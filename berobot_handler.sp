@@ -4,6 +4,11 @@
 #define PLUGIN_VERSION "1.0.0"
 #define PLUGIN_URL "Balancemod.tf"
 
+#define RED 2
+#define BLUE 3
+#define SPECTATE 1
+#define UNASSIGNED 0
+
 #include <morecolors_newsyntax>
 #include <sdkhooks>
 #include <sdktools>
@@ -16,7 +21,6 @@
 // #include <stocksoup/tf/entity_prop_stocks>
 // #include <stocksoup/tf/tempents_stocks>
 // #include <stocksoup/tf/weapon>
-
 
 
 #include <dhooks>
@@ -55,11 +59,11 @@ bool g_cv_Volunteered[MAXPLAYERS + 1];
 float g_CV_flSpyBackStabModifier;
 float g_CV_flYoutuberMode;
 
-int g_Volunteercount = 0;
 int g_RoboCap = 6;
 
 ArrayList g_Volunteers;
 
+TFTeam Roboteam;
 // Handle g_SDKCallInternalGetEffectBarRechargeTime;
 // Handle g_SDKCallIsBaseEntityWeapon;
 
@@ -76,11 +80,11 @@ Handle g_hGameConf;
 
 public Plugin myinfo =
 {
-	name = PLUGIN_NAME,
-	author = PLUGIN_AUTHOR,
-	description = PLUGIN_DESCRIPTION,
-	version = PLUGIN_VERSION,
-	url = PLUGIN_URL
+    name = PLUGIN_NAME,
+    author = PLUGIN_AUTHOR,
+    description = PLUGIN_DESCRIPTION,
+    version = PLUGIN_VERSION,
+    url = PLUGIN_URL
 };
 public void OnPluginStart()
 {
@@ -105,7 +109,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_flSpyBackStabModifier].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_flYoutuberMode].AddChangeHook(CvarChangeHook);
 
-    RegAdminCmd("sm_gr_start", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
+    RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCap));
@@ -190,21 +194,23 @@ public Action Command_YT_Robot_Start(int client, int args)
 {
     if(!g_cv_BlockTeamSwitch)
     {
-        PrintToChat(client, "[SM] Starting Giant Robot Event mode");
+        PrintCenterTextAll("Sarting Giant Robot Event mode");
         g_cv_BlockTeamSwitch = true;
         ServerCommand("mp_forceautoteam 0");
         ServerCommand("mp_teams_unbalance_limit 0");
         ServerCommand("mp_disable_respawn_times 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 0");
+        ServerCommand("mp_restartgame 5");
     }
     else
     {
         g_cv_BlockTeamSwitch = false;
-        PrintToChat(client, "[SM] Stopping Giant Robot Event mode");
+        PrintCenterTextAll("Stopping Giant Robot Event mode");
         ServerCommand("mp_forceautoteam 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 30");
         ServerCommand("mp_teams_unbalance_limit 1");
         ServerCommand("mp_disable_respawn_times 0");
+        ServerCommand("mp_restartgame 5");
     }
 
     if(g_cv_BlockTeamSwitch)
@@ -226,6 +232,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                     GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
                     int playerID = GetClientUserId(i);
 
+                    
                     //PrintToChatAll("Looping on %i", playerID);
                     //Hardcoding
                     //GPS
@@ -293,17 +300,18 @@ public Action Command_YT_Robot_Start(int client, int args)
         }
         else
         {
+            Roboteam = TFTeam_Red;
 
+            //Move all players to red
             for(int i = 1; i < MAXPLAYERS; i++)
             {
 
                 if(IsClientInGame(i) && IsValidClient(i))
                 {
-                    char sSteamID[64];
-                    GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
-                    int playerID = GetClientUserId(i);
+                    //int playerID = GetClientUserId(i);
 
-                    ServerCommand("sm_ct #%i red", playerID);
+                    //ServerCommand("sm_ct #%i red", playerID);
+                    TF2_SwapTeamAndRespawn(i, Roboteam);
                 }
             }
             // Go through all the volunteers
@@ -330,7 +338,10 @@ public Action Command_Volunteer(int client, int args)
     if(g_RoboCap == g_Volunteers.Length)
     {
 
-        MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i robots has been reached", g_RoboCap);
+
+        MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i robots has been reached, starting Boss Mode", g_RoboCap);
+        
+        Command_YT_Robot_Start(client, true);
 
         return Plugin_Handled;
     }
@@ -350,7 +361,9 @@ public Action Command_Volunteer(int client, int args)
         int index = FindValueInArray(g_Volunteers, client);
         g_Volunteers.Erase(index);
 
-        MC_PrintToChatEx(client, client, "{teamcolor}You are not volunteering to be a giant robot anymore");
+      //  MC_PrintToChatEx(client, client, "{teamcolor}You are not volunteering to be a giant robot anymore");
+        int islots = g_RoboCap - g_Volunteers.Length;
+        MC_PrintToChatAllEx(client, "{teamcolor}%N {default}is no longer volunteering to be a giant robot. %i/%i robot slots remains.", client, islots, g_RoboCap);
     }
 
     for(int i = 0; i < g_Volunteers.Length; i++)
@@ -360,7 +373,8 @@ public Action Command_Volunteer(int client, int args)
         if(IsValidClient(clientId) && IsClientInGame(clientId))
         {
 
-            MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has volunteered to be a giant robot", clientId);
+            int islots = g_RoboCap - g_Volunteers.Length;
+            MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has volunteered to be a giant robot. %i/%i robot slots remains.", clientId, islots, g_RoboCap);
         }
     }
 
@@ -387,7 +401,8 @@ public Action OnClientCommand(int client, int args)
 
             if(iTeam == TFTeam_Unassigned)
             {
-
+                
+                
                 //Add logic here to determine which team is bot team
                 ChangeClientTeam(client, TFTeam_Red);
                 TF2_SetPlayerClass(client, TFClass_Heavy);
@@ -439,4 +454,31 @@ stock bool IsValidClient(int client, bool replaycheck = true)
             return false;
     }
     return true;
+}
+/*
+	Swaps and respawns a player to a specified team.
+	
+	TFTeam_Unassigned = 0,
+	TFTeam_Spectator = 1,
+	TFTeam_Red = 2,
+	TFTeam_Blue = 3
+*/
+stock void TF2_SwapTeamAndRespawn(int client, int team)
+{
+	SetEntProp(client, Prop_Send, "m_lifeState", 2);
+	ChangeClientTeam(client, team);
+	TF2_RespawnPlayer(client);
+	SetEntProp(client, Prop_Send, "m_lifeState", 0);
+	
+	switch(team)
+	{
+		case TFTeam_Red:
+		{
+			PrintCenterText(client, "You have been moved to the RED team!");
+		}
+		case TFTeam_Blue:
+		{
+			PrintCenterText(client, "You have been moved to the BLU team!");
+		}
+	}
 }
