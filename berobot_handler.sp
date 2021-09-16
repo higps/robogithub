@@ -60,10 +60,12 @@ float g_CV_flSpyBackStabModifier;
 float g_CV_flYoutuberMode;
 
 int g_RoboCap = 6;
+TFTeam RoboTeam = TFTeam_Blue;
+TFTeam HumanTeam = TFTeam_Red;
 
 ArrayList g_Volunteers;
 
-TFTeam Roboteam;
+
 // Handle g_SDKCallInternalGetEffectBarRechargeTime;
 // Handle g_SDKCallIsBaseEntityWeapon;
 
@@ -222,7 +224,8 @@ public Action Command_YT_Robot_Start(int client, int args)
             ServerCommand("sm_ct @blue red");
 
             //Loops through all players and checks if the set ID's are present. Then sets them on blue while the rest is red
-            for(int i = 1; i < MAXPLAYERS; i++)
+            RoboTeam = TFTeam_Blue;
+            for(int i = 1; i < MaxClients; i++)
             {
 
                 if(IsClientInGame(i) && IsValidClient(i))
@@ -300,18 +303,44 @@ public Action Command_YT_Robot_Start(int client, int args)
         }
         else
         {
-            Roboteam = TFTeam_Red;
 
-            //Move all players to red
-            for(int i = 1; i < MAXPLAYERS; i++)
+                // Do something on "Teams have been switched." event
+            if(RoboTeam == TFTeam_Blue)
             {
 
-                if(IsClientInGame(i) && IsValidClient(i))
-                {
-                    //int playerID = GetClientUserId(i);
+                HumanTeam = TFTeam_Blue;
+            }
+            else
+            {
+                HumanTeam = TFTeam_Red;
+            }
 
+            for(int i = 1; i < MaxClients; i++)
+            {
+                
+                //PrintToChatAll("Looping players %i", i);
+                if(IsValidClient(i))
+                {
+                    
+                    int playerID = GetClientUserId(i);
+
+                    if (IsClientInGame(playerID)){
                     //ServerCommand("sm_ct #%i red", playerID);
-                    TF2_SwapTeamAndRespawn(i, Roboteam);
+                    //int index = FindValueInArray(g_Volunteers, i);
+                    PrintToChatAll("========Making one geps");
+                    if(g_cv_Volunteered[playerID])
+                    {
+                        PrintToChatAll("Making one geps");
+                        ServerCommand("sm_begps %i", playerID);
+                      //  ChangeClientTeam(playerID, RoboTeam);
+                       // TF2_RespawnPlayer(playerID);
+                    }
+                    else
+                    {
+                        ChangeClientTeam(playerID, HumanTeam);
+                        TF2_RespawnPlayer(playerID);
+                    }
+                    }
                 }
             }
             // Go through all the volunteers
@@ -340,7 +369,7 @@ public Action Command_Volunteer(int client, int args)
 
 
         MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i robots has been reached, starting Boss Mode", g_RoboCap);
-        
+
         Command_YT_Robot_Start(client, true);
 
         return Plugin_Handled;
@@ -361,7 +390,7 @@ public Action Command_Volunteer(int client, int args)
         int index = FindValueInArray(g_Volunteers, client);
         g_Volunteers.Erase(index);
 
-      //  MC_PrintToChatEx(client, client, "{teamcolor}You are not volunteering to be a giant robot anymore");
+        //  MC_PrintToChatEx(client, client, "{teamcolor}You are not volunteering to be a giant robot anymore");
         int islots = g_RoboCap - g_Volunteers.Length;
         MC_PrintToChatAllEx(client, "{teamcolor}%N {default}is no longer volunteering to be a giant robot. %i/%i robot slots remains.", client, islots, g_RoboCap);
     }
@@ -395,16 +424,16 @@ public Action OnClientCommand(int client, int args)
 
         if(g_cv_BlockTeamSwitch)
         {
-            PrintToChat(client, "[SM] Event mode activated: You are not currently allowed to change teams.");
+            PrintCenterText(client, "Boss mode is activated: You are not currently allowed to change teams.");
 
             //If someone joins while the event is going, set correct player team
 
             if(iTeam == TFTeam_Unassigned)
             {
-                
-                
+
+
                 //Add logic here to determine which team is bot team
-                ChangeClientTeam(client, TFTeam_Red);
+                ChangeClientTeam(client, HumanTeam);
                 TF2_SetPlayerClass(client, TFClass_Heavy);
                 TF2_RespawnPlayer(client);
             }
@@ -465,20 +494,20 @@ stock bool IsValidClient(int client, bool replaycheck = true)
 */
 stock void TF2_SwapTeamAndRespawn(int client, int team)
 {
-	SetEntProp(client, Prop_Send, "m_lifeState", 2);
-	ChangeClientTeam(client, team);
-	TF2_RespawnPlayer(client);
-	SetEntProp(client, Prop_Send, "m_lifeState", 0);
-	
-	switch(team)
-	{
-		case TFTeam_Red:
-		{
-			PrintCenterText(client, "You have been moved to the RED team!");
-		}
-		case TFTeam_Blue:
-		{
-			PrintCenterText(client, "You have been moved to the BLU team!");
-		}
-	}
+    SetEntProp(client, Prop_Send, "m_lifeState", 2);
+    ChangeClientTeam(client, team);
+    TF2_RespawnPlayer(client);
+    SetEntProp(client, Prop_Send, "m_lifeState", 0);
+
+    switch(team)
+    {
+    case TFTeam_Red:
+    {
+        PrintCenterText(client, "You have been moved to the RED team!");
+    }
+    case TFTeam_Blue:
+    {
+        PrintCenterText(client, "You have been moved to the BLU team!");
+    }
+    }
 }

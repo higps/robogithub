@@ -3,3 +3,4 @@ TODO:
 Track what teams robots are on and move players to the non robot team when they join the server mid round
 
 Add menus for volunteers to select from a list of robots, taken robots will be grayed out or not shown in the list. First come first serve
+Menu style will be 1 - > 9 with Scout, Soldier, Pyro, Demo, Heavy, Engineer, Medic, Spy, with each having different types to pick from.
