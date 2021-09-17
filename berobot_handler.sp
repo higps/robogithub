@@ -34,6 +34,7 @@ enum //Convar names
     CV_flSpyBackStabModifier,
     CV_bDebugMode,
     CV_flYoutuberMode,
+    CV_g_RoboCap,
     CV_PluginVersion
 }
 /* Global Variables */
@@ -62,7 +63,7 @@ bool g_cv_Volunteered[MAXPLAYERS + 1];
 float g_CV_flSpyBackStabModifier;
 float g_CV_flYoutuberMode;
 
-int g_RoboCap = 6;
+int g_RoboCap;
 int g_RoboTeam;
 int g_HumanTeam;
 
@@ -100,12 +101,14 @@ public void OnPluginStart()
     g_cvCvarList[CV_bDebugMode] = CreateConVar("bm_yt_v_mvm_debug", "1", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("bm_yt_mvm_backstab_reduction", "500.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("bm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
+    g_cvCvarList[CV_g_RoboCap] = CreateConVar("bm_robocap", "1", "The amount of giant robots needed to start a game.");
 
     /* Convar global variables init */
 
     g_cv_bDebugMode = GetConVarBool(g_cvCvarList[CV_bDebugMode]);
     g_CV_flSpyBackStabModifier = GetConVarFloat(g_cvCvarList[CV_flSpyBackStabModifier]);
     g_CV_flYoutuberMode = GetConVarFloat(g_cvCvarList[CV_flYoutuberMode]);
+    g_RoboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
 
 
     /* Convar Change Hooks */
@@ -113,6 +116,9 @@ public void OnPluginStart()
     g_cvCvarList[CV_bDebugMode].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_flSpyBackStabModifier].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_flYoutuberMode].AddChangeHook(CvarChangeHook);
+    g_cvCvarList[CV_g_RoboCap].AddChangeHook(CvarChangeHook);
+    
+    
 
     RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
@@ -377,21 +383,22 @@ public Action Command_YT_Robot_Start(int client, int args)
                     if(IsClientInGame(i))
                     {
                         TF2_ChangeClientTeam(i, TFTeam_Spectator);
-                        int playerID = GetClientUserId(i);
+                       // int playerID = GetClientUserId(i);
                         //ServerCommand("sm_ct #%i red", playerID);
                         //int index = FindValueInArray(g_Volunteers, i);
 
                         if(g_cv_Volunteered[i])
                         {
-                            PrintToChatAll("Making one Deflector GPS");
-                            ServerCommand("sm_begps #%i", playerID);
+                            PrintToChat(i, "You are on the Robot Team");
+                           // ServerCommand("sm_begps #%i", playerID);
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
                             ChangeClientTeam(i, g_RoboTeam);
                             TF2_RespawnPlayer(i);
+                            Menu_Volunteer(client, ITEMDRAW_DEFAULT);
                         }
                         else
                         {
-                            PrintToChatAll("Not making %N a Robot", i);
+                            PrintToChat(i,"You are on the Human team");
                             // ServerCommand("sm_ct #%i %i", playerID, g_HumanTeam);
                             ChangeClientTeam(i, g_HumanTeam);
                             TF2_RespawnPlayer(i);
@@ -413,7 +420,8 @@ public Action Command_Volunteer(int client, int args)
         MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i robots has been reached, starting Boss Mode", g_RoboCap);
 
         Command_YT_Robot_Start(client, true);
-
+        
+        g_Volunteers.Resize(g_RoboCap);
         return Plugin_Handled;
     }
 
@@ -450,7 +458,7 @@ public Action Command_Volunteer(int client, int args)
     }
 
     //Menu Stuff here
-    Menu_Volunteer(client, args);
+    
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
 }
 
@@ -458,15 +466,16 @@ public Action Command_Volunteer(int client, int args)
 public Action Menu_Volunteer(int client, int args)
 {
     Menu menu = new Menu(MenuHandler);
-    menu.SetTitle("Select Your Robot Type");
-    menu.AddItem("sm_begps", "Heavy: Deflector");
-    menu.AddItem("sm_bebearded", "Heavy: Juggernaut");
-    menu.AddItem("sm_besolar", "Demoman: Burst Bomber Hybrid Knight");
-    menu.AddItem("sm_bedane", "Engineer: Widowslinger");
-    menu.AddItem("sm_bearray", "Medic: Kritzkrieger");
-    menu.AddItem("sm_beagro","Pyro: Flamer");
+
+    menu.SetTitle("Select Your Robot Type", args);
+    menu.AddItem("sm_begps", "Heavy: Deflector", args);
+    menu.AddItem("sm_bebearded", "Heavy: Juggernaut", args);
+    menu.AddItem("sm_besolar", "Demoman: Burst Bomber Hybrid Knight", args);
+    menu.AddItem("sm_bedane", "Engineer: Widowslinger", args);
+    menu.AddItem("sm_bearray", "Medic: Kritzkrieger", args);
+    menu.AddItem("sm_beagro","Pyro: Flamer", args);
     menu.ExitButton = false;
-    menu.Display(client, 20);
+    menu.Display(client, -1);
  
     return Plugin_Handled;
 }
@@ -482,11 +491,13 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 //You selected item: 0 (found? 1 info: GPS)
         int clientID = GetClientUserId(param1);
         ServerCommand("%s #%i", info, clientID);
-        PrintToChatAll("The command: %s THe client: %i", info, clientID);
+        PrintToChatAll("The command: %s The client: %i", info, clientID);
 
-/*  
-    To draw more menus later
-       switch (param2)
+        //Make the picked option unavailable, redraw for all volunteers
+
+        MenuAction_DrawItem;
+    ///Handle menu selection, making selected robots unavailable
+/*        switch (param2)
         {
             
             case 1: 
