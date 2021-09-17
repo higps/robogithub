@@ -52,16 +52,19 @@ ConVar g_cvCvarList[CV_PluginVersion + 1];
 
 bool g_cv_bDebugMode;
 
+bool g_BossMode = false;
+
 bool g_cv_BlockTeamSwitch = false;
 
 bool g_cv_Volunteered[MAXPLAYERS + 1];
+
 
 float g_CV_flSpyBackStabModifier;
 float g_CV_flYoutuberMode;
 
 int g_RoboCap = 6;
-TFTeam RoboTeam = TFTeam_Blue;
-TFTeam HumanTeam = TFTeam_Red;
+TFTeam g_RoboTeam = TFTeam_Blue;
+TFTeam g_HumanTeam = TFTeam_Red;
 
 ArrayList g_Volunteers;
 
@@ -114,9 +117,15 @@ public void OnPluginStart()
     RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
 
+    /* Hooks */
+    HookEvent("teams_changed", Event_Teams_Changed, EventHookMode_Post);
+
+
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCap));
 
     g_cv_BlockTeamSwitch = false;
+    g_BossMode = false;
+
     for(int i = 0; i < MAXPLAYERS; i++)
     {
         g_cv_Volunteered[i] = false;
@@ -142,6 +151,40 @@ public void OnPluginStart()
 }
 
 /* Publics */
+
+public Action Event_Teams_Changed(Event event, char[] name, bool dontBroadcast)
+{
+
+    if(g_BossMode)
+    {
+
+        for(int i = 1; i < MaxClients; i++)
+        {
+            if(IsValidClient(i) && IsClientInGame(i)){
+            int playerID = GetClientUserId(i);
+            if(isMiniBoss(playerID))
+            {
+                TFTeam iBotTeam = view_as<TFTeam>(GetClientTeam(playerID));
+                PrintToChatAll("Bot team was %s", iBotTeam);
+
+                g_RoboTeam = iBotTeam;
+                switch (iBotTeam)
+                {
+                case TFTeam_Blue:
+                {
+                    g_HumanTeam = TFTeam_Red;
+                }
+                case TFTeam_Red:
+                {
+                    g_HumanTeam = TFTeam_Blue;
+                }
+                }
+                return Plugin_Handled;
+            }
+            }
+        }
+    }
+}
 
 public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 {
@@ -224,7 +267,7 @@ public Action Command_YT_Robot_Start(int client, int args)
             ServerCommand("sm_ct @blue red");
 
             //Loops through all players and checks if the set ID's are present. Then sets them on blue while the rest is red
-            RoboTeam = TFTeam_Blue;
+            g_RoboTeam = TFTeam_Blue;
             for(int i = 1; i < MaxClients; i++)
             {
 
@@ -235,7 +278,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                     GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
                     int playerID = GetClientUserId(i);
 
-                    
+
                     //PrintToChatAll("Looping on %i", playerID);
                     //Hardcoding
                     //GPS
@@ -303,61 +346,38 @@ public Action Command_YT_Robot_Start(int client, int args)
         }
         else
         {
-
-                // Do something on "Teams have been switched." event
-            if(RoboTeam == TFTeam_Blue)
+            //Make volunteer robots go here
+            for(int i = 0; i < MaxClients; i++)
             {
 
-                HumanTeam = TFTeam_Blue;
-            }
-            else
-            {
-                HumanTeam = TFTeam_Red;
-            }
-
-            for(int i = 1; i < MaxClients; i++)
-            {
-                
                 //PrintToChatAll("Looping players %i", i);
                 if(IsValidClient(i))
                 {
-                    
+
                     int playerID = GetClientUserId(i);
 
-                    if (IsClientInGame(playerID)){
-                    //ServerCommand("sm_ct #%i red", playerID);
-                    //int index = FindValueInArray(g_Volunteers, i);
-                    PrintToChatAll("========Making one geps");
-                    if(g_cv_Volunteered[playerID])
+                    if(IsClientInGame(i))
                     {
-                        PrintToChatAll("Making one geps");
-                        ServerCommand("sm_begps %i", playerID);
-                      //  ChangeClientTeam(playerID, RoboTeam);
-                       // TF2_RespawnPlayer(playerID);
-                    }
-                    else
-                    {
-                        ChangeClientTeam(playerID, HumanTeam);
-                        TF2_RespawnPlayer(playerID);
-                    }
+                        //ServerCommand("sm_ct #%i red", playerID);
+                        //int index = FindValueInArray(g_Volunteers, i);
+                        PrintToChatAll("========Making one geps");
+                        if(g_cv_Volunteered[i])
+                        {
+                            PrintToChatAll("Making one geps");
+                            ServerCommand("sm_begps #%i", playerID);
+                            //  ChangeClientTeam(playerID, g_RoboTeam);
+                            // TF2_RespawnPlayer(playerID);
+                        }
+                        else
+                        {
+                            ChangeClientTeam(playerID, g_HumanTeam);
+                            TF2_RespawnPlayer(playerID);
+                        }
                     }
                 }
             }
-            // Go through all the volunteers
-            // for(int i = 1; i < MAXPLAYERS; i++)
-            // {
-
-            //    char sSteamID[64];
-            //    GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
-            //     int playerID = GetClientUserId(i);
-
-            //     if(IsClientInGame(i) && IsValidClient(i) && g_cv_Volunteered[i])
-            //     {
-            //        ServerCommand("sm_begps #%i", playerID);
-            //        ServerCommand("sm_ct #%i blue", playerID);
-            //     }
-            // }
         }
+        g_BossMode = true;
     }
 }
 
@@ -432,9 +452,14 @@ public Action OnClientCommand(int client, int args)
             {
 
 
-                //Add logic here to determine which team is bot team
-                ChangeClientTeam(client, HumanTeam);
-                TF2_SetPlayerClass(client, TFClass_Heavy);
+                //Puts players in the correct team
+                if (!isMiniBoss(client)) ChangeClientTeam(client, g_HumanTeam);
+
+                if (isMiniBoss(client)) ChangeClientTeam(client, g_RoboTeam);
+                
+                //Sets you as random class when you join when boss mode is active
+                int irandomclass = GetRandomInt(1, 9);
+                TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
                 TF2_RespawnPlayer(client);
             }
 
