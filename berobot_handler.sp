@@ -449,7 +449,86 @@ public Action Command_Volunteer(int client, int args)
         }
     }
 
-    PrintToChatAll("%i arraylength", g_Volunteers.Length);
+    //Menu Stuff here
+    Menu_Volunteer(client, args);
+    //PrintToChatAll("%i arraylength", g_Volunteers.Length);
+}
+
+
+public Action Menu_Volunteer(int client, int args)
+{
+    Menu menu = new Menu(MenuHandler);
+    menu.SetTitle("Select Your Robot Type");
+    menu.AddItem("sm_begps", "Heavy: Deflector");
+    menu.AddItem("sm_bebearded", "Heavy: Juggernaut");
+    menu.AddItem("sm_besolar", "Demoman: Burst Bomber Hybrid Knight");
+    menu.AddItem("sm_bedane", "Engineer: Widowslinger");
+    menu.AddItem("sm_bearray", "Medic: Kritzkrieger");
+    menu.AddItem("sm_beagro","Pyro: Flamer");
+    menu.ExitButton = false;
+    menu.Display(client, 20);
+ 
+    return Plugin_Handled;
+}
+
+public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
+{
+    /* If an option was selected, tell the client about the item. */
+    if (action == MenuAction_Select)
+    {
+        char info[32];
+        bool found = menu.GetItem(param2, info, sizeof(info));
+        PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
+//You selected item: 0 (found? 1 info: GPS)
+        int clientID = GetClientUserId(param1);
+        ServerCommand("%s #%i", info, clientID);
+        PrintToChatAll("The command: %s THe client: %i", info, clientID);
+
+/*  
+    To draw more menus later
+       switch (param2)
+        {
+            
+            case 1: 
+            {
+                ServerCommand("%d #%i", found, param1);
+                PrintToChatAll("%d #%i", found, param1);
+            }
+            case 2: 
+            {
+                ServerCommand("%d #%i", found, param1);
+            }
+            case 3: 
+            {
+                ServerCommand("%d #%i", found, param1);
+            }
+            case 4: 
+            {
+                ServerCommand("%d #%i", found, param1);
+            }
+            case 5: 
+            {
+                ServerCommand("%d #%i", found, param1);
+            }
+            case 6: 
+            {
+                ServerCommand("%d #%i", found, param1);
+            }
+
+        } */
+
+    }
+    /* If the menu was cancelled, print a message to the server about it. */
+    else if (action == MenuAction_Cancel)
+    {
+        PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
+    }
+    
+    /* If the menu has ended, destroy it */
+    else if (action == MenuAction_End)
+    {
+        delete menu;
+    }
 }
 
 public Action OnClientCommand(int client, int args)
