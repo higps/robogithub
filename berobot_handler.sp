@@ -118,7 +118,7 @@ public void OnPluginStart()
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
 
     /* Hooks */
-    HookEvent("teams_changed", Event_Teams_Changed, EventHookMode_Post);
+    HookEvent("teams_changed", Event_teamplay_round_start, EventHookMode_Post);
 
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCap));
@@ -152,7 +152,7 @@ public void OnPluginStart()
 
 /* Publics */
 
-public Action Event_Teams_Changed(Event event, char[] name, bool dontBroadcast)
+public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
 
     if(g_BossMode)
@@ -183,7 +183,9 @@ public Action Event_Teams_Changed(Event event, char[] name, bool dontBroadcast)
             }
             }
         }
+        
     }
+    PrintToChatAll("No bosses detected");
 }
 
 public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
