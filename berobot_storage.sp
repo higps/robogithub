@@ -9,7 +9,7 @@
 
 public Plugin myinfo =
 {
-	name = "berobot_store",
+	name = "berobot_storage",
 	author = "icebear",
 	description = "",
 	version = "1.0",
@@ -39,10 +39,10 @@ public void Init()
 	if (_init)
 		return;
 
-	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
-	SMLogTag(SML_INFO, "berobot_store started at %i", GetTime());
 	//TODO: Release
 	// SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
+	SMLogTag(SML_INFO, "berobot_store started at %i", GetTime());
 	
 	_robots = new StringMap();
 	_init = true;
