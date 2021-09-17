@@ -475,7 +475,7 @@ public Action Menu_Volunteer(int client, int args)
     menu.AddItem("sm_bearray", "Medic: Kritzkrieger", args);
     menu.AddItem("sm_beagro","Pyro: Flamer", args);
     menu.ExitButton = false;
-    menu.Display(client, -1);
+    menu.Display(client, 120);
  
     return Plugin_Handled;
 }
@@ -488,14 +488,14 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
         char info[32];
         bool found = menu.GetItem(param2, info, sizeof(info));
         PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
-//You selected item: 0 (found? 1 info: GPS)
+
         int clientID = GetClientUserId(param1);
         ServerCommand("%s #%i", info, clientID);
         PrintToChatAll("The command: %s The client: %i", info, clientID);
 
         //Make the picked option unavailable, redraw for all volunteers
 
-        MenuAction_DrawItem;
+       
     ///Handle menu selection, making selected robots unavailable
 /*        switch (param2)
         {
@@ -532,7 +532,7 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     /* If the menu was cancelled, print a message to the server about it. */
     else if (action == MenuAction_Cancel)
     {
-        PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
+       // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
     }
     
     /* If the menu has ended, destroy it */
