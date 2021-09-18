@@ -275,10 +275,7 @@ MakeGiantPyro(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	g_bIsGPYRO[client] = true;
 	
-	PrintToChat(client, "1. You are now Giant Pyro !");
-		PrintToChat(client, "2. Same stats as normal Pyro.");
-		PrintToChat(client, "3. You will lose this status when you touch a locker, upgrade or die.");	
-	
+	PrintToChat(client, "1. You are now Giant Agro Pyro !");
 }
 
 stock UpdatePlayerHitbox(const client, const Float:fScale)
@@ -318,9 +315,9 @@ stock GiveGiantPyro(client)
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
-		CreateWeapon(client, "tf_weapon_flamethrower", 215, 6, 1, 2, 0);
+		CreateWeapon(client, "tf_weapon_flamethrower", 215, 6, 1, 1, 0);
 		TF2_RemoveWeaponSlot(client, 1);
-	//	CreateWeapon(client, "tf_weapon_flaregun", 740, 6, 1, 2, 0);
+		CreateWeapon(client, "tf_weapon_flaregun", 740, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 2);
 		
 		CreateHat(client, 470, 10, 6, true); //Lofi longave
@@ -328,7 +325,7 @@ stock GiveGiantPyro(client)
 		 CreateHat(client, 31184, 10, 6, false);//Manndatory atire
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-	//	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		
 		if(IsValidEntity(Weapon1))
 		{
@@ -348,15 +345,15 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "switch from wep deploy time decreased", 0.7);
 			TF2Attrib_SetByName(Weapon1, "weapon burn dmg reduced", 1.0);
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.2);
-			
 		}
 		
-		// if(IsValidEntity(Weapon2))
-		// {
-		// 	TF2Attrib_RemoveAll(Weapon2);
-		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 2.5);
-		// 	TF2Attrib_SetByName(Weapon1, "heal on kill", 300.0);
-		// }
+		if(IsValidEntity(Weapon2))
+		{
+			TF2Attrib_RemoveAll(Weapon2);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.8);
+			TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.5);
+			
+		}
 	}
 }
  

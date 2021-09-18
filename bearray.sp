@@ -296,7 +296,6 @@ stock GiveGiantMedic(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		
 		CreateWeapon(client, "tf_weapon_medigun", 35, 6, 1, 2, 0);
-		
 		CreateWeapon(client, "tf_weapon_syringegun_medic", 36, 6, 1, 2, 0);
 		
 		CreateHat(client, 303, 10, 6); // Berliner Bucket Helm
@@ -309,12 +308,10 @@ stock GiveGiantMedic(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			
 			TF2Attrib_SetByName(Weapon1, "health drain", 0.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.75);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-				
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 		}
 		
 		
@@ -323,7 +320,6 @@ stock GiveGiantMedic(client)
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
-			
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.5);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
