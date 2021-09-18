@@ -71,6 +71,7 @@ bool g_BossMode = false;
 bool g_cv_BlockTeamSwitch = false;
 
 bool g_cv_Volunteered[MAXPLAYERS + 1];
+bool g_cv_RobotPicked[MAXPLAYERS + 1];
 
 
 float g_CV_flSpyBackStabModifier;
@@ -544,16 +545,17 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
         int currentCount;
         g_RobotCount.GetValue(info, currentCount);
         g_RobotCount.SetValue(info, currentCount+1);
+        g_cv_RobotPicked[param1] = true;
 
         for(int i = 0; i < MaxClients; i++)
         {
+            if(g_cv_RobotPicked[i]) //don't open menu for players, who have already picked a robot
+                continue;
+
             if(!IsValidClient(i))
-                continue;
-            
+                continue;   
+
             if(!IsClientInGame(i))
-                continue;
-            
-            if(i == param1) //don't open menu for yourself again
                 continue;
 
             if(!g_cv_Volunteered[i])
