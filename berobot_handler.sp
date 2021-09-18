@@ -504,12 +504,13 @@ public Action Menu_Volunteer(int client)
         char class[9];
         GetRobotClass(name, class);
 
-        char display[128];
-        Format(display, sizeof(display), "%s: %s", class, name);
-
+        int roboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
         int count;
         g_RobotCount.GetValue(name, count);
-        int draw = count > 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
+        int draw = count >= roboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
+        
+        char display[128];
+        Format(display, sizeof(display), "%s: %s (%i / %i used)", class, name, count, roboCap);
 
         menu.AddItem(name, display, draw);
 
@@ -546,6 +547,9 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
             if(!IsClientInGame(i))
                 continue;
             
+            if(i == param1) //don't open menu for yourself again
+                continue;
+
             if(!g_cv_Volunteered[i])
                 continue;
             
