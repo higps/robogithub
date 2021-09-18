@@ -46,6 +46,7 @@ enum //Convar names
     CV_bDebugMode,
     CV_flYoutuberMode,
     CV_g_RoboCapTeam,
+    CV_g_RoboCap,
     CV_g_RoboMode,
     CV_PluginVersion
 }
@@ -75,7 +76,7 @@ bool g_cv_Volunteered[MAXPLAYERS + 1];
 float g_CV_flSpyBackStabModifier;
 float g_CV_flYoutuberMode;
 
-int g_RoboCap;
+int g_RoboCapTeam;
 int g_RoboTeam;
 int g_HumanTeam;
 
@@ -120,6 +121,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_yt_mvm_backstab_reduction", "500.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar("sm_robocap_team", "2", "The total amount of giant robots on a team");
+    g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
     g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = Main Mode, 1 = Both teams have bots");
 
     /* Convar global variables init */
@@ -127,7 +129,7 @@ public void OnPluginStart()
     g_cv_bDebugMode = GetConVarBool(g_cvCvarList[CV_bDebugMode]);
     g_CV_flSpyBackStabModifier = GetConVarFloat(g_cvCvarList[CV_flSpyBackStabModifier]);
     g_CV_flYoutuberMode = GetConVarFloat(g_cvCvarList[CV_flYoutuberMode]);
-    g_RoboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
+    g_RoboCapTeam = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
 
 
     /* Convar Change Hooks */
@@ -147,7 +149,7 @@ public void OnPluginStart()
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
 
 
-    g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCap));
+    g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
 
     g_cv_BlockTeamSwitch = false;
@@ -437,19 +439,19 @@ public Action Command_Volunteer(int client, int args)
 
     if(g_BossMode)
     {
-        MC_PrintToChatEx(client, client, "{teamcolor}Game has already started, volunteering not available.", g_RoboCap);
+        MC_PrintToChatEx(client, client, "{teamcolor}Game has already started, volunteering not available.", g_RoboCapTeam);
         return Plugin_Handled;
     }
 
-    if(g_RoboCap == g_Volunteers.Length)
+    if(g_RoboCapTeam == g_Volunteers.Length)
     {
 
 
-        MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i volunteers has been reached, starting Boss Mode", g_RoboCap);
+        MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i volunteers has been reached, starting Boss Mode", g_RoboCapTeam);
 
         Command_YT_Robot_Start(client, true);
         
-        g_Volunteers.Resize(g_RoboCap);
+        g_Volunteers.Resize(g_RoboCapTeam);
         g_BossMode = true;
         return Plugin_Handled;
     }
@@ -470,8 +472,8 @@ public Action Command_Volunteer(int client, int args)
         g_Volunteers.Erase(index);
 
         //  MC_PrintToChatEx(client, client, "{teamcolor}You are not volunteering to be a giant robot anymore");
-        int islots = g_RoboCap - g_Volunteers.Length;
-        MC_PrintToChatAllEx(client, "{teamcolor}%N {default}is no longer volunteering to be a giant robot. %i/%i robot slots remains.", client, islots, g_RoboCap);
+        int islots = g_RoboCapTeam - g_Volunteers.Length;
+        MC_PrintToChatAllEx(client, "{teamcolor}%N {default}is no longer volunteering to be a giant robot. %i/%i robot slots remains.", client, islots, g_RoboCapTeam);
     }
 
     for(int i = 0; i < g_Volunteers.Length; i++)
@@ -481,8 +483,8 @@ public Action Command_Volunteer(int client, int args)
         if(IsValidClient(clientId) && IsClientInGame(clientId))
         {
 
-            int islots = g_RoboCap - g_Volunteers.Length;
-            MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has volunteered to be a giant robot. %i/%i robot slots remains.", clientId, islots, g_RoboCap);
+            int islots = g_RoboCapTeam - g_Volunteers.Length;
+            MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has volunteered to be a giant robot. %i/%i robot slots remains.", clientId, islots, g_RoboCapTeam);
         }
     }
 
@@ -508,7 +510,7 @@ public Action Menu_Volunteer(int client)
         char class[9];
         GetRobotClass(name, class);
 
-        int roboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
+        int roboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
         int count;
         g_RobotCount.GetValue(name, count);
         int draw = count >= roboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
