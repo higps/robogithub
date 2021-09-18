@@ -4,6 +4,11 @@
 #define PLUGIN_VERSION "1.0.0"
 #define PLUGIN_URL "Balancemod.tf"
 
+#define RED 2
+#define BLUE 3
+#define SPECTATE 1
+#define UNASSIGNED 0
+
 #include <morecolors_newsyntax>
 #include <sdkhooks>
 #include <sdktools>
@@ -16,7 +21,6 @@
 // #include <stocksoup/tf/entity_prop_stocks>
 // #include <stocksoup/tf/tempents_stocks>
 // #include <stocksoup/tf/weapon>
-
 
 
 #include <dhooks>
@@ -48,17 +52,22 @@ ConVar g_cvCvarList[CV_PluginVersion + 1];
 
 bool g_cv_bDebugMode;
 
+bool g_BossMode = false;
+
 bool g_cv_BlockTeamSwitch = false;
 
 bool g_cv_Volunteered[MAXPLAYERS + 1];
 
+
 float g_CV_flSpyBackStabModifier;
 float g_CV_flYoutuberMode;
 
-int g_Volunteercount = 0;
 int g_RoboCap = 6;
+int g_RoboTeam;
+int g_HumanTeam;
 
 ArrayList g_Volunteers;
+
 
 // Handle g_SDKCallInternalGetEffectBarRechargeTime;
 // Handle g_SDKCallIsBaseEntityWeapon;
@@ -76,11 +85,11 @@ Handle g_hGameConf;
 
 public Plugin myinfo =
 {
-	name = PLUGIN_NAME,
-	author = PLUGIN_AUTHOR,
-	description = PLUGIN_DESCRIPTION,
-	version = PLUGIN_VERSION,
-	url = PLUGIN_URL
+    name = PLUGIN_NAME,
+    author = PLUGIN_AUTHOR,
+    description = PLUGIN_DESCRIPTION,
+    version = PLUGIN_VERSION,
+    url = PLUGIN_URL
 };
 public void OnPluginStart()
 {
@@ -105,12 +114,19 @@ public void OnPluginStart()
     g_cvCvarList[CV_flSpyBackStabModifier].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_flYoutuberMode].AddChangeHook(CvarChangeHook);
 
-    RegAdminCmd("sm_gr_start", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
+    RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
+    RegAdminCmd("sm_me_boss", Command_Me_Boss, ADMFLAG_SLAY, "Checks if you are a boss");
+
+    /* Hooks */
+    HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
+
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCap));
 
     g_cv_BlockTeamSwitch = false;
+    g_BossMode = false;
+
     for(int i = 0; i < MAXPLAYERS; i++)
     {
         g_cv_Volunteered[i] = false;
@@ -136,6 +152,16 @@ public void OnPluginStart()
 }
 
 /* Publics */
+
+public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
+{
+
+    
+/*     bool fullreset = GetEventBool(event, "full_reset");
+
+    PrintToChatAll("Fullreset %b", fullreset); */
+    return Plugin_Continue;
+}
 
 public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 {
@@ -185,26 +211,62 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     return Plugin_Continue;
 }
 
+public Action Command_Me_Boss(int client, int args)
+{
+    if(isMiniBoss(client))
+    {
+
+        PrintToChat(client, "You are miniboss");
+    }
+    else
+    {
+        PrintToChat(client, "You are not miniboss");
+    }
+    return Plugin_Handled;
+}
+
+
 // intercept and block client jointeam command if required
 public Action Command_YT_Robot_Start(int client, int args)
 {
     if(!g_cv_BlockTeamSwitch)
     {
-        PrintToChat(client, "[SM] Starting Giant Robot Event mode");
+        PrintCenterTextAll("Sarting Giant Robot Event mode");
         g_cv_BlockTeamSwitch = true;
         ServerCommand("mp_forceautoteam 0");
         ServerCommand("mp_teams_unbalance_limit 0");
         ServerCommand("mp_disable_respawn_times 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 0");
+        ServerCommand("mp_restartgame 5");
+
+        //Randomly set which team is roboteam and humanteam
+        int RandomTeam = GetRandomInt(1, 2);
+        PrintToChatAll("Randomteam was %i", RandomTeam);
+        if(RandomTeam == 1)
+        {
+
+            g_RoboTeam = BLUE;
+            g_HumanTeam = RED;
+        }
+        else
+        {
+
+            g_RoboTeam = RED;
+            g_HumanTeam = BLUE;
+        }
+
+        PrintToChatAll("Robots will be Team %i", g_RoboTeam);
+        PrintToChatAll("Humans will be Team %i", g_HumanTeam);
     }
     else
     {
         g_cv_BlockTeamSwitch = false;
-        PrintToChat(client, "[SM] Stopping Giant Robot Event mode");
+        PrintCenterTextAll("Stopping Giant Robot Event mode");
         ServerCommand("mp_forceautoteam 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 30");
         ServerCommand("mp_teams_unbalance_limit 1");
         ServerCommand("mp_disable_respawn_times 0");
+        ServerCommand("mp_restartgame 5");
     }
 
     if(g_cv_BlockTeamSwitch)
@@ -216,7 +278,8 @@ public Action Command_YT_Robot_Start(int client, int args)
             ServerCommand("sm_ct @blue red");
 
             //Loops through all players and checks if the set ID's are present. Then sets them on blue while the rest is red
-            for(int i = 1; i < MAXPLAYERS; i++)
+            g_RoboTeam = BLUE;
+            for(int i = 1; i < MaxClients; i++)
             {
 
                 if(IsClientInGame(i) && IsValidClient(i))
@@ -225,6 +288,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                     char sSteamID[64];
                     GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
                     int playerID = GetClientUserId(i);
+
 
                     //PrintToChatAll("Looping on %i", playerID);
                     //Hardcoding
@@ -294,32 +358,47 @@ public Action Command_YT_Robot_Start(int client, int args)
         else
         {
 
-            for(int i = 1; i < MAXPLAYERS; i++)
+
+            //Set everyone to spectate first
+            
+            //ServerCommand("sm_ct @all spectate");
+            
+            //Make volunteer robots go here
+            for(int i = 0; i < MaxClients; i++)
             {
 
-                if(IsClientInGame(i) && IsValidClient(i))
+                //PrintToChatAll("Looping players %i", i);
+                if(IsValidClient(i))
                 {
-                    char sSteamID[64];
-                    GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
-                    int playerID = GetClientUserId(i);
 
-                    ServerCommand("sm_ct #%i red", playerID);
+
+                    
+                    
+                    if(IsClientInGame(i))
+                    {
+                        TF2_ChangeClientTeam(i, TFTeam_Spectator);
+                        int playerID = GetClientUserId(i);
+                        //ServerCommand("sm_ct #%i red", playerID);
+                        //int index = FindValueInArray(g_Volunteers, i);
+
+                        if(g_cv_Volunteered[i])
+                        {
+                            PrintToChatAll("Making one Deflector GPS");
+                            ServerCommand("sm_begps #%i", playerID);
+                            //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
+                            ChangeClientTeam(i, g_RoboTeam);
+                            TF2_RespawnPlayer(i);
+                        }
+                        else
+                        {
+                            PrintToChatAll("Not making %N a Robot", i);
+                            // ServerCommand("sm_ct #%i %i", playerID, g_HumanTeam);
+                            ChangeClientTeam(i, g_HumanTeam);
+                            TF2_RespawnPlayer(i);
+                        }
+                    }
                 }
             }
-            // Go through all the volunteers
-            // for(int i = 1; i < MAXPLAYERS; i++)
-            // {
-
-            //    char sSteamID[64];
-            //    GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
-            //     int playerID = GetClientUserId(i);
-
-            //     if(IsClientInGame(i) && IsValidClient(i) && g_cv_Volunteered[i])
-            //     {
-            //        ServerCommand("sm_begps #%i", playerID);
-            //        ServerCommand("sm_ct #%i blue", playerID);
-            //     }
-            // }
         }
     }
 }
@@ -330,7 +409,10 @@ public Action Command_Volunteer(int client, int args)
     if(g_RoboCap == g_Volunteers.Length)
     {
 
-        MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i robots has been reached", g_RoboCap);
+
+        MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i robots has been reached, starting Boss Mode", g_RoboCap);
+
+        Command_YT_Robot_Start(client, true);
 
         return Plugin_Handled;
     }
@@ -350,7 +432,9 @@ public Action Command_Volunteer(int client, int args)
         int index = FindValueInArray(g_Volunteers, client);
         g_Volunteers.Erase(index);
 
-        MC_PrintToChatEx(client, client, "{teamcolor}You are not volunteering to be a giant robot anymore");
+        //  MC_PrintToChatEx(client, client, "{teamcolor}You are not volunteering to be a giant robot anymore");
+        int islots = g_RoboCap - g_Volunteers.Length;
+        MC_PrintToChatAllEx(client, "{teamcolor}%N {default}is no longer volunteering to be a giant robot. %i/%i robot slots remains.", client, islots, g_RoboCap);
     }
 
     for(int i = 0; i < g_Volunteers.Length; i++)
@@ -360,7 +444,8 @@ public Action Command_Volunteer(int client, int args)
         if(IsValidClient(clientId) && IsClientInGame(clientId))
         {
 
-            MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has volunteered to be a giant robot", clientId);
+            int islots = g_RoboCap - g_Volunteers.Length;
+            MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has volunteered to be a giant robot. %i/%i robot slots remains.", clientId, islots, g_RoboCap);
         }
     }
 
@@ -381,16 +466,24 @@ public Action OnClientCommand(int client, int args)
 
         if(g_cv_BlockTeamSwitch)
         {
-            PrintToChat(client, "[SM] Event mode activated: You are not currently allowed to change teams.");
+            PrintCenterText(client, "Boss mode is activated: You are not currently allowed to change teams.");
 
             //If someone joins while the event is going, set correct player team
 
             if(iTeam == TFTeam_Unassigned)
             {
 
-                //Add logic here to determine which team is bot team
-                ChangeClientTeam(client, TFTeam_Red);
-                TF2_SetPlayerClass(client, TFClass_Heavy);
+
+                //Puts players in the correct team
+                if(!isMiniBoss(client))
+                    ChangeClientTeam(client, g_HumanTeam);
+
+                if(isMiniBoss(client))
+                    ChangeClientTeam(client, g_RoboTeam);
+
+                //Sets you as random class when you join when boss mode is active
+                int irandomclass = GetRandomInt(1, 9);
+                TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
                 TF2_RespawnPlayer(client);
             }
 
@@ -407,17 +500,17 @@ bool isMiniBoss(int client)
     if(IsValidClient(client))
     {
 
-        if(GetEntProp(client, Prop_Send, "m_bIsMiniBoss") == 1)
+        if(GetEntProp(client, Prop_Send, "m_bIsMiniBoss"))
         {
             if(g_cv_bDebugMode)
-                //     PrintToChatAll("Was mini boss");
-                return true;
+//                PrintToChatAll("%N Was mini boss", client);
+            return true;
         }
         else
         {
             if(g_cv_bDebugMode)
-                //    PrintToChatAll("Was not mini boss");
-                return false;
+              //  PrintToChatAll("%N Was not mini boss", client);
+            return false;
         }
     }
     return false;
@@ -439,4 +532,36 @@ stock bool IsValidClient(int client, bool replaycheck = true)
             return false;
     }
     return true;
+}
+/*
+	Swaps and respawns a player to a specified team.
+	
+	TFTeam_Unassigned = 0,
+	TFTeam_Spectator = 1,
+	TFTeam_Red = 2,
+	TFTeam_Blue = 3
+*/
+stock void TF2_SwapTeamAndRespawn(int client, int team)
+{
+    SetEntProp(client, Prop_Send, "m_lifeState", 2);
+    ChangeClientTeam(client, team);
+    TF2_RespawnPlayer(client);
+    SetEntProp(client, Prop_Send, "m_lifeState", 0);
+
+    switch(team)
+    {
+    case RED:
+    {
+        PrintCenterText(client, "You have been moved to the RED team!");
+    }
+    case BLUE:
+    {
+        PrintCenterText(client, "You have been moved to the BLU team!");
+    }
+    }
+}
+
+stock void OnClientDisconnect(int client)
+{
+    PrintToChatAll("%N disconnected lol", client);
 }

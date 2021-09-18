@@ -150,7 +150,7 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (g_IsGPS[client]) CreateTimer(1.0, Timer_Locker, client);
+	if (g_IsGPS[client]) CreateTimer(0.0, Timer_Locker, client);
 }
  
 public Event_Death(Handle:event, const String:name[], bool:dontBroadcast)
@@ -316,9 +316,9 @@ MakeGDeflectorH(client)
 	
 	//g_IsGPS[client] = true;
 	
-		PrintToChat(client, "1. You are now Giant Deflector GPS!");
+/* 		PrintToChat(client, "1. You are now Giant Deflector GPS!");
 		PrintToChat(client, "2. Your Minigun deals 50 percent more damage and can destroy Rockets and Pipes !");
-		PrintToChat(client, "3. You will lose this status when you touch a locker");	
+		PrintToChat(client, "3. You will lose this status when you touch a locker");	 */
 	
 	//}
 	// else{
