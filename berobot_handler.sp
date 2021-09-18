@@ -420,7 +420,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
                             ChangeClientTeam(i, g_RoboTeam);
                             TF2_RespawnPlayer(i);
-                            Menu_Volunteer(client);
+                            Menu_Volunteer(i);
                         }
                         else
                         {
