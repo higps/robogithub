@@ -9,7 +9,7 @@ https://github.com/peace-maker/DHooks2
 Bot types:
 ```
 Heavy - Juggernaut - Bearded
- Health: 14500;
+ Health 14500
 -40% move speed penalty
 +90 % pushback resistance
 +90 % airblast resistance
@@ -20,6 +20,7 @@ Can't pick up health packs
 Immune to falling damage
 Can't block capture on defense
 
+Weapon: Melee Only
 Killing Gloves of Bearded
 -20% slower firing speed
 +50% more damage
