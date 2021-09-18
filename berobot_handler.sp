@@ -120,7 +120,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_yt_mvm_backstab_reduction", "500.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar("sm_robocap_team", "2", "The total amount of giant robots on a team");
-    g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = Main Mode, 1 = Both teams have bots");
+    g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = Robots vs Humans, 1 = Humans + Robots vs Human + Robts");
 
     /* Convar global variables init */
 
