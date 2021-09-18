@@ -40,8 +40,8 @@ public void OnPluginStart()
 
 	_created = new ArrayList(3);
 
-	AddRobot("A", CreateA);
-	AddRobot("B", CreateB);
+	AddRobot("A", "ClassA", CreateA);
+	AddRobot("B", "ClassB", CreateB);
 
 	Assert();
 }
@@ -80,6 +80,8 @@ public void Assert()
 {
 	if (!AssertNames())
 		return;
+	if (!AssertClasses())
+		return;
 	if (!AssertCalls())
 		return;
 
@@ -100,6 +102,21 @@ public bool AssertNames()
 	char actualB[2];
 	names.GetString(1, actualB, 2);
 	if (!AssertEqualString("A", actualB, "GetRobotNames did not have 'A' in second Position"))
+		return false;
+
+	return true;
+}
+
+public bool AssertClasses()
+{
+	char classA[9];
+	GetRobotClass("A", classA);
+	if (!AssertEqualString("ClassA", classA, "GetRobotClass did not return expected class"))
+		return false;
+
+	char classB[9];
+	GetRobotClass("B", classB);
+	if (!AssertEqualString("ClassB", classB, "GetRobotClass did not return expected class"))
 		return false;
 
 	return true;

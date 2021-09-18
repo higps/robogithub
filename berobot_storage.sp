@@ -25,6 +25,7 @@ enum (<<= 1)
 }
 
 char ROBOT_KEY_NAME[] = "name";
+char ROBOT_KEY_CLASS[] = "class";
 char ROBOT_KEY_CALLBACK[] = "callback";
 bool _init;
 StringMap _robots;
@@ -53,6 +54,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("AddRobot", Native_AddRobot);
 	CreateNative("RemoveRobot", Native_RemoveRobot);
 	CreateNative("GetRobotNames", Native_GetRobotNames);
+	CreateNative("GetRobotClass", Native_GetRobotClass);
 	CreateNative("CreateRobot", Native_CreateRobot);
 
 	return APLRes_Success;
@@ -65,7 +67,10 @@ public any Native_AddRobot(Handle plugin, int numParams)
 	char name[NAMELENGTH];
 	GetNativeString(1, name, NAMELENGTH);
 
-	Function callback = GetNativeFunction(2);
+	char class[9];
+	GetNativeString(2, class, 9);
+
+	Function callback = GetNativeFunction(3);
 
 	SMLogTag(SML_VERBOSE, "adding robot %s from plugin-handle %x", name, plugin);
 
@@ -73,9 +78,11 @@ public any Native_AddRobot(Handle plugin, int numParams)
 	privateForward.AddFunction(plugin, callback);
 
 	SMLogTag(SML_VERBOSE, "robot %s uses privateForward %x", name, privateForward);
+	SMLogTag(SML_VERBOSE, "robot %s is class %s", name, class);
 
 	StringMap item = new StringMap();
 	item.SetString(ROBOT_KEY_NAME, name);
+	item.SetString(ROBOT_KEY_CLASS, class);
 	item.SetValue(ROBOT_KEY_CALLBACK, privateForward);
 	_robots.SetValue(name, item);
 }
@@ -106,6 +113,22 @@ public any Native_GetRobotNames(Handle plugin, int numParams)
 	}
 
 	return names;
+}
+
+public any Native_GetRobotClass(Handle plugin, int numParams)
+{
+	Init();
+	
+	char name[NAMELENGTH];
+	GetNativeString(1, name, NAMELENGTH);
+
+	char class[9];
+	
+	StringMap item;
+	_robots.GetValue(name, item);
+	item.GetString(ROBOT_KEY_CLASS, class, 9);
+
+	SetNativeString(2, class, 10, false);
 }
 
 public any Native_CreateRobot(Handle plugin, int numParams)
