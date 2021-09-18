@@ -202,8 +202,8 @@ public void OnMapStart(){
 public void OnClientDisconnect(int client)
 {
 
-    g_Volunteers.Erase(client);
-
+    if(g_cv_Volunteered[client]) g_Volunteers.Erase(client);
+    PrintToChatAll("%N disconnected lol", client);
 }
 
 /* Publics */
@@ -746,9 +746,4 @@ stock void TF2_SwapTeamAndRespawn(int client, int team)
         PrintCenterText(client, "You have been moved to the BLU team!");
     }
     }
-}
-
-stock void OnClientDisconnect(int client)
-{
-    PrintToChatAll("%N disconnected lol", client);
 }
