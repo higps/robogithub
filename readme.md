@@ -7,7 +7,7 @@ https://forums.alliedmods.net/showthread.php?t=185016
 https://github.com/peace-maker/DHooks2
 
 Bot types:
-
+```
 Heavy - Juggernaut - Bearded
  Health: 14500;
 -40% move speed penalty
@@ -29,3 +29,4 @@ On Kill: Heal 800 HP
 On Hit: 2 seconds of speed boost
 +100% Melee range
 Attacks ignores all resistances
+```
