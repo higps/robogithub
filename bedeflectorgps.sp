@@ -2,6 +2,7 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
+#include <berobot>
  
 #define PLUGIN_VERSION "1.0"
  
@@ -60,6 +61,13 @@ public OnPluginStart()
 	SetFailState("Failed to create call: CBasePlayer::EquipWearable");
 
 	delete hTF2; 
+
+	AddRobot("HiGPS", "Heavy", CreateHiGPS);
+}
+
+public void OnPluginEnd()
+{
+	RemoveRobot("HiGPS");
 }
  
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -189,31 +197,45 @@ public Action:RemoveModel(client)
 		AcceptEntityInput(client, "SetCustomModel");
 	}
 }
- 
+
 public Action:Command_GPSDeflector(client, args)
 {
 	decl String:arg1[32];
 	if (args < 1)
 	{
-		arg1 = "@me";
+		arg1[0] = '\0';
 	}
 	else GetCmdArg(1, arg1, sizeof(arg1));
+
+	CreateHiGPS(client, arg1);	
+	return Plugin_Handled;
+}
+
+public void CreateHiGPS(int client, char target[32])
+{
+	int targetFilter = 0;
+	if (target[0] == '\0')
+	{
+		target = "@me";
+		targetFilter = COMMAND_FILTER_NO_IMMUNITY;
+	}
+
 	new String:target_name[MAX_TARGET_LENGTH];
 	new target_list[MAXPLAYERS], target_count;
 	new bool:tn_is_ml;
 
 	if ((target_count = ProcessTargetString(
-					arg1,
+					target,
 					client,
 					target_list,
 					MAXPLAYERS,
-					COMMAND_FILTER_ALIVE|(args < 1 ? COMMAND_FILTER_NO_IMMUNITY : 0),
+					COMMAND_FILTER_ALIVE|targetFilter,
 					target_name,
 					sizeof(target_name),
 					tn_is_ml)) <= 0)
 	{
 		ReplyToTargetError(client, target_count);
-		return Plugin_Handled;
+		return;
 	}
 	for (new i = 0; i < target_count; i++)
 	{
@@ -228,16 +250,10 @@ public Action:Command_GPSDeflector(client, args)
 			g_IsGPS[target_list[i]] = false;
 			PrintToChat(target_list[i], "1. You are no longer Giant Deflector GPS!");
 			TF2_RegeneratePlayer(target_list[i]);
-		}
-		
-		
+		}		
 	}
 
-
-
 	if (g_IsGPS[client])EmitSoundToAll(SPAWN);
-	
-	return Plugin_Handled;
 }
 
 MakeGDeflectorH(client)
