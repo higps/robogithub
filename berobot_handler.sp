@@ -203,7 +203,7 @@ public void OnClientDisconnect(int client)
 {
 
     if(g_cv_Volunteered[client]) g_Volunteers.Erase(client);
-    asd
+    
     PrintToChatAll("%N disconnected", client);
 }
 
