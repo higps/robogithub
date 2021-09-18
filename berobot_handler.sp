@@ -9,15 +9,15 @@
 #define SPECTATE 1
 #define UNASSIGNED 0
 
+#include <berobot>
 #include <morecolors_newsyntax>
 #include <sdkhooks>
 #include <sdktools>
+#include <sm_logger>
 #include <sourcemod>
 #include <tf2>
 #include <tf2_stocks>
 #include <tf_ontakedamage>
-#include <sm_logger>
-#include <berobot>
 
 // #include <stocksoup/memory>
 // #include <stocksoup/tf/entity_prop_stocks>
@@ -32,12 +32,12 @@
 #pragma semicolon 1
 
 
-char LOG_TAGS[][] =	 {"VERBOSE", "INFO", "ERROR"};
-enum (<<= 1)
+char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
+enum(<<= 1)
 {
-	SML_VERBOSE = 1,
-	SML_INFO,
-	SML_ERROR,
+    SML_VERBOSE = 1,
+    SML_INFO,
+    SML_ERROR,
 }
 
 enum //Convar names
@@ -109,10 +109,10 @@ public Plugin myinfo =
 };
 public void OnPluginStart()
 {
-	//TODO: Release
-	// SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
-	SMLogTag(SML_INFO, "berobot_store started at %i", GetTime());
+    //TODO: Release
+    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE | SML_INFO | SML_ERROR, SML_ALL);
+    SMLogTag(SML_INFO, "berobot_store started at %i", GetTime());
 
     /* Convars */
 
@@ -139,8 +139,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_flSpyBackStabModifier].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_flYoutuberMode].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboCapTeam].AddChangeHook(CvarChangeHook);
-    
-    
+
 
     RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
@@ -182,7 +181,8 @@ public void OnPluginStart()
     delete g_hGameConf;
 }
 
-public void OnMapStart(){
+public void OnMapStart()
+{
 
     g_cv_BlockTeamSwitch = false;
     g_BossMode = false;
@@ -195,16 +195,19 @@ public void OnMapStart(){
         g_cv_Volunteered[i] = false;
         g_cv_RobotPicked[i] = false;
     }
-
-
 }
 
 public void OnClientDisconnect(int client)
 {
 
-    if(g_cv_Volunteered[client]) g_Volunteers.Erase(client);
-    
-    PrintToChatAll("%N disconnected", client);
+    if(g_cv_Volunteered[client])
+    {
+        g_Volunteers.Erase(client);
+
+        //PrintToChatAll("%N disconnected", client);
+        int islots = g_RoboCapTeam - g_Volunteers.Length;
+        MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has disconnected. There is now %i/%i  available robot slots remains. Type !volunteer to become a giant robot", client, islots, g_RoboCapTeam);
+    }
 }
 
 /* Publics */
@@ -212,8 +215,8 @@ public void OnClientDisconnect(int client)
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
 
-    
-/*     bool fullreset = GetEventBool(event, "full_reset");
+
+    /*     bool fullreset = GetEventBool(event, "full_reset");
 
     PrintToChatAll("Fullreset %b", fullreset); */
     return Plugin_Continue;
@@ -418,9 +421,9 @@ public Action Command_YT_Robot_Start(int client, int args)
 
 
             //Set everyone to spectate first
-            
+
             //ServerCommand("sm_ct @all spectate");
-            
+
             //Make volunteer robots go here
             for(int i = 0; i < MaxClients; i++)
             {
@@ -430,19 +433,17 @@ public Action Command_YT_Robot_Start(int client, int args)
                 {
 
 
-                    
-                    
                     if(IsClientInGame(i))
                     {
                         TF2_ChangeClientTeam(i, TFTeam_Spectator);
-                       // int playerID = GetClientUserId(i);
+                        // int playerID = GetClientUserId(i);
                         //ServerCommand("sm_ct #%i red", playerID);
                         //int index = FindValueInArray(g_Volunteers, i);
 
                         if(g_cv_Volunteered[i])
                         {
                             PrintToChat(i, "You are on the Robot Team");
-                           // ServerCommand("sm_begps #%i", playerID);
+                            // ServerCommand("sm_begps #%i", playerID);
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
                             ChangeClientTeam(i, g_RoboTeam);
                             TF2_RespawnPlayer(i);
@@ -450,7 +451,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                         }
                         else
                         {
-                            PrintToChat(i,"You are on the Human team");
+                            PrintToChat(i, "You are on the Human team");
                             // ServerCommand("sm_ct #%i %i", playerID, g_HumanTeam);
                             ChangeClientTeam(i, g_HumanTeam);
                             TF2_RespawnPlayer(i);
@@ -478,7 +479,7 @@ public Action Command_Volunteer(int client, int args)
         MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i volunteers has been reached, starting Boss Mode", g_RoboCapTeam);
 
         Command_YT_Robot_Start(client, true);
-        
+
         g_Volunteers.Resize(g_RoboCapTeam);
         g_BossMode = true;
         return Plugin_Handled;
@@ -517,7 +518,7 @@ public Action Command_Volunteer(int client, int args)
     }
 
     //Menu Stuff here
-    
+
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
 }
 
@@ -542,7 +543,7 @@ public Action Menu_Volunteer(int client)
         int count;
         g_RobotCount.GetValue(name, count);
         int draw = count >= roboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
-        
+
         char display[128];
         Format(display, sizeof(display), "%s: %s (%i / %i used)", class, name, count, roboCap);
 
@@ -554,14 +555,14 @@ public Action Menu_Volunteer(int client)
     int timeout = MENU_TIME_FOREVER;
     menu.Display(client, timeout);
     SMLogTag(SML_VERBOSE, "menu displayed to %L for %i seconds", client, timeout);
- 
+
     return Plugin_Handled;
 }
 
 public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
     /* If an option was selected, tell the client about the item. */
-    if (action == MenuAction_Select)
+    if(action == MenuAction_Select)
     {
         char info[32];
         bool found = menu.GetItem(param2, info, sizeof(info));
@@ -571,7 +572,7 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
         int currentCount;
         g_RobotCount.GetValue(info, currentCount);
-        g_RobotCount.SetValue(info, currentCount+1);
+        g_RobotCount.SetValue(info, currentCount + 1);
         g_cv_RobotPicked[param1] = true;
 
         for(int i = 0; i < MaxClients; i++)
@@ -580,22 +581,22 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
                 continue;
 
             if(!IsValidClient(i))
-                continue;   
+                continue;
 
             if(!IsClientInGame(i))
                 continue;
 
             if(!g_cv_Volunteered[i])
                 continue;
-            
+
             Menu_Volunteer(i);
         }
 
         //Make the picked option unavailable, redraw for all volunteers
 
-       
-    ///Handle menu selection, making selected robots unavailable
-/*        switch (param2)
+
+        ///Handle menu selection, making selected robots unavailable
+        /*        switch (param2)
         {
             
             case 1: 
@@ -625,16 +626,15 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
             }
 
         } */
-
     }
     /* If the menu was cancelled, print a message to the server about it. */
-    else if (action == MenuAction_Cancel)
+    else if(action == MenuAction_Cancel)
     {
-       // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
+        // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
     }
-    
+
     /* If the menu has ended, destroy it */
-    else if (action == MenuAction_End)
+    else if(action == MenuAction_End)
     {
         delete menu;
     }
@@ -691,14 +691,14 @@ bool isMiniBoss(int client)
         if(GetEntProp(client, Prop_Send, "m_bIsMiniBoss"))
         {
             if(g_cv_bDebugMode)
-//                PrintToChatAll("%N Was mini boss", client);
-            return true;
+                //                PrintToChatAll("%N Was mini boss", client);
+                return true;
         }
         else
         {
             if(g_cv_bDebugMode)
-              //  PrintToChatAll("%N Was not mini boss", client);
-            return false;
+                //  PrintToChatAll("%N Was not mini boss", client);
+                return false;
         }
     }
     return false;
