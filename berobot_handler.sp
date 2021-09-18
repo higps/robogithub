@@ -182,6 +182,21 @@ public void OnPluginStart()
     delete g_hGameConf;
 }
 
+public void OnMapStart(){
+
+    g_cv_BlockTeamSwitch = false;
+    g_BossMode = false;
+
+    g_Volunteers.Clear();
+
+    for(int i = 0; i < MAXPLAYERS; i++)
+    {
+        g_cv_Volunteered[i] = false;
+    }
+
+
+}
+
 /* Publics */
 
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
