@@ -16,6 +16,8 @@
 #include <tf2>
 #include <tf2_stocks>
 #include <tf_ontakedamage>
+#include <sm_logger>
+#include <berobot>
 
 // #include <stocksoup/memory>
 // #include <stocksoup/tf/entity_prop_stocks>
@@ -28,6 +30,15 @@
 
 #pragma newdecls required
 #pragma semicolon 1
+
+
+char LOG_TAGS[][] =	 {"VERBOSE", "INFO", "ERROR"};
+enum (<<= 1)
+{
+	SML_VERBOSE = 1,
+	SML_INFO,
+	SML_ERROR,
+}
 
 enum //Convar names
 {
@@ -94,6 +105,11 @@ public Plugin myinfo =
 };
 public void OnPluginStart()
 {
+	//TODO: Release
+	// SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
+	SMLogTag(SML_INFO, "berobot_store started at %i", GetTime());
+
     /* Convars */
 
 
@@ -465,17 +481,30 @@ public Action Command_Volunteer(int client, int args)
 
 public Action Menu_Volunteer(int client, int args)
 {
+    ArrayList robotNames = GetRobotNames();
+    SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
+
     Menu menu = new Menu(MenuHandler);
 
     menu.SetTitle("Select Your Robot Type", args);
-    menu.AddItem("sm_begps", "Heavy: Deflector", args);
-    menu.AddItem("sm_bebearded", "Heavy: Juggernaut", args);
-    menu.AddItem("sm_besolar", "Demoman: Burst Bomber Hybrid Knight", args);
-    menu.AddItem("sm_bedane", "Engineer: Widowslinger", args);
-    menu.AddItem("sm_bearray", "Medic: Kritzkrieger", args);
-    menu.AddItem("sm_beagro","Pyro: Flamer", args);
-    menu.ExitButton = false;
-    menu.Display(client, 120);
+
+    for(int i = 0; i < robotNames.Length; i++)
+    {
+        char name[NAMELENGTH];
+        robotNames.GetString(i, name, NAMELENGTH);
+        char class[9];
+        GetRobotClass(name, class);
+
+        char display[128];
+        Format(display, sizeof(display), "%s: %s", class, name);
+        menu.AddItem(name, display, args);
+
+        SMLogTag(SML_VERBOSE, "added option for %s: %s", name, display);
+    }
+
+    int timeout = MENU_TIME_FOREVER;
+    menu.Display(client, timeout);
+    SMLogTag(SML_VERBOSE, "menu displayed to %L for %i seconds", client, timeout);
  
     return Plugin_Handled;
 }
@@ -489,9 +518,7 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
         bool found = menu.GetItem(param2, info, sizeof(info));
         PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
 
-        int clientID = GetClientUserId(param1);
-        ServerCommand("%s #%i", info, clientID);
-        PrintToChatAll("The command: %s The client: %i", info, clientID);
+        CreateRobot(info, param1, "");
 
         //Make the picked option unavailable, redraw for all volunteers
 
