@@ -118,7 +118,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_bDebugMode] = CreateConVar("bm_yt_v_mvm_debug", "1", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("bm_yt_mvm_backstab_reduction", "500.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("bm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
-    g_cvCvarList[CV_g_RoboCap] = CreateConVar("bm_robocap", "1", "The amount of giant robots needed to start a game.");
+    g_cvCvarList[CV_g_RoboCap] = CreateConVar("bm_robocap", "1", "The amount of giant robots");
 
     /* Convar global variables init */
 
@@ -433,7 +433,7 @@ public Action Command_Volunteer(int client, int args)
 
     if(g_BossMode)
     {
-        MC_PrintToChatEx(client, client, "{teamcolor}Game has already starter, volunteering not available.", g_RoboCap);
+        MC_PrintToChatEx(client, client, "{teamcolor}Game has already started, volunteering not available.", g_RoboCap);
         return Plugin_Handled;
     }
 
