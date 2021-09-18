@@ -79,6 +79,7 @@ int g_RoboTeam;
 int g_HumanTeam;
 
 ArrayList g_Volunteers;
+StringMap g_RobotCount;
 
 
 // Handle g_SDKCallInternalGetEffectBarRechargeTime;
@@ -145,6 +146,7 @@ public void OnPluginStart()
 
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCap));
+    g_RobotCount = new StringMap();
 
     g_cv_BlockTeamSwitch = false;
     g_BossMode = false;
@@ -410,7 +412,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
                             ChangeClientTeam(i, g_RoboTeam);
                             TF2_RespawnPlayer(i);
-                            Menu_Volunteer(client, ITEMDRAW_DEFAULT);
+                            Menu_Volunteer(client);
                         }
                         else
                         {
@@ -445,7 +447,6 @@ public Action Command_Volunteer(int client, int args)
         
         g_Volunteers.Resize(g_RoboCap);
         g_BossMode = true;
-
         return Plugin_Handled;
     }
 
@@ -487,14 +488,14 @@ public Action Command_Volunteer(int client, int args)
 }
 
 
-public Action Menu_Volunteer(int client, int args)
+public Action Menu_Volunteer(int client)
 {
     ArrayList robotNames = GetRobotNames();
     SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
 
     Menu menu = new Menu(MenuHandler);
 
-    menu.SetTitle("Select Your Robot Type", args);
+    menu.SetTitle("Select Your Robot Type");
 
     for(int i = 0; i < robotNames.Length; i++)
     {
@@ -505,7 +506,12 @@ public Action Menu_Volunteer(int client, int args)
 
         char display[128];
         Format(display, sizeof(display), "%s: %s", class, name);
-        menu.AddItem(name, display, args);
+
+        int count;
+        g_RobotCount.GetValue(name, count);
+        int draw = count > 0 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
+
+        menu.AddItem(name, display, draw);
 
         SMLogTag(SML_VERBOSE, "added option for %s: %s", name, display);
     }
@@ -527,6 +533,24 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
         PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
 
         CreateRobot(info, param1, "");
+
+        int currentCount;
+        g_RobotCount.GetValue(info, currentCount);
+        g_RobotCount.SetValue(info, currentCount+1);
+
+        for(int i = 0; i < MaxClients; i++)
+        {
+            if(!IsValidClient(i))
+                continue;
+            
+            if(!IsClientInGame(i))
+                continue;
+            
+            if(!g_cv_Volunteered[i])
+                continue;
+            
+            Menu_Volunteer(i);
+        }
 
         //Make the picked option unavailable, redraw for all volunteers
 
