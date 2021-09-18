@@ -160,6 +160,8 @@ public void OnPluginStart()
         g_cv_Volunteered[i] = false;
     }
 
+    g_Volunteers.Clear();
+
     g_hGameConf = LoadGameConfigFile("sm-tf2.games");
     if(g_hGameConf == null)
         SetFailState("Failed to setup gamedata!");
