@@ -429,15 +429,23 @@ public Action Command_YT_Robot_Start(int client, int args)
 public Action Command_Volunteer(int client, int args)
 {
 
+    if(g_BossMode)
+    {
+        MC_PrintToChatEx(client, client, "{teamcolor}Game has already starter, volunteering not available.", g_RoboCap);
+        return Plugin_Handled;
+    }
+
     if(g_RoboCap == g_Volunteers.Length)
     {
 
 
-        MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i robots has been reached, starting Boss Mode", g_RoboCap);
+        MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i volunteers has been reached, starting Boss Mode", g_RoboCap);
 
         Command_YT_Robot_Start(client, true);
         
         g_Volunteers.Resize(g_RoboCap);
+        g_BossMode = true;
+
         return Plugin_Handled;
     }
 
@@ -583,7 +591,7 @@ public Action OnClientCommand(int client, int args)
 
         if(g_cv_BlockTeamSwitch)
         {
-            PrintCenterText(client, "Boss mode is activated: You are not currently allowed to change teams.");
+            PrintCenterText(client, "Boss mode is activated: Teams are locked");
 
             //If someone joins while the event is going, set correct player team
 
