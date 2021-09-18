@@ -124,8 +124,8 @@ public bool AssertClasses()
 
 public bool AssertCalls()
 {
-	CreateRobot("A", 1, "@me");
-	CreateRobot("B", 2, "@me");
+	CreateRobot("A", 1, "");
+	CreateRobot("B", 2, "");
 	
 	if (!AssertEqual(2, _created.Length, "Create-functions were not called the expected number of times"))
 		return false;
@@ -133,11 +133,11 @@ public bool AssertCalls()
 	CreateCall call;
 	
 	_created.GetArray(0, call, sizeof(call));
-	if (!AssertEqualCalls(call, "A", 1, "@me", "first call"))
+	if (!AssertEqualCalls(call, "A", 1, "", "first call"))
 		return false;
 
 	_created.GetArray(1, call, sizeof(call));
-	if (!AssertEqualCalls(call, "B", 2, "@me", "second call"))
+	if (!AssertEqualCalls(call, "B", 2, "", "second call"))
 		return false;
 
 	return true;

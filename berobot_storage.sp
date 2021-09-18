@@ -44,9 +44,11 @@ public void Init()
 	// SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
 	SMLogTag(SML_INFO, "berobot_store started at %i", GetTime());
-	
+
 	_robots = new StringMap();
 	_init = true;
+	
+	RegAdminCmd("sm_dumpRobotStorage", Command_DumpRobotStorage, ADMFLAG_ROOT, "Dumps the current Robot-Storage (for debugging)");
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -58,6 +60,26 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("CreateRobot", Native_CreateRobot);
 
 	return APLRes_Success;
+}
+
+public Action Command_DumpRobotStorage(int client, int numParams)
+{
+	StringMapSnapshot snapshot = _robots.Snapshot();
+	for(int i = 0; i < snapshot.Length; i++)
+	{
+		char name[NAMELENGTH];
+		snapshot.GetKey(i, name, NAMELENGTH);
+
+		StringMap item;
+		_robots.GetValue(name, item);		
+		
+		char class[9];
+		item.GetString(ROBOT_KEY_CLASS, class, 9);
+		PrivateForward privateForward;
+		item.GetValue(ROBOT_KEY_CALLBACK, privateForward);
+
+		SMLogTag(SML_INFO, "Robot {%s: %s, callback: %x}", name, class, privateForward);
+	}
 }
 
 public any Native_AddRobot(Handle plugin, int numParams)

@@ -3,3 +3,8 @@ TODO:
 Track what teams robots are on and move players to the non robot team when they join the server mid round
 
 Add menus for volunteers to select from a list of robots, taken robots will be grayed out or not shown in the list. First come first serve
+
+storage:
+ - turn target into targetlist in storage plugin? ... maybe? 
+   needed in command too so it would be duplicate code
+     unless command gets setup in main-plugin too?

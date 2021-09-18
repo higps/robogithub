@@ -6,8 +6,6 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
-#pragma newdecls required
-#pragma semicolon 1
 
 const int NAMELENGTH = 128;
 typedef RobotCallback = function void (int client, char target[32]);
