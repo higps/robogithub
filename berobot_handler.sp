@@ -45,7 +45,7 @@ enum //Convar names
     CV_flSpyBackStabModifier,
     CV_bDebugMode,
     CV_flYoutuberMode,
-    CV_g_RoboCap,
+    CV_g_RoboCapTeam,
     CV_g_RoboMode,
     CV_PluginVersion
 }
@@ -115,11 +115,11 @@ public void OnPluginStart()
     /* Convars */
 
 
-    g_cvCvarList[CV_PluginVersion] = CreateConVar("bm_yt_v_mvm_version", PLUGIN_VERSION, "Plugin Version.", FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_CHEAT);
-    g_cvCvarList[CV_bDebugMode] = CreateConVar("bm_yt_v_mvm_debug", "1", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("bm_yt_mvm_backstab_reduction", "500.0", "Backstab damage");
-    g_cvCvarList[CV_flYoutuberMode] = CreateConVar("bm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
-    g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots on a team");
+    g_cvCvarList[CV_PluginVersion] = CreateConVar("sm_yt_v_mvm_version", PLUGIN_VERSION, "Plugin Version.", FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_CHEAT);
+    g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_yt_v_mvm_debug", "1", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_yt_mvm_backstab_reduction", "500.0", "Backstab damage");
+    g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
+    g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar("sm_robocap_team", "2", "The total amount of giant robots on a team");
     g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = Main Mode, 1 = Both teams have bots");
 
     /* Convar global variables init */
@@ -127,7 +127,7 @@ public void OnPluginStart()
     g_cv_bDebugMode = GetConVarBool(g_cvCvarList[CV_bDebugMode]);
     g_CV_flSpyBackStabModifier = GetConVarFloat(g_cvCvarList[CV_flSpyBackStabModifier]);
     g_CV_flYoutuberMode = GetConVarFloat(g_cvCvarList[CV_flYoutuberMode]);
-    g_RoboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
+    g_RoboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
 
 
     /* Convar Change Hooks */
@@ -135,7 +135,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_bDebugMode].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_flSpyBackStabModifier].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_flYoutuberMode].AddChangeHook(CvarChangeHook);
-    g_cvCvarList[CV_g_RoboCap].AddChangeHook(CvarChangeHook);
+    g_cvCvarList[CV_g_RoboCapTeam].AddChangeHook(CvarChangeHook);
     
     
 
@@ -508,7 +508,7 @@ public Action Menu_Volunteer(int client)
         char class[9];
         GetRobotClass(name, class);
 
-        int roboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
+        int roboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
         int count;
         g_RobotCount.GetValue(name, count);
         int draw = count >= roboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
