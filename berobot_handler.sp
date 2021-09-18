@@ -188,12 +188,21 @@ public void OnMapStart(){
     g_BossMode = false;
 
     g_Volunteers.Clear();
+    g_RobotCount.Clear();
 
     for(int i = 0; i < MAXPLAYERS; i++)
     {
         g_cv_Volunteered[i] = false;
+        g_cv_RobotPicked[i] = false;
     }
 
+
+}
+
+public void OnClientDisconnect(int client)
+{
+
+    g_Volunteers.Erase(client);
 
 }
 
