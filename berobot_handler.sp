@@ -688,7 +688,7 @@ public Action Volunteer(int client, bool volunteering)
 
         //  MC_PrintToChatEx(client, client, "{teamcolor}You are not volunteering to be a giant robot anymore");
         int islots = g_RoboCapTeam - g_Volunteers.Length;
-        MC_PrintToChatAllEx(client, "{teamcolor}%N {default}is no longer volunteering to be a giant robot. %i/%i robot slots remains.", client, islots, g_RoboCapTeam);
+        MC_PrintToChatAllEx(client, "{teamcolor}%N {default}is no longer volunteering to be a giant robot. %i more volunteers needed.", client, islots);
     }
     else
     {
