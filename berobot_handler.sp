@@ -296,7 +296,7 @@ public Action Command_YT_Robot_Start(int client, int args)
         ServerCommand("mp_teams_unbalance_limit 0");
         ServerCommand("mp_disable_respawn_times 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 0");
-        ServerCommand("mp_restartgame 5");
+        ServerCommand("mp_restartgame_immediate");
 
         //Randomly set which team is roboteam and humanteam
         int RandomTeam = GetRandomInt(1, 2);
@@ -325,7 +325,7 @@ public Action Command_YT_Robot_Start(int client, int args)
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 30");
         ServerCommand("mp_teams_unbalance_limit 1");
         ServerCommand("mp_disable_respawn_times 0");
-        ServerCommand("mp_restartgame 5");
+        ServerCommand("mp_restartgame_immediate");
 
         g_BossMode = false;
     }
@@ -348,7 +348,7 @@ public Action Command_YT_Robot_Start(int client, int args)
 
                     char sSteamID[64];
                     GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
-                    int playerID = GetClientUserId(i);
+                    //int playerID = GetClientUserId(i);
 
 
                     //PrintToChatAll("Looping on %i", playerID);
@@ -356,44 +356,56 @@ public Action Command_YT_Robot_Start(int client, int args)
                     //GPS
                     if(StrEqual(sSteamID, "76561197963998743"))
                     {
-                        ServerCommand("sm_begps #%i", playerID);
-                        ServerCommand("sm_ct #%i blue", playerID);
+                        //CreateRobot("HiGPS", i, "");
+                       // CreateRobot("Solar Light", i, "");
+                        //ServerCommand("sm_begps #%i", playerID);
+                        TF2_SwapTeamAndRespawn(i, g_RoboTeam);
                     }
 
                     //Bearded
                     if(StrEqual(sSteamID, "76561198031657211"))
                     {
-                        ServerCommand("sm_bebearded #%i", playerID);
-                        ServerCommand("sm_ct #%i blue", playerID);
+                        //ServerCommand("sm_bebearded #%i", playerID);
+                        CreateRobot("Bearded Expense", i, "");
+                        ChangeClientTeam(i, g_RoboTeam);
+                        TF2_RespawnPlayer(i);
                     }
 
 
                     //ArraySeven
                     if(StrEqual(sSteamID, "76561198013749611"))
                     {
-                        ServerCommand("sm_bearray #%i", playerID);
-                        ServerCommand("sm_ct #%i blue", playerID);
+                        //   ServerCommand("sm_bearray #%i", playerID);
+                        CreateRobot("Array Seven", i, "");
+                        ChangeClientTeam(i, g_RoboTeam);
+                        TF2_RespawnPlayer(i);
                     }
 
                     //Uncle Dane
                     if(StrEqual(sSteamID, "76561198057999536"))
                     {
-                        ServerCommand("sm_bedane #%i", playerID);
-                        ServerCommand("sm_ct #%i blue", playerID);
+                        //   ServerCommand("sm_bedane #%i", playerID);
+                        CreateRobot("Uncle Dane", i, "");
+                        ChangeClientTeam(i, g_RoboTeam);
+                        TF2_RespawnPlayer(i);
                     }
 
                     //Agro
                     if(StrEqual(sSteamID, "76561197970498549"))
                     {
-                        ServerCommand("sm_beagro #%i", playerID);
-                        ServerCommand("sm_ct #%i blue", playerID);
+                        //   ServerCommand("sm_beagro #%i", playerID);
+                        CreateRobot("Agro", i, "");
+                        ChangeClientTeam(i, g_RoboTeam);
+                        TF2_RespawnPlayer(i);
                     }
 
                     //Solar
                     if(StrEqual(sSteamID, "76561198070962612"))
                     {
-                        ServerCommand("sm_besolar #%i", playerID);
-                        ServerCommand("sm_ct #%i blue", playerID);
+                        ///     ServerCommand("sm_besolar #%i", playerID);
+                        CreateRobot("Solar Light", i, "");
+                        ChangeClientTeam(i, g_RoboTeam);
+                        TF2_RespawnPlayer(i);
                     }
                 }
             }
@@ -736,15 +748,4 @@ stock void TF2_SwapTeamAndRespawn(int client, int team)
     TF2_RespawnPlayer(client);
     SetEntProp(client, Prop_Send, "m_lifeState", 0);
 
-    switch(team)
-    {
-    case RED:
-    {
-        PrintCenterText(client, "You have been moved to the RED team!");
-    }
-    case BLUE:
-    {
-        PrintCenterText(client, "You have been moved to the BLU team!");
-    }
-    }
 }
