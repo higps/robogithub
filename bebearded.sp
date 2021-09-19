@@ -15,7 +15,7 @@ public Plugin:myinfo =
 {
 	name = "[TF2] Be the Juggernaut Bearded Expense",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Unused Super Heavyweight Champ from MvM",
+	description = "Play as the Unused Juggernaut Bearded Expense Champ from MvM",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -357,9 +357,10 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.8);
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 				
-				if (TF2_GetClientTeam(client) == TFTeam_Red)TF2Attrib_SetByName(Weapon3, "increase player capture value", 0.0);
+				if (TF2_GetClientTeam(client) == TFTeam_Red)TF2Attrib_SetByName(Weapon3, "increase player capture value", -1.0);
+				//Add additonal logic to detect if it's attack/defend mode
 
-				if (TF2_GetClientTeam(client) == TFTeam_Blue)TF2Attrib_SetByName(Weapon3, "increase player capture value", 1.0);
+			//	if (TF2_GetClientTeam(client) == TFTeam_Blue)TF2Attrib_SetByName(Weapon3, "increase player capture value", 0.0);
 	
 			//TF2Attrib_SetByName(Weapon3, "crit forces victim to laugh", 1.0);
 		}
