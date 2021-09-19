@@ -224,52 +224,79 @@ public void OnClientDisconnect(int client)
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
 
+
     for(int i = 1; i < MaxClients; i++)
     {
-        if (g_cv_Volunteered[i] == true){
-            
+        if(g_cv_Volunteered[i] == true)
+        {
+
             int iTeam = GetClientTeam(i);
 
-            if (iTeam != g_RoboTeam){
+            if(iTeam != g_RoboTeam)
+            {
 
-                PrintToChatAll("Was not the same for %N", i);               
+                PrintToChatAll("Was not the same for %N", i);
 
-                switch (iTeam)
+                switch(iTeam)
                 {
-                    case BLUE:
-                    {
-                        PrintToChatAll("RoboTeam was RED changing to BLUE...");               
-                        g_RoboTeam = BLUE;
-                        g_HumanTeam = RED;
-                    }
-                    case RED:
-                    {
-                        PrintToChatAll("RoboTeam was BLU changing to RED...");               
-                        g_RoboTeam = RED;
-                        g_HumanTeam = BLUE;
-                    }
-                    case UNASSIGNED:
-                    {
-                        PrintToChatAll("RoboTeam was UNASSIGNED");               
-                    }
-                    case SPECTATE:
-                    {
-                        PrintToChatAll("RoboTeam was Spectate");               
-                    }
-
+                case BLUE:
+                {
+                    PrintToChatAll("RoboTeam was RED changing to BLUE...");
+                    g_RoboTeam = BLUE;
+                    g_HumanTeam = RED;
                 }
-                
-
+                case RED:
+                {
+                    PrintToChatAll("RoboTeam was BLU changing to RED...");
+                    g_RoboTeam = RED;
+                    g_HumanTeam = BLUE;
+                }
+                case UNASSIGNED:
+                {
+                    PrintToChatAll("RoboTeam was UNASSIGNED");
+                }
+                case SPECTATE:
+                {
+                    PrintToChatAll("RoboTeam was Spectate");
+                }
+                }
+                //We found a volunteer that was not on the robo team, no need to check the rest
+                PrintToChatAll("Breaking off the loop on %N", i);
+                return Plugin_Handled;
             }
-
         }
-
     }
-//    bool fullreset = GetEventBool(event, "full_reset");
+
+    /*     int iTeamSwitch = GameRules_GetProp("m_bTeamsSwitched");
 
 
-    PrintToChatAll("RoboTeam is now: %i", g_RoboTeam);
+    switch(iTeamSwitch)
+    {
+    case 1:
+    {
+        PrintToChatAll("RoboTeam was RED changing to BLUE...");
+        g_RoboTeam = BLUE;
+        g_HumanTeam = RED;
+    }
+    case 0:
+    {
+        PrintToChatAll("RoboTeam was BLU changing to RED...");
+        g_RoboTeam = RED;
+        g_HumanTeam = BLUE;
+    }
+    } */
 
+
+    //    bool fullreset = GetEventBool(event, "full_reset");
+
+
+    //PrintToChatAll("Teamswitch?: %i", iTeamSwitch);
+
+
+//    int iGameType = GameRules_GetProp("m_nGameType");
+
+ //   PrintToChatAll("Gametype number %i", iGameType);
+    
 
     return Plugin_Continue;
 }
