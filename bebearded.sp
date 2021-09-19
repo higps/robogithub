@@ -13,7 +13,7 @@
 
 public Plugin:myinfo =
 {
-	name = "[TF2] Be the Super Heavyweight Champ",
+	name = "[TF2] Be the Juggernaut Bearded Expense",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
 	description = "Play as the Unused Super Heavyweight Champ from MvM",
 	version = PLUGIN_VERSION,
@@ -307,6 +307,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 public Action:Timer_Locker(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
+	StopSound(client, SNDCHAN_AUTO, LOOP);
 		MakeBearded(client);
 }
  

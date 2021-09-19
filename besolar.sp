@@ -124,7 +124,7 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 		g_bIsGDEKNIGHT[client] = false;
 
 			if (g_IsSolar[client] && !g_Resupply[client]){
-			CreateTimer(0.0, Timer_Locker, client);
+			CreateTimer(1.0, Timer_Locker, client);
 			//CreateTimer(1.2, Timer_Resupply, client);
 			//PrintToChatAll("Setting timers");
 			g_Resupply[client] = true; 
@@ -140,6 +140,7 @@ public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcas
 public Action:Timer_Locker(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
+	StopSound(client, SNDCHAN_AUTO, LOOP);
 		MakeSolar(client);
 }
 
