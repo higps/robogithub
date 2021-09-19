@@ -150,7 +150,7 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (g_IsGPS[client]) CreateTimer(0.0, Timer_Locker, client);
+	if (g_IsGPS[client]) CreateTimer(1.0, Timer_Locker, client);
 }
  
 public Event_Death(Handle:event, const String:name[], bool:dontBroadcast)
