@@ -604,6 +604,7 @@ public Action Menu_Volunteer(int client)
     Menu menu = new Menu(MenuHandler);
 
     menu.SetTitle("Select Your Robot Type");
+    menu.ExitButton = false;
 
     for(int i = 0; i < robotNames.Length; i++)
     {
