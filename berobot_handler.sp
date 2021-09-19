@@ -210,7 +210,8 @@ public void OnClientDisconnect(int client)
     g_RobotCount.SetValue(robotName, currentCount - 1);
     g_cv_Volunteered[client] = false;
     g_cv_RobotPicked[client] = "";
-    g_Volunteers.Erase(client);
+    int index = FindValueInArray(g_Volunteers, client);
+    g_Volunteers.Erase(index);
 
     //PrintToChatAll("%N disconnected", client);
     int islots = g_RoboCapTeam - g_Volunteers.Length;
