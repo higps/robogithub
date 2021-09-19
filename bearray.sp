@@ -252,12 +252,10 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	// TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
-	//TF2Attrib_SetByName(client, "patient overheal penalty", 0.5);
-	//TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.2);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
+	TF2Attrib_SetByName(client, "health regen", 10.0);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -268,7 +266,7 @@ MakeGiantMedic(client)
 		PrintToChat(client, "1. You are now Giant Arrayseven !");
 		PrintToChat(client, "2. Your Kriztkrieg has Lasts longer!");
 		PrintToChat(client, "3. Spawns with full Ubercharge !");
-		PrintToChat(client, "4. You will lose this status when you touch a locker, upgrade or die.");	
+		
 
 
 }
@@ -342,6 +340,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.5);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
 			TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.5);
+			TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 100.5);
 			SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 			
 		}
