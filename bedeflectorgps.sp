@@ -150,7 +150,7 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (g_IsGPS[client]) CreateTimer(0.0, Timer_Locker, client);
+	if (g_IsGPS[client]) CreateTimer(1.0, Timer_Locker, client);
 }
  
 public Event_Death(Handle:event, const String:name[], bool:dontBroadcast)
@@ -358,6 +358,11 @@ public Action:Timer_Switch(Handle:timer, any:client)
 public Action:Timer_Locker(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
+		StopSound(client, SNDCHAN_AUTO, LOOP);
+		StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
+		StopSound(client, SNDCHAN_AUTO, SOUND_GUNSPIN);
+		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
+		StopSound(client, SNDCHAN_AUTO, SOUND_WINDDOWN);
 		MakeGDeflectorH(client);
 }
  
@@ -387,8 +392,6 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "attack projectiles", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			//TF2Attrib_SetByName(Weapon1, "projectile penetration heavy", 5.0);
-			
 			TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 2.5);
 			TF2Attrib_SetByName(Weapon1, "spread penalty", 2.5);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);

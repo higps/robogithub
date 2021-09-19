@@ -141,6 +141,7 @@ public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcas
 public Action:Timer_Locker(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
+	StopSound(client, SNDCHAN_AUTO, LOOP);
 		MakeUncleDane(client);
 }
  
