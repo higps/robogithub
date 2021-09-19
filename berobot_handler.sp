@@ -260,9 +260,6 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
                 }
                 
 
-            }else
-            {
-               PrintToChatAll("Was the same for %N", i);  
             }
 
         }
