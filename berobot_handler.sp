@@ -71,7 +71,7 @@ bool g_BossMode = false;
 bool g_cv_BlockTeamSwitch = false;
 
 bool g_cv_Volunteered[MAXPLAYERS + 1];
-bool g_cv_RobotPicked[MAXPLAYERS + 1];
+char g_cv_RobotPicked[MAXPLAYERS + 1][NAMELENGTH];
 
 
 float g_CV_flSpyBackStabModifier;
@@ -193,21 +193,28 @@ public void OnMapStart()
     for(int i = 0; i < MAXPLAYERS; i++)
     {
         g_cv_Volunteered[i] = false;
-        g_cv_RobotPicked[i] = false;
+        g_cv_RobotPicked[i] = "";
     }
 }
 
 public void OnClientDisconnect(int client)
 {
+    if(!g_cv_Volunteered[client])
+        return;
+    
+    char robotName[NAMELENGTH];
+    robotName = g_cv_RobotPicked[client];
 
-    if(g_cv_Volunteered[client])
-    {
-        g_Volunteers.Erase(client);
+    int currentCount;
+    g_RobotCount.GetValue(robotName, currentCount);
+    g_RobotCount.SetValue(robotName, currentCount - 1);
+    g_cv_Volunteered[client] = false;
+    g_cv_RobotPicked[client] = "";
+    g_Volunteers.Erase(client);
 
-        //PrintToChatAll("%N disconnected", client);
-        int islots = g_RoboCapTeam - g_Volunteers.Length;
-        MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has disconnected. There is now %i/%i  available robot slots remains. Type !volunteer to become a giant robot", client, islots, g_RoboCapTeam);
-    }
+    //PrintToChatAll("%N disconnected", client);
+    int islots = g_RoboCapTeam - g_Volunteers.Length;
+    MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has disconnected. There is now %i/%i  available robot slots remains. Type !volunteer to become a giant robot", client, islots, g_RoboCapTeam);
 }
 
 /* Publics */
@@ -314,6 +321,8 @@ public Action Command_YT_Robot_Start(int client, int args)
             g_HumanTeam = BLUE;
         }
 
+
+        g_BossMode = true;
         PrintToChatAll("Robots will be Team %i", g_RoboTeam);
         PrintToChatAll("Humans will be Team %i", g_HumanTeam);
     }
@@ -477,8 +486,7 @@ public Action Command_YT_Robot_Start(int client, int args)
 
 public Action Command_Volunteer(int client, int args)
 {
-
-    if(g_BossMode)
+    if(g_BossMode && g_Volunteers.Length >= g_RoboCapTeam)
     {
         MC_PrintToChatEx(client, client, "{teamcolor}Game has already started, volunteering not available.", g_RoboCapTeam);
         return Plugin_Handled;
@@ -504,6 +512,14 @@ public Action Command_Volunteer(int client, int args)
         g_Volunteers.Push(client);
 
         //PrintToChat(client, "You have volunteered to be a giant robot");
+
+        if(g_BossMode)
+        {
+            SMLogTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
+
+            ChangeClientTeam(client, g_RoboTeam);
+            Menu_Volunteer(client);
+        }
     }
     else //Remove from volunteer list
     {
@@ -585,11 +601,11 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
         int currentCount;
         g_RobotCount.GetValue(info, currentCount);
         g_RobotCount.SetValue(info, currentCount + 1);
-        g_cv_RobotPicked[param1] = true;
+        g_cv_RobotPicked[param1] = info;
 
         for(int i = 0; i < MaxClients; i++)
         {
-            if(g_cv_RobotPicked[i]) //don't open menu for players, who have already picked a robot
+            if(g_cv_RobotPicked[i][0] != '\0') //don't open menu for players, who have already picked a robot
                 continue;
 
             if(!IsValidClient(i))
