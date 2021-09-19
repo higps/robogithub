@@ -714,7 +714,7 @@ public Action Volunteer(int client, bool volunteering)
         {
 
             int islots = g_RoboCapTeam - g_Volunteers.Length;
-            MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has volunteered to be a giant robot. %i/%i robot slots remains.", clientId, islots, g_RoboCapTeam);
+            MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has volunteered to be a giant robot. %i more volunteers needed.", clientId, islots);
         }
     }
 
