@@ -37,6 +37,8 @@ public OnPluginStart()
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 	
+	
+	
 	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
 
 	if (!hTF2)
@@ -66,6 +68,8 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 //	CreateNative("BeSuperHeavyweightChamp_IsSuperHeavyweightChamp", Native_IsSuperHeavyweightChamp);
 	return APLRes_Success;
 }
+
+
 
 public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcast)
 {
@@ -261,19 +265,23 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	TF2Attrib_SetByName(client, "health from healers increased", 4.0);
+	TF2Attrib_SetByName(client, "health from healers increased", 5.0);
 	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
 	
+
+
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+	
+
 	g_bIsBearded[client] = true;
 	
 	g_IsBearded[client] = true;
 		PrintToChat(client, "1. You are now Giant Bearded Expense bot !");
 		PrintToChat(client, "2. You are a juggernaut!");
-		PrintToChat(client, "3. You will lose this status when you touch a locker, upgrade or die.");	
+		
 }
  
 stock UpdatePlayerHitbox(const client, const Float:fScale)
@@ -324,12 +332,17 @@ stock GiveBearded(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		CreateWeapon(client, "tf_weapon_fists", 43, 6, 1, 2, 0);
 
+	//	CreateWeapon(client, "tf_weapon_lunchbox", 863, 6, 1, 1, 0);
+
 		CreateHat(client, 145, 10, 6, 1315860.0, true);
 	//	CreateHat(client, 30178, 10, 6, 1315860);
 		CreateHat(client, 30645, 10, 6, 1315860.0, true);
 		CreateHat(client, 30342, 10, 6, 0.0, false);
 		
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
+//		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_RemoveAll(Weapon3);
@@ -341,10 +354,22 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 2.0);
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 800.0);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 2.0);
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.8);
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
+				
+				if (TF2_GetClientTeam(client) == TFTeam_Red)TF2Attrib_SetByName(Weapon3, "increase player capture value", 0.0);
+
+				if (TF2_GetClientTeam(client) == TFTeam_Blue)TF2Attrib_SetByName(Weapon3, "increase player capture value", 1.0);
+	
 			//TF2Attrib_SetByName(Weapon3, "crit forces victim to laugh", 1.0);
 		}
+
+/* 				if(IsValidEntity(Weapon2))
+		{
+			TF2Attrib_RemoveAll(Weapon2);
+			TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 10.0);
+			TF2Attrib_SetByName(Weapon2, "item_meter_charge_rate", 50.0);
+		} */
 		
 		
 		
