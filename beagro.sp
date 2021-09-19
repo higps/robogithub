@@ -339,7 +339,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 0);
 		CreateWeapon(client, "tf_weapon_flamethrower", 215, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 1);
-	//	CreateWeapon(client, "tf_weapon_flaregun", 740, 6, 1, 2, 0);
+		CreateWeapon(client, "tf_weapon_flaregun", 740, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 2);
 		
 		CreateHat(client, 470, 10, 6, true); //Lofi longave
@@ -347,7 +347,7 @@ stock GiveGiantPyro(client)
 		 CreateHat(client, 31184, 10, 6, false);//Manndatory atire
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-	//	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		
 		if(IsValidEntity(Weapon1))
 		{
@@ -370,12 +370,12 @@ stock GiveGiantPyro(client)
 			
 		}
 		
-		// if(IsValidEntity(Weapon2))
-		// {
-		// 	TF2Attrib_RemoveAll(Weapon2);
-		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 2.5);
-		// 	TF2Attrib_SetByName(Weapon1, "heal on kill", 300.0);
-		// }
+		if(IsValidEntity(Weapon2))
+		{
+			TF2Attrib_RemoveAll(Weapon2);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 2.5);
+			TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.5);
+		}
 	}
 }
  
