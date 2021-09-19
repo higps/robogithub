@@ -116,7 +116,13 @@ public any Native_RemoveRobot(Handle plugin, int numParams)
 	char name[NAMELENGTH];
 	GetNativeString(1, name, NAMELENGTH);
 
-	_robots.Remove(name);
+	if (!_robots.Remove(name))
+	{
+		SMLogTag(SML_VERBOSE, "could not remove robot. no robot with name '%s' found", name);
+		return 1;
+	}
+
+	return 0;
 }
 
 public any Native_GetRobotNames(Handle plugin, int numParams)
@@ -147,10 +153,15 @@ public any Native_GetRobotClass(Handle plugin, int numParams)
 	char class[9];
 	
 	StringMap item;
-	_robots.GetValue(name, item);
-	item.GetString(ROBOT_KEY_CLASS, class, 9);
+	if (!_robots.GetValue(name, item))
+	{
+		SMLogTag(SML_ERROR, "could not retrieve class. no robot with name '%s' found", name);
+		return 1;
+	}
 
+	item.GetString(ROBOT_KEY_CLASS, class, 9);
 	SetNativeString(2, class, 10, false);
+	return 0;
 }
 
 public any Native_CreateRobot(Handle plugin, int numParams)
@@ -164,7 +175,11 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	GetNativeString(3, target, 32);
 
 	StringMap item;
-	_robots.GetValue(name, item);
+	if (!_robots.GetValue(name, item))
+	{
+		SMLogTag(SML_ERROR, "could not create robot. no robot with name '%s' found", name);
+		return 1;
+	}
 
 	PrivateForward privateForward;
 	item.GetValue(ROBOT_KEY_CALLBACK, privateForward);
