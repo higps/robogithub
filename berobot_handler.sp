@@ -92,6 +92,7 @@ StringMap g_RobotCount;
 
 Handle g_hRegen;
 Handle g_hGameConf;
+//Handle g_m_bTeamsSwitched;
 
 //In OnPluginStart
 
@@ -122,7 +123,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_yt_mvm_backstab_reduction", "500.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar("sm_robocap_team", "2", "The total amount of giant robots on a team");
-    g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
+    g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "2", "The amount of giant robots allowed per robot-type");
     g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = Main Mode, 1 = Both teams have bots");
 
     /* Convar global variables init */
@@ -201,7 +202,7 @@ public void OnClientDisconnect(int client)
 {
     if(!g_cv_Volunteered[client])
         return;
-    
+
     char robotName[NAMELENGTH];
     robotName = g_cv_RobotPicked[client];
 
@@ -223,10 +224,47 @@ public void OnClientDisconnect(int client)
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
 
+    for(int i = 1; i < MaxClients; i++)
+    {
+        if (g_cv_Volunteered[i] == true){
+            
+            int iTeam = GetClientTeam(i);
 
-    /*     bool fullreset = GetEventBool(event, "full_reset");
+            if (iTeam != g_RoboTeam){
 
-    PrintToChatAll("Fullreset %b", fullreset); */
+                PrintToChatAll("Was not the same for %N", i);               
+
+                switch (iTeam)
+                {
+                    case RED:
+                    {
+                        PrintToChatAll("Team was RED inverting...");               
+                        g_RoboTeam = BLUE;
+                        g_HumanTeam = RED;
+                    }
+                    case BLUE:
+                    {
+                        PrintToChatAll("Team was BLU inverting...");               
+                        g_RoboTeam = RED;
+                        g_HumanTeam = BLUE;
+                    }
+                }
+                
+
+            }else
+            {
+               PrintToChatAll("Was the same for %N", i);  
+            }
+
+        }
+
+    }
+//    bool fullreset = GetEventBool(event, "full_reset");
+
+
+    PrintToChatAll("RoboTeam is now: %i", g_RoboTeam);
+
+
     return Plugin_Continue;
 }
 
@@ -240,7 +278,6 @@ public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 
     return MRES_Ignored;
 }
-
 
 public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
 {
@@ -304,7 +341,7 @@ public Action Command_YT_Robot_Start(int client, int args)
         ServerCommand("mp_teams_unbalance_limit 0");
         ServerCommand("mp_disable_respawn_times 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 0");
-        ServerCommand("mp_restartgame_immediate");
+        ServerCommand("mp_restartgame_immediate 1");
 
         //Randomly set which team is roboteam and humanteam
         int RandomTeam = GetRandomInt(1, 2);
@@ -335,7 +372,7 @@ public Action Command_YT_Robot_Start(int client, int args)
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 30");
         ServerCommand("mp_teams_unbalance_limit 1");
         ServerCommand("mp_disable_respawn_times 0");
-        ServerCommand("mp_restartgame_immediate");
+        ServerCommand("mp_restartgame_immediate 1");
 
         g_BossMode = false;
     }
@@ -358,7 +395,7 @@ public Action Command_YT_Robot_Start(int client, int args)
 
                     char sSteamID[64];
                     GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
-                    //int playerID = GetClientUserId(i);
+                    int playerID = GetClientUserId(i);
 
 
                     //PrintToChatAll("Looping on %i", playerID);
@@ -366,10 +403,10 @@ public Action Command_YT_Robot_Start(int client, int args)
                     //GPS
                     if(StrEqual(sSteamID, "76561197963998743"))
                     {
-                        //CreateRobot("HiGPS", i, "");
-                       // CreateRobot("Solar Light", i, "");
+                        CreateRobot("HiGPS", i, "");
+                        // CreateRobot("Solar Light", i, "");
                         //ServerCommand("sm_begps #%i", playerID);
-                        TF2_SwapTeamAndRespawn(i, g_RoboTeam);
+                        TF2_SwapTeamAndRespawn(playerID, g_RoboTeam);
                     }
 
                     //Bearded
@@ -517,8 +554,8 @@ public Action Command_Volunteer(int client, int args)
         if(g_BossMode)
         {
             SMLogTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
-
-            ChangeClientTeam(client, g_RoboTeam);
+            //int playerID = GetClientUserId(client);
+            TF2_SwapTeamAndRespawn(client, g_RoboTeam);
             Menu_Volunteer(client);
         }
     }
@@ -549,6 +586,7 @@ public Action Command_Volunteer(int client, int args)
     //Menu Stuff here
 
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
+    return Plugin_Handled;
 }
 
 
@@ -620,41 +658,6 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
             Menu_Volunteer(i);
         }
-
-        //Make the picked option unavailable, redraw for all volunteers
-
-
-        ///Handle menu selection, making selected robots unavailable
-        /*        switch (param2)
-        {
-            
-            case 1: 
-            {
-                ServerCommand("%d #%i", found, param1);
-                PrintToChatAll("%d #%i", found, param1);
-            }
-            case 2: 
-            {
-                ServerCommand("%d #%i", found, param1);
-            }
-            case 3: 
-            {
-                ServerCommand("%d #%i", found, param1);
-            }
-            case 4: 
-            {
-                ServerCommand("%d #%i", found, param1);
-            }
-            case 5: 
-            {
-                ServerCommand("%d #%i", found, param1);
-            }
-            case 6: 
-            {
-                ServerCommand("%d #%i", found, param1);
-            }
-
-        } */
     }
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
@@ -707,9 +710,11 @@ public Action OnClientCommand(int client, int args)
             return Plugin_Handled;
         }
     }
+
+    //PrintToChatAll("Team switch trigger");
+
     return Plugin_Continue;
 }
-
 
 bool isMiniBoss(int client)
 {
@@ -764,5 +769,4 @@ stock void TF2_SwapTeamAndRespawn(int client, int team)
     ChangeClientTeam(client, team);
     TF2_RespawnPlayer(client);
     SetEntProp(client, Prop_Send, "m_lifeState", 0);
-
 }
