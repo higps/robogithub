@@ -236,18 +236,27 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
 
                 switch (iTeam)
                 {
-                    case RED:
+                    case BLUE:
                     {
-                        PrintToChatAll("Team was RED inverting...");               
+                        PrintToChatAll("RoboTeam was RED changing to BLUE...");               
                         g_RoboTeam = BLUE;
                         g_HumanTeam = RED;
                     }
-                    case BLUE:
+                    case RED:
                     {
-                        PrintToChatAll("Team was BLU inverting...");               
+                        PrintToChatAll("RoboTeam was BLU changing to RED...");               
                         g_RoboTeam = RED;
                         g_HumanTeam = BLUE;
                     }
+                    case UNASSIGNED:
+                    {
+                        PrintToChatAll("RoboTeam was UNASSIGNED");               
+                    }
+                    case SPECTATE:
+                    {
+                        PrintToChatAll("RoboTeam was Spectate");               
+                    }
+
                 }
                 
 
