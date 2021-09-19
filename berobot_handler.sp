@@ -150,6 +150,8 @@ public void OnPluginStart()
     RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
     RegAdminCmd("sm_me_boss", Command_Me_Boss, ADMFLAG_SLAY, "Checks if you are a boss");
+    RegAdminCmd("sm_setvolunteer", Command_SetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to true/enabled");
+    RegAdminCmd("sm_unsetvolunteer", Command_UnsetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to false/disabled");
 
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
@@ -564,29 +566,107 @@ public Action Command_YT_Robot_Start(int client, int args)
     }
 }
 
+public Action Command_SetVolunteer(int client, int args)
+{
+	char target[32];
+	if (args < 1)
+	{
+		target = "";
+	}
+	else GetCmdArg(1, target, sizeof(target));
+
+	VolunteerTargets(client, target, true);
+    
+	return Plugin_Handled;
+}
+
+public Action Command_UnsetVolunteer(int client, int args)
+{
+	char target[32];
+	if (args < 1)
+	{
+		target = "";
+	}
+	else GetCmdArg(1, target, sizeof(target));
+
+	VolunteerTargets(client, target, false);
+    
+	return Plugin_Handled;
+}
+
 public Action Command_Volunteer(int client, int args)
+{
+	char target[32];
+	if (args < 1)
+	{
+		target = "";
+	}
+	else GetCmdArg(1, target, sizeof(target));
+
+	VolunteerTargets(client, target, !g_cv_Volunteered[client]);
+
+	return Plugin_Handled;
+}
+
+public Action VolunteerTargets(int client, char target[32], bool volunteering)
+{
+	int targetFilter = 0;
+	if (target[0] == '\0')
+	{
+		target = "@me";
+		targetFilter = COMMAND_FILTER_NO_IMMUNITY;
+	}
+
+	char target_name[MAX_TARGET_LENGTH];
+	int target_list[MAXPLAYERS], target_count;
+	bool tn_is_ml;
+ 
+	if ((target_count = ProcessTargetString(
+			target,
+			client,
+			target_list,
+			MAXPLAYERS,
+			COMMAND_FILTER_ALIVE|targetFilter,
+			target_name,
+			sizeof(target_name),
+			tn_is_ml)) <= 0)
+	{
+		ReplyToTargetError(client, target_count);
+		return Plugin_Handled;
+	}
+
+	for (int i = 0; i < target_count; i++)
+	{
+		int targetClientId = target_list[i];
+		Volunteer(targetClientId, volunteering);
+	}
+    
+	return Plugin_Handled;
+}
+
+public Action Volunteer(int client, bool volunteering)
 {
     if(g_BossMode && g_Volunteers.Length >= g_RoboCapTeam)
     {
         MC_PrintToChatEx(client, client, "{teamcolor}Game has already started, volunteering not available.", g_RoboCapTeam);
-        return Plugin_Handled;
+        return;
     }
 
     if(g_RoboCapTeam == g_Volunteers.Length)
     {
-
-
         MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i volunteers has been reached, starting Boss Mode", g_RoboCapTeam);
 
         Command_YT_Robot_Start(client, true);
 
         g_Volunteers.Resize(g_RoboCapTeam);
         g_BossMode = true;
-        return Plugin_Handled;
+        return;
     }
 
-    if(!g_cv_Volunteered[client])
+    if(volunteering && !g_cv_Volunteered[client])
     {
+        SMLogTag(SML_VERBOSE, "volunteer-state changed to true for %L", client);
+
         g_cv_Volunteered[client] = true;
 
         g_Volunteers.Push(client);
@@ -601,8 +681,10 @@ public Action Command_Volunteer(int client, int args)
             Menu_Volunteer(client);
         }
     }
-    else //Remove from volunteer list
+    else if(!volunteering && g_cv_Volunteered[client]) //Remove from volunteer list
     {
+        SMLogTag(SML_VERBOSE, "volunteer-state changed to false for %L", client);
+
         g_cv_Volunteered[client] = false;
 
         int index = FindValueInArray(g_Volunteers, client);
@@ -611,6 +693,10 @@ public Action Command_Volunteer(int client, int args)
         //  MC_PrintToChatEx(client, client, "{teamcolor}You are not volunteering to be a giant robot anymore");
         int islots = g_RoboCapTeam - g_Volunteers.Length;
         MC_PrintToChatAllEx(client, "{teamcolor}%N {default}is no longer volunteering to be a giant robot. %i/%i robot slots remains.", client, islots, g_RoboCapTeam);
+    }
+    else
+    {
+        SMLogTag(SML_VERBOSE, "volunteer-state did not change for %L (still %b)", client, g_cv_Volunteered[client]);
     }
 
     for(int i = 0; i < g_Volunteers.Length; i++)
@@ -628,7 +714,6 @@ public Action Command_Volunteer(int client, int args)
     //Menu Stuff here
 
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
-    return Plugin_Handled;
 }
 
 
