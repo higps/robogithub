@@ -221,7 +221,7 @@ public void OnClientDisconnect(int client)
 
     //PrintToChatAll("%N disconnected", client);
     int islots = g_RoboCapTeam - g_Volunteers.Length;
-    MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has disconnected. There is now %i/%i  available robot slots remains. Type !volunteer to become a giant robot", client, islots, g_RoboCapTeam);
+    MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has disconnected. There is now %i available robot slots remains. Type !volunteer to become a giant robot", client, islots);
 }
 
 /* Publics */
@@ -298,10 +298,10 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
     //PrintToChatAll("Teamswitch?: %i", iTeamSwitch);
 
 
-//    int iGameType = GameRules_GetProp("m_nGameType");
+    //    int iGameType = GameRules_GetProp("m_nGameType");
 
- //   PrintToChatAll("Gametype number %i", iGameType);
-    
+    //   PrintToChatAll("Gametype number %i", iGameType);
+
 
     return Plugin_Continue;
 }
@@ -326,13 +326,13 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
     if(convar == g_cvCvarList[CV_flYoutuberMode])
         g_CV_flYoutuberMode = StringToFloat(sNewValue);
 
-        if(convar == g_cvCvarList[CV_g_RoboCap])
+    if(convar == g_cvCvarList[CV_g_RoboCap])
         g_RoboCap = StringToInt(sNewValue);
 
-        if(convar == g_cvCvarList[CV_g_RoboCapTeam])
+    if(convar == g_cvCvarList[CV_g_RoboCapTeam])
         g_RoboCapTeam = StringToInt(sNewValue);
 
-        if(convar == g_cvCvarList[CV_g_RoboTeamMode])
+    if(convar == g_cvCvarList[CV_g_RoboTeamMode])
         g_RoboTeamMode = StringToInt(sNewValue);
 }
 
@@ -575,80 +575,83 @@ public Action Command_YT_Robot_Start(int client, int args)
 
 public Action Command_SetVolunteer(int client, int args)
 {
-	char target[32];
-	if (args < 1)
-	{
-		target = "";
-	}
-	else GetCmdArg(1, target, sizeof(target));
+    char target[32];
+    if(args < 1)
+    {
+        target = "";
+    }
+    else
+        GetCmdArg(1, target, sizeof(target));
 
-	VolunteerTargets(client, target, true);
-    
-	return Plugin_Handled;
+    VolunteerTargets(client, target, true);
+
+    return Plugin_Handled;
 }
 
 public Action Command_UnsetVolunteer(int client, int args)
 {
-	char target[32];
-	if (args < 1)
-	{
-		target = "";
-	}
-	else GetCmdArg(1, target, sizeof(target));
+    char target[32];
+    if(args < 1)
+    {
+        target = "";
+    }
+    else
+        GetCmdArg(1, target, sizeof(target));
 
-	VolunteerTargets(client, target, false);
-    
-	return Plugin_Handled;
+    VolunteerTargets(client, target, false);
+
+    return Plugin_Handled;
 }
 
 public Action Command_Volunteer(int client, int args)
 {
-	char target[32];
-	if (args < 1)
-	{
-		target = "";
-	}
-	else GetCmdArg(1, target, sizeof(target));
+    char target[32];
+    if(args < 1)
+    {
+        target = "";
+    }
+    else
+        GetCmdArg(1, target, sizeof(target));
 
-	VolunteerTargets(client, target, !g_cv_Volunteered[client]);
+    VolunteerTargets(client, target, !g_cv_Volunteered[client]);
 
-	return Plugin_Handled;
+    return Plugin_Handled;
 }
 
 public Action VolunteerTargets(int client, char target[32], bool volunteering)
 {
-	int targetFilter = 0;
-	if (target[0] == '\0')
-	{
-		target = "@me";
-		targetFilter = COMMAND_FILTER_NO_IMMUNITY;
-	}
+    int targetFilter = 0;
+    if(target[0] == '\0')
+    {
+        target = "@me";
+        targetFilter = COMMAND_FILTER_NO_IMMUNITY;
+    }
 
-	char target_name[MAX_TARGET_LENGTH];
-	int target_list[MAXPLAYERS], target_count;
-	bool tn_is_ml;
- 
-	if ((target_count = ProcessTargetString(
-			target,
-			client,
-			target_list,
-			MAXPLAYERS,
-			COMMAND_FILTER_ALIVE|targetFilter,
-			target_name,
-			sizeof(target_name),
-			tn_is_ml)) <= 0)
-	{
-		ReplyToTargetError(client, target_count);
-		return Plugin_Handled;
-	}
+    char target_name[MAX_TARGET_LENGTH];
+    int target_list[MAXPLAYERS], target_count;
+    bool tn_is_ml;
 
-	for (int i = 0; i < target_count; i++)
-	{
-		int targetClientId = target_list[i];
-		Volunteer(targetClientId, volunteering);
-	}
-    
-	return Plugin_Handled;
+    if((target_count = ProcessTargetString(
+          target,
+          client,
+          target_list,
+          MAXPLAYERS,
+          COMMAND_FILTER_ALIVE | targetFilter,
+          target_name,
+          sizeof(target_name),
+          tn_is_ml)) <= 0)
+    {
+        ReplyToTargetError(client, target_count);
+        return Plugin_Handled;
+    }
+
+    for(int i = 0; i < target_count; i++)
+    {
+        int targetClientId = target_list[i];
+        Volunteer(targetClientId, volunteering);
+    }
+
+    return Plugin_Handled;
 }
 
 public Action Volunteer(int client, bool volunteering)
