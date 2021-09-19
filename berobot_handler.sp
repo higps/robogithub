@@ -661,17 +661,6 @@ public Action Volunteer(int client, bool volunteering)
         return;
     }
 
-    if(g_RoboCapTeam == g_Volunteers.Length)
-    {
-        MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i volunteers has been reached, starting Boss Mode", g_RoboCapTeam);
-
-        Command_YT_Robot_Start(client, true);
-
-        g_Volunteers.Resize(g_RoboCapTeam);
-        g_BossMode = true;
-        return;
-    }
-
     if(volunteering && !g_cv_Volunteered[client])
     {
         SMLogTag(SML_VERBOSE, "volunteer-state changed to true for %L", client);
@@ -706,6 +695,17 @@ public Action Volunteer(int client, bool volunteering)
     else
     {
         SMLogTag(SML_VERBOSE, "volunteer-state did not change for %L (still %b)", client, g_cv_Volunteered[client]);
+    }
+
+    if(g_RoboCapTeam == g_Volunteers.Length)
+    {
+        MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i volunteers has been reached, starting Boss Mode", g_RoboCapTeam);
+
+        Command_YT_Robot_Start(client, true);
+
+        g_Volunteers.Resize(g_RoboCapTeam);
+        g_BossMode = true;
+        return;
     }
 
     for(int i = 0; i < g_Volunteers.Length; i++)
