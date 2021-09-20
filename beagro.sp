@@ -35,7 +35,6 @@ new bool:CanWindDown[MAXPLAYERS+1];
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-	CreateConVar("beagro_version", PLUGIN_VERSION, "[TF2] Be the Giant Agro Pyro version", FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY);
 	
 	RegAdminCmd("sm_beagro", Command_GiantPyro, ADMFLAG_ROOT, "It's a good time to run");
 	AddNormalSoundHook(GiantPyroSH);
@@ -59,7 +58,7 @@ public OnPluginStart()
 
 	delete hTF2;
 
-	AddRobot("Agro", "Pyro", CreateAgro);
+	AddRobot("Agro", "Pyro", CreateAgro, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()

@@ -92,7 +92,21 @@ public any Native_AddRobot(Handle plugin, int numParams)
 
 	Function callback = GetNativeFunction(3);
 
+	char pluginVersion[9];
+	GetNativeString(4, pluginVersion, 9);
+
 	SMLogTag(SML_VERBOSE, "adding robot %s from plugin-handle %x", name, plugin);
+
+	char simpleName[NAMELENGTH];
+	simpleName = name;
+	ReplaceString(simpleName, NAMELENGTH, " ", "");
+	
+	char versionConVarName[NAMELENGTH+10];
+	Format(versionConVarName, NAMELENGTH+10, "be%s_version", simpleName);
+	
+	char versionConVarDescription[128];
+	Format(versionConVarDescription, 128, "[TF2] Be the Giant %s %s version", name, class);
+	CreateConVar(versionConVarName, pluginVersion, versionConVarDescription, FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_SPONLY);
 
 	PrivateForward privateForward = new PrivateForward(ET_Ignore, Param_Cell, Param_String);
 	privateForward.AddFunction(plugin, callback);

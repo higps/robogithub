@@ -28,7 +28,6 @@ new bool:g_bIsBearded[MAXPLAYERS + 1];
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-	CreateConVar("beshwc_version", PLUGIN_VERSION, "[TF2] Be the giant Bearded expense robot", FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY);
    
 	RegAdminCmd("sm_bebearded", Command_SuperHeavyweightChamp, ADMFLAG_ROOT, "It's a good time to run");
 	AddNormalSoundHook(SuperHeavyweightChampSH);
@@ -52,7 +51,7 @@ public OnPluginStart()
 
 	delete hTF2; 
 
-	AddRobot("Bearded Expense", "Heavy", CreateBearded);
+	AddRobot("Bearded Expense", "Heavy", CreateBearded, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()

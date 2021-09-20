@@ -15,7 +15,7 @@ typedef RobotCallback = function void (int client, char target[32]);
  * 
  * @noreturn
  */
-native void AddRobot(char name[NAMELENGTH], char class[9], RobotCallback callback);
+native void AddRobot(char name[NAMELENGTH], char class[9], RobotCallback callback, char[] version);
 
 /**
  * Removes a robot to the storage. So it can't be used by other plugins anymore. (usually called during OnPluginEnd)

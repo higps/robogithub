@@ -28,7 +28,6 @@ bool g_IsArraySeven[MAXPLAYERS + 1] = false;
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-	CreateConVar("begmed_version", PLUGIN_VERSION, "[TF2] Be the Giant Array Seven version", FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY);
    
 	RegAdminCmd("sm_bearray", Command_GiantMedic, ADMFLAG_ROOT, "It's a good time to run");
 	AddNormalSoundHook(GiantMedicSH);
@@ -52,7 +51,7 @@ public OnPluginStart()
 
 	delete hTF2; 
 
-	AddRobot("Array Seven", "Medic", CreateArraySeven);
+	AddRobot("Array Seven", "Medic", CreateArraySeven, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()

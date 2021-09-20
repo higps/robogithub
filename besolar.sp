@@ -29,7 +29,6 @@ bool g_Resupply[MAXPLAYERS + 1] = false;
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-	CreateConVar("begdeknight_version", PLUGIN_VERSION, "[TF2] Be the Giant Demoknight version", FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY);
 
 	RegAdminCmd("sm_besolar", Command_GiantSolar, ADMFLAG_ROOT, "It's a good time to run");
 	AddNormalSoundHook(GiantDemoKnightSH);
@@ -60,7 +59,7 @@ public OnPluginStart()
 		g_Resupply[i] = false;
     }
 
-	AddRobot("Solar Light", "Demoman", CreateSolar);
+	AddRobot("Solar Light", "Demoman", CreateSolar, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()

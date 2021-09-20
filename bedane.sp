@@ -31,7 +31,6 @@ bool g_Resupply[MAXPLAYERS + 1] = false;
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-	CreateConVar("beChangeDane_version", PLUGIN_VERSION, "[TF2] Be the giant Uncle Dane robot", FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY);
 
 	RegAdminCmd("sm_bedane", Command_SuperHeavyweightChamp, ADMFLAG_ROOT, "It's a good time to run");
 	AddNormalSoundHook(GiantUncleDane);
@@ -56,7 +55,7 @@ public OnPluginStart()
 
 	delete hTF2; 
 
-	AddRobot("Uncle Dane", "Engineer", CreateUncleDane);
+	AddRobot("Uncle Dane", "Engineer", CreateUncleDane, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
