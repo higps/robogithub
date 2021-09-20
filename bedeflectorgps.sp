@@ -40,13 +40,13 @@ public OnPluginStart()
 	LoadTranslations("common.phrases");
 	CreateConVar("begdeflectorh_version", PLUGIN_VERSION, "[TF2] Be the Giant Deflector GPS version", FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY);
    
-	RegAdminCmd("sm_begps", Command_GPSDeflector, ADMFLAG_ROOT, "It's a good time to run");
-	
+	RegAdminCmd("sm_begps", Command_GPSDeflector, ADMFLAG_ROOT, "It's a good time to run");	
 	AddNormalSoundHook(GDeflectorHSH);
 
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
+	
 	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
 
 	if (!hTF2)

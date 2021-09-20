@@ -112,7 +112,6 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	// return;
 	
 	
-	
 	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
 	int iObj = event.GetInt("index");
 	//int entRef = EntIndexToEntRef(iObj);

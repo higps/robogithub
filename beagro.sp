@@ -38,7 +38,6 @@ public OnPluginStart()
 	CreateConVar("beagro_version", PLUGIN_VERSION, "[TF2] Be the Giant Agro Pyro version", FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY);
 	
 	RegAdminCmd("sm_beagro", Command_GiantPyro, ADMFLAG_ROOT, "It's a good time to run");
-
 	AddNormalSoundHook(GiantPyroSH);
 	
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
