@@ -3,7 +3,6 @@
 #endif
 #define _berobot_included "0.1"
 
-const int NAMELENGTH = 128;
 typedef RobotCallback = function void (int client, char target[32]);
 
 /**

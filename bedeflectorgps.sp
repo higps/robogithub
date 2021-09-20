@@ -40,7 +40,6 @@ public OnPluginStart()
 	LoadTranslations("common.phrases");
    
 	RegAdminCmd("sm_begps", Command_GPSDeflector, ADMFLAG_ROOT, "It's a good time to run");	
-	AddNormalSoundHook(GDeflectorHSH);
 
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
@@ -415,31 +414,6 @@ stock GiveGDeflectorH(client)
 	// }
 // }
 
-public Action:GDeflectorHSH(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!g_bIsGDEFLECTORH[entity]) return Plugin_Continue;
-
-	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	new TFClassType:class = TF2_GetPlayerClass(entity);
-
-	if (StrContains(sample, "vo/", false) == -1) return Plugin_Continue;
-	if (StrContains(sample, "announcer", false) != -1) return Plugin_Continue;
-	if (volume == 0.99997) return Plugin_Continue;
-	ReplaceString(sample, sizeof(sample), "vo/", "vo/mvm/mght/", false);
-	ReplaceString(sample, sizeof(sample), "_", "_m_", false);
-	ReplaceString(sample, sizeof(sample), ".wav", ".mp3", false);
-	new String:classname[10], String:classname_mvm[15];
-	TF2_GetNameOfClass(class, classname, sizeof(classname));
-	Format(classname_mvm, sizeof(classname_mvm), "%s_mvm", classname);
-	ReplaceString(sample, sizeof(sample), classname, classname_mvm, false);
-	new String:soundchk[PLATFORM_MAX_PATH];
-	Format(soundchk, sizeof(soundchk), "sound/%s", sample);
-	PrecacheSound(sample);
-	return Plugin_Changed;
-}
-
 public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
 {
 	if (IsValidClient(iClient) && g_bIsGDEFLECTORH[iClient]) 
@@ -507,21 +481,6 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 	}
 }
 
-stock TF2_GetNameOfClass(TFClassType:class, String:name[], maxlen)
-{
-	switch (class)
-	{
-		case TFClass_Scout: Format(name, maxlen, "scout");
-		case TFClass_Soldier: Format(name, maxlen, "soldier");
-		case TFClass_Pyro: Format(name, maxlen, "pyro");
-		case TFClass_DemoMan: Format(name, maxlen, "demoman");
-		case TFClass_Heavy: Format(name, maxlen, "heavy");
-		case TFClass_Engineer: Format(name, maxlen, "engineer");
-		case TFClass_Medic: Format(name, maxlen, "medic");
-		case TFClass_Sniper: Format(name, maxlen, "sniper");
-		case TFClass_Spy: Format(name, maxlen, "spy");
-	}
-}
  /*
 public Native_SetGDeflectorH(Handle:plugin, args)
         MakeGDeflectorH(GetNativeCell(1));

@@ -9,6 +9,7 @@
 #define SPECTATE 1
 #define UNASSIGNED 0
 
+#include <berobot_constants>
 #include <berobot>
 #include <morecolors_newsyntax>
 #include <sdkhooks>
@@ -28,10 +29,6 @@
 #include <dhooks>
 #include <tf2attributes>
 
-#pragma newdecls required
-#pragma semicolon 1
-
-
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
 enum(<<= 1)
 {
@@ -39,6 +36,12 @@ enum(<<= 1)
     SML_INFO,
     SML_ERROR,
 }
+#include <berobot_core>
+
+#pragma newdecls required
+#pragma semicolon 1
+
+
 
 enum //Convar names
 {
@@ -112,8 +115,10 @@ public Plugin myinfo =
 };
 public void OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    SMLogTag(SML_INFO, "berobot_store started at %i", GetTime());
+    //TODO: Release
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
+    //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    SMLogTag(SML_INFO, "berobot_handler started at %i", GetTime());
 
     /* Convars */
 
@@ -153,7 +158,9 @@ public void OnPluginStart()
 
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
-
+	
+    /* Natives */
+    CreateNative("GetPickedRobot", Native_GetPickedRobot);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
@@ -876,35 +883,11 @@ bool isMiniBoss(int client)
     return false;
 }
 
+/* Natives */
+public any Native_GetPickedRobot(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	int maxDestLength = GetNativeCell(3);
 
-/* Stocks */
-stock bool IsValidClient(int client, bool replaycheck = true)
-{
-    if(client <= 0 || client > MaxClients)
-        return false;
-    if(!IsClientInGame(client))
-        return false;
-    if(GetEntProp(client, Prop_Send, "m_bIsCoaching"))
-        return false;
-    if(replaycheck)
-    {
-        if(IsClientSourceTV(client) || IsClientReplay(client))
-            return false;
-    }
-    return true;
-}
-/*
-	Swaps and respawns a player to a specified team.
-	
-	TFTeam_Unassigned = 0,
-	TFTeam_Spectator = 1,
-	TFTeam_Red = 2,
-	TFTeam_Blue = 3
-*/
-stock void TF2_SwapTeamAndRespawn(int client, int team)
-{
-    SetEntProp(client, Prop_Send, "m_lifeState", 2);
-    ChangeClientTeam(client, team);
-    TF2_RespawnPlayer(client);
-    SetEntProp(client, Prop_Send, "m_lifeState", 0);
+	SetNativeString(2, g_cv_RobotPicked[client], maxDestLength);
 }

@@ -13,7 +13,7 @@ public Plugin myinfo =
 	author = "icebear",
 	description = "",
 	version = "1.0",
-	url = "https://github.com/eisbaer66/robogithub"
+	url = "https://github.com/higps/robogithub"
 };
 
 char LOG_TAGS[][] =	 {"VERBOSE", "INFO", "ERROR"};

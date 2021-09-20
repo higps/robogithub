@@ -1,0 +1,90 @@
+#if defined _berobot_core_included
+ #endinput
+#endif
+#define _berobot_core_included "0.1"
+
+native void GetPickedRobot(int client, char[] dest, int maxDestLength);
+
+/**
+ * returns which classes have deep robot voicelines (opposed to only normal robot voicelines)
+ * 
+ * @param class     the class to check
+ * @return          true: class has deep robot voicelines;
+ *                  false: class has only normal robot voicelines
+ */
+stock bool ClassHasDeepRobotVoiceLines(TFClassType class)
+{
+	switch (class)
+	{
+		case TFClass_Scout: return true;
+		case TFClass_Soldier: return true;
+		case TFClass_Pyro: return true;
+		case TFClass_DemoMan: return true;
+		case TFClass_Heavy: return true;
+		case TFClass_Engineer: return false;
+		case TFClass_Medic: return false;
+		case TFClass_Sniper: return false;
+		case TFClass_Spy: return false;
+		default: 
+		{
+			SMLogTag(SML_ERROR, "unknown class when checking for deep robot voice lines: %s", class);
+			return false;
+		}
+	}
+}
+
+/**
+ * translates a tf2-class into a string
+ * 
+ * @param class      class to translate
+ * @param name       buffer to store value
+ * @param maxlen     maximum length of string-buffer
+ * @noretrurn
+ */
+stock void TF2_GetNameOfClass(TFClassType class, char[] name, int maxlen)
+{
+	switch (class)
+	{
+		case TFClass_Scout: Format(name, maxlen, "scout");
+		case TFClass_Soldier: Format(name, maxlen, "soldier");
+		case TFClass_Pyro: Format(name, maxlen, "pyro");
+		case TFClass_DemoMan: Format(name, maxlen, "demoman");
+		case TFClass_Heavy: Format(name, maxlen, "heavy");
+		case TFClass_Engineer: Format(name, maxlen, "engineer");
+		case TFClass_Medic: Format(name, maxlen, "medic");
+		case TFClass_Sniper: Format(name, maxlen, "sniper");
+		case TFClass_Spy: Format(name, maxlen, "spy");
+	}
+}
+
+
+stock bool IsValidClient(int client, bool replaycheck = true)
+{
+    if(client <= 0 || client > MaxClients)
+        return false;
+    if(!IsClientInGame(client))
+        return false;
+    if(GetEntProp(client, Prop_Send, "m_bIsCoaching"))
+        return false;
+    if(replaycheck)
+    {
+        if(IsClientSourceTV(client) || IsClientReplay(client))
+            return false;
+    }
+    return true;
+}
+/*
+	Swaps and respawns a player to a specified team.
+	
+	TFTeam_Unassigned = 0,
+	TFTeam_Spectator = 1,
+	TFTeam_Red = 2,
+	TFTeam_Blue = 3
+*/
+stock void TF2_SwapTeamAndRespawn(int client, int team)
+{
+    SetEntProp(client, Prop_Send, "m_lifeState", 2);
+    ChangeClientTeam(client, team);
+    TF2_RespawnPlayer(client);
+    SetEntProp(client, Prop_Send, "m_lifeState", 0);
+}

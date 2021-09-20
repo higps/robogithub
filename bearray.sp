@@ -30,7 +30,6 @@ public OnPluginStart()
 	LoadTranslations("common.phrases");
    
 	RegAdminCmd("sm_bearray", Command_GiantMedic, ADMFLAG_ROOT, "It's a good time to run");
-	AddNormalSoundHook(GiantMedicSH);
    
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
@@ -360,47 +359,6 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	}
 }
 
- 
-public Action:GiantMedicSH(clients[64], &numClients, String:sound[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!g_bIsGMEDIC[entity]) return Plugin_Continue;
-
-	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	new TFClassType:class = TF2_GetPlayerClass(entity);
-
-		if (StrContains(sound, "vo/", false) == -1) return Plugin_Continue;
-		if (StrContains(sound, "announcer", false) != -1) return Plugin_Continue;
-		if (volume == 0.99997) return Plugin_Continue;
-		ReplaceString(sound, sizeof(sound), "vo/", "vo/mvm/norm/", false);
-		ReplaceString(sound, sizeof(sound), ".wav", ".mp3", false);
-		new String:classname[10], String:classname_mvm[15];
-		TF2_GetNameOfClass(class, classname, sizeof(classname));
-		Format(classname_mvm, sizeof(classname_mvm), "%s_mvm", classname);
-		ReplaceString(sound, sizeof(sound), classname, classname_mvm, false);
-		new String:soundchk[PLATFORM_MAX_PATH];
-		Format(soundchk, sizeof(soundchk), "sound/%s", sound);
-		//if (!FileExists(soundchk, true) && GetConVarBool(cvarFileExists)) return Plugin_Continue;
-		PrecacheSound(sound);
-		return Plugin_Changed;
-}
-
-stock TF2_GetNameOfClass(TFClassType:class, String:name[], maxlen)
-{
-	switch (class)
-	{
-		case TFClass_Scout: Format(name, maxlen, "scout");
-		case TFClass_Soldier: Format(name, maxlen, "soldier");
-		case TFClass_Pyro: Format(name, maxlen, "pyro");
-		case TFClass_DemoMan: Format(name, maxlen, "demoman");
-		case TFClass_Heavy: Format(name, maxlen, "heavy");
-		case TFClass_Engineer: Format(name, maxlen, "engineer");
-		case TFClass_Medic: Format(name, maxlen, "medic");
-		case TFClass_Sniper: Format(name, maxlen, "sniper");
-		case TFClass_Spy: Format(name, maxlen, "spy");
-	}
-}
  /*
 public Native_SetGiantMedic(Handle:plugin, args)
         MakeGiantMedic(GetNativeCell(1));
