@@ -3,6 +3,25 @@
 #endif
 #define _berobot_core_included "0.1"
 
+enum struct RobotSounds {
+  char spawn[PLATFORM_MAX_PATH];
+}
+enum struct Robot {
+  char name[NAMELENGTH];
+  char class[9];
+  PrivateForward callback;
+  RobotSounds sounds;
+}
+
+/**
+ * returns the robot-definition 
+ * 
+ * @param name      name of the robot-definition
+ * @param robot     buffer to store robot-definiton
+ * @noreturn
+ */
+native int GetRobotDefinition(char name[NAMELENGTH], const any[] robot);
+
 /**
  * returns the name of the robot picked by a client
  * 
