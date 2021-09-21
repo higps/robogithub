@@ -17,6 +17,16 @@ public Plugin myinfo =
 	url = "https://github.com/higps/robogithub"
 };
 
+enum struct RobotSounds {
+  char spawn[PLATFORM_MAX_PATH];
+}
+enum struct Robot {
+  char name[NAMELENGTH];
+  char class[9];
+  PrivateForward callback;
+  RobotSounds sounds;
+}
+
 char LOG_TAGS[][] =	 {"VERBOSE", "INFO", "ERROR"};
 enum (<<= 1)
 {
@@ -25,11 +35,6 @@ enum (<<= 1)
 	SML_ERROR,
 }
 
-char ROBOT_KEY_NAME[] = "name";
-char ROBOT_KEY_CLASS[] = "class";
-char ROBOT_KEY_CALLBACK[] = "callback";
-char ROBOT_KEY_SOUNDS[] = "sounds";
-char ROBOT_KEY_SOUNDS_SPAWN[] = "spawn";
 bool _init;
 StringMap _robots;
 
@@ -72,16 +77,11 @@ public Action Command_DumpRobotStorage(int client, int numParams)
 	{
 		char name[NAMELENGTH];
 		snapshot.GetKey(i, name, NAMELENGTH);
-
-		StringMap item;
-		_robots.GetValue(name, item);		
+	
+		Robot item;
+		_robots.GetArray(name, item, sizeof(item));
 		
-		char class[9];
-		item.GetString(ROBOT_KEY_CLASS, class, 9);
-		PrivateForward privateForward;
-		item.GetValue(ROBOT_KEY_CALLBACK, privateForward);
-
-		SMLogTag(SML_INFO, "Robot {%s: %s, callback: %x}", name, class, privateForward);
+		SMLogTag(SML_INFO, "Robot {%s: %s, callback: %x, sounds: {spawn: %s}}", item.name, item.class, item.callback, item.sounds.spawn);
 	}
 }
 
@@ -116,22 +116,22 @@ public any Native_AddRobot(Handle plugin, int numParams)
 	Format(versionConVarDescription, 128, "[TF2] Be the Giant %s %s version", name, class);
 	CreateConVar(versionConVarName, pluginVersion, versionConVarDescription, FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_SPONLY);
 
-	PrivateForward privateForward = new PrivateForward(ET_Ignore, Param_Cell, Param_String);
+	PrivateForward privateForward = new PrivateForward(ET_Single, Param_Cell);
 	privateForward.AddFunction(plugin, callback);
 
 	SMLogTag(SML_VERBOSE, "robot %s uses privateForward %x", name, privateForward);
 	SMLogTag(SML_VERBOSE, "robot %s is class %s", name, class);
 
-	StringMap item = new StringMap();
-	item.SetString(ROBOT_KEY_NAME, name);
-	item.SetString(ROBOT_KEY_CLASS, class);
-	item.SetValue(ROBOT_KEY_CALLBACK, privateForward);
+	Robot item;
+	item.name = name;
+	item.class = class;
+	item.callback = privateForward;
+	
+	RobotSounds sounds;
+	sounds.spawn = soundSpawn;
+	item.sounds = sounds;
 
-	StringMap sounds = new StringMap();
-	sounds.SetString(ROBOT_KEY_SOUNDS_SPAWN, soundSpawn);
-	item.SetValue(ROBOT_KEY_SOUNDS, sounds);
-
-	_robots.SetValue(name, item);
+	_robots.SetArray(name, item, sizeof(item));
 }
 
 public any Native_RemoveRobot(Handle plugin, int numParams)
@@ -174,18 +174,15 @@ public any Native_GetRobotClass(Handle plugin, int numParams)
 	
 	char name[NAMELENGTH];
 	GetNativeString(1, name, NAMELENGTH);
-
-	char class[9];
 	
-	StringMap item;
-	if (!_robots.GetValue(name, item))
+	Robot item;
+	if (!_robots.GetArray(name, item, sizeof(item)))
 	{
 		SMLogTag(SML_ERROR, "could not retrieve class. no robot with name '%s' found", name);
 		return 1;
 	}
 
-	item.GetString(ROBOT_KEY_CLASS, class, 9);
-	SetNativeString(2, class, 10, false);
+	SetNativeString(2, item.class, 10, false);
 	return 0;
 }
 
@@ -225,22 +222,19 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 		return 2;
 	}
 
-	StringMap item;
-	if (!_robots.GetValue(name, item))
+	Robot item;
+	if (!_robots.GetArray(name, item, sizeof(item)))
 	{
 		SMLogTag(SML_ERROR, "could not create robot. no robot with name '%s' found", name);
 		return 1;
 	}
 
-	PrivateForward privateForward;
-	item.GetValue(ROBOT_KEY_CALLBACK, privateForward);
-
 	bool robotWasCreated = false;
 	for (int i = 0; i < target_count; i++)
 	{
         int targetClientId = target_list[i];
-        SMLogTag(SML_VERBOSE, "calling privateForward %x for robot %s, with client %i and target %s (current %i; count %i)", privateForward, name, client, target, targetClientId, target_count);
-        Call_StartForward(privateForward);
+        SMLogTag(SML_VERBOSE, "calling privateForward %x for robot %s, with client %i and target %s (current %i; count %i)", item.callback, name, client, target, targetClientId, target_count);
+        Call_StartForward(item.callback);
         Call_PushCell(targetClientId);
 
         bool wasCreated;
@@ -251,13 +245,8 @@ public any Native_CreateRobot(Handle plugin, int numParams)
     }
 	if (robotWasCreated)
 	{
-		StringMap sounds;
-		item.GetValue(ROBOT_KEY_SOUNDS, sounds);
-		char spawnPath[PLATFORM_MAX_PATH];
-		sounds.GetString(ROBOT_KEY_SOUNDS_SPAWN, spawnPath, PLATFORM_MAX_PATH);
-
-		SMLogTag(SML_VERBOSE, "playing robot spawn sound %s to all for call by client %i for target %s", spawnPath, client, target);
-		EmitSoundToAll(spawnPath);
+		SMLogTag(SML_VERBOSE, "playing robot spawn sound %s to all for call by client %i for target %s", item.sounds.spawn, client, target);
+		EmitSoundToAll(item.sounds.spawn);
 	}
 
 	return 0;
