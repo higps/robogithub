@@ -702,7 +702,7 @@ public Action Volunteer(int client, bool volunteering)
     {
         MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i volunteers has been reached, starting Boss Mode", g_RoboCapTeam);
 
-        Command_YT_Robot_Start(client, true);
+        if(!g_BossMode)Command_YT_Robot_Start(client, true);
 
         g_Volunteers.Resize(g_RoboCapTeam);
         g_BossMode = true;

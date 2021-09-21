@@ -281,7 +281,7 @@ MakeUncleDane(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 3250;
+	int iHealth = 2000;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -300,7 +300,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "maxammo metal increased", 7.5);
-	TF2Attrib_SetByName(client, "engy building health bonus", 6.0);
+	TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
 	TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
 	
 	
@@ -386,7 +386,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "metal regen", 100.0);
-			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 10.0);
+			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 60.0);
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
 			

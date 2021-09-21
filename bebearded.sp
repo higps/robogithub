@@ -247,7 +247,7 @@ MakeBearded(client)
 	SetModel(client, SHWC);
    
 		
-   int iHealth = 14500;
+   int iHealth = 9000;
 	TF2_SetHealth(client, iHealth);
 	
 	int MaxHealth = 300;
@@ -255,12 +255,12 @@ MakeBearded(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.1);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.3);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
+	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
@@ -354,7 +354,7 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 2.0);
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 800.0);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.8);
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 				
 				if (TF2_GetClientTeam(client) == TFTeam_Red)TF2Attrib_SetByName(Weapon3, "increase player capture value", -1.0);

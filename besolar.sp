@@ -260,7 +260,7 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	 int iHealth = 4700;
+	 int iHealth = 3000;
 	
 	
 	int MaxHealth = 175;
@@ -380,7 +380,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.5);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 3.0);
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.7);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
 			
 		}
 		
@@ -392,7 +392,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "is_festivized", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "charge meter on hit", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 2.0);		
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.75);		
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);		
 			
 			
 			
