@@ -2,9 +2,11 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
+#include <berobot_constants>
 #include <berobot>
  
 #define PLUGIN_VERSION "1.0"
+#define ROBOT_NAME	"Array Seven"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -28,9 +30,7 @@ bool g_IsArraySeven[MAXPLAYERS + 1] = false;
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-   
-	RegAdminCmd("sm_bearray", Command_GiantMedic, ADMFLAG_ROOT, "It's a good time to run");
-   
+      
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
@@ -50,12 +50,12 @@ public OnPluginStart()
 
 	delete hTF2; 
 
-	AddRobot("Array Seven", "Medic", CreateArraySeven, PLUGIN_VERSION);
+	AddRobot(ROBOT_NAME, "Medic", CreateArraySeven, PLUGIN_VERSION, SPAWN);
 }
 
 public void OnPluginEnd()
 {
-	RemoveRobot("Array Seven");
+	RemoveRobot(ROBOT_NAME);
 }
  
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -159,61 +159,21 @@ public Action:RemoveModel(client)
 		AcceptEntityInput(client, "SetCustomModel");
 	}
 }
-
-public Action:Command_GiantMedic(client, args)
-{
-	decl String:arg1[32];
-	if (args < 1)
-	{
-		arg1[0] = '\0';
-	}
-	else GetCmdArg(1, arg1, sizeof(arg1));
-
-	CreateArraySeven(client, arg1);
-	return Plugin_Handled;
-}
   
-public void CreateArraySeven(int client, char target[32])
+public bool CreateArraySeven(int client)
 {
-	int targetFilter = 0;
-	if (target[0] == '\0')
-	{
-		target = "@me";
-		targetFilter = COMMAND_FILTER_NO_IMMUNITY;
-	}
+    if(!g_IsArraySeven[client]){
+    
+        g_IsArraySeven[client] = true;
+        MakeGiantMedic(client);
+        return true;
+    }else{
 
-	new String:target_name[MAX_TARGET_LENGTH];
-	new target_list[MAXPLAYERS], target_count;
-	new bool:tn_is_ml;
-
-	if ((target_count = ProcessTargetString(
-					target,
-					client,
-					target_list,
-					MAXPLAYERS,
-					COMMAND_FILTER_ALIVE|targetFilter,
-					target_name,
-					sizeof(target_name),
-					tn_is_ml)) <= 0)
-	{
-		ReplyToTargetError(client, target_count);
-		return;
-	}
-	for (new i = 0; i < target_count; i++)
-	{
-		if(!g_IsArraySeven[target_list[i]]){
-		
-			g_IsArraySeven[target_list[i]] = true;
-			MakeGiantMedic(target_list[i]);
-
-		}else{
-
-			g_IsArraySeven[target_list[i]] = false;
-			PrintToChat(target_list[i], "1. You are no longer Giant ArraySeven!");
-			TF2_RegeneratePlayer(target_list[i]);
-		}		
-	}
-	if (g_IsArraySeven[client])EmitSoundToAll(SPAWN);
+        g_IsArraySeven[client] = false;
+        PrintToChat(client, "1. You are no longer Giant ArraySeven!");
+        TF2_RegeneratePlayer(client);
+        return false;
+    }	
 }
 
 MakeGiantMedic(client)
@@ -235,13 +195,13 @@ MakeGiantMedic(client)
 	SetModel(client, GMEDIC);
    
 		
-   int iHealth = 4000;
+	int iHealth = 4000;
 	
 	
 	int MaxHealth = 150;
 	int iAdditiveHP = iHealth - MaxHealth;
    
-   TF2_SetHealth(client, iHealth);
+	TF2_SetHealth(client, iHealth);
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
@@ -261,9 +221,9 @@ MakeGiantMedic(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	g_bIsGMEDIC[client] = true;
 
-		PrintToChat(client, "1. You are now Giant Arrayseven !");
-		PrintToChat(client, "2. Your Kriztkrieg has Lasts longer!");
-		PrintToChat(client, "3. Spawns with full Ubercharge !");
+	PrintToChat(client, "1. You are now Giant Arrayseven !");
+	PrintToChat(client, "2. Your Kriztkrieg has Lasts longer!");
+	PrintToChat(client, "3. Spawns with full Ubercharge !");
 		
 
 

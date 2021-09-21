@@ -2,9 +2,12 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
+#include <sm_logger>
+#include <berobot_constants>
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
+#define ROBOT_NAME	"Agro"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -23,6 +26,14 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
+char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
+enum(<<= 1)
+{
+    SML_VERBOSE = 1,
+    SML_INFO,
+    SML_ERROR,
+}
+
 new Handle:g_hEquipWearable;
 new bool:g_bIsGPYRO[MAXPLAYERS + 1];
 bool g_IsAgro[MAXPLAYERS + 1] = false;
@@ -34,10 +45,12 @@ new bool:CanWindDown[MAXPLAYERS+1];
 
 public OnPluginStart()
 {
+    //TODO: Release
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
+    //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+
 	LoadTranslations("common.phrases");
-	
-	RegAdminCmd("sm_beagro", Command_GiantPyro, ADMFLAG_ROOT, "It's a good time to run");
-	
+		
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
@@ -57,12 +70,12 @@ public OnPluginStart()
 
 	delete hTF2;
 
-	AddRobot("Agro", "Pyro", CreateAgro, PLUGIN_VERSION);
+	AddRobot(ROBOT_NAME, "Pyro", CreateAgro, PLUGIN_VERSION, SPAWN);
 }
 
 public void OnPluginEnd()
 {
-	RemoveRobot("Agro");
+	RemoveRobot(ROBOT_NAME);
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -185,61 +198,25 @@ public Action:RemoveModel(client)
 	}
 }
 
-public Action:Command_GiantPyro(client, args)
+public bool CreateAgro(int client)
 {
-	decl String:arg1[32];
-	if (args < 1)
-	{
-		arg1[0] = '\0';
-	}
-	else GetCmdArg(1, arg1, sizeof(arg1));
-	
-	CreateAgro(client, arg1);
-	return Plugin_Handled;
-}
+	SMLogTag(SML_VERBOSE, "Createing Agro");
+	if(!g_IsAgro[client]){		
+            
+        g_IsAgro[client] = true;
+        MakeGiantPyro(client);				
 
-public void CreateAgro(int client, char target[32])
-{
-	int targetFilter = 0;
-	if (target[0] == '\0')
-	{
-		target = "@me";
-		targetFilter = COMMAND_FILTER_NO_IMMUNITY;
-	}
+        return true;
+    }
+	else
+    {
 
-	new String:target_name[MAX_TARGET_LENGTH];
-	new target_list[MAXPLAYERS], target_count;
-	new bool:tn_is_ml;
- 
-	if ((target_count = ProcessTargetString(
-			target,
-			client,
-			target_list,
-			MAXPLAYERS,
-			COMMAND_FILTER_ALIVE|targetFilter,
-			target_name,
-			sizeof(target_name),
-			tn_is_ml)) <= 0)
-	{
-		ReplyToTargetError(client, target_count);
-		return;
-	}
-	for (new i = 0; i < target_count; i++)
-	{
-		if(!g_IsAgro[target_list[i]]){		
-				
-			g_IsAgro[target_list[i]] = true;
-			MakeGiantPyro(target_list[i]);				
-		}
-		else
-		{
-
-			g_IsAgro[target_list[i]] = false;
-			PrintToChat(target_list[i], "1. You are no longer Giant Agro!");
-			TF2_RegeneratePlayer(target_list[i]);
-		}
-	}
-	if (g_IsAgro[client])EmitSoundToAll(SPAWN);
+        g_IsAgro[client] = false;
+        PrintToChat(client, "1. You are no longer Giant Agro!");
+        TF2_RegeneratePlayer(client);
+        
+        return false;
+    }
 }
 
 MakeGiantPyro(client)
@@ -340,8 +317,8 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		
 		CreateHat(client, 470, 10, 6, true); //Lofi longave
-		 CreateHat(client, 31135, 10, 6, true); //Handsome Devil
-		 CreateHat(client, 31184, 10, 6, false);//Manndatory atire
+		CreateHat(client, 31135, 10, 6, true); //Handsome Devil
+		CreateHat(client, 31184, 10, 6, false);//Manndatory atire
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -485,7 +462,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 	SetEntData(hat, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);
 	SetEntProp(hat, Prop_Send, "m_bValidatedAttachedEntity", 1);  	
 	
-		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+	TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
 		
 	switch (itemindex)
 	{
@@ -521,8 +498,8 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 
 	}
 	
-		if (scale == true){
-	SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 0.75);
+	if (scale == true){
+		SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 0.75);
 	}
 
 	DispatchSpawn(hat);

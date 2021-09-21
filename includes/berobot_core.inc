@@ -3,6 +3,14 @@
 #endif
 #define _berobot_core_included "0.1"
 
+/**
+ * returns the name of the robot picked by a client
+ * 
+ * @param client            clientId to check
+ * @param dest              buffer to store value
+ * @param maxDestLength     maximum length of string-buffer
+ * @noreturn
+ */
 native void GetPickedRobot(int client, char[] dest, int maxDestLength);
 
 /**

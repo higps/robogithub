@@ -2,9 +2,11 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
+#include <berobot_constants>
 #include <berobot>
  
 #define PLUGIN_VERSION "1.0"
+#define ROBOT_NAME	"Bearded Expense"
  
 #define SHWC             "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -28,9 +30,7 @@ new bool:g_bIsBearded[MAXPLAYERS + 1];
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-   
-	RegAdminCmd("sm_bebearded", Command_SuperHeavyweightChamp, ADMFLAG_ROOT, "It's a good time to run");
-   
+      
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
@@ -50,12 +50,12 @@ public OnPluginStart()
 
 	delete hTF2; 
 
-	AddRobot("Bearded Expense", "Heavy", CreateBearded, PLUGIN_VERSION);
+	AddRobot(ROBOT_NAME, "Heavy", CreateBearded, PLUGIN_VERSION, SPAWN);
 }
 
 public void OnPluginEnd()
 {
-	RemoveRobot("Bearded Expense");
+	RemoveRobot(ROBOT_NAME);
 }
  
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -166,62 +166,20 @@ public Action:RemoveModel(client)
 	}
 }
 
-public Action:Command_SuperHeavyweightChamp(client, args)
+public bool CreateBearded(int client)
 {
-	decl String:arg1[32];
-	if (args < 1)
-	{
-		arg1[0] = '\0';
-	}
-	else GetCmdArg(1, arg1, sizeof(arg1));
-	
-	CreateBearded(client, arg1);
-	return Plugin_Handled;
-}
-
-public void CreateBearded(int client, char target[32])
-{
-	int targetFilter = 0;
-	if (target[0] == '\0')
-	{
-		target = "@me";
-		targetFilter = COMMAND_FILTER_NO_IMMUNITY;
-	}
-
-	new String:target_name[MAX_TARGET_LENGTH];
-	new target_list[MAXPLAYERS], target_count;
-	new bool:tn_is_ml;
-
-	if ((target_count = ProcessTargetString(
-					target,
-					client,
-					target_list,
-					MAXPLAYERS,
-					COMMAND_FILTER_ALIVE|targetFilter,
-					target_name,
-					sizeof(target_name),
-					tn_is_ml)) <= 0)
-	{
-			ReplyToTargetError(client, target_count);
-			return;
-	}
-	for (new i = 0; i < target_count; i++)
-	{	
-		if(!g_IsBearded[target_list[i]]){		
-			g_IsBearded[target_list[i]] = true;
-			MakeBearded(target_list[i]);
-			
-		}else
-		{
-			g_IsBearded[target_list[i]] = false;
-			PrintToChat(target_list[i], "1. You are no longer Giant Bearded Expense!");
-			PrintToChat(target_list[i], "2. You will turn back by changing class or dying!");
-			TF2_RegeneratePlayer(target_list[i]);
-		}
-		
-		
-	}
-	if (g_IsBearded[client])EmitSoundToAll(SPAWN);
+    if(!g_IsBearded[client]){		
+        g_IsBearded[client] = true;
+        MakeBearded(client);
+        return true;
+    }else
+    {
+        g_IsBearded[client] = false;
+        PrintToChat(client, "1. You are no longer Giant Bearded Expense!");
+        PrintToChat(client, "2. You will turn back by changing class or dying!");
+        TF2_RegeneratePlayer(client);
+        return false;
+    }
 }
  
 MakeBearded(client)
@@ -243,7 +201,7 @@ MakeBearded(client)
 	SetModel(client, SHWC);
    
 		
-   int iHealth = 14500;
+	int iHealth = 14500;
 	TF2_SetHealth(client, iHealth);
 	
 	int MaxHealth = 300;
@@ -275,8 +233,8 @@ MakeBearded(client)
 	g_bIsBearded[client] = true;
 	
 	g_IsBearded[client] = true;
-		PrintToChat(client, "1. You are now Giant Bearded Expense bot !");
-		PrintToChat(client, "2. You are a juggernaut!");
+	PrintToChat(client, "1. You are now Giant Bearded Expense bot !");
+	PrintToChat(client, "2. You are a juggernaut!");
 		
 }
  
@@ -311,8 +269,10 @@ public Action:Timer_Switch(Handle:timer, any:client)
 public Action:Timer_Locker(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
-	StopSound(client, SNDCHAN_AUTO, LOOP);
+    {
+		StopSound(client, SNDCHAN_AUTO, LOOP);
 		MakeBearded(client);
+    }
 }
  
 stock GiveBearded(client)
@@ -353,7 +313,7 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.8);
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 				
-				if (TF2_GetClientTeam(client) == TFTeam_Red)TF2Attrib_SetByName(Weapon3, "increase player capture value", -1.0);
+			if (TF2_GetClientTeam(client) == TFTeam_Red)TF2Attrib_SetByName(Weapon3, "increase player capture value", -1.0);
 				//Add additonal logic to detect if it's attack/defend mode
 
 			//	if (TF2_GetClientTeam(client) == TFTeam_Blue)TF2Attrib_SetByName(Weapon3, "increase player capture value", 0.0);

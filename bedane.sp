@@ -3,9 +3,11 @@
 #include <tf2_stocks>
 #include <tf2attributes>
 #include <sdkhooks>
+#include <berobot_constants>
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
+#define ROBOT_NAME	"Uncle Dane"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -32,8 +34,6 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	RegAdminCmd("sm_bedane", Command_SuperHeavyweightChamp, ADMFLAG_ROOT, "It's a good time to run");
-
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_builtobject", ObjectBuilt, EventHookMode_Post);
@@ -54,12 +54,12 @@ public OnPluginStart()
 
 	delete hTF2; 
 
-	AddRobot("Uncle Dane", "Engineer", CreateUncleDane, PLUGIN_VERSION);
+	AddRobot(ROBOT_NAME, "Engineer", CreateUncleDane, PLUGIN_VERSION, SPAWN);
 }
 
 public void OnPluginEnd()
 {
-	RemoveRobot("Uncle Dane");
+	RemoveRobot(ROBOT_NAME);
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -138,8 +138,10 @@ public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcas
 public Action:Timer_Locker(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
-	StopSound(client, SNDCHAN_AUTO, LOOP);
+    {
+		StopSound(client, SNDCHAN_AUTO, LOOP);
 		MakeUncleDane(client);
+    }
 }
  
 
@@ -204,59 +206,19 @@ public Action:RemoveModel(client)
 	}
 }
 
-public Action:Command_SuperHeavyweightChamp(client, args)
+public bool CreateUncleDane(int client)
 {
-	decl String:arg1[32];
-	if (args < 1)
-	{
-		arg1[0] = '\0';
-	}
-	else GetCmdArg(1, arg1, sizeof(arg1));
-	
-	CreateUncleDane(client, arg1);
-	return Plugin_Handled;
-}
-
-public void CreateUncleDane(int client, char target[32])
-{
-	int targetFilter = 0;
-	if (target[0] == '\0')
-	{
-		target = "@me";
-		targetFilter = COMMAND_FILTER_NO_IMMUNITY;
-	}
-
-	new String:target_name[MAX_TARGET_LENGTH];
-	new target_list[MAXPLAYERS], target_count;
-	new bool:tn_is_ml;
-
-	if ((target_count = ProcessTargetString(
-					target,
-					client,
-					target_list,
-					MAXPLAYERS,
-					COMMAND_FILTER_ALIVE|targetFilter,
-					target_name,
-					sizeof(target_name),
-					tn_is_ml)) <= 0)
-	{
-		ReplyToTargetError(client, target_count);
-		return;
-	}
-	for (new i = 0; i < target_count; i++)
-	{
-		if(!g_IsUncleDane[target_list[i]]){
-			g_IsUncleDane[target_list[i]] = true;
-			MakeUncleDane(target_list[i]);
-			
-		}else{
-			g_IsUncleDane[target_list[i]] = false;
-			PrintToChat(target_list[i], "1. You are no longer Giant Deflector GPS!");
-			PrintToChat(target_list[i], "2. You will turn back by changing class or dying!");
-			TF2_RegeneratePlayer(target_list[i]);
-		}		
-	}
-	if (g_IsUncleDane[client])EmitSoundToAll(SPAWN);
+    if(!g_IsUncleDane[client]){
+        g_IsUncleDane[client] = true;
+        MakeUncleDane(client);
+        return true;
+    }else{
+        g_IsUncleDane[client] = false;
+        PrintToChat(client, "1. You are no longer Giant Deflector GPS!");
+        PrintToChat(client, "2. You will turn back by changing class or dying!");
+        TF2_RegeneratePlayer(client);
+        return false;
+    }		
 }
 
 MakeUncleDane(client)

@@ -7,7 +7,15 @@ Menu style will be 1 - > 9 with Scout, Soldier, Pyro, Demo, Heavy, Engineer, Med
 
 cant join midround?!
 
+extract robot_factory / robot_assembly
+  unify 
+   g_IsUncleDane[client]
+   setting attributes etc.
 storage:
  - turn target into targetlist in storage plugin? ... maybe? 
    needed in command too so it would be duplicate code
      unless command gets setup in main-plugin too?
+
+codestyles
+ .editorconfig
+  tab vs spaces

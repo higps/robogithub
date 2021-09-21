@@ -3,7 +3,7 @@
 #endif
 #define _berobot_included "0.1"
 
-typedef RobotCallback = function void (int client, char target[32]);
+typedef RobotCallback = function bool (int client);
 
 /**
  * Adds a robot to the storage. So it can be dynamically used by other plugins. (usually called during OnPluginStart)
@@ -11,10 +11,12 @@ typedef RobotCallback = function void (int client, char target[32]);
  * @param name         name of the robot (used as a Identifierer by other plugins)
  * @param class        class of the robot (Soldier, Engineer, etc.)
  * @param callback     function creating this robot
+ * @param version      plugin version of this indivifual robot-plugin
+ * @param soundSpawn   sound that should be played, when this robot is spawned
  * 
  * @noreturn
  */
-native void AddRobot(char name[NAMELENGTH], char class[9], RobotCallback callback, char[] version);
+native void AddRobot(char name[NAMELENGTH], char class[9], RobotCallback callback, char[] version, char[] soundSpawn);
 
 /**
  * Removes a robot to the storage. So it can't be used by other plugins anymore. (usually called during OnPluginEnd)

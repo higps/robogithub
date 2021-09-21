@@ -150,6 +150,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboTeamMode].AddChangeHook(CvarChangeHook);
 
 
+    RegAdminCmd("sm_berobot", Command_BeRobot, ADMFLAG_ROOT, "It's a good time to run");
     RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
     RegAdminCmd("sm_me_boss", Command_Me_Boss, ADMFLAG_SLAY, "Checks if you are a boss");
@@ -161,6 +162,7 @@ public void OnPluginStart()
 	
     /* Natives */
     CreateNative("GetPickedRobot", Native_GetPickedRobot);
+    CreateNative("RobotIsPicked", Native_RobotIsPicked);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
@@ -367,6 +369,23 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
         }
     }
     return Plugin_Continue;
+}
+
+public Action Command_BeRobot(int client, int numParams)
+{
+    char name[NAMELENGTH];
+    GetCmdArg(1, name, NAMELENGTH);
+
+    char target[32];
+    if (numParams < 2)
+		target[0] = '\0';
+	else 
+        GetCmdArg(2, target, sizeof(target));
+
+	SMLogTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
+    CreateRobot(name, client, target);
+
+    return Plugin_Handled;
 }
 
 public Action Command_Me_Boss(int client, int args)

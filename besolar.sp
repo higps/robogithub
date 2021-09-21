@@ -2,9 +2,11 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
+#include <berobot_constants>
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
+#define ROBOT_NAME	"Solar Light"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -30,8 +32,6 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	RegAdminCmd("sm_besolar", Command_GiantSolar, ADMFLAG_ROOT, "It's a good time to run");
-
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
@@ -55,15 +55,15 @@ public OnPluginStart()
 	for(int i = 0; i < MAXPLAYERS; i++)
     {
     	g_IsSolar[i] = false;
-		g_Resupply[i] = false;
+        g_Resupply[i] = false;
     }
 
-	AddRobot("Solar Light", "Demoman", CreateSolar, PLUGIN_VERSION);
+	AddRobot(ROBOT_NAME, "Demoman", CreateSolar, PLUGIN_VERSION, SPAWN);
 }
 
 public void OnPluginEnd()
 {
-	RemoveRobot("Solar Light");
+	RemoveRobot(ROBOT_NAME);
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -121,7 +121,7 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 		
 		g_bIsGDEKNIGHT[client] = false;
 
-			if (g_IsSolar[client] && !g_Resupply[client]){
+		if (g_IsSolar[client] && !g_Resupply[client]){
 			CreateTimer(1.0, Timer_Locker, client);
 			//CreateTimer(1.2, Timer_Resupply, client);
 			//PrintToChatAll("Setting timers");
@@ -138,8 +138,10 @@ public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcas
 public Action:Timer_Locker(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
-	StopSound(client, SNDCHAN_AUTO, LOOP);
-		MakeSolar(client);
+    {
+        StopSound(client, SNDCHAN_AUTO, LOOP);
+        MakeSolar(client);
+    }
 }
 
 
@@ -184,60 +186,20 @@ public Action:RemoveModel(client)
 	}
 }
 
-public Action:Command_GiantSolar(client, args)
+public bool CreateSolar(int client)
 {
-	decl String:arg1[32];
-	if (args < 1)
-	{
-		arg1[0] = '\0';
-	}
-	else GetCmdArg(1, arg1, sizeof(arg1));
-
-	CreateSolar(client, arg1);	
-	return Plugin_Handled;
-}
-
-public void CreateSolar(int client, char target[32])
-{
-	int targetFilter = 0;
-	if (target[0] == '\0')
-	{
-		target = "@me";
-		targetFilter = COMMAND_FILTER_NO_IMMUNITY;
-	}
-	
-	new String:target_name[MAX_TARGET_LENGTH];
-	new target_list[MAXPLAYERS], target_count;
-	new bool:tn_is_ml;
-
-	if ((target_count = ProcessTargetString(
-					target,
-					client,
-					target_list,
-					MAXPLAYERS,
-					COMMAND_FILTER_ALIVE|targetFilter,
-					target_name,
-					sizeof(target_name),
-					tn_is_ml)) <= 0)
-	{
-		ReplyToTargetError(client, target_count);
-		return;
-	}
-	for (new i = 0; i < target_count; i++)
-	{
-		if(!g_IsSolar[target_list[i]]){	
-					
-			g_IsSolar[target_list[i]] = true;
-			MakeSolar(target_list[i]);
-			
-		}else
-		{
-			g_IsSolar[target_list[i]] = false;
-			PrintToChat(target_list[i], "1. You are no longer Giant Solarlight!");
-			TF2_RegeneratePlayer(target_list[i]);
-		}
-	}
-	EmitSoundToAll(SPAWN);
+    if(!g_IsSolar[client]){	
+                
+        g_IsSolar[client] = true;
+        MakeSolar(client);
+        return true;
+    }else
+    {
+        g_IsSolar[client] = false;
+        PrintToChat(client, "1. You are no longer Giant Solarlight!");
+        TF2_RegeneratePlayer(client);
+        return false;
+    }
 }
 
 MakeSolar(client)
@@ -258,7 +220,7 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	 int iHealth = 4700;
+	int iHealth = 4700;
 	
 	
 	int MaxHealth = 175;
@@ -462,9 +424,9 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 	SetEntData(hat, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);
 	SetEntProp(hat, Prop_Send, "m_bValidatedAttachedEntity", 1);  	
 	
-		if (scale == true){
-	SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 0.75);
-	//PrintToChatAll("Setting scale");
+	if (scale == true){
+		SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 0.75);
+		//PrintToChatAll("Setting scale");
 	}
 	
 

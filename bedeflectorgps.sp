@@ -2,9 +2,11 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
+#include <berobot_constants>
 #include <berobot>
  
 #define PLUGIN_VERSION "1.0"
+#define ROBOT_NAME	"HiGPS"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -39,8 +41,6 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
    
-	RegAdminCmd("sm_begps", Command_GPSDeflector, ADMFLAG_ROOT, "It's a good time to run");	
-
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
@@ -60,12 +60,12 @@ public OnPluginStart()
 
 	delete hTF2; 
 
-	AddRobot("HiGPS", "Heavy", CreateHiGPS, PLUGIN_VERSION);
+	AddRobot(ROBOT_NAME, "Heavy", CreateHiGPS, PLUGIN_VERSION, SPAWN);
 }
 
 public void OnPluginEnd()
 {
-	RemoveRobot("HiGPS");
+	RemoveRobot(ROBOT_NAME);
 }
  
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -196,62 +196,21 @@ public Action:RemoveModel(client)
 	}
 }
 
-public Action:Command_GPSDeflector(client, args)
+public bool CreateHiGPS(int client)
 {
-	decl String:arg1[32];
-	if (args < 1)
-	{
-		arg1[0] = '\0';
-	}
-	else GetCmdArg(1, arg1, sizeof(arg1));
+    if(!g_IsGPS[client]){
+        
+        g_IsGPS[client] = true;
+        MakeGDeflectorH(client);
+        return true;
+    }else
+    {
 
-	CreateHiGPS(client, arg1);	
-	return Plugin_Handled;
-}
-
-public void CreateHiGPS(int client, char target[32])
-{
-	int targetFilter = 0;
-	if (target[0] == '\0')
-	{
-		target = "@me";
-		targetFilter = COMMAND_FILTER_NO_IMMUNITY;
-	}
-
-	new String:target_name[MAX_TARGET_LENGTH];
-	new target_list[MAXPLAYERS], target_count;
-	new bool:tn_is_ml;
-
-	if ((target_count = ProcessTargetString(
-					target,
-					client,
-					target_list,
-					MAXPLAYERS,
-					COMMAND_FILTER_ALIVE|targetFilter,
-					target_name,
-					sizeof(target_name),
-					tn_is_ml)) <= 0)
-	{
-		ReplyToTargetError(client, target_count);
-		return;
-	}
-	for (new i = 0; i < target_count; i++)
-	{
-		if(!g_IsGPS[target_list[i]]){
-			
-			g_IsGPS[target_list[i]] = true;
-			MakeGDeflectorH(target_list[i]);
-			
-		}else
-		{
-
-			g_IsGPS[target_list[i]] = false;
-			PrintToChat(target_list[i], "1. You are no longer Giant Deflector GPS!");
-			TF2_RegeneratePlayer(target_list[i]);
-		}		
-	}
-
-	if (g_IsGPS[client])EmitSoundToAll(SPAWN);
+        g_IsGPS[client] = false;
+        PrintToChat(client, "1. You are no longer Giant Deflector GPS!");
+        TF2_RegeneratePlayer(client);
+        return false;
+    }
 }
 
 MakeGDeflectorH(client)
@@ -277,7 +236,7 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-   int iHealth = 7500;
+	int iHealth = 7500;
 	
 	
 	int MaxHealth = 300;
@@ -356,12 +315,14 @@ public Action:Timer_Switch(Handle:timer, any:client)
 public Action:Timer_Locker(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
+    {
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 		StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
 		StopSound(client, SNDCHAN_AUTO, SOUND_GUNSPIN);
 		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
 		StopSound(client, SNDCHAN_AUTO, SOUND_WINDDOWN);
 		MakeGDeflectorH(client);
+    }
 }
  
 stock GiveGDeflectorH(client)
@@ -377,9 +338,9 @@ stock GiveGDeflectorH(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		 CreateHat(client, 30623, 10, 6, true);
-		 CreateHat(client, 486, 10, 6, true);
-		 CreateHat(client, 30178, 10, 6, false);
+		CreateHat(client, 30623, 10, 6, true);
+		CreateHat(client, 486, 10, 6, true);
+		CreateHat(client, 30178, 10, 6, false);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
@@ -516,7 +477,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 		 // CreateHat(client, 486, 10, 6, 1315860.0);
 		 
 		
-		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+	TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
 		
 	switch (itemindex)
 	{
