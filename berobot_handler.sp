@@ -349,12 +349,42 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 // Checks if boss is on
                 if(g_cv_bDebugMode)
                     //   PrintToChatAll("Attacker was spy");
-                    if(isMiniBoss(victim) && damagecustom == TF_CUSTOM_BACKSTAB)
+                    if(isMiniBoss(victim))
+                    {
+                    if(damagecustom == TF_CUSTOM_BACKSTAB)
                     {
                         damage = g_CV_flSpyBackStabModifier;
                         if(g_cv_bDebugMode)
                             //    PrintToChatAll("Set damage to %f", damage);
                             return Plugin_Changed;
+                    }
+                        if(damagecustom == TF_CUSTOM_HEADSHOT)
+                    {
+                        damage *= g_CV_flSpyBackStabModifier;
+                       
+                        if(g_cv_bDebugMode)
+                            //    PrintToChatAll("Set damage to %f", damage);
+                            return Plugin_Changed;
+                    }
+                    }
+            }
+
+            if(iClass == TFClass_Sniper)
+            {
+                // Checks if boss is on
+                if(g_cv_bDebugMode)
+                    //   PrintToChatAll("Attacker was spy");
+                    if(isMiniBoss(victim))
+                    {
+
+                        if(damagecustom == TF_CUSTOM_HEADSHOT)
+                    {
+                         damage *= 1.5;
+                         critType = CritType_Crit;
+                        if(g_cv_bDebugMode)
+                            //    PrintToChatAll("Set damage to %f", damage);
+                            return Plugin_Changed;
+                    }
                     }
             }
         }

@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <sdkhooks>
 #include <berobot>
+#include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
 
@@ -57,6 +58,7 @@ public OnPluginStart()
 	delete hTF2; 
 
 	AddRobot("Uncle Dane", "Engineer", CreateUncleDane);
+
 }
 
 public void OnPluginEnd()
@@ -73,8 +75,14 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnClientPutInServer(client)
 {
+
+
+    SDKHook(client, SDKHook_Touch, OnTouch);
+
 	OnClientDisconnect_Post(client);
 }
+
+
 
 public OnClientDisconnect_Post(client)
 {
@@ -83,8 +91,14 @@ public OnClientDisconnect_Post(client)
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 		g_bIsChangeDane[client] = false;
 		g_IsUncleDane[client] = false;
+
+		SDKUnhook(client, SDKHook_StartTouch, OnTouch);
 	}
+
+
 }
+
+
 
 public OnMapStart()
 {
@@ -103,6 +117,50 @@ public OnMapStart()
 	PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
 
 
+}
+
+public Action OnTouch(int client, int ent)
+{
+
+	//PrintToChatAll("Got Here");
+
+	if (IsValidClient(client) && IsValidEntity(ent)){
+
+//		char class[MAX_NAME_LENGTH];
+//		GetEdictClassname(ent, class, sizeof(class));
+
+		//PrintToChatAll("ent was %i", ent);
+ 
+	char entname[MAX_NAME_LENGTH];
+	GetEdictClassname(ent, entname, sizeof(entname));
+	
+//PrintToChatAll("before ent name was %s", entname);
+	
+	if (StrEqual(entname, "obj_sentrygun") || StrEqual(entname, "obj_dispenser"))
+	{
+		int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+	//	PrintToChatAll("after ent name was %s", entname);
+		if (client == iBuilder){
+			
+			PrintToChatAll("Builder was %N", iBuilder);
+
+			SetEntProp(ent, Prop_Send, "m_CollisionGroup", 18);
+			
+			//return Plugin_Stop;
+		//	SDKHook(client, SDKHook_ShouldCollide, ShouldCollide);
+			
+		}
+	}
+	
+
+	}
+
+	}
+
+public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
+{	
+	PrintToChatAll("Returning false");
+	return false;
 }
 
 //trigger the event

@@ -10,7 +10,10 @@
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
-
+#define SOUND_LEAP "TFPlayer.AirBlastImpact"
+#define sBoomNoise "weapons/explode3.wav"
+#define ALARM "mvm/mvm_cpoint_klaxon.wav"
+#define JUMP "items/powerup_pickup_king.wav"
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Juggernaut Bearded Expense",
@@ -107,8 +110,10 @@ public OnMapStart()
 	PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
 	PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
 	PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
-   
-   
+	PrecacheSound(sBoomNoise);
+	PrecacheSound(ALARM);
+	PrecacheSound(JUMP);
+	PrecacheSound(SOUND_LEAP);
 }
  
 public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
@@ -128,7 +133,7 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 	}
 }
  
-public Event_Death(Handle:event, const String:name[], bool:dontBroadcast)
+public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
 	new deathflags = GetEventInt(event, "death_flags");
@@ -140,6 +145,80 @@ public Event_Death(Handle:event, const String:name[], bool:dontBroadcast)
 		   
 			TF2Attrib_RemoveAll(client);
 			EmitSoundToAll(DEATH);
+		}
+	}
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+	int weaponID = GetEventInt(event, "weapon_def_index");
+
+	char weapon_logname[MAX_NAME_LENGTH];
+	GetEventString(event, "weapon_logclassname", weapon_logname, sizeof(weapon_logname));
+
+	
+	
+	//int weaponID = GetEntPropEnt(weapon, Prop_Send, "m_iItemDefinitionIndex");
+	
+	PrintToChatAll("Attacker %N , weaponID %i, logname: %s", attacker, weaponID, weapon_logname);
+
+	if (g_IsBearded[attacker] && StrEqual(weapon_logname,"mantreads"))
+	{
+		//PrintToChatAll("Drop the bomb");
+		
+			Handle infokv = CreateKeyValues("infokv");
+				KvSetNum(infokv, "attacker", attacker);
+				KvSetNum(infokv, "victim", victim);
+				CreateTimer(0.0, BeardedBoom, infokv);
+
+		SDKHooks_TakeDamage(attacker, 0, attacker, 120.0, 0, -1);
+
+	}
+
+	if (g_IsBearded[attacker] && weaponID == 43)
+	{
+		//PrintToChatAll("Drop the bomb");
+		
+		TF2_AddCondition(attacker, TFCond_Slowed, 10.0);
+	}
+	
+	
+
+}
+
+public Action BeardedBoom(Handle timer, any data)
+{
+	Handle infokv = data;
+	int attacker = KvGetNum(infokv, "attacker");
+	int victim = KvGetNum(infokv, "victim");
+	float pos1[3];
+	float pos22[3];
+	GetClientAbsOrigin(attacker, pos1); // hack: make the explosion actually come from the attacker, that way we only have to hook one client
+	GetClientAbsOrigin(victim, pos22);
+
+	int particle = CreateEntityByName("info_particle_system");
+	DispatchKeyValue(particle, "effect_name", "mvm_tank_destroy");
+	AcceptEntityInput(particle, "Start");
+	TeleportEntity(particle, pos22, NULL_VECTOR, NULL_VECTOR);
+	DispatchSpawn(particle);
+	ActivateEntity(particle);
+	float pos2[3];
+//	float ignitetime = GetConVarFloat(FindConVar("sharpened_volcano_fragment_firetime"));
+	
+	for(int client = 1 ; client <= MaxClients ; client++ )
+	{
+		if(IsClientInGame(client))
+		{
+			GetClientAbsOrigin(client, pos2);
+			if(GetVectorDistance(pos1, pos2) <= 250.0 && TF2_GetClientTeam(attacker) != TF2_GetClientTeam(client))
+			{
+				SDKHooks_TakeDamage(client, 0, attacker, 1500.0, 0, -1);
+				
+				// ClientCommand(client, "playgamesound weapons/explode1.wav");
+				//ClientCommand(client, "playgamesound %s", sound);
+				EmitAmbientSound(sBoomNoise, pos22, client, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
+				
+				//return Plugin_Changed;
+
+			}
 		}
 	}
 }
@@ -247,7 +326,7 @@ MakeBearded(client)
 	SetModel(client, SHWC);
    
 		
-   int iHealth = 9000;
+   int iHealth = 6500;
 	TF2_SetHealth(client, iHealth);
 	
 	int MaxHealth = 300;
@@ -261,12 +340,16 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
-	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+	TF2Attrib_SetByName(client, "cancel falling damage", 0.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 5.0);
 	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
+	//TF2Attrib_SetByName(client, "mult charge turn control", 10.0);
+	TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
+	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
+	
 	
 
 
@@ -333,6 +416,7 @@ stock GiveBearded(client)
 		CreateWeapon(client, "tf_weapon_fists", 43, 6, 1, 2, 0);
 
 	//	CreateWeapon(client, "tf_weapon_lunchbox", 863, 6, 1, 1, 0);
+	//	CreateWeapon(client, "tf_weapon_rocketpack", 1179, 6, 1, 1, 0);
 
 		CreateHat(client, 145, 10, 6, 1315860.0, true);
 	//	CreateHat(client, 30178, 10, 6, 1315860);
@@ -349,14 +433,19 @@ stock GiveBearded(client)
 				
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.2);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
-			TF2Attrib_SetByName(Weapon3, "critboost on kill", 8.0);
+			TF2Attrib_SetByName(Weapon3, "critboost on kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 2.0);
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 800.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
-				
+			TF2Attrib_SetByName(Weapon3, "aiming movespeed increased", 2.0);
+			TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
+			
+			
+
+
 				if (TF2_GetClientTeam(client) == TFTeam_Red)TF2Attrib_SetByName(Weapon3, "increase player capture value", -1.0);
 				//Add additonal logic to detect if it's attack/defend mode
 
@@ -376,6 +465,83 @@ stock GiveBearded(client)
 		
 		
 	}
+}
+
+public TF2_OnConditionAdded(client, TFCond:condition)
+{
+    if (g_IsBearded[client] && condition == TFCond_Taunting)
+    {
+	
+	int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+
+	//PrintToChatAll("Taunt ID %i", tauntid);
+
+	if (tauntid == -1)
+	{
+	 TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
+	 EmitSoundToAll(ALARM);
+
+	 CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
+	// TF2_AddCondition(client, TFCond_GrapplingHookSafeFall, TFCondDuration_Infinite);
+	   //TFCond_CritHype
+	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+	  CreateTimer(3.35, Timer_Taunt_Cancel, client);
+	}
+
+
+	  
+    }
+}
+public Action:Timer_Alarm(Handle:timer, any:client)
+{
+	static int cap = 0;
+
+if(TF2_IsPlayerInCondition(client, TFCond_Taunting))EmitSoundToAll(ALARM);
+
+	if (cap >= 1)
+	{
+		cap = 0;
+		return Plugin_Stop;
+	}
+	cap++;
+	return Plugin_Continue;
+}
+
+public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
+{
+	if (IsValidClient(client)){
+		TF2_RemoveCondition(client, TFCond_Taunting);
+	}
+	
+
+	
+	float vOrigin[3], vAngles[3], vForward[3], vVelocity[3];
+	GetClientEyePosition(client, vOrigin);
+	GetClientEyeAngles(client, vAngles);
+	
+	// Get the direction we want to go
+	GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
+	
+	// make it usable
+	float flDistance = 650.0;
+
+	ScaleVector(vForward, flDistance);	
+	
+	// add it to the current velocity to avoid just being able to do full 180s
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVelocity);
+	AddVectors(vVelocity, vForward, vVelocity);
+	
+	float flDistanceVertical = 300.0;
+	
+		
+	
+	vVelocity[2] += flDistanceVertical; // we always want to go a bit up
+	
+	// And set it
+	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vVelocity);
+	
+	EmitGameSoundToAll(SOUND_LEAP,client);
+	EmitSoundToAll(JUMP,client);
 }
  
 public player_inv(Handle event, const char[] name, bool dontBroadcast) 

@@ -270,6 +270,15 @@ MakeGiantMedic(client)
 
 
 }
+
+public TF2_OnConditionAdded(client, TFCond:condition)
+{
+    if (g_IsArraySeven[client] && condition == TFCond_Taunting)
+    {
+       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 1.0);
+	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+    }
+}
  
 stock UpdatePlayerHitbox(const client, const Float:fScale)
 {
