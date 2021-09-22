@@ -24,16 +24,13 @@ public Plugin:myinfo =
 
 new Handle:g_hEquipWearable;
 new bool:g_bIsBearded[MAXPLAYERS + 1];
- 
- bool g_IsBearded[MAXPLAYERS + 1] = false;
- 
+  
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
       
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
-	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 		
 	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
 
@@ -50,7 +47,11 @@ public OnPluginStart()
 
 	delete hTF2; 
 
-	AddRobot(ROBOT_NAME, "Heavy", CreateBearded, PLUGIN_VERSION, SPAWN);
+	RobotSounds sounds;
+	sounds.spawn = SPAWN;
+	sounds.loop = LOOP;
+
+	AddRobot(ROBOT_NAME, "Heavy", MakeBearded, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()
@@ -65,14 +66,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-
-
-public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (g_IsBearded[client]) CreateTimer(1.0, Timer_Locker, client);
-}
-
 public OnClientPutInServer(client)
 {
     OnClientDisconnect_Post(client);
@@ -84,7 +77,6 @@ public OnClientDisconnect_Post(client)
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 		g_bIsBearded[client] = false;
-		g_IsBearded[client] = false;
 	}
 }
  
@@ -165,22 +157,6 @@ public Action:RemoveModel(client)
 		AcceptEntityInput(client, "SetCustomModel");
 	}
 }
-
-public bool CreateBearded(int client)
-{
-    if(!g_IsBearded[client]){		
-        g_IsBearded[client] = true;
-        MakeBearded(client);
-        return true;
-    }else
-    {
-        g_IsBearded[client] = false;
-        PrintToChat(client, "1. You are no longer Giant Bearded Expense!");
-        PrintToChat(client, "2. You will turn back by changing class or dying!");
-        TF2_RegeneratePlayer(client);
-        return false;
-    }
-}
  
 MakeBearded(client)
 {
@@ -232,7 +208,6 @@ MakeBearded(client)
 
 	g_bIsBearded[client] = true;
 	
-	g_IsBearded[client] = true;
 	PrintToChat(client, "1. You are now Giant Bearded Expense bot !");
 	PrintToChat(client, "2. You are a juggernaut!");
 		
@@ -264,15 +239,6 @@ public Action:Timer_Switch(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
 			GiveBearded(client);
-}
-
-public Action:Timer_Locker(Handle:timer, any:client)
-{
-	if (IsValidClient(client))
-    {
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-		MakeBearded(client);
-    }
 }
  
 stock GiveBearded(client)

@@ -8,6 +8,8 @@ Menu style will be 1 - > 9 with Scout, Soldier, Pyro, Demo, Heavy, Engineer, Med
 cant join midround?!
 
 unify sounds
+ OnMapStart precaches
+ OnClientDisconnect_Post stopsounds
 extract robot_factory / robot_assembly
   unify 
    g_IsUncleDane[client]

@@ -3,16 +3,6 @@
 #endif
 #define _berobot_core_included "0.1"
 
-enum struct RobotSounds {
-  char spawn[PLATFORM_MAX_PATH];
-}
-enum struct Robot {
-  char name[NAMELENGTH];
-  char class[9];
-  PrivateForward callback;
-  RobotSounds sounds;
-}
-
 /**
  * returns the robot-definition 
  * 

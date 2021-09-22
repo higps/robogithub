@@ -36,7 +36,6 @@ enum(<<= 1)
 
 new Handle:g_hEquipWearable;
 new bool:g_bIsGPYRO[MAXPLAYERS + 1];
-bool g_IsAgro[MAXPLAYERS + 1] = false;
 
 new bool:Locked1[MAXPLAYERS+1];
 new bool:Locked2[MAXPLAYERS+1];
@@ -53,7 +52,6 @@ public OnPluginStart()
 		
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
-	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 	
 	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
 	
@@ -70,7 +68,12 @@ public OnPluginStart()
 
 	delete hTF2;
 
-	AddRobot(ROBOT_NAME, "Pyro", CreateAgro, PLUGIN_VERSION, SPAWN);
+	RobotSounds sounds;
+	sounds.spawn = SPAWN;
+	sounds.loop = LOOP;
+	sounds.gunfire = SOUND_GUNFIRE;
+	sounds.windup = SOUND_WINDUP;
+	AddRobot(ROBOT_NAME, "Pyro", MakeGiantPyro, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()
@@ -98,7 +101,6 @@ public OnClientDisconnect_Post(client)
 		StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
 		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
 		g_bIsGPYRO[client] = false;
-		g_IsAgro[client] = false;
 	}
 }
 
@@ -143,17 +145,6 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 	}
 }
 
-public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (g_IsAgro[client]) CreateTimer(1.0, Timer_Locker, client);
-}
-
-public Action:Timer_Locker(Handle:timer, any:client)
-{
-	if (IsValidClient(client))
-		MakeGiantPyro(client);
-}
 public Event_Death(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
@@ -198,29 +189,9 @@ public Action:RemoveModel(client)
 	}
 }
 
-public bool CreateAgro(int client)
-{
-	SMLogTag(SML_VERBOSE, "Createing Agro");
-	if(!g_IsAgro[client]){		
-            
-        g_IsAgro[client] = true;
-        MakeGiantPyro(client);				
-
-        return true;
-    }
-	else
-    {
-
-        g_IsAgro[client] = false;
-        PrintToChat(client, "1. You are no longer Giant Agro!");
-        TF2_RegeneratePlayer(client);
-        
-        return false;
-    }
-}
-
 MakeGiantPyro(client)
 {
+	SMLogTag(SML_VERBOSE, "Createing Agro");
 	TF2_SetPlayerClass(client, TFClass_Pyro);
 	TF2_RegeneratePlayer(client);
 	EmitSoundToAll(LOOP, client);

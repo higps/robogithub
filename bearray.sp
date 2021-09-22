@@ -24,16 +24,13 @@ public Plugin:myinfo =
 
 new Handle:g_hEquipWearable;
 new bool:g_bIsGMEDIC[MAXPLAYERS + 1];
- 
-bool g_IsArraySeven[MAXPLAYERS + 1] = false;
- 
+
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
       
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
-	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 	
 	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
 
@@ -50,7 +47,10 @@ public OnPluginStart()
 
 	delete hTF2; 
 
-	AddRobot(ROBOT_NAME, "Medic", CreateArraySeven, PLUGIN_VERSION, SPAWN);
+	RobotSounds sounds;
+	sounds.spawn = SPAWN;
+	sounds.loop = LOOP;
+	AddRobot(ROBOT_NAME, "Medic", MakeGiantMedic, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()
@@ -76,7 +76,6 @@ public OnClientDisconnect_Post(client)
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 		g_bIsGMEDIC[client] = false;
-		g_IsArraySeven[client] = false;
 	}
 }
  
@@ -104,18 +103,6 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 			   
 		g_bIsGMEDIC[client] = false;
 	}
-}
-
-public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (g_IsArraySeven[client]) CreateTimer(1.0, Timer_Locker, client);
-}
-
-public Action:Timer_Locker(Handle:timer, any:client)
-{
-	if (IsValidClient(client))
-		MakeGiantMedic(client);
 }
  
 public Event_Death(Handle:event, const String:name[], bool:dontBroadcast)
@@ -158,22 +145,6 @@ public Action:RemoveModel(client)
 		SetVariantString("");
 		AcceptEntityInput(client, "SetCustomModel");
 	}
-}
-  
-public bool CreateArraySeven(int client)
-{
-    if(!g_IsArraySeven[client]){
-    
-        g_IsArraySeven[client] = true;
-        MakeGiantMedic(client);
-        return true;
-    }else{
-
-        g_IsArraySeven[client] = false;
-        PrintToChat(client, "1. You are no longer Giant ArraySeven!");
-        TF2_RegeneratePlayer(client);
-        return false;
-    }	
 }
 
 MakeGiantMedic(client)

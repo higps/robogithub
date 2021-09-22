@@ -25,7 +25,6 @@ public Plugin:myinfo =
 new Handle:g_hEquipWearable;
 new bool:g_bIsGDEKNIGHT[MAXPLAYERS + 1];
 
-bool g_IsSolar[MAXPLAYERS + 1] = false;
 bool g_Resupply[MAXPLAYERS + 1] = false;
 
 public OnPluginStart()
@@ -34,7 +33,6 @@ public OnPluginStart()
 
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
-	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 	
 	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
 
@@ -54,11 +52,14 @@ public OnPluginStart()
 	//Sets the values to false incase some players did something on the frame of a map change
 	for(int i = 0; i < MAXPLAYERS; i++)
     {
-    	g_IsSolar[i] = false;
         g_Resupply[i] = false;
     }
 
-	AddRobot(ROBOT_NAME, "Demoman", CreateSolar, PLUGIN_VERSION, SPAWN);
+	RobotSounds sounds;
+	sounds.spawn = SPAWN;
+	sounds.loop = LOOP;
+
+	AddRobot(ROBOT_NAME, "Demoman", MakeSolar, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()
@@ -84,7 +85,6 @@ public OnClientDisconnect_Post(client)
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 		g_bIsGDEKNIGHT[client] = false;
-		g_IsSolar[client] = false;
 	}
 }
 
@@ -120,30 +120,8 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 		TF2Attrib_RemoveAll(client);
 		
 		g_bIsGDEKNIGHT[client] = false;
-
-		if (g_IsSolar[client] && !g_Resupply[client]){
-			CreateTimer(1.0, Timer_Locker, client);
-			//CreateTimer(1.2, Timer_Resupply, client);
-			//PrintToChatAll("Setting timers");
-			g_Resupply[client] = true; 
-		} 
 	}
 }
-public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (g_IsSolar[client]) CreateTimer(1.0, Timer_Locker, client);
-}
-
-public Action:Timer_Locker(Handle:timer, any:client)
-{
-	if (IsValidClient(client))
-    {
-        StopSound(client, SNDCHAN_AUTO, LOOP);
-        MakeSolar(client);
-    }
-}
-
 
 public Event_Death(Handle:event, const String:name[], bool:dontBroadcast)
 {
@@ -184,22 +162,6 @@ public Action:RemoveModel(client)
 		SetVariantString("");
 		AcceptEntityInput(client, "SetCustomModel");
 	}
-}
-
-public bool CreateSolar(int client)
-{
-    if(!g_IsSolar[client]){	
-                
-        g_IsSolar[client] = true;
-        MakeSolar(client);
-        return true;
-    }else
-    {
-        g_IsSolar[client] = false;
-        PrintToChat(client, "1. You are no longer Giant Solarlight!");
-        TF2_RegeneratePlayer(client);
-        return false;
-    }
 }
 
 MakeSolar(client)

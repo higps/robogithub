@@ -3,7 +3,22 @@
 #endif
 #define _berobot_included "0.1"
 
-typedef RobotCallback = function bool (int client);
+
+enum struct RobotSounds {
+  char spawn[PLATFORM_MAX_PATH];
+  char loop[PLATFORM_MAX_PATH];
+  char gunfire[PLATFORM_MAX_PATH];
+  char gunspin[PLATFORM_MAX_PATH];
+  char windup[PLATFORM_MAX_PATH];
+  char winddown[PLATFORM_MAX_PATH];
+}
+enum struct Robot {
+  char name[NAMELENGTH];
+  char class[9];
+  PrivateForward callback;
+  RobotSounds sounds;
+}
+typedef RobotCallback = function void (int client);
 
 /**
  * Adds a robot to the storage. So it can be dynamically used by other plugins. (usually called during OnPluginStart)
@@ -12,11 +27,11 @@ typedef RobotCallback = function bool (int client);
  * @param class        class of the robot (Soldier, Engineer, etc.)
  * @param callback     function creating this robot
  * @param version      plugin version of this indivifual robot-plugin
- * @param soundSpawn   sound that should be played, when this robot is spawned
+ * @param sounds       enum struct RobotSounds containing sounds relevant to the robot
  * 
  * @noreturn
  */
-native void AddRobot(char name[NAMELENGTH], char class[9], RobotCallback callback, char[] version, char[] soundSpawn);
+native void AddRobot(char name[NAMELENGTH], char class[9], RobotCallback callback, char[] version, const any[] sounds);
 
 /**
  * Removes a robot to the storage. So it can't be used by other plugins anymore. (usually called during OnPluginEnd)

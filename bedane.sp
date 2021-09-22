@@ -27,8 +27,6 @@ public Plugin:myinfo =
 Handle g_hEquipWearable;
 
 bool g_bIsChangeDane[MAXPLAYERS + 1];
-bool g_IsUncleDane[MAXPLAYERS + 1] = false;
-bool g_Resupply[MAXPLAYERS + 1] = false;
 
 public OnPluginStart()
 {
@@ -37,7 +35,6 @@ public OnPluginStart()
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_builtobject", ObjectBuilt, EventHookMode_Post);
-	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 	
 	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
 
@@ -54,7 +51,10 @@ public OnPluginStart()
 
 	delete hTF2; 
 
-	AddRobot(ROBOT_NAME, "Engineer", CreateUncleDane, PLUGIN_VERSION, SPAWN);
+	RobotSounds sounds;
+	sounds.spawn = SPAWN;
+	sounds.loop = LOOP;
+	AddRobot(ROBOT_NAME, "Engineer", MakeUncleDane, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()
@@ -80,7 +80,6 @@ public OnClientDisconnect_Post(client)
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 		g_bIsChangeDane[client] = false;
-		g_IsUncleDane[client] = false;
 	}
 }
 
@@ -128,22 +127,6 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 
 	}
 }
-
-public Event_Player_Spawned(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (g_IsUncleDane[client]) CreateTimer(1.0, Timer_Locker, client);
-}
-
-public Action:Timer_Locker(Handle:timer, any:client)
-{
-	if (IsValidClient(client))
-    {
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-		MakeUncleDane(client);
-    }
-}
- 
 
 public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
 {
@@ -204,21 +187,6 @@ public Action:RemoveModel(client)
 		SetVariantString("");
 		AcceptEntityInput(client, "SetCustomModel");
 	}
-}
-
-public bool CreateUncleDane(int client)
-{
-    if(!g_IsUncleDane[client]){
-        g_IsUncleDane[client] = true;
-        MakeUncleDane(client);
-        return true;
-    }else{
-        g_IsUncleDane[client] = false;
-        PrintToChat(client, "1. You are no longer Giant Deflector GPS!");
-        PrintToChat(client, "2. You will turn back by changing class or dying!");
-        TF2_RegeneratePlayer(client);
-        return false;
-    }		
 }
 
 MakeUncleDane(client)

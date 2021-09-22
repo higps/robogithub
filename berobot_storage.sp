@@ -93,8 +93,8 @@ public any Native_AddRobot(Handle plugin, int numParams)
 	char pluginVersion[9];
 	GetNativeString(4, pluginVersion, 9);
 
-	char soundSpawn[PLATFORM_MAX_PATH];
-	GetNativeString(5, soundSpawn, PLATFORM_MAX_PATH);
+	RobotSounds sounds;
+	GetNativeArray(5, sounds, sizeof(sounds));
 
 	SMLogTag(SML_VERBOSE, "adding robot %s from plugin-handle %x", name, plugin);
 
@@ -114,14 +114,12 @@ public any Native_AddRobot(Handle plugin, int numParams)
 
 	SMLogTag(SML_VERBOSE, "robot %s uses privateForward %x", name, privateForward);
 	SMLogTag(SML_VERBOSE, "robot %s is class %s", name, class);
+	SMLogTag(SML_VERBOSE, "robot %s has sounds {spawn: %s; loop: %s", name, sounds.spawn, sounds.loop);
 
 	Robot item;
 	item.name = name;
 	item.class = class;
-	item.callback = privateForward;
-	
-	RobotSounds sounds;
-	sounds.spawn = soundSpawn;
+	item.callback = privateForward;	
 	item.sounds = sounds;
 
 	_robots.SetArray(name, item, sizeof(item));
