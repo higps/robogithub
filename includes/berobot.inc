@@ -11,6 +11,7 @@ enum struct RobotSounds {
   char gunspin[PLATFORM_MAX_PATH];
   char windup[PLATFORM_MAX_PATH];
   char winddown[PLATFORM_MAX_PATH];
+  char death[PLATFORM_MAX_PATH];
 }
 enum struct Robot {
   char name[NAMELENGTH];
@@ -69,3 +70,26 @@ native void GetRobotClass(char name[NAMELENGTH], char class[9]);
  * @noreturn
  */
 native void CreateRobot(char[] name, int client, char target[32]);
+
+/**
+ * scales the hitbox of player-hitbox
+ * 
+ * @param client     clientId of the player being scaled
+ * @param fScale     scale of how much the hitbox changes compared to the default hitbox
+ * @noreturn
+ */
+stock void UpdatePlayerHitbox(const int client, const float fScale)
+{
+	static const Float:vecTF2PlayerMin[3] = { -24.5, -24.5, 0.0 }, Float:vecTF2PlayerMax[3] = { 24.5,  24.5, 83.0 };
+
+	decl Float:vecScaledPlayerMin[3], Float:vecScaledPlayerMax[3];
+
+	vecScaledPlayerMin = vecTF2PlayerMin;
+	vecScaledPlayerMax = vecTF2PlayerMax;
+
+	ScaleVector(vecScaledPlayerMin, fScale);
+	ScaleVector(vecScaledPlayerMax, fScale);
+
+	SetEntPropVector(client, Prop_Send, "m_vecSpecifiedSurroundingMins", vecScaledPlayerMin);
+	SetEntPropVector(client, Prop_Send, "m_vecSpecifiedSurroundingMaxs", vecScaledPlayerMax);
+}

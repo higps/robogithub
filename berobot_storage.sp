@@ -114,7 +114,7 @@ public any Native_AddRobot(Handle plugin, int numParams)
 
 	SMLogTag(SML_VERBOSE, "robot %s uses privateForward %x", name, privateForward);
 	SMLogTag(SML_VERBOSE, "robot %s is class %s", name, class);
-	SMLogTag(SML_VERBOSE, "robot %s has sounds {spawn: %s; loop: %s", name, sounds.spawn, sounds.loop);
+	SMLogTag(SML_VERBOSE, "robot %s has sounds {spawn: %s; loop: %s; death: %s }", name, sounds.spawn, sounds.loop, sounds.death);
 
 	Robot item;
 	item.name = name;

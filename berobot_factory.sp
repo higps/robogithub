@@ -2,7 +2,9 @@
 #include <sdktools>
 #include <sdkhooks>
 #include <tf2>
+#include <tf2_stocks>
 #include <sm_logger>
+#include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
 
@@ -46,6 +48,7 @@ public void Init()
     //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 	SMLogTag(SML_INFO, "berobot_factory started at %i", GetTime());
 
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 
 	for(int i = 0; i <= MaxClients; i++)
@@ -75,9 +78,27 @@ public void OnClientDisconnect_Post(int client)
 
 public void Event_Player_Spawned(Handle event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (_isRobot[client][0] != '\0') 
-        CreateTimer(1.0, Timer_Locker, client);
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+    if (!IsValidClient(client))
+        return;
+
+    bool isAlive = IsPlayerAlive(client);
+    char robotName[NAMELENGTH];
+    robotName = _isRobot[client];
+    SMLogTag(SML_VERBOSE, "Event_Player_Spawned for %L (alive: %b) received with robot-name %s", client, isAlive, robotName);
+
+    if (robotName[0] == '\0') 
+        return;
+        
+    Robot item;
+    if (GetRobotDefinition(robotName, item) != 0)
+    {
+        SMLogTag(SML_ERROR, "could not stop sounds. no robot with name '%s' found for %L", robotName, client);
+        return;
+    }
+
+    StopSounds(client, item);   //moved here, because doing it inside Timer_Locker blocked the loop to start again (don't ask me why)
+    CreateTimer(1.0, Timer_Locker, client);
 }
 
 public Action Timer_Locker(Handle timer, any client)
@@ -85,13 +106,58 @@ public Action Timer_Locker(Handle timer, any client)
     if (!IsValidClient(client))
         return Plugin_Handled;
 
+    char robotName[NAMELENGTH];
+    robotName = _isRobot[client];
+    SMLogTag(SML_VERBOSE, "Event_Player_Spawned for %L received with robot-name %s", client, robotName);
+
     Robot item;
-    if (GetRobotDefinition(_isRobot[client], item) != 0)
+    if (GetRobotDefinition(robotName, item) != 0)
     {
-        SMLogTag(SML_ERROR, "could not create robot. no robot with name '%s' found", _isRobot[client]);
+        SMLogTag(SML_ERROR, "could not stop sounds. no robot with name '%s' found for %L", robotName, client);
         return Plugin_Handled;
     }
-    
+
+    CallCreate(client, item);
+    return Plugin_Handled;
+}
+
+public void Event_Death(Handle event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+	int deathflags = GetEventInt(event, "death_flags");
+	SMLogTag(SML_VERBOSE, "Event_Death for %L received with name %s, dontBroadcast %b and deathflags %i", client, name, dontBroadcast, deathflags);
+
+	if (!(deathflags & TF_DEATHFLAG_DEADRINGER))
+	{
+        if(!IsValidClient(client))
+        {
+            SMLogTag(SML_VERBOSE, "skipped Event_Death, because %i is not a valid client", client);
+            return;
+        }
+        if(_isRobot[client][0] == '\0')
+        {
+            SMLogTag(SML_VERBOSE, "skipped Event_Death, because %L is no robot", client);
+            return;
+        }
+
+        Robot item;
+        if (GetRobotDefinition(_isRobot[client], item) != 0)
+        {
+            SMLogTag(SML_ERROR, "skipped Event_Death, because no robot with name '%s' found for %L", _isRobot[client], client);
+            return;
+        }
+
+        StopSounds(client, item);
+        
+        TF2Attrib_RemoveAll(client);
+        EmitSoundToAll(item.sounds.death);
+	}
+}
+
+void StopSounds(int client, Robot item)
+{    
+    SMLogTag(SML_VERBOSE, "stopping sounds for %L as %s", client, item.name);
+
     if (item.sounds.loop[0] != '\0')
         StopSound(client, SNDCHAN_AUTO, item.sounds.loop);    
     if (item.sounds.gunfire[0] != '\0')
@@ -102,9 +168,6 @@ public Action Timer_Locker(Handle timer, any client)
         StopSound(client, SNDCHAN_AUTO, item.sounds.windup);
     if (item.sounds.winddown[0] != '\0')
         StopSound(client, SNDCHAN_AUTO, item.sounds.winddown);
-
-    CallCreate(client, item.callback);
-    return Plugin_Handled;
 }
 
 public void Reset(int client)
@@ -165,7 +228,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
             _isRobot[targetClientId] = name;
 
             SMLogTag(SML_VERBOSE, "calling privateForward %x for robot %s, with client %i and target %s (current %i; count %i)", item.callback, name, client, target, targetClientId, target_count);
-            CallCreate(targetClientId, item.callback);
+            CallCreate(targetClientId, item);
 
             robotWasCreated = true;
         }
@@ -186,10 +249,15 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	return 0;
 }
 
-void CallCreate(int client, PrivateForward callback)
+void CallCreate(int client, Robot item)
 {
-    Call_StartForward(callback);
+    Call_StartForward(item.callback);
     Call_PushCell(client);
 
     Call_Finish();
+    
+    SMLogTag(SML_VERBOSE, "starting loop-sound %s for %L as %s", item.sounds.loop, client, item.name);
+    EmitSoundToAll(item.sounds.loop, client);
+
+    _isRobot[client] = item.name;
 }

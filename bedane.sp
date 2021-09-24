@@ -32,8 +32,6 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_builtobject", ObjectBuilt, EventHookMode_Post);
 	
 	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
@@ -54,6 +52,7 @@ public OnPluginStart()
 	RobotSounds sounds;
 	sounds.spawn = SPAWN;
 	sounds.loop = LOOP;
+	sounds.death = DEATH;
 	AddRobot(ROBOT_NAME, "Engineer", MakeUncleDane, PLUGIN_VERSION, sounds);
 }
 
@@ -128,39 +127,6 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if(g_bIsChangeDane[client])
-	{
-		RemoveModel(client);
-		
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-		
-		SetVariantInt(0);
-		AcceptEntityInput(client, "SetForcedTauntCam");
-		TF2Attrib_RemoveAll(client);
-		
-		g_bIsChangeDane[client] = false;
-	}
-}
-
-public Event_Death(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-	new deathflags = GetEventInt(event, "death_flags");
-	if (!(deathflags & TF_DEATHFLAG_DEADRINGER))
-	{
-		if (IsValidClient(client) && g_bIsChangeDane[client])
-		{
-			StopSound(client, SNDCHAN_AUTO, LOOP);
-			
-			TF2Attrib_RemoveAll(client);
-			EmitSoundToAll(DEATH);
-		}
-	}
-}
-
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -174,26 +140,10 @@ public Action:SetModel(client, const String:model[])
 	}
 }
 
-public Action:RemoveModel(client)
-{
-	if (IsValidClient(client))
-	{
-		
-		TF2Attrib_RemoveAll(client);
-		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
-		SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:false);
-		UpdatePlayerHitbox(client, 1.0);
-
-		SetVariantString("");
-		AcceptEntityInput(client, "SetCustomModel");
-	}
-}
-
 MakeUncleDane(client)
 {
 	TF2_SetPlayerClass(client, TFClass_Engineer);
 	TF2_RegeneratePlayer(client);
-	EmitSoundToAll(LOOP, client);
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
 	if (ragdoll > MaxClients && IsValidEntity(ragdoll)) AcceptEntityInput(ragdoll, "Kill");
@@ -247,23 +197,6 @@ MakeUncleDane(client)
 	PrintToChat(client, "2. Melee only but you attack faster and deal more damage !");
 	PrintToChat(client, "3. You will lose this status when you touch a locker, upgrade or die.");	
 	
-}
-
-
-stock UpdatePlayerHitbox(const client, const Float:fScale)
-{
-	static const Float:vecTF2PlayerMin[3] = { -24.5, -24.5, 0.0 }, Float:vecTF2PlayerMax[3] = { 24.5,  24.5, 83.0 };
-
-	decl Float:vecScaledPlayerMin[3], Float:vecScaledPlayerMax[3];
-
-	vecScaledPlayerMin = vecTF2PlayerMin;
-	vecScaledPlayerMax = vecTF2PlayerMax;
-
-	ScaleVector(vecScaledPlayerMin, fScale);
-	ScaleVector(vecScaledPlayerMax, fScale);
-
-	SetEntPropVector(client, Prop_Send, "m_vecSpecifiedSurroundingMins", vecScaledPlayerMin);
-	SetEntPropVector(client, Prop_Send, "m_vecSpecifiedSurroundingMaxs", vecScaledPlayerMax);
 }
 
 stock TF2_SetHealth(client, NewHealth)
