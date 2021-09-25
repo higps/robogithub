@@ -63,6 +63,51 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	return APLRes_Success;
 }
 
+public void OnMapStart()
+{
+    SMLogTag(SML_VERBOSE, "precaching sounds for all robots");
+
+    PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
+    PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
+    PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
+    PrecacheSound("^mvm/giant_common/giant_common_step_04.wav");
+    PrecacheSound("^mvm/giant_common/giant_common_step_05.wav");
+    PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
+    PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
+    PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
+
+    StringMapSnapshot snapshot = _robots.Snapshot();
+    for(int i = 0; i < snapshot.Length; i++)
+    {
+        char name[NAMELENGTH];
+        snapshot.GetKey(i, name, NAMELENGTH);
+
+        Robot item;
+        if (!_robots.GetArray(name, item, sizeof(item)))
+        {
+            SMLogTag(SML_ERROR, "could not precaching sounds. no robot with name '%s' found", name);
+            continue;
+        }
+
+        SMLogTag(SML_VERBOSE, "precaching sounds for robot %s", name);
+        
+        if (item.sounds.spawn[0] != '\0')
+            PrecacheSound(item.sounds.spawn);
+        if (item.sounds.loop[0] != '\0')
+            PrecacheSound(item.sounds.loop);
+        if (item.sounds.gunfire[0] != '\0')
+            PrecacheSound(item.sounds.gunfire);
+        if (item.sounds.gunspin[0] != '\0')
+            PrecacheSound(item.sounds.gunspin);
+        if (item.sounds.windup[0] != '\0')
+            PrecacheSound(item.sounds.windup);
+        if (item.sounds.winddown[0] != '\0')
+            PrecacheSound(item.sounds.winddown);
+        if (item.sounds.death[0] != '\0')
+            PrecacheSound(item.sounds.death);
+    }
+}
+
 public Action Command_DumpRobotStorage(int client, int numParams)
 {
 	StringMapSnapshot snapshot = _robots.Snapshot();

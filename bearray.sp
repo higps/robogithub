@@ -63,11 +63,7 @@ public OnClientDisconnect_Post(client)
  
 public OnMapStart()
 {
-	PrecacheModel(GMEDIC);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
-   
+	PrecacheModel(GMEDIC);   
 }
  
 public Action:SetModel(client, const String:model[])
