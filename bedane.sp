@@ -65,7 +65,6 @@ public OnClientDisconnect_Post(client)
 {
 	if (g_bIsChangeDane[client])
 	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
 		g_bIsChangeDane[client] = false;
 
 		SDKUnhook(client, SDKHook_StartTouch, OnTouch);

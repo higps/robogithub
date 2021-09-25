@@ -56,7 +56,6 @@ public OnClientDisconnect_Post(client)
 {
 	if (g_bIsGMEDIC[client])
 	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
 		g_bIsGMEDIC[client] = false;
 	}
 }

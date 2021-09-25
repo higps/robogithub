@@ -71,11 +71,6 @@ public OnClientDisconnect_Post(client)
 {
 	if (g_bIsGDEFLECTORH[client])
 	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-		StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
-		StopSound(client, SNDCHAN_AUTO, SOUND_GUNSPIN);
-		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
-		StopSound(client, SNDCHAN_AUTO, SOUND_WINDDOWN);
 		g_bIsGDEFLECTORH[client] = false;
 	}
 }

@@ -157,7 +157,7 @@ public void Event_Death(Handle event, const char[] name, bool dontBroadcast)
 
 void StopSounds(int client, Robot item)
 {    
-    SMLogTag(SML_VERBOSE, "stopping sounds for %L as %s", client, item.name);
+    SMLogTag(SML_VERBOSE, "stopping sounds for client %i as %s", client, item.name);
 
     if (item.sounds.loop[0] != '\0')
         StopSound(client, SNDCHAN_AUTO, item.sounds.loop);    
@@ -173,6 +173,14 @@ void StopSounds(int client, Robot item)
 
 public void Reset(int client)
 {
+    Robot item;
+    if (GetRobotDefinition(_isRobot[client], item) != 0)
+    {
+        SMLogTag(SML_ERROR, "skipped Reset, because no robot with name '%s' found for client %i", _isRobot[client], client);
+        return;
+    }
+    StopSounds(client, item);
+
     _isRobot[client] = "";
 }
 

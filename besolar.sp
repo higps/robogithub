@@ -57,7 +57,6 @@ public OnClientDisconnect_Post(client)
 {
 	if (g_bIsGDEKNIGHT[client])
 	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
 		g_bIsGDEKNIGHT[client] = false;
 	}
 }

@@ -79,9 +79,6 @@ public OnClientDisconnect_Post(client)
 {
 	if (g_bIsGPYRO[client])
 	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-		StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
-		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
 		g_bIsGPYRO[client] = false;
 	}
 }

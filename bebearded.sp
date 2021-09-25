@@ -64,7 +64,6 @@ public OnClientDisconnect_Post(client)
 {
 	if (g_bIsBearded[client])
 	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
 		g_bIsBearded[client] = false;
 	}
 }
