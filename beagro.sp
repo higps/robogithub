@@ -49,6 +49,8 @@ public OnPluginStart()
 
 	LoadTranslations("common.phrases");
 
+	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+
 	RobotSounds sounds;
 	sounds.spawn = SPAWN;
 	sounds.loop = LOOP;
@@ -105,6 +107,16 @@ public OnMapStart()
 	PrecacheSound(SOUND_GUNFIRE);
 	PrecacheSound(SOUND_WINDUP);
 	
+}
+
+public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	new client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	if(g_bIsGPYRO[client])
+	{
+		g_bIsGPYRO[client] = false;
+	}
 }
 
 public Action:SetModel(client, const String:model[])
