@@ -62,6 +62,7 @@ public void Init()
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	CreateNative("CreateRobot", Native_CreateRobot);
+	CreateNative("IsRobot", Native_IsRobot);
 
 	return APLRes_Success;
 }
@@ -247,6 +248,15 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	}
 
 	return 0;
+}
+
+public any Native_IsRobot(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    char name[NAMELENGTH];
+    GetNativeString(2, name, NAMELENGTH);
+
+    return strcmp(_isRobot[client], name) == 0;
 }
 
 void CallCreate(int client, Robot item)

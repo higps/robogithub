@@ -162,7 +162,6 @@ public void OnPluginStart()
 	
     /* Natives */
     CreateNative("GetPickedRobot", Native_GetPickedRobot);
-    CreateNative("RobotIsPicked", Native_RobotIsPicked);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
@@ -358,12 +357,41 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 // Checks if boss is on
                 if(g_cv_bDebugMode)
                     //   PrintToChatAll("Attacker was spy");
-                    if(isMiniBoss(victim) && damagecustom == TF_CUSTOM_BACKSTAB)
+                    if(isMiniBoss(victim))
                     {
-                        damage = g_CV_flSpyBackStabModifier;
-                        if(g_cv_bDebugMode)
-                            //    PrintToChatAll("Set damage to %f", damage);
-                            return Plugin_Changed;
+                        if(damagecustom == TF_CUSTOM_BACKSTAB)
+                        {
+                            damage = g_CV_flSpyBackStabModifier;
+                            if(g_cv_bDebugMode)
+                                //    PrintToChatAll("Set damage to %f", damage);
+                                return Plugin_Changed;
+                        }
+                        if(damagecustom == TF_CUSTOM_HEADSHOT)
+                        {
+                            damage *= g_CV_flSpyBackStabModifier;
+                        
+                            if(g_cv_bDebugMode)
+                                //    PrintToChatAll("Set damage to %f", damage);
+                                return Plugin_Changed;
+                        }
+                    }
+            }
+
+            if(iClass == TFClass_Sniper)
+            {
+                // Checks if boss is on
+                if(g_cv_bDebugMode)
+                    //   PrintToChatAll("Attacker was spy");
+                    if(isMiniBoss(victim))
+                    {
+                        if(damagecustom == TF_CUSTOM_HEADSHOT)
+                        {
+                            damage *= 1.5;
+                            critType = CritType_Crit;
+                            if(g_cv_bDebugMode)
+                                //    PrintToChatAll("Set damage to %f", damage);
+                                return Plugin_Changed;
+                        }
                     }
             }
         }
@@ -378,11 +406,11 @@ public Action Command_BeRobot(int client, int numParams)
 
     char target[32];
     if (numParams < 2)
-		target[0] = '\0';
-	else 
+        target[0] = '\0';
+    else 
         GetCmdArg(2, target, sizeof(target));
 
-	SMLogTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
+    SMLogTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
     CreateRobot(name, client, target);
 
     return Plugin_Handled;
@@ -728,7 +756,7 @@ public Action Volunteer(int client, bool volunteering)
     {
         MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i volunteers has been reached, starting Boss Mode", g_RoboCapTeam);
 
-        Command_YT_Robot_Start(client, true);
+        if(!g_BossMode)Command_YT_Robot_Start(client, true);
 
         g_Volunteers.Resize(g_RoboCapTeam);
         g_BossMode = true;

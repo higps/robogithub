@@ -136,7 +136,7 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	int iHealth = 4700;
+	int iHealth = 3000;
 		
 	int MaxHealth = 175;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -230,7 +230,7 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 2.5);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.2);
 			TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.5);
 		}
 	}

@@ -5,6 +5,7 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
+#include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
@@ -53,8 +54,12 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnClientPutInServer(client)
 {
-	OnClientDisconnect_Post(client);
+    SDKHook(client, SDKHook_Touch, OnTouch);
+
+    OnClientDisconnect_Post(client);
 }
+
+
 
 public OnClientDisconnect_Post(client)
 {
@@ -62,8 +67,12 @@ public OnClientDisconnect_Post(client)
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 		g_bIsChangeDane[client] = false;
+
+		SDKUnhook(client, SDKHook_StartTouch, OnTouch);
 	}
 }
+
+
 
 public OnMapStart()
 {
@@ -82,6 +91,47 @@ public OnMapStart()
 	PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
 
 
+}
+
+public Action OnTouch(int client, int ent)
+{
+
+    //PrintToChatAll("Got Here");
+
+    if (IsValidClient(client) && IsValidEntity(ent))
+    {
+    //		char class[MAX_NAME_LENGTH];
+    //		GetEdictClassname(ent, class, sizeof(class));
+
+        //PrintToChatAll("ent was %i", ent);
+
+        char entname[MAX_NAME_LENGTH];
+        GetEdictClassname(ent, entname, sizeof(entname));
+
+    //PrintToChatAll("before ent name was %s", entname);
+
+        if (StrEqual(entname, "obj_sentrygun") || StrEqual(entname, "obj_dispenser"))
+        {
+            int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+        //	PrintToChatAll("after ent name was %s", entname);
+            if (client == iBuilder){
+                
+                PrintToChatAll("Builder was %N", iBuilder);
+
+                SetEntProp(ent, Prop_Send, "m_CollisionGroup", 18);
+                
+                //return Plugin_Stop;
+            //	SDKHook(client, SDKHook_ShouldCollide, ShouldCollide);
+                
+            }
+        }
+    }
+}
+
+public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
+{	
+	PrintToChatAll("Returning false");
+	return false;
 }
 
 //trigger the event
@@ -141,7 +191,7 @@ MakeUncleDane(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 3250;
+	int iHealth = 2000;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -160,7 +210,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "maxammo metal increased", 7.5);
-	TF2Attrib_SetByName(client, "engy building health bonus", 6.0);
+	TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
 	TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
 	
 	
@@ -229,7 +279,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "metal regen", 100.0);
-			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 10.0);
+			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 60.0);
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
 			

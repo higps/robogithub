@@ -100,7 +100,7 @@ MakeGiantMedic(client)
 	SetModel(client, GMEDIC);
    
 		
-	int iHealth = 4000;
+	int iHealth = 2500;
 	
 	
 	int MaxHealth = 150;
@@ -118,7 +118,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
-	TF2Attrib_SetByName(client, "health regen", 10.0);
+	TF2Attrib_SetByName(client, "health regen", 20.0);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -132,6 +132,15 @@ MakeGiantMedic(client)
 		
 
 
+}
+
+public TF2_OnConditionAdded(client, TFCond:condition)
+{
+    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+    {
+       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 1.0);
+	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+    }
 }
  
 stock TF2_SetHealth(client, NewHealth)
@@ -187,7 +196,8 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.5);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
 			TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.5);
-			TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 100.5);
+			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.25);
+			
 			SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 			
 		}
