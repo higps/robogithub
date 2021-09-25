@@ -72,6 +72,16 @@ native void GetRobotClass(char name[NAMELENGTH], char class[9]);
 native void CreateRobot(char[] name, int client, char target[32]);
 
 /**
+ * SDKCall for CBasePlayer::EquipWearable
+ * 
+ * @param client     the client who should wear the equipment/item
+ * @param item       the entity-index of the equipment/item
+ * 
+ * @noreturn
+ */
+native void EquipWearable(int client, int item);
+
+/**
  * scales the hitbox of player-hitbox
  * 
  * @param client     clientId of the player being scaled

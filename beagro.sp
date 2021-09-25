@@ -34,7 +34,6 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-new Handle:g_hEquipWearable;
 new bool:g_bIsGPYRO[MAXPLAYERS + 1];
 
 new bool:Locked1[MAXPLAYERS+1];
@@ -49,21 +48,6 @@ public OnPluginStart()
     //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
-	
-	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
-	
-	if (!hTF2)
-	SetFailState("This plugin is designed for a TF2 dedicated server only.");
-
-	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetVirtual(hTF2.GetOffset("RemoveWearable") - 1);
-	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
-	g_hEquipWearable = EndPrepSDKCall();
-
-	if (!g_hEquipWearable)
-	SetFailState("Failed to create call: CBasePlayer::EquipWearable");
-
-	delete hTF2;
 
 	RobotSounds sounds;
 	sounds.spawn = SPAWN;
@@ -390,7 +374,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 		}
 	case 31184://attire
 	{
-	TF2Attrib_SetByDefIndex(hat, 542, 1.0);//item style
+		TF2Attrib_SetByDefIndex(hat, 542, 1.0);//item style
 	}
 	
 
@@ -402,7 +386,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 	}
 
 	DispatchSpawn(hat);
-	SDKCall(g_hEquipWearable, client, hat);
+	EquipWearable(client, hat);
 	return true;
 }
 
@@ -552,9 +536,8 @@ bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int 
 	if (itemindex == 405 || itemindex == 608 || itemindex == 1101 || itemindex == 133 || itemindex == 444 || itemindex == 57 || itemindex == 231 || itemindex == 642 || itemindex == 131 || itemindex == 406 || itemindex == 1099 || itemindex == 1144)
 	{
 		DispatchSpawn(weapon);
-		SDKCall(g_hEquipWearable, client, weapon);
+		EquipWearable(client, weapon);
 	}
-
 	else
 	{
 		DispatchSpawn(weapon);

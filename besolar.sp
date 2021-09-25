@@ -22,35 +22,11 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new Handle:g_hEquipWearable;
 new bool:g_bIsGDEKNIGHT[MAXPLAYERS + 1];
-
-bool g_Resupply[MAXPLAYERS + 1] = false;
 
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-	
-	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
-
-	if (!hTF2)
-	SetFailState("This plugin is designed for a TF2 dedicated server only.");
-
-	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetVirtual(hTF2.GetOffset("RemoveWearable") - 1);
-	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
-	g_hEquipWearable = EndPrepSDKCall();
-
-	if (!g_hEquipWearable)
-	SetFailState("Failed to create call: CBasePlayer::EquipWearable");
-
-	delete hTF2; 
-	
-	//Sets the values to false incase some players did something on the frame of a map change
-	for(int i = 0; i < MAXPLAYERS; i++)
-    {
-        g_Resupply[i] = false;
-    }
 
 	RobotSounds sounds;
 	sounds.spawn = SPAWN;
@@ -368,7 +344,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 	
 
 	DispatchSpawn(hat);
-	SDKCall(g_hEquipWearable, client, hat);
+	EquipWearable(client, hat);
 	return true;
 }
 
@@ -518,9 +494,8 @@ bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int 
 	if (itemindex == 405 || itemindex == 608 || itemindex == 1101 || itemindex == 133 || itemindex == 444 || itemindex == 57 || itemindex == 231 || itemindex == 642 || itemindex == 131 || itemindex == 406 || itemindex == 1099 || itemindex == 1144)
 	{
 		DispatchSpawn(weapon);
-		SDKCall(g_hEquipWearable, client, weapon);
+		EquipWearable(client, weapon);
 	}
-
 	else
 	{
 		DispatchSpawn(weapon);
