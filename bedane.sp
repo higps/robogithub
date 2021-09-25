@@ -4,7 +4,9 @@
 #include <tf2attributes>
 #include <sdkhooks>
 #include <berobot>
-#include <sdkhooks>
+//#include <sendproxy>
+#include <tfobjects>
+#include <dhooks>
 
 #define PLUGIN_VERSION "1.0"
 
@@ -13,7 +15,9 @@
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-
+Handle g_hShouldHit;
+Handle g_hGameConf;
+Handle g_ShouldHitEntity;
 public Plugin:myinfo =
 {
 	name = "[TF2] Be Big Robot Uncle Dane",
@@ -27,7 +31,7 @@ Handle g_hEquipWearable;
 
 bool g_bIsChangeDane[MAXPLAYERS + 1];
 bool g_IsUncleDane[MAXPLAYERS + 1] = false;
-bool g_Resupply[MAXPLAYERS + 1] = false;
+
 
 public OnPluginStart()
 {
@@ -57,8 +61,32 @@ public OnPluginStart()
 
 	delete hTF2; 
 
+	g_hGameConf = LoadGameConfigFile("dane");
+	
+
+	g_hShouldHit = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Bool, ThisPointer_CBaseEntity);
+	
+	if(!DHookSetFromConf(g_hShouldHit, g_hGameConf, SDKConf_Signature, "CTraceFilterObject::ShouldHitEntity"))
+	SetFailState("Failed to find CTraceFilterObject::ShouldHitEntity signature in the gamedata!");
+
+	DHookAddParam(g_hShouldHit, HookParamType_CBaseEntity);
+	DHookAddParam(g_hShouldHit, HookParamType_Int);
+
+	if(!DHookEnableDetour(g_hShouldHit, false, ShouldHitEntity))
+	SetFailState("Failed to enable CTraceFilterObject::ShouldHitEntity detour");
+
+	delete g_hGameConf;
+
 	AddRobot("Uncle Dane", "Engineer", CreateUncleDane);
 
+}
+
+public MRESReturn ShouldHitEntity(int pThis, DHookReturn hReturn, DHookParam hParams)
+{
+
+	if(g_IsUncleDane[pThis])return MRES_Supercede;
+
+	return MRES_Ignored;
 }
 
 public void OnPluginEnd()
@@ -144,7 +172,11 @@ public Action OnTouch(int client, int ent)
 			
 			PrintToChatAll("Builder was %N", iBuilder);
 
-			SetEntProp(ent, Prop_Send, "m_CollisionGroup", 18);
+			//CTraceFilterObject::ShouldHitEntity(IHandleEntity*, int)
+		
+	//		SendProxy_Hook(ent, "COLLISION_GROUP_DEBRIS_TRIGGER", stType, pCallback, per_client);
+		
+		//	SetEntProp(ent, Prop_Send, "m_CollisionGroup", 12);
 			
 			//return Plugin_Stop;
 		//	SDKHook(client, SDKHook_ShouldCollide, ShouldCollide);
@@ -155,14 +187,16 @@ public Action OnTouch(int client, int ent)
 
 	}
 
-	}
+}
 
-public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
+
+
+/* public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
 {	
 	PrintToChatAll("Returning false");
 	return false;
 }
-
+ */
 //trigger the event
 public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 {

@@ -3,6 +3,7 @@
 #include <tf2_stocks>
 #include <tf2attributes>
 #include <berobot>
+#include <sdkhooks>
  
 #define PLUGIN_VERSION "1.0"
  
@@ -479,6 +480,7 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 	if (tauntid == -1)
 	{
 	 TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
+	 TF2_AddCondition(client, TFCond_MegaHeal);
 	 EmitSoundToAll(ALARM);
 
 	 CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
@@ -511,6 +513,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 {
 	if (IsValidClient(client)){
 		TF2_RemoveCondition(client, TFCond_Taunting);
+		TF2_RemoveCondition(client, TFCond_MegaHeal);
 	}
 	
 
