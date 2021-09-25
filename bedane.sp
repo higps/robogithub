@@ -5,7 +5,9 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
-#include <sdkhooks>
+//#include <sendproxy>
+#include <tfobjects>
+#include <dhooks>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
@@ -15,7 +17,9 @@
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-
+Handle g_hShouldHit;
+Handle g_hGameConf;
+Handle g_ShouldHitEntity;
 public Plugin:myinfo =
 {
 	name = "[TF2] Be Big Robot Uncle Dane",
@@ -38,6 +42,14 @@ public OnPluginStart()
 	sounds.loop = LOOP;
 	sounds.death = DEATH;
 	AddRobot(ROBOT_NAME, "Engineer", MakeUncleDane, PLUGIN_VERSION, sounds);
+}
+
+public MRESReturn ShouldHitEntity(int pThis, DHookReturn hReturn, DHookParam hParams)
+{
+
+	if(g_IsUncleDane[pThis])return MRES_Supercede;
+
+	return MRES_Ignored;
 }
 
 public void OnPluginEnd()
@@ -128,12 +140,13 @@ public Action OnTouch(int client, int ent)
     }
 }
 
-public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
+
+/* public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
 {	
 	PrintToChatAll("Returning false");
 	return false;
 }
-
+ */
 //trigger the event
 public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 {

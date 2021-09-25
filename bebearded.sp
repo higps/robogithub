@@ -316,7 +316,20 @@ public TF2_OnConditionAdded(client, TFCond:condition)
     {	
         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
 
-        //PrintToChatAll("Taunt ID %i", tauntid);
+	//PrintToChatAll("Taunt ID %i", tauntid);
+
+	if (tauntid == -1)
+	{
+	 TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
+	 TF2_AddCondition(client, TFCond_MegaHeal);
+	 EmitSoundToAll(ALARM);
+
+	 CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
+	// TF2_AddCondition(client, TFCond_GrapplingHookSafeFall, TFCondDuration_Infinite);
+	   //TFCond_CritHype
+	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+	  CreateTimer(3.35, Timer_Taunt_Cancel, client);
+	}
 
         if (tauntid == -1)
         {
@@ -350,6 +363,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 {
 	if (IsValidClient(client)){
 		TF2_RemoveCondition(client, TFCond_Taunting);
+		TF2_RemoveCondition(client, TFCond_MegaHeal);
 	}
 	
 
