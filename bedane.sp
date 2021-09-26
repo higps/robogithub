@@ -5,7 +5,9 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
-#include <sdkhooks>
+//#include <sendproxy>
+#include <tfobjects>
+#include <dhooks>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
@@ -128,12 +130,13 @@ public Action OnTouch(int client, int ent)
     }
 }
 
-public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
+
+/* public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
 {	
 	PrintToChatAll("Returning false");
 	return false;
 }
-
+ */
 //trigger the event
 public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 {
