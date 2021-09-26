@@ -422,7 +422,11 @@ public Action Command_Robot_Selection()
         
             for(int i = 1; i < MaxClients; i++)
             {
-                ChangeClientTeam(i, SPECTATE);
+                if (IsValidClient(i) && IsClientInGame(i))
+                {
+                    ChangeClientTeam(i, SPECTATE);
+                }
+                
             }
 
 
@@ -685,7 +689,8 @@ public Action Command_Volunteer(int client, int args)
     //PrintToChatAll("g_RoboMode was %i", g_RoboMode);
     //PrintToChatAll("CV_g_RoboMode was %i", CV_g_RoboMode);
 
-    if (!g_RoboMode)
+
+    if (!g_RoboMode) 
     {
         if (!g_SpectateSelection)MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}Unable to volunteer, robo mode is not started use {green}!robo_vote{green}{teamcolor} to initiate a vote instead. Volunteering will happen later");
         if (!g_SpectateSelection)return Plugin_Handled;
