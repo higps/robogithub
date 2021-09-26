@@ -161,7 +161,7 @@ MakeUncleDane(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 2000;
+	int iHealth = 1800;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -179,7 +179,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	TF2Attrib_SetByName(client, "maxammo metal increased", 7.5);
+	TF2Attrib_SetByName(client, "maxammo metal increased", 5.0);
 	TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
 	TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
 	
@@ -259,15 +259,14 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Weapon3);
 			
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.85);
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.25);
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.0);
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 20.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
 			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 4.0);
 			TF2Attrib_SetByName(Weapon3, "alt fire teleport to spawn", 1.0);
 			TF2Attrib_SetByName(Weapon3, "special taunt", 1.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 2.0);
-			TF2Attrib_SetByName(Weapon3, "metal_pickup_decreased", 2.0);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			
 		}
