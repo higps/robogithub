@@ -103,7 +103,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	
 	//int weaponID = GetEntPropEnt(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	
-	PrintToChatAll("Attacker %N , weaponID %i, logname: %s", attacker, weaponID, weapon_logname);
+	//PrintToChatAll("Attacker %N , weaponID %i, logname: %s", attacker, weaponID, weapon_logname);
 
 	if (IsRobot(attacker, ROBOT_NAME) && StrEqual(weapon_logname,"mantreads"))
 	{

@@ -637,7 +637,7 @@ public Action Command_RoboVote(int client, int args)
     if(g_Voted[client])
     {
         MC_PrintToChat(client,"{orange}You have already voted");
-	 //   return;
+        return;
     }
 
     g_iVotes++;
