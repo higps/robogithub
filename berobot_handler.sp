@@ -834,13 +834,12 @@ public Action Menu_Volunteer(int client)
         char class[9];
         GetRobotClass(name, class);
 
-        int roboCap = GetConVarInt(g_cvCvarList[g_RoboCap]);
         int count;
         g_RobotCount.GetValue(name, count);
-        int draw = count >= roboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
+        int draw = count >= g_RoboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
 
         char display[128];
-        Format(display, sizeof(display), "%s: %s (%i / %i used)", class, name, count, roboCap);
+        Format(display, sizeof(display), "%s: %s (%i / %i used)", class, name, count, g_RoboCap);
 
         menu.AddItem(name, display, draw);
 
