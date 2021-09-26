@@ -218,7 +218,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 			client,
 			target_list,
 			MAXPLAYERS,
-			COMMAND_FILTER_ALIVE|targetFilter,
+			targetFilter,
 			target_name,
 			sizeof(target_name),
 			tn_is_ml)) <= 0)

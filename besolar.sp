@@ -213,7 +213,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 3.0);
 			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.65);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.8);
 			
 
 		}
