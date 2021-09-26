@@ -332,6 +332,32 @@ stock bool:IsValidClient(client)
 	return IsClientInGame(client);
 }
 
+public TF2_OnConditionAdded(client, TFCond:condition)
+{
+    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+    {	
+        int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+
+	//PrintToChatAll("Taunt ID %i", tauntid);
+	
+
+        if (tauntid == -1)
+        {
+		//	TF2_AddCondition(client, TFCond_SpawnOutline, 10);
+           	 CreateTimer(1.2, Timer_Taunt_Cancel, client);
+        }	  
+
+	}
+}
+
+public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
+{
+	if (IsValidClient(client)){
+		TF2_RemoveCondition(client, TFCond_Taunting);
+		
+	}
+}
+
 bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 {
 	int hat = CreateEntityByName("tf_wearable");

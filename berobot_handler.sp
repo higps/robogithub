@@ -348,17 +348,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         if(damagecustom == TF_CUSTOM_BACKSTAB)
                         {
                             damage = g_CV_flSpyBackStabModifier;
-                            if(g_cv_bDebugMode)
-                                //    PrintToChatAll("Set damage to %f", damage);
+                            if(g_cv_bDebugMode) PrintToChatAll("Set damage to %f", damage);
+
                                 return Plugin_Changed;
                         }
                         if(damagecustom == TF_CUSTOM_HEADSHOT)
                         {
-                            damage *= g_CV_flSpyBackStabModifier;
-                        
-                            if(g_cv_bDebugMode)
-                                //    PrintToChatAll("Set damage to %f", damage);
-                                return Plugin_Changed;
+                            damage *= 1.1111;
+                            critType = CritType_Crit;
+                            if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                            return Plugin_Changed;
                         }
                     }
             }

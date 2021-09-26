@@ -254,7 +254,8 @@ public any Native_CreateRobot(Handle plugin, int numParams)
             Reset(target_list[i]);
             PrintToChat(target_list[i], "1. You are no longer %s!", name);
             PrintToChat(target_list[i], "2. You will turn back by changing class or dying!");
-            TF2_RegeneratePlayer(target_list[i]);
+            
+            TF2_RespawnPlayer(target_list[i]);
         }
     }
 	if (robotWasCreated)
