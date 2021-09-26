@@ -376,7 +376,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
 	
 	// make it usable
-	float flDistance = 650.0;
+	float flDistance = 350.0;
 
 	ScaleVector(vForward, flDistance);	
 	
@@ -384,7 +384,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVelocity);
 	AddVectors(vVelocity, vForward, vVelocity);
 	
-	float flDistanceVertical = 300.0;
+	float flDistanceVertical = 150.0;
 	
 		
 	

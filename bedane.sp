@@ -17,9 +17,7 @@
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-Handle g_hShouldHit;
-Handle g_hGameConf;
-Handle g_ShouldHitEntity;
+
 public Plugin:myinfo =
 {
 	name = "[TF2] Be Big Robot Uncle Dane",
@@ -42,14 +40,6 @@ public OnPluginStart()
 	sounds.loop = LOOP;
 	sounds.death = DEATH;
 	AddRobot(ROBOT_NAME, "Engineer", MakeUncleDane, PLUGIN_VERSION, sounds);
-}
-
-public MRESReturn ShouldHitEntity(int pThis, DHookReturn hReturn, DHookParam hParams)
-{
-
-	if(g_IsUncleDane[pThis])return MRES_Supercede;
-
-	return MRES_Ignored;
 }
 
 public void OnPluginEnd()

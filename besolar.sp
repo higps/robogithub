@@ -127,9 +127,9 @@ MakeSolar(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	TF2Attrib_SetByName(client, "damage force reduction", 1.2);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.2);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.3);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
@@ -213,7 +213,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 3.0);
 			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.75);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.65);
 			
 
 		}
@@ -227,6 +227,9 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "charge meter on hit", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 2.0);		
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);		
+			TF2Attrib_SetByName(Weapon3, "single wep deploy time decreased", 0.6);		
+			TF2Attrib_SetByName(Weapon3, "single wep holster time increased", 0.6);		
+			
 			
 			
 			
