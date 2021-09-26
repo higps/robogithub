@@ -44,9 +44,7 @@ public void Init()
 	if (_init)
 		return;
 
-    //TODO: Release
-	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
-    //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 	SMLogTag(SML_INFO, "berobot_factory started at %i", GetTime());
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
