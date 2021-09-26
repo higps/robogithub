@@ -398,7 +398,9 @@ public Action Command_BeRobot(int client, int numParams)
 
     SMLogTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
     CreateRobot(name, client, target);
-
+    
+    SetEntProp(client, Prop_Send, "m_bIsMiniBoss", 1);
+    
     return Plugin_Handled;
 }
 
@@ -951,14 +953,12 @@ bool isMiniBoss(int client)
 
         if(GetEntProp(client, Prop_Send, "m_bIsMiniBoss"))
         {
-            if(g_cv_bDebugMode)
-                //                PrintToChatAll("%N Was mini boss", client);
+            if(g_cv_bDebugMode) PrintToChatAll("%N Was mini boss", client);
                 return true;
         }
         else
         {
-            if(g_cv_bDebugMode)
-                //  PrintToChatAll("%N Was not mini boss", client);
+            if(g_cv_bDebugMode)PrintToChatAll("%N Was not mini boss", client);
                 return false;
         }
     }

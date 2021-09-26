@@ -322,7 +322,14 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 	{
 	 TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
 	 TF2_AddCondition(client, TFCond_MegaHeal);
-	 EmitSoundToAll(ALARM);
+	 
+	 
+	 
+	 
+	float pos[3];
+	GetClientEyePosition(client, pos);
+
+	EmitGameSoundToAll(ALARM, client, SND_SPEAKER, client, pos);
 
 	 CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
 	// TF2_AddCondition(client, TFCond_GrapplingHookSafeFall, TFCondDuration_Infinite);
