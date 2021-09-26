@@ -23,6 +23,16 @@ native int GetRobotDefinition(char name[NAMELENGTH], const any[] robot);
 native void GetPickedRobot(int client, char[] dest, int maxDestLength);
 
 /**
+ * checks if a client is any robot
+ * 
+ * @param client    clientId to check for robot
+ * 
+ * @return          true: client is a robot;
+ *                  false: client is _not_ a robot
+ */
+native bool IsAnyRobot(int client);
+
+/**
  * returns which classes have deep robot voicelines (opposed to only normal robot voicelines)
  * 
  * @param class     the class to check

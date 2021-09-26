@@ -45,11 +45,9 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 
 	SMLogTag(SML_VERBOSE, "playing sound %s for %L at volume %f", sample, entity, volume);
 
-	char pickedRobot[NAMELENGTH];
-	GetPickedRobot(entity, pickedRobot, NAMELENGTH);
-	if (pickedRobot[0] == '\0') //skip if no robot is picked
+	if (!IsAnyRobot(entity)) //skip if no robot is picked
 	{
-		SMLogTag(SML_VERBOSE, "skipping SoundHook because %L is not a robot (%s)", entity, pickedRobot);
+		SMLogTag(SML_VERBOSE, "skipping SoundHook because %L is not a robot", entity);
 		return Plugin_Continue;
 	}
 	
