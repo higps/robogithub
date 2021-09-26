@@ -166,7 +166,9 @@ public void OnPluginStart()
     RegAdminCmd("sm_unsetvolunteer", Command_UnsetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to false/disabled");
 
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
-    RegConsoleCmd("sm_robo_vote", Command_RoboVote, "Votes to begin a mode");
+    RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
+    RegConsoleCmd("sm_rtr", Command_RoboVote, "Votes to begin a mode");
+    RegConsoleCmd("sm_rocktherobot", Command_RoboVote, "Votes to begin a mode");
 
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
@@ -418,11 +420,16 @@ public Action Command_Me_Boss(int client, int args)
 public Action Command_Robot_Selection()
 {
         
+            for(int i = 1; i < MaxClients; i++)
+            {
+                ChangeClientTeam(i, SPECTATE);
+            }
 
-        ServerCommand("sm_ct @all spectate");
-        PrintCenterTextAll("Type !volunteer to be on the giant robot team");
-        g_cv_BlockTeamSwitch = true;
-        g_SpectateSelection = true;
+
+       
+            PrintCenterTextAll("Type !volunteer to be on the giant robot team");
+            g_cv_BlockTeamSwitch = true;
+            g_SpectateSelection = true;
     
 }
 // intercept and block client jointeam command if required
@@ -508,7 +515,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                         CreateRobot("HiGPS", i, "");
                         // CreateRobot("Solar Light", i, "");
                         //ServerCommand("sm_begps #%i", playerID);
-                        TF2_SwapTeamAndRespawn(playerID, g_RoboTeam);
+                        TF2_SwapTeamAndRespawnNoMsg(playerID, g_RoboTeam);
                     }
 
                     //Bearded
@@ -588,16 +595,16 @@ public Action Command_YT_Robot_Start(int client, int args)
                             PrintToChat(i, "You are on the Robot Team");
                             // ServerCommand("sm_begps #%i", playerID);
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
-                            ChangeClientTeam(i, g_RoboTeam);
-                            TF2_RespawnPlayer(i);
+                            TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+                        //    TF2_RespawnPlayer(i);
                             Menu_Volunteer(i);
                         }
                         else
                         {
                             PrintToChat(i, "You are on the Human team");
                             // ServerCommand("sm_ct #%i %i", playerID, g_HumanTeam);
-                            ChangeClientTeam(i, g_HumanTeam);
-                            TF2_RespawnPlayer(i);
+                            TF2_SwapTeamAndRespawnNoMsg(i, g_HumanTeam);
+                            //TF2_RespawnPlayer(i);
                         }
                     }
                 }
@@ -627,7 +634,7 @@ public Action Command_RoboVote(int client, int args)
     if(g_Voted[client])
     {
         MC_PrintToChat(client,"{orange}You have already voted");
-	//return;
+	 //   return;
     }
 
     g_iVotes++;
@@ -755,7 +762,7 @@ public Action Volunteer(int client, bool volunteering)
         {
             SMLogTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
             //int playerID = GetClientUserId(client);
-            TF2_SwapTeamAndRespawn(client, g_RoboTeam);
+            TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
             Menu_Volunteer(client);
         }
     }
@@ -962,4 +969,12 @@ public any Native_GetPickedRobot(Handle plugin, int numParams)
 	int maxDestLength = GetNativeCell(3);
 
 	SetNativeString(2, g_cv_RobotPicked[client], maxDestLength);
+}
+
+stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
+{
+	SetEntProp(client, Prop_Send, "m_lifeState", 2);
+	ChangeClientTeam(client, team);
+	TF2_RespawnPlayer(client);
+	SetEntProp(client, Prop_Send, "m_lifeState", 0);
 }
