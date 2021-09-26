@@ -32,6 +32,7 @@ public Plugin myinfo =
 
 bool _init;
 char _isRobot[MAXPLAYERS + 1][NAMELENGTH];
+char _wasRobot[MAXPLAYERS + 1][NAMELENGTH];
 
 public void OnPluginStart()
 {
@@ -90,7 +91,22 @@ public void Event_Player_Spawned(Handle event, const char[] name, bool dontBroad
     SMLogTag(SML_VERBOSE, "Event_Player_Spawned for %L (alive: %b) received with robot-name %s", client, isAlive, robotName);
 
     if (robotName[0] == '\0') 
+    {
+        if (_wasRobot[client][0] != '\0')
+        {
+            SMLogTag(SML_VERBOSE, "resetting robot for %L (was %s)", client, _wasRobot[client]);
+            Robot item;
+            if (GetRobotDefinition(_wasRobot[client], item) != 0)
+            {
+                SMLogTag(SML_ERROR, "could not stop sounds. no robot with name '%s' found for %L", _wasRobot[client], client);
+                return;
+            }
+            
+            StopSounds(client, item);
+            _wasRobot[client] = "";
+        }
         return;
+    }
         
     Robot item;
     if (GetRobotDefinition(robotName, item) != 0)
@@ -236,6 +252,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         }
         else
         {
+            _wasRobot[targetClientId] = _isRobot[targetClientId];
             Reset(target_list[i]);
             PrintToChat(target_list[i], "1. You are no longer %s!", name);
             PrintToChat(target_list[i], "2. You will turn back by changing class or dying!");
