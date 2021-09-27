@@ -326,16 +326,23 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 	 
 	 
 	 
-	float pos[3];
+/* 	float pos[3];
 	GetClientEyePosition(client, pos);
+	int clients[64]; */
+	//EmitGameSoundToClient(client, ALARM);
+	int clients[1];
+	clients[0] = client;
 
-	EmitGameSoundToAll(ALARM, client, SND_SPEAKER, client, pos);
+	
+	EmitSound(clients, 1, ALARM, client, SNDCHAN_AUTO, SNDLEVEL_WHISPER, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
 
-	 CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
+	//EmitGameSound(client, MaxClients, ALARM, client, SND_NOFLAGS, client, pos)
+	//EmitGameSound(clients, numClients, sample, client, channel, SNDLEVEL_CONVO);
+	CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
 	// TF2_AddCondition(client, TFCond_GrapplingHookSafeFall, TFCondDuration_Infinite);
 	   //TFCond_CritHype
 	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-	  CreateTimer(3.35, Timer_Taunt_Cancel, client);
+	CreateTimer(3.35, Timer_Taunt_Cancel, client);
 	}
 
         if (tauntid == -1)
@@ -351,6 +358,8 @@ public TF2_OnConditionAdded(client, TFCond:condition)
         }	  
     }
 }
+
+
 public Action:Timer_Alarm(Handle:timer, any:client)
 {
     static int cap = 0;
