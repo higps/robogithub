@@ -37,10 +37,10 @@ public OnPluginStart()
 	sounds.loop = LOOP;
 	sounds.death = DEATH;
 
-	AddRobot(ROBOT_NAME, "Demoman", MakeSolar, PLUGIN_VERSION, sounds);
+	AddRobot(ROBOT_NAME, "Demoman", MakeBuster, PLUGIN_VERSION, sounds);
 
 	AddNormalSoundHook(SoundHook);
-	
+	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
 }
 
 public void OnPluginEnd()
@@ -50,7 +50,7 @@ public void OnPluginEnd()
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-	//	CreateNative("BeGiantDemoKnight_MakeSolar", Native_SetGiantDemoKnight);
+	//	CreateNative("BeGiantDemoKnight_MakeBuster", Native_SetGiantDemoKnight);
 	//	CreateNative("BeGiantDemoKnight_IsGiantDemoKnight", Native_IsGiantDemoKnight);
 	return APLRes_Success;
 }
@@ -58,7 +58,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 public OnClientPutInServer(client)
 {
 	OnClientDisconnect_Post(client);
-	SDKHook(client, SDKHook_Touch, OnTouch);
+//	SDKHook(client, SDKHook_Touch, OnTouch);
 }
 
 public OnClientDisconnect_Post(client)
@@ -68,6 +68,7 @@ public OnClientDisconnect_Post(client)
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 		g_bIsGBUSTER[client] = false;
 	}
+//	SDKUnhook(client, SDKHook_Touch, OnTouch);
 }
 
 public OnMapStart()
@@ -85,6 +86,82 @@ public OnMapStart()
 	
 }
 
+public Action Event_post_inventory_application(Event event, char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+	///Sets color back to normal
+	if (IsValidClient(client))
+	{
+	SetEntityRenderColor(client, 255, 255, 255, 0);
+	}
+}
+public Action OnTouch(int client, int ent)
+{
+
+    //PrintToChatAll("Got Here");
+
+
+    if (IsValidClient(client) && IsValidEntity(ent))
+    {
+    //		char class[MAX_NAME_LENGTH];
+    //		GetEdictClassname(ent, class, sizeof(class));
+	
+        //PrintToChatAll("ent was %i", ent);
+			if (g_bIsGBUSTER[client])
+			 {
+        char entname[MAX_NAME_LENGTH];
+        GetEdictClassname(ent, entname, sizeof(entname));
+
+  //  PrintToChatAll("before ent name was %s", entname);
+ //|| StrEqual(entname, "obj_dispenser")
+        if (StrEqual(entname, "obj_sentrygun"))
+        {
+			SetEntPropEnt(ent, Prop_Send, "m_bGlowEnabled", 1);
+            int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+			int iBuildingTeam = GetEntPropEnt(ent, Prop_Send, "m_iTeamNum");
+			int iClientTeam = TF2_GetClientTeam(client);
+			
+			PrintToChatAll("iBuildingTeam: %i || Client teamL %i", iBuildingTeam, iClientTeam);
+
+
+			if(iClientTeam != iBuildingTeam){
+				PrintToChatAll("not the same team");
+			}
+        //	PrintToChatAll("after ent name was %s", entname);
+         
+                
+				GetReadyToExplode(client);
+				FakeClientCommand(client, "taunt");
+               // PrintToChatAll("Builder was %N", iBuilder);
+
+                //SetEntProp(ent, Prop_Send, "m_CollisionGroup", 18);
+                
+                //return Plugin_Stop;
+            //	SDKHook(client, SDKHook_ShouldCollide, ShouldCollide);
+                
+            
+        }
+
+		if (StrEqual(entname, "player"))
+		{
+			int iCarried = GetEntPropEnt(ent, Prop_Send, "m_hCarriedObject");
+
+			if (iCarried != -1)
+			{
+				char entname[MAX_NAME_LENGTH];
+        		GetEdictClassname(iCarried, entname, sizeof(entname));
+			//	PrintToChatAll("%s Object carried", entname);
+					if (StrEqual(entname, "obj_sentrygun") && !AboutToExplode[client])
+        			{
+						GetReadyToExplode(client);
+						FakeClientCommand(client, "taunt");
+					}
+		}
+		}
+			 }
+    }
+}
+
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -96,10 +173,16 @@ public Action:SetModel(client, const String:model[])
 	}
 }
 
-MakeSolar(client)
+MakeBuster(client)
 {
 	TF2_SetPlayerClass(client, TFClass_DemoMan);
 	TF2_RegeneratePlayer(client);
+
+	//Sets color to red if team is red
+			if(GetClientTeam(client) == 2){
+            SetEntityRenderColor(client, 255, 0, 0, 255);
+			}
+	
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
 	if (ragdoll > MaxClients && IsValidEntity(ragdoll)) AcceptEntityInput(ragdoll, "Kill");
@@ -159,6 +242,7 @@ stock GetReadyToExplode(client)
 {
 	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav", client);
 	StopSound(client, SNDCHAN_AUTO, "mvm/sentrybuster/mvm_sentrybuster_loop.wav");
+	PrintToChatAll("EXPLODING!");
 	CreateTimer(2.0, Bewm, GetClientUserId(client));
 	AboutToExplode[client] = true;
 }
@@ -398,6 +482,8 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
+
+
 	if (g_bIsGBUSTER[client] && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);

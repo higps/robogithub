@@ -33,6 +33,8 @@ public OnPluginStart()
 	sounds.loop = LOOP;
 	sounds.death = DEATH;
 
+	
+
 	AddRobot(ROBOT_NAME, "Demoman", MakeSolar, PLUGIN_VERSION, sounds);
 }
 
