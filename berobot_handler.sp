@@ -331,7 +331,7 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 }
 
 /* Plugin Exclusive Functions */
-public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
     if(IsValidClient(victim))
     {
@@ -348,15 +348,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         if(damagecustom == TF_CUSTOM_BACKSTAB)
                         {
                             damage = g_CV_flSpyBackStabModifier;
-                            if(g_cv_bDebugMode) PrintToChatAll("Set damage to %f", damage);
+                            critType = CritType_Crit;
+                           // if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
 
-                                return Plugin_Changed;
+                            return Plugin_Changed;
                         }
                         if(damagecustom == TF_CUSTOM_HEADSHOT)
                         {
                             damage *= 1.1111;
                             critType = CritType_Crit;
-                            if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                            //if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                             return Plugin_Changed;
                         }
                     }

@@ -18,6 +18,11 @@
 #define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
 #define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
 
+#define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
+#define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
+#define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
+#define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
+
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Deflector Heavy",
@@ -39,6 +44,8 @@ public OnPluginStart()
 	LoadTranslations("common.phrases");
 
 	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	
+	AddNormalSoundHook(BossGPS);
 
 	RobotSounds sounds;
 	sounds.spawn = SPAWN;
@@ -50,6 +57,37 @@ public OnPluginStart()
 	sounds.death = DEATH;
 
 	AddRobot(ROBOT_NAME, "Heavy", MakeGDeflectorH, PLUGIN_VERSION, sounds);
+}
+
+public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
+{
+	if (!IsValidClient(entity)) return Plugin_Continue;
+	if (!g_bIsGDEFLECTORH[entity]) return Plugin_Continue;
+
+	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
+	{
+		if (StrContains(sample, "1.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step01.wav");
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "3.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step03.wav");
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "2.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step02.wav");
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "4.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step04.wav");
+			EmitSoundToAll(sample, entity);
+		}
+		return Plugin_Changed;
+	}
 }
 
 public void OnPluginEnd()
@@ -98,6 +136,11 @@ public OnMapStart()
 	PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
 	PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
 	
+	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
+
 	PrecacheSound(SOUND_GUNFIRE);
 	PrecacheSound(SOUND_GUNSPIN);
 	PrecacheSound(SOUND_WINDUP);
@@ -167,7 +210,7 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
-	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
+	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	UpdatePlayerHitbox(client, 1.75);
