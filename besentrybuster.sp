@@ -39,6 +39,14 @@ public OnPluginStart()
 
 	AddRobot(ROBOT_NAME, "Demoman", MakeBuster, PLUGIN_VERSION, sounds);
 
+	for(int client = 1 ; client <= MaxClients ; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
+			SDKHook(client, SDKHook_Touch, OnTouch);
+		}
+	}
 
 	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
 }
@@ -59,6 +67,7 @@ public OnClientPutInServer(client)
 {
 	OnClientDisconnect_Post(client);
 	SDKHook(client, SDKHook_Touch, OnTouch);
+	SDKHook(client, SDKHook_TraceAttack, OnTraceAttack); // hook for when someone joins in the middle of a round
 }
 
 public OnClientDisconnect_Post(client)
@@ -134,7 +143,7 @@ public Action OnTouch(int client, int ent)
         //	PrintToChatAll("after ent name was %s", entname);
          
                 
-				GetReadyToExplode(client);
+				//GetReadyToExplode(client);
 				FakeClientCommand(client, "taunt");
                // PrintToChatAll("Builder was %N", iBuilder);
 
@@ -246,7 +255,7 @@ stock GetReadyToExplode(client)
 {
 	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav", client);
 	StopSound(client, SNDCHAN_AUTO, "mvm/sentrybuster/mvm_sentrybuster_loop.wav");
-	PrintToChatAll("EXPLODING!");
+//	PrintToChatAll("EXPLODING!");
 	CreateTimer(2.0, Bewm, GetClientUserId(client));
 	AboutToExplode[client] = true;
 }
@@ -291,9 +300,11 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 
 public Action:Bewm(Handle:timer, any:userid)
 {
+
 	new client = GetClientOfUserId(userid);
 	if (!IsValidClient(client)) return Plugin_Handled;
 	if (!IsPlayerAlive(client)) return Plugin_Handled;
+	if (!TF2_IsPlayerInCondition(client, TFCond_Taunting))return Plugin_Handled;
 	AboutToExplode[client] = false;
 	new explosion = CreateEntityByName("env_explosion");
 	new Float:clientPos[3];
@@ -450,11 +461,29 @@ stock GiveGiantDemoKnight(client)
 	return Plugin_Continue;
 } */
 
+public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
+{
+		if(IsValidClient(attacker))
+		{
+		//	PrintCenterTextAll("hit1");
+			if (g_bIsGBUSTER[attacker] && IsValidClient(victim))
+		{
+		//	PrintCenterTextAll("hit2");
+			//GetReadyToExplode(attacker);
+			FakeClientCommand(attacker, "taunt");
+		}
+		}
+}
+
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
 if (IsValidClient(victim))
 	{
+		
 		if (!g_bIsGBUSTER[victim]|| victim == attacker) return Plugin_Continue;
+
+
+		
 		//new Float:dmg = ((damagetype & DMG_CRIT) ? damage*3 : damage) + 10.0; // +10 to attempt to account for damage rampup.
 		if (AboutToExplode[victim])
 		{

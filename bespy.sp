@@ -2,63 +2,44 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
-#include <sm_logger>
+#include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
+//#include <sendproxy>
+#include <tfobjects>
+#include <dhooks>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Icebear"
+#define ROBOT_NAME	"Spy"
 
-#define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
-#define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
-#define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
-#define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
+#define ChangeDane             "models/bots/spy/bot_spy.mdl"
+#define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
+#define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
 
-public Plugin:myinfo = 
+public Plugin:myinfo =
 {
-	name = "[TF2] Be the Giant Icebear Soldier",
+	name = "[TF2] Be Big Robot Spy",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Icebear from Frankfurt",
+	description = "Play as the Giant Spy",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
 
-char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
-enum(<<= 1)
-{
-    SML_VERBOSE = 1,
-    SML_INFO,
-    SML_ERROR,
-}
-
-new bool:g_bIsGSoldier[MAXPLAYERS + 1];
-
-new bool:Locked1[MAXPLAYERS+1];
-new bool:Locked2[MAXPLAYERS+1];
-new bool:Locked3[MAXPLAYERS+1];
-new bool:CanWindDown[MAXPLAYERS+1];
+bool g_bisGSPY[MAXPLAYERS + 1];
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-
 	LoadTranslations("common.phrases");
 
-	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-	AddNormalSoundHook(BossIcebear);
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
 	RobotSounds sounds;
 	sounds.spawn = SPAWN;
 	sounds.loop = LOOP;
-//	sounds.gunfire = SOUND_GUNFIRE;
-//	sounds.windup = SOUND_WINDUP;
 	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Icebear", MakeGiantSoldier, PLUGIN_VERSION, sounds);
+	AddRobot(ROBOT_NAME, "Engineer", MakeSpy, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()
@@ -68,54 +49,81 @@ public void OnPluginEnd()
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-//	CreateNative("BeGiantPyro_MakeGiantSoldier", Native_SetGiantPyro);
-//	CreateNative("BeGiantPyro_IsGiantPyro", Native_IsGiantPyro);
+	//	CreateNative("BeSuperHeavyweightChamp_MakeSpy", Native_SetSuperHeavyweightChamp);
+	//	CreateNative("BeSuperHeavyweightChamp_IsSuperHeavyweightChamp", Native_IsSuperHeavyweightChamp);
 	return APLRes_Success;
 }
 
 public OnClientPutInServer(client)
 {
-	OnClientDisconnect_Post(client);
+   // SDKHook(client, SDKHook_Touch, OnTouch);
+
+    OnClientDisconnect_Post(client);
 }
+
+
 
 public OnClientDisconnect_Post(client)
 {
-	if (g_bIsGSoldier[client])
+	if (g_bisGSPY[client])
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
-	//	StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
-//		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
-		g_bIsGSoldier[client] = false;
+		g_bisGSPY[client] = false;
+
+		//SDKUnhook(client, SDKHook_StartTouch, OnTouch);
 	}
 }
 
+
+
 public OnMapStart()
 {
-	PrecacheModel(GSOLDIER);
+	PrecacheModel(ChangeDane);
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 	
+	PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_04.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_05.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
 
-	PrecacheSound("mvm/giant_soldier/giant_soldier_step01.wav");
-	PrecacheSound("mvm/giant_soldier/giant_soldier_step03.wav");
-	PrecacheSound("mvm/giant_soldier/giant_soldier_step02.wav");
-	PrecacheSound("mvm/giant_soldier/giant_soldier_step04.wav");
-	
-	//PrecacheSound(SOUND_GUNFIRE);
-	//PrecacheSound(SOUND_WINDUP);
-	
+
 }
 
-public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
+public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+//	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+	int weaponID = GetEventInt(event, "weapon_def_index");
 
-	if(g_bIsGSoldier[client])
+//	int weaponID = GetEntPropEnt(weapon, Prop_Send, "m_iItemDefinitionIndex");
+	
+	//PrintToChatAll("Attacker %N , weaponID %i, logname: %s", attacker, weaponID, weapon_logname);
+
+
+
+	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 4)
 	{
-		g_bIsGSoldier[client] = false;
+		
+		
+		TF2_AddCondition(attacker, TFCond_StealthedUserBuffFade, 10.0);
 	}
 }
+
+
+/* public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
+{	
+	PrintToChatAll("Returning false");
+	return false;
+}
+ */
+//trigger the event
+
 
 public Action:SetModel(client, const String:model[])
 {
@@ -125,92 +133,65 @@ public Action:SetModel(client, const String:model[])
 		AcceptEntityInput(client, "SetCustomModel");
 
 		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
+		
+		
 	}
 }
 
-public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
+MakeSpy(client)
 {
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!g_bIsGSoldier[entity]) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_soldier/giant_soldier_step01.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_soldier/giant_soldier_step03.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_soldier/giant_soldier_step02.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_soldier/giant_soldier_step04.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
-	}
-	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
-}
-
-MakeGiantSoldier(client)
-{
-	SMLogTag(SML_VERBOSE, "Createing Icebear");
-	TF2_SetPlayerClass(client, TFClass_Soldier);
+	TF2_SetPlayerClass(client, TFClass_Spy);
 	TF2_RegeneratePlayer(client);
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
 	if (ragdoll > MaxClients && IsValidEntity(ragdoll)) AcceptEntityInput(ragdoll, "Kill");
 	decl String:weaponname[32];
 	GetClientWeapon(client, weaponname, sizeof(weaponname));
-	if (strcmp(weaponname, "tf_weapon_", false) == 0) 
+	if (strcmp(weaponname, "tf_weapon_", false) == 2)
 	{
-		SetEntProp(GetPlayerWeaponSlot(client, 0), Prop_Send, "m_iWeaponState", 0);
+		SetEntProp(GetPlayerWeaponSlot(client, 2), Prop_Send, "m_iWeaponState", 2);
 		TF2_RemoveCondition(client, TFCond_Slowed);
 	}
 	CreateTimer(0.0, Timer_Switch, client);
-	SetModel(client, GSOLDIER);
-	
-	int iHealth = 3800;
-		
-	int MaxHealth = 200;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
-	
+	SetModel(client, ChangeDane);
+
+
+	int iHealth = 1200;
+	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
-	
+
 	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
+
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
+	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
-	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
-	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.3);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
+	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
-	//TF2Attrib_SetByName(client, "override footstep sound set", 3.0);
-	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
-	UpdatePlayerHitbox(client, 1.75);
+	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
+	
+	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
+	TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
+	TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
+	TF2Attrib_SetByName(client, "metal regen", 50.0);
+	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
+	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
+	TF2Attrib_SetByName(client, "mod teleporter cost", 0.5);
+	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
+	
+	
+	UpdatePlayerHitbox(client, 1.65);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGSoldier[client] = true;
+	g_bisGSPY[client] = true;
 	
-	PrintToChat(client, "1. You are now Icebear soldier !");
+	PrintToChat(client, "1. You are now Uncle Dane robot !");
 	
 }
 
@@ -223,142 +204,117 @@ stock TF2_SetHealth(client, NewHealth)
 public Action:Timer_Switch(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
-		GiveGiantPyro(client);
+	GiveBigRoboDane(client);
 }
 
-stock GiveGiantPyro(client)
+// public Action:Timer_Resize(Handle:timer, any:hat)
+// {
+	// if (IsValidClient(client))
+	// GiveBigRoboDane(client);
+// }
+
+stock GiveBigRoboDane(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsGSoldier[client] = true;
+		g_bisGSPY[client] = true;
 		
 		TF2_RemoveAllWearables(client);
 
-		TF2_RemoveWeaponSlot(client, 0);
-		TF2_RemoveWeaponSlot(client, 1);
-		TF2_RemoveWeaponSlot(client, 2);
-		CreateWeapon(client, "tf_weapon_rocketlauncher", 15006, 6, 1, 2, 0);
-		
-//		CreateWeapon(client, "tf_weapon_shovel", 447, 6, 1, 2, 0);
-		
-		
-		CreateHat(client, 183, 10, 6, true); //Sergeant's Drill Hat
-		CreateHat(client, 647, 10, 6, true); //The All-Father
-		CreateHat(client, 343, 10, 6, true);//Professor speks
+	TF2_RemoveWeaponSlot(client, 0); //Revolver
+	TF2_RemoveWeaponSlot(client, 1); //Sapper
+	TF2_RemoveWeaponSlot(client, 2); // Gun
+	//TF2_RemoveWeaponSlot(client, 3); //Disguise kit
+	TF2_RemoveWeaponSlot(client, 4);// nothing
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		//int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
+// int client, char[] classname, int itemindex, int quality, int level, int slot, int paint)
+	CreateWeapon(client, "tf_weapon_revolver", 24, 6, 1, 0, 0);
+//	CreateWeapon(client, "tf_weapon_sapper", 810, 6, 1, 1, 0);
+	CreateWeapon(client, "tf_weapon_knife", 4, 6, 1, 2, 0); 
+	CreateWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 		
-		if(IsValidEntity(Weapon1))
+
+	//	CreateHat(client, 30420, 10, 6, 15132390.0); // the danger
+		//	CreateHat(client, 30178, 10, 6, 1315860);
+	//	CreateHat(client, 30172, 10, 6, 15132390.0); //gold digger
+//		CreateHat(client, 30539, 10, 6, 15132390.0); //insulator
+		
+	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
+	int Knife = GetPlayerWeaponSlot(client, 2); //Knife
+	int Cloak = GetPlayerWeaponSlot(client, 4); //Invis watch
+	int Sapper = GetPlayerWeaponSlot(client, 1); //Sapper
+
+	if(IsValidEntity(Revolver)) //Revovler
 		{
-			TF2Attrib_RemoveAll(Weapon1);
+			TF2Attrib_RemoveAll(Revolver);
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 5.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.35);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.6);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.8);
-			
-		//	TF2Attrib_SetByName(Weapon1, "disable fancy class select anim", 1.0);
+			TF2Attrib_SetByName(Revolver, "fire rate bonus", 2.5);
+			TF2Attrib_SetByName(Revolver, "damage bonus", 2.0);
+			TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
 						
-\			
 		}
-		
 
+	if(IsValidEntity(Knife)) //
+		{
+			TF2Attrib_RemoveAll(Knife);
+			
+			TF2Attrib_SetByName(Knife, "fire rate bonus", 0.8);
+			//TF2Attrib_SetByName(Knife, "damage bonus", 1.5);
+			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
+						
+		}
+	if(IsValidEntity(Cloak)) //
+		{
+			TF2Attrib_RemoveAll(Cloak);
+			
+			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
+			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.5);
+
+			
+						
+		}
+	if(IsValidEntity(Sapper)) //
+		{
+			TF2Attrib_RemoveAll(Sapper);
+			
+		//	TF2Attrib_SetByName(Sapper, "mult cloak meter consume rate", 0.0);
+			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 150.0);
+			TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
+			
+		}
+
+		 
+		
+		
+		
 	}
 }
- 
+
 public player_inv(Handle event, const char[] name, bool dontBroadcast) 
 {
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bIsGSoldier[client] && IsValidClient(client))
+	if (g_bisGSPY[client] && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
-		TF2Attrib_RemoveByName(Weapon1, "maxammo primary increased");
+		TF2Attrib_RemoveByName(Weapon1, "fire rate bonus");
+		TF2Attrib_RemoveByName(Weapon1, "damage bonus");
+		TF2Attrib_RemoveByName(Weapon1, "critboost on kill");
 		TF2Attrib_RemoveByName(Weapon1, "killstreak tier");
 	}
 }
 
-/* public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
-{
-	if (IsValidClient(iClient) && g_bIsGSoldier[iClient]) 
-	{	
-		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-		if(IsValidEntity(weapon))
-		{
-			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
-			if (iWeaponState == 1 && !Locked1[iClient])
-			{
-				EmitSoundToAll(SOUND_WINDUP, iClient);
-			//	PrintToChatAll("WeaponState = Windup");
-				
-				Locked1[iClient] = true;
-				Locked2[iClient] = false;
-				Locked3[iClient] = false;
-				CanWindDown[iClient] = true;
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-			}
-			else if (iWeaponState == 2 && !Locked2[iClient])
-			{
-				EmitSoundToAll(SOUND_GUNFIRE, iClient);
-			//	PrintToChatAll("WeaponState = Firing");
-				
-				Locked2[iClient] = true;
-				Locked1[iClient] = true;
-				Locked3[iClient] = false;
-				CanWindDown[iClient] = true;
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-			}
-			else if (iWeaponState == 3 && !Locked3[iClient])
-			{
+/*
+public Native_SetSuperHeavyweightChamp(Handle:plugin, args)
+		MakeSpy(GetNativeCell(1));
 
-			//	PrintToChatAll("WeaponState = Spun Up");
-				
-				Locked3[iClient] = true;
-				Locked1[iClient] = true;
-				Locked2[iClient] = false;
-				CanWindDown[iClient] = true;
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-			}
-			else if (iWeaponState == 0)
-			{
-				if (CanWindDown[iClient])
-				{
-			//		PrintToChatAll("WeaponState = WindDown");
+public Native_IsSuperHeavyweightChamp(Handle:plugin, args)
+		return g_bisGSPY[GetNativeCell(1)];*/
 
-					CanWindDown[iClient] = false;
-				}
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-				
-				Locked1[iClient] = false;
-				Locked2[iClient] = false;
-				Locked3[iClient] = false;
-			}
-		}
-	}
-} */
-
-public Native_SetGiantPyro(Handle:plugin, args)
-	MakeGiantSoldier(GetNativeCell(1));
-
-public Native_IsGiantPyro(Handle:plugin, args)
-	return g_bIsGSoldier[GetNativeCell(1)];
-	
 stock bool:IsValidClient(client)
 {
 	if (client <= 0) return false;
@@ -366,7 +322,7 @@ stock bool:IsValidClient(client)
 	return IsClientInGame(client);
 }
 
-bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
+bool CreateHat(int client, int itemindex, int level, int quality, float paint)
 {
 	int hat = CreateEntityByName("tf_wearable");
 	
@@ -383,49 +339,38 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 	SetEntData(hat, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);
 	SetEntProp(hat, Prop_Send, "m_bValidatedAttachedEntity", 1);  	
 	
-	TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
-		
-//		CreateHat(client, 183, 10, 6, true); //Sergeant's Drill Hat
-		//CreateHat(client, 647, 10, 6, true); //The All-Father
-		//CreateHat(client, 343, 10, 6, false);//Professor Speks
-
+	if (paint != 0){
+		//PrintToChatAll("Painting hat! %s",hat);
+		TF2Attrib_SetByDefIndex(hat, 142, paint);
+		TF2Attrib_SetByDefIndex(hat, 261, paint);
+	}
+	
+	//Set head scale
+	
+	
+	// if (scale == true){
+	// SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 1.30);
+	// }
+	
 	switch (itemindex)
 	{
-	case 183://Sergeant's Drill Hat
+	case 30420:
 		{
-/* 			if (iTeam == TFTeam_Blue){
-				TF2Attrib_SetByDefIndex(hat, 142, 12807213.0);
-				TF2Attrib_SetByDefIndex(hat, 261, 12807213.0);
-			}
-			if (iTeam == TFTeam_Red){
-				TF2Attrib_SetByDefIndex(hat, 142, 12091445.0);
-				TF2Attrib_SetByDefIndex(hat, 261, 12091445.0);
-			} */
+			// The Danger	
+			SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 1.3);
+			//TF2Attrib_SetByDefIndex(hat, 134, 61);
 		}
-	case 647://The All-Father
+	case 30172:
 		{
-/* 			
-			if (iTeam == TFTeam_Blue){
-				TF2Attrib_SetByDefIndex(hat, 142, 12807213.0);
-				TF2Attrib_SetByDefIndex(hat, 261, 12807213.0);
-			}
-			if (iTeam == TFTeam_Red){
-				TF2Attrib_SetByDefIndex(hat, 142, 12091445.0);
-				TF2Attrib_SetByDefIndex(hat, 261, 12091445.0);
-			} */
+			// GOLDDIGGER
+			SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 1.3);
+			//CreateTimer(1.0, Timer_Resize, hat);
+			//SetEntPropFloat(hat, Prop_Send, "m_flModelScale", 10.0);  	
+			
 		}
-	case 343://Professor Speks
-	{
-		TF2Attrib_SetByDefIndex(hat, 542, 1.0);//item style
+		
 	}
-	
 
-
-	}
-	
-	if (scale == true){
-		SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 0.75);
-	}
 
 	DispatchSpawn(hat);
 	EquipWearable(client, hat);

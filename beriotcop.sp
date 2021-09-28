@@ -154,7 +154,7 @@ MakeRiotcop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 4950;
+	int iHealth = 5000;
 	
 	
 	int MaxHealth = 300;
@@ -171,9 +171,9 @@ MakeRiotcop(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.7);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
@@ -184,8 +184,8 @@ MakeRiotcop(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	//TF2Attrib_SetByName(client, "mult_item_meter_charge_rate", 0.3);
-	TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
-	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
+	//TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
+	//TF2Attrib_SetByName(client, "increase buff duration", 10.0);
 	 
 
 	UpdatePlayerHitbox(client, 1.75);
@@ -240,38 +240,31 @@ stock GiveGDeflectorH(client)
 			panham = 1013;
 		} */
 
-		CreateWeapon(client, "tf_weapon_club", 264, 6, 2, 2);
-		CreateWeapon(client, "tf_weapon_lunchbox", 311, 6, 2, 1);
+		CreateWeapon(client, "tf_weapon_shotgun_hwg", 11, 6, 2, 2);
+		//CreateWeapon(client, "tf_weapon_lunchbox", 311, 6, 2, 1);
 
 		CreateHat(client, 478, 10, 6, true); //Macho mann
 		CreateHat(client, 343, 10, 6, true); //the law
 		CreateHat(client, 296, 10, 6, false);//Siberian Sophisticate
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		if(IsValidEntity(Weapon1))
-		{
-			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.35);
-			TF2Attrib_SetByName(Weapon1, "ragdolls plasma effect", 1.0);
-			TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 250.0);
-			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.25);
-			//TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
-		//	TF2Attrib_SetByName(Weapon1, "increased air control", 1000.0);
-			
-
-		}
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.25);
+			TF2Attrib_SetByName(Weapon2, "attack projectiles", 1.0); // The Atributte doesn't work with Shotguns.
+			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 10.0);
+			TF2Attrib_SetByName(Weapon2, "damage penalty", 0.5);
+			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.25);
+			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "lunchbox adds minicrits", 7.0);
-			TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 20.0);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.6);
+			//TF2Attrib_SetByName(Weapon2, "fire rate bonus with reduced health", 0.75);
+			
 			
 
-
 		}
+
 	}
 }
         
@@ -294,10 +287,8 @@ public TF2_OnConditionAdded(client, TFCond:condition)
         if (tauntid == -1)
         {
 			
-		TF2_AddCondition(client, TFCond_CritCola, 30.0);
-		TF2_AddCondition(client, TFCond_RegenBuffed, 30.0);
-		TF2_AddCondition(client, TFCond_RestrictToMelee, 30.0);
-        CreateTimer(2.5, Timer_Taunt_Cancel, client);
+		
+        CreateTimer(3.2, Timer_Taunt_Cancel, client);
         }	  
 
 	}
@@ -307,11 +298,17 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 {
 	if (IsValidClient(client)){
 
+		if (TF2_IsPlayerInCondition(client, TFCond_Taunting))
+		{
 		TF2_RemoveCondition(client, TFCond_Taunting);
+		TF2_AddCondition(client, TFCond_CritCola, 6.0);
+		}
+		//TF2_AddCondition(client, TFCond_SpeedBuffAlly, 10.0);
+		
+		
+		/* int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
-		int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-
-		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon); 
+		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);  */
 	}
 }
 
