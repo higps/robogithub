@@ -28,13 +28,11 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new bool:g_bIsPanCop[MAXPLAYERS + 1];
-
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	//HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	
 	AddNormalSoundHook(BossGPS);
 
@@ -49,7 +47,7 @@ public OnPluginStart()
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
 {
 	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!g_bIsPanCop[entity]) return Plugin_Continue;
+	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
 
 	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
 	{
@@ -96,10 +94,10 @@ public OnClientPutInServer(client)
  
 public OnClientDisconnect_Post(client)
 {
-	if (g_bIsPanCop[client])
+	if (IsRobot(client, ROBOT_NAME))
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
-		g_bIsPanCop[client] = false;
+	
 	}
 }
  
@@ -117,7 +115,7 @@ public OnMapStart()
 
 }
 
-public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
+/* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -125,7 +123,7 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 	{
 		g_bIsPanCop[client] = false;
 	}
-}
+} */
  
 public Action:SetModel(client, const String:model[])
 {
@@ -192,19 +190,7 @@ MakePanCop(client)
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsPanCop[client] = true;
-	
-	//g_IsGPS[client] = true;
-	
-/* 		PrintToChat(client, "1. You are now Giant Deflector GPS!");
-		PrintToChat(client, "2. Your Minigun deals 50 percent more damage and can destroy Rockets and Pipes !");
-		PrintToChat(client, "3. You will lose this status when you touch a locker");	 */
-	
-	//}
-	// else{
-	// PrintToChat(client, "You have to be heavy to become Deflector GPS");
-	// g_IsGPS[client] = false;
-	// }
+
 }
  
 stock TF2_SetHealth(client, NewHealth)
@@ -222,9 +208,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 stock GiveGDeflectorH(client)
 {
 	if (IsValidClient(client))
-	{
-		g_bIsPanCop[client] = true;
-		
+	{		
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -297,7 +281,7 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 		TF2_AddCondition(client, TFCond_CritCola, 30.0);
 		TF2_AddCondition(client, TFCond_RegenBuffed, 30.0);
 		TF2_AddCondition(client, TFCond_RestrictToMelee, 30.0);
-        CreateTimer(2.5, Timer_Taunt_Cancel, client);
+		CreateTimer(2.5, Timer_Taunt_Cancel, client);
         }	  
 
 	}

@@ -22,8 +22,6 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new bool:g_bIsGDEKNIGHT[MAXPLAYERS + 1];
-
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
@@ -57,10 +55,9 @@ public OnClientPutInServer(client)
 
 public OnClientDisconnect_Post(client)
 {
-	if (g_bIsGDEKNIGHT[client])
+	if (IsRobot(client, ROBOT_NAME))
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
-		g_bIsGDEKNIGHT[client] = false;
 	}
 }
 
@@ -145,7 +142,6 @@ MakeSolar(client)
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGDEKNIGHT[client] = true;
 	
 	PrintToChat(client, "1. You are now Giant Solar Light !");
 }
@@ -165,9 +161,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
-	{
-		g_bIsGDEKNIGHT[client] = true;
-		
+	{		
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -244,7 +238,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bIsGDEKNIGHT[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);

@@ -15,7 +15,7 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/sentrybuster/mvm_sentrybuster_loop.wav"
 
-new bool:AboutToExplode[MAXPLAYERS + 1];
+bool AboutToExplode[MAXPLAYERS + 1];
 
 public Plugin:myinfo =
 {
@@ -26,7 +26,7 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new bool:g_bIsGBUSTER[MAXPLAYERS + 1];
+//new bool:g_bIsGBUSTER[MAXPLAYERS + 1];
 
 public OnPluginStart()
 {
@@ -49,11 +49,20 @@ public OnPluginStart()
 	}
 
 	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
+}
+public Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+	if (IsRobot(victim, ROBOT_NAME) )
+	{
+		AboutToExplode[victim] = false;
+	}
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -72,10 +81,10 @@ public OnClientPutInServer(client)
 
 public OnClientDisconnect_Post(client)
 {
-	if (g_bIsGBUSTER[client])
+	if (IsRobot(client, ROBOT_NAME))
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
-		g_bIsGBUSTER[client] = false;
+		
 	}
 	SDKUnhook(client, SDKHook_Touch, OnTouch);
 }
@@ -120,7 +129,7 @@ public Action OnTouch(int client, int ent)
     //		GetEdictClassname(ent, class, sizeof(class));
 	
         //PrintToChatAll("ent was %i", ent);
-			if (g_bIsGBUSTER[client])
+			if (IsRobot(client, ROBOT_NAME))
 			 {
         char entname[MAX_NAME_LENGTH];
         GetEdictClassname(ent, entname, sizeof(entname));
@@ -244,7 +253,7 @@ MakeBuster(client)
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGBUSTER[client] = true;
+
 	
 	PrintToChat(client, "1. You are now Giant Solar Light !");
 }
@@ -288,7 +297,7 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 	//PrintToChatAll("Taunt ID %i", tauntid);
 	
 
-	if (g_bIsGBUSTER[client] && tauntid == -1)
+	if (IsRobot(client, ROBOT_NAME) && tauntid == -1)
 	{
 	//	if (AboutToExplode[client]) return Plugin_Continue;
 //		if (GetEntProp(client, Prop_Send, "m_hGroundEntity") == -1) return Plugin_Continue;
@@ -410,7 +419,7 @@ stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsGBUSTER[client] = true;
+
 		
 		TF2_RemoveAllWearables(client);
 
@@ -447,26 +456,13 @@ stock GiveGiantDemoKnight(client)
 	}
 }
 
-/* public Action:SoundHook(clients[64], &numClients, String:sound[PLATFORM_MAX_PATH], &Ent, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
-	if (!IsValidClient(Ent)) return Plugin_Continue;
-	new client = Ent;
-	if (g_bIsGBUSTER[client])
-	{
-		if (StrContains(sound, "announcer", false) != -1) return Plugin_Continue;
-		if (StrContains(sound, "/mvm", false) != -1 || StrContains(sound, "\\mvm", false) != -1) return Plugin_Continue;
-		if (StrContains(sound, "vo/", false) != -1) return Plugin_Stop;
-	}
-	return Plugin_Continue;
-} */
 
 public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {
 		if(IsValidClient(attacker))
 		{
 		//	PrintCenterTextAll("hit1");
-			if (g_bIsGBUSTER[attacker] && IsValidClient(victim))
+			if (IsRobot(attacker, ROBOT_NAME) && IsValidClient(victim))
 		{
 		//	PrintCenterTextAll("hit2");
 			//GetReadyToExplode(attacker);
@@ -480,7 +476,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 if (IsValidClient(victim))
 	{
 		
-		if (!g_bIsGBUSTER[victim]|| victim == attacker) return Plugin_Continue;
+		if (!IsRobot(victim, ROBOT_NAME)|| victim == attacker) return Plugin_Continue;
 
 
 		
@@ -488,6 +484,7 @@ if (IsValidClient(victim))
 		if (AboutToExplode[victim])
 		{
 			damage = 0.0;
+			FakeClientCommand(victim, "taunt");
 			return Plugin_Changed;
 		}
 		else if (damage+10.0 > GetClientHealth(victim))
@@ -500,7 +497,7 @@ if (IsValidClient(victim))
 	}
 if (IsValidClient(attacker)) // This is a Sentry.
 	{
-		if (!g_bIsGBUSTER[victim] && !AboutToExplode[attacker])
+		if (!IsRobot(victim, ROBOT_NAME) && !AboutToExplode[attacker])
 		{
 			damage = 0.0;
 			return Plugin_Changed;
@@ -517,7 +514,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	
 
 
-	if (g_bIsGBUSTER[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);

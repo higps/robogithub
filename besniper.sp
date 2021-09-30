@@ -10,7 +10,7 @@
 #include <dhooks>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Sniper"
+#define ROBOT_NAME	"Jbird"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -20,14 +20,12 @@
 
 public Plugin:myinfo =
 {
-	name = "[TF2] Be Big Robot Sniper",
+	name = "[TF2] Be Big Robot Jbird",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Sniper",
+	description = "Play as the Giant Jbird",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-
-bool g_bisGSniper[MAXPLAYERS + 1];
 
 public OnPluginStart()
 {
@@ -65,11 +63,9 @@ public OnClientPutInServer(client)
 
 public OnClientDisconnect_Post(client)
 {
-	if (g_bisGSniper[client])
+	if (IsRobot(client, ROBOT_NAME))
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
-		g_bisGSniper[client] = false;
-
 		//SDKUnhook(client, SDKHook_StartTouch, OnTouch);
 	}
 }
@@ -94,28 +90,6 @@ public OnMapStart()
 
 
 }
-
-/* public Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-//	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-	int weaponID = GetEventInt(event, "weapon_def_index");
-
-//	int weaponID = GetEntPropEnt(weapon, Prop_Send, "m_iItemDefinitionIndex");
-	
-	//PrintToChatAll("Attacker %N , weaponID %i, logname: %s", attacker, weaponID, weapon_logname);
-
-
-
-	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 4)
-	{
-		
-		
-		TF2_AddCondition(attacker, TFCond_StealthedUserBuffFade, 10.0);
-	}
-}
- */
-
 
 public Action:SetModel(client, const String:model[])
 {
@@ -157,7 +131,7 @@ MakeSniper(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	TF2Attrib_SetByName(client, "move speed penalty", 0.4);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
@@ -167,14 +141,14 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "major increased jump height", 0.5);
+	TF2Attrib_SetByName(client, "major increased jump height", 0.8);
+	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
 	
 	UpdatePlayerHitbox(client, 1.65);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bisGSniper[client] = true;
 	
 	PrintToChat(client, "1. You are now Uncle Dane robot !");
 	
@@ -202,7 +176,6 @@ stock GiveBigRoboDane(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bisGSniper[client] = true;
 		
 		TF2_RemoveAllWearables(client);
 
@@ -214,18 +187,21 @@ stock GiveBigRoboDane(client)
 // int client, char[] classname, int itemindex, int quality, int level, int slot, int paint)
 	CreateWeapon(client, "tf_weapon_sniperrifle", 14, 6, 1, 0, 0);
 //	CreateWeapon(client, "tf_weapon_sapper", 810, 6, 1, 1, 0);
-	CreateWeapon(client, "tf_weapon_club", 3, 6, 1, 2, 0); 
+	CreateWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); 
 //	CreateWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 		
+	CreateWeapon(client, "tf_wearable", 642, 6, 1, 1, 0); 
 
-	//	CreateHat(client, 30420, 10, 6, 15132390.0); // the danger
-		//	CreateHat(client, 30178, 10, 6, 1315860);
-	//	CreateHat(client, 30172, 10, 6, 15132390.0); //gold digger
-//		CreateHat(client, 30539, 10, 6, 15132390.0); //insulator
+	CreateHat(client, 109, 10, 6, 0.0); // panama
+	CreateHat(client, 645, 10, 6, 7511618.0); //outback intellectial
+	CreateHat(client, 393, 10, 6, 7511618.0); //veil
+	//CreateHat(client, 642, 10, 6, 0.0); //cozy camper
+
 		
 	int SniperRifle = GetPlayerWeaponSlot(client, 0); //SniperRifle
 	int Kukri = GetPlayerWeaponSlot(client, 2); //SniperRifle
 
+	SetMannVsMachineMode = true;s
 
 	if(IsValidEntity(SniperRifle))
 		{
@@ -244,8 +220,12 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 10.0);
 			
 			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer", 1.0);
+			TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 1.0);
+			
 			
 		}
+		
+		
 
 	if(IsValidEntity(Kukri))
 		{
@@ -266,22 +246,6 @@ stock GiveBigRoboDane(client)
 	}
 }
 
-public player_inv(Handle event, const char[] name, bool dontBroadcast) 
-{
-	int userd = GetEventInt(event, "userid");
-	int client = GetClientOfUserId(userd);
-	
-	if (g_bisGSniper[client] && IsValidClient(client))
-	{
-		TF2_RemoveAllWearables(client);
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		
-		TF2Attrib_RemoveByName(Weapon1, "fire rate bonus");
-		TF2Attrib_RemoveByName(Weapon1, "damage bonus");
-		TF2Attrib_RemoveByName(Weapon1, "critboost on kill");
-		TF2Attrib_RemoveByName(Weapon1, "killstreak tier");
-	}
-}
 
 /*
 public Native_SetSuperHeavyweightChamp(Handle:plugin, args)
@@ -317,7 +281,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, float paint)
 	if (paint != 0){
 		//PrintToChatAll("Painting hat! %s",hat);
 		TF2Attrib_SetByDefIndex(hat, 142, paint);
-		TF2Attrib_SetByDefIndex(hat, 261, paint);
+	//	TF2Attrib_SetByDefIndex(hat, 261, paint);
 	}
 	
 	//Set head scale
@@ -329,13 +293,14 @@ bool CreateHat(int client, int itemindex, int level, int quality, float paint)
 	
 	switch (itemindex)
 	{
-	case 30420:
+	case 109:
 		{
-			// The Danger	
+			//Panama	
 			SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 1.3);
-			//TF2Attrib_SetByDefIndex(hat, 134, 61);
+/* 			TF2Attrib_SetByDefIndex(hat, 142, 1315860);
+			TF2Attrib_SetByDefIndex(hat, 261, 1315860); */
 		}
-	case 30172:
+	case 393:
 		{
 			// GOLDDIGGER
 			SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 1.3);

@@ -32,7 +32,7 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new bool:g_bIsGDEFLECTORH[MAXPLAYERS + 1];
+
 
 new bool:Locked1[MAXPLAYERS+1];
 new bool:Locked2[MAXPLAYERS+1];
@@ -43,7 +43,7 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	
 	AddNormalSoundHook(BossGPS);
 
@@ -62,7 +62,7 @@ public OnPluginStart()
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
 {
 	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!g_bIsGDEFLECTORH[entity]) return Plugin_Continue;
+	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
 
 	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
 	{
@@ -88,6 +88,7 @@ public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH]
 		}
 		return Plugin_Changed;
 	}
+	return Plugin_Continue;
 }
 
 public void OnPluginEnd()
@@ -109,14 +110,14 @@ public OnClientPutInServer(client)
  
 public OnClientDisconnect_Post(client)
 {
-	if (g_bIsGDEFLECTORH[client])
+	if (IsRobot(client, ROBOT_NAME))
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 		StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
 		StopSound(client, SNDCHAN_AUTO, SOUND_GUNSPIN);
 		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
 		StopSound(client, SNDCHAN_AUTO, SOUND_WINDDOWN);
-		g_bIsGDEFLECTORH[client] = false;
+	//	g_bIsGDEFLECTORH[client] = false;
 	}
 }
  
@@ -147,7 +148,7 @@ public OnMapStart()
 	PrecacheSound(SOUND_WINDDOWN);
 }
 
-public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
+/* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -155,7 +156,7 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 	{
 		g_bIsGDEFLECTORH[client] = false;
 	}
-}
+} */
  
 public Action:SetModel(client, const String:model[])
 {
@@ -217,7 +218,7 @@ MakeGDeflectorH(client)
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGDEFLECTORH[client] = true;
+	
 	
 	//g_IsGPS[client] = true;
 	
@@ -248,7 +249,7 @@ stock GiveGDeflectorH(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsGDEFLECTORH[client] = true;
+		
 		
 		TF2_RemoveAllWearables(client);
 
@@ -296,7 +297,7 @@ stock GiveGDeflectorH(client)
 
 public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
 {
-	if (IsValidClient(iClient) && g_bIsGDEFLECTORH[iClient]) 
+	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME))
 	{	
 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
 		if(IsValidEntity(weapon))

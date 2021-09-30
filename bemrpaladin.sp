@@ -8,11 +8,12 @@
 //#include <sendproxy>
 #include <tfobjects>
 #include <dhooks>
+#include <tf2items_giveweapon>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Spy"
+#define ROBOT_NAME	"Mr Paladin"
 
-#define ChangeDane             "models/bots/spy/bot_spy.mdl"
+#define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
@@ -27,7 +28,7 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-bool g_bisGSPY[MAXPLAYERS + 1];
+//bool g_bisGSPY[MAXPLAYERS + 1];
 
 public OnPluginStart()
 {
@@ -39,7 +40,7 @@ public OnPluginStart()
 	sounds.spawn = SPAWN;
 	sounds.loop = LOOP;
 	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Engineer", MakeSpy, PLUGIN_VERSION, sounds);
+	AddRobot(ROBOT_NAME, "Mr Paladin", MakeSpy, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()
@@ -65,10 +66,10 @@ public OnClientPutInServer(client)
 
 public OnClientDisconnect_Post(client)
 {
-	if (g_bisGSPY[client])
+	if (IsRobot(client, ROBOT_NAME))
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
-		g_bisGSPY[client] = false;
+	
 
 		//SDKUnhook(client, SDKHook_StartTouch, OnTouch);
 	}
@@ -78,7 +79,7 @@ public OnClientDisconnect_Post(client)
 
 public OnMapStart()
 {
-	PrecacheModel(ChangeDane);
+	PrecacheModel(MODEL);
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
@@ -107,7 +108,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 
 
-	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 4)
+	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 356)
 	{
 		
 		
@@ -153,7 +154,7 @@ MakeSpy(client)
 		TF2_RemoveCondition(client, TFCond_Slowed);
 	}
 	CreateTimer(0.0, Timer_Switch, client);
-	SetModel(client, ChangeDane);
+	SetModel(client, MODEL);
 
 
 	int iHealth = 1200;
@@ -183,13 +184,13 @@ MakeSpy(client)
 	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
 	TF2Attrib_SetByName(client, "mod teleporter cost", 0.5);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
-	
+	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
 	UpdatePlayerHitbox(client, 1.65);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bisGSPY[client] = true;
+
 	
 	PrintToChat(client, "1. You are now Uncle Dane robot !");
 	
@@ -217,28 +218,32 @@ stock GiveBigRoboDane(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bisGSPY[client] = true;
+
 		
-		TF2_RemoveAllWearables(client);
+	TF2_RemoveAllWearables(client);
 
 	TF2_RemoveWeaponSlot(client, 0); //Revolver
-	TF2_RemoveWeaponSlot(client, 1); //Sapper
+//	TF2_RemoveWeaponSlot(client, 1); //Sapper
 	TF2_RemoveWeaponSlot(client, 2); // Gun
 	//TF2_RemoveWeaponSlot(client, 3); //Disguise kit
-	TF2_RemoveWeaponSlot(client, 4);// nothing
+//	TF2_RemoveWeaponSlot(client, 4);// inviswatch
 
-
+	
 // int client, char[] classname, int itemindex, int quality, int level, int slot, int paint)
-	CreateWeapon(client, "tf_weapon_revolver", 24, 6, 1, 0, 0);
-//	CreateWeapon(client, "tf_weapon_sapper", 810, 6, 1, 1, 0);
-	CreateWeapon(client, "tf_weapon_knife", 4, 6, 1, 2, 0); 
-	CreateWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
+	//CreateWeapon(client, "tf_weapon_revolver", 224, 6, 1, 0, 0);
+	CreateWeapon(client, "tf_weapon_sapper", 735, 6, 1, 0, 0);
+	//CreateWeapon(client, "tf_weapon_knife", 356, 6, 1, 2, 0); 
+	//CreateWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 		
+//	TF2Items_GiveWeapon(client, 224);
+//	TF2Items_GiveWeapon(client, 735);
+//	TF2Items_GiveWeapon(client, 356);
+//	TF2Items_GiveWeapon(client, 30);
 
-	//	CreateHat(client, 30420, 10, 6, 15132390.0); // the danger
-		//	CreateHat(client, 30178, 10, 6, 1315860);
-	//	CreateHat(client, 30172, 10, 6, 15132390.0); //gold digger
-//		CreateHat(client, 30539, 10, 6, 15132390.0); //insulator
+	CreateHat(client, 319, 10, 6, 15132390.0); // Noir
+	//CreateHat(client, 30476, 10, 6, 0.0); //lady killer
+	CreateHat(client, 343, 10, 6, 0.0); //spek
+	
 		
 	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
 	int Knife = GetPlayerWeaponSlot(client, 2); //Knife
@@ -247,7 +252,7 @@ stock GiveBigRoboDane(client)
 
 	if(IsValidEntity(Revolver)) //Revovler
 		{
-			TF2Attrib_RemoveAll(Revolver);
+		//	TF2Attrib_RemoveAll(Revolver);
 			
 			TF2Attrib_SetByName(Revolver, "fire rate bonus", 2.5);
 			TF2Attrib_SetByName(Revolver, "damage bonus", 2.0);
@@ -262,6 +267,9 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Knife, "fire rate bonus", 0.8);
 			//TF2Attrib_SetByName(Knife, "damage bonus", 1.5);
 			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
+			TF2Attrib_SetByName(Knife, "restore health on kill", 250.0);
+			
 						
 		}
 	if(IsValidEntity(Cloak)) //
@@ -282,7 +290,8 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 150.0);
 			TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
 			
-		}
+			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
+		}	
 
 		 
 		
@@ -296,7 +305,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bisGSPY[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -352,7 +361,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, float paint)
 	// SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 1.30);
 	// }
 	
-	switch (itemindex)
+/* 	switch (itemindex)
 	{
 	case 30420:
 		{
@@ -369,7 +378,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, float paint)
 			
 		}
 		
-	}
+	} */
 
 
 	DispatchSpawn(hat);

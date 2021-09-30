@@ -26,8 +26,8 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-
-bool g_bIsChangeDane[MAXPLAYERS + 1];
+//IsRobot(client, ROBOT_NAME)
+//bool g_bIsChangeDane[MAXPLAYERS + 1];
 
 public OnPluginStart()
 {
@@ -65,10 +65,10 @@ public OnClientPutInServer(client)
 
 public OnClientDisconnect_Post(client)
 {
-	if (g_bIsChangeDane[client])
+	if (IsRobot(client, ROBOT_NAME))
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
-		g_bIsChangeDane[client] = false;
+	
 
 		//SDKUnhook(client, SDKHook_StartTouch, OnTouch);
 	}
@@ -116,7 +116,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	//int entRef = EntIndexToEntRef(iObj);
 	//PrintToChatAll("iObj %i", iObj);
 	
-	if (IsValidClient(iBuilder) && g_bIsChangeDane[iBuilder]){
+	if (IsValidClient(iBuilder) && IsRobot(iBuilder, ROBOT_NAME)){
 		// SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);
 		// SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
 		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.65);
@@ -188,13 +188,13 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
 	TF2Attrib_SetByName(client, "mod teleporter cost", 0.5);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
-	
+
 	
 	UpdatePlayerHitbox(client, 1.65);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsChangeDane[client] = true;
+	//g_bIsChangeDane[client] = true;
 	
 	PrintToChat(client, "1. You are now Uncle Dane robot !");
 	
@@ -222,7 +222,7 @@ stock GiveBigRoboDane(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsChangeDane[client] = true;
+	//	g_bIsChangeDane[client] = true;
 		
 		TF2_RemoveAllWearables(client);
 
@@ -280,7 +280,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bIsChangeDane[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);

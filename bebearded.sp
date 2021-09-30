@@ -27,7 +27,7 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new bool:g_bIsBearded[MAXPLAYERS + 1];
+//new bool:g_bIsBearded[MAXPLAYERS + 1];
   
 public OnPluginStart()
 {
@@ -62,10 +62,10 @@ public OnClientPutInServer(client)
  
 public OnClientDisconnect_Post(client)
 {
-	if (g_bIsBearded[client])
+	if (IsRobot(client, ROBOT_NAME))
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
-		g_bIsBearded[client] = false;
+	//	g_bIsBearded[client] = false;
 	}
 }
  
@@ -225,7 +225,7 @@ MakeBearded(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 
-	g_bIsBearded[client] = true;
+	//g_bIsBearded[client] = true;
 	
 	PrintToChat(client, "1. You are now Giant Bearded Expense bot !");
 	PrintToChat(client, "2. You are a juggernaut!");
@@ -248,7 +248,7 @@ stock GiveBearded(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsBearded[client] = true;
+	//	g_bIsBearded[client] = true;
 		
 		TF2_RemoveAllWearables(client);
 
@@ -412,12 +412,12 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	EmitSoundToAll(JUMP,client);
 }
  
-public player_inv(Handle event, const char[] name, bool dontBroadcast) 
+/* public player_inv(Handle event, const char[] name, bool dontBroadcast) 
 {
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bIsBearded[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -428,7 +428,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 		TF2Attrib_RemoveByName(Weapon3, "killstreak tier");
 	}
 }
-
+ */
  /*
 public Native_SetSuperHeavyweightChamp(Handle:plugin, args)
         MakeBearded(GetNativeCell(1));

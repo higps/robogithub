@@ -36,15 +36,12 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-new bool:g_bIsGSCOUT[MAXPLAYERS + 1];
-
 public OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
 
-	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	AddNormalSoundHook(BossScout);
 
 	RobotSounds sounds;
@@ -75,12 +72,12 @@ public OnClientPutInServer(client)
 
 public OnClientDisconnect_Post(client)
 {
-	if (g_bIsGSCOUT[client])
+	if (IsRobot(client, ROBOT_NAME))
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 	//	StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
 //		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
-		g_bIsGSCOUT[client] = false;
+		
 	}
 }
 
@@ -102,16 +99,6 @@ public OnMapStart()
 	
 }
 
-public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if(g_bIsGSCOUT[client])
-	{
-		g_bIsGSCOUT[client] = false;
-	}
-}
-
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -126,7 +113,7 @@ public Action:SetModel(client, const String:model[])
 public Action:BossScout(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
 {
 		if (!IsValidClient(entity)) return Plugin_Continue;
-		if (!g_bIsGSCOUT[entity]) return Plugin_Continue;
+		if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
 
 	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
 	{
@@ -204,9 +191,8 @@ MakeGiantscout(client)
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGSCOUT[client] = true;
 	
-	PrintToChat(client, "1. You are now Icebear scout !");
+	PrintToChat(client, "1. You are now Giant scout !");
 	
 }
 
@@ -226,8 +212,6 @@ stock GiveGiantPyro(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsGSCOUT[client] = true;
-		
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -277,7 +261,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bIsGSCOUT[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
@@ -354,9 +338,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 
-public Native_IsGiantPyro(Handle:plugin, args)
-	return g_bIsGSCOUT[GetNativeCell(1)];
-	
+
 stock bool:IsValidClient(client)
 {
 	if (client <= 0) return false;

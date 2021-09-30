@@ -19,6 +19,10 @@
 #define RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
 
+#define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
+#define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
+#define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
+
 public Plugin:myinfo = 
 {
 	name = "[TF2] Be the Giant Icebear Soldier",
@@ -36,26 +40,20 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-new bool:g_bIsGSoldier[MAXPLAYERS + 1];
-
-new bool:Locked1[MAXPLAYERS+1];
-new bool:Locked2[MAXPLAYERS+1];
-new bool:Locked3[MAXPLAYERS+1];
-new bool:CanWindDown[MAXPLAYERS+1];
-
 public OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
 
-	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	AddNormalSoundHook(BossIcebear);
 
 	RobotSounds sounds;
 	sounds.spawn = SPAWN;
 	sounds.loop = LOOP;
 //	sounds.gunfire = SOUND_GUNFIRE;
+	//sounds.gunfire = SOUND_GUNFIRE;
 //	sounds.windup = SOUND_WINDUP;
 	sounds.death = DEATH;
 	AddRobot(ROBOT_NAME, "Icebear", MakeGiantSoldier, PLUGIN_VERSION, sounds);
@@ -80,12 +78,12 @@ public OnClientPutInServer(client)
 
 public OnClientDisconnect_Post(client)
 {
-	if (g_bIsGSoldier[client])
+	if (IsValidClient(client) && IsRobot(client, ROBOT_NAME)) 
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 	//	StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
 //		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
-		g_bIsGSoldier[client] = false;
+	
 	}
 }
 
@@ -95,19 +93,23 @@ public OnMapStart()
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
+
+	PrecacheSound(GUNFIRE);
+	PrecacheSound(GUNFIRE_CRIT);
+	PrecacheSound(GUNFIRE_EXPLOSION);
 	
 
-	PrecacheSound("mvm/giant_soldier/giant_soldier_step01.wav");
-	PrecacheSound("mvm/giant_soldier/giant_soldier_step03.wav");
-	PrecacheSound("mvm/giant_soldier/giant_soldier_step02.wav");
-	PrecacheSound("mvm/giant_soldier/giant_soldier_step04.wav");
+	PrecacheSound(LEFTFOOT);
+	PrecacheSound(LEFTFOOT1);
+	PrecacheSound(RIGHTFOOT);
+	PrecacheSound(RIGHTFOOT1);
 	
 	//PrecacheSound(SOUND_GUNFIRE);
 	//PrecacheSound(SOUND_WINDUP);
 	
 }
 
-public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
+/* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -115,7 +117,7 @@ public EventInventoryApplication(Handle:event, const String:name[], bool:dontBro
 	{
 		g_bIsGSoldier[client] = false;
 	}
-}
+} */
 
 public Action:SetModel(client, const String:model[])
 {
@@ -131,30 +133,64 @@ public Action:SetModel(client, const String:model[])
 public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
 {
 	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!g_bIsGSoldier[entity]) return Plugin_Continue;
+	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
 
 	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
 	{
 		if (StrContains(sample, "1.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_soldier/giant_soldier_step01.wav");
+			Format(sample, sizeof(sample), LEFTFOOT);
 			EmitSoundToAll(sample, entity);
 		}
 		else if (StrContains(sample, "3.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_soldier/giant_soldier_step03.wav");
+			Format(sample, sizeof(sample), LEFTFOOT1);
 			EmitSoundToAll(sample, entity);
 		}
 		else if (StrContains(sample, "2.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_soldier/giant_soldier_step02.wav");
+			Format(sample, sizeof(sample), RIGHTFOOT);
 			EmitSoundToAll(sample, entity);
 		}
 		else if (StrContains(sample, "4.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_soldier/giant_soldier_step04.wav");
+			Format(sample, sizeof(sample), RIGHTFOOT1);
 			EmitSoundToAll(sample, entity);
 		}
+		return Plugin_Changed;
+	}
+
+	
+	if (strncmp(sample, ")weapons/", 9, false) == 0)
+	{
+		if (StrContains(sample, "rocket_shoot.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE);
+			EmitSoundToAll(sample, entity);
+			
+		}
+		else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_CRIT);
+			EmitSoundToAll(sample, entity);
+		}
+		
+		//Explosion doesnæt quite work
+		/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "explode2.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "explode3.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+			EmitSoundToAll(sample, entity);
+		} */
 		return Plugin_Changed;
 	}
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
@@ -208,7 +244,6 @@ MakeGiantSoldier(client)
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGSoldier[client] = true;
 	
 	PrintToChat(client, "1. You are now Icebear soldier !");
 	
@@ -230,7 +265,6 @@ stock GiveGiantPyro(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsGSoldier[client] = true;
 		
 		TF2_RemoveAllWearables(client);
 
@@ -273,91 +307,11 @@ stock GiveGiantPyro(client)
 
 	}
 }
- 
-public player_inv(Handle event, const char[] name, bool dontBroadcast) 
-{
-	int userd = GetEventInt(event, "userid");
-	int client = GetClientOfUserId(userd);
-	
-	if (g_bIsGSoldier[client] && IsValidClient(client))
-	{
-		TF2_RemoveAllWearables(client);
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		
-		TF2Attrib_RemoveByName(Weapon1, "maxammo primary increased");
-		TF2Attrib_RemoveByName(Weapon1, "killstreak tier");
-	}
-}
 
-/* public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
-{
-	if (IsValidClient(iClient) && g_bIsGSoldier[iClient]) 
-	{	
-		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-		if(IsValidEntity(weapon))
-		{
-			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
-			if (iWeaponState == 1 && !Locked1[iClient])
-			{
-				EmitSoundToAll(SOUND_WINDUP, iClient);
-			//	PrintToChatAll("WeaponState = Windup");
-				
-				Locked1[iClient] = true;
-				Locked2[iClient] = false;
-				Locked3[iClient] = false;
-				CanWindDown[iClient] = true;
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-			}
-			else if (iWeaponState == 2 && !Locked2[iClient])
-			{
-				EmitSoundToAll(SOUND_GUNFIRE, iClient);
-			//	PrintToChatAll("WeaponState = Firing");
-				
-				Locked2[iClient] = true;
-				Locked1[iClient] = true;
-				Locked3[iClient] = false;
-				CanWindDown[iClient] = true;
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-			}
-			else if (iWeaponState == 3 && !Locked3[iClient])
-			{
-
-			//	PrintToChatAll("WeaponState = Spun Up");
-				
-				Locked3[iClient] = true;
-				Locked1[iClient] = true;
-				Locked2[iClient] = false;
-				CanWindDown[iClient] = true;
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-			}
-			else if (iWeaponState == 0)
-			{
-				if (CanWindDown[iClient])
-				{
-			//		PrintToChatAll("WeaponState = WindDown");
-
-					CanWindDown[iClient] = false;
-				}
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-				
-				Locked1[iClient] = false;
-				Locked2[iClient] = false;
-				Locked3[iClient] = false;
-			}
-		}
-	}
-} */
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 
-public Native_IsGiantPyro(Handle:plugin, args)
-	return g_bIsGSoldier[GetNativeCell(1)];
 	
 stock bool:IsValidClient(client)
 {
@@ -383,7 +337,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 	SetEntData(hat, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);
 	SetEntProp(hat, Prop_Send, "m_bValidatedAttachedEntity", 1);  	
 	
-	TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+	//TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
 		
 //		CreateHat(client, 183, 10, 6, true); //Sergeant's Drill Hat
 		//CreateHat(client, 647, 10, 6, true); //The All-Father

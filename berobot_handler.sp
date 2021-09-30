@@ -341,15 +341,15 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             if(iClass == TFClass_Spy)
             {
                 // Checks if boss is on
-                if(g_cv_bDebugMode)
-                    //   PrintToChatAll("Attacker was spy");
+                if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy");
+
                     if(isMiniBoss(victim))
                     {
                         if(damagecustom == TF_CUSTOM_BACKSTAB)
                         {
                             damage = g_CV_flSpyBackStabModifier;
                             critType = CritType_Crit;
-                           // if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                            if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
 
                             return Plugin_Changed;
                         }
@@ -357,7 +357,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                         {
                             damage *= 1.1111;
                             critType = CritType_Crit;
-                            //if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                             return Plugin_Changed;
                         }
                     }
@@ -366,18 +366,18 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             if(iClass == TFClass_Sniper)
             {
                 // Checks if boss is on
-                if(g_cv_bDebugMode)
-                    //   PrintToChatAll("Attacker was spy");
+                if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy");
                     if(isMiniBoss(victim))
                     {
                         if(damagecustom == TF_CUSTOM_HEADSHOT)
                         {
                             
-                            critType = CritType_Crit;
+                            
                             damage *= 1.1111;
-                            if(g_cv_bDebugMode)
-                                //    PrintToChatAll("Set damage to %f", damage);
-                                return Plugin_Changed;
+                            critType = CritType_Crit;
+                            if(g_cv_bDebugMode) PrintToChatAll("Set damage to %f", damage);
+
+                            return Plugin_Changed;
                         }
                     }
             }
@@ -445,6 +445,7 @@ public Action Command_YT_Robot_Start(int client, int args)
     if(!g_BossMode)
     {
         g_cv_BlockTeamSwitch = true;
+        g_SpectateSelection = false;
         PrintCenterTextAll("Sarting Giant Robot Event mode");
         
         ServerCommand("mp_forceautoteam 0");
@@ -454,6 +455,8 @@ public Action Command_YT_Robot_Start(int client, int args)
         ServerCommand("mp_restartgame 5");
         ServerCommand("mp_autoteambalance 0");
         ServerCommand("mp_scrambleteams_auto 0");
+        ServerCommand("mp_forceautoteam  0");
+        
 
         //Randomly set which team is roboteam and humanteam
         int RandomTeam = GetRandomInt(1, 2);
@@ -913,6 +916,12 @@ public Action OnClientCommand(int client, int args)
 
     if(strcmp(cmd, "jointeam", true) == 0)
     {
+
+        if (g_SpectateSelection)
+        {
+            ChangeClientTeam(client, SPECTATE);
+            return Plugin_Handled;
+        }
 
         if(g_cv_BlockTeamSwitch)
         {

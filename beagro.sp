@@ -34,7 +34,7 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-new bool:g_bIsGPYRO[MAXPLAYERS + 1];
+//new bool:g_bIsGPYRO[MAXPLAYERS + 1];
 
 new bool:Locked1[MAXPLAYERS+1];
 new bool:Locked2[MAXPLAYERS+1];
@@ -47,7 +47,7 @@ public OnPluginStart()
 
 	LoadTranslations("common.phrases");
 
-	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	//HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 
 	RobotSounds sounds;
 	sounds.spawn = SPAWN;
@@ -77,12 +77,12 @@ public OnClientPutInServer(client)
 
 public OnClientDisconnect_Post(client)
 {
-	if (g_bIsGPYRO[client])
+	if (IsRobot(client, ROBOT_NAME))
 	{
 		StopSound(client, SNDCHAN_AUTO, LOOP);
 		StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
 		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
-		g_bIsGPYRO[client] = false;
+		
 	}
 }
 
@@ -107,15 +107,12 @@ public OnMapStart()
 	
 }
 
-public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
+/* ublic EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-	if(g_bIsGPYRO[client])
-	{
-		g_bIsGPYRO[client] = false;
-	}
-}
+
+} */
 
 public Action:SetModel(client, const String:model[])
 {
@@ -175,7 +172,7 @@ MakeGiantPyro(client)
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGPYRO[client] = true;
+	
 	
 	PrintToChat(client, "1. You are now Giant Pyro !");
 	PrintToChat(client, "2. Same stats as normal Pyro.");
@@ -199,7 +196,7 @@ stock GiveGiantPyro(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsGPYRO[client] = true;
+		
 		
 		TF2_RemoveAllWearables(client);
 
@@ -251,7 +248,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bIsGPYRO[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
@@ -263,7 +260,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 
 public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
 {
-	if (IsValidClient(iClient) && g_bIsGPYRO[iClient]) 
+	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME)) 
 	{	
 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
 		if(IsValidEntity(weapon))
@@ -328,8 +325,8 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantPyro(GetNativeCell(1));
 
-public Native_IsGiantPyro(Handle:plugin, args)
-	return g_bIsGPYRO[GetNativeCell(1)];
+/* public Native_IsGiantPyro(Handle:plugin, args)
+	return g_bIsGPYRO[GetNativeCell(1)]; */
 	
 stock bool:IsValidClient(client)
 {
