@@ -48,19 +48,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnClientPutInServer(client)
-{
-	OnClientDisconnect_Post(client);
-}
-
-public OnClientDisconnect_Post(client)
-{
-	if (IsRobot(client, ROBOT_NAME))
-	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-	}
-}
-
 public OnMapStart()
 {
 	PrecacheModel(GDEKNIGHT);
@@ -161,7 +148,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
-	{		
+	{
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -264,13 +251,6 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 		}
 	}
 }
-
-/*
-public Native_SetGiantDemoKnight(Handle:plugin, args)
-		MakeSolar(GetNativeCell(1));
-
-public Native_IsGiantDemoKnight(Handle:plugin, args)
-		return g_bIsGDEKNIGHT[GetNativeCell(1)];*/
 
 stock bool:IsValidClient(client)
 {

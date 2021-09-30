@@ -75,6 +75,7 @@ bool g_SpectateSelection = false;
 
 bool g_cv_Volunteered[MAXPLAYERS + 1];
 char g_cv_RobotPicked[MAXPLAYERS + 1][NAMELENGTH];
+bool g_ClientIsRepicking[MAXPLAYERS + 1];
 bool g_Voted[MAXPLAYERS + 1];
 
 
@@ -170,6 +171,9 @@ public void OnPluginStart()
     RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
     RegConsoleCmd("sm_rtr", Command_RoboVote, "Votes to begin a mode");
     RegConsoleCmd("sm_rocktherobot", Command_RoboVote, "Votes to begin a mode");
+    RegConsoleCmd("sm_changerobot", Command_ChangeRobot, "change your robot");
+    RegConsoleCmd("sm_chngrbt", Command_ChangeRobot, "change your robot");
+    RegConsoleCmd("sm_cr", Command_ChangeRobot, "change your robot");
 
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
@@ -250,6 +254,7 @@ public void OnClientDisconnect(int client)
     g_cv_RobotPicked[client] = "";
     int index = FindValueInArray(g_Volunteers, client);
     g_Volunteers.Erase(index);
+    RedrawVolunteerMenu();
 
     //PrintToChatAll("%N disconnected", client);
     int islots = g_RoboCapTeam - g_Volunteers.Length;
@@ -627,6 +632,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
                             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
                         //    TF2_RespawnPlayer(i);
+                            g_ClientIsRepicking[i] = false;
                             Menu_Volunteer(i);
                         }
                         else
@@ -679,6 +685,56 @@ public Action Command_RoboVote(int client, int args)
     
 
 }
+
+public Action Command_ChangeRobot(int client, int args)
+{
+    char target[32];
+    if(args < 1)
+    {
+        target = "";
+    }
+    else
+        GetCmdArg(1, target, sizeof(target));
+
+    int targetFilter = 0;
+    if(target[0] == '\0')
+    {
+        target = "@me";
+        targetFilter = COMMAND_FILTER_NO_IMMUNITY;
+    }
+
+    char target_name[MAX_TARGET_LENGTH];
+    int target_list[MAXPLAYERS], target_count;
+    bool tn_is_ml;
+
+    if((target_count = ProcessTargetString(
+          target,
+          client,
+          target_list,
+          MAXPLAYERS,
+          targetFilter,
+          target_name,
+          sizeof(target_name),
+          tn_is_ml)) <= 0)
+    {
+        ReplyToTargetError(client, target_count);
+        return Plugin_Handled;
+    }
+
+    for(int i = 0; i < target_count; i++)
+    {
+        int targetClientId = target_list[i];
+        if (!IsAnyRobot(targetClientId))
+            continue;
+
+        g_cv_Volunteered[targetClientId] = true;
+        g_ClientIsRepicking[targetClientId] = true;
+        Menu_Volunteer(targetClientId);
+    }
+            
+    return Plugin_Handled;
+}
+
 public Action Command_SetVolunteer(int client, int args)
 {
     char target[32];
@@ -794,6 +850,7 @@ public Action Volunteer(int client, bool volunteering)
             SMLogTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
             //int playerID = GetClientUserId(client);
             TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
+            g_ClientIsRepicking[client] = false;
             Menu_Volunteer(client);
         }
     }
@@ -843,8 +900,7 @@ public Action Volunteer(int client, bool volunteering)
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
 }
 
-
-public Action Menu_Volunteer(int client)
+Action Menu_Volunteer(int client)
 {
     ArrayList robotNames = GetRobotNames();
     SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
@@ -852,7 +908,7 @@ public Action Menu_Volunteer(int client)
     Menu menu = new Menu(MenuHandler);
 
     menu.SetTitle("Select Your Robot Type");
-    menu.ExitButton = false;
+    menu.ExitButton = g_ClientIsRepicking[client];
 
     for(int i = 0; i < robotNames.Length; i++)
     {
@@ -891,31 +947,30 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
         CreateRobot(info, param1, "");
 
+        //reset count for current robot
+        SMLogTag(SML_VERBOSE, "volunteered by %L is currently robot '%s'", param1, g_cv_RobotPicked[param1]);
+        if (g_cv_RobotPicked[param1][0] != '\0')
+        {
+            int count;
+            g_RobotCount.GetValue(g_cv_RobotPicked[param1], count);
+
+            SMLogTag(SML_VERBOSE, "%L decrements robot-count for robot '%s' from %i", param1, g_cv_RobotPicked[param1], count);
+            g_RobotCount.SetValue(g_cv_RobotPicked[param1], count - 1);
+
+        }
+
         int currentCount;
         g_RobotCount.GetValue(info, currentCount);
         g_RobotCount.SetValue(info, currentCount + 1);
         g_cv_RobotPicked[param1] = info;
+        g_ClientIsRepicking[param1] = false;
 
-        for(int i = 0; i < MaxClients; i++)
-        {
-            if(g_cv_RobotPicked[i][0] != '\0') //don't open menu for players, who have already picked a robot
-                continue;
-
-            if(!IsValidClient(i))
-                continue;
-
-            if(!IsClientInGame(i))
-                continue;
-
-            if(!g_cv_Volunteered[i])
-                continue;
-
-            Menu_Volunteer(i);
-        }
+        RedrawVolunteerMenu();
     }
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
     {
+        g_ClientIsRepicking[param1] = false;
         // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
     }
 
@@ -923,6 +978,26 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     else if(action == MenuAction_End)
     {
         delete menu;
+    }
+}
+
+void RedrawVolunteerMenu()
+{
+    for(int i = 0; i < MaxClients; i++)
+    {
+        if(g_cv_RobotPicked[i][0] != '\0' && !g_ClientIsRepicking[i]) //don't open menu for players, who have already picked a robot
+            continue;
+
+        if(!IsValidClient(i))
+            continue;
+
+        if(!IsClientInGame(i))
+            continue;
+
+        if(!g_cv_Volunteered[i])
+            continue;
+
+        Menu_Volunteer(i);
     }
 }
 

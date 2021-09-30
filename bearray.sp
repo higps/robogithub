@@ -22,8 +22,6 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-//new bool:g_bIsGMEDIC[MAXPLAYERS + 1];
-
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
@@ -45,20 +43,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 //	CreateNative("BeGiantMedic_MakeGiantMedic", Native_SetGiantMedic);
 //	CreateNative("BeGiantMedic_IsGiantMedic", Native_IsGiantMedic);
 	return APLRes_Success;
-}
- 
-public OnClientPutInServer(client)
-{
-	OnClientDisconnect_Post(client);
-}
- 
-public OnClientDisconnect_Post(client)
-{
-	if (IsRobot(client, ROBOT_NAME))
-	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-		
-	}
 }
  
 public OnMapStart()
@@ -125,7 +109,6 @@ MakeGiantMedic(client)
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	
 
 	PrintToChat(client, "1. You are now Giant Arrayseven !");
 	PrintToChat(client, "2. Your Kriztkrieg has Lasts longer!");
@@ -160,7 +143,6 @@ stock GiveGiantMedic(client)
 {
 	if (IsValidClient(client))
 	{
-				
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -217,13 +199,6 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 		TF2Attrib_RemoveByName(Weapon2, "killstreak tier");	
 	}
 }
-
- /*
-public Native_SetGiantMedic(Handle:plugin, args)
-        MakeGiantMedic(GetNativeCell(1));
- 
-public Native_IsGiantMedic(Handle:plugin, args)
-        return g_bIsGMEDIC[GetNativeCell(1)];*/
        
 stock bool:IsValidClient(client)
 {

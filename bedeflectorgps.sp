@@ -32,8 +32,6 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-
-
 new bool:Locked1[MAXPLAYERS+1];
 new bool:Locked2[MAXPLAYERS+1];
 new bool:Locked3[MAXPLAYERS+1];
@@ -42,8 +40,6 @@ new bool:CanWindDown[MAXPLAYERS+1];
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-
-//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	
 	AddNormalSoundHook(BossGPS);
 
@@ -103,24 +99,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
  
-public OnClientPutInServer(client)
-{
-    OnClientDisconnect_Post(client);
-}
- 
-public OnClientDisconnect_Post(client)
-{
-	if (IsRobot(client, ROBOT_NAME))
-	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-		StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
-		StopSound(client, SNDCHAN_AUTO, SOUND_GUNSPIN);
-		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
-		StopSound(client, SNDCHAN_AUTO, SOUND_WINDDOWN);
-	//	g_bIsGDEFLECTORH[client] = false;
-	}
-}
- 
 public OnMapStart()
 {
 	PrecacheModel(GDEFLECTORH);
@@ -147,16 +125,6 @@ public OnMapStart()
 	PrecacheSound(SOUND_WINDUP);
 	PrecacheSound(SOUND_WINDDOWN);
 }
-
-/* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if(g_bIsGDEFLECTORH[client])
-	{
-		g_bIsGDEFLECTORH[client] = false;
-	}
-} */
  
 public Action:SetModel(client, const String:model[])
 {
@@ -219,7 +187,6 @@ MakeGDeflectorH(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	
 	//g_IsGPS[client] = true;
 	
 /* 		PrintToChat(client, "1. You are now Giant Deflector GPS!");
@@ -249,8 +216,6 @@ stock GiveGDeflectorH(client)
 {
 	if (IsValidClient(client))
 	{
-		
-		
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -278,22 +243,6 @@ stock GiveGDeflectorH(client)
 		}
 	}
 }
- 
-// public player_inv(Handle event, const char[] name, bool dontBroadcast) 
-// {
-	// int userd = GetEventInt(event, "userid");
-	// int client = GetClientOfUserId(userd);
-	
-	// if (g_bIsGDEFLECTORH[client] && IsValidClient(client))
-	// {
-		// TF2_RemoveAllWearables(client);
-		// int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// TF2Attrib_RemoveByName(Weapon1, "damage bonus");
-		// TF2Attrib_RemoveByName(Weapon1, "attack projectiles");
-		// TF2Attrib_RemoveByName(Weapon1, "maxammo primary increased");	
-		// TF2Attrib_RemoveByName(Weapon1, "killstreak tier");
-	// }
-// }
 
 public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
 {
@@ -361,13 +310,6 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 		}
 	}
 }
-
- /*
-public Native_SetGDeflectorH(Handle:plugin, args)
-        MakeGDeflectorH(GetNativeCell(1));
- 
-public Native_IsGDeflectorH(Handle:plugin, args)
-        return g_bIsGDEFLECTORH[GetNativeCell(1)];*/
        
 stock bool:IsValidClient(client)
 {
