@@ -230,13 +230,13 @@ stock GiveBigRoboDane(client)
 
 	
 // int client, char[] classname, int itemindex, int quality, int level, int slot, int paint)
-	CreateWeapon(client, "tf_weapon_revolver", 224, 6, 1, 1, 0);
-	CreateWeapon(client, "tf_weapon_sapper", 735, 6, 1, 0, 0);
-	CreateWeapon(client, "tf_weapon_knife", 356, 6, 1, 2, 0); 
+	CreateWeapon(client, "tf_weapon_revolver", 224, 6, 1, 2, 0);
+//	CreateWeapon(client, "tf_weapon_sapper", 735, 6, 1, 0, 0);
+	CreateWeapon(client, "tf_weapon_knife", 356, 6, 1, 1, 0); 
 	CreateWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 		
 //	TF2Items_GiveWeapon(client, 224);
-//	TF2Items_GiveWeapon(client, 735);
+	TF2Items_GiveWeapon(client, 735);
 //	TF2Items_GiveWeapon(client, 356);
 //	TF2Items_GiveWeapon(client, 30);
 
