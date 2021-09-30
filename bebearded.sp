@@ -27,8 +27,6 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-//new bool:g_bIsBearded[MAXPLAYERS + 1];
-  
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
@@ -55,20 +53,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnClientPutInServer(client)
-{
-    OnClientDisconnect_Post(client);
-}
- 
-public OnClientDisconnect_Post(client)
-{
-	if (IsRobot(client, ROBOT_NAME))
-	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-	//	g_bIsBearded[client] = false;
-	}
-}
- 
 public OnMapStart()
 {
 	PrecacheModel(SHWC);
@@ -224,9 +208,6 @@ MakeBearded(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-
-	//g_bIsBearded[client] = true;
-	
 	PrintToChat(client, "1. You are now Giant Bearded Expense bot !");
 	PrintToChat(client, "2. You are a juggernaut!");
 		
@@ -248,8 +229,6 @@ stock GiveBearded(client)
 {
 	if (IsValidClient(client))
 	{
-	//	g_bIsBearded[client] = true;
-		
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -429,12 +408,6 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	}
 }
  */
- /*
-public Native_SetSuperHeavyweightChamp(Handle:plugin, args)
-        MakeBearded(GetNativeCell(1));
- 
-public Native_IsSuperHeavyweightChamp(Handle:plugin, args)
-        return g_bIsBearded[GetNativeCell(1)];*/
        
 stock bool:IsValidClient(client)
 {

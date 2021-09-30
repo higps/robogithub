@@ -32,6 +32,7 @@ public Plugin myinfo =
 
 bool _init;
 char _isRobot[MAXPLAYERS + 1][NAMELENGTH];
+bool _robotIsCreated[MAXPLAYERS + 1];
 char _wasRobot[MAXPLAYERS + 1][NAMELENGTH];
 
 public void OnPluginStart()
@@ -41,21 +42,23 @@ public void OnPluginStart()
 
 public void Init()
 {
-	if (_init)
-		return;
+    if (_init)
+        return;
 
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-	SMLogTag(SML_INFO, "berobot_factory started at %i", GetTime());
+    SMLogTag(SML_INFO, "berobot_factory started at %i", GetTime());
 
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
-	HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
+    HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 
-	for(int i = 0; i <= MaxClients; i++)
-	{
-		_isRobot[i] = "";
-	}
-    
-	_init = true;
+    for(int i = 0; i <= MaxClients; i++)
+    {
+        _isRobot[i] = "";
+        _wasRobot[i] = "";
+        _robotIsCreated[i] = false;
+    }
+
+    _init = true;
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -69,12 +72,12 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnClientPutInServer(int client)
 {
-    Reset(client);
+    FullReset(client);
 }
 
 public void OnClientDisconnect_Post(int client)
 {
-    Reset(client);
+    FullReset(client);
 }
 
 public void Event_Player_Spawned(Handle event, const char[] name, bool dontBroadcast)
@@ -83,26 +86,16 @@ public void Event_Player_Spawned(Handle event, const char[] name, bool dontBroad
     if (!IsValidClient(client))
         return;
 
+    _robotIsCreated[client] = false;
+
     bool isAlive = IsPlayerAlive(client);
     char robotName[NAMELENGTH];
     robotName = _isRobot[client];
     SMLogTag(SML_VERBOSE, "Event_Player_Spawned for %L (alive: %b) received with robot-name %s", client, isAlive, robotName);
 
+    ResetPreviousRobot(client);
     if (robotName[0] == '\0') 
     {
-        if (_wasRobot[client][0] != '\0')
-        {
-            SMLogTag(SML_VERBOSE, "resetting robot for %L (was %s)", client, _wasRobot[client]);
-            Robot item;
-            if (GetRobotDefinition(_wasRobot[client], item) != 0)
-            {
-                SMLogTag(SML_ERROR, "could not stop sounds. no robot with name '%s' found for %L", _wasRobot[client], client);
-                return;
-            }
-            
-            StopSounds(client, item);
-            _wasRobot[client] = "";
-        }
         return;
     }
         
@@ -115,6 +108,24 @@ public void Event_Player_Spawned(Handle event, const char[] name, bool dontBroad
 
     StopSounds(client, item);   //moved here, because doing it inside Timer_Locker blocked the loop to start again (don't ask me why)
     CreateTimer(1.0, Timer_Locker, client);
+}
+
+public void ResetPreviousRobot(int client)
+{
+    if (_wasRobot[client][0] == '\0')
+    {
+        return;
+    }
+    SMLogTag(SML_VERBOSE, "resetting robot for %L (was %s)", client, _wasRobot[client]);
+    Robot item;
+    if (GetRobotDefinition(_wasRobot[client], item) != 0)
+    {
+        SMLogTag(SML_ERROR, "could not stop sounds. no robot with name '%s' found for %L", _wasRobot[client], client);
+        return;
+    }
+    
+    StopSounds(client, item);
+    _wasRobot[client] = "";
 }
 
 public Action Timer_Locker(Handle timer, any client)
@@ -167,6 +178,7 @@ public void Event_Death(Handle event, const char[] name, bool dontBroadcast)
         
         TF2Attrib_RemoveAll(client);
         EmitSoundToAll(item.sounds.death);
+        _robotIsCreated[client] = false;
 	}
 }
 
@@ -186,9 +198,27 @@ void StopSounds(int client, Robot item)
         StopSound(client, SNDCHAN_AUTO, item.sounds.winddown);
 }
 
+public void FullReset(int client)
+{
+    if (IsValidClient(client))
+    {
+        Robot item;
+        if (GetRobotDefinition(_isRobot[client], item) != 0)
+        {
+            SMLogTag(SML_ERROR, "could not stop sounds. no robot with name '%s' found for %L", _isRobot[client], client);
+            return;
+        }
+        else
+            StopSounds(client, item);
+    }
+        
+    Reset(client);
+}
+
 public void Reset(int client)
 {
     _isRobot[client] = "";
+    _robotIsCreated[client] = false;
 }
 
 public any Native_CreateRobot(Handle plugin, int numParams)
@@ -238,25 +268,30 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	for (int i = 0; i < target_count; i++)
 	{
         int targetClientId = target_list[i];
-        SMLogTag(SML_VERBOSE, "%i. target: %i", i, targetClientId);
-        if (_isRobot[targetClientId][0] == '\0')
-        {
-            _isRobot[targetClientId] = name;
+        char wasRobot[NAMELENGTH];
+        wasRobot = _isRobot[targetClientId];
+        SMLogTag(SML_VERBOSE, "%i. target: %i is currently %s", i, targetClientId, wasRobot);
 
-            SMLogTag(SML_VERBOSE, "calling privateForward %x for robot %s, with client %i and target %s (current %i; count %i)", item.callback, name, client, target, targetClientId, target_count);
-            CallCreate(targetClientId, item);
-
-            robotWasCreated = true;
-        }
-        else
+        if (wasRobot[0] != '\0')            //disable previous robot
         {
-            _wasRobot[targetClientId] = _isRobot[targetClientId];
+            if (_wasRobot[targetClientId][0] == '\0')
+                _wasRobot[targetClientId] = wasRobot;
             Reset(target_list[i]);
-            PrintToChat(target_list[i], "1. You are no longer %s!", name);
+            PrintToChat(target_list[i], "1. You are no longer %s!", wasRobot);
             PrintToChat(target_list[i], "2. You will turn back by changing class or dying!");
             
             TF2_RespawnPlayer(target_list[i]);
         }
+
+        if (strcmp(name, wasRobot) == 0)    //don't enable robot, if client was already same robot as requested
+            continue;
+
+        _isRobot[targetClientId] = name;
+
+        SMLogTag(SML_VERBOSE, "calling privateForward %x for robot %s, with client %i and target %s (current %i; count %i)", item.callback, name, client, target, targetClientId, target_count);
+        CallCreate(targetClientId, item);
+
+        robotWasCreated = true;
     }
 	if (robotWasCreated)
 	{
@@ -270,6 +305,9 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 public any Native_IsRobot(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1);
+    if (!_robotIsCreated[client])
+        return false;
+
     char name[NAMELENGTH];
     GetNativeString(2, name, NAMELENGTH);
 
@@ -294,4 +332,5 @@ void CallCreate(int client, Robot item)
     EmitSoundToAll(item.sounds.loop, client);
 
     _isRobot[client] = item.name;
+    _robotIsCreated[client] = true;
 }

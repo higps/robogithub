@@ -26,8 +26,6 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-//IsRobot(client, ROBOT_NAME)
-//bool g_bIsChangeDane[MAXPLAYERS + 1];
 
 public OnPluginStart()
 {
@@ -54,28 +52,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnClientPutInServer(client)
-{
-   // SDKHook(client, SDKHook_Touch, OnTouch);
-
-    OnClientDisconnect_Post(client);
-}
-
-
-
-public OnClientDisconnect_Post(client)
-{
-	if (IsRobot(client, ROBOT_NAME))
-	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-	
-
-		//SDKUnhook(client, SDKHook_StartTouch, OnTouch);
-	}
-}
-
-
-
 public OnMapStart()
 {
 	PrecacheModel(ChangeDane);
@@ -91,8 +67,6 @@ public OnMapStart()
 	PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
 	PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
 	PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
-
-
 }
 
 
@@ -194,7 +168,6 @@ MakeUncleDane(client)
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	//g_bIsChangeDane[client] = true;
 	
 	PrintToChat(client, "1. You are now Uncle Dane robot !");
 	
@@ -222,8 +195,6 @@ stock GiveBigRoboDane(client)
 {
 	if (IsValidClient(client))
 	{
-	//	g_bIsChangeDane[client] = true;
-		
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -291,13 +262,6 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 		TF2Attrib_RemoveByName(Weapon1, "killstreak tier");
 	}
 }
-
-/*
-public Native_SetSuperHeavyweightChamp(Handle:plugin, args)
-		MakeUncleDane(GetNativeCell(1));
-
-public Native_IsSuperHeavyweightChamp(Handle:plugin, args)
-		return g_bIsChangeDane[GetNativeCell(1)];*/
 
 stock bool:IsValidClient(client)
 {
