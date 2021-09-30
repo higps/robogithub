@@ -135,7 +135,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar("sm_robocap_team", "6", "The total amount of giant robots on a team");
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
     g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
-    g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robomode", "0", "0 = Needs vote to start boss mode, 1 = Start game by reaching enough volunteers");
+    g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Needs vote to start boss mode, 1 = Start game by reaching enough volunteers");
 
     /* Convar global variables init */
 
@@ -160,6 +160,7 @@ public void OnPluginStart()
 
     RegAdminCmd("sm_berobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
     RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
+    RegAdminCmd("sm_selection_mode", Command_Robot_Selection, ADMFLAG_SLAY, "Forces selection mode");
     
     RegAdminCmd("sm_me_boss", Command_Me_Boss, ADMFLAG_SLAY, "Checks if you are a boss");
     RegAdminCmd("sm_setvolunteer", Command_SetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to true/enabled");
@@ -422,7 +423,7 @@ public Action Command_Me_Boss(int client, int args)
     return Plugin_Handled;
 }
 
-public Action Command_Robot_Selection()
+public Action Command_Robot_Selection(int client, int args)
 {
         
             for(int i = 1; i < MaxClients; i++)
@@ -656,7 +657,7 @@ public Action Command_RoboVote(int client, int args)
     //Start the robo vote
     if(g_iVotes >= g_iVotesNeeded)
     {
-        Command_Robot_Selection();
+        Command_Robot_Selection(client, args);
     }
     
 
