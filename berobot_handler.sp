@@ -265,11 +265,17 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
         TFTeam iTeam = TF2_GetClientTeam(victim);
 
-        if (iTeam == view_as<TFTeam>(g_HumanTeam))
+        if (g_BossMode && iTeam == view_as<TFTeam>(g_HumanTeam))
      {
-         TF2_RespawnPlayer(victim);
+         CreateTimer(6.0, Timer_Respawn, victim);
+         
      }
 
+}
+
+public Action Timer_Respawn(Handle timer, int client)
+{
+    TF2_RespawnPlayer(client);
 }
 
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
