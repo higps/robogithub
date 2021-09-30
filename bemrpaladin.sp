@@ -226,14 +226,14 @@ stock GiveBigRoboDane(client)
 //	TF2_RemoveWeaponSlot(client, 1); //Sapper
 	TF2_RemoveWeaponSlot(client, 2); // Gun
 	//TF2_RemoveWeaponSlot(client, 3); //Disguise kit
-//	TF2_RemoveWeaponSlot(client, 4);// inviswatch
+	TF2_RemoveWeaponSlot(client, 4);// inviswatch
 
 	
 // int client, char[] classname, int itemindex, int quality, int level, int slot, int paint)
-	//CreateWeapon(client, "tf_weapon_revolver", 224, 6, 1, 0, 0);
+	CreateWeapon(client, "tf_weapon_revolver", 224, 6, 1, 1, 0);
 	CreateWeapon(client, "tf_weapon_sapper", 735, 6, 1, 0, 0);
-	//CreateWeapon(client, "tf_weapon_knife", 356, 6, 1, 2, 0); 
-	//CreateWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
+	CreateWeapon(client, "tf_weapon_knife", 356, 6, 1, 2, 0); 
+	CreateWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 		
 //	TF2Items_GiveWeapon(client, 224);
 //	TF2Items_GiveWeapon(client, 735);
@@ -252,7 +252,7 @@ stock GiveBigRoboDane(client)
 
 	if(IsValidEntity(Revolver)) //Revovler
 		{
-		//	TF2Attrib_RemoveAll(Revolver);
+			TF2Attrib_RemoveAll(Revolver);
 			
 			TF2Attrib_SetByName(Revolver, "fire rate bonus", 2.5);
 			TF2Attrib_SetByName(Revolver, "damage bonus", 2.0);
