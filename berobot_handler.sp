@@ -877,6 +877,18 @@ public Action Volunteer(int client, bool volunteering)
 
 public Action Menu_Volunteer(int client)
 {
+    //reset count for current robot
+    SMLogTag(SML_VERBOSE, "volunteered by %L is currently robot '%s'", client, g_cv_RobotPicked[client]);
+    if (g_cv_RobotPicked[client][0] != '\0')
+    {
+        int count;
+        g_RobotCount.GetValue(g_cv_RobotPicked[client], count);
+
+        SMLogTag(SML_VERBOSE, "%L decrements robot-count for robot '%s' from %i", client, g_cv_RobotPicked[client], count);
+        g_RobotCount.SetValue(g_cv_RobotPicked[client], count - 1);
+
+        g_cv_RobotPicked[client] = "";
+    }
     ArrayList robotNames = GetRobotNames();
     SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
 
@@ -919,17 +931,6 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
         char info[32];
         bool found = menu.GetItem(param2, info, sizeof(info));
         PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
-
-        //reset count for current robot
-        SMLogTag(SML_VERBOSE, "robot selected by %L is currently robot '%s' wants to become '%s'", param1, g_cv_RobotPicked[param1], info);
-        if (g_cv_RobotPicked[param1][0] != '\0')
-        {            
-            int count;
-            g_RobotCount.GetValue(g_cv_RobotPicked[param1], count);
-
-            SMLogTag(SML_VERBOSE, "%L decrements robot-count for robot '%s' from %i", param1, g_cv_RobotPicked[param1], count);
-            g_RobotCount.SetValue(g_cv_RobotPicked[param1], count - 1);
-        }
 
         CreateRobot(info, param1, "");
 
