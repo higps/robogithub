@@ -75,6 +75,7 @@ bool g_SpectateSelection = false;
 
 bool g_cv_Volunteered[MAXPLAYERS + 1];
 char g_cv_RobotPicked[MAXPLAYERS + 1][NAMELENGTH];
+bool g_ClientIsRepicking[MAXPLAYERS + 1];
 bool g_Voted[MAXPLAYERS + 1];
 
 
@@ -611,6 +612,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
                             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
                         //    TF2_RespawnPlayer(i);
+                            g_ClientIsRepicking[i] = false;
                             Menu_Volunteer(i);
                         }
                         else
@@ -705,6 +707,7 @@ public Action Command_ChangeRobot(int client, int args)
         if (!IsAnyRobot(targetClientId))
             continue;
 
+        g_ClientIsRepicking[targetClientId] = true;
         Menu_Volunteer(targetClientId);
     }
             
@@ -826,6 +829,7 @@ public Action Volunteer(int client, bool volunteering)
             SMLogTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
             //int playerID = GetClientUserId(client);
             TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
+            g_ClientIsRepicking[client] = false;
             Menu_Volunteer(client);
         }
     }
@@ -875,28 +879,15 @@ public Action Volunteer(int client, bool volunteering)
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
 }
 
-
-public Action Menu_Volunteer(int client)
+Action Menu_Volunteer(int client)
 {
-    //reset count for current robot
-    SMLogTag(SML_VERBOSE, "volunteered by %L is currently robot '%s'", client, g_cv_RobotPicked[client]);
-    if (g_cv_RobotPicked[client][0] != '\0')
-    {
-        int count;
-        g_RobotCount.GetValue(g_cv_RobotPicked[client], count);
-
-        SMLogTag(SML_VERBOSE, "%L decrements robot-count for robot '%s' from %i", client, g_cv_RobotPicked[client], count);
-        g_RobotCount.SetValue(g_cv_RobotPicked[client], count - 1);
-
-        g_cv_RobotPicked[client] = "";
-    }
     ArrayList robotNames = GetRobotNames();
     SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
 
     Menu menu = new Menu(MenuHandler);
 
     menu.SetTitle("Select Your Robot Type");
-    menu.ExitButton = false;
+    menu.ExitButton = g_ClientIsRepicking[client];
 
     for(int i = 0; i < robotNames.Length; i++)
     {
@@ -935,16 +926,30 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
         CreateRobot(info, param1, "");
 
+        //reset count for current robot
+        SMLogTag(SML_VERBOSE, "volunteered by %L is currently robot '%s'", param1, g_cv_RobotPicked[param1]);
+        if (g_cv_RobotPicked[param1][0] != '\0')
+        {
+            int count;
+            g_RobotCount.GetValue(g_cv_RobotPicked[param1], count);
+
+            SMLogTag(SML_VERBOSE, "%L decrements robot-count for robot '%s' from %i", param1, g_cv_RobotPicked[param1], count);
+            g_RobotCount.SetValue(g_cv_RobotPicked[param1], count - 1);
+
+        }
+
         int currentCount;
         g_RobotCount.GetValue(info, currentCount);
         g_RobotCount.SetValue(info, currentCount + 1);
         g_cv_RobotPicked[param1] = info;
+        g_ClientIsRepicking[param1] = false;
 
         RedrawVolunteerMenu();
     }
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
     {
+        g_ClientIsRepicking[param1] = false;
         // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
     }
 
@@ -955,11 +960,11 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     }
 }
 
-public void RedrawVolunteerMenu()
+void RedrawVolunteerMenu()
 {
     for(int i = 0; i < MaxClients; i++)
     {
-        if(g_cv_RobotPicked[i][0] != '\0') //don't open menu for players, who have already picked a robot
+        if(g_cv_RobotPicked[i][0] != '\0' && !g_ClientIsRepicking[i]) //don't open menu for players, who have already picked a robot
             continue;
 
         if(!IsValidClient(i))
