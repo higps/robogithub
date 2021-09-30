@@ -251,6 +251,7 @@ public void OnClientDisconnect(int client)
     g_cv_RobotPicked[client] = "";
     int index = FindValueInArray(g_Volunteers, client);
     g_Volunteers.Erase(index);
+    RedrawVolunteerMenu();
 
     //PrintToChatAll("%N disconnected", client);
     int islots = g_RoboCapTeam - g_Volunteers.Length;
@@ -939,22 +940,7 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
         g_RobotCount.SetValue(info, currentCount + 1);
         g_cv_RobotPicked[param1] = info;
 
-        for(int i = 0; i < MaxClients; i++)
-        {
-            if(g_cv_RobotPicked[i][0] != '\0') //don't open menu for players, who have already picked a robot
-                continue;
-
-            if(!IsValidClient(i))
-                continue;
-
-            if(!IsClientInGame(i))
-                continue;
-
-            if(!g_cv_Volunteered[i])
-                continue;
-
-            Menu_Volunteer(i);
-        }
+        RedrawVolunteerMenu();
     }
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
@@ -966,6 +952,26 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     else if(action == MenuAction_End)
     {
         delete menu;
+    }
+}
+
+public void RedrawVolunteerMenu()
+{
+    for(int i = 0; i < MaxClients; i++)
+    {
+        if(g_cv_RobotPicked[i][0] != '\0') //don't open menu for players, who have already picked a robot
+            continue;
+
+        if(!IsValidClient(i))
+            continue;
+
+        if(!IsClientInGame(i))
+            continue;
+
+        if(!g_cv_Volunteered[i])
+            continue;
+
+        Menu_Volunteer(i);
     }
 }
 
