@@ -129,7 +129,7 @@ public void OnPluginStart()
 
 
     g_cvCvarList[CV_PluginVersion] = CreateConVar("sm_yt_v_mvm_version", PLUGIN_VERSION, "Plugin Version.", FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_CHEAT);
-    g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_yt_v_mvm_debug", "1", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+    g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_yt_v_mvm_debug", "0", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "500.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar("sm_robocap_team", "6", "The total amount of giant robots on a team");
@@ -334,7 +334,7 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 }
 
 /* Plugin Exclusive Functions */
-public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
     if(IsValidClient(victim))
     {
@@ -344,22 +344,23 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
             if(iClass == TFClass_Spy)
             {
                 // Checks if boss is on
-                if(g_cv_bDebugMode)
-                    //   PrintToChatAll("Attacker was spy");
+                if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy");
+
                     if(isMiniBoss(victim))
                     {
                         if(damagecustom == TF_CUSTOM_BACKSTAB)
                         {
                             damage = g_CV_flSpyBackStabModifier;
-                            if(g_cv_bDebugMode) PrintToChatAll("Set damage to %f", damage);
+                            critType = CritType_Crit;
+                            if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
 
-                                return Plugin_Changed;
+                            return Plugin_Changed;
                         }
                         if(damagecustom == TF_CUSTOM_HEADSHOT)
                         {
                             damage *= 1.1111;
                             critType = CritType_Crit;
-                            if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                             return Plugin_Changed;
                         }
                     }
@@ -368,18 +369,18 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
             if(iClass == TFClass_Sniper)
             {
                 // Checks if boss is on
-                if(g_cv_bDebugMode)
-                    //   PrintToChatAll("Attacker was spy");
+                if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy");
                     if(isMiniBoss(victim))
                     {
                         if(damagecustom == TF_CUSTOM_HEADSHOT)
                         {
                             
-                            critType = CritType_Crit;
+                            
                             damage *= 1.1111;
-                            if(g_cv_bDebugMode)
-                                //    PrintToChatAll("Set damage to %f", damage);
-                                return Plugin_Changed;
+                            critType = CritType_Crit;
+                            if(g_cv_bDebugMode) PrintToChatAll("Set damage to %f", damage);
+
+                            return Plugin_Changed;
                         }
                     }
             }
@@ -401,7 +402,9 @@ public Action Command_BeRobot(int client, int numParams)
 
     SMLogTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
     CreateRobot(name, client, target);
-
+    
+    SetEntProp(client, Prop_Send, "m_bIsMiniBoss", 1);
+    
     return Plugin_Handled;
 }
 
@@ -445,6 +448,7 @@ public Action Command_YT_Robot_Start(int client, int args)
     if(!g_BossMode)
     {
         g_cv_BlockTeamSwitch = true;
+        g_SpectateSelection = false;
         PrintCenterTextAll("Sarting Giant Robot Event mode");
         
         ServerCommand("mp_forceautoteam 0");
@@ -454,6 +458,8 @@ public Action Command_YT_Robot_Start(int client, int args)
         ServerCommand("mp_restartgame 5");
         ServerCommand("mp_autoteambalance 0");
         ServerCommand("mp_scrambleteams_auto 0");
+        ServerCommand("mp_forceautoteam  0");
+        
 
         //Randomly set which team is roboteam and humanteam
         int RandomTeam = GetRandomInt(1, 2);
@@ -973,6 +979,12 @@ public Action OnClientCommand(int client, int args)
     if(strcmp(cmd, "jointeam", true) == 0)
     {
 
+        if (g_SpectateSelection)
+        {
+            ChangeClientTeam(client, SPECTATE);
+            return Plugin_Handled;
+        }
+
         if(g_cv_BlockTeamSwitch)
         {
             PrintCenterText(client, "Boss mode is activated: Teams are locked");
@@ -1013,14 +1025,12 @@ bool isMiniBoss(int client)
 
         if(GetEntProp(client, Prop_Send, "m_bIsMiniBoss"))
         {
-            if(g_cv_bDebugMode)
-                //                PrintToChatAll("%N Was mini boss", client);
+            if(g_cv_bDebugMode) PrintToChatAll("%N Was mini boss", client);
                 return true;
         }
         else
         {
-            if(g_cv_bDebugMode)
-                //  PrintToChatAll("%N Was not mini boss", client);
+            if(g_cv_bDebugMode)PrintToChatAll("%N Was not mini boss", client);
                 return false;
         }
     }

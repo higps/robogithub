@@ -103,6 +103,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "health regen", 20.0);
+	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -121,7 +122,7 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 {
     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
     {
-       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 1.0);
+       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
 	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
     }
 }
