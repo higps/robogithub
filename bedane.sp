@@ -90,7 +90,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	//int entRef = EntIndexToEntRef(iObj);
 	//PrintToChatAll("iObj %i", iObj);
 	
-	if (IsValidClient(iBuilder) && IsRobot(client, ROBOT_NAME)){
+	if (IsValidClient(iBuilder) && IsRobot(iBuilder, ROBOT_NAME)){
 		// SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);
 		// SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
 		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.65);
@@ -135,7 +135,7 @@ MakeUncleDane(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 2000;
+	int iHealth = 1800;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -153,16 +153,16 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	TF2Attrib_SetByName(client, "maxammo metal increased", 7.5);
+	
+	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 	TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
 	TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
-	
-	
+	TF2Attrib_SetByName(client, "metal regen", 50.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
-	TF2Attrib_SetByName(client, "building cost reduction", 4.0);
-	TF2Attrib_SetByName(client, "mod teleporter cost", 1.5);
+	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
+	TF2Attrib_SetByName(client, "mod teleporter cost", 0.5);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
-	
+
 	
 	UpdatePlayerHitbox(client, 1.65);
 	
@@ -170,8 +170,6 @@ MakeUncleDane(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintToChat(client, "1. You are now Uncle Dane robot !");
-	PrintToChat(client, "2. Melee only but you attack faster and deal more damage !");
-	PrintToChat(client, "3. You will lose this status when you touch a locker, upgrade or die.");	
 	
 }
 
@@ -204,6 +202,7 @@ stock GiveBigRoboDane(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		CreateWeapon(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
 		CreateWeapon(client, "tf_weapon_wrench", 329, 6, 1, 2, 0);
+		
 
 		CreateHat(client, 30420, 10, 6, 15132390.0); // the danger
 		//	CreateHat(client, 30178, 10, 6, 1315860);
@@ -216,11 +215,10 @@ stock GiveBigRoboDane(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.5);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "metal regen", 100.0);
-			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 60.0);
+			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 30.0);
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
 			
@@ -230,15 +228,14 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Weapon3);
 			
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.85);
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.25);
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.0);
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 20.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
 			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 4.0);
 			TF2Attrib_SetByName(Weapon3, "alt fire teleport to spawn", 1.0);
 			TF2Attrib_SetByName(Weapon3, "special taunt", 1.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 2.0);
-			TF2Attrib_SetByName(Weapon3, "metal_pickup_decreased", 2.0);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			
 		}
