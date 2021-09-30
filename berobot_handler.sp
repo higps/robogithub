@@ -169,6 +169,9 @@ public void OnPluginStart()
     RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
     RegConsoleCmd("sm_rtr", Command_RoboVote, "Votes to begin a mode");
     RegConsoleCmd("sm_rocktherobot", Command_RoboVote, "Votes to begin a mode");
+    RegConsoleCmd("sm_changerobot", Command_ChangeRobot, "change your robot");
+    RegConsoleCmd("sm_chngrbt", Command_ChangeRobot, "change your robot");
+    RegConsoleCmd("sm_cr", Command_ChangeRobot, "change your robot");
 
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
@@ -652,6 +655,54 @@ public Action Command_RoboVote(int client, int args)
     
 
 }
+
+public Action Command_ChangeRobot(int client, int args)
+{
+    char target[32];
+    if(args < 1)
+    {
+        target = "";
+    }
+    else
+        GetCmdArg(1, target, sizeof(target));
+
+    int targetFilter = 0;
+    if(target[0] == '\0')
+    {
+        target = "@me";
+        targetFilter = COMMAND_FILTER_NO_IMMUNITY;
+    }
+
+    char target_name[MAX_TARGET_LENGTH];
+    int target_list[MAXPLAYERS], target_count;
+    bool tn_is_ml;
+
+    if((target_count = ProcessTargetString(
+          target,
+          client,
+          target_list,
+          MAXPLAYERS,
+          targetFilter,
+          target_name,
+          sizeof(target_name),
+          tn_is_ml)) <= 0)
+    {
+        ReplyToTargetError(client, target_count);
+        return Plugin_Handled;
+    }
+
+    for(int i = 0; i < target_count; i++)
+    {
+        int targetClientId = target_list[i];
+        if (!IsAnyRobot(targetClientId))
+            continue;
+
+        Menu_Volunteer(targetClientId);
+    }
+            
+    return Plugin_Handled;
+}
+
 public Action Command_SetVolunteer(int client, int args)
 {
     char target[32];
@@ -861,6 +912,17 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
         char info[32];
         bool found = menu.GetItem(param2, info, sizeof(info));
         PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
+
+        //reset count for current robot
+        SMLogTag(SML_VERBOSE, "robot selected by %L is currently robot '%s' wants to become '%s'", param1, g_cv_RobotPicked[param1], info);
+        if (g_cv_RobotPicked[param1][0] != '\0')
+        {            
+            int count;
+            g_RobotCount.GetValue(g_cv_RobotPicked[param1], count);
+
+            SMLogTag(SML_VERBOSE, "%L decrements robot-count for robot '%s' from %i", param1, g_cv_RobotPicked[param1], count);
+            g_RobotCount.SetValue(g_cv_RobotPicked[param1], count - 1);
+        }
 
         CreateRobot(info, param1, "");
 
