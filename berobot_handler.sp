@@ -418,7 +418,7 @@ public Action Command_Me_Boss(int client, int args)
 
 public Action Command_Robot_Selection()
 {
-        
+             ServerCommand("mp_forceautoteam  0");
             for(int i = 1; i < MaxClients; i++)
             {
                 if (IsValidClient(i) && IsClientInGame(i))
