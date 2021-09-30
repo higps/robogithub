@@ -173,6 +173,8 @@ public void OnPluginStart()
 
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
+
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
 	
     /* Natives */
     CreateNative("GetPickedRobot", Native_GetPickedRobot);
@@ -255,6 +257,20 @@ public void OnClientDisconnect(int client)
 }
 
 /* Publics */
+
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+        TFTeam iTeam = TF2_GetClientTeam(victim);
+
+        if (iTeam == view_as<TFTeam>(g_HumanTeam))
+     {
+         TF2_RespawnPlayer(victim);
+     }
+
+}
 
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
