@@ -267,7 +267,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
         if (g_BossMode && iTeam == view_as<TFTeam>(g_HumanTeam))
      {
-         CreateTimer(6.0, Timer_Respawn, victim);
+         CreateTimer(4.5, Timer_Respawn, victim);
          
      }
 
