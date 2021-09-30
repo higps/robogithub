@@ -473,7 +473,6 @@ public Action Command_YT_Robot_Start(int client, int args)
         
         ServerCommand("mp_forceautoteam 0");
         ServerCommand("mp_teams_unbalance_limit 0");
-        ServerCommand("mp_disable_respawn_times 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 0");
         ServerCommand("mp_restartgame 5");
         ServerCommand("mp_autoteambalance 0");
@@ -509,7 +508,6 @@ public Action Command_YT_Robot_Start(int client, int args)
         ServerCommand("mp_forceautoteam 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 30");
         ServerCommand("mp_teams_unbalance_limit 1");
-        ServerCommand("mp_disable_respawn_times 0");
         ServerCommand("mp_restartgame 5");
         ServerCommand("mp_autoteambalance 1");
         ServerCommand("mp_scrambleteams_auto 1");
