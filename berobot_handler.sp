@@ -707,6 +707,7 @@ public Action Command_ChangeRobot(int client, int args)
         if (!IsAnyRobot(targetClientId))
             continue;
 
+        g_cv_Volunteered[targetClientId] = true;
         g_ClientIsRepicking[targetClientId] = true;
         Menu_Volunteer(targetClientId);
     }
