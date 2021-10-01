@@ -8,6 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Icebear"
+#define ROBOT_DESCRIPTION "Rapid Rocket Launcher Specialist"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -56,7 +57,7 @@ public OnPluginStart()
 	//sounds.gunfire = SOUND_GUNFIRE;
 //	sounds.windup = SOUND_WINDUP;
 	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Icebear", MakeGiantSoldier, PLUGIN_VERSION, sounds);
+	AddRobot(ROBOT_NAME, "Soldier", MakeGiantSoldier, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()

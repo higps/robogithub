@@ -11,6 +11,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
+#define ROBOT_DESCRIPTION "Instant lvl 3 Sentry, Widowmaker, Jag"
+
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

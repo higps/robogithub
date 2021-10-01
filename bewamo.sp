@@ -7,8 +7,8 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Agro"
-#define ROBOT_DESCRIPTION "Backgreaser, Slow Scorch Shot"
+#define ROBOT_NAME	"Wamo"
+#define ROBOT_DESCRIPTION "Flamethrower, Flaregun"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -20,9 +20,9 @@
 
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant Agro Pyro",
+	name = "[TF2] Be the Giant Wamo Pyro",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Agro Pyro from Kritzkast",
+	description = "Play as the Giant Wamo Pyro from Kritzkast",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -101,7 +101,7 @@ public Action:SetModel(client, const String:model[])
 
 MakeGiantPyro(client)
 {
-	SMLogTag(SML_VERBOSE, "Createing Agro");
+	SMLogTag(SML_VERBOSE, "Createing Wamo");
 	TF2_SetPlayerClass(client, TFClass_Pyro);
 	TF2_RegeneratePlayer(client);
 
@@ -133,7 +133,7 @@ MakeGiantPyro(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
@@ -172,14 +172,14 @@ stock GiveGiantPyro(client)
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
-		CreateWeapon(client, "tf_weapon_flamethrower", 215, 6, 1, 2, 0);
+		CreateWeapon(client, "tf_weapon_flamethrower", 21, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 1);
-		CreateWeapon(client, "tf_weapon_flaregun", 740, 6, 1, 2, 0);
+		CreateWeapon(client, "tf_weapon_flaregun", 39, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		CreateHat(client, 470, 10, 6, true); //Lofi longave
-		CreateHat(client, 31135, 10, 6, true); //Handsome Devil
-		CreateHat(client, 31184, 10, 6, false);//Manndatory atire
+		CreateHat(client, 627, 10, 6, true); //Flameboyant Flamenco
+		CreateHat(client, 570, 10, 6, true); //Last breath
+		CreateHat(client, 30305, 10, 6, false);//Subzero suit
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -188,28 +188,25 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 2.00);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "mod flamethrower back crit", 1.0);		
+			//TF2Attrib_SetByName(Weapon1, "mod flamethrower back crit", 1.0);		
 			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);			
-			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 10.0);			
-			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.5);
-			TF2Attrib_SetByName(Weapon1, "attach particle effect", 4.0);
+			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 8.0);			
+			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.3);
 			
-			TF2Attrib_SetByName(Weapon1, "single wep deploy time decreased", 0.4);
-			TF2Attrib_SetByName(Weapon1, "switch from wep deploy time decreased", 0.7);
 			TF2Attrib_SetByName(Weapon1, "weapon burn dmg reduced", 1.0);
-			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.4);
+			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.2);
 			
 		}
 		
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.2);
-			TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.5);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.5);
+		//	TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.75);
 		}
 	}
 }
@@ -354,7 +351,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 	}
 	
 	if (scale == true){
-		SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 0.75);
+		SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 1.75);
 	}
 
 	DispatchSpawn(hat);

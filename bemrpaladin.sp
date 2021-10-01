@@ -12,6 +12,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Mr Paladin"
+#define ROBOT_DESCRIPTION "Turn invisible on kill, Le'tranger, Kunai"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -40,7 +41,7 @@ public OnPluginStart()
 	sounds.spawn = SPAWN;
 	sounds.loop = LOOP;
 	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Mr Paladin", MakeSpy, PLUGIN_VERSION, sounds);
+	AddRobot(ROBOT_NAME, "Spy", MakeSpy, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()

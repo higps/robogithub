@@ -9,6 +9,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Sentry Buster"
+#define ROBOT_DESCRIPTION "Activate by taunting, dying, melee hit player, toucing a sentry"
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
 #define SPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"
@@ -143,17 +144,18 @@ public Action OnTouch(int client, int ent)
 			int iBuildingTeam = GetEntPropEnt(ent, Prop_Send, "m_iTeamNum");
 			int iClientTeam = TF2_GetClientTeam(client);
 			
-			PrintToChatAll("iBuildingTeam: %i || Client teamL %i", iBuildingTeam, iClientTeam);
+		//	PrintToChatAll("iBuildingTeam: %i || Client teamL %i", iBuildingTeam, iClientTeam);
 
 
 			if(iClientTeam != iBuildingTeam){
-				PrintToChatAll("not the same team");
+				//PrintToChatAll("not the same team");
+				FakeClientCommand(client, "taunt");
 			}
         //	PrintToChatAll("after ent name was %s", entname);
          
                 
 				//GetReadyToExplode(client);
-				FakeClientCommand(client, "taunt");
+				
                // PrintToChatAll("Builder was %N", iBuilder);
 
                 //SetEntProp(ent, Prop_Send, "m_CollisionGroup", 18);
