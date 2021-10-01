@@ -177,6 +177,8 @@ stock GiveGiantPyro(client)
 		CreateWeapon(client, "tf_weapon_flaregun", 740, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 2);
 		
+		CreateWeapon(client, "tf_weapon_fireaxe", 466, 6, 1, 2, 0);
+
 		CreateHat(client, 470, 10, 6, true); //Lofi longave
 		CreateHat(client, 31135, 10, 6, true); //Handsome Devil
 		CreateHat(client, 31184, 10, 6, false);//Manndatory atire
