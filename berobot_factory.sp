@@ -3,6 +3,7 @@
 #include <sdkhooks>
 #include <tf2>
 #include <tf2_stocks>
+#include <morecolors_newsyntax>
 #include <sm_logger>
 #include <tf2attributes>
 #include <tf2_isPlayerInSpawn>
@@ -282,6 +283,19 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         {
             if (_wasRobot[targetClientId][0] == '\0')
                 _wasRobot[targetClientId] = wasRobot;
+
+            //notify robots of change
+            for(int otherRobotClientIndex = 0; otherRobotClientIndex <= MaxClients; otherRobotClientIndex++)
+            {
+                if (!IsValidClient(otherRobotClientIndex))
+                    continue;
+                if (_isRobot[otherRobotClientIndex][0] == '\0')
+                    continue;
+                
+                SMLogTag(SML_VERBOSE, "notifying %L, about %L switch from '%s' to '%s'", otherRobotClientIndex, targetClientId, wasRobot, name);
+                MC_PrintToChatEx(otherRobotClientIndex, otherRobotClientIndex, "{teamcolor}%N switching from '%s' to '%s'", targetClientId, wasRobot, name);
+            }
+
             Reset(targetClientId);
             PrintToChat(targetClientId, "1. You are no longer %s!", wasRobot);
             PrintToChat(targetClientId, "2. You will turn back by changing class or dying!");
@@ -305,17 +319,6 @@ public any Native_CreateRobot(Handle plugin, int numParams)
             }
             else
                 TF2_RespawnPlayer(targetClientId);
-
-            for(int otherRobotClientIndex = 0; otherRobotClientIndex <= MaxClients; otherRobotClientIndex++)
-            {
-                if (!IsValidClient(otherRobotClientIndex))
-                    continue;
-                if (_isRobot[otherRobotClientIndex][0] == '\0')
-                    continue;
-                
-                SMLogTag(SML_VERBOSE, "notifying %L, about %L switch from '%s' to '%s'", otherRobotClientIndex, targetClientId, wasRobot, name);
-                PrintToChat(otherRobotClientIndex, "%N switching from '%s' to '%s'", targetClientId, wasRobot, name);
-            }
         }
 
         if (strcmp(name, wasRobot) == 0)    //don't enable robot, if client was already same robot as requested
