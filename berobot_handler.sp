@@ -950,7 +950,7 @@ Action Menu_Volunteer(int client)
         int draw = count >= g_RoboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
 
         char display[128];
-        Format(display, sizeof(display), "%s: %s (%i / %i used)", item.class, item.name, count, g_RoboCap);
+        Format(display, sizeof(display), "%s: %s (%i / %i)", item.class, item.name, count, g_RoboCap);
 
         menu.AddItem(item.name, display, draw);
 
