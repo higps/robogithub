@@ -300,6 +300,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.8);
 			
+			
 		//	TF2Attrib_SetByName(Weapon1, "disable fancy class select anim", 1.0);
 						
 \			

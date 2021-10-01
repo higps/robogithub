@@ -6,8 +6,8 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Major Bomber Lite"
-#define ROBOT_DESCRIPTION "Major Bomber Lite"
+#define ROBOT_NAME	"Mortar Mack"
+#define ROBOT_DESCRIPTION "Mortar Mack"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -166,15 +166,18 @@ stock GiveGiantDemoKnight(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.2);
-			TF2Attrib_SetByName(Weapon1, "clip size bonus", 3.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.4);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
+			TF2Attrib_SetByName(Weapon1, "clip size bonus", 3.2);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.3);
 			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 1.5);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.2);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 10.0);
+			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.35);
+			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.6);
+			
 			
 		}
 	}

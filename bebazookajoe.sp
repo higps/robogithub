@@ -295,7 +295,7 @@ stock GiveGiantSoldier(client)
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 27.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.2);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.3);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			//TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
