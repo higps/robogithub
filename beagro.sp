@@ -179,9 +179,9 @@ stock GiveGiantPyro(client)
 		
 		CreateWeapon(client, "tf_weapon_fireaxe", 466, 6, 1, 2, 0);
 
-		CreateHat(client, 470, 10, 6, true); //Lofi longave
+		CreateHat(client, 470, 10, 6, false); //Lofi longave
 		CreateHat(client, 31135, 10, 6, true); //Handsome Devil
-		CreateHat(client, 31184, 10, 6, false);//Manndatory atire
+		CreateHat(client, 30652, 10, 6, true);//phobos something
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -346,7 +346,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 				TF2Attrib_SetByDefIndex(hat, 261, 12091445.0);
 			}
 		}
-	case 31184://attire
+	case 162://attire
 	{
 		TF2Attrib_SetByDefIndex(hat, 542, 1.0);//item style
 	}
