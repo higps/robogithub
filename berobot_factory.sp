@@ -3,8 +3,10 @@
 #include <sdkhooks>
 #include <tf2>
 #include <tf2_stocks>
+#include <morecolors_newsyntax>
 #include <sm_logger>
 #include <tf2attributes>
+#include <tf2_isPlayerInSpawn>
 #include <berobot_constants>
 #include <berobot>
 
@@ -174,12 +176,17 @@ public void Event_Death(Handle event, const char[] name, bool dontBroadcast)
             return;
         }
 
-        StopSounds(client, item);
-        
-        TF2Attrib_RemoveAll(client);
-        EmitSoundToAll(item.sounds.death);
-        _robotIsCreated[client] = false;
+        ResetOnDeath(client, item);
 	}
+}
+
+void ResetOnDeath(int client, Robot item)
+{
+    StopSounds(client, item);
+    
+    TF2Attrib_RemoveAll(client);
+    EmitSoundToAll(item.sounds.death);
+    _robotIsCreated[client] = false;    
 }
 
 void StopSounds(int client, Robot item)
@@ -276,11 +283,42 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         {
             if (_wasRobot[targetClientId][0] == '\0')
                 _wasRobot[targetClientId] = wasRobot;
-            Reset(target_list[i]);
-            PrintToChat(target_list[i], "1. You are no longer %s!", wasRobot);
-            PrintToChat(target_list[i], "2. You will turn back by changing class or dying!");
+
+            //notify robots of change
+            for(int otherRobotClientIndex = 0; otherRobotClientIndex <= MaxClients; otherRobotClientIndex++)
+            {
+                if (!IsValidClient(otherRobotClientIndex))
+                    continue;
+                if (_isRobot[otherRobotClientIndex][0] == '\0')
+                    continue;
+                
+                SMLogTag(SML_VERBOSE, "notifying %L, about %L switch from '%s' to '%s'", otherRobotClientIndex, targetClientId, wasRobot, name);
+                MC_PrintToChatEx(otherRobotClientIndex, otherRobotClientIndex, "{teamcolor}%N switching from '%s' to '%s'", targetClientId, wasRobot, name);
+            }
+
+            Reset(targetClientId);
+            PrintToChat(targetClientId, "1. You are no longer %s!", wasRobot);
+            PrintToChat(targetClientId, "2. You will turn back by changing class or dying!");
             
-            TF2_RespawnPlayer(target_list[i]);
+            if (!TF2Spawn_IsClientInSpawn(targetClientId))
+            {
+                SMLogTag(SML_VERBOSE, "forcing suicide on %L to become robot '%s'", targetClientId, name);
+                ForcePlayerSuicide(targetClientId);
+
+
+                Robot oldRobot;
+                if (GetRobotDefinition(wasRobot, oldRobot) != 0)
+                {
+                    SMLogTag(SML_ERROR, "could not create robot. no robot with name '%s' found", wasRobot);
+                    return 1;
+                }
+
+                ResetOnDeath(client, oldRobot);
+                _isRobot[targetClientId] = name;
+                return 0;
+            }
+            else
+                TF2_RespawnPlayer(targetClientId);
         }
 
         if (strcmp(name, wasRobot) == 0)    //don't enable robot, if client was already same robot as requested
