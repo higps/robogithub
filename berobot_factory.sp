@@ -175,12 +175,17 @@ public void Event_Death(Handle event, const char[] name, bool dontBroadcast)
             return;
         }
 
-        StopSounds(client, item);
-        
-        TF2Attrib_RemoveAll(client);
-        EmitSoundToAll(item.sounds.death);
-        _robotIsCreated[client] = false;
+        ResetOnDeath(client, item);
 	}
+}
+
+void ResetOnDeath(int client, Robot item)
+{
+    StopSounds(client, item);
+    
+    TF2Attrib_RemoveAll(client);
+    EmitSoundToAll(item.sounds.death);
+    _robotIsCreated[client] = false;    
 }
 
 void StopSounds(int client, Robot item)
@@ -285,6 +290,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
             {
                 SMLogTag(SML_VERBOSE, "forcing suicide on %L to become robot '%s'", targetClientId, name);
                 ForcePlayerSuicide(targetClientId);
+                ResetOnDeath(client, item);
                 _isRobot[targetClientId] = name;
                 return 0;
             }
