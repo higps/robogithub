@@ -900,33 +900,62 @@ public Action Volunteer(int client, bool volunteering)
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
 }
 
+int RobotDefinitionComparision(int index1, int index2, Handle array, Handle hndl)
+{
+    ArrayList list = view_as<ArrayList>(array); 
+    Robot a, b;
+    list.GetArray(index1, a);
+    list.GetArray(index2, b);
+
+
+    int classcmp = strcmp(a.class, b.class);
+    if (classcmp != 0)
+        return classcmp;
+
+    return strcmp(a.name, b.name);
+}
+
 Action Menu_Volunteer(int client)
 {
     ArrayList robotNames = GetRobotNames();
     SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
+
+    ArrayList robotDefinitions = new ArrayList(sizeof(Robot));
+    for(int i = 0; i < robotNames.Length; i++)
+    {
+        char name[NAMELENGTH];
+        robotNames.GetString(i, name, NAMELENGTH);
+        Robot item;
+        if (GetRobotDefinition(name, item) != 0)
+        {
+            SMLogTag(SML_ERROR, "could not volunteer. no robot with name '%s' found", name);
+            return Plugin_Handled;
+        }
+
+        robotDefinitions.PushArray(item);
+    }
+    robotDefinitions.SortCustom(RobotDefinitionComparision);
 
     Menu menu = new Menu(MenuHandler);
 
     menu.SetTitle("Select Your Robot Type");
     menu.ExitButton = g_ClientIsRepicking[client];
 
-    for(int i = 0; i < robotNames.Length; i++)
+    for(int i = 0; i < robotDefinitions.Length; i++)
     {
-        char name[NAMELENGTH];
-        robotNames.GetString(i, name, NAMELENGTH);
-        char class[9];
-        GetRobotClass(name, class);
+        Robot item;
+        robotDefinitions.GetArray(i, item, sizeof(item));
 
         int count;
-        g_RobotCount.GetValue(name, count);
+        g_RobotCount.GetValue(item.name, count);
         int draw = count >= g_RoboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
 
         char display[128];
-        Format(display, sizeof(display), "%s: %s (%i / %i used)", class, name, count, g_RoboCap);
+        Format(display, sizeof(display), "%s: %s (%i / %i used)", item.class, item.name, count, g_RoboCap);
 
-        menu.AddItem(name, display, draw);
+        menu.AddItem(item.name, display, draw);
 
-        SMLogTag(SML_VERBOSE, "added option for %s: %s", name, display);
+        SMLogTag(SML_VERBOSE, "added option for %s: %s", item.name, display);
     }
 
     int timeout = MENU_TIME_FOREVER;
