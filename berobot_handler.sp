@@ -251,7 +251,8 @@ public void OnClientDisconnect(int client)
     g_cv_Volunteered[client] = false;
     g_cv_RobotPicked[client] = "";
     int index = FindValueInArray(g_Volunteers, client);
-    g_Volunteers.Erase(index);
+    if (index >= 0)
+        g_Volunteers.Erase(index);
     RedrawVolunteerMenu();
 
     //PrintToChatAll("%N disconnected", client);
