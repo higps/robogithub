@@ -290,7 +290,16 @@ public any Native_CreateRobot(Handle plugin, int numParams)
             {
                 SMLogTag(SML_VERBOSE, "forcing suicide on %L to become robot '%s'", targetClientId, name);
                 ForcePlayerSuicide(targetClientId);
-                ResetOnDeath(client, item);
+
+
+                Robot oldRobot;
+                if (GetRobotDefinition(wasRobot, oldRobot) != 0)
+                {
+                    SMLogTag(SML_ERROR, "could not create robot. no robot with name '%s' found", wasRobot);
+                    return 1;
+                }
+
+                ResetOnDeath(client, oldRobot);
                 _isRobot[targetClientId] = name;
                 return 0;
             }
