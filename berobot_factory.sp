@@ -283,10 +283,13 @@ public any Native_CreateRobot(Handle plugin, int numParams)
             
             if (!TF2Spawn_IsClientInSpawn(targetClientId))
             {
-                SMLogTag(SML_VERBOSE, "respawning %L to become robot '%s'", targetClientId, name);
-                TF2_RespawnPlayer(targetClientId);
+                SMLogTag(SML_VERBOSE, "forcing suicide on %L to become robot '%s'", targetClientId, name);
+                ForcePlayerSuicide(targetClientId);
+                _isRobot[targetClientId] = name;
+                return 0;
             }
-
+            else
+                TF2_RespawnPlayer(targetClientId);
 
             for(int otherRobotClientIndex = 0; otherRobotClientIndex <= MaxClients; otherRobotClientIndex++)
             {
