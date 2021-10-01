@@ -177,6 +177,8 @@ public void OnPluginStart()
 
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
+
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
 	
     /* Natives */
     CreateNative("GetPickedRobot", Native_GetPickedRobot);
@@ -260,6 +262,26 @@ public void OnClientDisconnect(int client)
 }
 
 /* Publics */
+
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+        TFTeam iTeam = TF2_GetClientTeam(victim);
+
+        if (g_BossMode && iTeam == view_as<TFTeam>(g_HumanTeam))
+     {
+         CreateTimer(4.5, Timer_Respawn, victim);
+         
+     }
+
+}
+
+public Action Timer_Respawn(Handle timer, int client)
+{
+    TF2_RespawnPlayer(client);
+}
 
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
@@ -456,7 +478,6 @@ public Action Command_YT_Robot_Start(int client, int args)
         
         ServerCommand("mp_forceautoteam 0");
         ServerCommand("mp_teams_unbalance_limit 0");
-        ServerCommand("mp_disable_respawn_times 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 0");
         ServerCommand("mp_restartgame 5");
         ServerCommand("mp_autoteambalance 0");
@@ -492,7 +513,6 @@ public Action Command_YT_Robot_Start(int client, int args)
         ServerCommand("mp_forceautoteam 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 30");
         ServerCommand("mp_teams_unbalance_limit 1");
-        ServerCommand("mp_disable_respawn_times 0");
         ServerCommand("mp_restartgame 5");
         ServerCommand("mp_autoteambalance 1");
         ServerCommand("mp_scrambleteams_auto 1");
@@ -880,33 +900,62 @@ public Action Volunteer(int client, bool volunteering)
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
 }
 
+int RobotDefinitionComparision(int index1, int index2, Handle array, Handle hndl)
+{
+    ArrayList list = view_as<ArrayList>(array); 
+    Robot a, b;
+    list.GetArray(index1, a);
+    list.GetArray(index2, b);
+
+
+    int classcmp = strcmp(a.class, b.class);
+    if (classcmp != 0)
+        return classcmp;
+
+    return strcmp(a.name, b.name);
+}
+
 Action Menu_Volunteer(int client)
 {
     ArrayList robotNames = GetRobotNames();
     SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
+
+    ArrayList robotDefinitions = new ArrayList(sizeof(Robot));
+    for(int i = 0; i < robotNames.Length; i++)
+    {
+        char name[NAMELENGTH];
+        robotNames.GetString(i, name, NAMELENGTH);
+        Robot item;
+        if (GetRobotDefinition(name, item) != 0)
+        {
+            SMLogTag(SML_ERROR, "could not volunteer. no robot with name '%s' found", name);
+            return Plugin_Handled;
+        }
+
+        robotDefinitions.PushArray(item);
+    }
+    robotDefinitions.SortCustom(RobotDefinitionComparision);
 
     Menu menu = new Menu(MenuHandler);
 
     menu.SetTitle("Select Your Robot Type");
     menu.ExitButton = g_ClientIsRepicking[client];
 
-    for(int i = 0; i < robotNames.Length; i++)
+    for(int i = 0; i < robotDefinitions.Length; i++)
     {
-        char name[NAMELENGTH];
-        robotNames.GetString(i, name, NAMELENGTH);
-        char class[9];
-        GetRobotClass(name, class);
+        Robot item;
+        robotDefinitions.GetArray(i, item, sizeof(item));
 
         int count;
-        g_RobotCount.GetValue(name, count);
+        g_RobotCount.GetValue(item.name, count);
         int draw = count >= g_RoboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
 
         char display[128];
-        Format(display, sizeof(display), "%s: %s (%i / %i used)", class, name, count, g_RoboCap);
+        Format(display, sizeof(display), "%s: %s (%i / %i used)", item.class, item.name, count, g_RoboCap);
 
-        menu.AddItem(name, display, draw);
+        menu.AddItem(item.name, display, draw);
 
-        SMLogTag(SML_VERBOSE, "added option for %s: %s", name, display);
+        SMLogTag(SML_VERBOSE, "added option for %s: %s", item.name, display);
     }
 
     int timeout = MENU_TIME_FOREVER;

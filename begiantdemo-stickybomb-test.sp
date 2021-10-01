@@ -170,11 +170,11 @@ stock GiveGiantDemoKnight(client)
 		
 		TF2_RemoveAllWearables(client);
 
-		TF2_RemoveWeaponSlot(client, 0);
+	//	TF2_RemoveWeaponSlot(client, 0);
 		
 		
-		TF2_RemoveWeaponSlot(client, 1);
-		TF2_RemoveWeaponSlot(client, 2);
+	//	TF2_RemoveWeaponSlot(client, 1);
+	//	TF2_RemoveWeaponSlot(client, 2);
 
 		CreateWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 2, 0);
 		

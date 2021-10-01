@@ -5,6 +5,7 @@
 #include <tf2_stocks>
 #include <sm_logger>
 #include <tf2attributes>
+#include <tf2_isPlayerInSpawn>
 #include <berobot_constants>
 #include <berobot>
 
@@ -276,11 +277,27 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         {
             if (_wasRobot[targetClientId][0] == '\0')
                 _wasRobot[targetClientId] = wasRobot;
-            Reset(target_list[i]);
-            PrintToChat(target_list[i], "1. You are no longer %s!", wasRobot);
-            PrintToChat(target_list[i], "2. You will turn back by changing class or dying!");
+            Reset(targetClientId);
+            PrintToChat(targetClientId, "1. You are no longer %s!", wasRobot);
+            PrintToChat(targetClientId, "2. You will turn back by changing class or dying!");
             
-            TF2_RespawnPlayer(target_list[i]);
+            if (!TF2Spawn_IsClientInSpawn(targetClientId))
+            {
+                SMLogTag(SML_VERBOSE, "respawning %L to become robot '%s'", targetClientId, name);
+                TF2_RespawnPlayer(targetClientId);
+            }
+
+
+            for(int otherRobotClientIndex = 0; otherRobotClientIndex <= MaxClients; otherRobotClientIndex++)
+            {
+                if (!IsValidClient(otherRobotClientIndex))
+                    continue;
+                if (_isRobot[otherRobotClientIndex][0] == '\0')
+                    continue;
+                
+                SMLogTag(SML_VERBOSE, "notifying %L, about %L switch from '%s' to '%s'", otherRobotClientIndex, targetClientId, wasRobot, name);
+                PrintToChat(otherRobotClientIndex, "%N switching from '%s' to '%s'", targetClientId, wasRobot, name);
+            }
         }
 
         if (strcmp(name, wasRobot) == 0)    //don't enable robot, if client was already same robot as requested
