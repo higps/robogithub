@@ -122,8 +122,8 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
     //TODO: Release
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
-    //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
     SMLogTag(SML_INFO, "berobot_handler started at %i", GetTime());
 
     /* Convars */
@@ -182,6 +182,7 @@ public void OnPluginStart()
 	
     /* Natives */
     CreateNative("GetPickedRobot", Native_GetPickedRobot);
+    CreateNative("SetVolunteers", Native_SetVolunteers);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
@@ -450,22 +451,20 @@ public Action Command_Me_Boss(int client, int args)
 public Action Command_Robot_Selection(int client, int args)
 {
         
-            for(int i = 1; i < MaxClients; i++)
-            {
-                if (IsValidClient(i) && IsClientInGame(i))
-                {
-                    ChangeClientTeam(i, SPECTATE);
-                }
-                
-            }
+    for(int i = 1; i < MaxClients; i++)
+    {
+        if (IsValidClient(i) && IsClientInGame(i))
+        {
+            ChangeClientTeam(i, SPECTATE);
+        }
+    }
 
+    g_cv_BlockTeamSwitch = true;
+    g_SpectateSelection = true;
 
-       
-            PrintCenterTextAll("Type !volunteer to be on the giant robot team");
-            g_cv_BlockTeamSwitch = true;
-            g_SpectateSelection = true;
-    
+    StartAutomaticVolunteerVote(g_RoboCapTeam);
 }
+
 // intercept and block client jointeam command if required
 public Action Command_YT_Robot_Start(int client, int args)
 {
@@ -1078,6 +1077,18 @@ public any Native_GetPickedRobot(Handle plugin, int numParams)
 	int maxDestLength = GetNativeCell(3);
 
 	SetNativeString(2, g_cv_RobotPicked[client], maxDestLength);
+}
+
+int Native_SetVolunteers(Handle plugin, int numParams)
+{
+    int length = GetNativeCell(2);
+    int[] volunteers = new int[length];
+    GetNativeArray(1, volunteers, length);
+
+    for(int i = 0; i < length; i++)
+    {
+        Volunteer(volunteers[i], true);
+    }
 }
 
 stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
