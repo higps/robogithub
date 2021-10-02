@@ -124,7 +124,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.1);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
 	
 	UpdatePlayerHitbox(client, 1.75);
@@ -166,17 +166,17 @@ stock GiveGiantDemoKnight(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
+			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
 			TF2Attrib_SetByName(Weapon1, "clip size bonus", 3.2);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.3);
-			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 1.5);
+			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 1.15);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.2);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 10.0);
+			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 11.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.35);
-			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.6);
+			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
 			
 			
 		}

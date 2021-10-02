@@ -142,14 +142,14 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintToChat(client, "1. You are now Giant Pyro !");
-	PrintToChat(client, "2. Same stats as normal Pyro.");
-	PrintToChat(client, "3. You will lose this status when you touch a locker, upgrade or die.");	
+	PrintToChat(client, "1. You are now Wamo Pyro !");
 	
 }
 
@@ -172,7 +172,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
-		CreateWeapon(client, "tf_weapon_flamethrower", 21, 6, 1, 2, 0);
+		CreateWeapon(client, "tf_weapon_flamethrower", 594, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		CreateWeapon(client, "tf_weapon_flaregun", 39, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 2);
@@ -183,6 +183,7 @@ stock GiveGiantPyro(client)
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon1))
 		{

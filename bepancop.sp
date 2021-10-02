@@ -170,7 +170,7 @@ MakePanCop(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
@@ -185,6 +185,8 @@ MakePanCop(client)
 	//TF2Attrib_SetByName(client, "mult_item_meter_charge_rate", 0.3);
 	TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
 	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
+	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.3);
 	 
 
 	UpdatePlayerHitbox(client, 1.75);
@@ -231,6 +233,9 @@ stock GiveGDeflectorH(client)
 		CreateHat(client, 30085, 10, 6, true); //Macho mann
 		CreateHat(client, 30362, 10, 6, true); //the law
 		CreateHat(client, 946, 10, 6, false);//Siberian Sophisticate
+	//	CreateHat(client, 5617, 10, 6, false);//Voodoo-Cursed Scout Soul
+
+
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
@@ -240,7 +245,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.35);
 			TF2Attrib_SetByName(Weapon1, "ragdolls plasma effect", 1.0);
 			TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 250.0);
-			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.25);
+			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.35);
 			//TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
 		//	TF2Attrib_SetByName(Weapon1, "increased air control", 1000.0);
 			

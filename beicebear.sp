@@ -241,6 +241,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 3.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -295,10 +296,10 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 5.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.35);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.6);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.8);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.8);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			
 			
 		//	TF2Attrib_SetByName(Weapon1, "disable fancy class select anim", 1.0);

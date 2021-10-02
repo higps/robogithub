@@ -169,7 +169,7 @@ MakeRiotcop(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.7);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
@@ -180,6 +180,7 @@ MakeRiotcop(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	//TF2Attrib_SetByName(client, "mult_item_meter_charge_rate", 0.3);
 	//TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
@@ -243,16 +244,16 @@ stock GiveGDeflectorH(client)
 
 		CreateHat(client, 478, 10, 6, true); //Macho mann
 		CreateHat(client, 343, 10, 6, true); //the law
-		CreateHat(client, 296, 10, 6, false);//Siberian Sophisticate
+		CreateHat(client, 296, 10, 6, false);//License to maim
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.25);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.35);
 			TF2Attrib_SetByName(Weapon2, "attack projectiles", 1.0); // The Atributte doesn't work with Shotguns.
 			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 10.0);
-			TF2Attrib_SetByName(Weapon2, "damage penalty", 0.5);
+			TF2Attrib_SetByName(Weapon2, "damage penalty", 0.4);
 			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.25);
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);

@@ -8,6 +8,7 @@
 //#include <sendproxy>
 #include <tfobjects>
 #include <dhooks>
+//#include <collisionhook>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
@@ -19,6 +20,7 @@
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
+//new g_offsCollisionGroup;
 
 public Plugin:myinfo =
 {
@@ -33,6 +35,7 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
+	//g_offsCollisionGroup = FindSendPropInfo("DT_BaseEntity", "m_CollisionGroup");
 	HookEvent("player_builtobject", ObjectBuilt, EventHookMode_Post);
 
 	RobotSounds sounds;
@@ -40,11 +43,27 @@ public OnPluginStart()
 	sounds.loop = LOOP;
 	sounds.death = DEATH;
 	AddRobot(ROBOT_NAME, "Engineer", MakeUncleDane, PLUGIN_VERSION, sounds);
+
+
+	for(int client = 1 ; client <= MaxClients ; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			//SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
+			SDKHook(client, SDKHook_Touch, OnTouch);
+		}
+	}
+
 }
 
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
+}
+
+public Action OnTouch(int client, int ent)
+{
+
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -98,13 +117,30 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.65);
 		
 		SetEntPropFloat(iObj, Prop_Send, "m_flPercentageConstructed", 1.0);
+		//SetEntProp(iObj, Prop_Send, "m_CollisionGroup", 2); 
 		//SetEntPropFloat(iObj, Prop_Send, "m_bDisposableBuilding", 1.0);	
 		DispatchKeyValue(iObj, "defaultupgrade", "2"); 
 		//SetEntPropFloat(iObj, Prop_Send, "m_iUpgradeMetalRequired ", 0.1);
-		
-
+		//SDKHook(iObj, SDKHook_ShouldCollide, ShouldCollide );
+		//CH_PassFilter(iBuilder, iObj, false);
+		//SetEntData(iObj, g_offsCollisionGroup, 2, 4, false);
+	
 	}
 }
+
+/* public Action:CH_PassFilter( ent1, ent2, &bool:result )
+{
+	PrintToChatAll("Should stop");
+			result = false;
+			return Plugin_Stop;
+
+}  */
+
+/* public bool:ShouldCollide( entity, collisiongroup, contentsmask, bool:result )
+{
+	PrintToChatAll("Should not collide");
+    return false;
+}  */
 
 public Action:SetModel(client, const String:model[])
 {
@@ -164,7 +200,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
 	TF2Attrib_SetByName(client, "mod teleporter cost", 0.5);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
-
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	
 	UpdatePlayerHitbox(client, 1.65);
 	

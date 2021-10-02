@@ -200,6 +200,7 @@ MakeBearded(client)
 	//TF2Attrib_SetByName(client, "mult charge turn control", 10.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.3);
 	
 	
 

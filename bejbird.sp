@@ -123,7 +123,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1500;
+	int iHealth = 1250;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -144,6 +144,9 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 0.8);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "health regen", 10.0);
+	
 	
 	
 	UpdatePlayerHitbox(client, 1.65);
@@ -187,11 +190,11 @@ stock GiveBigRoboJbird(client)
 
 // int client, char[] classname, int itemindex, int quality, int level, int slot, int paint)
 	CreateWeapon(client, "tf_weapon_sniperrifle", 14, 6, 1, 0, 0);
-//	CreateWeapon(client, "tf_weapon_sapper", 810, 6, 1, 1, 0);
-	CreateWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); 
-//	CreateWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
+	CreateWeapon(client, "tf_weapon_smg", 16, 6, 1, 1, 0);
+	CreateWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
+
 		
-	CreateWeapon(client, "tf_wearable", 642, 6, 1, 1, 0); 
+	CreateWeapon(client, "tf_wearable", 642, 6, 1, 3, 0); 
 
 	CreateHat(client, 109, 10, 6, 0.0); // panama
 	CreateHat(client, 645, 10, 6, 7511618.0); //outback intellectial
@@ -199,8 +202,9 @@ stock GiveBigRoboJbird(client)
 	//CreateHat(client, 642, 10, 6, 0.0); //cozy camper
 
 		
-	int SniperRifle = GetPlayerWeaponSlot(client, 0); //SniperRifle
-	int Kukri = GetPlayerWeaponSlot(client, 2); //SniperRifle
+	int SniperRifle = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //SniperRifle
+	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
+	int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
 
 
@@ -209,10 +213,8 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_RemoveAll(SniperRifle);
 			
 			TF2Attrib_SetByName(SniperRifle, "killstreak tier", 1.0);
-
-			TF2Attrib_SetByName(SniperRifle, "fire rate bonus", 1.5);
-			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs players", 1.5);
-			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.75);
 		
 		
 
@@ -237,6 +239,19 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
+
+			
+		}
+	if(IsValidEntity(SMG))
+		{
+			TF2Attrib_RemoveAll(SMG);
+			
+			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
+
+			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 1.25);
+			//TF2Attrib_SetByName(SMG, "weapon spread bonus", 0.75);
+			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
+			
 
 			
 		}
