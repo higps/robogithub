@@ -66,22 +66,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnClientPutInServer(client)
-{
-	OnClientDisconnect_Post(client);
-}
-
-public OnClientDisconnect_Post(client)
-{
-	if (IsRobot(client, ROBOT_NAME))
-	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-	//	StopSound(client, SNDCHAN_AUTO, SOUND_GUNFIRE);
-//		StopSound(client, SNDCHAN_AUTO, SOUND_WINDUP);
-		
-	}
-}
-
 public OnMapStart()
 {
 	PrecacheModel(GSCOUT);
