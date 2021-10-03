@@ -51,6 +51,7 @@ enum //Convar names
     CV_g_RoboCapTeam,
     CV_g_RoboCap,
     CV_g_RoboTeamMode,
+    CV_g_RoboMode,
     CV_PluginVersion
 }
 /* Global Variables */
@@ -68,13 +69,15 @@ ConVar g_cvCvarList[CV_PluginVersion + 1];
 /* Convar related global variables */
 
 bool g_cv_bDebugMode;
-
 bool g_BossMode = false;
-
 bool g_cv_BlockTeamSwitch = false;
+bool g_SpectateSelection = false;
 
 bool g_cv_Volunteered[MAXPLAYERS + 1];
 char g_cv_RobotPicked[MAXPLAYERS + 1][NAMELENGTH];
+bool g_ClientIsRepicking[MAXPLAYERS + 1];
+bool g_Voted[MAXPLAYERS + 1];
+
 
 
 float g_CV_flSpyBackStabModifier;
@@ -85,6 +88,9 @@ int g_RoboTeam;
 int g_HumanTeam;
 int g_RoboCap;
 int g_RoboTeamMode;
+int g_RoboMode;
+int g_iVotes;
+int g_iVotesNeeded;
 
 ArrayList g_Volunteers;
 StringMap g_RobotCount;
@@ -115,21 +121,20 @@ public Plugin myinfo =
 };
 public void OnPluginStart()
 {
-    //TODO: Release
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
-    //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
     SMLogTag(SML_INFO, "berobot_handler started at %i", GetTime());
 
     /* Convars */
 
 
     g_cvCvarList[CV_PluginVersion] = CreateConVar("sm_yt_v_mvm_version", PLUGIN_VERSION, "Plugin Version.", FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_CHEAT);
-    g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_yt_v_mvm_debug", "1", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+    g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_yt_v_mvm_debug", "0", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "500.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar("sm_robocap_team", "6", "The total amount of giant robots on a team");
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
     g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
+    g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Needs vote to start boss mode, 1 = Start game by reaching enough volunteers");
 
     /* Convar global variables init */
 
@@ -139,6 +144,7 @@ public void OnPluginStart()
     g_RoboCapTeam = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
     g_RoboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
     g_RoboTeamMode = GetConVarInt(g_cvCvarList[CV_g_RoboTeamMode]);
+    g_RoboMode = GetConVarInt(g_cvCvarList[CV_g_RoboMode]);
 
     /* Convar Change Hooks */
 
@@ -148,20 +154,33 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboCapTeam].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboCap].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboTeamMode].AddChangeHook(CvarChangeHook);
+    g_cvCvarList[CV_g_RoboMode].AddChangeHook(CvarChangeHook);
 
 
-    RegAdminCmd("sm_berobot", Command_BeRobot, ADMFLAG_ROOT, "It's a good time to run");
+    RegAdminCmd("sm_berobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
     RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
-    RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
+    RegAdminCmd("sm_selection_mode", Command_Robot_Selection, ADMFLAG_SLAY, "Forces selection mode");
+    
     RegAdminCmd("sm_me_boss", Command_Me_Boss, ADMFLAG_SLAY, "Checks if you are a boss");
     RegAdminCmd("sm_setvolunteer", Command_SetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to true/enabled");
     RegAdminCmd("sm_unsetvolunteer", Command_UnsetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to false/disabled");
 
+    RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
+    RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
+    RegConsoleCmd("sm_rtr", Command_RoboVote, "Votes to begin a mode");
+    RegConsoleCmd("sm_rocktherobot", Command_RoboVote, "Votes to begin a mode");
+    RegConsoleCmd("sm_changerobot", Command_ChangeRobot, "change your robot");
+    RegConsoleCmd("sm_chngrbt", Command_ChangeRobot, "change your robot");
+    RegConsoleCmd("sm_cr", Command_ChangeRobot, "change your robot");
+
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
+
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
 	
     /* Natives */
     CreateNative("GetPickedRobot", Native_GetPickedRobot);
+    CreateNative("SetVolunteers", Native_SetVolunteers);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
@@ -169,13 +188,9 @@ public void OnPluginStart()
     g_cv_BlockTeamSwitch = false;
     g_BossMode = false;
 
-    for(int i = 0; i < MAXPLAYERS; i++)
-    {
-        g_cv_Volunteered[i] = false;
-    }
-
     g_Volunteers.Clear();
 
+    //Loading code where robots can't use resupply lockers
     g_hGameConf = LoadGameConfigFile("sm-tf2.games");
     if(g_hGameConf == null)
         SetFailState("Failed to setup gamedata!");
@@ -198,9 +213,16 @@ public void OnPluginStart()
 public void OnMapStart()
 {
 
+    ResetMode();
+
+}
+
+public void ResetMode()
+{
     g_cv_BlockTeamSwitch = false;
     g_BossMode = false;
-
+    g_SpectateSelection = false;
+    g_iVotes = 0;
     g_Volunteers.Clear();
     g_RobotCount.Clear();
 
@@ -208,7 +230,12 @@ public void OnMapStart()
     {
         g_cv_Volunteered[i] = false;
         g_cv_RobotPicked[i] = "";
+        g_Voted[i] = false;
+
     }
+    //Set more dynamic way of getting the amount of votes needed
+    g_iVotesNeeded = g_RoboCapTeam;
+    //g_iVotesNeeded = 6;
 }
 
 public void OnClientDisconnect(int client)
@@ -225,7 +252,9 @@ public void OnClientDisconnect(int client)
     g_cv_Volunteered[client] = false;
     g_cv_RobotPicked[client] = "";
     int index = FindValueInArray(g_Volunteers, client);
-    g_Volunteers.Erase(index);
+    if (index >= 0)
+        g_Volunteers.Erase(index);
+    RedrawVolunteerMenu();
 
     //PrintToChatAll("%N disconnected", client);
     int islots = g_RoboCapTeam - g_Volunteers.Length;
@@ -234,91 +263,73 @@ public void OnClientDisconnect(int client)
 
 /* Publics */
 
-public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 
+        TFTeam iTeam = TF2_GetClientTeam(victim);
+
+        if (g_BossMode && iTeam == view_as<TFTeam>(g_HumanTeam))
+     {
+       //  CreateTimer(4.5, Timer_Respawn, victim);
+         
+     }
+
+}
+
+public Action Timer_Respawn(Handle timer, int client)
+{
+    TF2_RespawnPlayer(client);
+}
+
+public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
+{
     for(int i = 1; i < MaxClients; i++)
     {
         if(g_cv_Volunteered[i] == true)
         {
-
             int iTeam = GetClientTeam(i);
-
             if(iTeam != g_RoboTeam)
             {
-
-                PrintToChatAll("Was not the same for %N", i);
+               // PrintToChatAll("Was not the same for %N", i);
 
                 switch(iTeam)
                 {
                 case BLUE:
                 {
-                    PrintToChatAll("RoboTeam was RED changing to BLUE...");
+                 //   PrintToChatAll("RoboTeam was RED changing to BLUE...");
                     g_RoboTeam = BLUE;
                     g_HumanTeam = RED;
                 }
                 case RED:
                 {
-                    PrintToChatAll("RoboTeam was BLU changing to RED...");
+                //    PrintToChatAll("RoboTeam was BLU changing to RED...");
                     g_RoboTeam = RED;
                     g_HumanTeam = BLUE;
                 }
                 case UNASSIGNED:
                 {
-                    PrintToChatAll("RoboTeam was UNASSIGNED");
+                 //   PrintToChatAll("RoboTeam was UNASSIGNED");
                 }
                 case SPECTATE:
                 {
-                    PrintToChatAll("RoboTeam was Spectate");
+                 //   PrintToChatAll("RoboTeam was Spectate");
                 }
                 }
                 //We found a volunteer that was not on the robo team, no need to check the rest
-                PrintToChatAll("Breaking off the loop on %N", i);
+               // PrintToChatAll("Breaking off the loop on %N", i);
                 return Plugin_Handled;
             }
         }
     }
-
-    /*     int iTeamSwitch = GameRules_GetProp("m_bTeamsSwitched");
-
-
-    switch(iTeamSwitch)
-    {
-    case 1:
-    {
-        PrintToChatAll("RoboTeam was RED changing to BLUE...");
-        g_RoboTeam = BLUE;
-        g_HumanTeam = RED;
-    }
-    case 0:
-    {
-        PrintToChatAll("RoboTeam was BLU changing to RED...");
-        g_RoboTeam = RED;
-        g_HumanTeam = BLUE;
-    }
-    } */
-
-
-    //    bool fullreset = GetEventBool(event, "full_reset");
-
-
-    //PrintToChatAll("Teamswitch?: %i", iTeamSwitch);
-
-
-    //    int iGameType = GameRules_GetProp("m_nGameType");
-
-    //   PrintToChatAll("Gametype number %i", iGameType);
-
 
     return Plugin_Continue;
 }
 
 public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 {
-    //int client = GetClientOfUserId(GetEventInt(pThis, "userid"));
-    //Write the code you want here, consult dhooks.inc for return types and so on
-    // PrintToChatAll("MRESReturn trigger");
+    //Activates when doing OnRegenerate (touchihng resupply locker) and then ignoring it if you are a boss
     if(isMiniBoss(pThis))
         return MRES_Supercede;
 
@@ -342,10 +353,13 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 
     if(convar == g_cvCvarList[CV_g_RoboTeamMode])
         g_RoboTeamMode = StringToInt(sNewValue);
+
+    if(convar == g_cvCvarList[CV_g_RoboMode])
+        g_RoboMode = StringToInt(sNewValue); 
 }
 
 /* Plugin Exclusive Functions */
-public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
     if(IsValidClient(victim))
     {
@@ -355,24 +369,24 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
             if(iClass == TFClass_Spy)
             {
                 // Checks if boss is on
-                if(g_cv_bDebugMode)
-                    //   PrintToChatAll("Attacker was spy");
+                if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy");
+
                     if(isMiniBoss(victim))
                     {
                         if(damagecustom == TF_CUSTOM_BACKSTAB)
                         {
                             damage = g_CV_flSpyBackStabModifier;
-                            if(g_cv_bDebugMode)
-                                //    PrintToChatAll("Set damage to %f", damage);
-                                return Plugin_Changed;
+                            critType = CritType_Crit;
+                            if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+
+                            return Plugin_Changed;
                         }
                         if(damagecustom == TF_CUSTOM_HEADSHOT)
                         {
-                            damage *= g_CV_flSpyBackStabModifier;
-                        
-                            if(g_cv_bDebugMode)
-                                //    PrintToChatAll("Set damage to %f", damage);
-                                return Plugin_Changed;
+                            damage *= 1.1111;
+                            critType = CritType_Crit;
+                         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                            return Plugin_Changed;
                         }
                     }
             }
@@ -380,17 +394,18 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
             if(iClass == TFClass_Sniper)
             {
                 // Checks if boss is on
-                if(g_cv_bDebugMode)
-                    //   PrintToChatAll("Attacker was spy");
+                if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy");
                     if(isMiniBoss(victim))
                     {
                         if(damagecustom == TF_CUSTOM_HEADSHOT)
                         {
-                            damage *= 1.5;
+                            
+                            
+                            damage *= 1.1111;
                             critType = CritType_Crit;
-                            if(g_cv_bDebugMode)
-                                //    PrintToChatAll("Set damage to %f", damage);
-                                return Plugin_Changed;
+                            if(g_cv_bDebugMode) PrintToChatAll("Set damage to %f", damage);
+
+                            return Plugin_Changed;
                         }
                     }
             }
@@ -412,7 +427,9 @@ public Action Command_BeRobot(int client, int numParams)
 
     SMLogTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
     CreateRobot(name, client, target);
-
+    
+    SetEntProp(client, Prop_Send, "m_bIsMiniBoss", 1);
+    
     return Plugin_Handled;
 }
 
@@ -430,21 +447,41 @@ public Action Command_Me_Boss(int client, int args)
     return Plugin_Handled;
 }
 
+public Action Command_Robot_Selection(int client, int args)
+{
+    ServerCommand("mp_forceautoteam  0");
+    for(int i = 1; i < MaxClients; i++)
+    {
+        if (IsValidClient(i) && IsClientInGame(i))
+        {
+            ChangeClientTeam(i, SPECTATE);
+        }
+    }
+
+    g_cv_BlockTeamSwitch = true;
+    g_SpectateSelection = true;
+
+    StartAutomaticVolunteerVote(g_RoboCapTeam);
+}
 
 // intercept and block client jointeam command if required
 public Action Command_YT_Robot_Start(int client, int args)
 {
-    if(!g_cv_BlockTeamSwitch)
+
+    if(!g_BossMode)
     {
-        PrintCenterTextAll("Sarting Giant Robot Event mode");
         g_cv_BlockTeamSwitch = true;
+        g_SpectateSelection = false;
+        PrintCenterTextAll("Sarting Giant Robot Event mode");
+        
         ServerCommand("mp_forceautoteam 0");
         ServerCommand("mp_teams_unbalance_limit 0");
-        ServerCommand("mp_disable_respawn_times 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 0");
         ServerCommand("mp_restartgame 5");
         ServerCommand("mp_autoteambalance 0");
         ServerCommand("mp_scrambleteams_auto 0");
+        ServerCommand("mp_forceautoteam  0");
+        
 
         //Randomly set which team is roboteam and humanteam
         int RandomTeam = GetRandomInt(1, 2);
@@ -474,15 +511,15 @@ public Action Command_YT_Robot_Start(int client, int args)
         ServerCommand("mp_forceautoteam 1");
         ServerCommand("sm_cvar tf_dropped_weapon_lifetime 30");
         ServerCommand("mp_teams_unbalance_limit 1");
-        ServerCommand("mp_disable_respawn_times 0");
         ServerCommand("mp_restartgame 5");
         ServerCommand("mp_autoteambalance 1");
         ServerCommand("mp_scrambleteams_auto 1");
 
-        g_BossMode = false;
+        ResetMode();
+        
     }
 
-    if(g_cv_BlockTeamSwitch)
+    if(g_BossMode)
     {
 
         if(g_CV_flYoutuberMode)
@@ -511,7 +548,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                         CreateRobot("HiGPS", i, "");
                         // CreateRobot("Solar Light", i, "");
                         //ServerCommand("sm_begps #%i", playerID);
-                        TF2_SwapTeamAndRespawn(playerID, g_RoboTeam);
+                        TF2_SwapTeamAndRespawnNoMsg(playerID, g_RoboTeam);
                     }
 
                     //Bearded
@@ -561,24 +598,6 @@ public Action Command_YT_Robot_Start(int client, int args)
                     }
                 }
             }
-
-            // ServerCommand("sm_begps %i", i);
-            // ServerCommand("sm_bebearded %i", i);
-            // ServerCommand("sm_bearray %i", i);
-            // ServerCommand("sm_besolar %i", i);
-            // ServerCommand("sm_beagro %i", i);
-            // ServerCommand("sm_bedane %i", i);
-
-
-            //PrintToChat(client, "AuthId_SteamID64 = %s", sSteamID);
-
-            // int SteamID64;
-            // Format(sSteamID, sizeof SteamID64, "%i %s", SteamID64, sSteamID);
-
-            //PrintToChatAll("SteamID64 %i", SteamID64);
-
-
-            //
         }
         else
         {
@@ -599,7 +618,7 @@ public Action Command_YT_Robot_Start(int client, int args)
 
                     if(IsClientInGame(i))
                     {
-                        TF2_ChangeClientTeam(i, TFTeam_Spectator);
+                       // TF2_ChangeClientTeam(i, TFTeam_Spectator);
                         // int playerID = GetClientUserId(i);
                         //ServerCommand("sm_ct #%i red", playerID);
                         //int index = FindValueInArray(g_Volunteers, i);
@@ -609,22 +628,109 @@ public Action Command_YT_Robot_Start(int client, int args)
                             PrintToChat(i, "You are on the Robot Team");
                             // ServerCommand("sm_begps #%i", playerID);
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
-                            ChangeClientTeam(i, g_RoboTeam);
-                            TF2_RespawnPlayer(i);
+                            TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+                        //    TF2_RespawnPlayer(i);
+                            g_ClientIsRepicking[i] = false;
                             Menu_Volunteer(i);
                         }
                         else
                         {
                             PrintToChat(i, "You are on the Human team");
                             // ServerCommand("sm_ct #%i %i", playerID, g_HumanTeam);
-                            ChangeClientTeam(i, g_HumanTeam);
-                            TF2_RespawnPlayer(i);
+                            TF2_SwapTeamAndRespawnNoMsg(i, g_HumanTeam);
+                            //TF2_RespawnPlayer(i);
                         }
                     }
                 }
             }
         }
     }
+}
+
+public Action Command_RoboVote(int client, int args)
+{
+
+    //If boss mode is already active
+    //PrintToChatAll("%i",CV_g_RoboCapTeam);
+    if (g_BossMode)
+    {
+        MC_PrintToChatEx(client, client,"[{orange}SM{default}]{teamcolor} Giant Boss Mode is already active");
+        return;
+    }
+
+    if (g_RoboMode == 1)
+    {
+        MC_PrintToChatEx(client, client,"[{orange}SM{default}]{teamcolor} Voting is disabled. Use {green}!volunteer{green} to become a robot, game starts when enough volunteers are reached");
+        return;
+    }
+    
+    //If the client has already voted
+    if(g_Voted[client])
+    {
+        MC_PrintToChat(client,"{orange}You have already voted");
+        return;
+    }
+
+    g_iVotes++;
+    g_Voted[client] = true;
+    MC_PrintToChatAllEx(client, "[{orange}SM{default}] {teamcolor}%N {default}wants to start Giant Robot Boss mode. [{orange}%i{default}/{orange}%i {default}more votes required]", client, g_iVotes, g_iVotesNeeded);
+
+    //Start the robo vote
+    if(g_iVotes >= g_iVotesNeeded)
+    {
+        Command_Robot_Selection(client, args);
+    }
+    
+
+}
+
+public Action Command_ChangeRobot(int client, int args)
+{
+    char target[32];
+    if(args < 1)
+    {
+        target = "";
+    }
+    else
+        GetCmdArg(1, target, sizeof(target));
+
+    int targetFilter = 0;
+    if(target[0] == '\0')
+    {
+        target = "@me";
+        targetFilter = COMMAND_FILTER_NO_IMMUNITY;
+    }
+
+    char target_name[MAX_TARGET_LENGTH];
+    int target_list[MAXPLAYERS], target_count;
+    bool tn_is_ml;
+
+    if((target_count = ProcessTargetString(
+          target,
+          client,
+          target_list,
+          MAXPLAYERS,
+          targetFilter,
+          target_name,
+          sizeof(target_name),
+          tn_is_ml)) <= 0)
+    {
+        ReplyToTargetError(client, target_count);
+        return Plugin_Handled;
+    }
+
+    for(int i = 0; i < target_count; i++)
+    {
+        int targetClientId = target_list[i];
+        if (!IsAnyRobot(targetClientId))
+            continue;
+
+        g_cv_Volunteered[targetClientId] = true;
+        g_ClientIsRepicking[targetClientId] = true;
+        Menu_Volunteer(targetClientId);
+    }
+            
+    return Plugin_Handled;
 }
 
 public Action Command_SetVolunteer(int client, int args)
@@ -659,6 +765,23 @@ public Action Command_UnsetVolunteer(int client, int args)
 
 public Action Command_Volunteer(int client, int args)
 {
+
+    //PrintToChatAll("g_RoboMode was %i", g_RoboMode);
+    //PrintToChatAll("CV_g_RoboMode was %i", CV_g_RoboMode);
+
+
+    if (!g_RoboMode) 
+    {
+        if (!g_SpectateSelection)MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}Unable to volunteer, robo mode is not started use {green}!robo_vote{green}{teamcolor} to initiate a vote instead. Volunteering will happen later");
+        if (!g_SpectateSelection)return Plugin_Handled;
+    }
+
+    if (AutomaticVolunteerVoteIsInProgress()) 
+    {
+        MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}Unable to volunteer, a vote for volunteers is in progress");
+        return Plugin_Handled;
+    }
+
     char target[32];
     if(args < 1)
     {
@@ -690,7 +813,7 @@ public Action VolunteerTargets(int client, char target[32], bool volunteering)
           client,
           target_list,
           MAXPLAYERS,
-          COMMAND_FILTER_ALIVE | targetFilter,
+          targetFilter,
           target_name,
           sizeof(target_name),
           tn_is_ml)) <= 0)
@@ -730,7 +853,8 @@ public Action Volunteer(int client, bool volunteering)
         {
             SMLogTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
             //int playerID = GetClientUserId(client);
-            TF2_SwapTeamAndRespawn(client, g_RoboTeam);
+            TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
+            g_ClientIsRepicking[client] = false;
             Menu_Volunteer(client);
         }
     }
@@ -780,35 +904,62 @@ public Action Volunteer(int client, bool volunteering)
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
 }
 
+int RobotDefinitionComparision(int index1, int index2, Handle array, Handle hndl)
+{
+    ArrayList list = view_as<ArrayList>(array); 
+    Robot a, b;
+    list.GetArray(index1, a);
+    list.GetArray(index2, b);
 
-public Action Menu_Volunteer(int client)
+
+    int classcmp = strcmp(a.class, b.class);
+    if (classcmp != 0)
+        return classcmp;
+
+    return strcmp(a.name, b.name);
+}
+
+Action Menu_Volunteer(int client)
 {
     ArrayList robotNames = GetRobotNames();
     SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
 
-    Menu menu = new Menu(MenuHandler);
-
-    menu.SetTitle("Select Your Robot Type");
-    menu.ExitButton = false;
-
+    ArrayList robotDefinitions = new ArrayList(sizeof(Robot));
     for(int i = 0; i < robotNames.Length; i++)
     {
         char name[NAMELENGTH];
         robotNames.GetString(i, name, NAMELENGTH);
-        char class[9];
-        GetRobotClass(name, class);
+        Robot item;
+        if (GetRobotDefinition(name, item) != 0)
+        {
+            SMLogTag(SML_ERROR, "could not volunteer. no robot with name '%s' found", name);
+            return Plugin_Handled;
+        }
 
-        int roboCap = GetConVarInt(g_cvCvarList[g_RoboCap]);
+        robotDefinitions.PushArray(item);
+    }
+    robotDefinitions.SortCustom(RobotDefinitionComparision);
+
+    Menu menu = new Menu(MenuHandler);
+
+    menu.SetTitle("Select Your Robot Type");
+    menu.ExitButton = g_ClientIsRepicking[client];
+
+    for(int i = 0; i < robotDefinitions.Length; i++)
+    {
+        Robot item;
+        robotDefinitions.GetArray(i, item, sizeof(item));
+
         int count;
-        g_RobotCount.GetValue(name, count);
-        int draw = count >= roboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
+        g_RobotCount.GetValue(item.name, count);
+        int draw = count >= g_RoboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
 
         char display[128];
-        Format(display, sizeof(display), "%s: %s (%i / %i used)", class, name, count, roboCap);
+        Format(display, sizeof(display), "%s: %s (%i / %i)", item.class, item.name, count, g_RoboCap);
 
-        menu.AddItem(name, display, draw);
+        menu.AddItem(item.name, display, draw);
 
-        SMLogTag(SML_VERBOSE, "added option for %s: %s", name, display);
+        SMLogTag(SML_VERBOSE, "added option for %s: %s", item.name, display);
     }
 
     int timeout = MENU_TIME_FOREVER;
@@ -829,31 +980,30 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
         CreateRobot(info, param1, "");
 
+        //reset count for current robot
+        SMLogTag(SML_VERBOSE, "volunteered by %L is currently robot '%s'", param1, g_cv_RobotPicked[param1]);
+        if (g_cv_RobotPicked[param1][0] != '\0')
+        {
+            int count;
+            g_RobotCount.GetValue(g_cv_RobotPicked[param1], count);
+
+            SMLogTag(SML_VERBOSE, "%L decrements robot-count for robot '%s' from %i", param1, g_cv_RobotPicked[param1], count);
+            g_RobotCount.SetValue(g_cv_RobotPicked[param1], count - 1);
+
+        }
+
         int currentCount;
         g_RobotCount.GetValue(info, currentCount);
         g_RobotCount.SetValue(info, currentCount + 1);
         g_cv_RobotPicked[param1] = info;
+        g_ClientIsRepicking[param1] = false;
 
-        for(int i = 0; i < MaxClients; i++)
-        {
-            if(g_cv_RobotPicked[i][0] != '\0') //don't open menu for players, who have already picked a robot
-                continue;
-
-            if(!IsValidClient(i))
-                continue;
-
-            if(!IsClientInGame(i))
-                continue;
-
-            if(!g_cv_Volunteered[i])
-                continue;
-
-            Menu_Volunteer(i);
-        }
+        RedrawVolunteerMenu();
     }
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
     {
+        g_ClientIsRepicking[param1] = false;
         // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
     }
 
@@ -861,6 +1011,26 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     else if(action == MenuAction_End)
     {
         delete menu;
+    }
+}
+
+void RedrawVolunteerMenu()
+{
+    for(int i = 0; i < MaxClients; i++)
+    {
+        if(g_cv_RobotPicked[i][0] != '\0' && !g_ClientIsRepicking[i]) //don't open menu for players, who have already picked a robot
+            continue;
+
+        if(!IsValidClient(i))
+            continue;
+
+        if(!IsClientInGame(i))
+            continue;
+
+        if(!g_cv_Volunteered[i])
+            continue;
+
+        Menu_Volunteer(i);
     }
 }
 
@@ -875,6 +1045,12 @@ public Action OnClientCommand(int client, int args)
 
     if(strcmp(cmd, "jointeam", true) == 0)
     {
+
+        if (g_SpectateSelection)
+        {
+            ChangeClientTeam(client, SPECTATE);
+            return Plugin_Handled;
+        }
 
         if(g_cv_BlockTeamSwitch)
         {
@@ -916,14 +1092,12 @@ bool isMiniBoss(int client)
 
         if(GetEntProp(client, Prop_Send, "m_bIsMiniBoss"))
         {
-            if(g_cv_bDebugMode)
-                //                PrintToChatAll("%N Was mini boss", client);
+            if(g_cv_bDebugMode) PrintToChatAll("%N Was mini boss", client);
                 return true;
         }
         else
         {
-            if(g_cv_bDebugMode)
-                //  PrintToChatAll("%N Was not mini boss", client);
+            if(g_cv_bDebugMode)PrintToChatAll("%N Was not mini boss", client);
                 return false;
         }
     }
@@ -937,4 +1111,24 @@ public any Native_GetPickedRobot(Handle plugin, int numParams)
 	int maxDestLength = GetNativeCell(3);
 
 	SetNativeString(2, g_cv_RobotPicked[client], maxDestLength);
+}
+
+int Native_SetVolunteers(Handle plugin, int numParams)
+{
+    int length = GetNativeCell(2);
+    int[] volunteers = new int[length];
+    GetNativeArray(1, volunteers, length);
+
+    for(int i = 0; i < length; i++)
+    {
+        Volunteer(volunteers[i], true);
+    }
+}
+
+stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
+{
+	SetEntProp(client, Prop_Send, "m_lifeState", 2);
+	ChangeClientTeam(client, team);
+	TF2_RespawnPlayer(client);
+	SetEntProp(client, Prop_Send, "m_lifeState", 0);
 }

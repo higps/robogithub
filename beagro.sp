@@ -8,6 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Agro"
+#define ROBOT_DESCRIPTION "Backgreaser, Slow Scorch Shot"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -34,8 +35,6 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-new bool:g_bIsGPYRO[MAXPLAYERS + 1];
-
 new bool:Locked1[MAXPLAYERS+1];
 new bool:Locked2[MAXPLAYERS+1];
 new bool:Locked3[MAXPLAYERS+1];
@@ -43,21 +42,17 @@ new bool:CanWindDown[MAXPLAYERS+1];
 
 public OnPluginStart()
 {
-    //TODO: Release
-	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
-    //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.gunfire = SOUND_GUNFIRE;
-	sounds.windup = SOUND_WINDUP;
-	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Pyro", MakeGiantPyro, PLUGIN_VERSION, sounds);
+    RobotSounds sounds;
+    sounds.spawn = SPAWN;
+    sounds.loop = LOOP;
+    sounds.gunfire = SOUND_GUNFIRE;
+    sounds.windup = SOUND_WINDUP;
+    sounds.death = DEATH;
+    AddRobot(ROBOT_NAME, "Pyro", MakeGiantPyro, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()
@@ -72,32 +67,9 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnClientPutInServer(client)
-{
-	OnClientDisconnect_Post(client);
-}
-
-public OnClientDisconnect_Post(client)
-{
-	if (g_bIsGPYRO[client])
-	{
-		g_bIsGPYRO[client] = false;
-	}
-}
-
 public OnMapStart()
 {
 	PrecacheModel(GPYRO);	
-}
-
-public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if(g_bIsGPYRO[client])
-	{
-		g_bIsGPYRO[client] = false;
-	}
 }
 
 public Action:SetModel(client, const String:model[])
@@ -146,7 +118,7 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
@@ -154,11 +126,12 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGPYRO[client] = true;
 	
 	PrintToChat(client, "1. You are now Giant Pyro !");
 	PrintToChat(client, "2. Same stats as normal Pyro.");
@@ -181,9 +154,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 stock GiveGiantPyro(client)
 {
 	if (IsValidClient(client))
-	{
-		g_bIsGPYRO[client] = true;
-		
+	{		
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -192,12 +163,15 @@ stock GiveGiantPyro(client)
 		CreateWeapon(client, "tf_weapon_flaregun", 740, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		CreateHat(client, 470, 10, 6, true); //Lofi longave
+		CreateWeapon(client, "tf_weapon_fireaxe", 466, 6, 1, 2, 0);
+
+		CreateHat(client, 470, 10, 6, false); //Lofi longave
 		CreateHat(client, 31135, 10, 6, true); //Handsome Devil
-		CreateHat(client, 31184, 10, 6, false);//Manndatory atire
+		CreateHat(client, 30652, 10, 6, true);//phobos something
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon1))
 		{
@@ -206,25 +180,40 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "mod flamethrower back crit", 1.0);		
+			TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 0.6);		
 			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);			
-			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 10.0);			
-			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.5);
+			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
+			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
+			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
+
+
+
 			TF2Attrib_SetByName(Weapon1, "attach particle effect", 4.0);
 			
 			TF2Attrib_SetByName(Weapon1, "single wep deploy time decreased", 0.4);
 			TF2Attrib_SetByName(Weapon1, "switch from wep deploy time decreased", 0.7);
 			TF2Attrib_SetByName(Weapon1, "weapon burn dmg reduced", 1.0);
-			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.2);
-			
+
 		}
 		
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.2);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 0.5);
 			TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.5);
+			TF2Attrib_SetByName(Weapon2, "apply z velocity on damage", 170.0);
+			//TF2Attrib_SetByName(Weapon2, "apply look velocity on damage", 1500.0);
+		}
+
+				if(IsValidEntity(Weapon3))
+		{
+			//TF2Attrib_RemoveAll(Weapon3);
+			TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", 3.25);
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
+			TF2Attrib_SetByName(Weapon3, "fire rate penalty", 1.2);
+			
+			//TF2Attrib_SetByName(Weapon2, "apply look velocity on damage", 1500.0);
 		}
 	}
 }
@@ -234,7 +223,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bIsGPYRO[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
@@ -246,7 +235,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 
 public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
 {
-	if (IsValidClient(iClient) && g_bIsGPYRO[iClient]) 
+	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME)) 
 	{	
 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
 		if(IsValidEntity(weapon))
@@ -307,12 +296,6 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 		}
 	}
 }
-
-public Native_SetGiantPyro(Handle:plugin, args)
-	MakeGiantPyro(GetNativeCell(1));
-
-public Native_IsGiantPyro(Handle:plugin, args)
-	return g_bIsGPYRO[GetNativeCell(1)];
 	
 stock bool:IsValidClient(client)
 {
@@ -365,7 +348,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 				TF2Attrib_SetByDefIndex(hat, 261, 12091445.0);
 			}
 		}
-	case 31184://attire
+	case 162://attire
 	{
 		TF2Attrib_SetByDefIndex(hat, 542, 1.0);//item style
 	}

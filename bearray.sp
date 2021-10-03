@@ -7,6 +7,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Array Seven"
+#define ROBOT_DESCRIPTION "Fast Kritzkrieg, Blutsauger, heal taunt"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -21,8 +22,6 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-
-new bool:g_bIsGMEDIC[MAXPLAYERS + 1];
 
 public OnPluginStart()
 {
@@ -45,19 +44,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 //	CreateNative("BeGiantMedic_MakeGiantMedic", Native_SetGiantMedic);
 //	CreateNative("BeGiantMedic_IsGiantMedic", Native_IsGiantMedic);
 	return APLRes_Success;
-}
- 
-public OnClientPutInServer(client)
-{
-	OnClientDisconnect_Post(client);
-}
- 
-public OnClientDisconnect_Post(client)
-{
-	if (g_bIsGMEDIC[client])
-	{
-		g_bIsGMEDIC[client] = false;
-	}
 }
  
 public OnMapStart()
@@ -114,12 +100,13 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "health regen", 20.0);
+	TF2Attrib_SetByName(client, "head scale", 0.8);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGMEDIC[client] = true;
 
 	PrintToChat(client, "1. You are now Giant Arrayseven !");
 	PrintToChat(client, "2. Your Kriztkrieg has Lasts longer!");
@@ -133,7 +120,7 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 {
     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
     {
-       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 1.0);
+       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
 	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
     }
 }
@@ -154,8 +141,6 @@ stock GiveGiantMedic(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsGMEDIC[client] = true;
-		
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -204,7 +189,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bIsGMEDIC[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -212,13 +197,6 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 		TF2Attrib_RemoveByName(Weapon2, "killstreak tier");	
 	}
 }
-
- /*
-public Native_SetGiantMedic(Handle:plugin, args)
-        MakeGiantMedic(GetNativeCell(1));
- 
-public Native_IsGiantMedic(Handle:plugin, args)
-        return g_bIsGMEDIC[GetNativeCell(1)];*/
        
 stock bool:IsValidClient(client)
 {

@@ -7,6 +7,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"HiGPS"
+#define ROBOT_DESCRIPTION "Deflector"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -18,6 +19,11 @@
 #define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
 #define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
 
+#define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
+#define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
+#define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
+#define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
+
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Deflector Heavy",
@@ -27,8 +33,6 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new bool:g_bIsGDEFLECTORH[MAXPLAYERS + 1];
-
 new bool:Locked1[MAXPLAYERS+1];
 new bool:Locked2[MAXPLAYERS+1];
 new bool:Locked3[MAXPLAYERS+1];
@@ -37,8 +41,8 @@ new bool:CanWindDown[MAXPLAYERS+1];
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-
-	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	
+	AddNormalSoundHook(BossGPS);
 
 	RobotSounds sounds;
 	sounds.spawn = SPAWN;
@@ -50,6 +54,38 @@ public OnPluginStart()
 	sounds.death = DEATH;
 
 	AddRobot(ROBOT_NAME, "Heavy", MakeGDeflectorH, PLUGIN_VERSION, sounds);
+}
+
+public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
+{
+	if (!IsValidClient(entity)) return Plugin_Continue;
+	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
+
+	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
+	{
+		if (StrContains(sample, "1.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step01.wav");
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "3.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step03.wav");
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "2.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step02.wav");
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "4.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step04.wav");
+			EmitSoundToAll(sample, entity);
+		}
+		return Plugin_Changed;
+	}
+	return Plugin_Continue;
 }
 
 public void OnPluginEnd()
@@ -64,32 +100,23 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
  
-public OnClientPutInServer(client)
-{
-    OnClientDisconnect_Post(client);
-}
- 
-public OnClientDisconnect_Post(client)
-{
-	if (g_bIsGDEFLECTORH[client])
-	{
-		g_bIsGDEFLECTORH[client] = false;
-	}
-}
- 
 public OnMapStart()
 {
 	PrecacheModel(GDEFLECTORH);
-}
-
-public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if(g_bIsGDEFLECTORH[client])
-	{
-		g_bIsGDEFLECTORH[client] = false;
-	}
+	
+	PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_04.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_05.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
+	PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
+	
+	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
+	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
 }
  
 public Action:SetModel(client, const String:model[])
@@ -145,14 +172,14 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
-	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
+	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	UpdatePlayerHitbox(client, 1.75);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGDEFLECTORH[client] = true;
 	
 	//g_IsGPS[client] = true;
 	
@@ -183,8 +210,6 @@ stock GiveGDeflectorH(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsGDEFLECTORH[client] = true;
-		
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -205,33 +230,19 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "attack projectiles", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 2.5);
-			TF2Attrib_SetByName(Weapon1, "spread penalty", 2.5);
+			//TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 1.5);
+			TF2Attrib_SetByName(Weapon1, "spread penalty", 1.3);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.2);
+			 
 
 		}
 	}
 }
- 
-// public player_inv(Handle event, const char[] name, bool dontBroadcast) 
-// {
-	// int userd = GetEventInt(event, "userid");
-	// int client = GetClientOfUserId(userd);
-	
-	// if (g_bIsGDEFLECTORH[client] && IsValidClient(client))
-	// {
-		// TF2_RemoveAllWearables(client);
-		// int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// TF2Attrib_RemoveByName(Weapon1, "damage bonus");
-		// TF2Attrib_RemoveByName(Weapon1, "attack projectiles");
-		// TF2Attrib_RemoveByName(Weapon1, "maxammo primary increased");	
-		// TF2Attrib_RemoveByName(Weapon1, "killstreak tier");
-	// }
-// }
 
 public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
 {
-	if (IsValidClient(iClient) && g_bIsGDEFLECTORH[iClient]) 
+	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME))
 	{	
 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
 		if(IsValidEntity(weapon))
@@ -295,19 +306,38 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 		}
 	}
 }
-
- /*
-public Native_SetGDeflectorH(Handle:plugin, args)
-        MakeGDeflectorH(GetNativeCell(1));
- 
-public Native_IsGDeflectorH(Handle:plugin, args)
-        return g_bIsGDEFLECTORH[GetNativeCell(1)];*/
        
 stock bool:IsValidClient(client)
 {
 	if (client <= 0) return false;
 	if (client > MaxClients) return false;
 	return IsClientInGame(client);
+}
+
+public TF2_OnConditionAdded(client, TFCond:condition)
+{
+    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+    {	
+        int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+
+	//PrintToChatAll("Taunt ID %i", tauntid);
+	
+
+        if (tauntid == -1)
+        {
+		//	TF2_AddCondition(client, TFCond_SpawnOutline, 10);
+           	 CreateTimer(1.2, Timer_Taunt_Cancel, client);
+        }	  
+
+	}
+}
+
+public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
+{
+	if (IsValidClient(client)){
+		TF2_RemoveCondition(client, TFCond_Taunting);
+		
+	}
 }
 
 bool CreateHat(int client, int itemindex, int level, int quality, bool scale)

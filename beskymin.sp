@@ -2,31 +2,23 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
-#include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
-//#include <sendproxy>
-#include <tfobjects>
-#include <dhooks>
-//#include <collisionhook>
-
+ 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Uncle Dane"
-#define ROBOT_DESCRIPTION "Instant lvl 3 Sentry, Widowmaker, Jag"
-
-
-#define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
+#define ROBOT_NAME	"Skymin Slash"
+#define ROBOT_DESCRIPTION "Vaccinator, Blutsauger"
+ 
+#define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
-#define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
-
-//new g_offsCollisionGroup;
-
+#define LOOP    "mvm/giant_demoman/giant_demoman_loop.wav"
+ 
 public Plugin:myinfo =
 {
-	name = "[TF2] Be Big Robot Uncle Dane",
+	name = "[TF2] Be the Giant Skymin Slash",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Uncle Dane Bot from MvM",
+	description = "Play as the Giant Medic from MvM",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -35,110 +27,34 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	//g_offsCollisionGroup = FindSendPropInfo("DT_BaseEntity", "m_CollisionGroup");
-	HookEvent("player_builtobject", ObjectBuilt, EventHookMode_Post);
-
 	RobotSounds sounds;
 	sounds.spawn = SPAWN;
 	sounds.loop = LOOP;
 	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Engineer", MakeUncleDane, PLUGIN_VERSION, sounds);
-
-
-	for(int client = 1 ; client <= MaxClients ; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			//SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
-			SDKHook(client, SDKHook_Touch, OnTouch);
-		}
-	}
-
+	AddRobot(ROBOT_NAME, "Medic", MakeGiantMedic, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
 }
-
-public Action OnTouch(int client, int ent)
-{
-
-}
-
+ 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-	//	CreateNative("BeSuperHeavyweightChamp_MakeUncleDane", Native_SetSuperHeavyweightChamp);
-	//	CreateNative("BeSuperHeavyweightChamp_IsSuperHeavyweightChamp", Native_IsSuperHeavyweightChamp);
+//	CreateNative("BeGiantMedic_MakeGiantMedic", Native_SetGiantMedic);
+//	CreateNative("BeGiantMedic_IsGiantMedic", Native_IsGiantMedic);
 	return APLRes_Success;
 }
-
+ 
 public OnMapStart()
 {
-	PrecacheModel(ChangeDane);
-	
-	PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_04.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_05.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
+	PrecacheModel(GMEDIC);
+	PrecacheSound(SPAWN);
+	PrecacheSound(DEATH);
+	PrecacheSound(LOOP);
+   
 }
-
-
-
-
-/* public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
-{	
-	PrintToChatAll("Returning false");
-	return false;
-}
- */
-//trigger the event
-public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
-{
-	// if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)
-	// return;
-	
-	
-	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
-	int iObj = event.GetInt("index");
-	//int entRef = EntIndexToEntRef(iObj);
-	//PrintToChatAll("iObj %i", iObj);
-	
-	if (IsValidClient(iBuilder) && IsRobot(iBuilder, ROBOT_NAME)){
-		// SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);
-		// SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
-		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.65);
-		
-		SetEntPropFloat(iObj, Prop_Send, "m_flPercentageConstructed", 1.0);
-		//SetEntProp(iObj, Prop_Send, "m_CollisionGroup", 2); 
-		//SetEntPropFloat(iObj, Prop_Send, "m_bDisposableBuilding", 1.0);	
-		DispatchKeyValue(iObj, "defaultupgrade", "2"); 
-		//SetEntPropFloat(iObj, Prop_Send, "m_iUpgradeMetalRequired ", 0.1);
-		//SDKHook(iObj, SDKHook_ShouldCollide, ShouldCollide );
-		//CH_PassFilter(iBuilder, iObj, false);
-		//SetEntData(iObj, g_offsCollisionGroup, 2, 4, false);
-	
-	}
-}
-
-/* public Action:CH_PassFilter( ent1, ent2, &bool:result )
-{
-	PrintToChatAll("Should stop");
-			result = false;
-			return Plugin_Stop;
-
-}  */
-
-/* public bool:ShouldCollide( entity, collisiongroup, contentsmask, bool:result )
-{
-	PrintToChatAll("Should not collide");
-    return false;
-}  */
-
+ 
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -147,140 +63,164 @@ public Action:SetModel(client, const String:model[])
 		AcceptEntityInput(client, "SetCustomModel");
 
 		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
-		
-		
+
 	}
 }
 
-MakeUncleDane(client)
+MakeGiantMedic(client)
 {
-	TF2_SetPlayerClass(client, TFClass_Engineer);
+	TF2_SetPlayerClass(client, TFClass_Medic);
 	TF2_RegeneratePlayer(client);
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
 	if (ragdoll > MaxClients && IsValidEntity(ragdoll)) AcceptEntityInput(ragdoll, "Kill");
 	decl String:weaponname[32];
 	GetClientWeapon(client, weaponname, sizeof(weaponname));
-	if (strcmp(weaponname, "tf_weapon_", false) == 2)
+	if (strcmp(weaponname, "tf_weapon_", false) == 0)
 	{
-		SetEntProp(GetPlayerWeaponSlot(client, 2), Prop_Send, "m_iWeaponState", 2);
+		SetEntProp(GetPlayerWeaponSlot(client, 0), Prop_Send, "m_iWeaponState", 0);
 		TF2_RemoveCondition(client, TFCond_Slowed);
 	}
 	CreateTimer(0.0, Timer_Switch, client);
-	SetModel(client, ChangeDane);
-
-
-	int iHealth = 1800;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
-
-	TF2_SetHealth(client, iHealth);
-
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
-	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
+	SetModel(client, GMEDIC);
+   
+		
+	int iHealth = 2500;
 	
+	
+	int MaxHealth = 150;
+	int iAdditiveHP = iHealth - MaxHealth;
+   
+	TF2_SetHealth(client, iHealth);
+   
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.3);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
-	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
-	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	
-	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
-	TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
-	TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
-	TF2Attrib_SetByName(client, "metal regen", 50.0);
+	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
-	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
-	TF2Attrib_SetByName(client, "mod teleporter cost", 0.5);
-	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
+	TF2Attrib_SetByName(client, "health regen", 20.0);
+	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	
-	UpdatePlayerHitbox(client, 1.65);
-	
+	UpdatePlayerHitbox(client, 1.75);
+
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	
-	PrintToChat(client, "1. You are now Uncle Dane robot !");
-	
+
+	PrintToChat(client, "1. You are now Giant Skymin Slash !");
+	PrintToChat(client, "2. Your Vaccinator is slow and strong!");
+	PrintToChat(client, "3. Spawns with full Ubercharge !");
+		
+
+
 }
 
+public TF2_OnConditionAdded(client, TFCond:condition)
+{
+    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+    {
+       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
+	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+    }
+}
+ 
 stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
 }
-
+ 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
-	GiveBigRoboDane(client);
+			GiveGiantMedic(client);
 }
-
-// public Action:Timer_Resize(Handle:timer, any:hat)
-// {
-	// if (IsValidClient(client))
-	// GiveBigRoboDane(client);
-// }
-
-stock GiveBigRoboDane(client)
+ 
+stock GiveGiantMedic(client)
 {
 	if (IsValidClient(client))
 	{
-		TF2_RemoveAllWearables(client);
-
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
-		CreateWeapon(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
-		CreateWeapon(client, "tf_weapon_wrench", 329, 6, 1, 2, 0);
-		
+		CreateWeapon(client, "tf_weapon_medigun", 998, 6, 1, 2, 0);
+		TF2_RemoveAllWearables(client);
 
-		CreateHat(client, 30420, 10, 6, 15132390.0); // the danger
-		//	CreateHat(client, 30178, 10, 6, 1315860);
-		CreateHat(client, 30172, 10, 6, 15132390.0); //gold digger
-		CreateHat(client, 30539, 10, 6, 15132390.0); //insulator
+	
+		
+		
+		CreateWeapon(client, "tf_weapon_syringegun_medic", 36, 6, 1, 2, 0);
+		
+		CreateHat(client, 101, 10, 6, 15132390.0); //Vintage Tyrolean
+	//	CreateHat(client, 30356, 10, 6, 0.0); //Heat of Winter
+		CreateHat(client, 30415, 10, 6, 0.0);//The Medicine Manpurse
 		
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		
+		
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
+			TF2Attrib_SetByName(Weapon1, "health drain", 0.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 30.0);
-			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
-			
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.75);
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 		}
-		if(IsValidEntity(Weapon3))
+		
+		
+		
+		
+		if(IsValidEntity(Weapon2))
 		{
-			TF2Attrib_RemoveAll(Weapon3);
+			TF2Attrib_RemoveAll(Weapon2);
+			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+			//TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.5);
+			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
+			TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.5);
+/* 			TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.1);
+			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.5);
+			TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.1);
+			TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.5);
+			TF2Attrib_SetByName(Weapon2, "medigun fire resist passive", 0.1);
+			TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.5); */
 			
-			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.85);
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.0);
-			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 20.0);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
-			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 4.0);
-			TF2Attrib_SetByName(Weapon3, "alt fire teleport to spawn", 1.0);
-			TF2Attrib_SetByName(Weapon3, "special taunt", 1.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);
-			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
+			TF2Attrib_SetByName(Weapon2, "ubercharge overheal rate penalty", 1.0);
+			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.3);
+			
+			SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 			
 		}
-		
-		
-		
+
+/* 			char model[128];
+			GetEntPropString(Weapon2, Prop_Data, "m_ModelName", model, sizeof(model));
+			if(StrEqual(model, "models/weapons/c_models/c_medigun_defense/c_medigun_defensepack.mdl", false))
+			{
+				RemoveEdict(Weapon2);
+			} */
+		//Removing vaccinator, doesn't quite work
+
+/* 	int wearable = -1;
+	while ((wearable = FindEntityByClassname(wearable, "extra_wearable")) != -1)
+	{
+		if (IsValidEntity(wearable))
+		{
+			int player = GetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity");
+			if (client == player)
+			{
+				TF2_RemoveWearable(client, wearable);
+			}
+		}
+	} */
 		
 	}
 }
-
+ 
 public player_inv(Handle event, const char[] name, bool dontBroadcast) 
 {
 	int userd = GetEventInt(event, "userid");
@@ -289,19 +229,17 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		
-		TF2Attrib_RemoveByName(Weapon1, "fire rate bonus");
-		TF2Attrib_RemoveByName(Weapon1, "damage bonus");
-		TF2Attrib_RemoveByName(Weapon1, "critboost on kill");
-		TF2Attrib_RemoveByName(Weapon1, "killstreak tier");
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		TF2Attrib_RemoveByName(Weapon2, "heal rate bonus");
+		TF2Attrib_RemoveByName(Weapon2, "killstreak tier");	
 	}
 }
-
+       
 stock bool:IsValidClient(client)
 {
 	if (client <= 0) return false;
 	if (client > MaxClients) return false;
+	if (client <= 0 || client > MaxClients) return false;
 	return IsClientInGame(client);
 }
 
@@ -313,6 +251,13 @@ bool CreateHat(int client, int itemindex, int level, int quality, float paint)
 	{
 		return false;
 	}
+
+	if (paint != 0.0){
+	
+	TF2Attrib_SetByDefIndex(hat, 142, paint);
+	TF2Attrib_SetByDefIndex(hat, 261, paint);
+	}
+	
 	
 	char entclass[64];
 	GetEntityNetClass(hat, entclass, sizeof(entclass));
@@ -322,38 +267,13 @@ bool CreateHat(int client, int itemindex, int level, int quality, float paint)
 	SetEntData(hat, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);
 	SetEntProp(hat, Prop_Send, "m_bValidatedAttachedEntity", 1);  	
 	
-	if (paint != 0){
-		//PrintToChatAll("Painting hat! %s",hat);
-		TF2Attrib_SetByDefIndex(hat, 142, paint);
-		TF2Attrib_SetByDefIndex(hat, 261, paint);
-	}
-	
-	//Set head scale
-	
-	
-	// if (scale == true){
-	// SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 1.30);
-	// }
-	
-	switch (itemindex)
+	if(itemindex == 359)
 	{
-	case 30420:
-		{
-			// The Danger	
-			SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 1.3);
-			//TF2Attrib_SetByDefIndex(hat, 134, 61);
-		}
-	case 30172:
-		{
-			// GOLDDIGGER
-			SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), 1.3);
-			//CreateTimer(1.0, Timer_Resize, hat);
-			//SetEntPropFloat(hat, Prop_Send, "m_flModelScale", 10.0);  	
-			
-		}
-		
+		SetEntData(hat, FindSendPropInfo(entclass, "m_iEntityQuality"), 5);
+		TF2Attrib_SetByDefIndex(hat, 134, GetRandomInt(1,133) + 0.0);	
 	}
-
+	
+	
 
 	DispatchSpawn(hat);
 	EquipWearable(client, hat);

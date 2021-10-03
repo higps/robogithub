@@ -8,6 +8,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bearded Expense"
+#define ROBOT_DESCRIPTION "Juggernaut, taunt jump ability, snowballer"
  
 #define SHWC             "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN       "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -27,8 +28,6 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new bool:g_bIsBearded[MAXPLAYERS + 1];
-  
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
@@ -55,19 +54,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnClientPutInServer(client)
-{
-    OnClientDisconnect_Post(client);
-}
- 
-public OnClientDisconnect_Post(client)
-{
-	if (g_bIsBearded[client])
-	{
-		g_bIsBearded[client] = false;
-	}
-}
- 
 public OnMapStart()
 {
 	PrecacheModel(SHWC);
@@ -88,10 +74,9 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	GetEventString(event, "weapon_logclassname", weapon_logname, sizeof(weapon_logname));
 
 	
-	
 	//int weaponID = GetEntPropEnt(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	
-	PrintToChatAll("Attacker %N , weaponID %i, logname: %s", attacker, weaponID, weapon_logname);
+	//PrintToChatAll("Attacker %N , weaponID %i, logname: %s", attacker, weaponID, weapon_logname);
 
 	if (IsRobot(attacker, ROBOT_NAME) && StrEqual(weapon_logname,"mantreads"))
 	{
@@ -204,6 +189,7 @@ MakeBearded(client)
 	//TF2Attrib_SetByName(client, "mult charge turn control", 10.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.3);
 	
 	
 
@@ -212,9 +198,6 @@ MakeBearded(client)
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	
-
-	g_bIsBearded[client] = true;
 	
 	PrintToChat(client, "1. You are now Giant Bearded Expense bot !");
 	PrintToChat(client, "2. You are a juggernaut!");
@@ -237,8 +220,6 @@ stock GiveBearded(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsBearded[client] = true;
-		
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -304,7 +285,34 @@ public TF2_OnConditionAdded(client, TFCond:condition)
     {	
         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
 
-        //PrintToChatAll("Taunt ID %i", tauntid);
+	//PrintToChatAll("Taunt ID %i", tauntid);
+
+	if (tauntid == -1)
+	{
+	 TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
+	 TF2_AddCondition(client, TFCond_MegaHeal);
+	 
+	 
+	 
+	 
+/* 	float pos[3];
+	GetClientEyePosition(client, pos);
+	int clients[64]; */
+	//EmitGameSoundToClient(client, ALARM);
+	int clients[1];
+	clients[0] = client;
+
+	
+	EmitSound(clients, 1, ALARM, client, SNDCHAN_AUTO, SNDLEVEL_WHISPER, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
+
+	//EmitGameSound(client, MaxClients, ALARM, client, SND_NOFLAGS, client, pos)
+	//EmitGameSound(clients, numClients, sample, client, channel, SNDLEVEL_CONVO);
+	CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
+	// TF2_AddCondition(client, TFCond_GrapplingHookSafeFall, TFCondDuration_Infinite);
+	   //TFCond_CritHype
+	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+	CreateTimer(3.35, Timer_Taunt_Cancel, client);
+	}
 
         if (tauntid == -1)
         {
@@ -319,6 +327,8 @@ public TF2_OnConditionAdded(client, TFCond:condition)
         }	  
     }
 }
+
+
 public Action:Timer_Alarm(Handle:timer, any:client)
 {
     static int cap = 0;
@@ -338,6 +348,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 {
 	if (IsValidClient(client)){
 		TF2_RemoveCondition(client, TFCond_Taunting);
+		TF2_RemoveCondition(client, TFCond_MegaHeal);
 	}
 	
 
@@ -350,7 +361,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
 	
 	// make it usable
-	float flDistance = 650.0;
+	float flDistance = 350.0;
 
 	ScaleVector(vForward, flDistance);	
 	
@@ -358,7 +369,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVelocity);
 	AddVectors(vVelocity, vForward, vVelocity);
 	
-	float flDistanceVertical = 300.0;
+	float flDistanceVertical = 150.0;
 	
 		
 	
@@ -371,12 +382,12 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	EmitSoundToAll(JUMP,client);
 }
  
-public player_inv(Handle event, const char[] name, bool dontBroadcast) 
+/* public player_inv(Handle event, const char[] name, bool dontBroadcast) 
 {
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bIsBearded[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -387,13 +398,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 		TF2Attrib_RemoveByName(Weapon3, "killstreak tier");
 	}
 }
-
- /*
-public Native_SetSuperHeavyweightChamp(Handle:plugin, args)
-        MakeBearded(GetNativeCell(1));
- 
-public Native_IsSuperHeavyweightChamp(Handle:plugin, args)
-        return g_bIsBearded[GetNativeCell(1)];*/
+ */
        
 stock bool:IsValidClient(client)
 {

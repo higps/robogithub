@@ -28,10 +28,8 @@ enum(<<= 1)
 Handle g_hEquipWearable;
 
 public void OnPluginStart()
-{	
-    //TODO: Release
-	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
-    //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+{
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 	SMLogTag(SML_INFO, "berobot_equipment started at %i", GetTime());
 
 	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata

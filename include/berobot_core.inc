@@ -33,6 +33,31 @@ native void GetPickedRobot(int client, char[] dest, int maxDestLength);
 native bool IsAnyRobot(int client);
 
 /**
+ * starts a vote who wants to be robot
+ * 
+ * @param neededRobots    number of robots needed to start a round
+ * @noreturn
+ */
+native void StartAutomaticVolunteerVote(int neededRobots);
+
+/**
+ * checks if automatic volunteer vote is in progress
+ * 
+ * @return      true if automatic volunteer vote is in progress
+                flase if no automatic volunteer vote is in progress
+ */
+native bool AutomaticVolunteerVoteIsInProgress();
+
+/**
+ * sets the provided clientIds as volunteers
+ * 
+ * @param volunteers    array of clientIds that should be set as volunteers
+ * @param length        length of the volunteers-array
+ * @noreturn
+ */
+native void SetVolunteers(int[] volunteers, int length);
+
+/**
  * returns which classes have deep robot voicelines (opposed to only normal robot voicelines)
  * 
  * @param class     the class to check

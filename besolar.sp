@@ -7,6 +7,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Solar Light"
+#define ROBOT_DESCRIPTION "Rapid Iron Bomber, Tide Turner, Claidhemor"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -22,8 +23,6 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new bool:g_bIsGDEKNIGHT[MAXPLAYERS + 1];
-
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
@@ -32,6 +31,8 @@ public OnPluginStart()
 	sounds.spawn = SPAWN;
 	sounds.loop = LOOP;
 	sounds.death = DEATH;
+
+	
 
 	AddRobot(ROBOT_NAME, "Demoman", MakeSolar, PLUGIN_VERSION, sounds);
 }
@@ -46,19 +47,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	//	CreateNative("BeGiantDemoKnight_MakeSolar", Native_SetGiantDemoKnight);
 	//	CreateNative("BeGiantDemoKnight_IsGiantDemoKnight", Native_IsGiantDemoKnight);
 	return APLRes_Success;
-}
-
-public OnClientPutInServer(client)
-{
-	OnClientDisconnect_Post(client);
-}
-
-public OnClientDisconnect_Post(client)
-{
-	if (g_bIsGDEKNIGHT[client])
-	{
-		g_bIsGDEKNIGHT[client] = false;
-	}
 }
 
 public OnMapStart()
@@ -113,9 +101,9 @@ MakeSolar(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	TF2Attrib_SetByName(client, "damage force reduction", 1.2);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.2);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.3);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
@@ -123,13 +111,13 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGDEKNIGHT[client] = true;
 	
 	PrintToChat(client, "1. You are now Giant Solar Light !");
 }
@@ -150,8 +138,6 @@ stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsGDEKNIGHT[client] = true;
-		
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -199,7 +185,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 3.0);
 			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.75);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.8);
 			
 
 		}
@@ -213,6 +199,9 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "charge meter on hit", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 2.0);		
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);		
+			TF2Attrib_SetByName(Weapon3, "single wep deploy time decreased", 0.6);		
+			TF2Attrib_SetByName(Weapon3, "single wep holster time increased", 0.6);		
+			
 			
 			
 			
@@ -225,7 +214,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bIsGDEKNIGHT[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -251,13 +240,6 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 		}
 	}
 }
-
-/*
-public Native_SetGiantDemoKnight(Handle:plugin, args)
-		MakeSolar(GetNativeCell(1));
-
-public Native_IsGiantDemoKnight(Handle:plugin, args)
-		return g_bIsGDEKNIGHT[GetNativeCell(1)];*/
 
 stock bool:IsValidClient(client)
 {
