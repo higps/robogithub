@@ -31,6 +31,8 @@ ConVar _autoVolunteerTimeoutConVar;
 int _autoVolunteerTimeout;
 bool _automaticVolunteerVoteIsInProgress;
 int _neededRobots;
+Handle _countdownTimer;
+int _countdownTarget;
 Handle _autoVolunteerTimer;
 bool _pickedOption[MAXPLAYERS + 1];
 bool _volunteered[MAXPLAYERS + 1];
@@ -90,12 +92,41 @@ int Native_StartAutomaticVolunteerVote(Handle plugin, int numParams)
         Menu_AutomaticVolunteer(i);
     }
 
+    _countdownTarget = GetTime() + _autoVolunteerTimeout;
     _autoVolunteerTimer = CreateTimer(float(_autoVolunteerTimeout), Timer_VolunteerAutomaticVolunteers);
+    _countdownTimer = CreateTimer(1.0, Timer_Countdown, _, TIMER_REPEAT);
+    Timer_Countdown(INVALID_HANDLE);
+}
+
+Action Timer_Countdown(Handle timer)
+{
+    int remainingSeconds = _countdownTarget - GetTime();
+    int volunteerCount = CountVolunteers();
+    char verb[5];
+    if (volunteerCount == 1)
+        verb = "has";
+    else
+        verb = "have";
+    PrintCenterTextAll("%i seconds left to vote. %i %s volunteered so far.", remainingSeconds, volunteerCount, verb);
 }
 
 Action Timer_VolunteerAutomaticVolunteers(Handle timer)
 {
     VolunteerAutomaticVolunteers();
+}
+
+int CountVolunteers()
+{
+    int count = 0;
+    for(int i = 0; i <= MaxClients; i++)
+    {
+        if (!_volunteered[i])
+            continue;
+        
+        count++;
+    }
+
+    return count;
 }
 
 void VolunteerAutomaticVolunteers()
@@ -193,6 +224,7 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
             VolunteerAutomaticVolunteers();            
             //if (IsValidHandle(_autoVolunteerTimer))
             KillTimer(_autoVolunteerTimer);
+            KillTimer(_countdownTimer);
         }
     }
     /* If the menu was cancelled, print a message to the server about it. */
