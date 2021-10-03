@@ -41,6 +41,14 @@ native bool IsAnyRobot(int client);
 native void StartAutomaticVolunteerVote(int neededRobots);
 
 /**
+ * checks if automatic volunteer vote is in progress
+ * 
+ * @return      true if automatic volunteer vote is in progress
+                flase if no automatic volunteer vote is in progress
+ */
+native bool AutomaticVolunteerVoteIsInProgress();
+
+/**
  * sets the provided clientIds as volunteers
  * 
  * @param volunteers    array of clientIds that should be set as volunteers

@@ -777,6 +777,12 @@ public Action Command_Volunteer(int client, int args)
         if (!g_SpectateSelection)return Plugin_Handled;
     }
 
+    if (AutomaticVolunteerVoteIsInProgress()) 
+    {
+        MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}Unable to volunteer, a vote for volunteers is in progress");
+        return Plugin_Handled;
+    }
+
     char target[32];
     if(args < 1)
     {

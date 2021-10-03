@@ -29,6 +29,7 @@ public Plugin myinfo =
 
 ConVar _autoVolunteerTimeoutConVar;
 int _autoVolunteerTimeout;
+bool _automaticVolunteerVoteIsInProgress;
 int _neededRobots;
 Handle _autoVolunteerTimer;
 bool _pickedOption[MAXPLAYERS + 1];
@@ -36,9 +37,7 @@ bool _volunteered[MAXPLAYERS + 1];
 
 public void OnPluginStart()
 {
-    //Release
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
-    //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
     SMLogTag(SML_INFO, "berobot_volunteer started at %i", GetTime());
 
     _autoVolunteerTimeoutConVar = CreateConVar("sm_auto_volunteer_timeout", "20", "duration the automatic volunteer-menu will be shown (in seconds) ('0' to disable)");
@@ -56,6 +55,7 @@ public void AutoVolunteerTimeoutCvarChangeHook(ConVar convar, const char[] sOldV
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
     CreateNative("StartAutomaticVolunteerVote", Native_StartAutomaticVolunteerVote);
+    CreateNative("AutomaticVolunteerVoteIsInProgress", Native_AutomaticVolunteerVoteIsInProgress);
     return APLRes_Success;
 }
 
@@ -73,8 +73,14 @@ void Reset()
     }
 }
 
+int Native_AutomaticVolunteerVoteIsInProgress(Handle plugin, int numParams)
+{
+    return _automaticVolunteerVoteIsInProgress;
+}
+
 int Native_StartAutomaticVolunteerVote(Handle plugin, int numParams)
-{    
+{
+    _automaticVolunteerVoteIsInProgress = true;
     Reset();
     _neededRobots = GetNativeCell(1);
     for(int i = 1; i < MaxClients; i++)
@@ -138,6 +144,7 @@ void VolunteerAutomaticVolunteers()
         SMLogTag(SML_VERBOSE, "setting %L as volunteered", volunteerArray[i]);
     }
     SetVolunteers(volunteerArray, volunteers.Length);
+    _automaticVolunteerVoteIsInProgress = false;
 }
 
 bool EveryClientAnsweredVote()
