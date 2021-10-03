@@ -112,9 +112,8 @@ MakeGiantMedic(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintToChat(client, "1. You are now Giant Arrayseven !");
-	PrintToChat(client, "2. Your Kriztkrieg has Lasts longer!");
-	PrintToChat(client, "3. Spawns with full Ubercharge !");
+	PrintToChat(client, "1. You are now %s !", ROBOT_NAME);
+	PrintToChat(client, "2. %s", ROBOT_DESCRIPTION);
 		
 
 
