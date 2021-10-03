@@ -93,16 +93,12 @@ public OnClientDisconnect_Post(client)
 public OnMapStart()
 {
 	PrecacheModel(GBUSTER);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
 
 	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_01.wav");
 	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_02.wav");
 	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_03.wav");
 	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_04.wav");
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
-	
 }
 
 public Action Event_post_inventory_application(Event event, char[] name, bool dontBroadcast)

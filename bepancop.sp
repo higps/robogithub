@@ -105,15 +105,11 @@ public OnClientDisconnect_Post(client)
 public OnMapStart()
 {
 	PrecacheModel(GDEFLECTORH);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
 	
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
-
 }
 
 /* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)

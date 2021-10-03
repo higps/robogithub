@@ -85,10 +85,6 @@ public OnClientDisconnect_Post(client)
 public OnMapStart()
 {
 	PrecacheModel(GSCOUT);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
-	
 
 	PrecacheSound("mvm/giant_scout/giant_scout_step_01.wav");
 	PrecacheSound("mvm/giant_scout/giant_scout_step_03.wav");

@@ -104,15 +104,11 @@ public OnClientDisconnect_Post(client)
 public OnMapStart()
 {
 	PrecacheModel(GDEFLECTORH);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
 	
 	PrecacheSound(LEFTFOOT);
 	PrecacheSound(LEFTFOOT1);
 	PrecacheSound(RIGHTFOOT);
 	PrecacheSound(RIGHTFOOT1);
-
 }
 
 /* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
