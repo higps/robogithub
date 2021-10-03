@@ -7,6 +7,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"HiGPS"
+#define ROBOT_DESCRIPTION "Deflector"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -181,6 +182,7 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	UpdatePlayerHitbox(client, 1.75);
    
@@ -236,9 +238,11 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "attack projectiles", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 2.5);
-			TF2Attrib_SetByName(Weapon1, "spread penalty", 2.5);
+			//TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 1.5);
+			TF2Attrib_SetByName(Weapon1, "spread penalty", 1.3);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.2);
+			 
 
 		}
 	}

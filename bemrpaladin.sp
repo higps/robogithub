@@ -8,10 +8,11 @@
 //#include <sendproxy>
 #include <tfobjects>
 #include <dhooks>
-#include <tf2items_giveweapon>
+//#include <tf2items_giveweapon>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Mr Paladin"
+#define ROBOT_DESCRIPTION "Turn invisible on kill, Le'tranger, Kunai"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -40,7 +41,7 @@ public OnPluginStart()
 	sounds.spawn = SPAWN;
 	sounds.loop = LOOP;
 	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Mr Paladin", MakeSpy, PLUGIN_VERSION, sounds);
+	AddRobot(ROBOT_NAME, "Spy", MakeSpy, PLUGIN_VERSION, sounds);
 }
 
 public void OnPluginEnd()
@@ -101,14 +102,18 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 //	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 	int weaponID = GetEventInt(event, "weapon_def_index");
+/* 	char customkill[MAX_NAME_LENGTH];
+	GetEventString(event, "customkill", customkill, sizeof(customkill)); */
+	int customkill = GetEventInt(event, "customkill");
 
+	
 //	int weaponID = GetEntPropEnt(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	
 	//PrintToChatAll("Attacker %N , weaponID %i, logname: %s", attacker, weaponID, weapon_logname);
 
 
 
-	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 356)
+	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 356 && customkill == 2)
 	{
 		
 		
@@ -157,7 +162,7 @@ MakeSpy(client)
 	SetModel(client, MODEL);
 
 
-	int iHealth = 1200;
+	int iHealth = 1250;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -166,9 +171,9 @@ MakeSpy(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.3);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.0);
+	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
@@ -181,8 +186,6 @@ MakeSpy(client)
 	TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
 	TF2Attrib_SetByName(client, "metal regen", 50.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
-	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
-	TF2Attrib_SetByName(client, "mod teleporter cost", 0.5);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
@@ -192,7 +195,7 @@ MakeSpy(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 	
-	PrintToChat(client, "1. You are now Uncle Dane robot !");
+	PrintToChat(client, "1. You are now Giant Mr Paladin robot!");
 	
 }
 
@@ -223,7 +226,7 @@ stock GiveBigRoboDane(client)
 	TF2_RemoveAllWearables(client);
 
 	TF2_RemoveWeaponSlot(client, 0); //Revolver
-//	TF2_RemoveWeaponSlot(client, 1); //Sapper
+	TF2_RemoveWeaponSlot(client, 1); //Sapper
 	TF2_RemoveWeaponSlot(client, 2); // Gun
 	//TF2_RemoveWeaponSlot(client, 3); //Disguise kit
 	TF2_RemoveWeaponSlot(client, 4);// inviswatch
@@ -232,11 +235,11 @@ stock GiveBigRoboDane(client)
 // int client, char[] classname, int itemindex, int quality, int level, int slot, int paint)
 	CreateWeapon(client, "tf_weapon_revolver", 224, 6, 1, 2, 0);
 //	CreateWeapon(client, "tf_weapon_sapper", 735, 6, 1, 0, 0);
-	CreateWeapon(client, "tf_weapon_knife", 356, 6, 1, 1, 0); 
+	CreateWeapon(client, "tf_weapon_knife", 356, 6, 1, 1, 0); //kunai
 	CreateWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 		
 //	TF2Items_GiveWeapon(client, 224);
-	TF2Items_GiveWeapon(client, 735);
+//	TF2Items_GiveWeapon(client, 735);
 //	TF2Items_GiveWeapon(client, 356);
 //	TF2Items_GiveWeapon(client, 30);
 
@@ -264,11 +267,11 @@ stock GiveBigRoboDane(client)
 		{
 			TF2Attrib_RemoveAll(Knife);
 			
-			TF2Attrib_SetByName(Knife, "fire rate bonus", 0.8);
+			//TF2Attrib_SetByName(Knife, "fire rate bonus", 0.8);
 			//TF2Attrib_SetByName(Knife, "damage bonus", 1.5);
 			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
-			TF2Attrib_SetByName(Knife, "restore health on kill", 250.0);
+			TF2Attrib_SetByName(Knife, "restore health on kill", 15.0);
 			
 						
 		}
@@ -277,7 +280,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Cloak);
 			
 			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
-			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.5);
+			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.4);
 
 			
 						

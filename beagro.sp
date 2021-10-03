@@ -8,6 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Agro"
+#define ROBOT_DESCRIPTION "Backgreaser, Slow Scorch Shot"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -133,7 +134,7 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
@@ -141,6 +142,8 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -176,12 +179,15 @@ stock GiveGiantPyro(client)
 		CreateWeapon(client, "tf_weapon_flaregun", 740, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		CreateHat(client, 470, 10, 6, true); //Lofi longave
+		CreateWeapon(client, "tf_weapon_fireaxe", 466, 6, 1, 2, 0);
+
+		CreateHat(client, 470, 10, 6, false); //Lofi longave
 		CreateHat(client, 31135, 10, 6, true); //Handsome Devil
-		CreateHat(client, 31184, 10, 6, false);//Manndatory atire
+		CreateHat(client, 30652, 10, 6, true);//phobos something
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon1))
 		{
@@ -190,25 +196,40 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "mod flamethrower back crit", 1.0);		
+			TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 0.6);		
 			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);			
-			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 10.0);			
-			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.5);
+			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
+			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
+			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
+
+
+
 			TF2Attrib_SetByName(Weapon1, "attach particle effect", 4.0);
 			
 			TF2Attrib_SetByName(Weapon1, "single wep deploy time decreased", 0.4);
 			TF2Attrib_SetByName(Weapon1, "switch from wep deploy time decreased", 0.7);
 			TF2Attrib_SetByName(Weapon1, "weapon burn dmg reduced", 1.0);
-			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.2);
-			
+
 		}
 		
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.2);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 0.5);
 			TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.5);
+			TF2Attrib_SetByName(Weapon2, "apply z velocity on damage", 170.0);
+			//TF2Attrib_SetByName(Weapon2, "apply look velocity on damage", 1500.0);
+		}
+
+				if(IsValidEntity(Weapon3))
+		{
+			//TF2Attrib_RemoveAll(Weapon3);
+			TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", 3.25);
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
+			TF2Attrib_SetByName(Weapon3, "fire rate penalty", 1.2);
+			
+			//TF2Attrib_SetByName(Weapon2, "apply look velocity on damage", 1500.0);
 		}
 	}
 }
@@ -343,7 +364,7 @@ bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 				TF2Attrib_SetByDefIndex(hat, 261, 12091445.0);
 			}
 		}
-	case 31184://attire
+	case 162://attire
 	{
 		TF2Attrib_SetByDefIndex(hat, 542, 1.0);//item style
 	}

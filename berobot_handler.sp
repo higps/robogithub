@@ -121,8 +121,6 @@ public Plugin myinfo =
 };
 public void OnPluginStart()
 {
-    //TODO: Release
-    //SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_VERBOSE|SML_INFO|SML_ERROR, SML_ALL);
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
     SMLogTag(SML_INFO, "berobot_handler started at %i", GetTime());
 
@@ -254,7 +252,8 @@ public void OnClientDisconnect(int client)
     g_cv_Volunteered[client] = false;
     g_cv_RobotPicked[client] = "";
     int index = FindValueInArray(g_Volunteers, client);
-    g_Volunteers.Erase(index);
+    if (index >= 0)
+        g_Volunteers.Erase(index);
     RedrawVolunteerMenu();
 
     //PrintToChatAll("%N disconnected", client);
@@ -273,7 +272,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
         if (g_BossMode && iTeam == view_as<TFTeam>(g_HumanTeam))
      {
-         CreateTimer(4.5, Timer_Respawn, victim);
+       //  CreateTimer(4.5, Timer_Respawn, victim);
          
      }
 
@@ -450,7 +449,7 @@ public Action Command_Me_Boss(int client, int args)
 
 public Action Command_Robot_Selection(int client, int args)
 {
-        
+    ServerCommand("mp_forceautoteam  0");
     for(int i = 1; i < MaxClients; i++)
     {
         if (IsValidClient(i) && IsClientInGame(i))
@@ -905,33 +904,62 @@ public Action Volunteer(int client, bool volunteering)
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
 }
 
+int RobotDefinitionComparision(int index1, int index2, Handle array, Handle hndl)
+{
+    ArrayList list = view_as<ArrayList>(array); 
+    Robot a, b;
+    list.GetArray(index1, a);
+    list.GetArray(index2, b);
+
+
+    int classcmp = strcmp(a.class, b.class);
+    if (classcmp != 0)
+        return classcmp;
+
+    return strcmp(a.name, b.name);
+}
+
 Action Menu_Volunteer(int client)
 {
     ArrayList robotNames = GetRobotNames();
     SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
+
+    ArrayList robotDefinitions = new ArrayList(sizeof(Robot));
+    for(int i = 0; i < robotNames.Length; i++)
+    {
+        char name[NAMELENGTH];
+        robotNames.GetString(i, name, NAMELENGTH);
+        Robot item;
+        if (GetRobotDefinition(name, item) != 0)
+        {
+            SMLogTag(SML_ERROR, "could not volunteer. no robot with name '%s' found", name);
+            return Plugin_Handled;
+        }
+
+        robotDefinitions.PushArray(item);
+    }
+    robotDefinitions.SortCustom(RobotDefinitionComparision);
 
     Menu menu = new Menu(MenuHandler);
 
     menu.SetTitle("Select Your Robot Type");
     menu.ExitButton = g_ClientIsRepicking[client];
 
-    for(int i = 0; i < robotNames.Length; i++)
+    for(int i = 0; i < robotDefinitions.Length; i++)
     {
-        char name[NAMELENGTH];
-        robotNames.GetString(i, name, NAMELENGTH);
-        char class[9];
-        GetRobotClass(name, class);
+        Robot item;
+        robotDefinitions.GetArray(i, item, sizeof(item));
 
         int count;
-        g_RobotCount.GetValue(name, count);
+        g_RobotCount.GetValue(item.name, count);
         int draw = count >= g_RoboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
 
         char display[128];
-        Format(display, sizeof(display), "%s: %s (%i / %i used)", class, name, count, g_RoboCap);
+        Format(display, sizeof(display), "%s: %s (%i / %i)", item.class, item.name, count, g_RoboCap);
 
-        menu.AddItem(name, display, draw);
+        menu.AddItem(item.name, display, draw);
 
-        SMLogTag(SML_VERBOSE, "added option for %s: %s", name, display);
+        SMLogTag(SML_VERBOSE, "added option for %s: %s", item.name, display);
     }
 
     int timeout = MENU_TIME_FOREVER;

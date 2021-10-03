@@ -7,6 +7,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Solar Light"
+#define ROBOT_DESCRIPTION "Rapid Iron Bomber, Tide Turner, Claidhemor"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -123,6 +124,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
 	
 	UpdatePlayerHitbox(client, 1.75);

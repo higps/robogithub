@@ -7,6 +7,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Array Seven"
+#define ROBOT_DESCRIPTION "Fast Kritzkrieg, Blutsauger, heal taunt"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -104,6 +105,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	
 	UpdatePlayerHitbox(client, 1.75);
 

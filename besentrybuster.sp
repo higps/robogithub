@@ -8,7 +8,8 @@
 #include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Sentry Buster"
+#define ROBOT_NAME	"Sentry Buster Bluth"
+#define ROBOT_DESCRIPTION "Activate by taunting, dying, melee hit player, toucing a sentry"
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
 #define SPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"
@@ -19,9 +20,9 @@ bool AboutToExplode[MAXPLAYERS + 1];
 
 public Plugin:myinfo =
 {
-	name = "[TF2] Be the Giant Solar Demoknight",
+	name = "[TF2] Be the Giant Sentry Buster",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Demoknight from MvM",
+	description = "Play as the Giant Sentry Buster from MvM",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -37,7 +38,7 @@ public OnPluginStart()
 	sounds.loop = LOOP;
 	sounds.death = DEATH;
 
-	AddRobot(ROBOT_NAME, "Demoman", MakeBuster, PLUGIN_VERSION, sounds);
+	AddRobot(ROBOT_NAME, "ZBuster", MakeBuster, PLUGIN_VERSION, sounds);
 
 	for(int client = 1 ; client <= MaxClients ; client++)
 	{
@@ -143,17 +144,18 @@ public Action OnTouch(int client, int ent)
 			int iBuildingTeam = GetEntPropEnt(ent, Prop_Send, "m_iTeamNum");
 			int iClientTeam = TF2_GetClientTeam(client);
 			
-			PrintToChatAll("iBuildingTeam: %i || Client teamL %i", iBuildingTeam, iClientTeam);
+		//	PrintToChatAll("iBuildingTeam: %i || Client teamL %i", iBuildingTeam, iClientTeam);
 
 
 			if(iClientTeam != iBuildingTeam){
-				PrintToChatAll("not the same team");
+				//PrintToChatAll("not the same team");
+				FakeClientCommand(client, "taunt");
 			}
         //	PrintToChatAll("after ent name was %s", entname);
          
                 
 				//GetReadyToExplode(client);
-				FakeClientCommand(client, "taunt");
+				
                // PrintToChatAll("Builder was %N", iBuilder);
 
                 //SetEntProp(ent, Prop_Send, "m_CollisionGroup", 18);
@@ -237,9 +239,9 @@ MakeBuster(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 2.0);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", -5.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
@@ -247,6 +249,7 @@ MakeBuster(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 0.0);
 	TF2Attrib_SetByName(client, "increased jump height", 2.0);
 	TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
 	
 	UpdatePlayerHitbox(client, 1.75);
@@ -262,6 +265,7 @@ MakeBuster(client)
 
 stock GetReadyToExplode(client)
 {
+	TF2_AddCondition(client, TFCond_MegaHeal);
 	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav", client);
 	StopSound(client, SNDCHAN_AUTO, "mvm/sentrybuster/mvm_sentrybuster_loop.wav");
 //	PrintToChatAll("EXPLODING!");

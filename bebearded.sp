@@ -8,6 +8,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bearded Expense"
+#define ROBOT_DESCRIPTION "Juggernaut, taunt jump ability, snowballer"
  
 #define SHWC             "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN       "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -199,6 +200,7 @@ MakeBearded(client)
 	//TF2Attrib_SetByName(client, "mult charge turn control", 10.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.3);
 	
 	
 
