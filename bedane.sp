@@ -50,7 +50,6 @@ public OnPluginStart()
 		if(IsClientInGame(client))
 		{
 			//SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
-		//	PrintToChatAll("Setting Hook");
 			SDKHook(client, SDKHook_Touch, OnTouch);
 		}
 	} */
@@ -83,6 +82,11 @@ public void OnPluginEnd()
 
 	
 } */
+
+public Action OnTouch(int client, int ent)
+{
+
+}
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
