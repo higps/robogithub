@@ -8,6 +8,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bearded Expense"
+#define ROBOT_ROLE "Attack"
 #define ROBOT_DESCRIPTION "Juggernaut, taunt jump ability, snowballer"
  
 #define SHWC             "models/bots/heavy_boss/bot_heavy_boss.mdl"
@@ -30,16 +31,19 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
-    
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
+    LoadTranslations("common.phrases");
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-	AddRobot(ROBOT_NAME, "Heavy", MakeBearded, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Heavy";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeBearded, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()

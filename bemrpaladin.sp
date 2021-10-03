@@ -12,6 +12,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Mr Paladin"
+#define ROBOT_ROLE "Attack"
 #define ROBOT_DESCRIPTION "Turn invisible on kill, Le'tranger, Kunai"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
@@ -33,15 +34,19 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Spy", MakeSpy, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Spy";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeSpy, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()

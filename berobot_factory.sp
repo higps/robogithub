@@ -275,6 +275,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	for (int i = 0; i < target_count; i++)
 	{
         int targetClientId = target_list[i];
+        SMLogTag(SML_VERBOSE, "%i. target: %i", i, targetClientId);
         char wasRobot[NAMELENGTH];
         wasRobot = _isRobot[targetClientId];
         SMLogTag(SML_VERBOSE, "%i. target: %i is currently %s", i, targetClientId, wasRobot);

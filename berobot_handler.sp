@@ -912,11 +912,19 @@ int RobotDefinitionComparision(int index1, int index2, Handle array, Handle hndl
     list.GetArray(index2, b);
 
 
+    int rolecmp = strcmp(a.role, b.role);
+    if (rolecmp != 0)
+        return rolecmp;
+
     int classcmp = strcmp(a.class, b.class);
     if (classcmp != 0)
         return classcmp;
 
-    return strcmp(a.name, b.name);
+    int namecmp = strcmp(a.name, b.name);
+    if (namecmp != 0)
+        return namecmp;
+
+    return strcmp(a.shortDescription, b.shortDescription);
 }
 
 Action Menu_Volunteer(int client)
@@ -955,7 +963,7 @@ Action Menu_Volunteer(int client)
         int draw = count >= g_RoboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
 
         char display[128];
-        Format(display, sizeof(display), "%s: %s (%i / %i)", item.class, item.name, count, g_RoboCap);
+        Format(display, sizeof(display), "%s: %s - %s - %s (%i / %i)", item.role, item.class, item.name, item.shortDescription, count, g_RoboCap);
 
         menu.AddItem(item.name, display, draw);
 
