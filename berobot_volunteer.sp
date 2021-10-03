@@ -130,6 +130,7 @@ Action Timer_Countdown(Handle timer)
 Action Timer_VolunteerAutomaticVolunteers(Handle timer)
 {
     VolunteerAutomaticVolunteers();
+    KillTimer(_countdownTimer);
 }
 
 int CountVolunteers()
