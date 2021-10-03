@@ -29,6 +29,9 @@ public Plugin myinfo =
 
 ConVar _autoVolunteerTimeoutConVar;
 int _autoVolunteerTimeout;
+ConVar _autoVolunteerPriaoritizeAdminFlagConVar;
+int _autoVolunteerAdminFlag;
+
 bool _automaticVolunteerVoteIsInProgress;
 int _neededRobots;
 Handle _countdownTimer;
@@ -46,7 +49,21 @@ public void OnPluginStart()
     _autoVolunteerTimeoutConVar.AddChangeHook(AutoVolunteerTimeoutCvarChangeHook);
     _autoVolunteerTimeout = GetConVarInt(_autoVolunteerTimeoutConVar);
 
+    int defautlAdminFlag = ADMFLAG_ROOT;
+    char defautlAdminFlagString[10];
+    IntToString(defautlAdminFlag, defautlAdminFlagString, sizeof(defautlAdminFlagString));
+    _autoVolunteerPriaoritizeAdminFlagConVar = CreateConVar("sm_auto_volunteer_prioitize_admin_flag", 
+                                                            defautlAdminFlagString, 
+                                                            "Users with this admin-flag get prioritized when picking volunteers. set to -1 to disable");
+    _autoVolunteerPriaoritizeAdminFlagConVar.AddChangeHook(AutoVolunteerAdminFlagCvarChangeHook);
+    _autoVolunteerAdminFlag = GetConVarInt(_autoVolunteerPriaoritizeAdminFlagConVar);
+
     Reset();
+}
+
+public void AutoVolunteerAdminFlagCvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
+{
+    _autoVolunteerAdminFlag = StringToInt(sNewValue);
 }
 
 public void AutoVolunteerTimeoutCvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
@@ -113,6 +130,7 @@ Action Timer_Countdown(Handle timer)
 Action Timer_VolunteerAutomaticVolunteers(Handle timer)
 {
     VolunteerAutomaticVolunteers();
+    KillTimer(_countdownTimer);
 }
 
 int CountVolunteers()
@@ -131,8 +149,10 @@ int CountVolunteers()
 
 void VolunteerAutomaticVolunteers()
 {
+    ArrayList adminVolunteers = new ArrayList();
     ArrayList volunteers = new ArrayList();
     ArrayList nonVolunteers = new ArrayList();
+    ArrayList pickedVolunteers = new ArrayList();
     
     for(int i = 0; i <= MaxClients; i++)
     {
@@ -143,6 +163,17 @@ void VolunteerAutomaticVolunteers()
 
         if (_volunteered[i])
         {
+            if (_autoVolunteerAdminFlag >= 0)
+            {
+                int userflags = GetUserFlagBits(i);
+                if (userflags & _autoVolunteerAdminFlag)
+                {
+                    SMLogTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they have admin-flag %i", i, _autoVolunteerAdminFlag);
+                    adminVolunteers.Push(i);
+                    continue;
+                }
+            }
+
             SMLogTag(SML_VERBOSE, "%L has volunteered", i);
             volunteers.Push(i);
         }
@@ -153,28 +184,49 @@ void VolunteerAutomaticVolunteers()
         }
     }
 
-    while(volunteers.Length < _neededRobots)        //add nonvolunteers until we have enough
+    while(pickedVolunteers.Length < _neededRobots)      //add adminVolunteers until we have enough
+    {
+        if (adminVolunteers.Length == 0)
+            break;
+        
+        int i = GetRandomInt(0, adminVolunteers.Length -1);
+        pickedVolunteers.Push(adminVolunteers.Get(i));
+        adminVolunteers.Erase(i);
+    }
+
+    while(pickedVolunteers.Length < _neededRobots)      //add nonvolunteers until we have enough
+    {
+        if (volunteers.Length == 0)
+            break;
+        
+        int i = GetRandomInt(0, volunteers.Length -1);
+        pickedVolunteers.Push(volunteers.Get(i));
+        volunteers.Erase(i);
+    }
+
+    while(pickedVolunteers.Length < _neededRobots)      //add volunteers until we have enough
     {
         if (nonVolunteers.Length == 0)
             break;
         
         int i = GetRandomInt(0, nonVolunteers.Length -1);
-        volunteers.Push(nonVolunteers.Get(i));
+        pickedVolunteers.Push(nonVolunteers.Get(i));
         nonVolunteers.Erase(i);
     }
-    while(volunteers.Length > _neededRobots)        //remove volunteers until we have just enough
+
+    while(pickedVolunteers.Length > _neededRobots)      //remove volunteers until we have just enough
     {
-        int i = GetRandomInt(0, volunteers.Length -1);
-        volunteers.Erase(i);
+        int i = GetRandomInt(0, pickedVolunteers.Length -1);
+        pickedVolunteers.Erase(i);
     }
 
-    int[] volunteerArray = new int[volunteers.Length];
-    for(int i = 0; i < volunteers.Length; i++)
+    int[] volunteerArray = new int[pickedVolunteers.Length];
+    for(int i = 0; i < pickedVolunteers.Length; i++)
     {
-        volunteerArray[i] = volunteers.Get(i);
+        volunteerArray[i] = pickedVolunteers.Get(i);
         SMLogTag(SML_VERBOSE, "setting %L as volunteered", volunteerArray[i]);
     }
-    SetVolunteers(volunteerArray, volunteers.Length);
+    SetVolunteers(volunteerArray, pickedVolunteers.Length);
     _automaticVolunteerVoteIsInProgress = false;
 }
 
