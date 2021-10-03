@@ -258,7 +258,7 @@ MakeBuster(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 	
-	PrintToChat(client, "1. You are now Giant Solar Light !");
+	PrintToChat(client, "1. You are now Giant Sentry Buster!");
 }
 
 
@@ -465,12 +465,17 @@ public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& da
 {
 		if(IsValidClient(attacker))
 		{
+
+			
 		//	PrintCenterTextAll("hit1");
 			if (IsRobot(attacker, ROBOT_NAME) && IsValidClient(victim))
 		{
 		//	PrintCenterTextAll("hit2");
 			//GetReadyToExplode(attacker);
+			if(TF2_GetClientTeam(attacker) != (TF2_GetClientTeam(victim)))
+			{
 			FakeClientCommand(attacker, "taunt");
+			}
 		}
 		}
 }
