@@ -22,8 +22,6 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new bool:g_bIsGDEKNIGHT[MAXPLAYERS + 1];
-
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
@@ -48,20 +46,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	//	CreateNative("BeGiantDemoKnight_MakeSolar", Native_SetGiantDemoKnight);
 	//	CreateNative("BeGiantDemoKnight_IsGiantDemoKnight", Native_IsGiantDemoKnight);
 	return APLRes_Success;
-}
-
-public OnClientPutInServer(client)
-{
-	OnClientDisconnect_Post(client);
-}
-
-public OnClientDisconnect_Post(client)
-{
-	if (g_bIsGDEKNIGHT[client])
-	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-		g_bIsGDEKNIGHT[client] = false;
-	}
 }
 
 public OnMapStart()
@@ -145,7 +129,6 @@ MakeSolar(client)
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	g_bIsGDEKNIGHT[client] = true;
 	
 	PrintToChat(client, "1. You are now Giant Solar Light !");
 }
@@ -166,8 +149,6 @@ stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
 	{
-		g_bIsGDEKNIGHT[client] = true;
-		
 		TF2_RemoveAllWearables(client);
 
 	//	TF2_RemoveWeaponSlot(client, 0);
@@ -241,7 +222,7 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	int userd = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(userd);
 	
-	if (g_bIsGDEKNIGHT[client] && IsValidClient(client))
+	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -267,13 +248,6 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 		}
 	}
 }
-
-/*
-public Native_SetGiantDemoKnight(Handle:plugin, args)
-		MakeSolar(GetNativeCell(1));
-
-public Native_IsGiantDemoKnight(Handle:plugin, args)
-		return g_bIsGDEKNIGHT[GetNativeCell(1)];*/
 
 stock bool:IsValidClient(client)
 {

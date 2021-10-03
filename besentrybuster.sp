@@ -75,18 +75,12 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnClientPutInServer(client)
 {
-	OnClientDisconnect_Post(client);
 	SDKHook(client, SDKHook_Touch, OnTouch);
 	SDKHook(client, SDKHook_TraceAttack, OnTraceAttack); // hook for when someone joins in the middle of a round
 }
 
 public OnClientDisconnect_Post(client)
 {
-	if (IsRobot(client, ROBOT_NAME))
-	{
-		StopSound(client, SNDCHAN_AUTO, LOOP);
-		
-	}
 	SDKUnhook(client, SDKHook_Touch, OnTouch);
 }
 
