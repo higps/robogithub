@@ -110,7 +110,7 @@ int Native_AutomaticVolunteerVoteIsInProgress(Handle plugin, int numParams)
 
 int Native_GetRandomVolunteer(Handle plugin, int numParams)
 {
-    ArrayList pickedVolunteers = PickVolunteers(1);
+    ArrayList pickedVolunteers = PickVolunteers(1, false);
     if (pickedVolunteers.Length <= 0)
         return -1;
 
@@ -180,7 +180,7 @@ void VolunteerAutomaticVolunteers()
     _automaticVolunteerVoteIsInProgress = false;
 }
 
-ArrayList PickVolunteers(int neededVolunteers)
+ArrayList PickVolunteers(int neededVolunteers, bool pickNonvolunteers = true)
 {
     ArrayList adminVolunteers = new ArrayList();
     ArrayList volunteers = new ArrayList();
@@ -227,7 +227,7 @@ ArrayList PickVolunteers(int neededVolunteers)
         adminVolunteers.Erase(i);
     }
 
-    while(pickedVolunteers.Length < neededVolunteers)      //add nonvolunteers until we have enough
+    while(pickedVolunteers.Length < neededVolunteers)      //add volunteers until we have enough
     {
         if (volunteers.Length == 0)
             break;
@@ -237,14 +237,17 @@ ArrayList PickVolunteers(int neededVolunteers)
         volunteers.Erase(i);
     }
 
-    while(pickedVolunteers.Length < neededVolunteers)      //add volunteers until we have enough
+    if (pickNonvolunteers)
     {
-        if (nonVolunteers.Length == 0)
-            break;
-        
-        int i = GetRandomInt(0, nonVolunteers.Length -1);
-        pickedVolunteers.Push(nonVolunteers.Get(i));
-        nonVolunteers.Erase(i);
+        while(pickedVolunteers.Length < neededVolunteers)   //add nonvolunteers until we have enough
+        {
+            if (nonVolunteers.Length == 0)
+                break;
+            
+            int i = GetRandomInt(0, nonVolunteers.Length -1);
+            pickedVolunteers.Push(nonVolunteers.Get(i));
+            nonVolunteers.Erase(i);
+        }
     }
 
     while(pickedVolunteers.Length > neededVolunteers)      //remove volunteers until we have just enough
