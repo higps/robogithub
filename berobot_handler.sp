@@ -178,10 +178,6 @@ public void OnPluginStart()
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
 
     HookEvent("player_death", Event_Death, EventHookMode_Post);
-	
-    /* Natives */
-    CreateNative("GetPickedRobot", Native_GetPickedRobot);
-    CreateNative("SetVolunteers", Native_SetVolunteers);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
@@ -206,6 +202,13 @@ public void OnPluginStart()
         SetFailState("Failed to detour OnRegenerate!");
 
     delete g_hGameConf;
+}
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+    CreateNative("GetPickedRobot", Native_GetPickedRobot);
+    CreateNative("SetVolunteers", Native_SetVolunteers);
+    return APLRes_Success;
 }
 
 public void OnMapStart()
