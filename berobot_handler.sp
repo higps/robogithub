@@ -258,7 +258,10 @@ public void OnClientDisconnect(int client)
 
     int newVolunteer = GetRandomVolunteer();
     if (IsValidClient(newVolunteer))
+    {
+        PrintToChat(newVolunteer, "%N has disconnected. You where automatically chosen to fillup the robot-team.", client);
         Volunteer(newVolunteer, true);
+    }
     else
     {
         int islots = g_RoboCapTeam - g_Volunteers.Length;
