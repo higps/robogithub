@@ -256,9 +256,14 @@ public void OnClientDisconnect(int client)
         g_Volunteers.Erase(index);
     RedrawVolunteerMenu();
 
-    //PrintToChatAll("%N disconnected", client);
-    int islots = g_RoboCapTeam - g_Volunteers.Length;
-    MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has disconnected. There is now %i available robot slots remains. Type !volunteer to become a giant robot", client, islots);
+    int newVolunteer = GetRandomVolunteer();
+    if (IsValidClient(newVolunteer))
+        Volunteer(newVolunteer, true);
+    else
+    {
+        int islots = g_RoboCapTeam - g_Volunteers.Length;
+        MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has disconnected. There is now %i available robot slots remains. Type !volunteer to become a giant robot", client, islots);
+    }
 }
 
 /* Publics */
@@ -461,7 +466,7 @@ public Action Command_Robot_Selection(int client, int args)
     g_cv_BlockTeamSwitch = true;
     g_SpectateSelection = true;
 
-    StartAutomaticVolunteerVote(g_RoboCapTeam);
+    StartAutomaticVolunteerVote();
 }
 
 // intercept and block client jointeam command if required
