@@ -11,7 +11,7 @@ enum(<<= 1)
 {
     SML_VERBOSE = 1,
     SML_INFO,
-    SML_ERROR,
+    SML_ERROR
 }
 #include <berobot_core>
 #pragma newdecls required
@@ -31,6 +31,8 @@ ConVar _autoVolunteerTimeoutConVar;
 int _autoVolunteerTimeout;
 ConVar _autoVolunteerPriaoritizeAdminFlagConVar;
 int _autoVolunteerAdminFlag;
+ConVar _robocapTeamConVar;
+int _robocapTeam;
 
 bool _automaticVolunteerVoteIsInProgress;
 int _neededRobots;
@@ -58,6 +60,10 @@ public void OnPluginStart()
     _autoVolunteerPriaoritizeAdminFlagConVar.AddChangeHook(AutoVolunteerAdminFlagCvarChangeHook);
     _autoVolunteerAdminFlag = GetConVarInt(_autoVolunteerPriaoritizeAdminFlagConVar);
 
+    _robocapTeamConVar = FindConVar(CONVAR_ROBOCAP_TEAM);
+    _robocapTeamConVar.AddChangeHook(RobocapTeamCvarChangeHook);
+    _robocapTeam = GetConVarInt(_robocapTeamConVar);
+
     Reset();
 }
 
@@ -69,6 +75,11 @@ public void AutoVolunteerAdminFlagCvarChangeHook(ConVar convar, const char[] sOl
 public void AutoVolunteerTimeoutCvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
 {
     _autoVolunteerTimeout = StringToInt(sNewValue);
+}
+
+public void RobocapTeamCvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
+{
+    _robocapTeam = StringToInt(sNewValue);
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -124,7 +135,7 @@ Action Timer_Countdown(Handle timer)
         verb = "has";
     else
         verb = "have";
-    PrintCenterTextAll("%i seconds left to vote. %i %s volunteered so far.", remainingSeconds, volunteerCount, verb);
+    PrintCenterTextAll("%i seconds left to vote. %i/%i %s volunteered so far.", remainingSeconds, volunteerCount, _robocapTeam, verb);
 }
 
 Action Timer_VolunteerAutomaticVolunteers(Handle timer)
