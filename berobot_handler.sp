@@ -462,7 +462,7 @@ public Action Command_Robot_Selection(int client, int args)
 
     g_cv_BlockTeamSwitch = true;
     g_SpectateSelection = true;
-
+//bap
     StartAutomaticVolunteerVote(g_RoboCapTeam);
 }
 
