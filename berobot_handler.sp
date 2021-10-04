@@ -129,7 +129,7 @@ public void OnPluginStart()
 
     g_cvCvarList[CV_PluginVersion] = CreateConVar("sm_yt_v_mvm_version", PLUGIN_VERSION, "Plugin Version.", FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_CHEAT);
     g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_yt_v_mvm_debug", "0", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "500.0", "Backstab damage");
+    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "300.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar("sm_robocap_team", "6", "The total amount of giant robots on a team");
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
@@ -157,7 +157,8 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboMode].AddChangeHook(CvarChangeHook);
 
 
-    RegAdminCmd("sm_berobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
+    RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
+    RegAdminCmd("sm_mr", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
     RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
     RegAdminCmd("sm_selection_mode", Command_Robot_Selection, ADMFLAG_SLAY, "Forces selection mode");
     
@@ -184,9 +185,6 @@ public void OnPluginStart()
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
-
-    g_cv_BlockTeamSwitch = false;
-    g_BossMode = false;
 
     g_Volunteers.Clear();
 
@@ -450,6 +448,7 @@ public Action Command_Me_Boss(int client, int args)
 public Action Command_Robot_Selection(int client, int args)
 {
     ServerCommand("mp_forceautoteam  0");
+    
     for(int i = 1; i < MaxClients; i++)
     {
         if (IsValidClient(i) && IsClientInGame(i))
