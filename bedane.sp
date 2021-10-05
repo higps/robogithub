@@ -50,7 +50,6 @@ public OnPluginStart()
 		if(IsClientInGame(client))
 		{
 			//SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
-		//	PrintToChatAll("Setting Hook");
 			SDKHook(client, SDKHook_Touch, OnTouch);
 		}
 	} */
@@ -83,6 +82,11 @@ public void OnPluginEnd()
 
 	
 } */
+
+public Action OnTouch(int client, int ent)
+{
+
+}
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
@@ -213,7 +217,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 	TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
 	TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
-	TF2Attrib_SetByName(client, "metal regen", 50.0);
+	TF2Attrib_SetByName(client, "metal regen", 150.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
 	TF2Attrib_SetByName(client, "mod teleporter cost", 0.5);

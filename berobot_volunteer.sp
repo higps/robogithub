@@ -143,7 +143,7 @@ Action Timer_Countdown(Handle timer)
         verb = "has";
     else
         verb = "have";
-    PrintCenterTextAll("%i seconds left to vote. %i/%i %s volunteered so far.", remainingSeconds, volunteerCount, _robocapTeam, verb);
+    PrintCenterTextAll("%i seconds left to vote. %i/%i %s volunteered so far. Random volunteers are picked to be robots.", remainingSeconds, volunteerCount, _robocapTeam, verb);
 }
 
 Action Timer_VolunteerAutomaticVolunteers(Handle timer)

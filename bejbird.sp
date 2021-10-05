@@ -161,7 +161,7 @@ stock GiveBigRoboJbird(client)
 	if (IsValidClient(client))
 	{
 		
-		TF2_RemoveAllWearables(client);
+	TF2_RemoveAllWearables(client);
 
 	TF2_RemoveWeaponSlot(client, 0); //SniperRifle
 	TF2_RemoveWeaponSlot(client, 1); //Sapper
