@@ -921,6 +921,12 @@ int RobotDefinitionComparision(int index1, int index2, Handle array, Handle hndl
 
 Action Menu_Volunteer(int client)
 {
+    if (IsFakeClient(client))
+    {
+        SetRandomRobot(client);
+        return Plugin_Handled;
+    }
+
     ArrayList robotNames = GetRobotNames();
     SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
 
@@ -974,31 +980,11 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     /* If an option was selected, tell the client about the item. */
     if(action == MenuAction_Select)
     {
-        char info[32];
+        char info[NAMELENGTH];
         bool found = menu.GetItem(param2, info, sizeof(info));
         PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
 
-        CreateRobot(info, param1, "");
-
-        //reset count for current robot
-        SMLogTag(SML_VERBOSE, "volunteered by %L is currently robot '%s'", param1, g_cv_RobotPicked[param1]);
-        if (g_cv_RobotPicked[param1][0] != '\0')
-        {
-            int count;
-            g_RobotCount.GetValue(g_cv_RobotPicked[param1], count);
-
-            SMLogTag(SML_VERBOSE, "%L decrements robot-count for robot '%s' from %i", param1, g_cv_RobotPicked[param1], count);
-            g_RobotCount.SetValue(g_cv_RobotPicked[param1], count - 1);
-
-        }
-
-        int currentCount;
-        g_RobotCount.GetValue(info, currentCount);
-        g_RobotCount.SetValue(info, currentCount + 1);
-        g_cv_RobotPicked[param1] = info;
-        g_ClientIsRepicking[param1] = false;
-
-        RedrawVolunteerMenu();
+        SetRobot(info, param1);
     }
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
@@ -1014,6 +1000,51 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     }
 }
 
+void SetRandomRobot(int client)
+{
+    ArrayList robotNames = GetRobotNames();
+
+    char robotname[NAMELENGTH];
+    int count;
+    do
+    {
+        int i = GetRandomInt(0, robotNames.Length -1);
+
+        robotNames.GetString(i, robotname, sizeof(robotname));
+
+        g_RobotCount.GetValue(robotname, count);
+    }
+    while(count >= g_RoboCap);
+
+    SMLogTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
+    SetRobot(robotname, client);
+}
+
+void SetRobot(char robotname[NAMELENGTH], int client)
+{    
+    CreateRobot(robotname, client, "");
+
+    //reset count for current robot
+    SMLogTag(SML_VERBOSE, "volunteered by %L is currently robot '%s'", client, g_cv_RobotPicked[client]);
+    if (g_cv_RobotPicked[client][0] != '\0')
+    {
+        int count;
+        g_RobotCount.GetValue(g_cv_RobotPicked[client], count);
+
+        SMLogTag(SML_VERBOSE, "%L decrements robot-count for robot '%s' from %i", client, g_cv_RobotPicked[client], count);
+        g_RobotCount.SetValue(g_cv_RobotPicked[client], count - 1);
+
+    }
+
+    int currentCount;
+    g_RobotCount.GetValue(robotname, currentCount);
+    g_RobotCount.SetValue(robotname, currentCount + 1);
+    g_cv_RobotPicked[client] = robotname;
+    g_ClientIsRepicking[client] = false;
+
+    RedrawVolunteerMenu();
+}
+
 void RedrawVolunteerMenu()
 {
     for(int i = 0; i < MaxClients; i++)
@@ -1025,6 +1056,9 @@ void RedrawVolunteerMenu()
             continue;
 
         if(!IsClientInGame(i))
+            continue;
+
+        if(IsFakeClient(i))
             continue;
 
         if(!g_cv_Volunteered[i])
