@@ -131,7 +131,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_yt_v_mvm_debug", "0", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "300.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
-    g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar("sm_robocap_team", "6", "The total amount of giant robots on a team");
+    g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar(CONVAR_ROBOCAP_TEAM, "6", "The total amount of giant robots on a team");
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
     g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
     g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Needs vote to start boss mode, 1 = Start game by reaching enough volunteers");
@@ -257,9 +257,17 @@ public void OnClientDisconnect(int client)
         g_Volunteers.Erase(index);
     RedrawVolunteerMenu();
 
-    //PrintToChatAll("%N disconnected", client);
-    int islots = g_RoboCapTeam - g_Volunteers.Length;
-    MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has disconnected. There is now %i available robot slots remains. Type !volunteer to become a giant robot", client, islots);
+    int newVolunteer = GetRandomVolunteer();
+    if (IsValidClient(newVolunteer))
+    {
+        PrintToChat(newVolunteer, "%N has disconnected. You where automatically chosen to fillup the robot-team.", client);
+        Volunteer(newVolunteer, true);
+    }
+    else
+    {
+        int islots = g_RoboCapTeam - g_Volunteers.Length;
+        MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has disconnected. There is now %i available robot slots remains. Type !volunteer to become a giant robot", client, islots);
+    }
 }
 
 /* Publics */
@@ -462,8 +470,8 @@ public Action Command_Robot_Selection(int client, int args)
 
     g_cv_BlockTeamSwitch = true;
     g_SpectateSelection = true;
-//bap
-    StartAutomaticVolunteerVote(g_RoboCapTeam);
+
+    StartAutomaticVolunteerVote();
 }
 
 // intercept and block client jointeam command if required

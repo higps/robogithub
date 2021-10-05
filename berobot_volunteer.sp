@@ -11,7 +11,7 @@ enum(<<= 1)
 {
     SML_VERBOSE = 1,
     SML_INFO,
-    SML_ERROR,
+    SML_ERROR
 }
 #include <berobot_core>
 #pragma newdecls required
@@ -31,9 +31,10 @@ ConVar _autoVolunteerTimeoutConVar;
 int _autoVolunteerTimeout;
 ConVar _autoVolunteerPriaoritizeAdminFlagConVar;
 int _autoVolunteerAdminFlag;
+ConVar _robocapTeamConVar;
+int _robocapTeam;
 
 bool _automaticVolunteerVoteIsInProgress;
-int _neededRobots;
 Handle _countdownTimer;
 int _countdownTarget;
 Handle _autoVolunteerTimer;
@@ -58,6 +59,10 @@ public void OnPluginStart()
     _autoVolunteerPriaoritizeAdminFlagConVar.AddChangeHook(AutoVolunteerAdminFlagCvarChangeHook);
     _autoVolunteerAdminFlag = GetConVarInt(_autoVolunteerPriaoritizeAdminFlagConVar);
 
+    _robocapTeamConVar = FindConVar(CONVAR_ROBOCAP_TEAM);
+    _robocapTeamConVar.AddChangeHook(RobocapTeamCvarChangeHook);
+    _robocapTeam = GetConVarInt(_robocapTeamConVar);
+
     Reset();
 }
 
@@ -71,10 +76,16 @@ public void AutoVolunteerTimeoutCvarChangeHook(ConVar convar, const char[] sOldV
     _autoVolunteerTimeout = StringToInt(sNewValue);
 }
 
+public void RobocapTeamCvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
+{
+    _robocapTeam = StringToInt(sNewValue);
+}
+
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
     CreateNative("StartAutomaticVolunteerVote", Native_StartAutomaticVolunteerVote);
     CreateNative("AutomaticVolunteerVoteIsInProgress", Native_AutomaticVolunteerVoteIsInProgress);
+    CreateNative("GetRandomVolunteer", Native_GetRandomVolunteer);
     return APLRes_Success;
 }
 
@@ -97,11 +108,19 @@ int Native_AutomaticVolunteerVoteIsInProgress(Handle plugin, int numParams)
     return _automaticVolunteerVoteIsInProgress;
 }
 
+int Native_GetRandomVolunteer(Handle plugin, int numParams)
+{
+    ArrayList pickedVolunteers = PickVolunteers(1, false);
+    if (pickedVolunteers.Length <= 0)
+        return -1;
+
+    return pickedVolunteers.Get(0);
+}
+
 int Native_StartAutomaticVolunteerVote(Handle plugin, int numParams)
 {
     _automaticVolunteerVoteIsInProgress = true;
     Reset();
-    _neededRobots = GetNativeCell(1);
     for(int i = 1; i < MaxClients; i++)
     {
         if (!IsValidClient(i) || !IsClientInGame(i))
@@ -124,13 +143,13 @@ Action Timer_Countdown(Handle timer)
         verb = "has";
     else
         verb = "have";
-    PrintCenterTextAll("%i seconds left to vote. %i %s volunteers. Random volunteers are picked to be robots", remainingSeconds, volunteerCount, verb);
+    PrintCenterTextAll("%i seconds left to vote. %i/%i %s volunteered so far. Random volunteers are picked to be robots.", remainingSeconds, volunteerCount, _robocapTeam, verb);
 }
 
 Action Timer_VolunteerAutomaticVolunteers(Handle timer)
 {
-    VolunteerAutomaticVolunteers();
     KillTimer(_countdownTimer);
+    VolunteerAutomaticVolunteers();
 }
 
 int CountVolunteers()
@@ -148,6 +167,20 @@ int CountVolunteers()
 }
 
 void VolunteerAutomaticVolunteers()
+{
+    ArrayList pickedVolunteers = PickVolunteers(_robocapTeam);
+
+    int[] volunteerArray = new int[pickedVolunteers.Length];
+    for(int i = 0; i < pickedVolunteers.Length; i++)
+    {
+        volunteerArray[i] = pickedVolunteers.Get(i);
+        SMLogTag(SML_VERBOSE, "setting %L as volunteered", volunteerArray[i]);
+    }
+    SetVolunteers(volunteerArray, pickedVolunteers.Length);
+    _automaticVolunteerVoteIsInProgress = false;
+}
+
+ArrayList PickVolunteers(int neededVolunteers, bool pickNonvolunteers = true)
 {
     ArrayList adminVolunteers = new ArrayList();
     ArrayList volunteers = new ArrayList();
@@ -184,7 +217,7 @@ void VolunteerAutomaticVolunteers()
         }
     }
 
-    while(pickedVolunteers.Length < _neededRobots)      //add adminVolunteers until we have enough
+    while(pickedVolunteers.Length < neededVolunteers)      //add adminVolunteers until we have enough
     {
         if (adminVolunteers.Length == 0)
             break;
@@ -194,7 +227,7 @@ void VolunteerAutomaticVolunteers()
         adminVolunteers.Erase(i);
     }
 
-    while(pickedVolunteers.Length < _neededRobots)      //add nonvolunteers until we have enough
+    while(pickedVolunteers.Length < neededVolunteers)      //add volunteers until we have enough
     {
         if (volunteers.Length == 0)
             break;
@@ -204,30 +237,26 @@ void VolunteerAutomaticVolunteers()
         volunteers.Erase(i);
     }
 
-    while(pickedVolunteers.Length < _neededRobots)      //add volunteers until we have enough
+    if (pickNonvolunteers)
     {
-        if (nonVolunteers.Length == 0)
-            break;
-        
-        int i = GetRandomInt(0, nonVolunteers.Length -1);
-        pickedVolunteers.Push(nonVolunteers.Get(i));
-        nonVolunteers.Erase(i);
+        while(pickedVolunteers.Length < neededVolunteers)   //add nonvolunteers until we have enough
+        {
+            if (nonVolunteers.Length == 0)
+                break;
+            
+            int i = GetRandomInt(0, nonVolunteers.Length -1);
+            pickedVolunteers.Push(nonVolunteers.Get(i));
+            nonVolunteers.Erase(i);
+        }
     }
 
-    while(pickedVolunteers.Length > _neededRobots)      //remove volunteers until we have just enough
+    while(pickedVolunteers.Length > neededVolunteers)      //remove volunteers until we have just enough
     {
         int i = GetRandomInt(0, pickedVolunteers.Length -1);
         pickedVolunteers.Erase(i);
     }
 
-    int[] volunteerArray = new int[pickedVolunteers.Length];
-    for(int i = 0; i < pickedVolunteers.Length; i++)
-    {
-        volunteerArray[i] = pickedVolunteers.Get(i);
-        SMLogTag(SML_VERBOSE, "setting %L as volunteered", volunteerArray[i]);
-    }
-    SetVolunteers(volunteerArray, pickedVolunteers.Length);
-    _automaticVolunteerVoteIsInProgress = false;
+    return pickedVolunteers;
 }
 
 bool EveryClientAnsweredVote()

@@ -35,18 +35,25 @@ native bool IsAnyRobot(int client);
 /**
  * starts a vote who wants to be robot
  * 
- * @param neededRobots    number of robots needed to start a round
  * @noreturn
  */
-native void StartAutomaticVolunteerVote(int neededRobots);
+native void StartAutomaticVolunteerVote();
 
 /**
  * checks if automatic volunteer vote is in progress
  * 
- * @return      true if automatic volunteer vote is in progress
+ * @return      true if automatic volunteer vote is in progress; 
                 flase if no automatic volunteer vote is in progress
  */
 native bool AutomaticVolunteerVoteIsInProgress();
+
+/**
+ * returns a clientId of previously volunteered player
+ * 
+ * @return      clientId of previously volunteered player; 
+                -1 if no volunteers are left
+ */
+native int GetRandomVolunteer();
 
 /**
  * sets the provided clientIds as volunteers
