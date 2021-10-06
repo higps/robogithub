@@ -38,7 +38,10 @@ public void OnPluginStart()
     _roboCapTeamHumansPerRobotConVar = CreateConVar("sm_robocap_team_humansPerRobot", "3.0", "ratio of humans-to-robot for dynamic robot count calculation");
     _roboCapTeamHumansPerRobotConVar.AddChangeHook(RoboCapTeamHumansPerRobotConVarChangeHook);
     _roboCapTeamHumansPerRobot = _roboCapTeamHumansPerRobotConVar.FloatValue;
+}
 
+public void OnConfigsExecuted()
+{
     _roboCapTeamConVar = FindConVar(CONVAR_ROBOCAP_TEAM);
 }
 
