@@ -9,7 +9,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Wamo"
 #define ROBOT_ROLE "Attack"
-#define ROBOT_DESCRIPTION "Flamethrower, Flaregun"
+#define ROBOT_DESCRIPTION "Boss Plhogistinator, Flaregun"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

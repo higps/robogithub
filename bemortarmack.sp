@@ -8,7 +8,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Mortar Mack"
 #define ROBOT_ROLE "Attack"
-#define ROBOT_DESCRIPTION "Mortar Mack"
+#define ROBOT_DESCRIPTION "Grenade Launcher: 13 clip, shoots all bombs at once."
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

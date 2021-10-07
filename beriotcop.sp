@@ -8,7 +8,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Riotcop"
 #define ROBOT_ROLE "Attack"
-#define ROBOT_DESCRIPTION "Shotgun, taunt ability"
+#define ROBOT_DESCRIPTION "Power Shotgun. Taunt: Surpress Riot"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

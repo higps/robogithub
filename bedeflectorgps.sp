@@ -8,7 +8,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"HiGPS"
 #define ROBOT_ROLE "Defense"
-#define ROBOT_DESCRIPTION "Deflector"
+#define ROBOT_DESCRIPTION "Deflector: Shoot down projectiles"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

@@ -9,7 +9,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Agro"
 #define ROBOT_ROLE "Attack"
-#define ROBOT_DESCRIPTION "Backgreaser, Slow Scorch Shot"
+#define ROBOT_DESCRIPTION "Boss Degreaser. High knockback scorch shot. High damage Maul"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

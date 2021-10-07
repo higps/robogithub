@@ -7,8 +7,8 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Pancop"
-#define ROBOT_ROLE "Attack"
-#define ROBOT_DESCRIPTION "Heal on hit: Pan, Healing & Crit boosting Steak"
+#define ROBOT_ROLE "Rushdown"
+#define ROBOT_DESCRIPTION "Besrserker: Frying Pan: Heal on hit. Healing & Crit boosting Steak"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

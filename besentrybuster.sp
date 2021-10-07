@@ -9,8 +9,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Sentry Buster Bluth"
-#define ROBOT_ROLE "Attack"
-#define ROBOT_DESCRIPTION "Activate by taunting, dying, melee hit player, toucing a sentry"
+#define ROBOT_ROLE "Support"
+#define ROBOT_DESCRIPTION "Explode by taunting, melee hit player, toucing a sentry"
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
 #define SPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"

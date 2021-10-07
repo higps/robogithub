@@ -8,8 +8,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Mad Milk Fast Scout"
-#define ROBOT_ROLE "Attack"
-#define ROBOT_DESCRIPTION "Scattergun, Bat"
+#define ROBOT_ROLE "Harasser"
+#define ROBOT_DESCRIPTION "Rapid Recharge Mad Milk, Fish"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
