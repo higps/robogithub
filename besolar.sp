@@ -167,7 +167,7 @@ stock GiveGiantDemoKnight(client)
 		
 		
 		CreateHat(client, 30334, 10, 6, true); //Tartan Tyrolean
-		//CreateHat(client, 30309, 10, 6, false); //dead of night
+		CreateHat(client, 30309, 10, 6, false); //dead of night
 		CreateHat(client, 30363, 10, 6, false);//juggernaut jacket
 		
 		

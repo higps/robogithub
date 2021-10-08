@@ -227,7 +227,7 @@ stock GiveBigRoboDane(client)
 //	TF2Items_GiveWeapon(client, 30);
 
 	CreateHat(client, 319, 10, 6, 15132390.0); // Noir
-	//CreateHat(client, 30476, 10, 6, 0.0); //lady killer
+	CreateHat(client, 30476, 10, 6, 0.0); //lady killer
 	CreateHat(client, 343, 10, 6, 0.0); //spek
 	
 		
