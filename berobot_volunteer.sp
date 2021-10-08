@@ -59,11 +59,14 @@ public void OnPluginStart()
     _autoVolunteerPriaoritizeAdminFlagConVar.AddChangeHook(AutoVolunteerAdminFlagCvarChangeHook);
     _autoVolunteerAdminFlag = GetConVarInt(_autoVolunteerPriaoritizeAdminFlagConVar);
 
+    Reset();
+}
+
+public void OnConfigsExecuted()
+{
     _robocapTeamConVar = FindConVar(CONVAR_ROBOCAP_TEAM);
     _robocapTeamConVar.AddChangeHook(RobocapTeamCvarChangeHook);
     _robocapTeam = GetConVarInt(_robocapTeamConVar);
-
-    Reset();
 }
 
 public void AutoVolunteerAdminFlagCvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
