@@ -9,7 +9,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Captain Conch"
 #define ROBOT_ROLE "Support"
-#define ROBOT_DESCRIPTION "Black Box, Concherors"
+#define ROBOT_DESCRIPTION "Black Box, Concheror"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

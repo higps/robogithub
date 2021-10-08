@@ -8,7 +8,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Solar Light"
 #define ROBOT_ROLE "Attack"
-#define ROBOT_DESCRIPTION "Rapid Iron Bomber, Tide Turner, Boss Claidhemor"
+#define ROBOT_DESCRIPTION "Hybrid Knight"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

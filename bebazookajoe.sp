@@ -9,7 +9,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"BazookaJoe2002"
 #define ROBOT_ROLE "Attack"
-#define ROBOT_DESCRIPTION "Rapid Reload & Fire Beggars Bazooka. Rockets are slow"
+#define ROBOT_DESCRIPTION "Rapid Bazooka"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

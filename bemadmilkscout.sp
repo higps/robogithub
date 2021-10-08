@@ -7,9 +7,9 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Mad Milk Fast Scout"
+#define ROBOT_NAME	"Mad Milk"
 #define ROBOT_ROLE "Harasser"
-#define ROBOT_DESCRIPTION "Rapid Recharge Mad Milk, Fish"
+#define ROBOT_DESCRIPTION "Rapid Recharge, Fish"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

@@ -8,9 +8,9 @@
 #include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Sentry Buster Bluth"
+#define ROBOT_NAME	"Sentry Buster"
 #define ROBOT_ROLE "Support"
-#define ROBOT_DESCRIPTION "Explode by taunting, melee hit player, toucing a sentry"
+#define ROBOT_DESCRIPTION "Explode by taunting"
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
 #define SPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"
@@ -37,7 +37,7 @@ public OnPluginStart()
     Robot robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "ZBuster";
+    robot.class = "";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

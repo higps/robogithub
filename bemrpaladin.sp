@@ -13,7 +13,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Mr Paladin"
 #define ROBOT_ROLE "Support"
-#define ROBOT_DESCRIPTION "Kunai: Turn invisible on backstab, Slow Le'tranger, infinite cloak, fast decloak time"
+#define ROBOT_DESCRIPTION "Turn invisible on backstab"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

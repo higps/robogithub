@@ -8,7 +8,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Mortar Mack"
 #define ROBOT_ROLE "Attack"
-#define ROBOT_DESCRIPTION "Grenade Launcher: 13 clip, shoots all bombs at once."
+#define ROBOT_DESCRIPTION "Scatter Shot"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -19,7 +19,7 @@ public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Major Bomber lite",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Demoknight from MvM",
+	description = "Play as the Giant Demoman",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }

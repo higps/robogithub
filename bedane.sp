@@ -13,7 +13,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
 #define ROBOT_ROLE "Defense"
-#define ROBOT_DESCRIPTION "Boss Widowmaker, Jag: Builds instantly on hit, Giant Sentry & Dispenser"
+#define ROBOT_DESCRIPTION " Widowmaker, Jag"
 
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"

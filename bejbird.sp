@@ -12,7 +12,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Jbird"
 #define ROBOT_ROLE "Support"
-#define ROBOT_DESCRIPTION "Sniper Rifle: Explosive headshot, Boss SMG, Cozy Camper, Shahansah"
+#define ROBOT_DESCRIPTION "Explosive headshot"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
