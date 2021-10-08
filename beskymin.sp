@@ -162,7 +162,7 @@ stock GiveGiantMedic(client)
 		CreateWeapon(client, "tf_weapon_syringegun_medic", 36, 6, 1, 2, 0);
 		
 		CreateHat(client, 101, 10, 6, 15132390.0); //Vintage Tyrolean
-	//	CreateHat(client, 30356, 10, 6, 0.0); //Heat of Winter
+		CreateHat(client, 30356, 10, 6, 0.0); //Heat of Winter
 		CreateHat(client, 30415, 10, 6, 0.0);//The Medicine Manpurse
 		
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);

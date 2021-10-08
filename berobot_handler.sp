@@ -341,7 +341,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
             for(int i = 1; i < MaxClients; i++)
             {
 
-                if(IsPlayerAlive(i)){
+                if(IsValidClient(i) && IsPlayerAlive(i)){
         switch(i)
         {
             case TFClass_Heavy:
