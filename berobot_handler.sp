@@ -420,7 +420,7 @@ public Action Event_player_escort_score(Event event, char[] name, bool dontBroad
             {
             int change = GetRandomInt(1,3);
             if(change == 1){
-                PrintToChatAll("%N said it", i);
+               // PrintToChatAll("%N said it", i);
                 EmitGameSoundToAll(szVO, i);
             }
             }

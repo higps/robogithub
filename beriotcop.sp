@@ -171,7 +171,7 @@ MakeRiotcop(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	//TF2Attrib_SetByName(client, "mult_item_meter_charge_rate", 0.3);
 	//TF2Attrib_SetByName(client, "jarate backstabber", 1.0);

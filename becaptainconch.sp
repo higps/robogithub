@@ -197,6 +197,8 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 		return Plugin_Changed;
 	}
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
+
+	return Plugin_Continue;
 }
 
 MakeGiantSoldier(client)
@@ -245,6 +247,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	TF2Attrib_SetByName(client, "increase buff duration", 1.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -290,8 +293,8 @@ stock GiveGiantSoldier(client)
 	//	CreateHat(client, 343, 10, 6, true);//Professor speks
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+	//	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	//	int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon1))
 		{

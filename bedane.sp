@@ -227,7 +227,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
 	TF2Attrib_SetByName(client, "mod teleporter cost", 0.5);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	
 	UpdatePlayerHitbox(client, 1.65);
 	
