@@ -7,7 +7,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Solar Light"
-#define ROBOT_DESCRIPTION "Rapid Iron Bomber, Tide Turner, Claidhemor"
+#define ROBOT_ROLE "Attack"
+#define ROBOT_DESCRIPTION "Rapid Iron Bomber, Tide Turner, Boss Claidhemor"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -25,16 +26,17 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
-
-	
-
-	AddRobot(ROBOT_NAME, "Demoman", MakeSolar, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Demoman";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeSolar, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()

@@ -7,7 +7,8 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"HiGPS"
-#define ROBOT_DESCRIPTION "Deflector"
+#define ROBOT_ROLE "Defense"
+#define ROBOT_DESCRIPTION "Deflector: Shoot down projectiles"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -40,20 +41,24 @@ new bool:CanWindDown[MAXPLAYERS+1];
  
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
-	
-	AddNormalSoundHook(BossGPS);
+    LoadTranslations("common.phrases");
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.gunfire = SOUND_GUNFIRE;
-	sounds.gunspin = SOUND_GUNSPIN;
-	sounds.windup = SOUND_WINDUP;
-	sounds.winddown = SOUND_WINDDOWN;
-	sounds.death = DEATH;
+    AddNormalSoundHook(BossGPS);
 
-	AddRobot(ROBOT_NAME, "Heavy", MakeGDeflectorH, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Heavy";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.gunfire = SOUND_GUNFIRE;
+    robot.sounds.gunspin = SOUND_GUNSPIN;
+    robot.sounds.windup = SOUND_WINDUP;
+    robot.sounds.winddown = SOUND_WINDDOWN;
+    robot.sounds.death = DEATH;
+
+    AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION);
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)

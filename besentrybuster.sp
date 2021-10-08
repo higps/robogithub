@@ -9,7 +9,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Sentry Buster Bluth"
-#define ROBOT_DESCRIPTION "Activate by taunting, dying, melee hit player, toucing a sentry"
+#define ROBOT_ROLE "Support"
+#define ROBOT_DESCRIPTION "Explode by taunting, melee hit player, toucing a sentry"
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
 #define SPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"
@@ -31,26 +32,30 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "ZBuster";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
 
-	AddRobot(ROBOT_NAME, "ZBuster", MakeBuster, PLUGIN_VERSION, sounds);
+    AddRobot(robot, MakeBuster, PLUGIN_VERSION);
 
-	for(int client = 1 ; client <= MaxClients ; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
-			SDKHook(client, SDKHook_Touch, OnTouch);
-		}
-	}
+    for(int client = 1 ; client <= MaxClients ; client++)
+    {
+        if(IsClientInGame(client))
+        {
+            SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
+            SDKHook(client, SDKHook_Touch, OnTouch);
+        }
+    }
 
-	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
+    HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
 public void OnPluginEnd()

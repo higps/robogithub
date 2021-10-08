@@ -7,7 +7,8 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Pancop"
-#define ROBOT_DESCRIPTION "Heal on hit: Pan, Healing & Crit boosting Steak"
+#define ROBOT_ROLE "Rushdown"
+#define ROBOT_DESCRIPTION "Besrserker: Frying Pan: Heal on hit. Healing & Crit boosting Steak"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -31,18 +32,21 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	//HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-	
-	AddNormalSoundHook(BossGPS);
+    //HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
+    AddNormalSoundHook(BossGPS);
 
-	AddRobot(ROBOT_NAME, "Heavy", MakePanCop, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Heavy";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakePanCop, PLUGIN_VERSION);
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)

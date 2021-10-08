@@ -8,7 +8,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Agro"
-#define ROBOT_DESCRIPTION "Scorch knocks enemies far away"
+#define ROBOT_ROLE "Attack"
+#define ROBOT_DESCRIPTION "Boss Degreaser. High knockback scorch shot. High damage Maul"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -46,13 +47,17 @@ public OnPluginStart()
 
     LoadTranslations("common.phrases");
 
-    RobotSounds sounds;
-    sounds.spawn = SPAWN;
-    sounds.loop = LOOP;
-    sounds.gunfire = SOUND_GUNFIRE;
-    sounds.windup = SOUND_WINDUP;
-    sounds.death = DEATH;
-    AddRobot(ROBOT_NAME, "Pyro", MakeGiantPyro, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Pyro";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.gunfire = SOUND_GUNFIRE;
+    robot.sounds.windup = SOUND_WINDUP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()

@@ -12,7 +12,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
-#define ROBOT_DESCRIPTION "Instant lvl 3 Sentry, Widowmaker, Jag"
+#define ROBOT_ROLE "Defense"
+#define ROBOT_DESCRIPTION "Boss Widowmaker, Jag: Builds instantly on hit, Giant Sentry & Dispenser"
 
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
@@ -33,26 +34,30 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	//g_offsCollisionGroup = FindSendPropInfo("DT_BaseEntity", "m_CollisionGroup");
-	HookEvent("player_builtobject", ObjectBuilt, EventHookMode_Post);
+    //g_offsCollisionGroup = FindSendPropInfo("DT_BaseEntity", "m_CollisionGroup");
+    HookEvent("player_builtobject", ObjectBuilt, EventHookMode_Post);
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Engineer", MakeUncleDane, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Engineer";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeUncleDane, PLUGIN_VERSION);
 
 
-/* 	for(int client = 1 ; client <= MaxClients ; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			//SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
-			SDKHook(client, SDKHook_Touch, OnTouch);
-		}
-	} */
+    for(int client = 1 ; client <= MaxClients ; client++)
+    {
+        if(IsClientInGame(client))
+        {
+            //SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
+            SDKHook(client, SDKHook_Touch, OnTouch);
+        }
+    }
 
 }
 
