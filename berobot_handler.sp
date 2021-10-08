@@ -1225,17 +1225,21 @@ void SetRandomRobot(int client)
 {
     ArrayList robotNames = GetRobotNames();
 
-    char robotname[NAMELENGTH];
-    int count;
-    do
+    char robotname[NAMELENGTH];  
+    for (;;)  
     {
         int i = GetRandomInt(0, robotNames.Length -1);
 
         robotNames.GetString(i, robotname, sizeof(robotname));
 
+        int count;
         g_RobotCount.GetValue(robotname, count);
+        if (count < g_RoboCap)
+        {
+            break;
+        }
+        robotNames.Erase(i);
     }
-    while(count >= g_RoboCap);
 
     SMLogTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
     SetRobot(robotname, client);

@@ -26,8 +26,10 @@ public Plugin myinfo =
 	url = "https://github.com/higps/robogithub"
 };
 
-ConVar _roboCapTeamHumansPerRobotConVar;
-float _roboCapTeamHumansPerRobot;
+ConVar _enabledConVar;
+bool _enabled;
+ConVar _humansPerRobotConVar;
+float _humansPerRobot;
 ConVar _roboCapTeamConVar;
 
 public void OnPluginStart()
@@ -35,16 +37,28 @@ public void OnPluginStart()
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
     SMLogTag(SML_INFO, "berobot_dynamicRobotCount started at %i", GetTime());
 
-    _roboCapTeamHumansPerRobotConVar = CreateConVar("sm_robocap_team_humansPerRobot", "3.0", "ratio of humans-to-robot for dynamic robot count calculation");
-    _roboCapTeamHumansPerRobotConVar.AddChangeHook(RoboCapTeamHumansPerRobotConVarChangeHook);
-    _roboCapTeamHumansPerRobot = _roboCapTeamHumansPerRobotConVar.FloatValue;
+    _enabledConVar = CreateConVar("sm_berobot_dynamicRobotCount_enable", "1", "enables dynamically setting sm_robocap_team from the ratio of humans-to-robot");
+    _enabledConVar.AddChangeHook(EnabledConVarChangeHook);
+    _enabled = _enabledConVar.BoolValue;
 
+    _humansPerRobotConVar = CreateConVar("sm_berobot_dynamicRobotCount_humansPerRobot", "3.0", "ratio of humans-to-robot for dynamic robot count calculation");
+    _humansPerRobotConVar.AddChangeHook(RoboCapTeamHumansPerRobotConVarChangeHook);
+    _humansPerRobot = _humansPerRobotConVar.FloatValue;
+}
+
+public void OnConfigsExecuted()
+{
     _roboCapTeamConVar = FindConVar(CONVAR_ROBOCAP_TEAM);
+}
+
+public void EnabledConVarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
+{
+    _enabled = _enabledConVar.BoolValue;
 }
 
 public void RoboCapTeamHumansPerRobotConVarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
 {
-    _roboCapTeamHumansPerRobot = StringToFloat(sNewValue);
+    _humansPerRobot = StringToFloat(sNewValue);
 }
 
 public void OnClientPutInServer(int client)
@@ -59,8 +73,11 @@ public void OnClientDisconnect_Post(int client)
 
 void SetRoboCapTeam()
 {
+    if (!_enabled)
+        return;
+
     int count = GetClientCount();
-    float ratio = _roboCapTeamHumansPerRobot +1;
+    float ratio = _humansPerRobot +1;
     int robotCount = RoundToCeil(count/ratio);
 
     SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
