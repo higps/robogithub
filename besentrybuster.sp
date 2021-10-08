@@ -197,9 +197,9 @@ MakeBuster(client)
 	TF2_RegeneratePlayer(client);
 
 	//Sets color to red if team is red
-			if(GetClientTeam(client) == 2){
+	/* 		if(GetClientTeam(client) == 2){
             SetEntityRenderColor(client, 255, 0, 0, 255);
-			}
+			} */
 	
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
