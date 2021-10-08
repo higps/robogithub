@@ -8,7 +8,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bearded Expense"
-#define ROBOT_ROLE "Rushdown"
+#define ROBOT_ROLE "Tank"
 #define ROBOT_DESCRIPTION "Juggernaut: Can go anywhere unchallenged. Taunt: Activate Defense buff & leap. Gets value off kills."
  
 #define SHWC             "models/bots/heavy_boss/bot_heavy_boss.mdl"

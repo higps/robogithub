@@ -8,6 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Captain Conch"
+#define ROBOT_ROLE "Support"
 #define ROBOT_DESCRIPTION "Black Box, Concherors"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -50,14 +51,15 @@ public OnPluginStart()
 //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	AddNormalSoundHook(BossIcebear);
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-//	sounds.gunfire = SOUND_GUNFIRE;
-	//sounds.gunfire = SOUND_GUNFIRE;
-//	sounds.windup = SOUND_WINDUP;
-	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Soldier", MakeGiantSoldier, PLUGIN_VERSION, sounds);
+	Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Soldier";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()

@@ -7,9 +7,9 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Force-a-Nature Scout"
+#define ROBOT_NAME	"Funke"
 #define ROBOT_ROLE "Harasser"
-#define ROBOT_DESCRIPTION "Force-a-Nature: More accurate and insane knockback"
+#define ROBOT_DESCRIPTION "Rapid Cleaver Thrower"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
