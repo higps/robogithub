@@ -123,6 +123,7 @@ int Native_GetRandomVolunteer(Handle plugin, int numParams)
         return -1;
 
     int clientId = pickedVolunteers.Get(0);
+    SMLogTag(SML_VERBOSE, "Native_GetRandomVolunteer picked %L", clientId);
 
     delete pickedVolunteers;
 

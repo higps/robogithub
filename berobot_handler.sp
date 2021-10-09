@@ -1388,17 +1388,20 @@ bool AddRandomVolunteer()
         ignoredVolunteers[i] = g_Volunteers.Get(i);
     }
     int newVolunteer = GetRandomVolunteer(ignoredVolunteers, g_Volunteers.Length);
-    if (IsValidClient(newVolunteer))
+    SMLogTag(SML_VERBOSE, "GetRandomVolunteer returned %L", newVolunteer);
+    if (!IsValidClient(newVolunteer))
     {
-        PrintToChatAll("A new robot-slot is available. %N was automatically chosen to fillup the robot-team.", newVolunteer);
-        Volunteer(newVolunteer, true);
-        ChangeClientTeam(newVolunteer, g_RoboTeam);
-    }
-    else
-    {
+        SMLogTag(SML_VERBOSE, "no volunteer found notifying players of open spot", newVolunteer);
         int islots = g_RoboCapTeam - g_Volunteers.Length;
         PrintToChatAll("A new robot-slot is available. There is now %i available robot slots remains. Type !volunteer to become a giant robot", islots);
+
+        return false;
     }
+
+    SMLogTag(SML_VERBOSE, "turning %L into a robot", newVolunteer);
+    PrintToChatAll("A new robot-slot is available. %N was automatically chosen to fillup the robot-team.", newVolunteer);
+    Volunteer(newVolunteer, true);
+    ChangeClientTeam(newVolunteer, g_RoboTeam);
 
     return true;
 }
