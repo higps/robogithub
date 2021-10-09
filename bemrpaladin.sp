@@ -100,7 +100,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	{
 		
 		
-		TF2_AddCondition(attacker, TFCond_StealthedUserBuffFade, 10.0);
+		TF2_AddCondition(attacker, TFCond_StealthedUserBuffFade, 5.0);
 	}
 }
 
@@ -255,7 +255,7 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_SetByName(Knife, "damage bonus", 1.5);
 			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
-			TF2Attrib_SetByName(Knife, "restore health on kill", 15.0);
+			TF2Attrib_SetByName(Knife, "restore health on kill", 10.0);
 			
 						
 		}
