@@ -130,7 +130,7 @@ public void OnPluginStart()
 
     g_cvCvarList[CV_PluginVersion] = CreateConVar("sm_yt_v_mvm_version", PLUGIN_VERSION, "Plugin Version.", FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_CHEAT);
     g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_yt_v_mvm_debug", "0", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "300.0", "Backstab damage");
+    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "250.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar(CONVAR_ROBOCAP_TEAM, "6", "The total amount of giant robots on a team");
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
@@ -239,7 +239,7 @@ public void ResetMode()
 
     }
     //Set more dynamic way of getting the amount of votes needed
-    g_iVotesNeeded = g_RoboCapTeam;
+    g_iVotesNeeded = g_RoboCapTeam+5;
     //g_iVotesNeeded = 6;
 }
 
@@ -590,32 +590,6 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                             damage = g_CV_flSpyBackStabModifier;
                             critType = CritType_Crit;
                             if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-
-                            return Plugin_Changed;
-                        }
-                        if(damagecustom == TF_CUSTOM_HEADSHOT)
-                        {
-                            damage *= 1.1111;
-                            critType = CritType_Crit;
-                         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                            return Plugin_Changed;
-                        }
-                    }
-            }
-
-            if(iClassAttacker == TFClass_Sniper)
-            {
-                // Checks if boss is on
-                if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy");
-                    if(IsAnyRobot(victim))
-                    {
-                        if(damagecustom == TF_CUSTOM_HEADSHOT)
-                        {
-                            
-                            
-                            damage *= 1.1111;
-                            critType = CritType_Crit;
-                            if(g_cv_bDebugMode) PrintToChatAll("Set damage to %f", damage);
 
                             return Plugin_Changed;
                         }

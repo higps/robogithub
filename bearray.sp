@@ -170,7 +170,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "health drain", 0.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.75);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.15);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 		}
 		
