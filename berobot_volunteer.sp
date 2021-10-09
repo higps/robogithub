@@ -113,7 +113,12 @@ int Native_AutomaticVolunteerVoteIsInProgress(Handle plugin, int numParams)
 
 int Native_GetRandomVolunteer(Handle plugin, int numParams)
 {
-    ArrayList pickedVolunteers = PickVolunteers(1, false);
+    int length = GetNativeCell(2);
+    int[] ignoredClientIds = new int[length];
+    GetNativeArray(1, ignoredClientIds, length);
+    SMLogTag(SML_VERBOSE, "Native_GetRandomVolunteer read %i ignroedClientIds", length);
+
+    ArrayList pickedVolunteers = PickVolunteers(1, ignoredClientIds, length, false);
     if (pickedVolunteers.Length <= 0)
         return -1;
 
@@ -171,7 +176,8 @@ int CountVolunteers()
 
 void VolunteerAutomaticVolunteers()
 {
-    ArrayList pickedVolunteers = PickVolunteers(_robocapTeam);
+    int[] ignoredClientIds = new int[0];
+    ArrayList pickedVolunteers = PickVolunteers(_robocapTeam, ignoredClientIds, 0);
 
     int[] volunteerArray = new int[pickedVolunteers.Length];
     for(int i = 0; i < pickedVolunteers.Length; i++)
@@ -183,12 +189,22 @@ void VolunteerAutomaticVolunteers()
     _automaticVolunteerVoteIsInProgress = false;
 }
 
-ArrayList PickVolunteers(int neededVolunteers, bool pickNonvolunteers = true)
+ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignoredClientIdsLength, bool pickNonvolunteers = true)
 {
+    StringMap ignoredClientIdLookup = new StringMap();
+    for(int i = 0; i < ignoredClientIdsLength; i++)
+    {
+        int ignoredClientId = ignoredClientIds[i];
+        char str[10];
+        IntToString(ignoredClientId, str, 10);
+
+        SMLogTag(SML_VERBOSE, "adding %s for %L to ignored volunteers", str, ignoredClientId);
+        ignoredClientIdLookup.SetValue(str, true);
+    }
+
     ArrayList adminVolunteers = new ArrayList();
     ArrayList volunteers = new ArrayList();
     ArrayList nonVolunteers = new ArrayList();
-    ArrayList pickedVolunteers = new ArrayList();
     
     for(int i = 0; i <= MaxClients; i++)
     {
@@ -196,6 +212,15 @@ ArrayList PickVolunteers(int neededVolunteers, bool pickNonvolunteers = true)
             continue;
         if (!IsClientInGame(i))
             continue;
+
+        char str[10];
+        IntToString(i, str, 10);
+        bool value;
+        if (ignoredClientIdLookup.GetValue(str, value))
+        {
+            SMLogTag(SML_VERBOSE, "ignoring %L for picking volunteers", i);
+            continue;
+        }
 
         if (_volunteered[i])
         {
@@ -220,6 +245,7 @@ ArrayList PickVolunteers(int neededVolunteers, bool pickNonvolunteers = true)
         }
     }
 
+    ArrayList pickedVolunteers = new ArrayList();
     while(pickedVolunteers.Length < neededVolunteers)      //add adminVolunteers until we have enough
     {
         if (adminVolunteers.Length == 0)

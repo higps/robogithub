@@ -50,10 +50,12 @@ native bool AutomaticVolunteerVoteIsInProgress();
 /**
  * returns a clientId of previously volunteered player
  * 
- * @return      clientId of previously volunteered player; 
-                -1 if no volunteers are left
+ * @param ignoredClientIds      array of clientIds that will be ignored when picking volunteer
+ * @param maxDestLength         maximum length of ignoredClientIds-array
+ * @return                      clientId of previously volunteered player; 
+                                -1 if no volunteers are left
  */
-native int GetRandomVolunteer();
+native int GetRandomVolunteer(int[] ignoredClientIds, int length);
 
 /**
  * sets the provided clientIds as volunteers
@@ -63,6 +65,14 @@ native int GetRandomVolunteer();
  * @noreturn
  */
 native void SetVolunteers(int[] volunteers, int length);
+
+/**
+ * adds a random volunteer to the robot team or removes a random robot from the robot team
+ * depending on the current/wanted team-size
+ * 
+ * @noreturn
+ */
+native void EnsureRobotCount();
 
 /**
  * returns which classes have deep robot voicelines (opposed to only normal robot voicelines)

@@ -208,6 +208,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
     CreateNative("GetPickedRobot", Native_GetPickedRobot);
     CreateNative("SetVolunteers", Native_SetVolunteers);
+    CreateNative("EnsureRobotCount", Native_EnsureRobotCount);
     return APLRes_Success;
 }
 
@@ -257,17 +258,7 @@ public void OnClientDisconnect(int client)
         g_Volunteers.Erase(index);
     RedrawVolunteerMenu();
 
-    int newVolunteer = GetRandomVolunteer();
-    if (IsValidClient(newVolunteer))
-    {
-        PrintToChat(newVolunteer, "%N has disconnected. You where automatically chosen to fillup the robot-team.", client);
-        Volunteer(newVolunteer, true);
-    }
-    else
-    {
-        int islots = g_RoboCapTeam - g_Volunteers.Length;
-        MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has disconnected. There is now %i available robot slots remains. Type !volunteer to become a giant robot", client, islots);
-    }
+    AddRandomVolunteer();
 }
 
 /* Publics */
@@ -845,6 +836,7 @@ public Action Volunteer(int client, bool volunteering)
 {
     if(g_BossMode && g_Volunteers.Length >= g_RoboCapTeam)
     {
+        SMLogTag(SML_VERBOSE, "Game has already started, volunteering not available.");
         MC_PrintToChatEx(client, client, "{teamcolor}Game has already started, volunteering not available.", g_RoboCapTeam);
         return;
     }
@@ -872,10 +864,7 @@ public Action Volunteer(int client, bool volunteering)
     {
         SMLogTag(SML_VERBOSE, "volunteer-state changed to false for %L", client);
 
-        g_cv_Volunteered[client] = false;
-
-        int index = FindValueInArray(g_Volunteers, client);
-        g_Volunteers.Erase(index);
+        RemoveVolunteer(client);
 
         //  MC_PrintToChatEx(client, client, "{teamcolor}You are not volunteering to be a giant robot anymore");
         int islots = g_RoboCapTeam - g_Volunteers.Length;
@@ -912,6 +901,15 @@ public Action Volunteer(int client, bool volunteering)
     //Menu Stuff here
 
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
+}
+
+void RemoveVolunteer(int client)
+{
+    g_cv_RobotPicked[client] = "";
+    g_cv_Volunteered[client] = false;
+
+    int index = FindValueInArray(g_Volunteers, client);
+    g_Volunteers.Erase(index);
 }
 
 int RobotDefinitionComparision(int index1, int index2, Handle array, Handle hndl)
@@ -1167,6 +1165,79 @@ int Native_SetVolunteers(Handle plugin, int numParams)
     {
         Volunteer(volunteers[i], true);
     }
+}
+
+int Native_EnsureRobotCount(Handle plugin, int numParams)
+{
+    while (g_Volunteers.Length < g_RoboCapTeam)
+    {
+        bool success = AddRandomVolunteer();
+        SMLogTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
+        if (!success)
+            break;
+    }
+    while (g_Volunteers.Length > g_RoboCapTeam)
+    {
+        bool success = RemoveRandomRobot();
+        SMLogTag(SML_VERBOSE, "removing random robot succcess: %b", success);
+        if (!success)
+            break;
+    }
+}
+
+bool AddRandomVolunteer()
+{
+    if (!g_BossMode)
+    {
+        SMLogTag(SML_INFO, "will not add random volunteer, because g_BossMode is not enabled");
+        return false;
+    }
+
+    int[] ignoredVolunteers = new int[g_Volunteers.Length];
+    for(int i = 0; i < g_Volunteers.Length; i++)
+    {
+        ignoredVolunteers[i] = g_Volunteers.Get(i);
+    }
+    int newVolunteer = GetRandomVolunteer(ignoredVolunteers, g_Volunteers.Length);
+    if (IsValidClient(newVolunteer))
+    {
+        PrintToChatAll("A new robot-slot is available. %N was automatically chosen to fillup the robot-team.", newVolunteer);
+        Volunteer(newVolunteer, true);
+        ChangeClientTeam(newVolunteer, g_RoboTeam);
+    }
+    else
+    {
+        int islots = g_RoboCapTeam - g_Volunteers.Length;
+        PrintToChatAll("A new robot-slot is available. There is now %i available robot slots remains. Type !volunteer to become a giant robot", islots);
+    }
+
+    return true;
+}
+
+bool RemoveRandomRobot()
+{
+    if (!g_BossMode)
+    {
+        SMLogTag(SML_INFO, "will not remove random robot, because g_BossMode is not enabled");
+        return false;
+    }
+    if (g_Volunteers.Length == 0)
+    {
+        SMLogTag(SML_INFO, "can't remove random robot, because no volunteers are found");
+        return false;
+    }
+
+    int i = GetRandomInt(0, g_Volunteers.Length -1);
+    int clientId = g_Volunteers.Get(i);
+    char robotName[NAMELENGTH];
+    robotName = g_cv_RobotPicked[clientId];
+    CreateRobot(robotName, clientId, "");
+
+    // Volunteer(clientId, false);
+
+    RemoveVolunteer(clientId);
+    ChangeClientTeam(clientId, g_HumanTeam);
+    return true;
 }
 
 stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
