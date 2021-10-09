@@ -122,7 +122,11 @@ int Native_GetRandomVolunteer(Handle plugin, int numParams)
     if (pickedVolunteers.Length <= 0)
         return -1;
 
-    return pickedVolunteers.Get(0);
+    int clientId = pickedVolunteers.Get(0);
+
+    delete pickedVolunteers;
+
+    return clientId;
 }
 
 int Native_StartAutomaticVolunteerVote(Handle plugin, int numParams)
@@ -186,6 +190,9 @@ void VolunteerAutomaticVolunteers()
         SMLogTag(SML_VERBOSE, "setting %L as volunteered", volunteerArray[i]);
     }
     SetVolunteers(volunteerArray, pickedVolunteers.Length);
+
+    delete pickedVolunteers;
+
     _automaticVolunteerVoteIsInProgress = false;
 }
 
@@ -284,6 +291,10 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         int i = GetRandomInt(0, pickedVolunteers.Length -1);
         pickedVolunteers.Erase(i);
     }
+
+    delete adminVolunteers;
+    delete volunteers;
+    delete nonVolunteers;
 
     return pickedVolunteers;
 }
