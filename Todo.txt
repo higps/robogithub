@@ -1,11 +1,14 @@
 TODO:
+  Todo:
+1.  Unset and set volunteer
+2. Make !volunteer work after round has started
+3. Add resources (timed, kills) - Sentry Buster, bosses
+4. Robot model stays when not being a robot anymore (fixed by changing class)
+5. Stuck command bug
+6. When mode is over, robots return to normal
+7. Unset robot command
+8. Both teams have robot mode
 
-Track what teams robots are on and move players to the non robot team when they join the server mid round - DONE
-
-Add menus for volunteers to select from a list of robots, taken robots will be grayed out or not shown in the list. - DONE
-Menu style will be 1 - > 9 with Scout, Soldier, Pyro, Demo, Heavy, Engineer, Medic, Spy, with each having different types to pick from.
-
-cant join midround?!
 
 unify sounds
  OnMapStart precaches
@@ -20,3 +23,4 @@ storage:
 codestyles
  .editorconfig
   tab vs spaces
+
