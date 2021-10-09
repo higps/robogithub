@@ -7,7 +7,8 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Array Seven"
-#define ROBOT_DESCRIPTION "Fast Kritzkrieg, Blutsauger, heal taunt"
+#define ROBOT_ROLE "Healer"
+#define ROBOT_DESCRIPTION "Kritzkrieg"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -25,13 +26,17 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Medic", MakeGiantMedic, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Medic";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -105,7 +110,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -165,7 +170,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "health drain", 0.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.75);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.15);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 		}
 		

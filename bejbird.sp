@@ -11,7 +11,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Jbird"
-#define ROBOT_DESCRIPTION "Sniper Rifle, Cozy Camper, Shahansah"
+#define ROBOT_ROLE "Support"
+#define ROBOT_DESCRIPTION "Explosive headshot"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -30,15 +31,19 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-//	HookEvent("player_death", Event_Death, EventHookMode_Post);
+    //HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Sniper", MakeSniper, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Sniper";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeSniper, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -124,7 +129,7 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 0.8);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "health regen", 10.0);
 	
 	

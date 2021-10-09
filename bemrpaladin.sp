@@ -12,7 +12,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Mr Paladin"
-#define ROBOT_DESCRIPTION "Turn invisible on kill, Le'tranger, Kunai"
+#define ROBOT_ROLE "Support"
+#define ROBOT_DESCRIPTION "Turn invisible on backstab"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -33,15 +34,19 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Spy", MakeSpy, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Spy";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeSpy, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -95,7 +100,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	{
 		
 		
-		TF2_AddCondition(attacker, TFCond_StealthedUserBuffFade, 10.0);
+		TF2_AddCondition(attacker, TFCond_StealthedUserBuffFade, 5.0);
 	}
 }
 
@@ -167,6 +172,7 @@ MakeSpy(client)
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
+	
 	UpdatePlayerHitbox(client, 1.65);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -222,7 +228,7 @@ stock GiveBigRoboDane(client)
 //	TF2Items_GiveWeapon(client, 30);
 
 	CreateHat(client, 319, 10, 6, 15132390.0); // Noir
-	//CreateHat(client, 30476, 10, 6, 0.0); //lady killer
+	CreateHat(client, 30476, 10, 6, 0.0); //lady killer
 	CreateHat(client, 343, 10, 6, 0.0); //spek
 	
 		
@@ -249,7 +255,7 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_SetByName(Knife, "damage bonus", 1.5);
 			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
-			TF2Attrib_SetByName(Knife, "restore health on kill", 15.0);
+			TF2Attrib_SetByName(Knife, "restore health on kill", 10.0);
 			
 						
 		}

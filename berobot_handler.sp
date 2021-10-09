@@ -77,6 +77,7 @@ bool g_cv_Volunteered[MAXPLAYERS + 1];
 char g_cv_RobotPicked[MAXPLAYERS + 1][NAMELENGTH];
 bool g_ClientIsRepicking[MAXPLAYERS + 1];
 bool g_Voted[MAXPLAYERS + 1];
+bool g_VoiceCalloutClamp[MAXPLAYERS + 1];
 
 
 
@@ -129,7 +130,7 @@ public void OnPluginStart()
 
     g_cvCvarList[CV_PluginVersion] = CreateConVar("sm_yt_v_mvm_version", PLUGIN_VERSION, "Plugin Version.", FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_CHEAT);
     g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_yt_v_mvm_debug", "0", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "300.0", "Backstab damage");
+    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "250.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar(CONVAR_ROBOCAP_TEAM, "6", "The total amount of giant robots on a team");
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
@@ -177,6 +178,9 @@ public void OnPluginStart()
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
 
+    HookEvent("player_escort_score", Event_player_escort_score, EventHookMode_Post);
+
+    
     HookEvent("player_death", Event_Death, EventHookMode_Post);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
@@ -236,7 +240,7 @@ public void ResetMode()
 
     }
     //Set more dynamic way of getting the amount of votes needed
-    g_iVotesNeeded = g_RoboCapTeam;
+    g_iVotesNeeded = g_RoboCapTeam+5;
     //g_iVotesNeeded = 6;
 }
 
@@ -267,14 +271,83 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+    int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+    int assister = GetClientOfUserId(GetEventInt(event, "assister"));
+    TFClassType attackerClass = TF2_GetPlayerClass(attacker);
 
-        TFTeam iTeam = TF2_GetClientTeam(victim);
+    TFClassType assisterClass = TFClass_Unknown;
+    if(IsValidClient(assister))
+    {
+        assisterClass = TF2_GetPlayerClass(assister);
+    } 
+    TFTeam iTeam = TF2_GetClientTeam(victim);
+    char szVO[512];
 
-        if (g_BossMode && iTeam == view_as<TFTeam>(g_HumanTeam))
+    if (g_BossMode && iTeam == view_as<TFTeam>(g_HumanTeam))
      {
+         //Handle respawn for robot teams
        //  CreateTimer(4.5, Timer_Respawn, victim);
          
      }
+
+    //Robot died
+    if (IsAnyRobot(victim))
+    {
+    
+      switch(attackerClass)
+      {
+        case TFClass_Heavy:
+        {
+            Format(szVO, sizeof(szVO), "heavy_mvm_giant_robot02");
+        }
+        case TFClass_Medic:
+        {
+            Format(szVO, sizeof(szVO), "medic_mvm_giant_robot02");
+        }
+      }
+       EmitGameSoundToAll(szVO, attacker);
+
+       if (IsValidClient(assister)){
+       switch(assisterClass)
+      {
+        case TFClass_Heavy:
+        {
+            Format(szVO, sizeof(szVO), "heavy_mvm_giant_robot02");
+        }
+        case TFClass_Medic:
+        {
+            Format(szVO, sizeof(szVO), "medic_mvm_giant_robot02");
+        }
+      
+      }
+      EmitGameSoundToAll(szVO, assister);
+       }
+    }
+
+    //player died to robot
+
+    if (!IsAnyRobot(victim) && IsAnyRobot(attacker))
+    {
+
+            for(int i = 1; i < MaxClients; i++)
+            {
+
+                if(IsValidClient(i) && IsPlayerAlive(i)){
+        switch(i)
+        {
+            case TFClass_Heavy:
+            {
+                int random = GetRandomInt(1,10);
+                if (random == 1){
+                Format(szVO, sizeof(szVO), "heavy_mvm_giant_robot01");
+                EmitGameSoundToAll(szVO, i);
+                }
+            }
+        }
+                }
+            }
+        }
+    
 
 }
 
@@ -283,6 +356,70 @@ public Action Timer_Respawn(Handle timer, int client)
     TF2_RespawnPlayer(client);
 }
 
+public Action Event_player_escort_score(Event event, char[] name, bool dontBroadcast)
+{   
+    //Adds voice line if boss mode is active
+    if(g_BossMode){
+    int iCapper = GetEventInt(event, "player");
+    
+    char szVO[512];
+
+    
+
+        for(int i = 1; i < MaxClients; i++)
+        {
+        int iCapperTeam = TF2_GetClientTeam(iCapper);
+     //   PrintToChatAll("Capture team was: %i", iCapperTeam);
+        if (IsValidClient(i) && IsClientInGame(i)){
+         TFClassType iClass = TF2_GetPlayerClass(i);
+         TFTeam iPlayerTeam = TF2_GetClientTeam(i);
+
+
+        // int digit = 1;
+
+        if (iClass == TFClass_Spy && (TF2_IsPlayerInCondition(i, TFCond_Disguised) && GetEntProp(i, Prop_Send, "m_nDisguiseClass") != view_as<int>(iClass))){
+            iClass = view_as<TFClassType>(GetEntProp(i, Prop_Send, "m_nDisguiseClass"));
+        }
+				
+
+     //   If robot was not the capture
+        if (!IsAnyRobot(i) && iPlayerTeam != iCapperTeam && IsPlayerAlive(i))
+        {
+            
+            switch(iClass)
+            {
+                case TFClass_Heavy:
+                {
+                Format(szVO, sizeof(szVO), "heavy_mvm_giant_robot03");
+                }
+                case TFClass_Medic:
+                {
+                Format(szVO, sizeof(szVO), "medic_mvm_giant_robot03");
+                }
+                case TFClass_Soldier:
+                {
+                int digit = GetRandomInt(3,4);
+                Format(szVO, sizeof(szVO), "soldier_mvm_giant_robot0%i", digit);
+                }
+                case TFClass_Engineer:
+                {
+                Format(szVO, sizeof(szVO), "engineer_mvm_giant_robot03");
+                }
+            }
+
+            if (iClass == TFClass_Heavy || iClass == TFClass_Medic || iClass == TFClass_Soldier || iClass == TFClass_Engineer)
+            {
+            int change = GetRandomInt(1,3);
+            if(change == 1){
+               // PrintToChatAll("%N said it", i);
+                EmitGameSoundToAll(szVO, i);
+            }
+            }
+        }
+    }
+        }
+    }
+}
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
     for(int i = 1; i < MaxClients; i++)
@@ -358,6 +495,23 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
         g_RoboMode = StringToInt(sNewValue); 
 }
 
+void EmitSoundWithClamp(int client, char[] voiceline, float clamp){
+
+	if (!g_VoiceCalloutClamp[client] && IsPlayerAlive(client)){
+		EmitGameSoundToAll(voiceline, client);
+
+		CreateTimer(clamp, calltimer_reset, client);
+		g_VoiceCalloutClamp[client] = true;
+	}
+	
+
+}
+public Action calltimer_reset (Handle timer, int client)
+{
+	g_VoiceCalloutClamp[client] = false;
+	//PrintToChatAll("resetting");
+}
+
 /* Plugin Exclusive Functions */
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
@@ -365,45 +519,68 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     {
         if(IsValidClient(attacker))
         {
-            TFClassType iClass = TF2_GetPlayerClass(attacker);
-            if(iClass == TFClass_Spy)
+
+
+            TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
+//            TFClassType iClassVictim = TF2_GetPlayerClass(victim);
+            char szVO[512];
+            int digit = 0;
+ 
+    //IsAnyRobot(attacker)
+    if (IsAnyRobot(victim)) 
+    {
+    
+      switch(iClassAttacker)
+      {
+        case TFClass_Heavy:
+        {
+            Format(szVO, sizeof(szVO), "heavy_mvm_giant_robot04");
+        }
+        case TFClass_Medic:
+        {
+            Format(szVO, sizeof(szVO), "medic_mvm_giant_robot01");
+        }
+        case TFClass_Soldier:
+        {
+            digit = GetRandomInt(1,2);
+            Format(szVO, sizeof(szVO), "soldier_mvm_giant_robot0%i", digit);
+        }
+        case TFClass_Engineer:
+        {
+            digit = GetRandomInt(1,2);
+            Format(szVO, sizeof(szVO), "engineer_mvm_giant_robot0%i", digit);
+        }
+      }
+
+      digit = GetRandomInt(1,4);
+      if (digit == 1)
+      {
+        float random_timer = GetRandomFloat(20.5,60.5);
+      //if (!IsAnyRobot(victim))EmitSoundWithClamp(victim, szVO, random_timer);
+      if (!IsAnyRobot(attacker))EmitSoundWithClamp(attacker, szVO, random_timer);
+      }
+    }
+      
+    
+
+        
+    
+    
+
+
+            //Backstab damage and Headshot code below
+            if(iClassAttacker == TFClass_Spy)
             {
                 // Checks if boss is on
                 if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy");
 
-                    if(isMiniBoss(victim))
+                    if(IsAnyRobot(victim))
                     {
                         if(damagecustom == TF_CUSTOM_BACKSTAB)
                         {
                             damage = g_CV_flSpyBackStabModifier;
                             critType = CritType_Crit;
                             if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-
-                            return Plugin_Changed;
-                        }
-                        if(damagecustom == TF_CUSTOM_HEADSHOT)
-                        {
-                            damage *= 1.1111;
-                            critType = CritType_Crit;
-                         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                            return Plugin_Changed;
-                        }
-                    }
-            }
-
-            if(iClass == TFClass_Sniper)
-            {
-                // Checks if boss is on
-                if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy");
-                    if(isMiniBoss(victim))
-                    {
-                        if(damagecustom == TF_CUSTOM_HEADSHOT)
-                        {
-                            
-                            
-                            damage *= 1.1111;
-                            critType = CritType_Crit;
-                            if(g_cv_bDebugMode) PrintToChatAll("Set damage to %f", damage);
 
                             return Plugin_Changed;
                         }
@@ -920,11 +1097,19 @@ int RobotDefinitionComparision(int index1, int index2, Handle array, Handle hndl
     list.GetArray(index2, b);
 
 
+    int rolecmp = strcmp(a.role, b.role);
+    if (rolecmp != 0)
+        return rolecmp;
+
     int classcmp = strcmp(a.class, b.class);
     if (classcmp != 0)
         return classcmp;
 
-    return strcmp(a.name, b.name);
+    int namecmp = strcmp(a.name, b.name);
+    if (namecmp != 0)
+        return namecmp;
+
+    return strcmp(a.shortDescription, b.shortDescription);
 }
 
 Action Menu_Volunteer(int client)
@@ -969,7 +1154,7 @@ Action Menu_Volunteer(int client)
         int draw = count >= g_RoboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
 
         char display[128];
-        Format(display, sizeof(display), "%s: %s (%i / %i)", item.class, item.name, count, g_RoboCap);
+        Format(display, sizeof(display), "%s: %s - %s - %s (%i / %i)", item.role, item.class, item.name, item.shortDescription, count, g_RoboCap);
 
         menu.AddItem(item.name, display, draw);
 
@@ -1012,17 +1197,21 @@ void SetRandomRobot(int client)
 {
     ArrayList robotNames = GetRobotNames();
 
-    char robotname[NAMELENGTH];
-    int count;
-    do
+    char robotname[NAMELENGTH];  
+    for (;;)  
     {
         int i = GetRandomInt(0, robotNames.Length -1);
 
         robotNames.GetString(i, robotname, sizeof(robotname));
 
+        int count;
         g_RobotCount.GetValue(robotname, count);
+        if (count < g_RoboCap)
+        {
+            break;
+        }
+        robotNames.Erase(i);
     }
-    while(count >= g_RoboCap);
 
     SMLogTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
     SetRobot(robotname, client);

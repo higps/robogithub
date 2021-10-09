@@ -7,7 +7,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Solar Light"
-#define ROBOT_DESCRIPTION "Rapid Iron Bomber, Tide Turner, Claidhemor"
+#define ROBOT_ROLE "Attack"
+#define ROBOT_DESCRIPTION "Hybrid Knight"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -25,16 +26,17 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
-
-	
-
-	AddRobot(ROBOT_NAME, "Demoman", MakeSolar, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Demoman";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeSolar, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -124,7 +126,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
 	
 	UpdatePlayerHitbox(client, 1.75);
@@ -165,7 +167,7 @@ stock GiveGiantDemoKnight(client)
 		
 		
 		CreateHat(client, 30334, 10, 6, true); //Tartan Tyrolean
-		//CreateHat(client, 30309, 10, 6, false); //dead of night
+		CreateHat(client, 30309, 10, 6, false); //dead of night
 		CreateHat(client, 30363, 10, 6, false);//juggernaut jacket
 		
 		

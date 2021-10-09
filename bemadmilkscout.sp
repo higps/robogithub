@@ -7,8 +7,9 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Mad Milk Fast Scout"
-#define ROBOT_DESCRIPTION "Scattergun, Bat"
+#define ROBOT_NAME	"Mad Milk"
+#define ROBOT_ROLE "Harasser"
+#define ROBOT_DESCRIPTION "Rapid Recharge, Fish"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -41,17 +42,19 @@ public OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	AddNormalSoundHook(BossScout);
+    AddNormalSoundHook(BossScout);
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-//	sounds.gunfire = SOUND_GUNFIRE;
-//	sounds.windup = SOUND_WINDUP;
-	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Scout", MakeGiantscout, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Scout";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeGiantscout, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -172,7 +175,7 @@ MakeGiantscout(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);

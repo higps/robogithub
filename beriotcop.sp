@@ -7,7 +7,8 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Riotcop"
-#define ROBOT_DESCRIPTION "Shotgun, taunt ability"
+#define ROBOT_ROLE "Attack"
+#define ROBOT_DESCRIPTION "Power Shotgun. Taunt: Surpress Riot"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -31,18 +32,21 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-	
-	AddNormalSoundHook(BossGPS);
+    //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
+    AddNormalSoundHook(BossGPS);
 
-	AddRobot(ROBOT_NAME, "Heavy", MakeRiotcop, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Heavy";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeRiotcop, PLUGIN_VERSION);
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -167,7 +171,7 @@ MakeRiotcop(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	//TF2Attrib_SetByName(client, "mult_item_meter_charge_rate", 0.3);
 	//TF2Attrib_SetByName(client, "jarate backstabber", 1.0);

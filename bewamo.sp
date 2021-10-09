@@ -8,7 +8,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Wamo"
-#define ROBOT_DESCRIPTION "Flamethrower, Flaregun"
+#define ROBOT_ROLE "Attack"
+#define ROBOT_DESCRIPTION "Plhogistinator, Flaregun"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -46,13 +47,17 @@ public OnPluginStart()
 
     LoadTranslations("common.phrases");
 
-    RobotSounds sounds;
-    sounds.spawn = SPAWN;
-    sounds.loop = LOOP;
-    sounds.gunfire = SOUND_GUNFIRE;
-    sounds.windup = SOUND_WINDUP;
-    sounds.death = DEATH;
-    AddRobot(ROBOT_NAME, "Pyro", MakeGiantPyro, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Pyro";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.gunfire = SOUND_GUNFIRE;
+    robot.sounds.windup = SOUND_WINDUP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -142,7 +147,7 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	
 	UpdatePlayerHitbox(client, 1.75);
 	

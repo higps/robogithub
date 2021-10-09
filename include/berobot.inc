@@ -15,7 +15,9 @@ enum struct RobotSounds {
 }
 enum struct Robot {
   char name[NAMELENGTH];
+  char role[NAMELENGTH];
   char class[9];
+  char shortDescription[NAMELENGTH];
   PrivateForward callback;
   RobotSounds sounds;
 }
@@ -24,15 +26,13 @@ typedef RobotCallback = function void (int client);
 /**
  * Adds a robot to the storage. So it can be dynamically used by other plugins. (usually called during OnPluginStart)
  * 
- * @param name         name of the robot (used as a Identifierer by other plugins)
- * @param class        class of the robot (Soldier, Engineer, etc.)
+ * @param robot       enum struct Robot containing robot-definition
  * @param callback     function creating this robot
  * @param version      plugin version of this indivifual robot-plugin
- * @param sounds       enum struct RobotSounds containing sounds relevant to the robot
  * 
  * @noreturn
  */
-native void AddRobot(char name[NAMELENGTH], char class[9], RobotCallback callback, char[] version, const any[] sounds);
+native void AddRobot(const any[] robot, RobotCallback callback, char[] version);
 
 /**
  * Removes a robot to the storage. So it can't be used by other plugins anymore. (usually called during OnPluginEnd)

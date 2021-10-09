@@ -80,47 +80,36 @@ public any Native_AddRobot(Handle plugin, int numParams)
 { 
 	Init();
 
-	char name[NAMELENGTH];
-	GetNativeString(1, name, NAMELENGTH);
+	Robot robot;
+	GetNativeArray(1, robot, sizeof(robot));
 
-	char class[9];
-	GetNativeString(2, class, 9);
-
-	Function callback = GetNativeFunction(3);
+	Function callback = GetNativeFunction(2);
 
 	char pluginVersion[9];
-	GetNativeString(4, pluginVersion, 9);
+	GetNativeString(3, pluginVersion, 9);
 
-	RobotSounds sounds;
-	GetNativeArray(5, sounds, sizeof(sounds));
-
-	SMLogTag(SML_VERBOSE, "adding robot %s from plugin-handle %x", name, plugin);
+	SMLogTag(SML_VERBOSE, "adding robot %s from plugin-handle %x", robot.name, plugin);
 
 	char simpleName[NAMELENGTH];
-	simpleName = name;
+	simpleName = robot.name;
 	ReplaceString(simpleName, NAMELENGTH, " ", "");
 	
 	char versionConVarName[NAMELENGTH+10];
 	Format(versionConVarName, NAMELENGTH+10, "be%s_version", simpleName);
 	
 	char versionConVarDescription[128];
-	Format(versionConVarDescription, 128, "[TF2] Be the Giant %s %s version", name, class);
+	Format(versionConVarDescription, 128, "[TF2] Be the Giant %s %s version", robot.name, robot.class);
 	CreateConVar(versionConVarName, pluginVersion, versionConVarDescription, FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_SPONLY);
 
 	PrivateForward privateForward = new PrivateForward(ET_Single, Param_Cell);
 	privateForward.AddFunction(plugin, callback);
+	robot.callback = privateForward;
 
-	SMLogTag(SML_VERBOSE, "robot %s uses privateForward %x", name, privateForward);
-	SMLogTag(SML_VERBOSE, "robot %s is class %s", name, class);
-	SMLogTag(SML_VERBOSE, "robot %s has sounds {spawn: %s; loop: %s; death: %s }", name, sounds.spawn, sounds.loop, sounds.death);
+	SMLogTag(SML_VERBOSE, "robot %s uses privateForward %x", robot.name, privateForward);
+	SMLogTag(SML_VERBOSE, "robot %s is class %s", robot.name, robot.class);
+	SMLogTag(SML_VERBOSE, "robot %s has sounds {spawn: %s; loop: %s; death: %s }", robot.name, robot.sounds.spawn, robot.sounds.loop, robot.sounds.death);
 
-	Robot item;
-	item.name = name;
-	item.class = class;
-	item.callback = privateForward;	
-	item.sounds = sounds;
-
-	_robots.SetArray(name, item, sizeof(item));
+	_robots.SetArray(robot.name, robot, sizeof(robot));
 }
 
 public any Native_RemoveRobot(Handle plugin, int numParams)

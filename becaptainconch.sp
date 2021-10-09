@@ -8,7 +8,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Captain Conch"
-#define ROBOT_DESCRIPTION "Black Box, Concherors"
+#define ROBOT_ROLE "Support"
+#define ROBOT_DESCRIPTION "Black Box, Concheror"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -50,14 +51,15 @@ public OnPluginStart()
 //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	AddNormalSoundHook(BossIcebear);
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-//	sounds.gunfire = SOUND_GUNFIRE;
-	//sounds.gunfire = SOUND_GUNFIRE;
-//	sounds.windup = SOUND_WINDUP;
-	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Soldier", MakeGiantSoldier, PLUGIN_VERSION, sounds);
+	Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Soldier";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -195,6 +197,8 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 		return Plugin_Changed;
 	}
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
+
+	return Plugin_Continue;
 }
 
 MakeGiantSoldier(client)
@@ -243,6 +247,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	TF2Attrib_SetByName(client, "increase buff duration", 1.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -288,8 +293,8 @@ stock GiveGiantSoldier(client)
 	//	CreateHat(client, 343, 10, 6, true);//Professor speks
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+	//	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	//	int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon1))
 		{

@@ -8,6 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Icebear"
+#define ROBOT_ROLE "Attack"
 #define ROBOT_DESCRIPTION "Rapid Rocket Launcher Specialist"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -45,19 +46,20 @@ public OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-	AddNormalSoundHook(BossIcebear);
+    //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+    AddNormalSoundHook(BossIcebear);
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-//	sounds.gunfire = SOUND_GUNFIRE;
-	//sounds.gunfire = SOUND_GUNFIRE;
-//	sounds.windup = SOUND_WINDUP;
-	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Soldier", MakeGiantSoldier, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Soldier";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -225,7 +227,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 3.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);

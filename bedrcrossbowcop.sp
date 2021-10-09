@@ -7,7 +7,8 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Dr. Crossbow Cop"
-#define ROBOT_DESCRIPTION "Vaccinator, Blutsauger"
+#define ROBOT_ROLE "Healer"
+#define ROBOT_DESCRIPTION "Rapid fire Crossbow"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -25,13 +26,17 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	RobotSounds sounds;
-	sounds.spawn = SPAWN;
-	sounds.loop = LOOP;
-	sounds.death = DEATH;
-	AddRobot(ROBOT_NAME, "Medic", MakeGiantMedic, PLUGIN_VERSION, sounds);
+    Robot robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Medic";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
+    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -105,7 +110,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -167,7 +172,8 @@ stock GiveGiantMedic(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.75);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 0.65);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 50.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.5);
 			TF2Attrib_SetByName(Weapon1, "clip size bonus", 5.0);
