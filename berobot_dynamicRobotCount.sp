@@ -82,4 +82,6 @@ void SetRoboCapTeam()
 
     SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
     _roboCapTeamConVar.SetInt(robotCount);
+
+    EnsureRobotCount();
 }
