@@ -7,7 +7,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Mortar Mack"
-#define ROBOT_ROLE "Attack"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Scatter Shot"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"

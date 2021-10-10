@@ -8,7 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Fan Scout"
-#define ROBOT_ROLE "Harasser"
+#define ROBOT_ROLE "Disrupter"
 #define ROBOT_DESCRIPTION "High Pushback"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"

@@ -12,7 +12,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
-#define ROBOT_ROLE "Defense"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION " Widowmaker, Jag"
 
 

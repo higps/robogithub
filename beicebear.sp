@@ -8,7 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Icebear"
-#define ROBOT_ROLE "Attack"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Rapid Rocket Launcher Specialist"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"

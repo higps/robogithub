@@ -8,7 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Wamo"
-#define ROBOT_ROLE "Attack"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Plhogistinator, Flaregun"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"

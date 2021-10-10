@@ -1,5 +1,6 @@
 TODO:
   Todo:
+  0. Add enable/disable cvar
 1.  Unset and set volunteer
 2. Make !volunteer work after round has started
 3. Add resources (timed, kills) - Sentry Buster, bosses
@@ -8,6 +9,8 @@ TODO:
 6. When mode is over, robots return to normal
 7. Unset robot command
 8. Both teams have robot mode
+9. Make !rtr use proper player numbers to determine 60% players needed to enable/disable
+
 
 
 unify sounds

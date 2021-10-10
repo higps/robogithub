@@ -8,7 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"B4nny"
-#define ROBOT_ROLE "Harasser"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Scatter Scout"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
@@ -151,7 +151,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 1000;
+	int iHealth = 1600;
 		
 	int MaxHealth = 125;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -167,8 +167,8 @@ MakeGiantscout(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
-	TF2Attrib_SetByName(client, "damage force reduction", 1.25);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.80);
+	TF2Attrib_SetByName(client, "damage force reduction", 1.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.25);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
@@ -176,14 +176,16 @@ MakeGiantscout(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
-	TF2Attrib_SetByName(client, "increased jump height", 1.25);
+	TF2Attrib_SetByName(client, "increased jump height", 1.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	TF2Attrib_SetByName(client, "self dmg push force increased", 3.0);
+	
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintToChat(client, "1. You are now Giant scout !");
+	PrintToChat(client, "1. You are now Giant B4nny!");
 	
 }
 
@@ -209,7 +211,9 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateWeapon(client, "tf_weapon_scattergun", 13, 6, 1, 0, 0);
+		CreateWeapon(client, "tf_weapon_scattergun", 13, 6, 1, 0, 0);//scattergun
+		CreateWeapon(client, "tf_weapon_pistol", 294, 6, 1, 1, 0);//lugermorph
+		CreateWeapon(client, "tf_weapon_bat", 452, 6, 1, 2, 0);//three rune blade
 		
 		
 		CreateHat(client, 30757, 10, 6, false); //Prinny Pouch
@@ -217,14 +221,37 @@ stock GiveGiantPyro(client)
 		CreateHat(client, 30066, 10, 6, true); //brotherhood of arms
 		
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		if(IsValidEntity(Weapon1))
+		int Scattergun = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Lugermorph = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Threerune = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
+		if(IsValidEntity(Scattergun))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
+			TF2Attrib_RemoveAll(Scattergun);
+			TF2Attrib_SetByName(Scattergun, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Threerune, "fire rate bonus", 0.85);
+			TF2Attrib_SetByName(Scattergun, "weapon spread bonus", 0.5);
+			TF2Attrib_SetByName(Scattergun, "clip size bonus", 1.4);
+			//TF2Attrib_SetByName(Scattergun, "scattergun no reload single", 1.0);
+			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.5);
 			
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.3);
-			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 0.01);
+
+			
+			
+		}
+		if(IsValidEntity(Lugermorph))
+		{
+			TF2Attrib_RemoveAll(Lugermorph);
+			TF2Attrib_SetByName(Lugermorph, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Lugermorph, "clip size bonus", 1.35);
+			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.6);
+			
+		}
+		if(IsValidEntity(Threerune))
+		{
+			TF2Attrib_RemoveAll(Threerune);
+			TF2Attrib_SetByName(Threerune, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Threerune, "fire rate bonus", 0.75);
 			
 		}
 	}
@@ -238,76 +265,12 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Scattergun = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		
-		TF2Attrib_RemoveByName(Weapon1, "maxammo primary increased");
-		TF2Attrib_RemoveByName(Weapon1, "killstreak tier");
+		TF2Attrib_RemoveByName(Scattergun, "maxammo primary increased");
+		TF2Attrib_RemoveByName(Scattergun, "killstreak tier");
 	}
 }
-
-/* public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
-{
-	if (IsValidClient(iClient) && g_bIsGSCOUT[iClient]) 
-	{	
-		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-		if(IsValidEntity(weapon))
-		{
-			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
-			if (iWeaponState == 1 && !Locked1[iClient])
-			{
-				EmitSoundToAll(SOUND_WINDUP, iClient);
-			//	PrintToChatAll("WeaponState = Windup");
-				
-				Locked1[iClient] = true;
-				Locked2[iClient] = false;
-				Locked3[iClient] = false;
-				CanWindDown[iClient] = true;
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-			}
-			else if (iWeaponState == 2 && !Locked2[iClient])
-			{
-				EmitSoundToAll(SOUND_GUNFIRE, iClient);
-			//	PrintToChatAll("WeaponState = Firing");
-				
-				Locked2[iClient] = true;
-				Locked1[iClient] = true;
-				Locked3[iClient] = false;
-				CanWindDown[iClient] = true;
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-			}
-			else if (iWeaponState == 3 && !Locked3[iClient])
-			{
-
-			//	PrintToChatAll("WeaponState = Spun Up");
-				
-				Locked3[iClient] = true;
-				Locked1[iClient] = true;
-				Locked2[iClient] = false;
-				CanWindDown[iClient] = true;
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-			}
-			else if (iWeaponState == 0)
-			{
-				if (CanWindDown[iClient])
-				{
-			//		PrintToChatAll("WeaponState = WindDown");
-
-					CanWindDown[iClient] = false;
-				}
-				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-				
-				Locked1[iClient] = false;
-				Locked2[iClient] = false;
-				Locked3[iClient] = false;
-			}
-		}
-	}
-} */
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
