@@ -226,7 +226,7 @@ stock GiveGDeflectorH(client)
 	//	CreateHat(client, 5617, 10, 6, false);//Voodoo-Cursed Scout Soul
 
 
-
+		
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
