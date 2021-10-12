@@ -52,6 +52,7 @@ enum //Convar names
     CV_g_RoboCap,
     CV_g_RoboTeamMode,
     CV_g_RoboMode,
+    CV_g_Enable,
     CV_PluginVersion
 }
 /* Global Variables */
@@ -69,6 +70,7 @@ ConVar g_cvCvarList[CV_PluginVersion + 1];
 /* Convar related global variables */
 
 bool g_cv_bDebugMode;
+
 bool g_BossMode = false;
 bool g_cv_BlockTeamSwitch = false;
 bool g_SpectateSelection = false;
@@ -84,6 +86,7 @@ bool g_VoiceCalloutClamp[MAXPLAYERS + 1];
 float g_CV_flSpyBackStabModifier;
 float g_CV_flYoutuberMode;
 
+int g_Enable;
 int g_RoboCapTeam;
 int g_RoboTeam;
 int g_HumanTeam;
@@ -128,10 +131,11 @@ public void OnPluginStart()
     /* Convars */
 
 
-    g_cvCvarList[CV_PluginVersion] = CreateConVar("sm_yt_v_mvm_version", PLUGIN_VERSION, "Plugin Version.", FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_CHEAT);
-    g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_yt_v_mvm_debug", "0", "Enable Debugging for Market Garden and Reserve Shooter damage", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+    g_cvCvarList[CV_PluginVersion] = CreateConVar("sm_mm_version", PLUGIN_VERSION, "Plugin Version.", FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_CHEAT);
+    g_cvCvarList[CV_g_Enable] = CreateConVar("sm_mm_enable", "0", "0 = Manned Machines disabled, 1 = Manned Machines enabled", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+    g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_mm_debug", "0", "Enable Debugging for Manned Machines Mode", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "250.0", "Backstab damage");
-    g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
+    g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_mm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar(CONVAR_ROBOCAP_TEAM, "6", "The total amount of giant robots on a team");
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
     g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
@@ -140,16 +144,19 @@ public void OnPluginStart()
     /* Convar global variables init */
 
     g_cv_bDebugMode = GetConVarBool(g_cvCvarList[CV_bDebugMode]);
+    g_Enable = GetConVarInt(g_cvCvarList[CV_g_Enable]);
     g_CV_flSpyBackStabModifier = GetConVarFloat(g_cvCvarList[CV_flSpyBackStabModifier]);
     g_CV_flYoutuberMode = GetConVarFloat(g_cvCvarList[CV_flYoutuberMode]);
     g_RoboCapTeam = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
     g_RoboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
     g_RoboTeamMode = GetConVarInt(g_cvCvarList[CV_g_RoboTeamMode]);
     g_RoboMode = GetConVarInt(g_cvCvarList[CV_g_RoboMode]);
+    
 
     /* Convar Change Hooks */
 
     g_cvCvarList[CV_bDebugMode].AddChangeHook(CvarChangeHook);
+    g_cvCvarList[CV_g_Enable].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_flSpyBackStabModifier].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_flYoutuberMode].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboCapTeam].AddChangeHook(CvarChangeHook);
@@ -493,6 +500,9 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 
     if(convar == g_cvCvarList[CV_g_RoboMode])
         g_RoboMode = StringToInt(sNewValue); 
+
+    if(convar == g_cvCvarList[CV_g_Enable])
+        g_Enable = StringToInt(sNewValue); 
 }
 
 void EmitSoundWithClamp(int client, char[] voiceline, float clamp){
@@ -645,6 +655,8 @@ public Action Command_Robot_Selection(int client, int args)
 // intercept and block client jointeam command if required
 public Action Command_YT_Robot_Start(int client, int args)
 {
+
+    if (g_Enable){
 
     if(!g_BossMode)
     {
@@ -823,11 +835,16 @@ public Action Command_YT_Robot_Start(int client, int args)
             }
         }
     }
+    }else
+    {
+        PrintCenterText(client, "Manned Machines is not enabled. Enable with sm_mm_enable 1");
+    }
 }
 
 public Action Command_RoboVote(int client, int args)
 {
-
+    if (g_Enable)
+    {
     //If boss mode is already active
     //PrintToChatAll("%i",CV_g_RoboCapTeam);
     if (g_BossMode)
@@ -858,7 +875,10 @@ public Action Command_RoboVote(int client, int args)
     {
         Command_Robot_Selection(client, args);
     }
-    
+    }else
+    {
+        MC_PrintToChatAllEx(client, "[{orange}SM{default}] {teamcolor}%N {default}Manned Machines mode is {red}disabled", client);
+    }
 
 }
 
@@ -913,6 +933,8 @@ public Action Command_ChangeRobot(int client, int args)
 
 public Action Command_SetVolunteer(int client, int args)
 {
+
+    if (g_Enable){
     char target[32];
     if(args < 1)
     {
@@ -922,12 +944,14 @@ public Action Command_SetVolunteer(int client, int args)
         GetCmdArg(1, target, sizeof(target));
 
     VolunteerTargets(client, target, true);
-
+    }
     return Plugin_Handled;
+    
 }
 
 public Action Command_UnsetVolunteer(int client, int args)
 {
+
     char target[32];
     if(args < 1)
     {
@@ -939,6 +963,7 @@ public Action Command_UnsetVolunteer(int client, int args)
     VolunteerTargets(client, target, false);
 
     return Plugin_Handled;
+    
 }
 
 public Action Command_Volunteer(int client, int args)
@@ -946,7 +971,7 @@ public Action Command_Volunteer(int client, int args)
 
     //PrintToChatAll("g_RoboMode was %i", g_RoboMode);
     //PrintToChatAll("CV_g_RoboMode was %i", CV_g_RoboMode);
-
+if (g_Enable){
 
     if (!g_RoboMode) 
     {
@@ -969,8 +994,9 @@ public Action Command_Volunteer(int client, int args)
         GetCmdArg(1, target, sizeof(target));
 
     VolunteerTargets(client, target, !g_cv_Volunteered[client]);
-
+}
     return Plugin_Handled;
+
 }
 
 public Action VolunteerTargets(int client, char target[32], bool volunteering)
@@ -1011,6 +1037,7 @@ public Action VolunteerTargets(int client, char target[32], bool volunteering)
 
 public Action Volunteer(int client, bool volunteering)
 {
+if (g_Enable){
     if(g_BossMode && g_Volunteers.Length >= g_RoboCapTeam)
     {
         SMLogTag(SML_VERBOSE, "Game has already started, volunteering not available.");
@@ -1074,7 +1101,8 @@ public Action Volunteer(int client, bool volunteering)
             MC_PrintToChatAllEx(client, "{teamcolor}%N {default}has volunteered to be a giant robot. %i more volunteers needed.", clientId, islots);
         }
     }
-
+}
+    
     //Menu Stuff here
 
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
@@ -1195,6 +1223,8 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
 void SetRandomRobot(int client)
 {
+
+    if (g_Enable){
     ArrayList robotNames = GetRobotNames();
 
     char robotname[NAMELENGTH];  
@@ -1215,10 +1245,13 @@ void SetRandomRobot(int client)
 
     SMLogTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
     SetRobot(robotname, client);
+    }
 }
 
 void SetRobot(char robotname[NAMELENGTH], int client)
 {    
+
+
     CreateRobot(robotname, client, "");
 
     //reset count for current robot
@@ -1240,6 +1273,7 @@ void SetRobot(char robotname[NAMELENGTH], int client)
     g_ClientIsRepicking[client] = false;
 
     RedrawVolunteerMenu();
+    
 }
 
 void RedrawVolunteerMenu()
