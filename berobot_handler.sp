@@ -366,6 +366,7 @@ public Action Timer_Respawn(Handle timer, int client)
 public Action Event_player_escort_score(Event event, char[] name, bool dontBroadcast)
 {   
     //Adds voice line if boss mode is active
+    if (g_Enable){
     if(g_BossMode){
     int iCapper = GetEventInt(event, "player");
     
@@ -426,9 +427,11 @@ public Action Event_player_escort_score(Event event, char[] name, bool dontBroad
     }
         }
     }
+    }
 }
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
+    if (g_Enable){
     for(int i = 1; i < MaxClients; i++)
     {
         if(g_cv_Volunteered[i] == true)
@@ -466,6 +469,7 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
                 return Plugin_Handled;
             }
         }
+    }
     }
 
     return Plugin_Continue;
@@ -525,6 +529,8 @@ public Action calltimer_reset (Handle timer, int client)
 /* Plugin Exclusive Functions */
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
+
+    if (g_Enable){
     if(IsValidClient(victim))
     {
         if(IsValidClient(attacker))
@@ -598,6 +604,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             }
         }
     }
+    }
     return Plugin_Continue;
 }
 
@@ -636,6 +643,7 @@ public Action Command_Me_Boss(int client, int args)
 
 public Action Command_Robot_Selection(int client, int args)
 {
+    if (g_Enable){
     ServerCommand("mp_forceautoteam  0");
     
     for(int i = 1; i < MaxClients; i++)
@@ -650,6 +658,7 @@ public Action Command_Robot_Selection(int client, int args)
     g_SpectateSelection = true;
 
     StartAutomaticVolunteerVote();
+    }
 }
 
 // intercept and block client jointeam command if required
