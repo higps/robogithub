@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Dr. Crossbow Cop"
@@ -176,8 +177,9 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 50.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.5);
-			TF2Attrib_SetByName(Weapon1, "clip size bonus", 5.0);
-			TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.35);
+			TF2Attrib_SetByName(Weapon1, "clip size bonus", 6.0);
+			TF2Attrib_SetByName(Weapon1, "Reload time decreased", 2.00);
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 			
 			

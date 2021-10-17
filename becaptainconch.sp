@@ -219,7 +219,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 2250;
+	int iHealth = 2800;
 		
 	int MaxHealth = 200;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -246,7 +246,7 @@ MakeGiantSoldier(client)
 	//TF2Attrib_SetByName(client, "override footstep sound set", 3.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
-	TF2Attrib_SetByName(client, "increase buff duration", 1.5);
+	TF2Attrib_SetByName(client, "increase buff duration", 99.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
 	

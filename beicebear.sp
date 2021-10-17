@@ -5,6 +5,7 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Icebear"
@@ -281,12 +282,16 @@ stock GiveGiantPyro(client)
 		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 5.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.35);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.0);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.8);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			//TF2Attrib_SetByName(Weapon1, "reload full clip at once", 1.0);
 			
+			
+		//	SetEntProp(Weapon1, Prop_Send, "m_bInReload", 1.0);
 			
 		//	TF2Attrib_SetByName(Weapon1, "disable fancy class select anim", 1.0);
 						
@@ -426,7 +431,9 @@ bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int 
 	SetEntData(weapon, FindSendPropInfo(entclass, "m_iItemDefinitionIndex"), itemindex);	 
 	SetEntData(weapon, FindSendPropInfo(entclass, "m_bInitialized"), 1);
 	SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);
+	
 	SetEntProp(weapon, Prop_Send, "m_bValidatedAttachedEntity", 1); 
+	//SetEntProp(weapon, Prop_Send, "m_bReloadsSingly", 1); 
 	
 	if (level)
 	{
