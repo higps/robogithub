@@ -205,6 +205,7 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	
 	
 
@@ -264,16 +265,13 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 2.0);
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 800.0);
+			TF2Attrib_SetByName(Weapon3, "heal on kill", 600.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 			TF2Attrib_SetByName(Weapon3, "aiming movespeed increased", 2.0);
 			TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
 			
-			
-
-
-			if (TF2_GetClientTeam(client) == TFTeam_Red)TF2Attrib_SetByName(Weapon3, "increase player capture value", -1.0);
+				
 				//Add additonal logic to detect if it's attack/defend mode
 
 			//	if (TF2_GetClientTeam(client) == TFTeam_Blue)TF2Attrib_SetByName(Weapon3, "increase player capture value", 0.0);
