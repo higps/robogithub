@@ -154,9 +154,7 @@ MakeGiantPyro(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintToChat(client, "1. You are now Giant Pyro !");
-	PrintToChat(client, "2. Same stats as normal Pyro.");
-	PrintToChat(client, "3. You will lose this status when you touch a locker, upgrade or die.");	
+	PrintToChat(client, "1. You are now Giant Agro !");
 	
 }
 
@@ -223,7 +221,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 0.5);
 			TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.5);
-			TF2Attrib_SetByName(Weapon2, "apply z velocity on damage", 170.0);
+			TF2Attrib_SetByName(Weapon2, "damage causes airblast", 1.0);
 			//TF2Attrib_SetByName(Weapon2, "apply look velocity on damage", 1500.0);
 		}
 

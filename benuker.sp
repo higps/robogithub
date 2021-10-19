@@ -171,7 +171,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 5.0);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 5.0);
 			TF2Attrib_SetByName(Weapon1, "grenade launcher mortar mode", 0.0);
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
@@ -179,7 +179,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 2.0);
 			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
-			TF2Attrib_SetByName(Weapon1, "reload time increased", 1.5);
+			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.5);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.8);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);

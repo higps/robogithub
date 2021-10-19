@@ -54,10 +54,10 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
   //  robot.sounds.gunfire = SOUND_GUNFIRE;
-  //  robot.sounds.gunspin = SOUND_GUNSPIN;
-  //  robot.sounds.windup = SOUND_WINDUP;
-  //  robot.sounds.winddown = SOUND_WINDDOWN;
-    robot.sounds.death = DEATH;
+ //  robot.sounds.gunspin = SOUND_GUNSPIN;
+ //  robot.sounds.windup = SOUND_WINDUP;
+ //  robot.sounds.winddown = SOUND_WINDDOWN;
+   robot.sounds.death = DEATH;
 
     AddRobot(robot, MakeGRageH, PLUGIN_VERSION);
 }
@@ -254,11 +254,13 @@ stock GiveGRageH(client)
 			//TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 1.5);
 			TF2Attrib_SetByName(Weapon1, "spread penalty", 1.3);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
-			TF2Attrib_SetByName(Weapon1, "generate rage on damage", 2.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.0);
+			TF2Attrib_SetByName(Weapon1, "generate rage on damage", 1.0);
 			TF2Attrib_SetByName(Weapon1, "increase buff duration", 1.25);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
 			//TF2Attrib_SetByName(Weapon1, "mod rage on hit bonus", 25.0);
 			TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
+			
 			 
 
 		}

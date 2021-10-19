@@ -233,7 +233,9 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Scattergun, "weapon spread bonus", 0.5);
 			TF2Attrib_SetByName(Scattergun, "clip size bonus", 1.4);
 			//TF2Attrib_SetByName(Scattergun, "scattergun no reload single", 1.0);
-			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.5);
+			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.4);
+			TF2Attrib_SetByName(Scattergun, "dmg penalty vs players", 1.32);
+			
 			
 
 			
@@ -244,7 +246,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_RemoveAll(Lugermorph);
 			TF2Attrib_SetByName(Lugermorph, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Lugermorph, "clip size bonus", 1.35);
-			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.6);
+			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.4);
 			
 		}
 		if(IsValidEntity(Threerune))

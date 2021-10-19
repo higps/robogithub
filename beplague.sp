@@ -32,7 +32,7 @@ public OnPluginStart()
     Robot robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Medic";
+    robot.class = "Pyro";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
@@ -101,7 +101,7 @@ MakeGiantMedic(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
@@ -112,6 +112,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -156,7 +157,7 @@ stock GiveGiantMedic(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		CreateWeapon(client, "tf_weapon_medigun", 35, 6, 1, 2, 0);
+		CreateWeapon(client, "tf_weapon_medigun", 594, 6, 1, 1, 0);
 	//	CreateWeapon(client, "tf_weapon_syringegun_medic", 36, 6, 1, 2, 0);
 		
 		CreateHat(client, 30052, 10, 6); // byte'd beak
@@ -185,9 +186,12 @@ stock GiveGiantMedic(client)
 			 TF2Attrib_SetByName(Weapon2, "uber duration bonus", -0.9);
 			 TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
 			 TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 0.0);
-			 TF2Attrib_SetByName(Weapon2, "heal rate bonus", 0.25);
+			 TF2Attrib_SetByName(Weapon2, "heal rate bonus", 0.0);
 			 TF2Attrib_SetByName(Weapon2, "medigun charge is crit boost", 1.0);
-			TF2CustAttr_SetString(Weapon2, "medigun drains health", "35.0");
+			TF2CustAttr_SetString(Weapon2, "medigun drains health", "80.0");
+			
+			SetEntityRenderColor(Weapon2, 0, 255, 0 , 0);
+
 			
 		//	SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 			

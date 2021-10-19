@@ -6,6 +6,7 @@
 #include <berobot>
 #include <tf_ontakedamage>
 #include <sdkhooks>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Sentry Buster"
@@ -249,6 +250,7 @@ MakeBuster(client)
 	TF2Attrib_SetByName(client, "increased jump height", 2.0);
 	TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
 	
 	UpdatePlayerHitbox(client, 1.75);
@@ -448,6 +450,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.0);
+			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=1.25 frequency=1.5 range=400.0");
 			//TF2Attrib_SetByName(Weapon1, "gesture speed increase", 1.2);
 			
 			SetEntProp(Weapon1, Prop_Send, "m_iDetonated", 1);
