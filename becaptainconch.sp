@@ -307,7 +307,7 @@ stock GiveGiantSoldier(client)
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.6);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.85);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon1, "health on radius damage", 100.0);
+			TF2Attrib_SetByName(Weapon1, "health on radius damage", 50.0);
 		
 		}
 

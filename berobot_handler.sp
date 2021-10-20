@@ -354,8 +354,6 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
                 }
             }
         }
-    
-
 }
 
 public Action Timer_Respawn(Handle timer, int client)
@@ -371,9 +369,6 @@ public Action Event_player_escort_score(Event event, char[] name, bool dontBroad
     int iCapper = GetEventInt(event, "player");
     
     char szVO[512];
-
-    
-
         for(int i = 1; i < MaxClients; i++)
         {
         int iCapperTeam = TF2_GetClientTeam(iCapper);
@@ -478,8 +473,16 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
 public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 {
     //Activates when doing OnRegenerate (touchihng resupply locker) and then ignoring it if you are a boss
-    if(isMiniBoss(pThis))
-        return MRES_Supercede;
+    if(IsAnyRobot(pThis)){
+        //PrintToChatAll("1");
+
+    //sets the robot health when touc
+	int maxhealth = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, pThis);
+        SetEntityHealth(pThis, maxhealth);
+        return MRES_Supercede; 
+    }
+        
+        
 
     return MRES_Ignored;
 }
@@ -576,21 +579,13 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
       if (!IsAnyRobot(attacker))EmitSoundWithClamp(attacker, szVO, random_timer);
       }
     }
-      
     
-
-        
-    
-    
-
-
-            //Backstab damage and Headshot code below
-            if(iClassAttacker == TFClass_Spy)
+    if(iClassAttacker == TFClass_Spy)
             {
                 // Checks if boss is on
                 if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy");
 
-                    if(IsAnyRobot(victim))
+                if(IsAnyRobot(victim))
                     {
                         if(damagecustom == TF_CUSTOM_BACKSTAB)
                         {
@@ -876,7 +871,7 @@ public Action Command_RoboVote(int client, int args)
     }
 
     g_iVotes++;
-    g_Voted[client] = true;
+    //g_Voted[client] = true;
     MC_PrintToChatAllEx(client, "[{orange}SM{default}] {teamcolor}%N {default}wants to start Giant Robot Boss mode. [{orange}%i{default}/{orange}%i {default}more votes required]", client, g_iVotes, g_iVotesNeeded);
 
     //Start the robo vote
@@ -982,17 +977,17 @@ public Action Command_Volunteer(int client, int args)
     //PrintToChatAll("CV_g_RoboMode was %i", CV_g_RoboMode);
 if (g_Enable){
 
-    // if (!g_RoboMode) 
-    // {
-    //     if (!g_SpectateSelection)MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}Unable to volunteer, robo mode is not started use {green}!robo_vote{green}{teamcolor} to initiate a vote instead. Volunteering will happen later");
-    //     if (!g_SpectateSelection)return Plugin_Handled;
-    // }
-
-    if (AutomaticVolunteerVoteIsInProgress()) 
+    if (!g_RoboMode && !g_BossMode) 
     {
-        MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}Unable to volunteer, a vote for volunteers is in progress");
-        return Plugin_Handled;
+        if (!g_SpectateSelection)MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}You have volunteered, use {green}!rtr{green}{teamcolor} to initiate the vote to enable the mode");
+        //if (!g_SpectateSelection)return Plugin_Handled;
     }
+
+    // if (AutomaticVolunteerVoteIsInProgress()) 
+    // {
+    //     MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}Unable to volunteer, a vote for volunteers is in progress, press YES instead.");
+    //     return Plugin_Handled;
+    // }
 
     char target[32];
     if(args < 1)
@@ -1003,8 +998,8 @@ if (g_Enable){
         GetCmdArg(1, target, sizeof(target));
 
     VolunteerTargets(client, target, !g_cv_Volunteered[client]);
-}
-    return Plugin_Handled;
+    }
+return Plugin_Handled;
 
 }
 
@@ -1047,12 +1042,12 @@ public Action VolunteerTargets(int client, char target[32], bool volunteering)
 public Action Volunteer(int client, bool volunteering)
 {
 if (g_Enable){
-    if(g_BossMode && g_Volunteers.Length >= g_RoboCapTeam)
-    {
-        SMLogTag(SML_VERBOSE, "Game has already started, volunteering not available.");
-        MC_PrintToChatEx(client, client, "{teamcolor}Game has already started, volunteering not available.", g_RoboCapTeam);
-        return;
-    }
+    // if(g_BossMode && g_Volunteers.Length >= g_RoboCapTeam)
+    // {
+    //     SMLogTag(SML_VERBOSE, "Game has already started, volunteering not available.");
+    //     MC_PrintToChatEx(client, client, "{teamcolor}Game has already started, volunteering not available.", g_RoboCapTeam);
+    //     return;
+    // }
 
     if(volunteering && !g_cv_Volunteered[client])
     {
@@ -1090,12 +1085,12 @@ if (g_Enable){
 
     if(g_RoboCapTeam == g_Volunteers.Length)
     {
-        MC_PrintToChatEx(client, client, "{teamcolor}The max amount of %i volunteers has been reached, starting Boss Mode", g_RoboCapTeam);
-
-        if(!g_BossMode)Command_YT_Robot_Start(client, true);
+        //MC_PrintToChatExAll
+        MC_PrintToChatAllEx(client, "{orange}The max amount of %i volunteers has been reached, use {green}!rtr {orange} to start the mode", g_RoboCapTeam);
+       // if(!g_BossMode)Command_YT_Robot_Start(client, true);
 
         g_Volunteers.Resize(g_RoboCapTeam);
-        g_BossMode = true;
+        //g_BossMode = true;
         return;
     }
 
@@ -1367,12 +1362,12 @@ bool isMiniBoss(int client)
         if(GetEntProp(client, Prop_Send, "m_bIsMiniBoss"))
         {
             if(g_cv_bDebugMode) PrintToChatAll("%N Was mini boss", client);
-                return true;
+               return true;
         }
         else
         {
             if(g_cv_bDebugMode)PrintToChatAll("%N Was not mini boss", client);
-                return false;
+            return false;
         }
     }
     return false;
