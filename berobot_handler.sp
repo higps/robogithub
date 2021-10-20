@@ -653,7 +653,7 @@ public Action Command_Robot_Selection(int client, int args)
             ChangeClientTeam(i, SPECTATE);
         }
     }
-
+    g_BossMode = true;
     g_cv_BlockTeamSwitch = true;
     g_SpectateSelection = true;
 
@@ -982,11 +982,11 @@ public Action Command_Volunteer(int client, int args)
     //PrintToChatAll("CV_g_RoboMode was %i", CV_g_RoboMode);
 if (g_Enable){
 
-    if (!g_RoboMode) 
-    {
-        if (!g_SpectateSelection)MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}Unable to volunteer, robo mode is not started use {green}!robo_vote{green}{teamcolor} to initiate a vote instead. Volunteering will happen later");
-        if (!g_SpectateSelection)return Plugin_Handled;
-    }
+    // if (!g_RoboMode) 
+    // {
+    //     if (!g_SpectateSelection)MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}Unable to volunteer, robo mode is not started use {green}!robo_vote{green}{teamcolor} to initiate a vote instead. Volunteering will happen later");
+    //     if (!g_SpectateSelection)return Plugin_Handled;
+    // }
 
     if (AutomaticVolunteerVoteIsInProgress()) 
     {
@@ -1477,8 +1477,8 @@ bool RemoveRandomRobot()
 
 stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
 {
-	SetEntProp(client, Prop_Send, "m_lifeState", 2);
+//	SetEntProp(client, Prop_Send, "m_lifeState", 2);
 	ChangeClientTeam(client, team);
 	TF2_RespawnPlayer(client);
-	SetEntProp(client, Prop_Send, "m_lifeState", 0);
+//	SetEntProp(client, Prop_Send, "m_lifeState", 0);
 }

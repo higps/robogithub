@@ -229,7 +229,7 @@ MakeBearded(client)
 	SetModel(client, SHWC);
    
 		
-	int iHealth = 6500;
+	int iHealth = 5000;
 	TF2_SetHealth(client, iHealth);
 	
 	int MaxHealth = 300;
@@ -250,7 +250,7 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "health from healers increased", 5.0);
 	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
 	//TF2Attrib_SetByName(client, "mult charge turn control", 10.0);
-	TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
+	TF2Attrib_SetByName(client, "dmg from melee increased", 3.5);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);

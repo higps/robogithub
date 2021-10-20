@@ -281,8 +281,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 3.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.1);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.5);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.3);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);

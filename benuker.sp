@@ -176,7 +176,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "grenade launcher mortar mode", 0.0);
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
 			TF2Attrib_SetByName(Weapon1, "blast radius increased", 1.55);
-			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
+			//TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 2.0);
 			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
 			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.5);
