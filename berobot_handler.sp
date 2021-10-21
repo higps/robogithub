@@ -648,7 +648,7 @@ public Action Command_Robot_Selection(int client, int args)
             ChangeClientTeam(i, SPECTATE);
         }
     }
-    g_BossMode = true;
+ //   g_BossMode = true;
     g_cv_BlockTeamSwitch = true;
     g_SpectateSelection = true;
 
@@ -792,8 +792,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                     }
                 }
             }
-        }
-        else
+        }else
         {
 
 
@@ -820,6 +819,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                         if(g_cv_Volunteered[i])
                         {
                             PrintToChat(i, "You are on the Robot Team");
+                            PrintToChatAll("%N is on robot team, which is %i", i, g_RoboTeam);
                             // ServerCommand("sm_begps #%i", playerID);
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
                             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
@@ -830,6 +830,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                         else
                         {
                             PrintToChat(i, "You are on the Human team");
+                            PrintToChatAll("%N is on robot team, which is %i",i, g_HumanTeam);
                             // ServerCommand("sm_ct #%i %i", playerID, g_HumanTeam);
                             TF2_SwapTeamAndRespawnNoMsg(i, g_HumanTeam);
                             //TF2_RespawnPlayer(i);
@@ -1087,10 +1088,10 @@ if (g_Enable){
     {
         //MC_PrintToChatExAll
         MC_PrintToChatAllEx(client, "{orange}The max amount of %i volunteers has been reached, use {green}!rtr {orange} to start the mode", g_RoboCapTeam);
-       // if(!g_BossMode)Command_YT_Robot_Start(client, true);
+       if(!g_BossMode)Command_YT_Robot_Start(client, true);
 
         g_Volunteers.Resize(g_RoboCapTeam);
-        //g_BossMode = true;
+       //g_BossMode = true;
         return;
     }
 
@@ -1472,8 +1473,8 @@ bool RemoveRandomRobot()
 
 stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
 {
-//	SetEntProp(client, Prop_Send, "m_lifeState", 2);
+	SetEntProp(client, Prop_Send, "m_lifeState", 2);
 	ChangeClientTeam(client, team);
 	TF2_RespawnPlayer(client);
-//	SetEntProp(client, Prop_Send, "m_lifeState", 0);
+	SetEntProp(client, Prop_Send, "m_lifeState", 0);
 }
