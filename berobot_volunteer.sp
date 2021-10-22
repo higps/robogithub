@@ -3,12 +3,13 @@
 #include <sdktools>
 #include <sdkhooks>
 #include <sm_logger>
+#include <morecolors_newsyntax>
 #include <berobot_constants>
 #include <berobot>
 
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
-enum(<<= 1)
+enum (<<= 1)
 {
     SML_VERBOSE = 1,
     SML_INFO,
@@ -60,6 +61,12 @@ public void OnPluginStart()
     _autoVolunteerPriaoritizeAdminFlagConVar.AddChangeHook(AutoVolunteerAdminFlagCvarChangeHook);
     _autoVolunteerAdminFlag = GetConVarInt(_autoVolunteerPriaoritizeAdminFlagConVar);
 
+    RegAdminCmd("sm_setvolunteer", Command_SetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to true/enabled");
+    RegAdminCmd("sm_unsetvolunteer", Command_UnsetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to false/disabled");
+
+    RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
+    RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
+
     Reset();
 }
 
@@ -100,11 +107,138 @@ public void OnMapStart()
 
 void Reset()
 {
+    _automaticVolunteerVoteIsInProgress = false;
     for(int i = 0; i < MAXPLAYERS; i++)
     {
         _volunteered[i] = false;
         _pickedOption[i] = false;
     }
+}
+
+public Action Command_SetVolunteer(int client, int args)
+{
+    if (!IsEnabled())
+    {
+        MM_PrintToChat(client, "Unable to volunteer, robot-mode is not enabled");
+        SMLogTag(SML_VERBOSE, "Command_SetVolunteer cancled for %L, because robot-mode is not enabled", client);
+        return Plugin_Handled;
+    }
+
+    char target[32];
+    if(args < 1)
+    {
+        target = "";
+    }
+    else
+        GetCmdArg(1, target, sizeof(target));
+
+    VolunteerTargets(client, target, true);
+
+    return Plugin_Handled;
+}
+
+public Action Command_UnsetVolunteer(int client, int args)
+{
+    if (!IsEnabled())
+    {
+        MM_PrintToChat(client, "Unable to volunteer, robot-mode is not enabled");
+        SMLogTag(SML_VERBOSE, "Command_UnsetVolunteer cancled for %L, because robot-mode is not enabled", client);
+        return Plugin_Handled;
+    }
+
+    char target[32];
+    if(args < 1)
+    {
+        target = "";
+    }
+    else
+        GetCmdArg(1, target, sizeof(target));
+
+    VolunteerTargets(client, target, false);
+
+    return Plugin_Handled;
+}
+
+public Action Command_Volunteer(int client, int args)
+{
+    SMLogTag(SML_VERBOSE, "Command_Volunteer called for %L", client);
+
+    if (!IsEnabled())
+    {
+        MM_PrintToChat(client, "Unable to volunteer, robot-mode is not enabled");
+        SMLogTag(SML_VERBOSE, "Command_Volunteer cancled for %L, because robot-mode is not enabled", client);
+        return Plugin_Handled;
+    }
+
+    if (AutomaticVolunteerVoteIsInProgress()) 
+    {
+        MM_PrintToChat(client, "Unable to volunteer, a vote for volunteers is in progress");
+        return Plugin_Handled;
+    }
+
+    char target[32];
+    if(args < 1)
+    {
+        target = "";
+    }
+    else
+        GetCmdArg(1, target, sizeof(target));
+
+    VolunteerTargets(client, target, !_volunteered[client]);
+
+    return Plugin_Handled;
+}
+
+public Action VolunteerTargets(int client, char target[32], bool volunteering)
+{
+    int targetFilter = 0;
+    if(target[0] == '\0')
+    {
+        target = "@me";
+        targetFilter = COMMAND_FILTER_NO_IMMUNITY;
+    }
+
+    char target_name[MAX_TARGET_LENGTH];
+    int target_list[MAXPLAYERS], target_count;
+    bool tn_is_ml;
+
+    if((target_count = ProcessTargetString(
+          target,
+          client,
+          target_list,
+          MAXPLAYERS,
+          targetFilter,
+          target_name,
+          sizeof(target_name),
+          tn_is_ml)) <= 0)
+    {
+        ReplyToTargetError(client, target_count);
+        return Plugin_Handled;
+    }
+
+    for(int i = 0; i < target_count; i++)
+    {
+        int targetClientId = target_list[i];
+        Volunteer(targetClientId, volunteering);
+    }
+
+    return Plugin_Handled;
+}
+
+public Action Volunteer(int client, bool volunteering)
+{
+    _volunteered[client] = volunteering;
+    _pickedOption[client] = true;
+
+    if (volunteering)
+        MM_PrintToChat(client, "You volunteered to be a robot.");
+    else
+    {
+        MM_PrintToChat(client, "You no longer volunteer to be a robot.");
+        UnmakeRobot(client);
+    }
+
+    EnsureRobotCount();
 }
 
 int Native_AutomaticVolunteerVoteIsInProgress(Handle plugin, int numParams)
@@ -134,11 +268,19 @@ int Native_GetRandomVolunteer(Handle plugin, int numParams)
 int Native_StartAutomaticVolunteerVote(Handle plugin, int numParams)
 {
     _automaticVolunteerVoteIsInProgress = true;
-    Reset();
     for(int i = 1; i < MaxClients; i++)
     {
         if (!IsValidClient(i) || !IsClientInGame(i))
             continue;
+        if (_pickedOption[i])
+        {            
+            if (_volunteered[i])
+                MM_PrintToChat(i, "You already volunteered to be a robot. type '!volunteer' to cancle your volunteer-state.");
+            else
+                MM_PrintToChat(i, "You already decided not volunteering to be a robot. type '!volunteer' to volunteer again.");
+            continue;
+        }
+        
         Menu_AutomaticVolunteer(i);
     }
 
@@ -195,6 +337,7 @@ void VolunteerAutomaticVolunteers()
 
     delete pickedVolunteers;
 
+    SMLogTag(SML_VERBOSE, "setting _automaticVolunteerVoteIsInProgress to false");
     _automaticVolunteerVoteIsInProgress = false;
 }
 

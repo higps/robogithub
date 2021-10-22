@@ -4,6 +4,14 @@
 #define _berobot_core_included "0.1"
 
 /**
+ * checks if the plugin is enabled
+ * 
+ * @return  true: plugin is enabled;
+ *          false: plugin is disabled
+ */
+native bool IsEnabled();
+
+/**
  * returns the robot-definition 
  * 
  * @param name      name of the robot-definition
@@ -73,6 +81,14 @@ native void SetVolunteers(int[] volunteers, int length);
  * @noreturn
  */
 native void EnsureRobotCount();
+
+/**
+ * turns a robot into human again
+ * 
+ * @param clientId    clientId of robot
+ * @noreturn
+ */
+native void UnmakeRobot(int clientId);
 
 /**
  * returns which classes have deep robot voicelines (opposed to only normal robot voicelines)
@@ -156,4 +172,16 @@ stock void TF2_SwapTeamAndRespawn(int client, int team)
     ChangeClientTeam(client, team);
     TF2_RespawnPlayer(client);
     SetEntProp(client, Prop_Send, "m_lifeState", 0);
+}
+
+/**
+ * prints text with MannedMachine prefix and teamcolor
+ * 
+ * @param client    client to send the text to
+ * @param text      text to be send
+ * @noretrurn
+ */
+stock void MM_PrintToChat(int client, char[] text)
+{
+    MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}%s", text);
 }
