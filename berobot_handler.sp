@@ -74,6 +74,7 @@ bool g_cv_bDebugMode;
 bool g_BossMode = false;
 bool g_cv_BlockTeamSwitch = false;
 bool g_SpectateSelection = false;
+bool g_WaitingForPlayers = true;
 
 bool g_cv_Volunteered[MAXPLAYERS + 1];
 char g_cv_RobotPicked[MAXPLAYERS + 1][NAMELENGTH];
@@ -95,6 +96,8 @@ int g_RoboTeamMode;
 int g_RoboMode;
 int g_iVotes;
 int g_iVotesNeeded;
+
+int g_RoundCount;
 
 ArrayList g_Volunteers;
 StringMap g_RobotCount;
@@ -129,18 +132,20 @@ public void OnPluginStart()
     SMLogTag(SML_INFO, "berobot_handler started at %i", GetTime());
 
     /* Convars */
-
+//
 
     g_cvCvarList[CV_PluginVersion] = CreateConVar("sm_mm_version", PLUGIN_VERSION, "Plugin Version.", FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_CHEAT);
+    //Gamemode cvar
     g_cvCvarList[CV_g_Enable] = CreateConVar("sm_mm_enable", "0", "0 = Manned Machines disabled, 1 = Manned Machines enabled", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_mm_debug", "0", "Enable Debugging for Manned Machines Mode", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "250.0", "Backstab damage");
-    g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_mm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
-    g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar(CONVAR_ROBOCAP_TEAM, "6", "The total amount of giant robots on a team");
+    g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar(CONVAR_ROBOCAP_TEAM, "6", "The total amount of giant robots on a team", FCVAR_NOTIFY);  
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
     g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
     g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Needs vote to start boss mode, 1 = Start game by reaching enough volunteers");
 
+    //Gameplay cvar
+    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "250.0", "Backstab damage");
+    g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_mm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     /* Convar global variables init */
 
     g_cv_bDebugMode = GetConVarBool(g_cvCvarList[CV_bDebugMode]);
@@ -183,8 +188,10 @@ public void OnPluginStart()
 
     HookEvent("player_escort_score", Event_player_escort_score, EventHookMode_Post);
 
-    
     HookEvent("player_death", Event_Death, EventHookMode_Post);
+
+    HookEvent("teamplay_round_start", Event_Waiting_Abouttoend, EventHookMode_Post);
+    
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
@@ -223,7 +230,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnMapStart()
 {
-
+    g_WaitingForPlayers = true;
+    g_RoundCount = 0;
     ResetMode();
 
 }
@@ -245,7 +253,10 @@ public void ResetMode()
 
     }
     //Set more dynamic way of getting the amount of votes needed
-    g_iVotesNeeded = g_RoboCapTeam+5;
+    float totalplayers = float(GetClientCount(false)) * 0.4;
+     //view_as<TFTeam>(g_HumanTeam) 
+     
+    g_iVotesNeeded = view_as<int>(totalplayers);
     //g_iVotesNeeded = 6;
 }
 
@@ -276,6 +287,27 @@ void Reset(int client)
 }
 
 /* Publics */
+public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dontBroadcast)
+{
+    if(g_Enable && g_RoundCount == 0){
+        PrintToChatAll("==Waiting for other players==");
+        g_RoundCount++;
+        g_WaitingForPlayers = true;
+
+        
+    }else if(g_Enable && g_RoundCount == 1){
+        PrintToChatAll("== Not waiting for players !rtr available!");
+        g_WaitingForPlayers = false;
+        g_RoundCount++;
+    }else if (g_Enable && g_RoundCount < 1)
+    {
+        
+    }
+
+
+    g_iVotesNeeded = GetClientCount(false);
+    
+}
 
 public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
@@ -853,6 +885,11 @@ public Action Command_RoboVote(int client, int args)
 {
     if (g_Enable)
     {
+    if (g_WaitingForPlayers)
+    {
+        MC_PrintToChatEx(client, client,"[{orange}SM{default}]{teamcolor} Still waiting for players, try again once waiting for players is over");
+        return;
+    }
     //If boss mode is already active
     //PrintToChatAll("%i",CV_g_RoboCapTeam);
     if (g_BossMode)
