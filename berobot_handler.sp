@@ -80,6 +80,7 @@ char g_cv_RobotPicked[MAXPLAYERS + 1][NAMELENGTH];
 bool g_ClientIsRepicking[MAXPLAYERS + 1];
 bool g_Voted[MAXPLAYERS + 1];
 bool g_VoiceCalloutClamp[MAXPLAYERS + 1];
+Menu g_chooseRobotMenus[MAXPLAYERS + 1];
 
 
 
@@ -270,6 +271,14 @@ void Reset(int client)
     int index = FindValueInArray(g_Volunteers, client);
     if (index >= 0)
         g_Volunteers.Erase(index);
+
+    if (g_chooseRobotMenus[client] != null)
+    {
+        SMLogTag(SML_VERBOSE, "canceling ChooseRobot-menu for %L", client);
+        g_chooseRobotMenus[client].Cancel();
+        g_chooseRobotMenus[client] = null;
+    }
+
     RedrawChooseRobotMenu();
 
     AddRandomVolunteer();
@@ -1119,6 +1128,10 @@ Action Menu_ChooseRobot(int client)
 
         SMLogTag(SML_VERBOSE, "added option for %s: %s", item.name, display);
     }
+
+    if (g_chooseRobotMenus[client] != null)
+        g_chooseRobotMenus[client].Cancel();
+    g_chooseRobotMenus[client] = menu;
 
     int timeout = MENU_TIME_FOREVER;
     menu.Display(client, timeout);
