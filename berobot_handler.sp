@@ -1182,6 +1182,9 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     /* If an option was selected, tell the client about the item. */
     if(action == MenuAction_Select)
     {
+        if (g_chooseRobotMenus[param1] == null)
+            return;
+
         char info[NAMELENGTH];
         bool found = menu.GetItem(param2, info, sizeof(info));
         PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
@@ -1191,6 +1194,7 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
     {
+        g_chooseRobotMenus[param1] = null;
         g_ClientIsRepicking[param1] = false;
         // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
     }
