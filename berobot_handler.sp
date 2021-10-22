@@ -146,7 +146,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
     g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Needs vote to start boss mode, 1 = Start game by reaching enough volunteers");
 
-    g_cvCvarList[CV_g_Rtr_precent] = CreateConVar("sm_rtr_percent", "0.5", "The ratio of votes needed to start the mode with !rtr 1.0 = 100% 0.0 = 0%");
+    g_cvCvarList[CV_g_Rtr_precent] = CreateConVar("sm_mm_needed_rtr_ratio", "0.5", "The ratio of votes needed to start the mode with !rtr 1.0 = 100% 0.0 = 0%");
 
     //Gameplay cvar
     g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "250.0", "Backstab damage");
@@ -175,6 +175,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboCap].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboTeamMode].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboMode].AddChangeHook(CvarChangeHook);
+    g_cvCvarList[CV_g_Rtr_precent].AddChangeHook(CvarChangeHook);
 
 
     RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
@@ -261,7 +262,7 @@ public void ResetMode()
     }
 
     int totalplayers = RoundToCeil(float(GetClientCount(false)) * g_Rtr_percent);
-    g_iVotesNeeded = view_as<int>(totalplayers);
+    g_iVotesNeeded = totalplayers;
     //g_iVotesNeeded = 6;
 }
 
@@ -317,7 +318,7 @@ public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dont
     }
 
     int totalplayers = RoundToCeil(float(GetClientCount(false)) * g_Rtr_percent);
-    g_iVotesNeeded = view_as<int>(totalplayers);
+    g_iVotesNeeded = totalplayers;
 
    // PrintToChatAll("Total players: %i", totalplayers);
   //  PrintToChatAll("Total players: %i", GetClientCount(false));
