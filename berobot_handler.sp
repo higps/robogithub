@@ -45,6 +45,7 @@ enum (<<= 1)
 
 enum //Convar names
 {
+    CV_g_Rtr_precent,
     CV_flSpyBackStabModifier,
     CV_bDebugMode,
     CV_flYoutuberMode,
@@ -87,6 +88,7 @@ Menu g_chooseRobotMenus[MAXPLAYERS + 1];
 
 float g_CV_flSpyBackStabModifier;
 float g_CV_flYoutuberMode;
+float g_Rtr_percent;
 
 int g_Enable;
 int g_RoboCapTeam;
@@ -144,6 +146,8 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
     g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Needs vote to start boss mode, 1 = Start game by reaching enough volunteers");
 
+    g_cvCvarList[CV_g_Rtr_precent] = CreateConVar("sm_rtr_percent", "0.5", "The ratio of votes needed to start the mode with !rtr 1.0 = 100% 0.0 = 0%");
+
     //Gameplay cvar
     g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "250.0", "Backstab damage");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_mm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
@@ -153,6 +157,8 @@ public void OnPluginStart()
     g_Enable = GetConVarInt(g_cvCvarList[CV_g_Enable]);
     g_CV_flSpyBackStabModifier = GetConVarFloat(g_cvCvarList[CV_flSpyBackStabModifier]);
     g_CV_flYoutuberMode = GetConVarFloat(g_cvCvarList[CV_flYoutuberMode]);
+    g_Rtr_percent = GetConVarFloat(g_cvCvarList[CV_g_Rtr_precent]);
+
     g_RoboCapTeam = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
     g_RoboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
     g_RoboTeamMode = GetConVarInt(g_cvCvarList[CV_g_RoboTeamMode]);
@@ -253,10 +259,8 @@ public void ResetMode()
         g_Voted[i] = false;
 
     }
-    //Set more dynamic way of getting the amount of votes needed
-    float totalplayers = float(GetClientCount(false)) * 0.4;
-     //view_as<TFTeam>(g_HumanTeam) 
-     
+
+    int totalplayers = RoundToCeil(float(GetClientCount(false)) * g_Rtr_percent);
     g_iVotesNeeded = view_as<int>(totalplayers);
     //g_iVotesNeeded = 6;
 }
@@ -299,22 +303,28 @@ void Reset(int client)
 public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dontBroadcast)
 {
     if(g_Enable && g_RoundCount == 0){
-        PrintToChatAll("==Waiting for other players==");
+        //PrintToChatAll("==Waiting for other players==");
         g_RoundCount++;
         g_WaitingForPlayers = true;
 
         
     }else if(g_Enable && g_RoundCount == 1){
-        PrintToChatAll("== Not waiting for players !rtr available!");
+        //PrintToChatAll("== Not waiting for players !rtr available!");
+        MC_PrintToChatAll("[{orange}SM{default}]{orange} Type !rtr to vote to start Manned Machines");
+        
         g_WaitingForPlayers = false;
         g_RoundCount++;
-    }else if (g_Enable && g_RoundCount < 1)
-    {
-        
     }
 
+    int totalplayers = RoundToCeil(float(GetClientCount(false)) * g_Rtr_percent);
+    g_iVotesNeeded = view_as<int>(totalplayers);
 
-    g_iVotesNeeded = GetClientCount(false);
+   // PrintToChatAll("Total players: %i", totalplayers);
+  //  PrintToChatAll("Total players: %i", GetClientCount(false));
+     //view_as<TFTeam>(g_HumanTeam) 
+     
+    
+    //g_iVotesNeeded = int(ivotes_needed);
     
 }
 
@@ -540,6 +550,9 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
     if(convar == g_cvCvarList[CV_flYoutuberMode])
         g_CV_flYoutuberMode = StringToFloat(sNewValue);
 
+    if(convar == g_cvCvarList[CV_g_Rtr_precent])
+        g_Rtr_percent = StringToFloat(sNewValue);
+
     if(convar == g_cvCvarList[CV_g_RoboCap])
         g_RoboCap = StringToInt(sNewValue);
 
@@ -723,7 +736,7 @@ public Action Command_YT_Robot_Start(int client, int args)
 
         //Randomly set which team is roboteam and humanteam
         int RandomTeam = GetRandomInt(1, 2);
-        PrintToChatAll("Randomteam was %i", RandomTeam);
+       // PrintToChatAll("Randomteam was %i", RandomTeam);
         if(RandomTeam == 1)
         {
 
@@ -739,8 +752,8 @@ public Action Command_YT_Robot_Start(int client, int args)
 
 
         g_BossMode = true;
-        PrintToChatAll("Robots will be Team %i", g_RoboTeam);
-        PrintToChatAll("Humans will be Team %i", g_HumanTeam);
+      //  PrintToChatAll("Robots will be Team %i", g_RoboTeam);
+      //  PrintToChatAll("Humans will be Team %i", g_HumanTeam);
     }
     else
     {
