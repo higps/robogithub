@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+#include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Nuker"
@@ -134,7 +135,8 @@ MakeSolar(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintToChat(client, "1. You are now Giant Solar Light !");
+	PrintCenterText(client, "You can only fire after the smoke has settled!");
+	PrintToChat(client, "1. You are now Giant Nuker !");
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -171,19 +173,19 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 5.0);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 4.0);
+			//TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 5.0);
 			TF2Attrib_SetByName(Weapon1, "grenade launcher mortar mode", 0.0);
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
-			TF2Attrib_SetByName(Weapon1, "blast radius increased", 1.55);
-			//TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 2.0);
-			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
-			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.5);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.8);
+			TF2Attrib_SetByName(Weapon1, "blast radius increased", 2.25);
+			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 20.0);
+			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.25);
+			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.1);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
+			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
 			
 			
 		}
@@ -565,5 +567,21 @@ stock void TF2_RemoveAllWearables(int client)
 				TF2_RemoveWearable(client, wearable);
 			}
 		}
+	}
+}
+
+public void OnEntityCreated(int iEntity, const char[] sClassName) 
+{
+	if (StrContains(sClassName, "tf_projectile") == 0)
+	{
+		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+	}
+	
+}
+
+public void Hook_OnProjectileSpawn(iEntity) {
+	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
 	}
 }
