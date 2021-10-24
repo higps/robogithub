@@ -1179,9 +1179,7 @@ Action Menu_ChooseRobot(int client)
 
         SMLogTag(SML_VERBOSE, "added option for %s: %s", item.name, display);
     }
-
-    if (g_chooseRobotMenus[client] != null)
-        g_chooseRobotMenus[client].Cancel();
+    
     g_chooseRobotMenus[client] = menu;
 
     int timeout = MENU_TIME_FOREVER;
