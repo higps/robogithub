@@ -3,6 +3,7 @@
 #include <sdkhooks>
 #include <tf2>
 #include <tf2_stocks>
+#include <tf_ontakedamage>
 #include <sm_logger>
 #include <berobot_constants>
 
@@ -27,12 +28,16 @@ public Plugin myinfo =
 	url = "https://github.com/higps/robogithub"
 };
 
+bool g_VoiceCalloutClamp[MAXPLAYERS + 1];
 
 public void OnPluginStart()
 {
-	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-	SMLogTag(SML_INFO, "berobot_voicelines started at %i", GetTime());
-	AddNormalSoundHook(NormalSoundHook);
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    SMLogTag(SML_INFO, "berobot_voicelines started at %i", GetTime());
+
+    AddNormalSoundHook(NormalSoundHook);
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
+    HookEvent("player_escort_score", Event_player_escort_score, EventHookMode_Post);
 }
 
 public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags)
@@ -87,4 +92,214 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 	SMLogTag(SML_VERBOSE, "turned sample into %s", sample);
 	PrecacheSound(sample);
 	return Plugin_Changed;
+}
+
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+    int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+    int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+    int assister = GetClientOfUserId(GetEventInt(event, "assister"));
+
+    //Robot died
+    if (IsAnyRobot(victim))
+    {
+        PlayRobotDeathVoiceOver(attacker);
+        PlayRobotDeathVoiceOver(assister);
+    }
+
+    //player died to robot
+    if (!IsAnyRobot(victim) && IsAnyRobot(attacker))
+    {
+        PlayRobotKilledFriendVoiceOver();
+    }
+}
+
+public Action Event_player_escort_score(Event event, char[] name, bool dontBroadcast)
+{   
+    //Adds voice line if boss mode is active
+    if (!IsEnabled())
+        return;
+    if(!IsActive())
+        return;
+
+    int iCapper = GetEventInt(event, "player");
+    TFTeam iCapperTeam = TF2_GetClientTeam(iCapper);
+    
+    for(int i = 1; i < MaxClients; i++)
+    {
+        if (!IsValidClient(i))
+            continue;
+        if (!IsClientInGame(i))
+            continue;
+        if (IsAnyRobot(i))
+            continue;
+        if (!IsPlayerAlive(i))
+            continue;
+
+        TFTeam iPlayerTeam = TF2_GetClientTeam(i);  
+        if (iPlayerTeam == iCapperTeam)
+            continue;       
+
+        if (MM_Random(1,3))
+            continue;
+
+        PlayRobotPushedCartVoiceOver(i);        
+    }
+}
+
+public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+    if (!IsEnabled())
+        return Plugin_Continue;
+    if(!IsValidClient(victim))
+        return Plugin_Continue;    
+    if(!IsValidClient(attacker))
+        return Plugin_Continue;
+
+
+    TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
+
+    PlayRobotTakeDamageVoiceOver(attacker, iClassAttacker, victim);
+
+    return Plugin_Continue;
+}
+
+void PlayRobotDeathVoiceOver(int client)
+{
+    if (!IsValidClient(client))
+        return;
+
+    TFClassType class = TF2_GetPlayerClass(client);
+    char szVO[512];
+    switch(class)
+    {
+        case TFClass_Heavy:
+        {
+            strcopy(szVO, sizeof(szVO), "heavy_mvm_giant_robot02");
+        }
+        case TFClass_Medic:
+        {
+            strcopy(szVO, sizeof(szVO), "medic_mvm_giant_robot02");
+        }
+        default:
+            return;
+    }
+    
+    EmitGameSoundToAll(szVO, client);
+}
+
+void PlayRobotKilledFriendVoiceOver()
+{
+    for(int i = 1; i <= MaxClients; i++)
+    {
+        if(!IsValidClient(i))
+            continue;
+        if(!IsPlayerAlive(i))
+            continue;
+            
+        char szVO[512];
+        switch(i)
+        {
+            case TFClass_Heavy:
+            {
+                if (MM_Random(1, 10)){
+                    strcopy(szVO, sizeof(szVO), "heavy_mvm_giant_robot01");
+                    EmitGameSoundToAll(szVO, i);
+                }
+            }
+        }
+    }
+}
+
+void PlayRobotPushedCartVoiceOver(int clientId)
+{
+    TFClassType iClass = TF2_GetPlayerClass(clientId);
+    bool isSpyDisguised = iClass == TFClass_Spy && TF2_IsPlayerInCondition(clientId, TFCond_Disguised);
+    if (isSpyDisguised)
+    {
+        iClass = view_as<TFClassType>(GetEntProp(clientId, Prop_Send, "m_nDisguiseClass"));
+    }
+
+    char szVO[512];
+    switch(iClass)
+    {
+        case TFClass_Heavy:
+        {
+            strcopy(szVO, sizeof(szVO), "heavy_mvm_giant_robot03");
+        }
+        case TFClass_Medic:
+        {
+            strcopy(szVO, sizeof(szVO), "medic_mvm_giant_robot03");
+        }
+        case TFClass_Soldier:
+        {
+            int digit = GetRandomInt(3,4);
+            Format(szVO, sizeof(szVO), "soldier_mvm_giant_robot0%i", digit);
+        }
+        case TFClass_Engineer:
+        {
+            strcopy(szVO, sizeof(szVO), "engineer_mvm_giant_robot03");
+        }
+        default:
+            return;
+    }
+
+    EmitGameSoundToAll(szVO, clientId);
+}
+
+void PlayRobotTakeDamageVoiceOver(int attackerClientId, TFClassType attackerClass, int victimClientId)
+{
+    if (!IsAnyRobot(victimClientId)) 
+        return;
+    if (MM_Random(1,4))
+        return;
+    if (IsAnyRobot(attackerClientId))
+        return;
+
+    char szVO[512];
+    int digit = 0;
+    switch(attackerClass)
+    {
+        case TFClass_Heavy:
+        {
+            Format(szVO, sizeof(szVO), "heavy_mvm_giant_robot04");
+        }
+        case TFClass_Medic:
+        {
+            Format(szVO, sizeof(szVO), "medic_mvm_giant_robot01");
+        }
+        case TFClass_Soldier:
+        {
+            digit = GetRandomInt(1,2);
+            Format(szVO, sizeof(szVO), "soldier_mvm_giant_robot0%i", digit);
+        }
+        case TFClass_Engineer:
+        {
+            digit = GetRandomInt(1,2);
+            Format(szVO, sizeof(szVO), "engineer_mvm_giant_robot0%i", digit);
+        }
+        default:
+            return;
+    }
+
+    float random_timer = GetRandomFloat(20.5,60.5);
+    EmitSoundWithClamp(attackerClientId, szVO, random_timer);
+}
+
+void EmitSoundWithClamp(int client, char[] voiceline, float clamp)
+{
+    if (g_VoiceCalloutClamp[client])
+        return;
+    if (!IsPlayerAlive(client))
+        return;
+        
+    EmitGameSoundToAll(voiceline, client);
+
+    CreateTimer(clamp, calltimer_reset, client);
+    g_VoiceCalloutClamp[client] = true;
+}
+
+public Action calltimer_reset (Handle timer, int client)
+{
+	g_VoiceCalloutClamp[client] = false;
 }
