@@ -235,7 +235,7 @@ MakeGiantSoldier(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.4);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
@@ -251,6 +251,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
+	PrintCenterText(client, "Use +attack2 / MOUSE2to redirect rockets");
 	PrintToChat(client, "1. You are now Homer soldier !");
 	
 }
@@ -293,19 +294,21 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.7);
+			TF2Attrib_SetByName(Weapon1, "damage penalty", 1.5);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.1);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.5);
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			//TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", -3.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 3.0);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.2);
+			
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.8);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+			//TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
 
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2CustAttr_SetString(Weapon1, "crosshair guided projectiles", "1.0");
-			TF2CustAttr_SetString(Weapon1, "projectile lifetime", "5.0");
+			TF2CustAttr_SetString(Weapon1, "projectile lifetime", "15.0");
 			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		//	TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);

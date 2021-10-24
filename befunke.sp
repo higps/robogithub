@@ -223,7 +223,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);
 			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 0.05);
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 			

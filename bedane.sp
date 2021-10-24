@@ -296,6 +296,8 @@ stock GiveBigRoboDane(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		CreateWeapon(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
 		CreateWeapon(client, "tf_weapon_wrench", 329, 6, 1, 2, 0);
+		CreateWeapon(client, "tf_weapon_pda_engineer_build", 25, 6, 1, 3, 0);
+		CreateWeapon(client, "tf_weapon_pda_engineer_destroy", 26, 6, 1, 4, 0);
 		
 
 		CreateHat(client, 30420, 10, 6, 15132390.0); // the danger

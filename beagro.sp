@@ -108,6 +108,7 @@ MakeGiantPyro(client)
 {
 	SMLogTag(SML_VERBOSE, "Createing Agro");
 	TF2_SetPlayerClass(client, TFClass_Pyro);
+	//TF2_RespawnPlayer(client);
 	TF2_RegeneratePlayer(client);
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
@@ -177,10 +178,12 @@ stock GiveGiantPyro(client)
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
-		CreateWeapon(client, "tf_weapon_flamethrower", 215, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 1);
-		CreateWeapon(client, "tf_weapon_flaregun", 740, 6, 1, 2, 0);
 		TF2_RemoveWeaponSlot(client, 2);
+		CreateWeapon(client, "tf_weapon_flamethrower", 215, 6, 1, 2, 0);
+		
+		CreateWeapon(client, "tf_weapon_flaregun", 740, 6, 1, 2, 0);
+		
 		
 		CreateWeapon(client, "tf_weapon_fireaxe", 466, 6, 1, 2, 0);
 
@@ -256,8 +259,13 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 {
 	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME)) 
 	{	
+		//add a check to prevent errors related to switching classes
+		
+ 
 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-		if(IsValidEntity(weapon))
+		int iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+
+		if(IsValidEntity(weapon) && iWeapon == 215)//215 == flamethrower
 		{
 			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
 			if (iWeaponState == 1 && !Locked1[iClient])

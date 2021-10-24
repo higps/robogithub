@@ -6,6 +6,7 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
+#include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Auto Homer"
@@ -281,10 +282,10 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 3.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.75);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.3);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.45);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		//	TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
@@ -644,78 +645,18 @@ stock void TF2_RemoveAllWearables(int client)
 	}
 }
 
-// public OnGameFrame()
-// {
-// 	for(new i = 1; i <= MaxClients; i++)
-// 	{
-// 		if(IsRobot(i, ROBOT_NAME))
-// 		{
-// 		//	SetHomingProjectile(i, "tf_projectile_arrow");
-// 		//	SetHomingProjectile(i, "tf_projectile_energy_ball");
-// 		//	SetHomingProjectile(i, "tf_projectile_flare");
-// 		//	SetHomingProjectile(i, "tf_projectile_healing_bolt");
-// 			SetHomingProjectile(i, "tf_projectile_rocket");
-// 		//	SetHomingProjectile(i, "tf_projectile_sentryrocket");
-// 		//	SetHomingProjectile(i, "tf_projectile_syringe");
-// 		}
-// 	}
-// }
+public void OnEntityCreated(int iEntity, const char[] sClassName) 
+{
+	if (StrContains(sClassName, "tf_projectile") == 0)
+	{
+		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+	}
+	
+}
 
-// SetHomingProjectile(client, const String:classname[])
-// {
-// 	new entity = -1; 
-// 	while((entity = FindEntityByClassname(entity, classname))!=INVALID_ENT_REFERENCE)
-// 	{
-// 		new owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-// 		if(!IsValidEntity(owner)) continue;
-// 		if(StrEqual(classname, "tf_projectile_sentryrocket", false)) owner = GetEntPropEnt(owner, Prop_Send, "m_hBuilder");		
-// 		new Target = GetClosestTarget(entity, owner);
-// 		if(!Target) continue;
-// 		if(owner == client)
-// 		{
-// 			new Float:ProjLocation[3], Float:ProjVector[3], Float:ProjSpeed, Float:ProjAngle[3], Float:TargetLocation[3], Float:AimVector[3];			
-// 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLocation);
-// 			GetClientAbsOrigin(Target, TargetLocation);
-// 			TargetLocation[2] += 40.0;
-// 			MakeVectorFromPoints(ProjLocation, TargetLocation , AimVector);
-// 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", ProjVector);					
-// 			ProjSpeed = GetVectorLength(ProjVector);					
-// 			AddVectors(ProjVector, AimVector, ProjVector);	
-// 			NormalizeVector(ProjVector, ProjVector);
-// 			GetEntPropVector(entity, Prop_Data, "m_angRotation", ProjAngle);
-// 			GetVectorAngles(ProjVector, ProjAngle);
-// 			SetEntPropVector(entity, Prop_Data, "m_angRotation", ProjAngle);					
-// 			ScaleVector(ProjVector, ProjSpeed);
-// 			SetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", ProjVector);
-// 		}
-// 	}	
-// }
-
-// GetClosestTarget(entity, owner)
-// {
-// 	new Float:TargetDistance = 0.0;
-// 	new ClosestTarget = 0;
-// 	for(new i = 1; i <= MaxClients; i++) 
-// 	{
-// 		if(!IsClientConnected(i) || !IsPlayerAlive(i) || i == owner || (GetClientTeam(owner) == GetClientTeam(i))) continue;
-// 		new Float:EntityLocation[3], Float:TargetLocation[3];
-// 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", EntityLocation);
-// 		GetClientAbsOrigin(i, TargetLocation);
-		
-// 		new Float:distance = GetVectorDistance(EntityLocation, TargetLocation);
-// 		if(TargetDistance)
-// 		{
-// 			if(distance < TargetDistance) 
-// 			{
-// 				ClosestTarget = i;
-// 				TargetDistance = distance;			
-// 			}
-// 		}
-// 		else
-// 		{
-// 			ClosestTarget = i;
-// 			TargetDistance = distance;
-// 		}
-// 	}
-// 	return ClosestTarget;
-// }
+public void Hook_OnProjectileSpawn(iEntity) {
+	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.25);
+	}
+}

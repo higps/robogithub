@@ -258,7 +258,9 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME))
 	{	
 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-		if(IsValidEntity(weapon))
+		int iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+
+		if(IsValidEntity(weapon) && iWeapon == 850)//850 == deflector
 		{
 			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
 			if (iWeaponState == 1 && !Locked1[iClient])

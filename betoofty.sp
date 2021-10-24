@@ -4,22 +4,23 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Sticker"
+#define ROBOT_NAME	"Toofty"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Sticky Bomb"
+#define ROBOT_DESCRIPTION "Sticky jumper"
 
-#define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
+#define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
 public Plugin:myinfo =
 {
-	name = "[TF2] Be the Giant Major Bomber lite",
+	name = "[TF2] Be the Giant Toofty",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Demoman",
+	description = "Play as the Giant Demoknight from MvM",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -36,7 +37,7 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeSolar, PLUGIN_VERSION);
+    AddRobot(robot, MakeToofty, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -46,7 +47,7 @@ public void OnPluginEnd()
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-	//	CreateNative("BeGiantDemoKnight_MakeSolar", Native_SetGiantDemoKnight);
+	//	CreateNative("BeGiantDemoKnight_MakeToofty", Native_SetGiantDemoKnight);
 	//	CreateNative("BeGiantDemoKnight_IsGiantDemoKnight", Native_IsGiantDemoKnight);
 	return APLRes_Success;
 }
@@ -80,7 +81,7 @@ public Action:SetModel(client, const String:model[])
 	}
 }
 
-MakeSolar(client)
+MakeToofty(client)
 {
 	TF2_SetPlayerClass(client, TFClass_DemoMan);
 	TF2_RegeneratePlayer(client);
@@ -119,12 +120,11 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.3);
-	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
-	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
@@ -134,7 +134,7 @@ MakeSolar(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintToChat(client, "1. You are now Giant Solar Light !");
+	PrintToChat(client, "1. You are now Giant Toofty !");
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -156,40 +156,72 @@ stock GiveGiantDemoKnight(client)
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
-		
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
+		TF2_RemoveWeaponSlot(client, 3);
+		TF2_RemoveWeaponSlot(client, 4);
+		TF2_RemoveWeaponSlot(client, 5);
+		
+		CreateWeapon(client, "tf_weapon_grenadelauncher", 1151, 6, 98, 0, 213);
+		//CreateWeapon(client, "tf_weapon_grenadelauncher", 1151, 8, 1, 2, 213);
+		CreateWeapon(client, "tf_weapon_pipebomblauncher", 265, 6, 1, 2, 0);
+		// CreateWeapon(client, "tf_weapon_sword", 327, 6, 1, 2, 0);
+		
+		
+		
+		CreateHat(client, 830, 10, 6, true); //Bearded Bombardier
+		CreateHat(client, 30067, 10, 6, false); //well rounded rifle man
+		//CreateHat(client, 30363, 10, 6, false);//juggernaut jacket
+		
+		
+		
+		// int iEntity2 = -1;
+		// while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_wearable_demoshield")) != -1)
+		// {
+		// 	if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
+		// 	{				
+		// 		//PrintToChatAll("going through entity");
+		// 		TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.5);		
+		// 		TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);		
+				
+		// 		break;
+		// 	}
+		// }
+		
 
-		//CreateWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 0, 0);
-		CreateWeapon(client, "tf_weapon_pipebomblauncher", 20, 6, 1, 0, 0);
-		CreateHat(client, 30034, 10, 6, true);//"The Frag Proof Fragger"
-		//CreateHat(client, 30945, 10, 6, false);//blast locker
+		
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
+		//	TF2Attrib_RemoveAll(Weapon1);
+			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.2);
+			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.25);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.5);
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
+			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.35);
+			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
+			// TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.8);
 			
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 5.0);
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 5.0);
-			TF2Attrib_SetByName(Weapon1, "grenade launcher mortar mode", 0.0);
-			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
-			TF2Attrib_SetByName(Weapon1, "blast radius increased", 1.55);
-			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 2.0);
-			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
-			TF2Attrib_SetByName(Weapon1, "reload time increased", 1.5);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.8);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
+			
+
+		}
+		
+		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		if(IsValidEntity(Weapon3))
+		{
+			TF2Attrib_RemoveAll(Weapon3);
+			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.1);
+			TF2Attrib_SetByName(Weapon3, "max pipebombs decreased", 0.0);
+			//TF2Attrib_SetByName(Weapon3, "auto fires full clip all at once", 1.0);
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+			TF2CustAttr_SetString(Weapon3, "reload full clip at once", "1.0");
 			
 			
 		}
-
-		//TF2_AddCondition(client, TFCond_CritCanteen);
-		
 	}
 }
 
@@ -350,10 +382,10 @@ bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int 
 	
 	char entclass[64];
 	GetEntityNetClass(weapon, entclass, sizeof(entclass));
-	SetEntData(weapon, FindSendPropInfo(entclass, "m_iItemDefinitionIndex"), itemindex);	 
-	SetEntData(weapon, FindSendPropInfo(entclass, "m_bInitialized"), 1);
+	SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", itemindex);	 
+	SetEntProp(weapon, Prop_Send, "m_bInitialized", 1);
 	SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);
-	SetEntProp(weapon, Prop_Send, "m_bValidatedAttachedEntity", 1); 
+	SetEntProp(weapon, Prop_Send, "m_bValidatedAttachedEntity", 1);
 	
 	if (level)
 	{
