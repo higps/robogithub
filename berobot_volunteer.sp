@@ -304,7 +304,11 @@ Action Timer_Countdown(Handle timer)
 
 Action Timer_VolunteerAutomaticVolunteers(Handle timer)
 {
-    KillTimer(_countdownTimer);
+    if (_countdownTimer != null)
+    {
+        KillTimer(_countdownTimer);
+        _countdownTimer = null;
+    }
     VolunteerAutomaticVolunteers();
 }
 
@@ -490,7 +494,11 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
             VolunteerAutomaticVolunteers();            
             //if (IsValidHandle(_autoVolunteerTimer))
             KillTimer(_autoVolunteerTimer);
-            KillTimer(_countdownTimer);
+            if (_countdownTimer != null)
+            {
+                KillTimer(_countdownTimer);
+                _countdownTimer = null;
+            }
         }
     }
     /* If the menu was cancelled, print a message to the server about it. */
