@@ -214,8 +214,8 @@ public Action:SetModel(client, const String:model[])
 }
 public Action Dane(int client, int args)
 {
-	TF2_SetPlayerClass(client, TFClass_Engineer);
-    TF2_RegeneratePlayer(client);
+	// TF2_SetPlayerClass(client, TFClass_Engineer);
+    // TF2_RegeneratePlayer(client);
 	MakeUncleDane(client);
 }
 
@@ -299,9 +299,9 @@ stock GiveBigRoboDane(client)
 	if (IsValidClient(client))
 	{
 		TF2_RemoveAllWearables(client);
-		TF2_RegeneratePlayer(client);
+	//	TF2_RegeneratePlayer(client);
 
-		TF2_RemoveWeaponSlot(client, 0);
+/* 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		CreateWeapon(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
@@ -344,7 +344,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			
-		}
+		} */
 		
 		
 		
