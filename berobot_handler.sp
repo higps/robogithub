@@ -1481,15 +1481,20 @@ bool RemoveRandomRobot()
 }
 
 int FindRandomVolunteer()
-{    
-    int clientId;
-    do
+{
+    for(;;)
     {
+        if (g_Volunteers.Length <= 0)
+            return -1;
+
         int i = GetRandomInt(0, g_Volunteers.Length -1);
-        clientId = g_Volunteers.Get(i);
+        int clientId = g_Volunteers.Get(i);
+
+        if (IsValidClient(clientId) && IsClientInGame(clientId))
+            return clientId;
+                     
+        g_Volunteers.Erase(i);
     }
-    while(!IsValidClient(clientId) || !IsClientInGame(clientId));
-    return clientId;
 }
 
 stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
