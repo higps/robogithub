@@ -7,12 +7,13 @@
 #include <sm_logger>
 #include <berobot_constants>
 
-char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
+char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR", "NormalSoundHook"};
 enum(<<= 1)
 {
     SML_VERBOSE = 1,
     SML_INFO,
     SML_ERROR,
+    SML_NormalSoundHook,
 }
 #include <berobot_core>
 #pragma newdecls required
@@ -44,33 +45,33 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 {
 	if (!IsValidClient(entity)) 
 	{
-		SMLogTag(SML_VERBOSE, "skipping SoundHook because client %i is not valid", entity);
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because client %i is not valid", entity);
 		return Plugin_Continue;
 	}
 
-	SMLogTag(SML_VERBOSE, "playing sound %s for %L at volume %f", sample, entity, volume);
+	SMLogTag(SML_NormalSoundHook, "playing sound %s for %L at volume %f", sample, entity, volume);
 
 	if (!IsAnyRobot(entity)) //skip if no robot is picked
 	{
-		SMLogTag(SML_VERBOSE, "skipping SoundHook because %L is not a robot", entity);
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because %L is not a robot", entity);
 		return Plugin_Continue;
 	}
 	
 	if (volume == 0.0 || volume == 0.9997)
 	{
-		SMLogTag(SML_VERBOSE, "skipping SoundHook because volume is set to %f", volume);
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because volume is set to %f", volume);
 		return Plugin_Continue;
 	}
 	TFClassType class = TF2_GetPlayerClass(entity);
 
 	if (StrContains(sample, "vo/", false) == -1)
 	{
-		SMLogTag(SML_VERBOSE, "skipping SoundHook because 'vo/' was not found in %s", sample);
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'vo/' was not found in %s", sample);
 		return Plugin_Continue;
 	}
 	if (StrContains(sample, "announcer", false) != -1)
 	{
-		SMLogTag(SML_VERBOSE, "skipping SoundHook because 'announcer' was not found in %s", sample);
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'announcer' was not found in %s", sample);
 		return Plugin_Continue;
 	}
 	if (ClassHasDeepRobotVoiceLines(class))
@@ -89,7 +90,7 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 	Format(classname_mvm, sizeof(classname_mvm), "%s_mvm", classname);
 	ReplaceString(sample, sizeof(sample), classname, classname_mvm, false);
 
-	SMLogTag(SML_VERBOSE, "turned sample into %s", sample);
+	SMLogTag(SML_NormalSoundHook, "turned sample into %s", sample);
 	PrecacheSound(sample);
 	return Plugin_Changed;
 }
@@ -99,6 +100,8 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     int victim = GetClientOfUserId(GetEventInt(event, "userid"));
     int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     int assister = GetClientOfUserId(GetEventInt(event, "assister"));
+
+    SMLogTag(SML_VERBOSE, "Event_Death triggerd with attacker %L, assister %L and victim %L", attacker, assister, victim);
 
     //Robot died
     if (IsAnyRobot(victim))
@@ -116,32 +119,57 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 public Action Event_player_escort_score(Event event, char[] name, bool dontBroadcast)
 {   
+    SMLogTag(SML_VERBOSE, "Event_player_escort_score called");
     //Adds voice line if boss mode is active
     if (!IsEnabled())
+    {
+        SMLogTag(SML_VERBOSE, "Event_player_escort_score ignored, because MM is not enabled");
         return;
+    }
     if(!IsActive())
+    {
+        SMLogTag(SML_VERBOSE, "Event_player_escort_score ignored, because robo-mode is not active");
         return;
+    }  
 
     int iCapper = GetEventInt(event, "player");
     TFTeam iCapperTeam = TF2_GetClientTeam(iCapper);
     
-    for(int i = 1; i < MaxClients; i++)
+    for(int i = 1; i <= MaxClients; i++)
     {
         if (!IsValidClient(i))
+        {
+            SMLogTag(SML_VERBOSE, "Event_player_escort_score ignored for %i, because the client is not valid", i);
             continue;
+        }  
         if (!IsClientInGame(i))
+        {
+            SMLogTag(SML_VERBOSE, "Event_player_escort_score ignored for %i, because the client is not ingame", i);
             continue;
+        }  
         if (IsAnyRobot(i))
+        {
+            SMLogTag(SML_VERBOSE, "Event_player_escort_score ignored for %i, because the client is a robot", i);
             continue;
+        }  
         if (!IsPlayerAlive(i))
+        {
+            SMLogTag(SML_VERBOSE, "Event_player_escort_score ignored for %i, because the client is not alive", i);
             continue;
+        }  
 
         TFTeam iPlayerTeam = TF2_GetClientTeam(i);  
         if (iPlayerTeam == iCapperTeam)
-            continue;       
-
-        if (MM_Random(1,3))
+        {
+            SMLogTag(SML_VERBOSE, "Event_player_escort_score ignored for %i, because the client is on the capping team", i);
             continue;
+        }  
+
+        if (!MM_Random(1,3))
+        {
+            SMLogTag(SML_VERBOSE, "Event_player_escort_score ignored for %i, because random says no", i);
+            continue;
+        }  
 
         PlayRobotPushedCartVoiceOver(i);        
     }
@@ -150,11 +178,20 @@ public Action Event_player_escort_score(Event event, char[] name, bool dontBroad
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
     if (!IsEnabled())
+    {
+        SMLogTag(SML_VERBOSE, "TF2_OnTakeDamageModifyRules ignored, because MM is not enabled");
         return Plugin_Continue;
+    }
     if(!IsValidClient(victim))
-        return Plugin_Continue;    
-    if(!IsValidClient(attacker))
+    {
+        SMLogTag(SML_VERBOSE, "TF2_OnTakeDamageModifyRules ignored, because victim %i was not a valid client", victim);
         return Plugin_Continue;
+    }  
+    if(!IsValidClient(attacker))
+    {
+        SMLogTag(SML_VERBOSE, "TF2_OnTakeDamageModifyRules ignored, because attacker %i was not a valid client", attacker);
+        return Plugin_Continue;
+    }  
 
 
     TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
@@ -167,7 +204,12 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 void PlayRobotDeathVoiceOver(int client)
 {
     if (!IsValidClient(client))
+    {
+        SMLogTag(SML_VERBOSE, "PlayRobotDeathVoiceOver ignored, because client %i was not a valid client", client);
         return;
+    }
+
+    SMLogTag(SML_VERBOSE, "PlayRobotDeathVoiceOver for %L", client);
 
     TFClassType class = TF2_GetPlayerClass(client);
     char szVO[512];
@@ -193,9 +235,15 @@ void PlayRobotKilledFriendVoiceOver()
     for(int i = 1; i <= MaxClients; i++)
     {
         if(!IsValidClient(i))
+        {
+            SMLogTag(SML_VERBOSE, "PlayRobotKilledFriendVoiceOver ignored, because client %i was not a valid client", i);
             continue;
+        }
         if(!IsPlayerAlive(i))
+        {
+            SMLogTag(SML_VERBOSE, "PlayRobotKilledFriendVoiceOver ignored, because client %i was not alive", i);
             continue;
+        }
             
         char szVO[512];
         switch(i)
@@ -203,6 +251,7 @@ void PlayRobotKilledFriendVoiceOver()
             case TFClass_Heavy:
             {
                 if (MM_Random(1, 10)){
+                    SMLogTag(SML_VERBOSE, "PlayRobotKilledFriendVoiceOver for %L", i);
                     strcopy(szVO, sizeof(szVO), "heavy_mvm_giant_robot01");
                     EmitGameSoundToAll(szVO, i);
                 }
@@ -213,6 +262,8 @@ void PlayRobotKilledFriendVoiceOver()
 
 void PlayRobotPushedCartVoiceOver(int clientId)
 {
+    SMLogTag(SML_VERBOSE, "PlayRobotPushedCartVoiceOver for %L", clientId);
+
     TFClassType iClass = TF2_GetPlayerClass(clientId);
     bool isSpyDisguised = iClass == TFClass_Spy && TF2_IsPlayerInCondition(clientId, TFCond_Disguised);
     if (isSpyDisguised)
@@ -250,11 +301,22 @@ void PlayRobotPushedCartVoiceOver(int clientId)
 void PlayRobotTakeDamageVoiceOver(int attackerClientId, TFClassType attackerClass, int victimClientId)
 {
     if (!IsAnyRobot(victimClientId)) 
+    {
+        SMLogTag(SML_VERBOSE, "PlayRobotTakeDamageVoiceOver ignored, because victim %i was not a robot", victimClientId);
         return;
-    if (MM_Random(1,4))
+    }
+    if (!MM_Random(1,4))
+    {
+        SMLogTag(SML_VERBOSE, "PlayRobotTakeDamageVoiceOver ignored, because random says no");
         return;
+    }
     if (IsAnyRobot(attackerClientId))
+    {
+        SMLogTag(SML_VERBOSE, "PlayRobotTakeDamageVoiceOver ignored, because attacker %i was a robot", victimClientId);
         return;
+    }
+
+    SMLogTag(SML_VERBOSE, "PlayRobotTakeDamageVoiceOver for attacker %L and victim %L", attackerClientId, victimClientId);
 
     char szVO[512];
     int digit = 0;
@@ -289,9 +351,15 @@ void PlayRobotTakeDamageVoiceOver(int attackerClientId, TFClassType attackerClas
 void EmitSoundWithClamp(int client, char[] voiceline, float clamp)
 {
     if (g_VoiceCalloutClamp[client])
+    {
+        SMLogTag(SML_VERBOSE, "EmitSoundWithClamp ignored, because clamped for client %L", client);
         return;
+    }
     if (!IsPlayerAlive(client))
+    {
+        SMLogTag(SML_VERBOSE, "EmitSoundWithClamp ignored, because client %L is not alive", client);
         return;
+    }
         
     EmitGameSoundToAll(voiceline, client);
 
