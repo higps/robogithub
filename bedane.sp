@@ -40,7 +40,7 @@ public OnPluginStart()
     HookEvent("player_builtobject", ObjectBuilt, EventHookMode_Post);
 	HookEvent("player_carryobject", ObjectCarry, EventHookMode_Post);
 
-	//RegConsoleCmd("sm_dane", Dane, "become dane");
+	RegConsoleCmd("sm_dane", Dane, "become dane");
 
     Robot robot;
     robot.name = ROBOT_NAME;
@@ -212,10 +212,12 @@ public Action:SetModel(client, const String:model[])
 		
 	}
 }
-// public Action Dane(int client, int args)
-// {
-// 	MakeUncleDane(client);
-// }
+public Action Dane(int client, int args)
+{
+	TF2_SetPlayerClass(client, TFClass_Engineer);
+    TF2_RegeneratePlayer(client);
+	MakeUncleDane(client);
+}
 
 MakeUncleDane(client)
 {
@@ -225,13 +227,13 @@ MakeUncleDane(client)
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
 	if (ragdoll > MaxClients && IsValidEntity(ragdoll)) AcceptEntityInput(ragdoll, "Kill");
-	decl String:weaponname[32];
-	GetClientWeapon(client, weaponname, sizeof(weaponname));
-	if (strcmp(weaponname, "tf_weapon_", false) == 2)
-	{
-		SetEntProp(GetPlayerWeaponSlot(client, 2), Prop_Send, "m_iWeaponState", 2);
-		TF2_RemoveCondition(client, TFCond_Slowed);
-	}
+	// decl String:weaponname[32];
+	// GetClientWeapon(client, weaponname, sizeof(weaponname));
+	// if (strcmp(weaponname, "tf_weapon_", false) == 2)
+	// {
+	// 	SetEntProp(GetPlayerWeaponSlot(client, 2), Prop_Send, "m_iWeaponState", 2);
+	// 	TF2_RemoveCondition(client, TFCond_Slowed);
+	// }
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, ChangeDane);
 
@@ -306,7 +308,7 @@ stock GiveBigRoboDane(client)
 		CreateWeapon(client, "tf_weapon_wrench", 329, 6, 1, 2, 0);
 		// CreateWeapon(client, "tf_weapon_pda_engineer_build", 25, 6, 1, 3, 0);
 		// CreateWeapon(client, "tf_weapon_pda_engineer_destroy", 26, 6, 1, 4, 0);
-		TF2_RegeneratePlayer(client);
+		//TF2_RegeneratePlayer(client);
 
 		CreateHat(client, 30420, 10, 6, 15132390.0); // the danger
 		//	CreateHat(client, 30178, 10, 6, 1315860);
