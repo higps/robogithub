@@ -298,7 +298,7 @@ stock GiveBigRoboDane(client)
 {
 	if (IsValidClient(client))
 	{
-		TF2_RemoveAllWearables(client);
+		//TF2_RemoveAllWearables(client);
 	//	TF2_RegeneratePlayer(client);
 
 /* 		TF2_RemoveWeaponSlot(client, 0);
@@ -352,22 +352,22 @@ stock GiveBigRoboDane(client)
 	}
 }
 
-public player_inv(Handle event, const char[] name, bool dontBroadcast) 
-{
-	int userd = GetEventInt(event, "userid");
-	int client = GetClientOfUserId(userd);
+// public player_inv(Handle event, const char[] name, bool dontBroadcast) 
+// {
+// 	int userd = GetEventInt(event, "userid");
+// 	int client = GetClientOfUserId(userd);
 	
-	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
-	{
-		TF2_RemoveAllWearables(client);
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+// 	if (IsRobot(client, ROBOT_NAME) && IsValidClient(client))
+// 	{
+// 		TF2_RemoveAllWearables(client);
+// 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
-		TF2Attrib_RemoveByName(Weapon1, "fire rate bonus");
-		TF2Attrib_RemoveByName(Weapon1, "damage bonus");
-		TF2Attrib_RemoveByName(Weapon1, "critboost on kill");
-		TF2Attrib_RemoveByName(Weapon1, "killstreak tier");
-	}
-}
+// 		TF2Attrib_RemoveByName(Weapon1, "fire rate bonus");
+// 		TF2Attrib_RemoveByName(Weapon1, "damage bonus");
+// 		TF2Attrib_RemoveByName(Weapon1, "critboost on kill");
+// 		TF2Attrib_RemoveByName(Weapon1, "killstreak tier");
+// 	}
+// }
 
 stock bool:IsValidClient(client)
 {
