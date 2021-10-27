@@ -40,7 +40,7 @@ public OnPluginStart()
     HookEvent("player_builtobject", ObjectBuilt, EventHookMode_Post);
 	HookEvent("player_carryobject", ObjectCarry, EventHookMode_Post);
 
-	RegConsoleCmd("sm_dane", Dane, "become dane");
+	//RegConsoleCmd("sm_dane", Dane, "become dane");
 
     Robot robot;
     robot.name = ROBOT_NAME;
@@ -212,12 +212,12 @@ public Action:SetModel(client, const String:model[])
 		
 	}
 }
-public Action Dane(int client, int args)
-{
-	// TF2_SetPlayerClass(client, TFClass_Engineer);
-    // TF2_RegeneratePlayer(client);
-	MakeUncleDane(client);
-}
+// public Action Dane(int client, int args)
+// {
+// 	// TF2_SetPlayerClass(client, TFClass_Engineer);
+//     // TF2_RegeneratePlayer(client);
+// 	MakeUncleDane(client);
+// }
 
 MakeUncleDane(client)
 {

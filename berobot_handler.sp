@@ -528,7 +528,7 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
 public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 {
     //Activates when doing OnRegenerate (touchihng resupply locker) and then ignoring it if you are a boss
-    if(IsAnyRobot(pThis)){
+     if(isMiniBoss(pThis)){
         //PrintToChatAll("1");
 
     //sets the robot health when touc
