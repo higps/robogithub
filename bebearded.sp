@@ -5,8 +5,9 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
-#include <tf_custom_attributes>
+//#tryinclude <tf_custom_attributes>
  
+
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bearded Expense"
 #define ROBOT_ROLE "Tank"
@@ -17,9 +18,14 @@
 #define DEATH       "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP        "mvm/giant_heavy/giant_heavy_loop.wav"
 #define SOUND_LEAP  "TFPlayer.AirBlastImpact"
+
+
 #define sBoomNoise  "weapons/explode3.wav"
-#define ALARM       "mvm/mvm_cpoint_klaxon.wav"
-#define JUMP        "items/powerup_pickup_king.wav"
+#define ALARM2      "mvm/mvm_cpoint_klaxon.wav"
+#define JUMP2        "items/powerup_pickup_king.wav"
+
+#define JUMP  "download/sound/lunge.mp3"
+#define ALARM        "download/sound/om_chant.mp3"
 
 #define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
@@ -319,8 +325,9 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 			TF2Attrib_SetByName(Weapon3, "aiming movespeed increased", 2.0);
 			TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
-			TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
-			TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");
+
+			// TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
+			// TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");
 			
 			
 				
