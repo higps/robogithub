@@ -145,6 +145,52 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.65);
 		
 		SetEntPropFloat(iObj, Prop_Send, "m_flPercentageConstructed", 1.0);
+		DispatchKeyValue(iObj, "defaultupgrade", "2"); 
+		
+		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Teleporter){
+						
+						SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
+						SetEntProp(iObj, Prop_Send, "m_nBody", 2);
+						SetEntProp(iObj, Prop_Send, "m_iState", 2);
+						SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);	//Set Pads to level 3 for cosmetic reasons related to recharging
+						SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
+						AcceptEntityInput(iObj, "Start");
+						//SetEntProp(iObj, Prop_Send, "m_bMiniBuilding", true);
+
+						CreateTimer(0.4, Particle_Teleporter);
+						//Set teleporter to itself - does not work yet
+						TF2_SetMatchingTeleporter(iObj, iObj);
+
+						float position[3];
+						GetEntPropVector(iObj, Prop_Data, "m_vecOrigin", position);	
+						int attach = CreateEntityByName("trigger_push");
+						TeleportEntity(attach, position, NULL_VECTOR, NULL_VECTOR);
+						TE_Particle("teleported_mvm_bot", position, _, _, attach, 1,0);	
+						int soundswitch = GetRandomInt(1, 5);
+						switch(soundswitch)
+						{
+							case 1:
+							{
+								EmitSoundToAll(TELEPORTER_ACTIVATE1);
+							}
+							case 2:
+							{
+								EmitSoundToAll(TELEPORTER_ACTIVATE2);
+							}
+							case 3:
+							{
+								EmitSoundToAll(TELEPORTER_ACTIVATE3);
+							}
+							case 4:
+							{
+								EmitSoundToAll(TELEPORTER_ACTIVATE4);
+							}
+							case 5:
+							{
+								EmitSoundToAll(TELEPORTER_ACTIVATE5);
+							}
+						}
+		}
 		//SetEntProp(iObj, Prop_Send, "m_CollisionGroup", 2); 
 		//SetEntPropFloat(iObj, Prop_Send, "m_bDisposableBuilding", 1.0);	
 		DispatchKeyValue(iObj, "defaultupgrade", "2"); 
