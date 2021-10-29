@@ -120,12 +120,6 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 public Action Event_player_escort_score(Event event, char[] name, bool dontBroadcast)
 {   
     SMLogTag(SML_VERBOSE, "Event_player_escort_score called");
-    //Adds voice line if boss mode is active
-    if (!IsEnabled())
-    {
-        SMLogTag(SML_VERBOSE, "Event_player_escort_score ignored, because MM is not enabled");
-        return;
-    }
     if(!IsActive())
     {
         SMLogTag(SML_VERBOSE, "Event_player_escort_score ignored, because robo-mode is not active");
@@ -177,11 +171,6 @@ public Action Event_player_escort_score(Event event, char[] name, bool dontBroad
 
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
-    if (!IsEnabled())
-    {
-        SMLogTag(SML_VERBOSE, "TF2_OnTakeDamageModifyRules ignored, because MM is not enabled");
-        return Plugin_Continue;
-    }
     if(!IsValidClient(victim))
     {
         SMLogTag(SML_VERBOSE, "TF2_OnTakeDamageModifyRules ignored, because victim %i was not a valid client", victim);
