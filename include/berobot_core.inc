@@ -12,6 +12,14 @@
 native bool IsEnabled();
 
 /**
+ * checks if robot-mode is active right now
+ * 
+ * @return  true: robot-mode is active;
+ *          false: robot-mode is _not_ active
+ */
+native bool IsActive();
+
+/**
  * returns the robot-definition 
  * 
  * @param name      name of the robot-definition
@@ -124,7 +132,7 @@ stock bool ClassHasDeepRobotVoiceLines(TFClassType class)
  * @param class      class to translate
  * @param name       buffer to store value
  * @param maxlen     maximum length of string-buffer
- * @noretrurn
+ * @noreturn
  */
 stock void TF2_GetNameOfClass(TFClassType class, char[] name, int maxlen)
 {
@@ -179,9 +187,24 @@ stock void TF2_SwapTeamAndRespawn(int client, int team)
  * 
  * @param client    client to send the text to
  * @param text      text to be send
- * @noretrurn
+ * @noreturn
  */
 stock void MM_PrintToChat(int client, char[] text)
 {
     MC_PrintToChatEx(client, client, "[ {orange}SM {default}] {teamcolor}%s", text);
+}
+
+/**
+ * generates a random boolean based on the given uniform distribution
+ * 
+ * @param trueCases     count of cases that produce a true result
+ * @param maxCases      count of all cases
+ * @return              randomly true/false based on the given uniform distribution
+ */
+stock bool MM_Random(int trueCases, int maxCases)
+{
+    return true;
+    
+    int random = GetRandomInt(1, maxCases);
+    return random <= trueCases;
 }
