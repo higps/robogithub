@@ -292,8 +292,7 @@ void Reset(int client)
     }
 
     RedrawChooseRobotMenu();
-
-    AddRandomVolunteer();
+    EnsureRobotCount();
 }
 
 /* Publics */
@@ -968,6 +967,8 @@ Action Menu_ChooseRobot(int client)
         SMLogTag(SML_VERBOSE, "added option for %s: %s", item.name, display);
     }
     
+    if (g_chooseRobotMenus[client] != null)
+        g_chooseRobotMenus[client].Cancel();
     g_chooseRobotMenus[client] = menu;
 
     int timeout = MENU_TIME_FOREVER;
@@ -990,6 +991,7 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
         PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
 
         SetRobot(info, param1);
+        g_chooseRobotMenus[param1] = null;
     }
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
@@ -1259,8 +1261,7 @@ bool RemoveRandomRobot()
         return false;
     }
 
-    int i = GetRandomInt(0, g_Volunteers.Length -1);
-    int clientId = g_Volunteers.Get(i);
+    int clientId = FindRandomVolunteer();
     char robotName[NAMELENGTH];
     robotName = g_cv_RobotPicked[clientId];
     CreateRobot(robotName, clientId, "");
@@ -1270,6 +1271,23 @@ bool RemoveRandomRobot()
     Reset(clientId);
     ChangeClientTeam(clientId, g_HumanTeam);
     return true;
+}
+
+int FindRandomVolunteer()
+{
+    for(;;)
+    {
+        if (g_Volunteers.Length <= 0)
+            return -1;
+
+        int i = GetRandomInt(0, g_Volunteers.Length -1);
+        int clientId = g_Volunteers.Get(i);
+
+        if (IsValidClient(clientId) && IsClientInGame(clientId))
+            return clientId;
+                     
+        g_Volunteers.Erase(i);
+    }
 }
 
 stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
