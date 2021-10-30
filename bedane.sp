@@ -11,10 +11,7 @@
 #include <dhooks>
 #include <sdktools>
 //#include <collisionhook>
-
-#include <tf2items>
-#include <tf2items_giveweapon>
-
+#include <tf_custom_attributes>
 
 #pragma semicolon 1
 //#pragma newdecls required
@@ -422,14 +419,16 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
-	TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
-	TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
+
 	TF2Attrib_SetByName(client, "metal regen", 150.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
-	TF2Attrib_SetByName(client, "mod teleporter cost", 0.5);
+	TF2Attrib_SetByName(client, "mod teleporter cost", 3.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+
+	
+	//TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");
 	
 	UpdatePlayerHitbox(client, 1.65);
 	
@@ -511,14 +510,17 @@ stock GiveBigRoboDane(client)
 			
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.85);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.0);
-			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 20.0);
+			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
 			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 4.0);
-			TF2Attrib_SetByName(Weapon3, "alt fire teleport to spawn", 1.0);
-			TF2Attrib_SetByName(Weapon3, "special taunt", 1.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
+			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
+			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 6.0);
+
+			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
+			
 			
 		}
 	
@@ -921,7 +923,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	PrintToChatAll("%N spawned", client);
+	//PrintToChatAll("%N spawned", client);
 	if (!IsAnyRobot(client))
 		return Plugin_Continue;
 

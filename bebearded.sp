@@ -5,7 +5,7 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
-//#tryinclude <tf_custom_attributes>
+#include <tf_custom_attributes>
  
 
 #define PLUGIN_VERSION "1.0"
@@ -326,8 +326,8 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "aiming movespeed increased", 2.0);
 			TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
 
-			// TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
-			// TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");
+			TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
+			TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");
 			
 			
 				
