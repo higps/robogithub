@@ -16,7 +16,16 @@
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_demoman/giant_demoman_loop.wav"
+#define SOUND_HEAL_READY "player/recharged.wav"
+
+#define CHAR_FULL "■"
+#define CHAR_EMPTY "□"
+#define THINK_RATE 0.5
+#define RECHARGE_TIME 30.0
  
+int g_Recharge[MAXPLAYERS + 1] = 1;
+int g_RechargeCap = 25;
+
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Sentror",
@@ -39,6 +48,8 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
+
+	CreateTimer(THINK_RATE, Timer_Think, _, TIMER_REPEAT);
 }
 
 public void OnPluginEnd()
@@ -59,6 +70,7 @@ public OnMapStart()
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
+	PrecacheSound(SOUND_HEAL_READY);
    
 }
  
@@ -529,15 +541,20 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		//0 = fireball
 		//PrintToChat(client, "Throwing spell!");
+			if (g_Recharge[client] == g_RechargeCap)
+	{
 		CastSpell(client, 0);
+	}
+		
 	}
 }
 
 public void CastSpell(int client, int index) {
 	//index = 0;
-	float time = GetGameTime();
-	bool rare = (index >= PAGE_LENGTH);
-	float delay = 0.5;
+
+	// float time = GetGameTime();
+	// bool rare = (index >= PAGE_LENGTH);
+	// float delay = 0.5;
 	// if (rare) {
 	// 	float actual = fTimeFiredRare[client] - time + fSpellDelay + fSpellDelayRare;
 	// 	if (actual > 0)delay = actual;
@@ -569,6 +586,7 @@ public void CastSpell(int client, int index) {
 			EquipPlayerWeapon(client, ent);
 			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", ent);
 			
+			g_Recharge[client] = 1;
 			// if (rare)fTimeFiredRare[client] = time;
 			// fTimeFired[client] = time;
 		}
@@ -581,4 +599,71 @@ public int FindSpellbook(int client) {
 		if (IsValidEntity(i) && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client && !GetEntProp(i, Prop_Send, "m_bDisguiseWeapon"))return i;
 	}
 	return 0;
+}
+
+void DrawHUD(int client)
+{
+	char sHUDText[128];
+	char sProgress[32];
+	int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCap) * 100.0);
+
+	for (int j = 1; j <= 10; j++)
+	{
+		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
+		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
+	}
+
+	Format(sHUDText, sizeof(sHUDText), "Fireball: %d%%%%   \n%s   ", iPercents, sProgress);
+
+	if(iPercents >= 100)
+	{
+		SetHudTextParams(1.0, 0.8, 0.5, 255, 0, 0, 255);
+	} else {
+		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
+	}
+	ShowHudText(client, -1, sHUDText);
+}
+
+void UpdateCharge(int client)
+{
+	// if we are already at max charge, no need to check anything
+	if(g_Recharge[client] >= g_RechargeCap)
+	{
+		g_Recharge[client] = g_RechargeCap;
+		return;
+	}
+	
+
+
+	
+	g_Recharge[client] += 1;
+	//m_iLastHealingAmount[client] = iActualHealingAmount;
+	
+	// if we reached the cap after healing, play the voicelines and such
+	if(g_Recharge[client] >=g_RechargeCap)
+	{
+		g_Recharge[client] = g_RechargeCap;
+		EmitSoundToClient(client, SOUND_HEAL_READY);
+		//EmitSoundToAll(SOUND_HEAL_READY_VO, client);
+	}
+	//UpdatePoseParameter(client, GetWeaponWithAttribute(client));
+}
+
+public Action Timer_Think(Handle hTimer, any data)
+{
+	for (int i = 1; i <= MAXPLAYERS; i++)
+	{
+		if(IsValidClient(i))
+		{
+			// check for class type to save looping over every weapon
+			// if this attribute ever gets applied to other classes, remove this check
+			if(IsRobot(i, ROBOT_NAME))
+			{
+				
+				UpdateCharge(i);
+				DrawHUD(i);
+				
+			}
+		}
+	}
 }
