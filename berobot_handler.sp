@@ -418,8 +418,8 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 /* Plugin Exclusive Functions */
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
-    if (!g_Enable)
-        return Plugin_Continue;
+    // if (!g_Enable)
+    //     return Plugin_Continue;
     if(!IsValidClient(victim))
         return Plugin_Continue;    
     if(!IsValidClient(attacker))
@@ -430,13 +430,11 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
     //if(g_cv_bDebugMode) PrintToChatAll("On damage happened");
     
-    if(iClassAttacker == TFClass_Spy)
+    if(IsAnyRobot(victim) && iClassAttacker == TFClass_Spy)
     {
         // Checks if boss is on
-        if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy");
+        if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy and victim was robot");
 
-        if(IsAnyRobot(victim))
-            {
                 if(damagecustom == TF_CUSTOM_BACKSTAB)
                 {
                     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
@@ -445,7 +443,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                     return Plugin_Changed;
                 }
-            }
+            
     }
     return Plugin_Continue;
 }
