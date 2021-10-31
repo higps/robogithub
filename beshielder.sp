@@ -186,12 +186,12 @@ stock GiveGiantMedic(client)
 			 TF2Attrib_SetByName(Weapon2, "ubercharge overheal rate penalty", 0.5);
 			 
 			 //TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", -0.1);
-			 TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.00);
+			 //TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.00);
 			 TF2Attrib_SetByName(Weapon2, "generate rage on heal", 1.0);
 			 TF2Attrib_SetByName(Weapon2, "increase buff duration", 0.65);
 			 //TF2Attrib_SetByName(Weapon2, "rage fill multiplier", 0.5);
-			 TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.5");
-
+			 TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.25");
+			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.6);
 			 //TF2CustAttr_SetString(Weapon2, "banner rage fill multiplier", "0.25");
 			 
 			  

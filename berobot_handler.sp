@@ -148,7 +148,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_Rtr_precent] = CreateConVar("sm_mm_needed_rtr_ratio", "0.5", "The ratio of votes needed to start the mode with !rtr 1.0 = 100% 0.0 = 0%");
 
     //Gameplay cvar
-    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "250.0", "Backstab damage");
+    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "83.2", "Backstab damage that will be multipled by crit multiplier");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_mm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     /* Convar global variables init */
 
@@ -416,7 +416,7 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 }
 
 /* Plugin Exclusive Functions */
-public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
     if (!g_Enable)
         return Plugin_Continue;
@@ -427,6 +427,8 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
 
     TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
+
+    //if(g_cv_bDebugMode) PrintToChatAll("On damage happened");
     
     if(iClassAttacker == TFClass_Spy)
     {
@@ -437,10 +439,10 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             {
                 if(damagecustom == TF_CUSTOM_BACKSTAB)
                 {
+                    if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
                     damage = g_CV_flSpyBackStabModifier;
                     critType = CritType_Crit;
                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-
                     return Plugin_Changed;
                 }
             }

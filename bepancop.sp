@@ -164,7 +164,7 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.55);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
+	TF2Attrib_SetByName(client, "health from packs decreased", 0.01);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -235,6 +235,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.35);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
 			TF2Attrib_SetByName(Weapon1, "ragdolls plasma effect", 1.0);
 			TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 109.0);
 			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.35);
@@ -251,7 +252,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "lunchbox adds minicrits", 7.0);
-			TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 20.0);
+			TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 40.0);
 			
 
 

@@ -195,14 +195,17 @@ stock GiveGiantDemoKnight(client)
 		if(IsValidEntity(Weapon1))
 		{
 		//	TF2Attrib_RemoveAll(Weapon1);
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.2);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.23);
 			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.25);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.35);
+			//TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.8);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
+			TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 2.0);
+			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			
 			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
 			// TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.8);
 			

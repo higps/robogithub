@@ -6,7 +6,7 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
- 
+#include <dhooks>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bearded Expense"
@@ -21,18 +21,19 @@
 
 
 #define sBoomNoise  "weapons/explode3.wav"
-#define ALARM2      "mvm/mvm_cpoint_klaxon.wav"
-#define JUMP2        "items/powerup_pickup_king.wav"
+#define ALARM      "mvm/mvm_cpoint_klaxon.wav"
+#define JUMP        "items/powerup_pickup_king.wav"
 
-#define JUMP  "download/sound/lunge.mp3"
-#define ALARM        "download/sound/om_chant.mp3"
+#define JUMP2  "download/sound/lunge.mp3"
+#define ALARM2       "download/sound/om_chant.mp3"
 
 #define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
 #define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
 
-
+Handle g_hGameConf;
+Handle g_hIsDeflectable;
 
 public Plugin:myinfo =
 {
@@ -51,6 +52,20 @@ public OnPluginStart()
 
     HookEvent("player_death", Event_Death, EventHookMode_Post);
 
+	g_hGameConf = LoadGameConfigFile("bm_charge_airblast_immunity_data");
+	
+	//IsDeflectable
+	g_hIsDeflectable = DHookCreate(0, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, IsPlayerDeflectable);
+	if(g_hIsDeflectable == null) SetFailState("Failed to setup hook for CTFPlayer::IsDeflectable!"); 
+	
+	if(!DHookSetFromConf(g_hIsDeflectable, g_hGameConf, SDKConf_Virtual, "CTFPlayer::IsDeflectable"))
+	SetFailState("Failed to find CTFPlayer::IsDeflectable offset in the gamedata!");
+	
+	//Finds players to hook for IsDeflectable
+	FindAndHookPlayers();
+	
+	delete g_hGameConf;
+
     Robot robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
@@ -65,6 +80,35 @@ public OnPluginStart()
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
+}
+
+void FindAndHookPlayers()
+{
+	for(int i = 1; i < MaxClients+1; i++)
+	{
+		if(IsValidClient(i))
+		{
+			DHookEntity(g_hIsDeflectable, false, i);
+		}
+	}
+}
+
+public void OnClientPutInServer(int client)
+{
+	DHookEntity(g_hIsDeflectable, false, client);
+}
+
+public MRESReturn IsPlayerDeflectable(int pThis, Handle hReturn, Handle hParams)
+{
+	if(IsRobot(pThis, ROBOT_NAME))
+	{
+		//PrintToChatAll("Shouldn't airblast target %N", pThis);
+		
+		DHookSetReturn(hReturn, false);
+		
+		return MRES_Override;
+	}
+	return MRES_Ignored;
 }
  
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -245,7 +289,7 @@ MakeBearded(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.1);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.3);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
@@ -260,6 +304,8 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	TF2Attrib_SetByName(client, "increased air control", 500.0);
+	
 	
 	
 	
@@ -388,7 +434,7 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 
         if (tauntid == -1)
         {
-            TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
+            TF2_AddCondition(client,TFCond_DefenseBuffed, 120.0);
             EmitSoundToAll(ALARM);
 
             CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);

@@ -252,9 +252,9 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 1.5);
-			TF2Attrib_SetByName(Weapon1, "spread penalty", 1.3);
+			//TF2Attrib_SetByName(Weapon1, "spread penalty", 1.3);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
 			TF2Attrib_SetByName(Weapon1, "generate rage on damage", 1.0);
 			TF2Attrib_SetByName(Weapon1, "increase buff duration", 1.25);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);

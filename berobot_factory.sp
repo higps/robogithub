@@ -109,7 +109,7 @@ public void Event_Player_Spawned(Handle event, const char[] name, bool dontBroad
     }
 
     StopSounds(client, item);   //moved here, because doing it inside Timer_Locker blocked the loop to start again (don't ask me why)
-    CreateTimer(0.2, Timer_Locker, client);
+    CreateTimer(0.0, Timer_Locker, client);
 }
 
 public void ResetPreviousRobot(int client)
