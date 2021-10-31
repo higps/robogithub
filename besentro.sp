@@ -198,8 +198,8 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			 //TF2Attrib_SetByName(Weapon2, "uber duration bonus", -0.9);
 			//  TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
-			//  TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 0.0);
-			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.25);
+			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.25);
+			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.20);
 			//  TF2Attrib_SetByName(Weapon2, "medigun charge is crit boost", 1.0);
 			
 			
@@ -251,11 +251,27 @@ bool CreateHat(int client, int itemindex, int level, int quality)
 	SetEntData(hat, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);
 	SetEntProp(hat, Prop_Send, "m_bValidatedAttachedEntity", 1);  	
 	
-	if(itemindex == 359)
-	{
-		SetEntData(hat, FindSendPropInfo(entclass, "m_iEntityQuality"), 5);
-		TF2Attrib_SetByDefIndex(hat, 134, GetRandomInt(1,133) + 0.0);	
-	}
+
+		// 	CreateHat(client, 30052, 10, 6); // byte'd beak
+		// CreateHat(client, 383, 10, 6); //Grimhatte
+		// CreateHat(client, 878, 10, 6);//Foppish
+
+	TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		
+			if (iTeam == TFTeam_Red){
+				TF2Attrib_SetByDefIndex(hat, 142, 8400928.0);
+				TF2Attrib_SetByDefIndex(hat, 261, 8400928.0);
+			}
+			if (iTeam == TFTeam_Blue){
+				TF2Attrib_SetByDefIndex(hat, 142, 2452877.0);
+				TF2Attrib_SetByDefIndex(hat, 261, 2452877.0);
+			}
+
+	// if(itemindex == 359)
+	// {
+	// 	SetEntData(hat, FindSendPropInfo(entclass, "m_iEntityQuality"), 5);
+	// 	TF2Attrib_SetByDefIndex(hat, 134, GetRandomInt(1,133) + 0.0);	
+	// }
 	
 	
 

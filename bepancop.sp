@@ -171,7 +171,7 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
+	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	//TF2Attrib_SetByName(client, "mult_item_meter_charge_rate", 0.3);
 	TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
@@ -234,8 +234,8 @@ stock GiveGDeflectorH(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.35);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.30);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
 			TF2Attrib_SetByName(Weapon1, "ragdolls plasma effect", 1.0);
 			TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 109.0);
 			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.35);

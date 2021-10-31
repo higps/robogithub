@@ -297,10 +297,10 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	TF2Attrib_SetByName(client, "health from healers increased", 5.0);
+	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
 	//TF2Attrib_SetByName(client, "mult charge turn control", 10.0);
-	TF2Attrib_SetByName(client, "dmg from melee increased", 3.5);
+	TF2Attrib_SetByName(client, "dmg from melee increased", 4.5);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);

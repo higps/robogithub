@@ -485,6 +485,13 @@ public Action Command_Robot_Selection(int client, int args)
 {
     if (g_Enable){
     ServerCommand("mp_forceautoteam  0");
+            
+        ServerCommand("mp_teams_unbalance_limit 0");
+        ServerCommand("sm_cvar tf_dropped_weapon_lifetime 0");
+        
+        ServerCommand("mp_autoteambalance 0");
+        ServerCommand("mp_scrambleteams_auto 0");
+        ServerCommand("mp_forceautoteam  0");
     
     for(int i = 1; i < MaxClients; i++)
     {

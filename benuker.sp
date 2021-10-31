@@ -165,7 +165,7 @@ stock GiveGiantDemoKnight(client)
 		//CreateWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 0, 0);
 		CreateWeapon(client, "tf_weapon_cannon", 996, 6, 1, 0, 0);
 
-		CreateWeapon(client, "tf_weapon_bottle", 609, 6, 1, 0, 1);
+		CreateWeapon(client, "tf_weapon_bottle", 609, 6, 1, 3, 0);
 
 		CreateHat(client, 30034, 10, 6, true);//"The Frag Proof Fragger"
 		//CreateHat(client, 30945, 10, 6, false);//blast locker

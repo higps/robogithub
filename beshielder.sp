@@ -183,7 +183,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			 //TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 0.0);
 			 TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
-			 TF2Attrib_SetByName(Weapon2, "ubercharge overheal rate penalty", 0.5);
+			TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 0.15);
 			 
 			 //TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", -0.1);
 			 //TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.00);

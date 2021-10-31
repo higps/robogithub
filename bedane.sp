@@ -310,7 +310,7 @@ stock void TF2_SetMatchingTeleporter(int iTele, int iMatch)	//Set the matching t
 
 	if (IsValidEntity(iTele) && HasEntProp(iTele, Prop_Send, g_szOffsetStartProp))
 	{
-		PrintToChatAll("Matching telepoters");
+		//PrintToChatAll("Matching telepoters");
 		int iOffs = FindSendPropInfo("CObjectTeleporter", g_szOffsetStartProp) + g_iOffsetMatchingTeleporter;
 		SetEntDataEnt2(iTele, iOffs, iMatch, true);
 	}
@@ -1216,8 +1216,8 @@ public Action CommandListener_Build(client, const char[] command, argc)
 	int iObjectMode = StringToInt(sObjectMode);
 	int iObjectType = StringToInt(sObjectType);
 	//char sClassName[32];
-	PrintToChat(client,"Object type: %i", iObjectType);
-	PrintToChat(client,"Object mode: %i", iObjectMode);
+	// PrintToChat(client,"Object type: %i", iObjectType);
+	// PrintToChat(client,"Object mode: %i", iObjectMode);
 	// for(int i = MaxClients + 1; i < g_iMaxEntities; i++)
 	// {
 	// 	PrintToChatAll("Client: %i", i);
