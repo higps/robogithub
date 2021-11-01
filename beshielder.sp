@@ -89,6 +89,8 @@ MakeGiantMedic(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GMEDIC);
+	m_nSkin
+	
    
 		
 	int iHealth = 2500;
