@@ -21,11 +21,11 @@
 
 
 #define sBoomNoise  "weapons/explode3.wav"
-#define ALARM      "mvm/mvm_cpoint_klaxon.wav"
-#define JUMP        "items/powerup_pickup_king.wav"
+#define ALARM2      "mvm/mvm_cpoint_klaxon.wav"
+#define JUMP2        "items/powerup_pickup_king.wav"
 
-#define JUMP2  "download/sound/lunge.mp3"
-#define ALARM2       "download/sound/om_chant.mp3"
+#define JUMP  "lunge.wav"
+#define ALARM       "om_chant.wav"
 
 #define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
@@ -294,13 +294,13 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 0.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
 	//TF2Attrib_SetByName(client, "mult charge turn control", 10.0);
-	TF2Attrib_SetByName(client, "dmg from melee increased", 4.5);
+	TF2Attrib_SetByName(client, "dmg from melee increased", 3.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
@@ -350,7 +350,26 @@ stock GiveBearded(client)
 		CreateHat(client, 145, 10, 6, 1315860.0, true);
 	//	CreateHat(client, 30178, 10, 6, 1315860);
 		CreateHat(client, 30645, 10, 6, 1315860.0, true);
-		CreateHat(client, 30342, 10, 6, 0.0, false);
+
+		int iTeam = GetClientTeam(client);
+		int suit = 0;
+
+		
+		
+		switch(iTeam)
+		{
+			case 2://RED
+			{
+				//PrintToChatAll("Team was 2");
+				suit = 30342;// The Heavy Lifter
+			}
+			case 3://BLUE
+			{
+				//PrintToChatAll("Team was 3");
+				suit = 30178;//weight room warmer
+			}
+		}
+		CreateHat(client, suit, 10, 6, 0.0, false);
 		
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
@@ -421,23 +440,28 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 	clients[0] = client;
 
 	
-	EmitSound(clients, 1, ALARM, client, SNDCHAN_AUTO, SNDLEVEL_WHISPER, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
+	//EmitSound(clients, 1, ALARM, client, SNDCHAN_AUTO, SNDLEVEL_WHISPER, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
 
 	//EmitGameSound(client, MaxClients, ALARM, client, SND_NOFLAGS, client, pos)
 	//EmitGameSound(clients, numClients, sample, client, channel, SNDLEVEL_CONVO);
-	CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
+//	CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
 	// TF2_AddCondition(client, TFCond_GrapplingHookSafeFall, TFCondDuration_Infinite);
 	   //TFCond_CritHype
 	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+
+	EmitSoundToAll(ALARM, client);
+	EmitSoundToAll(ALARM, client);
+
+	//EmitSoundToAll("misc/bonzo_vomit01.wav", _, _, 5, _, 10.0);
 	CreateTimer(3.35, Timer_Taunt_Cancel, client);
 	}
 
         if (tauntid == -1)
         {
             TF2_AddCondition(client,TFCond_DefenseBuffed, 120.0);
-            EmitSoundToAll(ALARM);
+            
 
-            CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
+          //  CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
             // TF2_AddCondition(client, TFCond_GrapplingHookSafeFall, TFCondDuration_Infinite);
             //TFCond_CritHype
             // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
@@ -496,7 +520,9 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	// And set it
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vVelocity);
 	
-	EmitGameSoundToAll(SOUND_LEAP,client);
+	//EmitGameSoundToAll(SOUND_LEAP,client);
+	EmitSoundToAll(JUMP,client);
+	EmitSoundToAll(JUMP,client);
 	EmitSoundToAll(JUMP,client);
 }
  

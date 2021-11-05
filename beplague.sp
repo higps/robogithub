@@ -32,7 +32,7 @@ public OnPluginStart()
     Robot robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Pyro";
+    robot.class = "Medic";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

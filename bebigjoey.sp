@@ -184,7 +184,7 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -232,9 +232,9 @@ stock GiveGDeflectorH(client)
 
 //bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot)
 		
-		CreateWeapon(client, "tf_weapon_lunchbox", 863, 6, 1, 1);
-		CreateWeapon(client, "tf_weapon_fists", 239, 6, 1, 2);
-		CreateWeapon(client, "tf_weapon_minigun", 424, 6, 1, 0);
+	//	CreateWeapon(client, "tf_weapon_lunchbox", 863, 6, 1, 1);
+	//	CreateWeapon(client, "tf_weapon_fists", 239, 6, 1, 2);
+		CreateWeapon(client, "tf_weapon_minigun", 424, 9, 1, 0);
 		
 		CreateHat(client, 30644, 10, 6, true);//white russian
 		CreateHat(client, 30104, 10, 6, true);//graybanns
@@ -255,28 +255,28 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 1.5);
-			TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.5);
+			TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.65);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.2);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
 			 
 
 		}
 
-		if(IsValidEntity(Weapon2))
-		{
-			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 5.0);
-			TF2Attrib_SetByName(Weapon2, "item_meter_charge_rate", 50.0);
-		}
+		// if(IsValidEntity(Weapon2))
+		// {
+		// 	TF2Attrib_RemoveAll(Weapon2);
+		// 	TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 5.0);
+		// 	TF2Attrib_SetByName(Weapon2, "item_meter_charge_rate", 50.0);
+		// }
 
 		
-		if(IsValidEntity(Weapon3))
-		{
-			TF2Attrib_RemoveAll(Weapon3);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon3, "single wep holster time increased", 1.0);
+		// if(IsValidEntity(Weapon3))
+		// {
+		// 	TF2Attrib_RemoveAll(Weapon3);
+		// 	TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Weapon3, "single wep holster time increased", 1.0);
 			
-		}
+		// }
 	}
 }
 

@@ -6,6 +6,7 @@
 #include <berobot>
 //#include <tf_custom_attributes>
 #include <sdktools>
+#include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Sentro"
@@ -126,6 +127,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -197,9 +199,13 @@ stock GiveGiantMedic(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			 //TF2Attrib_SetByName(Weapon2, "uber duration bonus", -0.9);
-			//  TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
-			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.25);
-			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.20);
+			//TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.5);
+			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
+			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
+			TF2CustAttr_SetString(Weapon2,"medigun charge is group overheal", "range=500.0 heal_rate=160.0 overheal_ratio=1.25 overheal_duration_mult=0.25");
+
+			// 
+			
 			//  TF2Attrib_SetByName(Weapon2, "medigun charge is crit boost", 1.0);
 			
 			
@@ -553,13 +559,14 @@ stock void TF2_RemoveAllWearables(int client)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ALT1|IN_ALT2|IN_ATTACK3|IN_RELOAD|IN_USE))
+	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_RELOAD|IN_USE))
 	{
 		//0 = fireball
 		//PrintToChat(client, "Throwing spell!");
-			if (g_Recharge[client] == g_RechargeCap)
+			if (g_Recharge[client] >= g_RechargeCap)
 	{
 		CastSpell(client, 0);
+		g_Recharge[client] = 1;
 	}
 		
 	}
@@ -602,7 +609,7 @@ public void CastSpell(int client, int index) {
 			EquipPlayerWeapon(client, ent);
 			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", ent);
 			
-			g_Recharge[client] = 1;
+			
 			// if (rare)fTimeFiredRare[client] = time;
 			// fTimeFired[client] = time;
 		}
@@ -652,7 +659,10 @@ void UpdateCharge(int client)
 
 
 	
-	g_Recharge[client] += 1;
+	if(IsRobot(client, ROBOT_NAME))//only add charge if you are sentro
+	{ 
+		g_Recharge[client] += 2;
+	}
 	//m_iLastHealingAmount[client] = iActualHealingAmount;
 	
 	// if we reached the cap after healing, play the voicelines and such

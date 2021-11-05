@@ -121,7 +121,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.3);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
@@ -135,7 +135,7 @@ MakeSolar(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintToChat(client, "1. You are now Giant Solar Light !");
+	PrintToChat(client, "1. You are now Giant Mortar Mack!");
 }
 
 stock TF2_SetHealth(client, NewHealth)

@@ -89,7 +89,7 @@ MakeGiantMedic(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GMEDIC);
-	m_nSkin
+	
 	
    
 		
@@ -114,7 +114,8 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
+
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -184,16 +185,17 @@ stock GiveGiantMedic(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			 //TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 0.0);
-			 TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
-			TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 0.15);
+			 //TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
+			//TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 0.25);
 			 
 			 //TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", -0.1);
 			 //TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.00);
-			 TF2Attrib_SetByName(Weapon2, "generate rage on heal", 1.0);
-			 TF2Attrib_SetByName(Weapon2, "increase buff duration", 0.65);
+			TF2Attrib_SetByName(Weapon2, "generate rage on heal", 1.0);
+			TF2Attrib_SetByName(Weapon2, "increase buff duration", 0.65);
 			 //TF2Attrib_SetByName(Weapon2, "rage fill multiplier", 0.5);
-			 TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.25");
-			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.6);
+			 TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
+			TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.1");
+			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 3.0);
 			 //TF2CustAttr_SetString(Weapon2, "banner rage fill multiplier", "0.25");
 			 
 			  

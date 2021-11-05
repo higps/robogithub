@@ -184,9 +184,9 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
+	//TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	UpdatePlayerHitbox(client, 1.75);
@@ -226,9 +226,10 @@ stock GiveGDeflectorH(client)
 		TF2_RemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
-		CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
+
+		CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
 
 		CreateHat(client, 30623, 10, 6, true);
 		CreateHat(client, 486, 10, 6, true);
@@ -244,7 +245,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 1.5);
-			TF2Attrib_SetByName(Weapon1, "spread penalty", 1.3);
+			//TF2Attrib_SetByName(Weapon1, "spread penalty", 1.3);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
 			 

@@ -109,6 +109,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -119,8 +120,6 @@ MakeGiantMedic(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 	PrintToChat(client, "1. You are now Giant Dr. Crossbow Cop !");
-	PrintToChat(client, "2. Your Vaccinator is slow and strong!");
-	PrintToChat(client, "3. Spawns with full Ubercharge !");
 		
 
 

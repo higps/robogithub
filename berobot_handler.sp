@@ -373,6 +373,33 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
 public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 {
     //Activates when doing OnRegenerate (touchihng resupply locker) and then ignoring it if you are a boss
+
+    if(!IsAnyRobot(pThis)){
+         if(g_cv_bDebugMode) PrintToChatAll("Not a robot, removing forced skin on %N", pThis);
+        SetEntProp(pThis, Prop_Send, "m_bForcedSkin", 0);
+    }else
+    {
+        int iTeam = GetClientTeam(pThis);
+        switch(iTeam)
+        {
+            case RED:
+            {            	
+            if(g_cv_bDebugMode) PrintToChatAll("Forcing skin of %N, to RED", pThis);
+            SetEntProp(pThis, Prop_Send, "m_bForcedSkin", 1);
+            SetEntProp(pThis, Prop_Send, "m_nForcedSkin", 0);
+            }
+            case BLUE:
+            {
+            if(g_cv_bDebugMode) PrintToChatAll("Forcing skin of %N, to BLUE", pThis);
+            SetEntProp(pThis, Prop_Send, "m_bForcedSkin", 1);
+            SetEntProp(pThis, Prop_Send, "m_nForcedSkin", 1);
+            }
+        }
+        //unset to get uber animations to play right maybe?
+        
+  
+    }
+
      if(isMiniBoss(pThis)){
         //PrintToChatAll("1");
 
@@ -648,7 +675,7 @@ public Action Command_YT_Robot_Start(int client, int args)
         {
 
 
-            //Set everyone to spectate first
+            //Everyone is in spectate
 
             //ServerCommand("sm_ct @all spectate");
 
@@ -671,7 +698,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                         if(g_cv_Volunteered[i])
                         {
                             PrintToChat(i, "You are on the Robot Team");
-                            PrintToChatAll("%N is on robot team, which is %i", i, g_RoboTeam);
+                            //PrintToChatAll("%N is on robot team, which is %i", i, g_RoboTeam);
                             // ServerCommand("sm_begps #%i", playerID);
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
                             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
@@ -682,7 +709,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                         else
                         {
                             PrintToChat(i, "You are on the Human team");
-                            PrintToChatAll("%N is on robot team, which is %i",i, g_HumanTeam);
+                          //  PrintToChatAll("%N is on robot team, which is %i",i, g_HumanTeam);
                             // ServerCommand("sm_ct #%i %i", playerID, g_HumanTeam);
                             TF2_SwapTeamAndRespawnNoMsg(i, g_HumanTeam);
                             //TF2_RespawnPlayer(i);
@@ -1099,33 +1126,46 @@ public Action OnClientCommand(int client, int args)
     /* Get the argument */
     GetCmdArg(0, cmd, sizeof(cmd));
 
-    TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+    
 
     if(strcmp(cmd, "jointeam", true) == 0)
     {
+    TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+
+    //PrintToChatAll("Join team triggered. %N's team was %i", client, iTeam);
 
         if (g_SpectateSelection)
         {
             ChangeClientTeam(client, SPECTATE);
+            if(g_cv_bDebugMode) PrintToChatAll("Moving to spectate %N", client);
             return Plugin_Handled;
         }
 
         if(g_cv_BlockTeamSwitch)
         {
             PrintCenterText(client, "Boss mode is activated: Teams are locked");
-
+            if(g_cv_bDebugMode) PrintToChatAll("Teamswitch is %b ", g_cv_BlockTeamSwitch);
             //If someone joins while the event is going, set correct player team
 
-            if(iTeam == TFTeam_Unassigned)
+            if(iTeam == TFTeam_Unassigned || iTeam == TFTeam_Spectator)
             {
 
 
                 //Puts players in the correct team
-                if(!isMiniBoss(client))
+                if(!IsAnyRobot(client)){
+                    if(g_cv_bDebugMode) PrintToChatAll("Was not a robot %N", client);
                     ChangeClientTeam(client, g_HumanTeam);
+                    //ShowVGUIPanel(client, GetClientTeam(client) == 3 ? "class_blue" : "class_red");
+                }
+                    
 
-                if(isMiniBoss(client))
+                if(IsAnyRobot(client))
+                {
+                    if(g_cv_bDebugMode) PrintToChatAll("Was a robot %N", client);
                     ChangeClientTeam(client, g_RoboTeam);
+                    //ShowVGUIPanel(client, GetClientTeam(client) == 3 ? "class_blue" : "class_red");
+                }
+                    
 
                 //Sets you as random class when you join when boss mode is active
                 int irandomclass = GetRandomInt(1, 9);
@@ -1301,6 +1341,8 @@ stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
 {
 	SetEntProp(client, Prop_Send, "m_lifeState", 2);
 	ChangeClientTeam(client, team);
-	TF2_RespawnPlayer(client);
 	SetEntProp(client, Prop_Send, "m_lifeState", 0);
+    int irandomclass = GetRandomInt(1, 9);
+    TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
+    TF2_RespawnPlayer(client);
 }

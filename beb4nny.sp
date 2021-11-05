@@ -151,7 +151,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 1600;
+	int iHealth = 1250;
 		
 	int MaxHealth = 125;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -163,20 +163,21 @@ MakeGiantscout(client)
 	
 	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
+	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.80);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.5);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.25);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.5);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
-	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
-	TF2Attrib_SetByName(client, "increased jump height", 1.5);
+	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
+	TF2Attrib_SetByName(client, "increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 3.0);
 	
@@ -186,7 +187,9 @@ MakeGiantscout(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintToChat(client, "1. You are now Giant B4nny!");
-	
+	// SetEntProp(client, Prop_Send, "m_bForcedSkin", 1);
+	// SetEntProp(client, Prop_Send, "m_nForcedSkin", 0);
+
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -229,12 +232,12 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Scattergun);
 			TF2Attrib_SetByName(Scattergun, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Threerune, "fire rate bonus", 0.85);
-			TF2Attrib_SetByName(Scattergun, "weapon spread bonus", 0.5);
+			TF2Attrib_SetByName(Threerune, "fire rate bonus", 0.9);
+			TF2Attrib_SetByName(Scattergun, "weapon spread bonus", 0.6);
 			TF2Attrib_SetByName(Scattergun, "clip size bonus", 1.4);
 			//TF2Attrib_SetByName(Scattergun, "scattergun no reload single", 1.0);
-			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.4);
-			TF2Attrib_SetByName(Scattergun, "dmg penalty vs players", 1.32);
+			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.8);
+			TF2Attrib_SetByName(Scattergun, "dmg penalty vs players", 1.30);
 			
 			
 

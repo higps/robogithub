@@ -243,7 +243,7 @@ MakeBuster(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 2.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", -5.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 7.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 0.0);

@@ -121,7 +121,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.3);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
@@ -165,7 +165,7 @@ stock GiveGiantDemoKnight(client)
 		//CreateWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 0, 0);
 		CreateWeapon(client, "tf_weapon_cannon", 996, 6, 1, 0, 0);
 
-		CreateWeapon(client, "tf_weapon_bottle", 609, 6, 1, 3, 0);
+		CreateWeapon(client, "tf_weapon_bottle", 609, 6, 1, 2, 0);
 
 		CreateHat(client, 30034, 10, 6, true);//"The Frag Proof Fragger"
 		//CreateHat(client, 30945, 10, 6, false);//blast locker

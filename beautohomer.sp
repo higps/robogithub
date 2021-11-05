@@ -225,7 +225,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 3.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
@@ -277,7 +277,7 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.7);
+			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.5);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
@@ -285,7 +285,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.75);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.45);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.25);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		//	TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);

@@ -185,7 +185,7 @@ MakeGRageH(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -254,9 +254,9 @@ stock GiveGRageH(client)
 			//TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 1.5);
 			//TF2Attrib_SetByName(Weapon1, "spread penalty", 1.3);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
+			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
 			TF2Attrib_SetByName(Weapon1, "generate rage on damage", 1.0);
-			TF2Attrib_SetByName(Weapon1, "increase buff duration", 1.25);
+			TF2Attrib_SetByName(Weapon1, "increase buff duration", 0.25);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
 			//TF2Attrib_SetByName(Weapon1, "mod rage on hit bonus", 25.0);
 			TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");

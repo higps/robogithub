@@ -414,7 +414,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	
@@ -925,8 +925,9 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	//PrintToChatAll("%N spawned", client);
 	if (!IsAnyRobot(client))
+	{
 		return Plugin_Continue;
-
+	}
 	
 	int team = GetClientTeam(client);
 
@@ -949,6 +950,8 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		if (GetEntProp(ent, Prop_Send, "m_bCarried"))	// If being carried
 			continue;
 		if (GetEntProp(ent, Prop_Send, "m_iObjectMode") != 1)	// If not exit
+			continue;
+		if (GetEntProp(ent, Prop_Send, "m_bHasSapper"))//has sapper
 			continue;
 		if (!IsValidEntity(GetEntDataEnt2(ent, FindSendPropInfo("CObjectTeleporter", "m_bMatchBuilding")+4)))	// Props to Pelipoika
 			continue;
@@ -977,7 +980,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 
 //TELEPORTER CODE// VERSION 2
-public Action Particle_Teleporter(Handle Timer)
+/* public Action Particle_Teleporter(Handle Timer)
 {
 	
 	int client; 
@@ -1057,9 +1060,9 @@ public Action Particle_Teleporter(Handle Timer)
 			}
 		}
 	}
-}
+} */
 
-stock AttachParticle(entity, char[] particleType, float offset[]={0.0,0.0,0.0}, bool attach=true)
+/* stock AttachParticle(entity, char[] particleType, float offset[]={0.0,0.0,0.0}, bool attach=true)
 {
 	int particle = CreateEntityByName("info_particle_system");
 
@@ -1088,15 +1091,15 @@ stock AttachParticle(entity, char[] particleType, float offset[]={0.0,0.0,0.0}, 
 	AcceptEntityInput(particle, "start");
 	CreateTimer(3.0, DeleteParticle, particle);
 	return particle;
-}
-public Action DeleteParticle(Handle timer, any Ent)
+} */
+/* public Action DeleteParticle(Handle timer, any Ent)
 {
 	if (!IsValidEntity(Ent)) return;
 	char cls[25];
 	GetEdictClassname(Ent, cls, sizeof(cls));
 	if (StrEqual(cls, "info_particle_system", false)) AcceptEntityInput(Ent, "Kill");
 	return;
-}
+} */
 
 stock TE_Particle(char[] Name, float origin[3] = NULL_VECTOR, float start[3] = NULL_VECTOR, float angles[3] = NULL_VECTOR, entindex=-1, attachtype=-1, attachpoint=-1, bool resetParticles=true, customcolors = 0, float color1[3] = NULL_VECTOR, float color2[3] = NULL_VECTOR, controlpoint = -1, controlpointattachment = -1, float controlpointoffset[3] = NULL_VECTOR)
 {
@@ -1285,20 +1288,17 @@ void OnPadThink(int iPad)
 	
 	int iObjParti = EntRefToEntIndex(g_iObjectParticle[iPad]);
 	
-	// if (bCarried || bPlacing || bDisabled)
-	// {
-	// 	if (bSapped)
-	// 	{
-	// 		if (GetEntProp(iPad, Prop_Send, "m_iUpgradeLevel") > 1)
-	// 		{
-	// 			SetEntProp(iPad, Prop_Send, "m_iUpgradeLevel", 1);	//Prevents the Red-Tape Recorder having to downgrade Pads before deconstructing.
-	// 			SetEntProp(iPad, Prop_Send, "m_iHighestUpgradeLevel", 1);
-	// 		}
-	// 	}
-	// 	if (IsValidEntity(iObjParti) && GetEntProp(iObjParti, Prop_Send, "m_bActive"))
-	// 		AcceptEntityInput(iObjParti, "Stop");
-	// 	return;
-	// }
+		if (bSapped)
+		{
+			if (GetEntProp(iPad, Prop_Send, "m_iUpgradeLevel") > 1)
+			{
+				SetEntProp(iPad, Prop_Send, "m_iUpgradeLevel", 1);	//Prevents the Red-Tape Recorder having to downgrade Pads before deconstructing.
+				SetEntProp(iPad, Prop_Send, "m_iHighestUpgradeLevel", 1);
+			TF2_SetBuildingState(iPad, TELEPORTER_STATE_IDLE);
+			
+			}
+			return;
+		}
 	
 	if (TF2_GetBuildingState(iPad) > TELEPORTER_STATE_BUILDING && TF2_GetBuildingState(iPad) < TELEPORTER_STATE_UPGRADING)
 	{
@@ -1310,7 +1310,7 @@ void OnPadThink(int iPad)
 			PrintToChatAll("%i Ready!", iPad);
 			#endif
 		}
-		if (TF2_GetBuildingState(iPad) == TELEPORTER_STATE_READY && IsValidEntity(iObjParti))
+		if (TF2_GetBuildingState(iPad) == TELEPORTER_STATE_READY && IsValidEntity(iObjParti) && !bSapped)
 			AcceptEntityInput(iObjParti, "Start");
 	}
 }

@@ -188,17 +188,17 @@ stock GiveGiantMedic(client)
 			//TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.5);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
 			TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.5);
-			TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.25);
-			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.9);
-			TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.25);
-			TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.9);
-			TF2Attrib_SetByName(Weapon2, "medigun fire resist passive", 0.25);
-			TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.9);
+			TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.15);
+			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.5);
+			TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.15);
+			TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.5);
+			TF2Attrib_SetByName(Weapon2, "medigun fire resist passive", 0.15);
+			TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.5);
 			
 			TF2Attrib_SetByName(Weapon2, "ubercharge overheal rate penalty", 1.0);
-			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.25);
+			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 1.2);
 			
-			SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
+			//SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 			
 		}
 
