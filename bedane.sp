@@ -244,7 +244,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Teleporter){
 						
 						SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
-					//	SetEntProp(iObj, Prop_Send, "m_nBody", 2);
+						SetEntProp(iObj, Prop_Send, "m_nBody", 2);
 						//SetEntProp(iObj, Prop_Send, "m_iState", 2);
 						SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);	//Set Pads to level 3 for cosmetic reasons related to recharging
 						SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
@@ -254,7 +254,16 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 						SetEntProp(iObj, Prop_Send, "m_iTimesUsed", 0);
 
 						//Set teleporter to itself - does not work yet
+
+						// int iObjParti = CreatePadParticle(iObj, "teleporter_mvm_bot_persist");
+						// g_iObjectParticle[iObj] = EntIndexToEntRef(iObjParti);
+
+						//AcceptEntityInput(iObjParti, "Start");
+
 						TF2_SetMatchingTeleporter(iObj, iObj);
+						//TF2_SetBuildingState(iObj, TELEPORTER_STATE_RECEIVING_RELEASE);
+
+						//SetEntPropFloat(iObj, Prop_Send, "m_flRechargeTime", GetGameTime() + 1.0);
 
 						float position[3];
 						GetEntPropVector(iObj, Prop_Data, "m_vecOrigin", position);	
@@ -266,7 +275,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 						
 						g_iPadType[iObj] = PadType_Boss;
 
-						// AcceptEntityInput(iObj, "Start");
+						// AcceptEntityInput(iObj, "Start");F
 						// AcceptEntityInput(iObj, "Enable");
 						// SetEntProp(iObj, Prop_Send, "m_iState", 2);
 
@@ -305,6 +314,60 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	
 	}
 }
+
+int CreatePadParticle(int iPad, char[] szParticleName)
+{
+	//TFTeam iPadTeam = view_as<TFTeam>(GetEntProp(iPad, Prop_Send, "m_iTeamNum"));
+	//char szParticleName[128];
+	// switch (g_iPadType[iPad])
+	// {
+	// 	case PadType_Boost:	strcopy(szParticleName, sizeof(szParticleName), "powerup_icon_haste");
+	// 	case PadType_Jump:	strcopy(szParticleName, sizeof(szParticleName), "powerup_icon_agility");
+	// }
+	// switch (iPadTeam)
+	// {
+	// 	case TFTeam_Red:	StrCat(szParticleName, sizeof(szParticleName), "_red");
+	// 	case TFTeam_Blue:	StrCat(szParticleName, sizeof(szParticleName), "_blue");
+	// }
+	int iParticle = SpawnParticle(szParticleName);
+	
+	float vPos[3];
+	GetEntPropVector(iPad, Prop_Data, "m_vecAbsOrigin", vPos);
+	//vPos[2] += 40.0;
+	TeleportEntity(iParticle, vPos, NULL_VECTOR, NULL_VECTOR);
+	
+	SetParent(iPad, iParticle);
+	
+	return iParticle;
+}
+
+stock int SpawnParticle(char[] szParticleType)
+{
+	int iParti = CreateEntityByName("info_particle_system");
+	if (IsValidEntity(iParti))
+	{
+		DispatchKeyValue(iParti, "effect_name", szParticleType);
+		DispatchSpawn(iParti);
+		ActivateEntity(iParti);
+	}
+	return iParti;
+}
+
+stock void SetParent(int iParent, int iChild, char[] szAttachPoint = "")
+{
+	SetVariantString("!activator");
+	AcceptEntityInput(iChild, "SetParent", iParent, iChild);
+	
+	if (szAttachPoint[0] != '\0')
+	{
+		if (IsValidClient(iParent) && IsPlayerAlive(iParent))
+		{
+			SetVariantString(szAttachPoint);
+			AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iChild, iChild, 0);
+		}
+	}
+}
+
 stock void TF2_SetMatchingTeleporter(int iTele, int iMatch)	//Set the matching teleporter entity of a given Teleporter
 {
 
@@ -1274,10 +1337,12 @@ void OnPadThink(int iPad)
 	bool bDisabled = view_as<bool>(GetEntProp(iPad, Prop_Send, "m_bDisabled"));
 	bool bSapped = view_as<bool>(GetEntProp(iPad, Prop_Send, "m_bHasSapper"));
 	
+	if (bCarried || bPlacing || bDisabled)
+	{
 	if (bBuilding && flConstructed < 1.0)
 	{
 		if (TF2_GetBuildingState(iPad) != TELEPORTER_STATE_BUILDING)
-			TF2_SetBuildingState(iPad, TELEPORTER_STATE_BUILDING);
+			//TF2_SetBuildingState(iPad, TELEPORTER_STATE_BUILDING);
 		if (GetEntProp(iPad, Prop_Send, "m_iUpgradeLevel") != 3 && !bSapped)
 		{
 			SetEntProp(iPad, Prop_Send, "m_iHighestUpgradeLevel", 3);
@@ -1285,8 +1350,8 @@ void OnPadThink(int iPad)
 		}
 		return;
 	}
-	
-	int iObjParti = EntRefToEntIndex(g_iObjectParticle[iPad]);
+	}
+	//int iObjParti = EntRefToEntIndex(g_iObjectParticle[iPad]);
 	
 		if (bSapped)
 		{
@@ -1294,25 +1359,35 @@ void OnPadThink(int iPad)
 			{
 				SetEntProp(iPad, Prop_Send, "m_iUpgradeLevel", 1);	//Prevents the Red-Tape Recorder having to downgrade Pads before deconstructing.
 				SetEntProp(iPad, Prop_Send, "m_iHighestUpgradeLevel", 1);
-			TF2_SetBuildingState(iPad, TELEPORTER_STATE_IDLE);
+				TF2_SetBuildingState(iPad, TELEPORTER_STATE_IDLE);
 			
 			}
+		//	PrintToChatAll("Sapped");
 			return;
 		}
 	
+		PrintToChatAll("Teleporter state: %i", TF2_GetBuildingState(iPad));
+
 	if (TF2_GetBuildingState(iPad) > TELEPORTER_STATE_BUILDING && TF2_GetBuildingState(iPad) < TELEPORTER_STATE_UPGRADING)
 	{
-		if (TF2_GetBuildingState(iPad) != TELEPORTER_STATE_READY && GetEntPropFloat(iPad, Prop_Send, "m_flRechargeTime") <= GetGameTime())
+		if (TF2_GetBuildingState(iPad) != TELEPORTER_STATE_READY)/*  && GetEntPropFloat(iPad, Prop_Send, "m_flRechargeTime") <= GetGameTime() */
 		{
 			TF2_SetBuildingState(iPad, TELEPORTER_STATE_READY);	//Make sure the Pad always re-activates when it's supposed to.
-			
-			#if defined DEBUG
-			PrintToChatAll("%i Ready!", iPad);
-			#endif
+		//	AcceptEntityInput(iObjParti, "Start");
+			// #if defined DEBUG
+			// PrintToChatAll("%i Ready!", iPad);
+			// #endif
 		}
-		if (TF2_GetBuildingState(iPad) == TELEPORTER_STATE_READY && IsValidEntity(iObjParti) && !bSapped)
-			AcceptEntityInput(iObjParti, "Start");
+		// if (TF2_GetBuildingState(iPad) == TELEPORTER_STATE_READY && IsValidEntity(iObjParti) && !bSapped)
+		// {
+		// 	AcceptEntityInput(iObjParti, "Start");
+		// }
+			
 	}
+	SetEntPropFloat(iPad, Prop_Send, "m_flCurrentRechargeDuration", 1.0);
+	SetEntPropFloat(iPad, Prop_Send, "m_flYawToExit", GetEntPropFloat(iPad, Prop_Send, "m_flYawToExit") + 10.0);	//Make the arrow spin for fun, and to indicate its not a Teleporter (but mostly for fun)
+	if (GetEntPropFloat(iPad, Prop_Send, "m_flYawToExit") > 360.0)
+		SetEntPropFloat(iPad, Prop_Send, "m_flYawToExit", 0.0);
 }
 	stock int FindEntityByClassname2(int startEnt, char[] classname)
 {
@@ -1338,6 +1413,7 @@ stock void TF2_SetBuildingState(int iBuilding, int iState = 0)
 	if (IsValidEntity(iBuilding))
 	{
 		SetEntProp(iBuilding, Prop_Send, "m_iState", iState);
+	//	PrintToChatAll("Setting state to %i", iState);
 	}
 }
 
