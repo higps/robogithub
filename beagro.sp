@@ -155,7 +155,8 @@ MakeGiantPyro(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintToChat(client, "1. You are now Giant Agro !");
+	PrintToChat(client, "1. You are now Giant Agro!");
+	PrintToChat(client, "2. Your Scorch shot homes in on burning targets and has high knockback!");
 	
 }
 

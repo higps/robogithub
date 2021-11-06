@@ -203,12 +203,15 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 		SDKHooks_TakeDamage(attacker, 0, attacker, 120.0, 0, -1);
 	}
 
-	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 43)
+	if (IsRobot(attacker, ROBOT_NAME))
 	{
-		//PrintToChatAll("Drop the bomb");
+		//PrintToChatAll("applying slowed");
 		
 		TF2_AddCondition(attacker, TFCond_Slowed, 10.0);
+		PrintHintText(victim,"Bearded Expense has resistance to crit, but weakness to melee damage");
 	}
+	
+	
 }
 
 public Action BeardedBoom(Handle timer, any data)
@@ -305,6 +308,7 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "increased air control", 500.0);
+	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.5);
 
 	UpdatePlayerHitbox(client, 1.75);
 	
@@ -384,7 +388,7 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 2.0);
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 600.0);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.6);
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 			TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
 

@@ -11,7 +11,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Sentro"
 #define ROBOT_ROLE "Healer"
-#define ROBOT_DESCRIPTION "Can throw fireballs deals damage"
+#define ROBOT_DESCRIPTION "Can throw fireballs"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

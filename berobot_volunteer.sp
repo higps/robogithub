@@ -124,6 +124,13 @@ public Action Command_SetVolunteer(int client, int args)
         return Plugin_Handled;
     }
 
+    if (IsYTEnabled())
+    {
+        MM_PrintToChat(client, "Unable to volunteer, robot-mode is not enabled");
+        SMLogTag(SML_VERBOSE, "Command_SetVolunteer cancled for %L, because robot-mode is not enabled", client);
+        return Plugin_Handled;
+    }
+
     char target[32];
     if(args < 1)
     {
