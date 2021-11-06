@@ -574,8 +574,8 @@ public Action Command_YT_Robot_Start(int client, int args)
 
 
         g_BossMode = true;
-      //  PrintToChatAll("Robots will be Team %i", g_RoboTeam);
-      //  PrintToChatAll("Humans will be Team %i", g_HumanTeam);
+        if(g_cv_bDebugMode) PrintToChatAll("Robots will be Team %i", g_RoboTeam);
+        if(g_cv_bDebugMode) PrintToChatAll("Humans will be Team %i", g_HumanTeam);
     }
     else
     {
@@ -597,11 +597,12 @@ public Action Command_YT_Robot_Start(int client, int args)
 
         if(g_CV_flYoutuberMode)
         {
-            ServerCommand("sm_ct @all red");
-            ServerCommand("sm_ct @blue red");
+            // ServerCommand("sm_ct @all red");
+            // ServerCommand("sm_ct @blue red");
+            ServerCommand("sm_berobot_dynamicRobotCount_enable 0");
 
             //Loops through all players and checks if the set ID's are present. Then sets them on blue while the rest is red
-            g_RoboTeam = BLUE;
+            //g_RoboTeam = BLUE;
             for(int i = 1; i < MaxClients; i++)
             {
 
@@ -622,53 +623,45 @@ public Action Command_YT_Robot_Start(int client, int args)
                         // CreateRobot("Solar Light", i, "");
                         //ServerCommand("sm_begps #%i", playerID);
                         TF2_SwapTeamAndRespawnNoMsg(playerID, g_RoboTeam);
-                    }
-
-                    //Bearded
-                    if(StrEqual(sSteamID, "76561198031657211"))
+                    }else if(StrEqual(sSteamID, "76561198031657211"))
                     {
                         //ServerCommand("sm_bebearded #%i", playerID);
                         CreateRobot("Bearded Expense", i, "");
-                        ChangeClientTeam(i, g_RoboTeam);
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
                         TF2_RespawnPlayer(i);
-                    }
-
-
-                    //ArraySeven
-                    if(StrEqual(sSteamID, "76561198013749611"))
+                    }else if(StrEqual(sSteamID, "76561198042407618"))
                     {
-                        //   ServerCommand("sm_bearray #%i", playerID);
-                        CreateRobot("Array Seven", i, "");
-                        ChangeClientTeam(i, g_RoboTeam);
+                        //   ServerCommand("sm_besentro #%i", playerID);
+                        CreateRobot("Sentro", i, "");
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
                         TF2_RespawnPlayer(i);
-                    }
-
-                    //Uncle Dane
-                    if(StrEqual(sSteamID, "76561198057999536"))
+                    }else if(StrEqual(sSteamID, "76561198057999536"))//dane
                     {
                         //   ServerCommand("sm_bedane #%i", playerID);
                         CreateRobot("Uncle Dane", i, "");
-                        ChangeClientTeam(i, g_RoboTeam);
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
                         TF2_RespawnPlayer(i);
-                    }
-
-                    //Agro
-                    if(StrEqual(sSteamID, "76561197970498549"))
+                    }else if(StrEqual(sSteamID, "76561197970498549"))//Agro
                     {
                         //   ServerCommand("sm_beagro #%i", playerID);
                         CreateRobot("Agro", i, "");
-                        ChangeClientTeam(i, g_RoboTeam);
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
                         TF2_RespawnPlayer(i);
-                    }
-
-                    //Solar
-                    if(StrEqual(sSteamID, "76561198070962612"))
+                    }else if(StrEqual(sSteamID, "76561198070962612"))
                     {
                         ///     ServerCommand("sm_besolar #%i", playerID);
                         CreateRobot("Solar Light", i, "");
-                        ChangeClientTeam(i, g_RoboTeam);
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+                        TF2_RespawnPlayer(i);
+                    }else
+                    {
+                        if(g_cv_bDebugMode) PrintToChatAll("%N was moved to Human team which was %i", i, g_HumanTeam);
+                        
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_HumanTeam);
                         TF2_RespawnPlayer(i);
                     }
+                        if(g_cv_bDebugMode) PrintToChatAll("RobotTeam was %i", g_RoboTeam);
+
                 }
             }
         }else

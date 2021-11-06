@@ -490,7 +490,15 @@ MakeUncleDane(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
+	
 	PrintToChat(client, "1. You are now Uncle Dane robot !");
+	PrintToChat(client, "2. Your Widowmaker deals 250%%% bonus damage to the target your sentry shoots.");
+	PrintToChat(client, "3. Your wrench builds lvl 3 buildings in one swing.");
+	PrintToChat(client, "4. Your teleporter exit is now a teamporter like in mvm.");
+	PrintCenterText(client, "Use !stuck if you get stuck in buildings");
+	
+	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
+
 	int soundswitch = GetRandomInt(1, 2);
 	switch(soundswitch)
 	{
@@ -1329,7 +1337,7 @@ void OnPadThink(int iPad)
 	bool bDisabled = view_as<bool>(GetEntProp(iPad, Prop_Send, "m_bDisabled"));
 	bool bSapped = view_as<bool>(GetEntProp(iPad, Prop_Send, "m_bHasSapper"));
 	
-	PrintToChatAll("Teleporter state: %i", TF2_GetBuildingState(iPad));
+	//PrintToChatAll("Teleporter state: %i", TF2_GetBuildingState(iPad));
 
 	if (bCarried || bPlacing || bDisabled)
 	{
