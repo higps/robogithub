@@ -139,7 +139,7 @@ MakeGiantPyro(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
@@ -155,7 +155,8 @@ MakeGiantPyro(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintToChat(client, "1. You are now Giant Agro !");
+	PrintToChat(client, "1. You are now Giant Agro!");
+	PrintToChat(client, "2. Your Scorch shot homes in on burning targets and has high knockback!");
 	
 }
 
@@ -202,9 +203,9 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 0.6);		
+			TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.2);		
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);			
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.8);			
 			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
 			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
@@ -222,9 +223,10 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 0.5);
-			TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.5);
+			//TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 0.5);
+			TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.6);
 			TF2Attrib_SetByName(Weapon2, "damage causes airblast", 1.0);
+			TF2Attrib_SetByName(Weapon2, "mod projectile heat seek power", 3600.0);
 			//TF2Attrib_SetByName(Weapon2, "apply look velocity on damage", 1500.0);
 		}
 

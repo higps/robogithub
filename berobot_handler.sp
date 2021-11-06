@@ -227,6 +227,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("SetVolunteers", Native_SetVolunteers);
     CreateNative("EnsureRobotCount", Native_EnsureRobotCount);
     CreateNative("IsEnabled", Native_IsEnabled);
+    CreateNative("IsYTEnabled", Native_IsYTEnabled);
     CreateNative("IsActive", Native_IsActive);
     CreateNative("UnmakeRobot", Native_UnmakeRobot);
     return APLRes_Success;
@@ -574,8 +575,8 @@ public Action Command_YT_Robot_Start(int client, int args)
 
 
         g_BossMode = true;
-      //  PrintToChatAll("Robots will be Team %i", g_RoboTeam);
-      //  PrintToChatAll("Humans will be Team %i", g_HumanTeam);
+        if(g_cv_bDebugMode) PrintToChatAll("Robots will be Team %i", g_RoboTeam);
+        if(g_cv_bDebugMode) PrintToChatAll("Humans will be Team %i", g_HumanTeam);
     }
     else
     {
@@ -597,80 +598,75 @@ public Action Command_YT_Robot_Start(int client, int args)
 
         if(g_CV_flYoutuberMode)
         {
-            ServerCommand("sm_ct @all red");
-            ServerCommand("sm_ct @blue red");
+            // ServerCommand("sm_ct @all red");
+            // ServerCommand("sm_ct @blue red");
+            ServerCommand("sm_berobot_dynamicRobotCount_enable 0");
 
             //Loops through all players and checks if the set ID's are present. Then sets them on blue while the rest is red
-            g_RoboTeam = BLUE;
-            for(int i = 1; i < MaxClients; i++)
-            {
+            //g_RoboTeam = BLUE;
 
-                if(IsClientInGame(i) && IsValidClient(i))
-                {
+            CheckIfYT();
+            // for(int i = 1; i < MaxClients; i++)
+            // {
 
-                    char sSteamID[64];
-                    GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
-                    int playerID = GetClientUserId(i);
+            //     if(IsClientInGame(i) && IsValidClient(i))
+            //     {
 
-
-                    //PrintToChatAll("Looping on %i", playerID);
-                    //Hardcoding
-                    //GPS
-                    if(StrEqual(sSteamID, "76561197963998743"))
-                    {
-                        CreateRobot("HiGPS", i, "");
-                        // CreateRobot("Solar Light", i, "");
-                        //ServerCommand("sm_begps #%i", playerID);
-                        TF2_SwapTeamAndRespawnNoMsg(playerID, g_RoboTeam);
-                    }
-
-                    //Bearded
-                    if(StrEqual(sSteamID, "76561198031657211"))
-                    {
-                        //ServerCommand("sm_bebearded #%i", playerID);
-                        CreateRobot("Bearded Expense", i, "");
-                        ChangeClientTeam(i, g_RoboTeam);
-                        TF2_RespawnPlayer(i);
-                    }
+            //         char sSteamID[64];
+            //         GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
+            //         int playerID = GetClientUserId(i);
 
 
-                    //ArraySeven
-                    if(StrEqual(sSteamID, "76561198013749611"))
-                    {
-                        //   ServerCommand("sm_bearray #%i", playerID);
-                        CreateRobot("Array Seven", i, "");
-                        ChangeClientTeam(i, g_RoboTeam);
-                        TF2_RespawnPlayer(i);
-                    }
+            //         //PrintToChatAll("Looping on %i", playerID);
+            //         //Hardcoding
+            //         //GPS
+            //         if(StrEqual(sSteamID, "76561197963998743"))
+            //         {
+            //             CreateRobot("HiGPS", i, "");
+            //             // CreateRobot("Solar Light", i, "");
+            //             //ServerCommand("sm_begps #%i", playerID);
+            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+            //         }else if(StrEqual(sSteamID, "76561198031657211"))
+            //         {
+            //             //ServerCommand("sm_bebearded #%i", playerID);
+            //             CreateRobot("Bearded Expense", i, "");
+            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+            //             TF2_RespawnPlayer(i);
+            //         }else if(StrEqual(sSteamID, "76561198042407618"))
+            //         {
+            //             //   ServerCommand("sm_besentro #%i", playerID);
+            //             CreateRobot("Sentro", i, "");
+            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+            //             TF2_RespawnPlayer(i);
+            //         }else if(StrEqual(sSteamID, "76561198057999536"))//dane
+            //         {
+            //             //   ServerCommand("sm_bedane #%i", playerID);
+            //             CreateRobot("Uncle Dane", i, "");
+            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+            //             TF2_RespawnPlayer(i);
+            //         }else if(StrEqual(sSteamID, "76561197970498549"))//Agro
+            //         {
+            //             //   ServerCommand("sm_beagro #%i", playerID);
+            //             CreateRobot("Agro", i, "");
+            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+            //             TF2_RespawnPlayer(i);
+            //         }else if(StrEqual(sSteamID, "76561198070962612"))
+            //         {
+            //             ///     ServerCommand("sm_besolar #%i", playerID);
+            //             CreateRobot("Solar Light", i, "");
+            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+            //             TF2_RespawnPlayer(i);
+            //         }else
+            //         {
+            //             if(g_cv_bDebugMode) PrintToChatAll("%N was moved to Human team which was %i", i, g_HumanTeam);
+            //             if(g_cv_bDebugMode) PrintToChatAll("RobotTeam was %i", g_RoboTeam);
+            //             TF2_SwapTeamAndRespawnNoMsg(i, g_HumanTeam);
+            //             TF2_RespawnPlayer(i);
+            //         }
 
-                    //Uncle Dane
-                    if(StrEqual(sSteamID, "76561198057999536"))
-                    {
-                        //   ServerCommand("sm_bedane #%i", playerID);
-                        CreateRobot("Uncle Dane", i, "");
-                        ChangeClientTeam(i, g_RoboTeam);
-                        TF2_RespawnPlayer(i);
-                    }
 
-                    //Agro
-                    if(StrEqual(sSteamID, "76561197970498549"))
-                    {
-                        //   ServerCommand("sm_beagro #%i", playerID);
-                        CreateRobot("Agro", i, "");
-                        ChangeClientTeam(i, g_RoboTeam);
-                        TF2_RespawnPlayer(i);
-                    }
-
-                    //Solar
-                    if(StrEqual(sSteamID, "76561198070962612"))
-                    {
-                        ///     ServerCommand("sm_besolar #%i", playerID);
-                        CreateRobot("Solar Light", i, "");
-                        ChangeClientTeam(i, g_RoboTeam);
-                        TF2_RespawnPlayer(i);
-                    }
-                }
-            }
+            //     }
+            // }
         }else
         {
 
@@ -739,6 +735,12 @@ public Action Command_RoboVote(int client, int args)
     if (g_BossMode)
     {
         MC_PrintToChatEx(client, client,"[{orange}SM{default}]{teamcolor} Giant Boss Mode is already active");
+        return;
+    }
+
+    if (g_CV_flYoutuberMode)
+    {
+        MC_PrintToChatEx(client, client,"[{orange}SM{default}]{teamcolor} Giant Boss Mode is already active with Youtubers");
         return;
     }
 
@@ -1150,6 +1152,10 @@ public Action OnClientCommand(int client, int args)
             if(iTeam == TFTeam_Unassigned || iTeam == TFTeam_Spectator)
             {
 
+                if(g_CV_flYoutuberMode){
+                    CheckIfYT();
+                    return Plugin_Handled;
+                } 
 
                 //Puts players in the correct team
                 if(!IsAnyRobot(client)){
@@ -1206,6 +1212,11 @@ bool isMiniBoss(int client)
 public any Native_IsEnabled(Handle plugin, int numParams)
 {
     return g_Enable;
+}
+
+public any Native_IsYTEnabled(Handle plugin, int numParams)
+{
+    return g_CV_flYoutuberMode;
 }
 
 public any Native_IsActive(Handle plugin, int numParams)
@@ -1351,4 +1362,69 @@ stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
     int irandomclass = GetRandomInt(1, 9);
     TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
     TF2_RespawnPlayer(client);
+}
+
+stock void CheckIfYT()
+{
+            for(int i = 1; i < MaxClients; i++)
+            {
+
+                if(IsClientInGame(i) && IsValidClient(i))
+                {
+
+                    char sSteamID[64];
+                    GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
+                    int playerID = GetClientUserId(i);
+
+
+                    //PrintToChatAll("Looping on %i", playerID);
+                    //Hardcoding
+                    //GPS
+                    if(StrEqual(sSteamID, "76561197963998743-00"))
+                    {
+                        CreateRobot("HiGPS", i, "");
+                        // CreateRobot("Solar Light", i, "");
+                        //ServerCommand("sm_begps #%i", playerID);
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+                    }else if(StrEqual(sSteamID, "76561198031657211"))
+                    {
+                        //ServerCommand("sm_bebearded #%i", playerID);
+                        CreateRobot("Bearded Expense", i, "");
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+                        TF2_RespawnPlayer(i);
+                    }else if(StrEqual(sSteamID, "76561198042407618"))
+                    {
+                        //   ServerCommand("sm_besentro #%i", playerID);
+                        CreateRobot("Sentro", i, "");
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+                        TF2_RespawnPlayer(i);
+                    }else if(StrEqual(sSteamID, "76561198057999536"))//dane
+                    {
+                        //   ServerCommand("sm_bedane #%i", playerID);
+                        CreateRobot("Uncle Dane", i, "");
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+                        TF2_RespawnPlayer(i);
+                    }else if(StrEqual(sSteamID, "76561197970498549"))//Agro
+                    {
+                        //   ServerCommand("sm_beagro #%i", playerID);
+                        CreateRobot("Agro", i, "");
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+                        TF2_RespawnPlayer(i);
+                    }else if(StrEqual(sSteamID, "76561198070962612"))
+                    {
+                        ///     ServerCommand("sm_besolar #%i", playerID);
+                        CreateRobot("Solar Light", i, "");
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
+                        TF2_RespawnPlayer(i);
+                    }else
+                    {
+                        if(g_cv_bDebugMode) PrintToChatAll("%N was moved to Human team which was %i", i, g_HumanTeam);
+                        if(g_cv_bDebugMode) PrintToChatAll("RobotTeam was %i", g_RoboTeam);
+                        TF2_SwapTeamAndRespawnNoMsg(i, g_HumanTeam);
+                        TF2_RespawnPlayer(i);
+                    }
+
+
+                }
+            }
 }

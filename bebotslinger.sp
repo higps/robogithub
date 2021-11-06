@@ -1,5 +1,6 @@
 #pragma semicolon 1
 #include <sourcemod>
+#include <tf2>
 #include <tf2_stocks>
 #include <tf2attributes>
 #include <sdkhooks>
@@ -17,7 +18,7 @@
 //#pragma newdecls required
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Uncle Dane"
+#define ROBOT_NAME	"Bot Slinger"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION " Widowmaker, Jag"
 
@@ -43,21 +44,20 @@
 
 //new g_offsCollisionGroup;
 
-bool engibotactive;
-bool teleportercheck;
-bool AnnouncerQuiet;
-
-
-
 int EngieTeam = 2;
-int engieid = -1;
-int g_iMaxEntities;
-int BossTeleporter;
+// int engieid = -1;
+// int g_iMaxEntities;
+// int BossTeleporter;
+
+int OwnerOffset;
+ConVar sm_dispenser_limit;
+ConVar sm_sentry_limit;
+ConVar sm_instant_upgrade;
 
 float vecSpawns[2][3];
 
 static int g_iPadType[2048];
-static int g_iObjectParticle[2048];
+//static int g_iObjectParticle[2048];
 
 static char g_szOffsetStartProp[64];
 static int g_iOffsetMatchingTeleporter = -1;
@@ -80,11 +80,13 @@ enum //Custom ObjectType
 	PadType_Boss,
 }
 
+Handle g_hUpdateOnRemove;
+
 public Plugin:myinfo =
 {
-	name = "[TF2] Be Big Robot Uncle Dane",
+	name = "[TF2] Be Big Robot Bot Slinger",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Uncle Dane Bot from MvM",
+	description = "Play as the Giant Bot Slinger Bot from MvM",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -113,6 +115,8 @@ public OnPluginStart()
 	}
 	
 	CloseHandle(hGameConf);
+
+	
 
 	AddCommandListener(CommandListener_Build, "build");
 	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
@@ -149,7 +153,47 @@ public OnPluginStart()
         }
     }
 
+	//Multi Sentry Code
+
+	sm_dispenser_limit = CreateConVar("sm_dispenser_limit", "1", "Self explanatory");
+	sm_sentry_limit = CreateConVar("sm_sentry_limit", "3", "Self explanatory");
+	sm_instant_upgrade = CreateConVar("sm_instant_upgrade","0","Self explanatory");
+
+	HookEvent("player_builtobject",Evt_BuiltObject,EventHookMode_Pre);
+
+	RegConsoleCmd("sm_destroy_dispensers", Command_destroy_dispensers);
+	RegConsoleCmd("sm_destroy_sentries", Command_destroy_sentries);
+
+	OwnerOffset = FindSendPropInfo("CBaseObject", "m_hBuilder");
+
+	for(int client=1;client<MaxClients;client++){
+		if(!IsValidEntity(client)){
+			continue;
+		}
+		if(!IsClientConnected(client)){
+			continue;
+		}
+
+		SDKUnhook(client, SDKHook_WeaponSwitch, WeaponSwitch);
+		SDKHookEx(client, SDKHook_WeaponSwitch, WeaponSwitch);
+	}
+
+	//Remove all sappers code
+	hGameConf = LoadGameConfigFile("bm_sh_data");
+	
+	
+	g_hUpdateOnRemove = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_CBaseEntity);
+	
+	if(!DHookSetFromConf(g_hUpdateOnRemove, hGameConf, SDKConf_Signature, "CBaseObject::UpdateOnRemove"))
+	SetFailState("Failed to find CBaseObject::UpdateOnRemove signature in the gamedata!");
+	
+	if(!DHookEnableDetour(g_hUpdateOnRemove, false, UpdateOnRemove))
+	SetFailState("Failed to enable CBaseObject::UpdateOnRemove detour!");
+	
+	delete hGameConf;
+
 }
+
 
 public void OnPluginEnd()
 {
@@ -237,16 +281,32 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 		// SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);
 		// SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
 		
-		SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.65);
+		SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.25);
 		SetEntPropFloat(iObj, Prop_Send, "m_flPercentageConstructed", 1.0);
-		DispatchKeyValue(iObj, "defaultupgrade", "2"); 
+				
+		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
+		{
+			//PrintToChatAll("Buildt dispenser");
+			DispatchKeyValue(iObj, "defaultupgrade", "2"); 
+		}
+
+		// if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Sentry)
+		// {
+		// 	//PrintToChatAll("Buildt dispenser");
+		// 	//SetEntProp(iObj, Prop_Send, "m_iAmmoShells", 10000);
+		// 	//int flags = GetEntProp(iObj, Prop_Data, "m_spawnflags");
+		// 	//SetEntProp(iObj, Prop_Data, "m_spawnflags", flags|1<<3);
+		// 	//DispatchKeyValue(iObj, "defaultupgrade", "2"); 
+		// }
+		
 		
 		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Teleporter){
 						
 						SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
 						SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);	//Set Pads to level 3 for cosmetic reasons related to recharging
 						SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
-						SetEntProp(iObj, Prop_Send, "m_bMiniBuilding", true);	
+						SetEntProp(iObj, Prop_Send, "m_bMiniBuilding", true);
+						
 						 //Setting m_bMiniBuilding tries to set the skin to a 'mini' skin. Since teles don't have one, reset the skin.
 						SetEntProp(iObj, Prop_Send, "m_iTimesUsed", 0);
 						RequestFrame(ResetSkin, iObj);
@@ -481,6 +541,9 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "mod teleporter cost", 3.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	
+	
+	
 
 	
 	//TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");
@@ -490,15 +553,7 @@ MakeUncleDane(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	
-	PrintToChat(client, "1. You are now Uncle Dane robot !");
-	PrintToChat(client, "2. Your Widowmaker deals 250%%% bonus damage to the target your sentry shoots.");
-	PrintToChat(client, "3. Your wrench builds lvl 3 buildings in one swing.");
-	PrintToChat(client, "4. Your teleporter exit is now a teamporter like in mvm.");
-	PrintCenterText(client, "Use !stuck if you get stuck in buildings");
-	
-	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
-
+	PrintToChat(client, "1. You are now Bot Slinger robot !");
 	int soundswitch = GetRandomInt(1, 2);
 	switch(soundswitch)
 	{
@@ -542,18 +597,20 @@ stock GiveBigRoboDane(client)
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
-		CreateWeapon(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
-		CreateWeapon(client, "tf_weapon_wrench", 329, 6, 1, 2, 0);
+		//CreateWeapon(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
+		CreateWeapon(client, "tf_weapon_laser_pointer", 30668, 6, 1, 1, 0);
+		CreateWeapon(client, "tf_weapon_robot_arm", 142, 6, 1, 2, 0);
 		// CreateWeapon(client, "tf_weapon_pda_engineer_build", 25, 6, 1, 3, 0);
 		// CreateWeapon(client, "tf_weapon_pda_engineer_destroy", 26, 6, 1, 4, 0);
 		//TF2_RegeneratePlayer(client);
 
-		CreateHat(client, 30420, 10, 6, 15132390.0); // the danger
+		CreateHat(client, 30749, 10, 6, 0.0); // Winter Backup
 		//	CreateHat(client, 30178, 10, 6, 1315860);
-		CreateHat(client, 30172, 10, 6, 15132390.0); //gold digger
-		CreateHat(client, 30539, 10, 6, 15132390.0); //insulator
+		CreateHat(client, 30804, 10, 6, 0.0); //El Paso Poncho
+		CreateHat(client, 755, 10, 6, 0.0); //Texas Half Pants
 		
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
@@ -572,18 +629,19 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Weapon3);
 			
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.85);
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.0);
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
 			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 4.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 2.5);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 6.0);
 
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
-			
+			//TF2Attrib_SetByName(Weapon3, "engy disposable sentries", 1.0);
+			TF2Attrib_SetByName(Weapon3, "multiple sentries", 3.0);
 			
 		}
 	
@@ -1290,13 +1348,13 @@ public Action CommandListener_Build(client, const char[] command, argc)
 	// 	if(!IsValidEntity(i)) continue;
 		
 	// 	GetEntityNetClass(i, sClassName, sizeof(sClassName));
-		if(IsRobot(client, ROBOT_NAME) && iObjectType == TF_OBJECT_TELEPORTER && iObjectMode == TF_TELEPORTER_ENTR)
-		{
-			PrintCenterText(client,"You can't build enterance, you can only build a exit teleporter!");
-			PrintToChat(client,"You can't build enterance , you can only build a exit teleporter!");
-			return Plugin_Handled;
-		}
-	// }
+	if(IsRobot(client, ROBOT_NAME) && iObjectType == TF_OBJECT_TELEPORTER && iObjectMode == TF_TELEPORTER_ENTR)
+	{
+		PrintCenterText(client,"You can't build enterance, you can only build a exit teleporter!");
+		PrintToChat(client,"You can't build enterance , you can only build a exit teleporter!");
+		return Plugin_Handled;
+	}
+
 	return Plugin_Continue;
 }
 
@@ -1367,8 +1425,6 @@ void OnPadThink(int iPad)
 		//	PrintToChatAll("Sapped");
 		return;
 	}
-	
-		
 
 	if (TF2_GetBuildingState(iPad) > TELEPORTER_STATE_BUILDING && TF2_GetBuildingState(iPad) < TELEPORTER_STATE_UPGRADING)
 	{
@@ -1438,4 +1494,272 @@ stock void TF2_SetBuildingState(int iBuilding, int iState = 0)
 // 	{
 // 		AcceptEntityInput(iObj, "Enable");
 // 	}
-// }
+// }public void OnClientPostAdminCheck(client){
+
+///============MULTIPLE SENTRIES CODE//////
+
+public Action Evt_BuiltObject(Event event, const char[] name, bool dontBroadcast){
+	int ObjIndex = event .GetInt("index");
+
+	if(GetConVarInt(sm_instant_upgrade)>0){
+		SetEntProp(ObjIndex, Prop_Send, "m_iUpgradeMetal", 600);
+		SetEntProp(ObjIndex,Prop_Send,"m_iUpgradeMetalRequired",0);
+	}
+	return Plugin_Continue;
+}
+
+
+public Action WeaponSwitch(client, weapon){
+	//Safety Checks
+	if(IsRobot(client, ROBOT_NAME))
+	{
+
+	if(!IsClientInGame(client)){
+		return Plugin_Continue;
+	}
+	if(TF2_GetPlayerClass(client)!=TFClass_Engineer){
+		return Plugin_Continue;
+	}
+	if(!IsValidEntity(GetPlayerWeaponSlot(client,1))){
+		return Plugin_Continue;
+	}
+	if(!IsValidEntity(GetPlayerWeaponSlot(client,3))){
+		return Plugin_Continue;
+	}
+	if(!IsValidEntity(GetPlayerWeaponSlot(client,4))){
+		return Plugin_Continue;
+	}
+	if(!IsValidEntity(weapon)){
+		return Plugin_Continue;
+	}
+
+	//if the building pda is opened
+	//Switches some buildings to sappers so the game doesn't count them as engie buildings
+	if(GetPlayerWeaponSlot(client,3)==weapon){
+		function_AllowBuilding(client);
+		return Plugin_Continue;
+	}//else if the client is not holding the building tool
+	else if(GetEntProp(weapon,Prop_Send,"m_iItemDefinitionIndex")!=28){
+		function_AllowDestroying(client);
+		return Plugin_Continue;
+	}
+	}
+	return Plugin_Continue;
+
+}
+
+public Action Command_destroy_dispensers(int client, int args){
+
+	for(int i=1;i<2048;i++){
+
+		if(!IsValidEntity(i)){
+			continue;
+		}
+
+		decl String:netclass[32];
+		GetEntityNetClass(i, netclass, sizeof(netclass));
+
+		if (!strcmp(netclass, "CObjectDispenser") == 0){
+			continue;
+		}
+
+		if(GetEntDataEnt2(i, OwnerOffset)!=client){
+			continue;
+		}
+		SetVariantInt(9999);
+		AcceptEntityInput(i,"RemoveHealth");
+	}
+
+	return Plugin_Handled;
+
+
+}
+
+public Action Command_destroy_sentries(int client, int args){
+
+	for(int i=1;i<2048;i++){
+
+		if(!IsValidEntity(i)){
+			continue;
+		}
+
+		decl String:netclass[32];
+		GetEntityNetClass(i, netclass, sizeof(netclass));
+
+		if ( !(strcmp(netclass, "CObjectSentrygun") == 0) ){
+			continue;
+		}
+
+		if(GetEntDataEnt2(i, OwnerOffset)!=client){
+			continue;
+		}
+		SetVariantInt(9999);
+		AcceptEntityInput(i,"RemoveHealth");
+	}
+
+	return Plugin_Handled;
+
+}
+
+public void function_AllowBuilding(int client){
+
+	if(IsRobot(client, ROBOT_NAME))
+	{
+
+	int DispenserLimit = GetConVarInt(sm_dispenser_limit);
+	int SentryLimit = GetConVarInt(sm_sentry_limit);
+
+	int DispenserCount = 0;
+	int SentryCount = 0;
+
+	for(int i=0;i<2048;i++){
+
+		if(!IsValidEntity(i)){
+			continue;
+		}
+
+		decl String:netclass[32];
+		GetEntityNetClass(i, netclass, sizeof(netclass));
+		if ( !(strcmp(netclass, "CObjectSentrygun") == 0 || strcmp(netclass, "CObjectDispenser") == 0) ){
+			continue;
+		}
+
+		if(GetEntDataEnt2(i, OwnerOffset)!=client){
+			continue;
+		}
+
+
+		int type=view_as<int>(function_GetBuildingType(i));
+
+		//Switching the dispenser to a sapper type
+		if(type==view_as<int>(TFObject_Dispenser)){
+			DispenserCount=DispenserCount+1;
+			SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
+			if(DispenserCount>=DispenserLimit){
+				//if the limit is reached, disallow building
+				SetEntProp(i, Prop_Send, "m_iObjectType", type);
+
+			}
+
+		//not a dispenser,
+		}else if(type==view_as<int>(TFObject_Sentry)){
+			SentryCount++;
+			SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
+			if(SentryCount>=SentryLimit){
+				//if the limit is reached, disallow building
+				SetEntProp(i, Prop_Send, "m_iObjectType", type);
+			}
+		}
+	//every building is in the desired state
+
+
+	}
+	}
+}
+public void function_AllowDestroying(int client){
+	for(int i=1;i<2048;i++){
+
+		if(!IsValidEntity(i)){
+			continue;
+		}
+
+		decl String:netclass[32];
+		GetEntityNetClass(i, netclass, sizeof(netclass));
+
+		if ( !(strcmp(netclass, "CObjectSentrygun") == 0 || strcmp(netclass, "CObjectDispenser") == 0) ){
+			continue;
+		}
+
+		if(GetEntDataEnt2(i, OwnerOffset)!=client){
+			continue;
+		}
+
+		SetEntProp(i, Prop_Send, "m_iObjectType", function_GetBuildingType(i));
+	}
+
+}
+
+public TFObjectType function_GetBuildingType(int entIndex){
+	//This function relies on Netclass rather than building type since building type
+	//gets changed
+	decl String:netclass[32];
+	GetEntityNetClass(entIndex, netclass, sizeof(netclass));
+
+	if(strcmp(netclass, "CObjectSentrygun") == 0){
+		return TFObject_Sentry;
+	}
+	if(strcmp(netclass, "CObjectDispenser") == 0){
+		return TFObject_Dispenser;
+	}
+	return TFObject_Sapper;
+}
+
+public MRESReturn UpdateOnRemove(int pThis)
+{
+	int iObjectType = GetEntProp(pThis, Prop_Send, "m_iObjectType");
+	//int user = GetClientUserId(pThis);
+	//PrintToChatAll("Removed sapper %i", iObjectType);
+	int iBuiltOnEntity;
+	int iBuilderClient;
+	int iObjectTypeBOE;
+	
+	switch(iObjectType)
+	{
+		case TFObject_Sapper:
+		{
+			iBuiltOnEntity = GetEntPropEnt(pThis, Prop_Send, "m_hBuiltOnEntity");
+			if(iBuiltOnEntity == -1) return MRES_Ignored;
+			
+			iBuilderClient = GetEntPropEnt(iBuiltOnEntity, Prop_Send, "m_hBuilder");
+
+			if(IsRobot(iBuilderClient, ROBOT_NAME))
+			{
+				new ent = -1;	//Check all buildings owned by robot and remove sappers
+				while ((ent = FindEntityByClassname(ent, "obj_attachment_sapper")) != -1)
+				{
+					PrintToChatAll("Looking for sappers!");
+
+					// int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+					// if (IsValidClient(iBuilder))
+					// {
+					// 	PrintToChatAll("iBulder %N", iBuilder);	
+					// // }
+					if (IsValidEntity(ent))
+					{
+						
+						int uBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuiltOnEntity");
+						int uBuilderClient;
+						//PrintToChatAll("iBulder %N", uBuilder);	
+						if(uBuilder != -1)
+						{
+							uBuilderClient = GetEntPropEnt(uBuilder, Prop_Send, "m_hBuilder");
+						
+							if (IsRobot(uBuilderClient, ROBOT_NAME))
+								{
+
+									PrintToChatAll("Removing sappers for %N, ent was: %i", uBuilderClient, ent);
+									
+									//SetVariantInt(999);
+        							RequestFrame(DetonateObject, ent);
+									//DetonateObject(ent);
+									
+								}
+						}
+					}
+				}
+				}
+		}
+	//PrintToChatAll("Remove Sapper: %i, OT: %i", pThis, GetEntProp(pThis, Prop_Send, "m_iObjectType"));
+	//PrintToChatAll("Built on: %i", GetEntPropEnt(pThis, Prop_Send, "m_hBuiltOnEntity"));
+	//return MRES_Ignored;
+	}
+}
+
+void DetonateObject(any iObj) {
+    if (IsValidEntity(iObj)) {
+        // SetVariantInt(1);
+        // AcceptEntityInput(iObj, "SetHealth");
+        SetVariantInt(999);
+        AcceptEntityInput(iObj, "RemoveHealth");
+    }
+}

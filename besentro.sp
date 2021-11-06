@@ -11,7 +11,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Sentro"
 #define ROBOT_ROLE "Healer"
-#define ROBOT_DESCRIPTION "Can throw fireballs deals damage"
+#define ROBOT_DESCRIPTION "Can throw fireballs"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -126,7 +126,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
+	//TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	UpdatePlayerHitbox(client, 1.75);

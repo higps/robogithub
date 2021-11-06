@@ -203,12 +203,15 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 		SDKHooks_TakeDamage(attacker, 0, attacker, 120.0, 0, -1);
 	}
 
-	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 43)
+	if (IsRobot(attacker, ROBOT_NAME))
 	{
-		//PrintToChatAll("Drop the bomb");
+		//PrintToChatAll("applying slowed");
 		
 		TF2_AddCondition(attacker, TFCond_Slowed, 10.0);
+		PrintHintText(victim,"Bearded Expense has resistance to crit, but weakness to melee damage");
 	}
+	
+	
 }
 
 public Action BeardedBoom(Handle timer, any data)
@@ -287,7 +290,7 @@ MakeBearded(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
+	//TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.1);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
@@ -305,19 +308,17 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "increased air control", 500.0);
-	
-	
-	
-	
-
+	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.5);
 
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	
-	PrintToChat(client, "1. You are now Giant Bearded Expense bot !");
-	PrintToChat(client, "2. You are a juggernaut!");
+	TF2_AddCondition(client,TFCond_DefenseBuffed);
+
+	PrintToChat(client, "1. You are now Giant Bearded Expense bot!");
+	PrintToChat(client, "2. You have permanent Battalions Backup buff!");
+	PrintCenterText(client, "Use taunt to leap. Land on players to kill everything!");
 		
 }
  
@@ -342,7 +343,7 @@ stock GiveBearded(client)
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
-		CreateWeapon(client, "tf_weapon_fists", 43, 6, 1, 2, 0);
+		CreateWeapon(client, "tf_weapon_fists", 239, 6, 1, 2, 0);
 
 	//	CreateWeapon(client, "tf_weapon_lunchbox", 863, 6, 1, 1, 0);
 	//	CreateWeapon(client, "tf_weapon_rocketpack", 1179, 6, 1, 1, 0);
@@ -378,23 +379,29 @@ stock GiveBearded(client)
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_RemoveAll(Weapon3);
+			
 				
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.2);
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
+			TF2Attrib_SetByName(Weapon3, "damage penalty", 1.5);
 			TF2Attrib_SetByName(Weapon3, "critboost on kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 2.0);
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 600.0);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.6);
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
-			TF2Attrib_SetByName(Weapon3, "aiming movespeed increased", 2.0);
 			TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
+
+			TF2Attrib_SetByName(Weapon3, "move speed penalty", 0.5163);
+			//TF2Attrib_SetByName(Weapon3, "move speed bonus", 1.5);
+			
+			TF2Attrib_SetByName(Weapon3, "mod_maxhealth_drain_rate", 0.0);
+			SetEntPropFloat(Weapon3, Prop_Send, "m_flModelScale", 2.75);
+			
 
 			TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");
-			
-			
+
 				
 				//Add additonal logic to detect if it's attack/defend mode
 
@@ -426,7 +433,7 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 
 	if (tauntid == -1)
 	{
-	 TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
+//	 TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
 	 TF2_AddCondition(client, TFCond_MegaHeal);
 	 
 	 
