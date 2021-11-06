@@ -284,7 +284,8 @@ void PlayRobotPushedCartVoiceOver(int clientId)
             return;
     }
 
-    EmitGameSoundToAll(szVO, clientId);
+        float random_timer = GetRandomFloat(20.5,60.5);
+    EmitSoundWithClamp(clientId, szVO, random_timer);
 }
 
 void PlayRobotTakeDamageVoiceOver(int attackerClientId, TFClassType attackerClass, int victimClientId)
