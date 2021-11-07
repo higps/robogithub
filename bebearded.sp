@@ -300,7 +300,7 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
+	
 	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
 	//TF2Attrib_SetByName(client, "mult charge turn control", 10.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 3.0);
@@ -388,7 +388,7 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 2.0);
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 600.0);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.6);
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 			TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
 

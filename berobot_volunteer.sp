@@ -176,6 +176,12 @@ public Action Command_Volunteer(int client, int args)
         SMLogTag(SML_VERBOSE, "Command_Volunteer cancled for %L, because robot-mode is not enabled", client);
         return Plugin_Handled;
     }
+    //     if (IsYTEnabled())
+    // {
+    //     MM_PrintToChat(client, "Unable to volunteer, because Youtube mode is active");
+    //     SMLogTag(SML_VERBOSE, "Command_Volunteer cancled for %L, because robot-mode is in youtube mode", client);
+    //     return Plugin_Handled;
+    // }
 
     if (AutomaticVolunteerVoteIsInProgress()) 
     {
