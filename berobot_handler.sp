@@ -86,9 +86,10 @@ Menu g_chooseRobotMenus[MAXPLAYERS + 1];
 
 
 float g_CV_flSpyBackStabModifier;
-float g_CV_flYoutuberMode;
+
 float g_Rtr_percent;
 
+int g_CV_flYoutuberMode;
 int g_Enable;
 int g_RoboCapTeam;
 int g_RoboTeam;
@@ -155,13 +156,14 @@ public void OnPluginStart()
     g_cv_bDebugMode = GetConVarBool(g_cvCvarList[CV_bDebugMode]);
     g_Enable = GetConVarInt(g_cvCvarList[CV_g_Enable]);
     g_CV_flSpyBackStabModifier = GetConVarFloat(g_cvCvarList[CV_flSpyBackStabModifier]);
-    g_CV_flYoutuberMode = GetConVarFloat(g_cvCvarList[CV_flYoutuberMode]);
+    
     g_Rtr_percent = GetConVarFloat(g_cvCvarList[CV_g_Rtr_precent]);
 
     g_RoboCapTeam = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
     g_RoboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
     g_RoboTeamMode = GetConVarInt(g_cvCvarList[CV_g_RoboTeamMode]);
     g_RoboMode = GetConVarInt(g_cvCvarList[CV_g_RoboMode]);
+    g_CV_flYoutuberMode = GetConVarInt(g_cvCvarList[CV_flYoutuberMode]);
     
 
     /* Convar Change Hooks */
@@ -1152,10 +1154,10 @@ public Action OnClientCommand(int client, int args)
             if(iTeam == TFTeam_Unassigned || iTeam == TFTeam_Spectator)
             {
 
-                if(g_CV_flYoutuberMode){
-                    CheckIfYT();
-                    return Plugin_Handled;
-                } 
+                // if(g_CV_flYoutuberMode){
+                //     CheckIfYT();
+                //     return Plugin_Handled;
+                // } 
 
                 //Puts players in the correct team
                 if(!IsAnyRobot(client)){
@@ -1380,7 +1382,7 @@ stock void CheckIfYT()
                     //PrintToChatAll("Looping on %i", playerID);
                     //Hardcoding
                     //GPS
-                    if(StrEqual(sSteamID, "76561197963998743-00"))
+                    if(StrEqual(sSteamID, "76561197963998743"))
                     {
                         CreateRobot("HiGPS", i, "");
                         // CreateRobot("Solar Light", i, "");

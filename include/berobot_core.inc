@@ -11,6 +11,15 @@
  */
 native bool IsEnabled();
 
+
+/**
+ * checks if the plugin is enabled
+ * 
+ * @return  true: plugin is enabled;
+ *          false: plugin is disabled
+ */
+native bool IsYTEnabled();
+
 /**
  * checks if robot-mode is active right now
  * 

@@ -476,7 +476,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 
 	TF2Attrib_SetByName(client, "metal regen", 150.0);
-	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
+	
 	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
 	TF2Attrib_SetByName(client, "mod teleporter cost", 3.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);

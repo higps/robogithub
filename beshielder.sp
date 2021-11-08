@@ -110,7 +110,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "health from healers increased", 2.0);
+	
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -193,8 +193,8 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "generate rage on heal", 1.0);
 			TF2Attrib_SetByName(Weapon2, "increase buff duration", 0.65);
 			 //TF2Attrib_SetByName(Weapon2, "rage fill multiplier", 0.5);
-			 TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
-			TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.1");
+			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
+			TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.35");
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 3.0);
 			 //TF2CustAttr_SetString(Weapon2, "banner rage fill multiplier", "0.25");
 			 
