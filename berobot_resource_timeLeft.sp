@@ -113,7 +113,7 @@ void GetResources()
     for(int i = 0; i < _resources.Length; i++)
     {
         TimeLeftResource resource = _resources.Get(i);
-        SMLogTag(SML_VERBOSE, "%i TimeLeft-resources set %i: %i", i, resource.SecondsBeforeEndOfRound);
+        SMLogTag(SML_VERBOSE, "TimeLeft-resource %i set: %i", i, resource.SecondsBeforeEndOfRound);
     }
 }
  
