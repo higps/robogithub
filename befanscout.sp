@@ -46,7 +46,7 @@ public OnPluginStart()
 
     AddNormalSoundHook(BossScout);
 
-    Robot robot;
+    RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Scout";
@@ -312,14 +312,6 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
-
-
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
-}
 
 bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 {

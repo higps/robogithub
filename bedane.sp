@@ -5,7 +5,6 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
-#include <berobot_core>
 //#include <sendproxy>
 #include <tfobjects>
 #include <dhooks>
@@ -119,7 +118,7 @@ public OnPluginStart()
 
 	//RegConsoleCmd("sm_dane", Dane, "become dane");
 
-    Robot robot;
+    RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Engineer";

@@ -3,6 +3,91 @@
 #endif
 #define _berobot_core_included "0.1"
 
+methodmap TimeLeftResource < TimeLeftResourceDefinition {
+    property bool Active {
+        public get(){
+            return this.SecondsBeforeEndOfRound > 0;
+        }
+    }
+    property bool Enabled {
+        public get(){ 
+            if (!this.Active)
+                return true;
+
+            bool value;
+            this.GetValue("Enabled", value);
+            return value;
+        }
+        public set(bool value){
+            this.SetValue("Enabled", value);
+        }
+    }
+
+    public TimeLeftResource() {
+        return view_as<TimeLeftResource>(new StringMap());
+    }
+
+    public void GetRobotName(char buffer[NAMELENGTH])
+    {
+        this.GetString("RobotName", buffer, NAMELENGTH);
+    }
+
+    public TimeLeftResource From(TimeLeftResourceDefinition definition, char robotName[NAMELENGTH])
+    {
+        this.SetString("RobotName", robotName);
+        if (definition == null)
+        {
+            SMLogTag(SML_VERBOSE, "TimeLeftResourceDefinition does not exist");
+            return this;
+        }
+        SMLogTag(SML_VERBOSE, "assigning SecondsBeforeEndOfRound to %i", definition.SecondsBeforeEndOfRound);
+        this.SecondsBeforeEndOfRound = definition.SecondsBeforeEndOfRound;
+        SMLogTag(SML_VERBOSE, "SecondsBeforeEndOfRound is %i", this.SecondsBeforeEndOfRound);
+        return this;
+    }
+}
+methodmap Resources < StringMap {
+    property TimeLeftResource TimeLeft {
+        public get(){ 
+            TimeLeftResource value;
+            this.GetValue("TimeLeft", value);
+            return value;
+        }
+        public set(TimeLeftResource value){
+            this.SetValue("TimeLeft", value);
+        }
+    }
+
+    public Resources() {
+        return view_as<Resources>(new StringMap());
+    }
+
+    public bool IsEnabled()
+    {
+        return this.TimeLeft.Enabled;
+    }
+
+    public void From(ResourcesDefinition definition, char robotName[NAMELENGTH])
+    {
+        if (definition == null)
+        {
+            SMLogTag(SML_VERBOSE, "ResourcesDefinition created");
+            definition = new ResourcesDefinition();
+        }
+        TimeLeftResource timeLeft = new TimeLeftResource();        
+        this.TimeLeft = timeLeft.From(definition.TimeLeft, robotName);
+    }
+}
+enum struct Robot {
+  char name[NAMELENGTH];
+  char role[NAMELENGTH];
+  char class[9];
+  char shortDescription[NAMELENGTH];
+  PrivateForward callback;
+  RobotSounds sounds;
+  Resources resources;
+}
+
 /**
  * checks if the plugin is enabled
  * 
@@ -38,6 +123,13 @@ native bool IsActive();
 native int GetRobotDefinition(char name[NAMELENGTH], const any[] robot);
 
 /**
+ * returns all robot-resources 
+ * 
+ * @return  StringMap containing all resources per robot-name
+ */
+native ArrayList GetRobotResources();
+
+/**
  * returns the name of the robot picked by a client
  * 
  * @param client            clientId to check
@@ -46,16 +138,6 @@ native int GetRobotDefinition(char name[NAMELENGTH], const any[] robot);
  * @noreturn
  */
 native void GetPickedRobot(int client, char[] dest, int maxDestLength);
-
-/**
- * checks if a client is any robot
- * 
- * @param client    clientId to check for robot
- * 
- * @return          true: client is a robot;
- *                  false: client is _not_ a robot
- */
-native bool IsAnyRobot(int client);
 
 /**
  * starts a vote who wants to be robot
@@ -106,6 +188,20 @@ native void EnsureRobotCount();
  * @noreturn
  */
 native void UnmakeRobot(int clientId);
+
+/**
+ * Called after robot-definition was added/removed
+ * 
+ * @noreturn
+ */
+forward void MM_OnRobotStorageChanged();
+
+/**
+ * Called after enabled-state changed
+ * 
+ * @noreturn
+ */
+forward void MM_OnEnabledChanged(int enabled);
 
 /**
  * returns which classes have deep robot voicelines (opposed to only normal robot voicelines)
@@ -159,22 +255,6 @@ stock void TF2_GetNameOfClass(TFClassType class, char[] name, int maxlen)
 	}
 }
 
-
-stock bool IsValidClient(int client, bool replaycheck = true)
-{
-    if(client <= 0 || client > MaxClients)
-        return false;
-    if(!IsClientInGame(client))
-        return false;
-    if(GetEntProp(client, Prop_Send, "m_bIsCoaching"))
-        return false;
-    if(replaycheck)
-    {
-        if(IsClientSourceTV(client) || IsClientReplay(client))
-            return false;
-    }
-    return true;
-}
 /*
 	Swaps and respawns a player to a specified team.
 	
@@ -189,6 +269,23 @@ stock void TF2_SwapTeamAndRespawn(int client, int team)
     ChangeClientTeam(client, team);
     TF2_RespawnPlayer(client);
     SetEntProp(client, Prop_Send, "m_lifeState", 0);
+}
+
+/**
+ * prints text with MannedMachine prefix and teamcolor
+ * 
+ * @param client    client to send the text to
+ * @param text      text to be send
+ * @noreturn
+ */
+stock void MM_PrintToChatAll(char[] text)
+{
+    for(int i = 1; i < MaxClients; i++)
+    {
+        if (!IsValidClient(i))
+            continue;
+        MM_PrintToChat(i, text);
+    }
 }
 
 /**

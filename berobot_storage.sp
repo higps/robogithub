@@ -30,6 +30,7 @@ public Plugin myinfo =
 
 bool _init;
 StringMap _robots;
+GlobalForward _robotStorageChangedForward;
 
 public void OnPluginStart()
 {
@@ -38,16 +39,17 @@ public void OnPluginStart()
 
 public void Init()
 {
-	if (_init)
-		return;
+    if (_init)
+        return;
 
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-	SMLogTag(SML_INFO, "berobot_store started at %i", GetTime());
+    SMLogTag(SML_INFO, "berobot_store started at %i", GetTime());
 
-	_robots = new StringMap();
-	_init = true;
-	
-	RegAdminCmd("sm_dumpRobotStorage", Command_DumpRobotStorage, ADMFLAG_ROOT, "Dumps the current Robot-Storage (for debugging)");
+    _robots = new StringMap();
+    _init = true;
+
+    _robotStorageChangedForward = new GlobalForward("MM_OnRobotStorageChanged", ET_Ignore);
+    RegAdminCmd("sm_dumpRobotStorage", Command_DumpRobotStorage, ADMFLAG_ROOT, "Dumps the current Robot-Storage (for debugging)");
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -57,75 +59,100 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("GetRobotNames", Native_GetRobotNames);
 	CreateNative("GetRobotClass", Native_GetRobotClass);
 	CreateNative("GetRobotDefinition", Native_GetRobotDefinition);
+	CreateNative("GetRobotResources", Native_GetRobotResources);
 
 	return APLRes_Success;
 }
 
+void OnRobotStorageChanged()
+{
+    Call_StartForward(_robotStorageChangedForward);
+    Call_Finish();
+}
+
 public Action Command_DumpRobotStorage(int client, int numParams)
 {
-	StringMapSnapshot snapshot = _robots.Snapshot();
-	for(int i = 0; i < snapshot.Length; i++)
-	{
-		char name[NAMELENGTH];
-		snapshot.GetKey(i, name, NAMELENGTH);
-	
-		Robot item;
-		_robots.GetArray(name, item, sizeof(item));
-		
-		SMLogTag(SML_INFO, "Robot {%s: %s, callback: %x, sounds: {spawn: %s}}", item.name, item.class, item.callback, item.sounds.spawn);
-	}
-}
+    StringMapSnapshot snapshot = _robots.Snapshot();
+    for(int i = 0; i < snapshot.Length; i++)
+    {
+        char name[NAMELENGTH];
+        snapshot.GetKey(i, name, NAMELENGTH);
+
+        Robot item;
+        _robots.GetArray(name, item, sizeof(item));
+        
+        SMLogTag(SML_INFO, "Robot {%s: %s, callback: %x, sounds: {spawn: %s}, resources: {timeLeft: %i}}", 
+            item.name, item.class, item.callback, item.sounds.spawn, item.resources.TimeLeft);
+    }
+    }
 
 public any Native_AddRobot(Handle plugin, int numParams)
 { 
-	Init();
+    Init();
 
-	Robot robot;
-	GetNativeArray(1, robot, sizeof(robot));
+    RobotDefinition robotDefinition;
+    GetNativeArray(1, robotDefinition, sizeof(robotDefinition));
 
-	Function callback = GetNativeFunction(2);
+    Function callback = GetNativeFunction(2);
 
-	char pluginVersion[9];
-	GetNativeString(3, pluginVersion, 9);
+    char pluginVersion[9];
+    GetNativeString(3, pluginVersion, 9);
 
-	SMLogTag(SML_VERBOSE, "adding robot %s from plugin-handle %x", robot.name, plugin);
+    ResourcesDefinition resourcesDefinition = null;
+    if (numParams >= 4)
+        resourcesDefinition = GetNativeCell(4);
 
-	char simpleName[NAMELENGTH];
-	simpleName = robot.name;
-	ReplaceString(simpleName, NAMELENGTH, " ", "");
-	
-	char versionConVarName[NAMELENGTH+10];
-	Format(versionConVarName, NAMELENGTH+10, "be%s_version", simpleName);
-	
-	char versionConVarDescription[128];
-	Format(versionConVarDescription, 128, "[TF2] Be the Giant %s %s version", robot.name, robot.class);
-	CreateConVar(versionConVarName, pluginVersion, versionConVarDescription, FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_SPONLY);
+    SMLogTag(SML_VERBOSE, "adding robot %s from plugin-handle %x", robotDefinition.name, plugin);
 
-	PrivateForward privateForward = new PrivateForward(ET_Single, Param_Cell);
-	privateForward.AddFunction(plugin, callback);
-	robot.callback = privateForward;
+    char simpleName[NAMELENGTH];
+    simpleName = robotDefinition.name;
+    ReplaceString(simpleName, NAMELENGTH, " ", "");
 
-	SMLogTag(SML_VERBOSE, "robot %s uses privateForward %x", robot.name, privateForward);
-	SMLogTag(SML_VERBOSE, "robot %s is class %s", robot.name, robot.class);
-	SMLogTag(SML_VERBOSE, "robot %s has sounds {spawn: %s; loop: %s; death: %s }", robot.name, robot.sounds.spawn, robot.sounds.loop, robot.sounds.death);
+    char versionConVarName[NAMELENGTH+10];
+    Format(versionConVarName, NAMELENGTH+10, "be%s_version", simpleName);
 
-	_robots.SetArray(robot.name, robot, sizeof(robot));
+    char versionConVarDescription[128];
+    Format(versionConVarDescription, 128, "[TF2] Be the Giant %s %s version", robotDefinition.name, robotDefinition.class);
+    CreateConVar(versionConVarName, pluginVersion, versionConVarDescription, FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_SPONLY);
+
+    Robot robot;
+    robot.name = robotDefinition.name;
+    robot.role = robotDefinition.role;
+    robot.class = robotDefinition.class;
+    robot.shortDescription = robotDefinition.shortDescription;
+    robot.sounds = robotDefinition.sounds;
+
+    PrivateForward privateForward = new PrivateForward(ET_Single, Param_Cell);
+    privateForward.AddFunction(plugin, callback);
+    robot.callback = privateForward;
+
+    robot.resources = new Resources();
+    robot.resources.From(resourcesDefinition, robot.name);
+
+    SMLogTag(SML_VERBOSE, "robot %s uses privateForward %x", robot.name, privateForward);
+    SMLogTag(SML_VERBOSE, "robot %s is class %s", robot.name, robot.class);
+    SMLogTag(SML_VERBOSE, "robot %s has sounds {spawn: %s; loop: %s; death: %s }", robot.name, robot.sounds.spawn, robot.sounds.loop, robot.sounds.death);
+    SMLogTag(SML_VERBOSE, "robot %s has timeleft-resource {Active: %b; SecondsBeforeEndOfRound: %i }", robot.name, robot.resources.TimeLeft.Active, robot.resources.TimeLeft.SecondsBeforeEndOfRound);
+
+    _robots.SetArray(robot.name, robot, sizeof(robot));
+    OnRobotStorageChanged();
 }
 
 public any Native_RemoveRobot(Handle plugin, int numParams)
 { 
-	Init();
-	
-	char name[NAMELENGTH];
-	GetNativeString(1, name, NAMELENGTH);
+    Init();
 
-	if (!_robots.Remove(name))
-	{
-		SMLogTag(SML_VERBOSE, "could not remove robot. no robot with name '%s' found", name);
-		return 1;
-	}
+    char name[NAMELENGTH];
+    GetNativeString(1, name, NAMELENGTH);
 
-	return 0;
+    if (!_robots.Remove(name))
+    {
+        SMLogTag(SML_VERBOSE, "could not remove robot. no robot with name '%s' found", name);
+        return 1;
+    }
+
+    OnRobotStorageChanged();
+    return 0;
 }
 
 public any Native_GetRobotNames(Handle plugin, int numParams)
@@ -180,4 +207,23 @@ public any Native_GetRobotDefinition(Handle plugin, int numParams)
 
 	SetNativeArray(2, item, sizeof(item));
 	return 0;
+}
+
+public any Native_GetRobotResources(Handle plugin, int numParams)
+{
+    ArrayList resources = new ArrayList();
+
+    StringMapSnapshot snapshot = _robots.Snapshot();
+    for(int i = 0; i < snapshot.Length; i++)
+    {
+        char name[NAMELENGTH];
+        snapshot.GetKey(i, name, NAMELENGTH);
+
+        Robot item;
+        _robots.GetArray(name, item, sizeof(item));
+        
+        resources.Push(item.resources);
+    }
+
+    return resources;
 }

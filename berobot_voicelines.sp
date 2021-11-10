@@ -6,6 +6,7 @@
 #include <tf_ontakedamage>
 #include <sm_logger>
 #include <berobot_constants>
+#include <berobot>
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR", "NormalSoundHook"};
 enum(<<= 1)

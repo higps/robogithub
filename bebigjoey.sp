@@ -45,7 +45,7 @@ public OnPluginStart()
 
     AddNormalSoundHook(BossGPS);
 
-    Robot robot;
+    RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Heavy";
@@ -347,13 +347,6 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 			}
 		}
 	}
-}
-       
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
 }
 
 public TF2_OnConditionAdded(client, TFCond:condition)

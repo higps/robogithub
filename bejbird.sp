@@ -35,7 +35,7 @@ public OnPluginStart()
 
     //HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    Robot robot;
+    RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Sniper";
@@ -258,13 +258,6 @@ public Native_SetSuperHeavyweightChamp(Handle:plugin, args)
 
 public Native_IsSuperHeavyweightChamp(Handle:plugin, args)
 		return g_bisGSniper[GetNativeCell(1)];*/
-
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
-}
 
 bool CreateHat(int client, int itemindex, int level, int quality, float paint)
 {

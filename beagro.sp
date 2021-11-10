@@ -47,7 +47,7 @@ public OnPluginStart()
 
     LoadTranslations("common.phrases");
 
-    Robot robot;
+    RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Pyro";
@@ -57,6 +57,7 @@ public OnPluginStart()
     robot.sounds.gunfire = SOUND_GUNFIRE;
     robot.sounds.windup = SOUND_WINDUP;
     robot.sounds.death = DEATH;
+
     AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 }
 
@@ -324,13 +325,6 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 			}
 		}
 	}
-}
-	
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
 }
 
 bool CreateHat(int client, int itemindex, int level, int quality, bool scale)

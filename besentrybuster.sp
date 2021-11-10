@@ -35,7 +35,7 @@ public OnPluginStart()
 {
     LoadTranslations("common.phrases");
 
-    Robot robot;
+    RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "";
@@ -44,7 +44,10 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 
-    AddRobot(robot, MakeBuster, PLUGIN_VERSION);
+    ResourcesDefinition resources = new ResourcesDefinition();
+    resources.TimeLeft = new TimeLeftResourceDefinition();
+    resources.TimeLeft.SecondsBeforeEndOfRound = 180;
+    AddRobot(robot, MakeBuster, PLUGIN_VERSION, resources);
 
     for(int client = 1 ; client <= MaxClients ; client++)
     {
@@ -550,14 +553,6 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 			}
 		}
 	}
-}
-
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	if (client <= 0 || client > MaxClients) return false;
-	return IsClientInGame(client);
 }
 
 stock void RemoveAllWearables(int client)

@@ -28,7 +28,7 @@ public OnPluginStart()
 {
     LoadTranslations("common.phrases");
 
-    Robot robot;
+    RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Medic";
@@ -238,14 +238,6 @@ public player_inv(Handle event, const char[] name, bool dontBroadcast)
 		TF2Attrib_RemoveByName(Weapon2, "heal rate bonus");
 		TF2Attrib_RemoveByName(Weapon2, "killstreak tier");	
 	}
-}
-       
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	if (client <= 0 || client > MaxClients) return false;
-	return IsClientInGame(client);
 }
 
 bool CreateHat(int client, int itemindex, int level, int quality, float paint)
