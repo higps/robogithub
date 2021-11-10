@@ -1320,6 +1320,12 @@ bool RemoveRandomRobot()
     }
 
     int clientId = FindRandomVolunteer();
+    if (clientId < 0)
+    {
+        SMLogTag(SML_INFO, "can't remove random robot, because no volunteers are found");
+        return false;
+    }
+
     char robotName[NAMELENGTH];
     robotName = g_cv_RobotPicked[clientId];
     CreateRobot(robotName, clientId, "");
