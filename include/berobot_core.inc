@@ -24,7 +24,9 @@ methodmap TimeLeftResource < TimeLeftResourceDefinition {
     }
 
     public TimeLeftResource() {
-        return view_as<TimeLeftResource>(new StringMap());
+        TimeLeftResource resource = view_as<TimeLeftResource>(new StringMap());
+        resource.Enabled = false;
+        return resource;
     }
 
     public void GetRobotName(char buffer[NAMELENGTH])

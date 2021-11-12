@@ -1092,7 +1092,7 @@ void SetRandomRobot(int client)
         {
             Robot item;
             GetRobotDefinition(robotname, item);
-            if (!item.resources.TimeLeft.Enabled)
+            if (item.resources.IsEnabled())
             {
                 break;
             }
