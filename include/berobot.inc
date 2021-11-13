@@ -93,6 +93,34 @@ native void CreateRobot(char[] name, int client, char target[32]);
 native void EquipWearable(int client, int item);
 
 /**
+ * Creates a weapon with level
+ * 
+ * @param client     the client who should wear the equipment/item
+ * @param classname  the class name of the weapon like "tf_weapon_minigun"
+ * @param itemindex  the item index of the weapon to be used, doesn't have to match classname
+ * @param quality    the quality of the item, 6 is unique, 9 is australium and so on.
+ * @param level       the level of the item
+ * @param slot      the weapon slot this weapon will be put in, starts at 0
+ * @noreturn
+ */
+ //CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
+native void CreateWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot);
+
+/**
+ * Creates a weapon with level
+ * 
+ * @param client     the client who should wear the equipment/item
+ * @param classname  the class name of the weapon like "tf_weapon_minigun"
+ * @param itemindex  the item index of the weapon to be used, doesn't have to match classname
+ * @param quality    the quality of the item, 6 is unique, 9 is australium and so on.
+ * @param level       the level of the item
+ * @param paint      the paint, has to be a float value ending with .0 for attributes to work properly
+ * @param scale     the scale of the hat, will only work on single bone hats.
+ * @noreturn
+ */
+ //CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
+native void  CreateHat(int client, int itemindex, int level, int quality, float paint, float scale)
+/**
  * scales the hitbox of player-hitbox
  * 
  * @param client     clientId of the player being scaled
