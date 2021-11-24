@@ -68,6 +68,14 @@ public any Native_EquipWearable(Handle plugin, int numParams)
 
 public bool Native_CreateWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot)
 {
+
+	int client = GetNativeCell(1);
+	char classname[64] = GetNativeCell(2);
+	int itemindex = GetNativeCell(3);
+	int quality = GetNativeCell(4);
+	int slot = GetNativeCell(5);
+
+
 	TF2_RemoveWeaponSlot(client, slot);
 	
 	int weapon = CreateEntityByName(classname);
@@ -109,6 +117,14 @@ public bool Native_CreateWeapon(int client, char[] classname, int itemindex, int
 
 public any Native_CreateHat(int client, int itemindex, int level, int quality, float paint, float scale)
 {
+	int client = GetNativeCell(1);
+	int itemindex = GetNativeCell(2);
+	int level = GetNativeCell(2);
+	int quality = GetNativeCell(4);
+	float paint = GetNativeCell(5);
+	float scale = GetNativeCell(5);
+
+
 	int hat = CreateEntityByName("tf_wearable");
 	
 	if (!IsValidEntity(hat))

@@ -145,6 +145,7 @@ public OnPluginStart()
         if(IsClientInGame(client))
         {
             //SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
+			PrintToChatAll("Hooking %N", client);
             SDKHook(client, SDKHook_Touch, OnTouch);
         }
     }
@@ -178,9 +179,9 @@ public void OnPluginEnd()
 	
 } */
 
-public Action OnTouch(int client, int ent)
+public Action OnTouch(int client)
 {
-
+	PrintToChatAll("TOUCHING! %N", client);
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -549,16 +550,16 @@ stock GiveBigRoboDane(client)
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
-		CreateWeapon(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
-		CreateWeapon(client, "tf_weapon_wrench", 329, 6, 1, 2, 0);
+		CreateWeapon2(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
+		CreateWeapon2(client, "tf_weapon_wrench", 329, 6, 1, 2, 0);
 		// CreateWeapon(client, "tf_weapon_pda_engineer_build", 25, 6, 1, 3, 0);
 		// CreateWeapon(client, "tf_weapon_pda_engineer_destroy", 26, 6, 1, 4, 0);
 		//TF2_RegeneratePlayer(client);
 
-		CreateHat(client, 30420, 10, 6, 15132390.0); // the danger
+		CreateHat2(client, 30420, 10, 6, 15132390.0); // the danger
 		//	CreateHat(client, 30178, 10, 6, 1315860);
-		CreateHat(client, 30172, 10, 6, 15132390.0); //gold digger
-		CreateHat(client, 30539, 10, 6, 15132390.0); //insulator
+		CreateHat2(client, 30172, 10, 6, 15132390.0); //gold digger
+		CreateHat2(client, 30539, 10, 6, 15132390.0); //insulator
 		
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -624,7 +625,7 @@ stock GiveBigRoboDane(client)
 // 	return IsClientInGame(client);
 // }
 
-bool CreateHat(int client, int itemindex, int level, int quality, float paint)
+bool CreateHat2(int client, int itemindex, int level, int quality, float paint)
 {
 	int hat = CreateEntityByName("tf_wearable");
 	
@@ -714,7 +715,7 @@ stock Action RemoveWearable(int client, char[] classname, char[] networkclass)
 	}
 }
 
-bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, int paint)
+bool CreateWeapon2(int client, char[] classname, int itemindex, int quality, int level, int slot, int paint)
 {
 	TF2_RemoveWeaponSlot(client, slot);
 	
