@@ -1076,6 +1076,11 @@ void SetRandomRobot(int client)
         return;
 
     ArrayList robotNames = GetRobotNames();
+    if (robotNames.Length <= 0)
+    {
+        SMLogTag(SML_VERBOSE, "no robots were found. %L will not be turned into a robot.", client);
+        return;
+    }
 
     char robotname[NAMELENGTH];  
     for (;;)  
