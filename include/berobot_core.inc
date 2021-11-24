@@ -3,92 +3,6 @@
 #endif
 #define _berobot_core_included "0.1"
 
-methodmap TimeLeftResource < TimeLeftResourceDefinition {
-    property bool Active {
-        public get(){
-            return this.SecondsBeforeEndOfRound > 0;
-        }
-    }
-    property bool Enabled {
-        public get(){ 
-            if (!this.Active)
-                return true;
-
-            bool value;
-            this.GetValue("Enabled", value);
-            return value;
-        }
-        public set(bool value){
-            this.SetValue("Enabled", value);
-        }
-    }
-
-    public TimeLeftResource() {
-        TimeLeftResource resource = view_as<TimeLeftResource>(new StringMap());
-        resource.Enabled = false;
-        return resource;
-    }
-
-    public void GetRobotName(char buffer[NAMELENGTH])
-    {
-        this.GetString("RobotName", buffer, NAMELENGTH);
-    }
-
-    public TimeLeftResource From(TimeLeftResourceDefinition definition, char robotName[NAMELENGTH])
-    {
-        this.SetString("RobotName", robotName);
-        if (definition == null)
-        {
-            SMLogTag(SML_VERBOSE, "TimeLeftResourceDefinition does not exist");
-            return this;
-        }
-        SMLogTag(SML_VERBOSE, "assigning SecondsBeforeEndOfRound to %i", definition.SecondsBeforeEndOfRound);
-        this.SecondsBeforeEndOfRound = definition.SecondsBeforeEndOfRound;
-        SMLogTag(SML_VERBOSE, "SecondsBeforeEndOfRound is %i", this.SecondsBeforeEndOfRound);
-        return this;
-    }
-}
-methodmap Resources < StringMap {
-    property TimeLeftResource TimeLeft {
-        public get(){ 
-            TimeLeftResource value;
-            this.GetValue("TimeLeft", value);
-            return value;
-        }
-        public set(TimeLeftResource value){
-            this.SetValue("TimeLeft", value);
-        }
-    }
-
-    public Resources() {
-        return view_as<Resources>(new StringMap());
-    }
-
-    public bool IsEnabled()
-    {
-        return this.TimeLeft.Enabled;
-    }
-
-    public void From(ResourcesDefinition definition, char robotName[NAMELENGTH])
-    {
-        if (definition == null)
-        {
-            SMLogTag(SML_VERBOSE, "ResourcesDefinition created");
-            definition = new ResourcesDefinition();
-        }
-        TimeLeftResource timeLeft = new TimeLeftResource();        
-        this.TimeLeft = timeLeft.From(definition.TimeLeft, robotName);
-    }
-}
-enum struct Robot {
-  char name[NAMELENGTH];
-  char role[NAMELENGTH];
-  char class[9];
-  char shortDescription[NAMELENGTH];
-  PrivateForward callback;
-  RobotSounds sounds;
-  Resources resources;
-}
 
 /**
  * checks if the plugin is enabled
@@ -140,6 +54,13 @@ native ArrayList GetRobotResources();
  * @noreturn
  */
 native void GetPickedRobot(int client, char[] dest, int maxDestLength);
+
+/**
+ * returns the amount of robots per team
+ * 
+ * @return  count of robots per team
+ */
+native int GetRobotCountPerTeam();
 
 /**
  * starts a vote who wants to be robot
@@ -315,4 +236,193 @@ stock bool MM_Random(int trueCases, int maxCases)
     
     int random = GetRandomInt(1, maxCases);
     return random <= trueCases;
+}
+
+methodmap TimeLeftResource < TimeLeftResourceDefinition {
+    property bool Active {
+        public get(){
+            return this.SecondsBeforeEndOfRound > 0;
+        }
+    }
+    property bool Enabled {
+        public get(){ 
+            if (!this.Active)
+                return true;
+
+            bool value;
+            this.GetValue("Enabled", value);
+            return value;
+        }
+        public set(bool value){
+            this.SetValue("Enabled", value);
+        }
+    }
+
+    public TimeLeftResource() {
+        TimeLeftResource resource = view_as<TimeLeftResource>(new StringMap());
+        resource.Enabled = false;
+        return resource;
+    }
+
+    public void GetRobotName(char buffer[NAMELENGTH])
+    {
+        this.GetString("RobotName", buffer, NAMELENGTH);
+    }
+
+    public TimeLeftResource From(TimeLeftResourceDefinition definition, char robotName[NAMELENGTH])
+    {
+        this.SetString("RobotName", robotName);
+        if (definition == null)
+        {
+            SMLogTag(SML_VERBOSE, "TimeLeftResourceDefinition does not exist");
+            return this;
+        }
+        SMLogTag(SML_VERBOSE, "assigning SecondsBeforeEndOfRound to %i", definition.SecondsBeforeEndOfRound);
+        this.SecondsBeforeEndOfRound = definition.SecondsBeforeEndOfRound;
+        SMLogTag(SML_VERBOSE, "SecondsBeforeEndOfRound is %i", this.SecondsBeforeEndOfRound);
+        return this;
+    }
+}
+
+methodmap TeamResource < TeamResourceDefinition {
+    property bool Active {
+        public get(){
+            return this.Overall > 0 || this.PerRobot > 0;
+        }
+    }
+    property bool Enabled {
+        public get(){ 
+            if (!this.Active)
+                return true;
+
+            bool value;
+            this.GetValue("Enabled", value);
+            return value;
+        }
+        public set(bool value){
+            this.SetValue("Enabled", value);
+        }
+    }
+
+    public TeamResource(char robotName[NAMELENGTH]) {
+        TeamResource teamResource = view_as<TeamResource>(new StringMap());
+        teamResource.SetString("RobotName", robotName);
+        teamResource.PerRobot = 0;
+        teamResource.Overall = 0;
+        return teamResource;
+    }
+
+    public void GetRobotName(char buffer[NAMELENGTH])
+    {
+        this.GetString("RobotName", buffer, NAMELENGTH);
+    }
+
+    public int GetPrice()
+    {
+        if (this.Overall > 0)
+            return this.Overall;
+
+        int robotCount = GetRobotCountPerTeam();
+        return robotCount * this.PerRobot;
+    }
+
+    public TeamResource From(TeamResourceDefinition definition)
+    {
+        if (definition == null)
+        {
+            SMLogTag(SML_VERBOSE, "TeamResourceDefinition does not exist");
+            return this;
+        }
+        SMLogTag(SML_VERBOSE, "assigning PerRobot to %i", definition.PerRobot);
+        this.PerRobot = definition.PerRobot;
+        SMLogTag(SML_VERBOSE, "assigning Overall to %i", definition.Overall);
+        this.Overall = definition.Overall;
+        
+        return this;
+    }
+}
+
+methodmap Resources < StringMap {
+    property TimeLeftResource TimeLeft {
+        public get(){ 
+            TimeLeftResource value;
+            this.GetValue("TimeLeft", value);
+            return value;
+        }
+        public set(TimeLeftResource value){
+            this.SetValue("TimeLeft", value);
+        }
+    }
+    property TeamResource TeamResourceRed {
+        public get(){ 
+            TeamResource value;
+            this.GetValue("TeamResourceRed", value);
+            return value;
+        }
+        public set(TeamResource value){
+            this.SetValue("TeamResourceRed", value);
+        }
+    }
+    property TeamResource TeamResourceBlu {
+        public get(){ 
+            TeamResource value;
+            this.GetValue("TeamResourceBlu", value);
+            return value;
+        }
+        public set(TeamResource value){
+            this.SetValue("TeamResourceBlu", value);
+        }
+    }
+
+    public Resources() {
+        return view_as<Resources>(new StringMap());
+    }
+
+    public bool IsEnabled()
+    {
+        return this.TimeLeft.Enabled || this.TeamResourceRed.Enabled || this.TeamResourceBlu.Enabled;
+    }
+
+    public TeamResource GetTeamResource(TFTeam team)
+    {
+        switch (team)
+        {
+            case TFTeam_Blue:
+                return this.TeamResourceBlu;
+            case TFTeam_Red:
+                return this.TeamResourceRed;
+            default:
+                return null;
+        }
+    }
+    
+    public TeamResource GetTeamResourceFor(int clientId)
+    {        
+        TFTeam team = view_as<TFTeam>(GetClientTeam(clientId));
+        return this.GetTeamResource(team);
+    }
+
+    public void From(ResourcesDefinition definition, char robotName[NAMELENGTH])
+    {
+        if (definition == null)
+        {
+            SMLogTag(SML_VERBOSE, "ResourcesDefinition created");
+            definition = new ResourcesDefinition();
+        }
+        TimeLeftResource timeLeft = new TimeLeftResource();        
+        this.TimeLeft = timeLeft.From(definition.TimeLeft, robotName);
+        TeamResource teamResourceRed = new TeamResource(robotName);        
+        this.TeamResourceRed = teamResourceRed.From(definition.TeamResource);
+        TeamResource teamResourceBlu = new TeamResource(robotName);        
+        this.TeamResourceBlu = teamResourceBlu.From(definition.TeamResource);
+    }
+}
+enum struct Robot {
+  char name[NAMELENGTH];
+  char role[NAMELENGTH];
+  char class[9];
+  char shortDescription[NAMELENGTH];
+  PrivateForward callback;
+  RobotSounds sounds;
+  Resources resources;
 }

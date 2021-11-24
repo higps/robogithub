@@ -11,6 +11,7 @@
 
 #include <berobot_constants>
 #include <berobot>
+#include <berobot_core_resources>
 #include <morecolors_newsyntax>
 #include <sdkhooks>
 #include <sdktools>
@@ -228,6 +229,7 @@ public void OnPluginStart()
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
     CreateNative("GetPickedRobot", Native_GetPickedRobot);
+    CreateNative("GetRobotCountPerTeam", Native_GetRobotCountPerTeam);
     CreateNative("SetVolunteers", Native_SetVolunteers);
     CreateNative("EnsureRobotCount", Native_EnsureRobotCount);
     CreateNative("IsEnabled", Native_IsEnabled);
@@ -1008,20 +1010,9 @@ Action Menu_ChooseRobot(int client)
         Robot item;
         robotDefinitions.GetArray(i, item, sizeof(item));
 
-        int count;
-        g_RobotCount.GetValue(item.name, count);
-
         char notes[15];
-        int draw = ITEMDRAW_DEFAULT;
-        if (count >= g_RoboCap)
-            draw = ITEMDRAW_DISABLED;
-        if (!item.resources.TimeLeft.Enabled)
-        {
-            Format(notes, sizeof(notes), "timeleft: %is", item.resources.TimeLeft.SecondsBeforeEndOfRound);
-            draw = ITEMDRAW_DISABLED;
-        }
-        if (notes[0] == '\0')
-            Format(notes, sizeof(notes), "%i / %i", count, g_RoboCap);
+        int draw;
+        GenerateNotes(item, client, notes, draw);
 
         char display[128];
         Format(display, sizeof(display), "%s: %s - %s - %s (%s)", item.role, item.class, item.name, item.shortDescription, notes);
@@ -1040,6 +1031,36 @@ Action Menu_ChooseRobot(int client)
     SMLogTag(SML_VERBOSE, "menu displayed to %L for %i seconds", client, timeout);
 
     return Plugin_Handled;
+}
+
+void GenerateNotes(Robot item, int client, char notes[15], int& draw)
+{
+    int count;
+    g_RobotCount.GetValue(item.name, count);
+    if (count >= g_RoboCap)
+    {
+        Format(notes, sizeof(notes), "%i / %i", count, g_RoboCap);
+        draw = ITEMDRAW_DISABLED;
+        return;
+    }
+
+    if (!item.resources.TimeLeft.Enabled)
+    {
+        Format(notes, sizeof(notes), "timeleft: %is", item.resources.TimeLeft.SecondsBeforeEndOfRound);
+        draw = ITEMDRAW_DISABLED;
+        return;
+    }
+
+    TeamResource teamResource = item.resources.GetTeamResourceFor(client);
+    if (!teamResource.Enabled)
+    {
+        Format(notes, sizeof(notes), "resources: %i", teamResource.GetPrice());
+        draw = ITEMDRAW_DISABLED;
+        return;
+    }
+
+    Format(notes, sizeof(notes), "%i / %i", count, g_RoboCap);
+    draw = ITEMDRAW_DEFAULT;
 }
 
 public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
@@ -1061,7 +1082,11 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     else if(action == MenuAction_Cancel)
     {
         g_chooseRobotMenus[param1] = null;
-        g_ClientIsRepicking[param1] = false;
+
+        if (param2 == MenuCancel_Exit)
+        {
+            g_ClientIsRepicking[param1] = false;
+        }
         // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
     }
 
@@ -1111,10 +1136,13 @@ void SetRandomRobot(int client)
 }
 
 void SetRobot(char robotname[NAMELENGTH], int client)
-{    
-
-
-    CreateRobot(robotname, client, "");
+{
+    int error = CreateRobot(robotname, client, "");
+    if (error != 0)
+    {
+        RedrawChooseRobotMenuFor(client);
+        return;
+    }
 
     //reset count for current robot
     SMLogTag(SML_VERBOSE, "volunteered by %L is currently robot '%s'", client, g_cv_RobotPicked[client]);
@@ -1141,23 +1169,44 @@ void RedrawChooseRobotMenu()
 {
     for(int i = 0; i < MaxClients; i++)
     {
-        if(g_cv_RobotPicked[i][0] != '\0' && !g_ClientIsRepicking[i]) //don't open menu for players, who have already picked a robot
-            continue;
-
-        if(!IsValidClient(i))
-            continue;
-
-        if(!IsClientInGame(i))
-            continue;
-
-        if(IsFakeClient(i))
-            continue;
-
-        if(!g_cv_Volunteered[i])
-            continue;
-
-        Menu_ChooseRobot(i);
+        RedrawChooseRobotMenuFor(i);
     }
+}
+
+void RedrawChooseRobotMenuFor(int clientId)
+{
+    if(!IsValidClient(clientId))
+    {
+        SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for client %i, because client is not valid", clientId);
+        return;
+    }
+
+    if(g_cv_RobotPicked[clientId][0] != '\0' && !g_ClientIsRepicking[clientId]) //don't open menu for players, who have already picked a robot
+    {
+        SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is already robot and not repicking", clientId);
+        return;
+    }
+
+    if(!IsClientInGame(clientId))
+    {
+        SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is not in game", clientId);
+        return;
+    }
+
+    if(IsFakeClient(clientId))
+    {
+        SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is fake", clientId);
+        return;
+    }
+
+    if(!g_cv_Volunteered[clientId])
+    {
+        SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is not a robot", clientId);
+        return;
+    }
+
+    SMLogTag(SML_VERBOSE, "redrawing ChooseRobotMenu for %L", clientId);
+    Menu_ChooseRobot(clientId);
 }
 
 public Action OnClientCommand(int client, int args)
@@ -1269,6 +1318,11 @@ public any Native_GetPickedRobot(Handle plugin, int numParams)
 	int maxDestLength = GetNativeCell(3);
 
 	SetNativeString(2, g_cv_RobotPicked[client], maxDestLength);
+}
+
+public any Native_GetRobotCountPerTeam(Handle plugin, int numParams)
+{
+    return g_RoboCapTeam;
 }
 
 int Native_SetVolunteers(Handle plugin, int numParams)

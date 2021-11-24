@@ -47,6 +47,8 @@ public OnPluginStart()
     ResourcesDefinition resources = new ResourcesDefinition();
     resources.TimeLeft = new TimeLeftResourceDefinition();
     resources.TimeLeft.SecondsBeforeEndOfRound = 180;
+    resources.TeamResource = new TeamResourceDefinition();
+    resources.TeamResource.PerRobot = 3;
     AddRobot(robot, MakeBuster, PLUGIN_VERSION, resources);
 
     for(int client = 1 ; client <= MaxClients ; client++)

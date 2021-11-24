@@ -29,6 +29,32 @@ methodmap TimeLeftResourceDefinition < StringMap {
         return view_as<TimeLeftResourceDefinition>(new StringMap());
     }
 }
+methodmap TeamResourceDefinition < StringMap {
+    property int PerRobot {
+        public get(){ 
+            int value;
+            this.GetValue("PerRobot", value);
+            return value;
+        }
+        public set(int value){
+            this.SetValue("PerRobot", value);
+        }
+    }
+    property int Overall {
+        public get(){ 
+            int value;
+            this.GetValue("Overall", value);
+            return value;
+        }
+        public set(int value){
+            this.SetValue("Overall", value);
+        }
+    }
+
+    public TeamResourceDefinition() {
+        return view_as<TeamResourceDefinition>(new StringMap());
+    }
+}
 methodmap ResourcesDefinition < StringMap {
     property TimeLeftResourceDefinition TimeLeft {
         public get(){ 
@@ -38,6 +64,16 @@ methodmap ResourcesDefinition < StringMap {
         }
         public set(TimeLeftResourceDefinition value){
             this.SetValue("TimeLeft", value);
+        }
+    }
+    property TeamResourceDefinition TeamResource {
+        public get(){ 
+            TeamResourceDefinition value;
+            this.GetValue("TeamResource", value);
+            return value;
+        }
+        public set(TeamResourceDefinition value){
+            this.SetValue("TeamResource", value);
         }
     }
 
@@ -119,9 +155,13 @@ native bool IsAnyRobot(int client);
  * @param client     the client in whos context the command should be executed
  * @param target     the target of the command (usualy "" can be "@me" etc.)
  * 
- * @noreturn
+ * @return  error code 
+            0: no error
+            1: robot not found
+            2: target error
+            3: could not pay resource
  */
-native void CreateRobot(char[] name, int client, char target[32]);
+native int CreateRobot(char[] name, int client, char target[32]);
 
 /**
  * SDKCall for CBasePlayer::EquipWearable
