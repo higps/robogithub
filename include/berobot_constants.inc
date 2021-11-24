@@ -9,3 +9,4 @@
 #define CONVAR_ROBOCAP_TEAM "sm_robocap_team"
 
 const int NAMELENGTH = 128;
+const int MAX_INT = 2147483647;

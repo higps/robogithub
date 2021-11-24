@@ -53,7 +53,7 @@ public OnPluginStart()
     //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
     AddNormalSoundHook(BossHomer);
 
-    Robot robot;
+    RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Soldier";
@@ -304,14 +304,6 @@ stock GiveGiantPyro(client)
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
-
-	
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
-}
 
 bool CreateHat(int client, int itemindex, int level, int quality, bool scale)
 {

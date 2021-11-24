@@ -367,7 +367,7 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         char str[10];
         IntToString(ignoredClientId, str, 10);
 
-        SMLogTag(SML_VERBOSE, "adding %s for %L to ignored volunteers", str, ignoredClientId);
+        SMLogTag(SML_VERBOSE, "adding %s for %i to ignored volunteers", str, ignoredClientId);
         ignoredClientIdLookup.SetValue(str, true);
     }
 

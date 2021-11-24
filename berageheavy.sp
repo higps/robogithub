@@ -46,7 +46,7 @@ public OnPluginStart()
 
     AddNormalSoundHook(BossGPS);
 
-    Robot robot;
+    RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Heavy";
@@ -269,14 +269,6 @@ stock GiveGRageH(client)
 		PrintCenterText(client, "Taunt To activate rage mode!");
 		//FakeClientCommand(client, "+taunt");
 	}
-}
-
-       
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
 }
 
 public TF2_OnConditionAdded(client, TFCond:condition)

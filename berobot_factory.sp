@@ -8,7 +8,6 @@
 #include <tf2attributes>
 #include <tf2_isPlayerInSpawn>
 #include <berobot_constants>
-#include <berobot>
 
 char LOG_TAGS[][] =	 {"VERBOSE", "INFO", "ERROR"};
 enum (<<= 1)
@@ -17,6 +16,7 @@ enum (<<= 1)
 	SML_INFO,
 	SML_ERROR,
 }
+#include <berobot>
 #include <berobot_core>
 #pragma newdecls required
 #pragma semicolon 1

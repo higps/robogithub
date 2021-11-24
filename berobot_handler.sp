@@ -84,6 +84,7 @@ bool g_Voted[MAXPLAYERS + 1];
 Menu g_chooseRobotMenus[MAXPLAYERS + 1];
 
 
+GlobalForward _enabledChangedForward;
 
 float g_CV_flSpyBackStabModifier;
 
@@ -178,6 +179,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboMode].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_Rtr_precent].AddChangeHook(CvarChangeHook);
 
+    _enabledChangedForward = new GlobalForward("MM_OnEnabledChanged", ET_Ignore, Param_Cell);
 
     RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
     RegAdminCmd("sm_mr", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
@@ -440,7 +442,13 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
         g_RoboMode = StringToInt(sNewValue); 
 
     if(convar == g_cvCvarList[CV_g_Enable])
+    {
         g_Enable = StringToInt(sNewValue); 
+        
+        Call_StartForward(_enabledChangedForward);
+        Call_PushCell(g_Enable);
+        Call_Finish();
+    }
 }
 
 /* Plugin Exclusive Functions */
@@ -474,6 +482,13 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
             
     }
     return Plugin_Continue;
+}
+
+public void MM_OnResourceChanged(char name[NAMELENGTH])
+{
+    SMLogTag(SML_VERBOSE, "MM_OnResourceChanged called at %i", GetTime());
+
+    RedrawChooseRobotMenu();
 }
 
 public Action Command_BeRobot(int client, int numParams)
@@ -993,10 +1008,21 @@ Action Menu_ChooseRobot(int client)
 
         int count;
         g_RobotCount.GetValue(item.name, count);
-        int draw = count >= g_RoboCap ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT;
+
+        char notes[15];
+        int draw = ITEMDRAW_DEFAULT;
+        if (count >= g_RoboCap)
+            draw = ITEMDRAW_DISABLED;
+        if (!item.resources.TimeLeft.Enabled)
+        {
+            Format(notes, sizeof(notes), "timeleft: %is", item.resources.TimeLeft.SecondsBeforeEndOfRound);
+            draw = ITEMDRAW_DISABLED;
+        }
+        if (notes[0] == '\0')
+            Format(notes, sizeof(notes), "%i / %i", count, g_RoboCap);
 
         char display[128];
-        Format(display, sizeof(display), "%s: %s - %s - %s (%i / %i)", item.role, item.class, item.name, item.shortDescription, count, g_RoboCap);
+        Format(display, sizeof(display), "%s: %s - %s - %s (%s)", item.role, item.class, item.name, item.shortDescription, notes);
 
         menu.AddItem(item.name, display, draw);
 
@@ -1046,8 +1072,9 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 
 void SetRandomRobot(int client)
 {
+    if (!g_Enable)
+        return;
 
-    if (g_Enable){
     ArrayList robotNames = GetRobotNames();
 
     char robotname[NAMELENGTH];  
@@ -1061,14 +1088,24 @@ void SetRandomRobot(int client)
         g_RobotCount.GetValue(robotname, count);
         if (count < g_RoboCap)
         {
-            break;
-        }
+            Robot item;
+            GetRobotDefinition(robotname, item);
+            if (item.resources.IsEnabled())
+            {
+                break;
+            }
+        }        
+
         robotNames.Erase(i);
+        if (robotNames.Length <= 0)
+        {
+            SMLogTag(SML_VERBOSE, "no robot left to choose. %L will not be turned into a robot.", client);
+            return;
+        }
     }
 
     SMLogTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
     SetRobot(robotname, client);
-    }
 }
 
 void SetRobot(char robotname[NAMELENGTH], int client)

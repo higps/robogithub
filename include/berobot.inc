@@ -13,12 +13,43 @@ enum struct RobotSounds {
   char winddown[PLATFORM_MAX_PATH];
   char death[PLATFORM_MAX_PATH];
 }
-enum struct Robot {
+methodmap TimeLeftResourceDefinition < StringMap {
+    property int SecondsBeforeEndOfRound {
+        public get(){ 
+            int value;
+            this.GetValue("SecondsBeforeEndOfRound", value);
+            return value;
+        }
+        public set(int value){
+            this.SetValue("SecondsBeforeEndOfRound", value);
+        }
+    }
+
+    public TimeLeftResourceDefinition() {
+        return view_as<TimeLeftResourceDefinition>(new StringMap());
+    }
+}
+methodmap ResourcesDefinition < StringMap {
+    property TimeLeftResourceDefinition TimeLeft {
+        public get(){ 
+            TimeLeftResourceDefinition value;
+            this.GetValue("TimeLeft", value);
+            return value;
+        }
+        public set(TimeLeftResourceDefinition value){
+            this.SetValue("TimeLeft", value);
+        }
+    }
+
+    public ResourcesDefinition() {
+        return view_as<ResourcesDefinition>(new StringMap());
+    }
+}
+enum struct RobotDefinition {
   char name[NAMELENGTH];
   char role[NAMELENGTH];
   char class[9];
   char shortDescription[NAMELENGTH];
-  PrivateForward callback;
   RobotSounds sounds;
 }
 typedef RobotCallback = function void (int client);
@@ -32,7 +63,7 @@ typedef RobotCallback = function void (int client);
  * 
  * @noreturn
  */
-native void AddRobot(const any[] robot, RobotCallback callback, char[] version);
+native void AddRobot(const any[] robot, RobotCallback callback, char[] version, ResourcesDefinition resources = null);
 
 /**
  * Removes a robot to the storage. So it can't be used by other plugins anymore. (usually called during OnPluginEnd)
@@ -70,6 +101,16 @@ native void GetRobotClass(char name[NAMELENGTH], char class[9]);
  *                  false: client is _not_ specified robot
  */
 native bool IsRobot(int client, char name[NAMELENGTH]);
+
+/**
+ * checks if a client is any robot
+ * 
+ * @param client    clientId to check for robot
+ * 
+ * @return          true: client is a robot;
+ *                  false: client is _not_ a robot
+ */
+native bool IsAnyRobot(int client);
 
 /**
  * turns a player into a registered robot
@@ -113,4 +154,28 @@ stock void UpdatePlayerHitbox(const int client, const float fScale)
 
 	SetEntPropVector(client, Prop_Send, "m_vecSpecifiedSurroundingMins", vecScaledPlayerMin);
 	SetEntPropVector(client, Prop_Send, "m_vecSpecifiedSurroundingMaxs", vecScaledPlayerMax);
+}
+
+/**
+ * checks if the given client is valid (in game, not coaching and if requested not SourceTV/replay)
+ * 
+ * @param client        clientId to check
+ * @param replaycheck   indicates if SourceTV/Replay should be considered invalid
+ * @return              true: client is valid;
+ *                      false: client is invalid
+ */
+stock bool IsValidClient(int client, bool replaycheck = true)
+{
+    if(client <= 0 || client > MaxClients)
+        return false;
+    if(!IsClientInGame(client))
+        return false;
+    if(GetEntProp(client, Prop_Send, "m_bIsCoaching"))
+        return false;
+    if(replaycheck)
+    {
+        if(IsClientSourceTV(client) || IsClientReplay(client))
+            return false;
+    }
+    return true;
 }

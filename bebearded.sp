@@ -66,7 +66,7 @@ public OnPluginStart()
 	
 	delete g_hGameConf;
 
-    Robot robot;
+    RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Heavy";
@@ -550,13 +550,6 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	}
 }
  */
-       
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
-}
 
 bool CreateHat(int client, int itemindex, int level, int quality, float paint, bool scale)
 {

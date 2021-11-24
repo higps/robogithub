@@ -4,6 +4,7 @@
 #include <tf2>
 #include <sm_logger>
 #include <berobot_constants>
+#include <berobot>
 
 char LOG_TAGS[][] =	 {"VERBOSE", "INFO", "ERROR"};
 enum (<<= 1)
