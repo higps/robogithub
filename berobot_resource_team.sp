@@ -22,6 +22,7 @@ enum(<<= 1)
 
 ArrayList _resources[TEAMCOUNT];
 int _teamResources[TEAMCOUNT];
+char _lastUnrestrictedRobot[MAXPLAYERS + 1][NAMELENGTH];
 
 public Plugin myinfo =
 {
@@ -37,8 +38,17 @@ public void OnPluginStart()
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
     SMLogTag(SML_INFO, "berobot_resource_team started at %i", GetTime());
 
+    char description[64];
+    Format(description, sizeof(description), "add robot-coins for a team (%i for red; %i for blu)", TFTeam_Red, TFTeam_Blue);
+    RegAdminCmd("sm_addrobotcoins", Command_AddRobotCoins, ADMFLAG_SLAY, description);
+    RegAdminCmd("sm_addrbtcns", Command_AddRobotCoins, ADMFLAG_SLAY, description);
+    RegAdminCmd("sm_arc", Command_AddRobotCoins, ADMFLAG_SLAY, description);
+
     TeamRoundTimer teamRoundTimer = new TeamRoundTimer();
     teamRoundTimer.HookOnFinished(OnRoundFinished);
+
+    if (IsEnabled())
+        Start();
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -114,10 +124,35 @@ public any Native_PayResource(Handle plugin, int numParams)
         return false;
     }
 
+    SaveLastUnrestrictedRobot(clientId);
+
     SMLogTag(SML_VERBOSE, "%L paying %i from team %i's team-resources %i for %s", clientId, price, team, available, robotName);
     _teamResources[team] = available - price;
     UpdateResources();
     return true;
+}
+
+public Action Command_AddRobotCoins(int client, int numParams)
+{
+    if (numParams < 2)
+    {
+        PrintToConsole(client, "parameters missing");
+        PrintToConsole(client, "example: sm_addrobotcoins 2 50");
+        return Plugin_Handled;
+    }
+
+    char rawTeam[2];
+    GetCmdArg(1, rawTeam, sizeof(rawTeam));
+    TFTeam team = view_as<TFTeam>(StringToInt(rawTeam));
+
+    char rawAmount[64];
+    GetCmdArg(2, rawAmount, sizeof(rawAmount));
+    int amount = StringToInt(rawAmount);
+    
+    SMLogTag(SML_VERBOSE, "Command_AddRobotCoins: adding %i bot-coins for team %i", amount, team);
+    AddTeamResource(team, amount);
+
+    return Plugin_Handled;
 }
 
 public void OnMapStart()
@@ -138,10 +173,36 @@ public void MM_OnEnabledChanged(int enabled)
     SMLogTag(SML_VERBOSE, "MM_OnEnabledChanged called at %i with value %i", GetTime(), enabled);
     if (enabled == 0)
     {
+        UnhookEvent("player_death", OnDeath, EventHookMode_PostNoCopy);
         return;
     }
 
+    Start();
+}
+
+void Start()
+{
+    SMLogTag(SML_VERBOSE, "berobot_resource_team started at %i", GetTime());
+
     GetResources();
+    HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy);
+}
+
+public void OnDeath(Event event, const char[] name, bool dontBroadcast)
+{
+    int victimUserId = event.GetInt("userid", -1);
+    int victimClientId = GetClientOfUserId(victimUserId);
+    SMLogTag(SML_VERBOSE, "OnDeath called at %i for %L (userid: %i) with last unresticted robot %s", GetTime(), victimClientId, victimUserId, _lastUnrestrictedRobot[victimUserId]);
+
+    if (_lastUnrestrictedRobot[victimUserId][0] == '\0')
+    {
+        SMLogTag(SML_VERBOSE, "not resetting %L (userid: %i)'s robot, because it was not bought", victimClientId, victimUserId);
+        return;
+    }
+    
+    SMLogTag(SML_VERBOSE, "resetting %L (userid: %i)'s bought robot to %s after death", victimClientId, victimUserId, _lastUnrestrictedRobot[victimUserId]);
+    CreateRobot(_lastUnrestrictedRobot[victimUserId], victimClientId, "");
+    _lastUnrestrictedRobot[victimUserId] = "";
 }
 
 void OnRoundFinished(const char[] output, int caller, int activator, float delay)
@@ -155,6 +216,39 @@ void ResetTeamResources()
     {
         _teamResources[i] = 0;
     }
+}
+
+void SaveLastUnrestrictedRobot(int clientId)
+{
+    SMLogTag(SML_VERBOSE, "SaveLastUnrestrictedRobot called for %L", clientId);
+
+    if (!IsAnyRobot(clientId))
+    {
+        SMLogTag(SML_VERBOSE, "ignoring SaveLastUnrestrictedRobot for %L, because client is not a robot", clientId);
+        return;
+    }
+        
+    char robotName[NAMELENGTH];
+    GetPickedRobot(clientId, robotName, sizeof(robotName));
+
+    if (IsPaidRobot(clientId, robotName))
+    {
+        SMLogTag(SML_VERBOSE, "ignoring SaveLastUnrestrictedRobot for %L, because client is paid robot", clientId);
+        return;
+    }
+
+    int userId = GetClientUserId(clientId);
+    SMLogTag(SML_VERBOSE, "SaveLastUnrestrictedRobot for %L (userid: %i) to %s", clientId, userId, robotName);
+    _lastUnrestrictedRobot[userId] = robotName;
+}
+
+bool IsPaidRobot(int clientId, char robotName[NAMELENGTH])
+{
+    Robot robot;
+    GetRobotDefinition(robotName, robot);
+
+    TeamResource teamResource = robot.resources.GetTeamResourceFor(clientId);
+    return teamResource.Active;
 }
 
 void UpdateResources()
