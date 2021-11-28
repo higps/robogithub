@@ -7,7 +7,7 @@
 #include <team_round_timer>
 #include <berobot_constants>
 #include <berobot>
-#include <berobot_core_resources>
+#include <berobot_core_restrictions>
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
 enum(<<= 1)
@@ -22,7 +22,7 @@ enum(<<= 1)
 
 public Plugin myinfo =
 {
-	name = "berobot_resource_team_death",
+	name = "berobot_restrictions_team_death",
 	author = "icebear",
 	description = "",
 	version = "0.1",
@@ -32,7 +32,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    SMLogTag(SML_INFO, "berobot_resource_team_death started at %i", GetTime());
+    SMLogTag(SML_INFO, "berobot_restrictions_team_death started at %i", GetTime());
 
     if (!IsEnabled())
         return;

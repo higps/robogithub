@@ -13,7 +13,7 @@ enum struct RobotSounds {
   char winddown[PLATFORM_MAX_PATH];
   char death[PLATFORM_MAX_PATH];
 }
-methodmap TimeLeftResourceDefinition < StringMap {
+methodmap TimeLeftRestrictionDefinition < StringMap {
     property int SecondsBeforeEndOfRound {
         public get(){ 
             int value;
@@ -25,11 +25,11 @@ methodmap TimeLeftResourceDefinition < StringMap {
         }
     }
 
-    public TimeLeftResourceDefinition() {
-        return view_as<TimeLeftResourceDefinition>(new StringMap());
+    public TimeLeftRestrictionDefinition() {
+        return view_as<TimeLeftRestrictionDefinition>(new StringMap());
     }
 }
-methodmap RobotCoinResourceDefinition < StringMap {
+methodmap RobotCoinRestrictionDefinition < StringMap {
     property int PerRobot {
         public get(){ 
             int value;
@@ -51,34 +51,34 @@ methodmap RobotCoinResourceDefinition < StringMap {
         }
     }
 
-    public RobotCoinResourceDefinition() {
-        return view_as<RobotCoinResourceDefinition>(new StringMap());
+    public RobotCoinRestrictionDefinition() {
+        return view_as<RobotCoinRestrictionDefinition>(new StringMap());
     }
 }
-methodmap ResourcesDefinition < StringMap {
-    property TimeLeftResourceDefinition TimeLeft {
+methodmap RestrictionsDefinition < StringMap {
+    property TimeLeftRestrictionDefinition TimeLeft {
         public get(){ 
-            TimeLeftResourceDefinition value;
+            TimeLeftRestrictionDefinition value;
             this.GetValue("TimeLeft", value);
             return value;
         }
-        public set(TimeLeftResourceDefinition value){
+        public set(TimeLeftRestrictionDefinition value){
             this.SetValue("TimeLeft", value);
         }
     }
-    property RobotCoinResourceDefinition RobotCoins {
+    property RobotCoinRestrictionDefinition RobotCoins {
         public get(){ 
-            RobotCoinResourceDefinition value;
+            RobotCoinRestrictionDefinition value;
             this.GetValue("RobotCoins", value);
             return value;
         }
-        public set(RobotCoinResourceDefinition value){
+        public set(RobotCoinRestrictionDefinition value){
             this.SetValue("RobotCoins", value);
         }
     }
 
-    public ResourcesDefinition() {
-        return view_as<ResourcesDefinition>(new StringMap());
+    public RestrictionsDefinition() {
+        return view_as<RestrictionsDefinition>(new StringMap());
     }
 }
 enum struct RobotDefinition {
@@ -93,13 +93,14 @@ typedef RobotCallback = function void (int client);
 /**
  * Adds a robot to the storage. So it can be dynamically used by other plugins. (usually called during OnPluginStart)
  * 
- * @param robot       enum struct Robot containing robot-definition
- * @param callback     function creating this robot
- * @param version      plugin version of this indivifual robot-plugin
+ * @param robot             enum struct Robot containing robot-definition
+ * @param callback          function creating this robot
+ * @param version           plugin version of this individual robot-plugin
+ * @param restrictions      restrictions on spawning this robot (null means no restricitons)
  * 
  * @noreturn
  */
-native void AddRobot(const any[] robot, RobotCallback callback, char[] version, ResourcesDefinition resources = null);
+native void AddRobot(const any[] robot, RobotCallback callback, char[] version, RestrictionsDefinition restrictions = null);
 
 /**
  * Removes a robot to the storage. So it can't be used by other plugins anymore. (usually called during OnPluginEnd)

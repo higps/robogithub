@@ -5,7 +5,7 @@
 #include <sm_logger>
 #include <morecolors_newsyntax>
 #include <berobot_constants>
-#include <berobot_core_resources>
+#include <berobot_core_restrictions>
 #include <berobot>
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
@@ -19,11 +19,11 @@ enum(<<= 1)
 #pragma newdecls required
 #pragma semicolon 1
 
-GlobalForward _resourceChangedForward;
+GlobalForward _restrictionChangedForward;
 
 public Plugin myinfo =
 {
-	name = "berobot_resources",
+	name = "berobot_restrictions",
 	author = "icebear",
 	description = "",
 	version = "0.1",
@@ -33,23 +33,23 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    SMLogTag(SML_INFO, "berobot_resources started at %i", GetTime());
+    SMLogTag(SML_INFO, "berobot_restrictions started at %i", GetTime());
 
-    _resourceChangedForward = new GlobalForward("MM_OnResourceChanged", ET_Ignore, Param_String);
+    _restrictionChangedForward = new GlobalForward("MM_OnRestrictionChanged", ET_Ignore, Param_String);
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-    CreateNative("OnResourceChanged", Native_OnResourceChanged);
+    CreateNative("OnRestrictionChanged", Native_OnRestrictionChanged);
     return APLRes_Success;
 }
 
-public any Native_OnResourceChanged(Handle plugin, int numParams)
+public any Native_OnRestrictionChanged(Handle plugin, int numParams)
 {
     char name[NAMELENGTH];
     GetNativeString(1, name, NAMELENGTH);
 
-    Call_StartForward(_resourceChangedForward);
+    Call_StartForward(_restrictionChangedForward);
     Call_PushString(name);
     Call_Finish();
 }

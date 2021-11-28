@@ -59,7 +59,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("GetRobotNames", Native_GetRobotNames);
 	CreateNative("GetRobotClass", Native_GetRobotClass);
 	CreateNative("GetRobotDefinition", Native_GetRobotDefinition);
-	CreateNative("GetRobotResources", Native_GetRobotResources);
+	CreateNative("GetRobotRestrictions", Native_GetRobotRestrictions);
 
 	return APLRes_Success;
 }
@@ -81,8 +81,8 @@ public Action Command_DumpRobotStorage(int client, int numParams)
         Robot item;
         _robots.GetArray(name, item, sizeof(item));
         
-        SMLogTag(SML_INFO, "Robot {%s: %s, callback: %x, sounds: {spawn: %s}, resources: {timeLeft: %i}}", 
-            item.name, item.class, item.callback, item.sounds.spawn, item.resources.TimeLeft);
+        SMLogTag(SML_INFO, "Robot {%s: %s, callback: %x, sounds: {spawn: %s}, restrictions: {timeLeft: %i}}", 
+            item.name, item.class, item.callback, item.sounds.spawn, item.restrictions.TimeLeft);
     }
     }
 
@@ -98,9 +98,9 @@ public any Native_AddRobot(Handle plugin, int numParams)
     char pluginVersion[9];
     GetNativeString(3, pluginVersion, 9);
 
-    ResourcesDefinition resourcesDefinition = null;
+    RestrictionsDefinition restrictionsDefinition = null;
     if (numParams >= 4)
-        resourcesDefinition = GetNativeCell(4);
+        restrictionsDefinition = GetNativeCell(4);
 
     SMLogTag(SML_VERBOSE, "adding robot %s from plugin-handle %x", robotDefinition.name, plugin);
 
@@ -126,13 +126,13 @@ public any Native_AddRobot(Handle plugin, int numParams)
     privateForward.AddFunction(plugin, callback);
     robot.callback = privateForward;
 
-    robot.resources = new Resources();
-    robot.resources.From(resourcesDefinition, robot.name);
+    robot.restrictions = new Restrictions();
+    robot.restrictions.From(restrictionsDefinition, robot.name);
 
     SMLogTag(SML_VERBOSE, "robot %s uses privateForward %x", robot.name, privateForward);
     SMLogTag(SML_VERBOSE, "robot %s is class %s", robot.name, robot.class);
     SMLogTag(SML_VERBOSE, "robot %s has sounds {spawn: %s; loop: %s; death: %s }", robot.name, robot.sounds.spawn, robot.sounds.loop, robot.sounds.death);
-    SMLogTag(SML_VERBOSE, "robot %s has timeleft-resource {Active: %b; SecondsBeforeEndOfRound: %i }", robot.name, robot.resources.TimeLeft.Active, robot.resources.TimeLeft.SecondsBeforeEndOfRound);
+    SMLogTag(SML_VERBOSE, "robot %s has timeleft-restrictions {Active: %b; SecondsBeforeEndOfRound: %i }", robot.name, robot.restrictions.TimeLeft.Active, robot.restrictions.TimeLeft.SecondsBeforeEndOfRound);
 
     _robots.SetArray(robot.name, robot, sizeof(robot));
     OnRobotStorageChanged();
@@ -209,9 +209,9 @@ public any Native_GetRobotDefinition(Handle plugin, int numParams)
 	return 0;
 }
 
-public any Native_GetRobotResources(Handle plugin, int numParams)
+public any Native_GetRobotRestrictions(Handle plugin, int numParams)
 {
-    ArrayList resources = new ArrayList();
+    ArrayList restrictions = new ArrayList();
 
     StringMapSnapshot snapshot = _robots.Snapshot();
     for(int i = 0; i < snapshot.Length; i++)
@@ -222,8 +222,8 @@ public any Native_GetRobotResources(Handle plugin, int numParams)
         Robot item;
         _robots.GetArray(name, item, sizeof(item));
         
-        resources.Push(item.resources);
+        restrictions.Push(item.restrictions);
     }
 
-    return resources;
+    return restrictions;
 }

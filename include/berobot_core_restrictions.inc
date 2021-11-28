@@ -1,37 +1,37 @@
-#if defined _berobot_core_resources_included
+#if defined _berobot_core_restrictions_included
  #endinput
 #endif
-#define _berobot_core_resources_included "0.1"
+#define _berobot_core_restrictions_included "0.1"
 
 /**
  * Called after resoruce of a robot changed
  * 
  * @noreturn
  */
-forward void MM_OnResourceChanged(char name[NAMELENGTH]);
+forward void MM_OnRestrictionChanged(char name[NAMELENGTH]);
 
 /**
- * invokes MM_OnResourceChanged
+ * invokes MM_OnRestrictionChanged
  * 
  * @noreturn
  */
-native void OnResourceChanged(char name[NAMELENGTH]);
+native void OnRestrictionChanged(char name[NAMELENGTH]);
 
 /**
- * pays resource to create robot
+ * pays robot-coin to create robot
  * 
- * @param resources     Resources of the robot, that should be created
- * @param clientId      clientId
- * @return              true: succesfully paid
-                        false: was not able to pay
+ * @param restrictions      Restrictions of the robot, that should be created
+ * @param clientId          clientId
+ * @return                  true: succesfully paid
+                            false: was not able to pay
  */
-native bool RobotCoin(Resources resources, int clientId);
+native bool PayRobotCoin(Restrictions restrictions, int clientId);
 
 /**
  * add a specified amount to the robot-coins
  * 
- * @param team      resources will be added to this team
- * @param amount    amount of resources to add
+ * @param team      robot-coin will be added to this team
+ * @param amount    amount of robot-coin to add
  * @noreturn
  */
 native void AddRobotCoins(TFTeam team, int amount);
@@ -39,8 +39,8 @@ native void AddRobotCoins(TFTeam team, int amount);
 /**
  * add a specified amount to the robot-coins
  * 
- * @param clientId  resources will be added to this clients team
- * @param amount    amount of resources to add
+ * @param clientId  robot-coin will be added to this clients team
+ * @param amount    amount of robot-coin to add
  * @noreturn
  */
 native void AddRobotCoinsFor(int clientId, int amount);

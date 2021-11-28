@@ -39,11 +39,11 @@ native bool IsActive();
 native int GetRobotDefinition(char name[NAMELENGTH], const any[] robot);
 
 /**
- * returns all robot-resources 
+ * returns all robot-restrictions 
  * 
- * @return  StringMap containing all resources per robot-name
+ * @return  StringMap containing all restrictions per robot-name
  */
-native ArrayList GetRobotResources();
+native ArrayList GetRobotRestrictions();
 
 /**
  * returns the name of the robot picked by a client
@@ -238,7 +238,7 @@ stock bool MM_Random(int trueCases, int maxCases)
     return random <= trueCases;
 }
 
-methodmap TimeLeftResource < TimeLeftResourceDefinition {
+methodmap TimeLeftRestriction < TimeLeftRestrictionDefinition {
     property bool Active {
         public get(){
             return this.SecondsBeforeEndOfRound > 0;
@@ -258,10 +258,10 @@ methodmap TimeLeftResource < TimeLeftResourceDefinition {
         }
     }
 
-    public TimeLeftResource() {
-        TimeLeftResource resource = view_as<TimeLeftResource>(new StringMap());
-        resource.Enabled = false;
-        return resource;
+    public TimeLeftRestriction() {
+        TimeLeftRestriction restriction = view_as<TimeLeftRestriction>(new StringMap());
+        restriction.Enabled = false;
+        return restriction;
     }
 
     public void GetRobotName(char buffer[NAMELENGTH])
@@ -269,12 +269,12 @@ methodmap TimeLeftResource < TimeLeftResourceDefinition {
         this.GetString("RobotName", buffer, NAMELENGTH);
     }
 
-    public TimeLeftResource From(TimeLeftResourceDefinition definition, char robotName[NAMELENGTH])
+    public TimeLeftRestriction From(TimeLeftRestrictionDefinition definition, char robotName[NAMELENGTH])
     {
         this.SetString("RobotName", robotName);
         if (definition == null)
         {
-            SMLogTag(SML_VERBOSE, "TimeLeftResourceDefinition does not exist");
+            SMLogTag(SML_VERBOSE, "TimeLeftRestrictionDefinition does not exist");
             return this;
         }
         SMLogTag(SML_VERBOSE, "assigning SecondsBeforeEndOfRound to %i", definition.SecondsBeforeEndOfRound);
@@ -284,7 +284,7 @@ methodmap TimeLeftResource < TimeLeftResourceDefinition {
     }
 }
 
-methodmap RobotCoins < RobotCoinResourceDefinition {
+methodmap RobotCoins < RobotCoinRestrictionDefinition {
     property bool Active {
         public get(){
             return this.Overall > 0 || this.PerRobot > 0;
@@ -326,11 +326,11 @@ methodmap RobotCoins < RobotCoinResourceDefinition {
         return robotCount * this.PerRobot;
     }
 
-    public RobotCoins From(RobotCoinResourceDefinition definition)
+    public RobotCoins From(RobotCoinRestrictionDefinition definition)
     {
         if (definition == null)
         {
-            SMLogTag(SML_VERBOSE, "RobotCoinResourceDefinition does not exist");
+            SMLogTag(SML_VERBOSE, "RobotCoinRestrictionDefinition does not exist");
             return this;
         }
         SMLogTag(SML_VERBOSE, "assigning PerRobot to %i", definition.PerRobot);
@@ -342,14 +342,14 @@ methodmap RobotCoins < RobotCoinResourceDefinition {
     }
 }
 
-methodmap Resources < StringMap {
-    property TimeLeftResource TimeLeft {
+methodmap Restrictions < StringMap {
+    property TimeLeftRestriction TimeLeft {
         public get(){ 
-            TimeLeftResource value;
+            TimeLeftRestriction value;
             this.GetValue("TimeLeft", value);
             return value;
         }
-        public set(TimeLeftResource value){
+        public set(TimeLeftRestriction value){
             this.SetValue("TimeLeft", value);
         }
     }
@@ -374,8 +374,8 @@ methodmap Resources < StringMap {
         }
     }
 
-    public Resources() {
-        return view_as<Resources>(new StringMap());
+    public Restrictions() {
+        return view_as<Restrictions>(new StringMap());
     }
 
     public bool IsEnabled()
@@ -402,14 +402,14 @@ methodmap Resources < StringMap {
         return this.GetRobotCoins(team);
     }
 
-    public void From(ResourcesDefinition definition, char robotName[NAMELENGTH])
+    public void From(RestrictionsDefinition definition, char robotName[NAMELENGTH])
     {
         if (definition == null)
         {
-            SMLogTag(SML_VERBOSE, "ResourcesDefinition created");
-            definition = new ResourcesDefinition();
+            SMLogTag(SML_VERBOSE, "RestrictionsDefinition created");
+            definition = new RestrictionsDefinition();
         }
-        TimeLeftResource timeLeft = new TimeLeftResource();        
+        TimeLeftRestriction timeLeft = new TimeLeftRestriction();        
         this.TimeLeft = timeLeft.From(definition.TimeLeft, robotName);
         RobotCoins robotCoinsRed = new RobotCoins(robotName);        
         this.RobotCoinsRed = robotCoinsRed.From(definition.RobotCoins);
@@ -424,5 +424,5 @@ enum struct Robot {
   char shortDescription[NAMELENGTH];
   PrivateForward callback;
   RobotSounds sounds;
-  Resources resources;
+  Restrictions restrictions;
 }

@@ -6,7 +6,7 @@
 #include <morecolors_newsyntax>
 #include <team_round_timer>
 #include <berobot_constants>
-#include <berobot_core_resources>
+#include <berobot_core_restrictions>
 #include <berobot>
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
@@ -20,13 +20,13 @@ enum(<<= 1)
 #pragma newdecls required
 #pragma semicolon 1
 
-ArrayList _resources[TEAMCOUNT];
+ArrayList _restrictions[TEAMCOUNT];
 int _robotCoins[TEAMCOUNT];
 char _lastUnrestrictedRobot[MAXPLAYERS + 1][NAMELENGTH];
 
 public Plugin myinfo =
 {
-	name = "berobot_resource_team",
+	name = "berobot_restrictions_team",
 	author = "icebear",
 	description = "",
 	version = "0.1",
@@ -36,7 +36,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    SMLogTag(SML_INFO, "berobot_resource_team started at %i", GetTime());
+    SMLogTag(SML_INFO, "berobot_restrictions_team started at %i", GetTime());
 
     char description[64];
     Format(description, sizeof(description), "add robot-coins for a team (%i for red; %i for blu)", TFTeam_Red, TFTeam_Blue);
@@ -57,7 +57,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("AddRobotCoinsFor", Native_AddRobotCoinsFor);
     CreateNative("GetRobotCoins", Native_GetRobotCoins);
     CreateNative("GetRobotCoinsFor", Native_GetRobotCoinsFor);
-    CreateNative("RobotCoin", Native_RobotCoin);
+    CreateNative("PayRobotCoin", Native_PayRobotCoin);
     return APLRes_Success;
 }
 
@@ -76,7 +76,7 @@ public any Native_AddRobotCoins(Handle plugin, int numParams)
     int amount = GetNativeCell(2);
     
     _robotCoins[team] = _robotCoins[team] + amount;
-    UpdateResources();
+    UpdateRestrictions();
 }
 
 public any Native_GetRobotCoinsFor(Handle plugin, int numParams)
@@ -94,13 +94,13 @@ public any Native_GetRobotCoins(Handle plugin, int numParams)
     return _robotCoins[team];
 }
 
-public any Native_RobotCoin(Handle plugin, int numParams)
+public any Native_PayRobotCoin(Handle plugin, int numParams)
 {
-    Resources resources = view_as<Resources>(GetNativeCell(1));
+    Restrictions restrictions = view_as<Restrictions>(GetNativeCell(1));
     int clientId = GetNativeCell(2);
-    SMLogTag(SML_VERBOSE, "paying resources for %L ", clientId);
+    SMLogTag(SML_VERBOSE, "paying robot-coins for %L ", clientId);
     
-    RobotCoins robotCoins = resources.GetRobotCoinsFor(clientId);
+    RobotCoins robotCoins = restrictions.GetRobotCoinsFor(clientId);
     char robotName[NAMELENGTH];
     robotCoins.GetRobotName(robotName);
 
@@ -128,7 +128,7 @@ public any Native_RobotCoin(Handle plugin, int numParams)
 
     SMLogTag(SML_VERBOSE, "%L paying %i from team %i's robot-coins %i for %s", clientId, price, team, available, robotName);
     _robotCoins[team] = available - price;
-    UpdateResources();
+    UpdateRestrictions();
     return true;
 }
 
@@ -158,14 +158,14 @@ public Action Command_AddRobotCoins(int client, int numParams)
 public void OnMapStart()
 {
     SMLogTag(SML_VERBOSE, "OnMapStart called at %i", GetTime());
-    GetResources();
+    GetRestrictions();
     ResetRobotCoins();
 }
 
 public void MM_OnRobotStorageChanged()
 {
     SMLogTag(SML_VERBOSE, "MM_OnRobotStorageChanged called at %i", GetTime());
-    GetResources();
+    GetRestrictions();
 }
 
 public void MM_OnEnabledChanged(int enabled)
@@ -182,9 +182,9 @@ public void MM_OnEnabledChanged(int enabled)
 
 void Start()
 {
-    SMLogTag(SML_VERBOSE, "berobot_resource_team started at %i", GetTime());
+    SMLogTag(SML_VERBOSE, "berobot_restrictions_team started at %i", GetTime());
 
-    GetResources();
+    GetRestrictions();
     HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy);
 }
 
@@ -247,51 +247,51 @@ bool IsPaidRobot(int clientId, char robotName[NAMELENGTH])
     Robot robot;
     GetRobotDefinition(robotName, robot);
 
-    RobotCoins robotCoins = robot.resources.GetRobotCoinsFor(clientId);
+    RobotCoins robotCoins = robot.restrictions.GetRobotCoinsFor(clientId);
     return robotCoins.Active;
 }
 
-void UpdateResources()
+void UpdateRestrictions()
 {
-    UpdateResourcesFor(TFTeam_Red);
-    UpdateResourcesFor(TFTeam_Blue);
+    UpdateRestrictionsFor(TFTeam_Red);
+    UpdateRestrictionsFor(TFTeam_Blue);
 }
 
-void UpdateResourcesFor(TFTeam team)
+void UpdateRestrictionsFor(TFTeam team)
 {
-    for(int i = 0; i < _resources[team].Length; i++)
+    for(int i = 0; i < _restrictions[team].Length; i++)
     {
-        RobotCoins resource = _resources[team].Get(i);
+        RobotCoins restriction = _restrictions[team].Get(i);
         char robotName[NAMELENGTH];
-        resource.GetRobotName(robotName);
+        restriction.GetRobotName(robotName);
 
-        int price = resource.GetPrice();
+        int price = restriction.GetPrice();
         if (price > _robotCoins[team])
         {
-            if (!resource.Enabled)
+            if (!restriction.Enabled)
             {
                 SMLogTag(SML_VERBOSE, "team %i robot %s: price %i not met (%i robot-coins), but was disabled already", team, robotName, price, _robotCoins[team]);
                 continue;
             }
 
-            SetResource(resource, robotName, false);
+            SetRestriciton(restriction, robotName, false);
             continue;
         }
-        if (resource.Enabled)
+        if (restriction.Enabled)
         {
             SMLogTag(SML_VERBOSE, "team %i robot %s: price %i is met (%i robot-coins), but was enabled already", team, robotName, price, _robotCoins[team]);
             continue;
         }
 
-        SetResource(resource, robotName, true);
+        SetRestriciton(restriction, robotName, true);
     }
 }
 
-void SetResource(RobotCoins resource, char robotName[NAMELENGTH], bool enable)
+void SetRestriciton(RobotCoins restriction, char robotName[NAMELENGTH], bool enable)
 {
-    resource.Enabled = enable;
+    restriction.Enabled = enable;
 
-    OnResourceChanged(robotName);
+    OnRestrictionChanged(robotName);
     
     char msg[256];
     if (enable)
@@ -303,44 +303,44 @@ void SetResource(RobotCoins resource, char robotName[NAMELENGTH], bool enable)
     MM_PrintToChatAll(msg);
 }
 
-void GetResources()
+void GetRestrictions()
 {
     if (!IsEnabled())
         return;
 
-    ArrayList resources = GetRobotResources();
-    SMLogTag(SML_VERBOSE, "%i resources found", resources.Length);
+    ArrayList restrictions = GetRobotRestrictions();
+    SMLogTag(SML_VERBOSE, "%i restrictions found", restrictions.Length);
 
-    GetResource(TFTeam_Red, resources);
-    GetResource(TFTeam_Blue, resources);
+    GetRestriction(TFTeam_Red, restrictions);
+    GetRestriction(TFTeam_Blue, restrictions);
 }
 
-void GetResource(TFTeam team, ArrayList resources)
+void GetRestriction(TFTeam team, ArrayList restrictions)
 {
-    _resources[team] = new ArrayList();
+    _restrictions[team] = new ArrayList();
     
-    for(int i = 0; i < resources.Length; i++)
+    for(int i = 0; i < restrictions.Length; i++)
     {
-        Resources item = resources.Get(i);
+        Restrictions item = restrictions.Get(i);
 
-        RobotCoins resource = item.GetRobotCoins(team);
-        if (resource == null)
+        RobotCoins restriction = item.GetRobotCoins(team);
+        if (restriction == null)
         {
             SMLogTag(SML_ERROR, "could not find RobotCoins for team %i", team);
             return;
         }
 
-        if (resource.Active)
-            _resources[team].Push(resource);        
+        if (restriction.Active)
+            _restrictions[team].Push(restriction);        
     }
 
-    _resources[team].SortCustom(RobotCoinsComparision);
+    _restrictions[team].SortCustom(RobotCoinsComparision);
     
-    SMLogTag(SML_VERBOSE, "%i robot-coins for team %i set", _resources[team].Length, team);
-    for(int i = 0; i < _resources[team].Length; i++)
+    SMLogTag(SML_VERBOSE, "%i robot-coins for team %i set", _restrictions[team].Length, team);
+    for(int i = 0; i < _restrictions[team].Length; i++)
     {
-        RobotCoins resource = _resources[team].Get(i);
-        SMLogTag(SML_VERBOSE, "RobotCoins set for team %i %i: %i PerRobot; %i Overall", team, i, resource.PerRobot, resource.Overall);
+        RobotCoins restriction = _restrictions[team].Get(i);
+        SMLogTag(SML_VERBOSE, "RobotCoins set for team %i %i: %i PerRobot; %i Overall", team, i, restriction.PerRobot, restriction.Overall);
     }
 }
 

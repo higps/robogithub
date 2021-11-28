@@ -6,7 +6,7 @@
 #include <morecolors_newsyntax>
 #include <team_round_timer>
 #include <berobot_constants>
-#include <berobot_core_resources>
+#include <berobot_core_restrictions>
 #include <berobot>
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};

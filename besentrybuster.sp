@@ -44,13 +44,13 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 
-    ResourcesDefinition resources = new ResourcesDefinition();
-    resources.TimeLeft = new TimeLeftResourceDefinition();
-    resources.TimeLeft.SecondsBeforeEndOfRound = 180;
-    resources.RobotCoins = new RobotCoinResourceDefinition();
-    resources.RobotCoins.PerRobot = 3;
+    RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+    restrictions.TimeLeft.SecondsBeforeEndOfRound = 180;
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.PerRobot = 3;
 	
-    AddRobot(robot, MakeBuster, PLUGIN_VERSION, resources);
+    AddRobot(robot, MakeBuster, PLUGIN_VERSION, restrictions);
 
     for(int client = 1 ; client <= MaxClients ; client++)
     {

@@ -11,7 +11,7 @@
 
 #include <berobot_constants>
 #include <berobot>
-#include <berobot_core_resources>
+#include <berobot_core_restrictions>
 #include <morecolors_newsyntax>
 #include <sdkhooks>
 #include <sdktools>
@@ -488,9 +488,9 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     return Plugin_Continue;
 }
 
-public void MM_OnResourceChanged(char name[NAMELENGTH])
+public void MM_OnRestrictionChanged(char name[NAMELENGTH])
 {
-    SMLogTag(SML_VERBOSE, "MM_OnResourceChanged called at %i", GetTime());
+    SMLogTag(SML_VERBOSE, "MM_OnRestrictionChanged called at %i", GetTime());
 
     RedrawChooseRobotMenu();
 }
@@ -1044,14 +1044,14 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
         return;
     }
 
-    if (!item.resources.TimeLeft.Enabled)
+    if (!item.restrictions.TimeLeft.Enabled)
     {
-        Format(notes, sizeof(notes), "timeleft: %is", item.resources.TimeLeft.SecondsBeforeEndOfRound);
+        Format(notes, sizeof(notes), "timeleft: %is", item.restrictions.TimeLeft.SecondsBeforeEndOfRound);
         draw = ITEMDRAW_DISABLED;
         return;
     }
 
-    RobotCoins robotCoins = item.resources.GetRobotCoinsFor(client);
+    RobotCoins robotCoins = item.restrictions.GetRobotCoinsFor(client);
     if (!robotCoins.Enabled)
     {
         Format(notes, sizeof(notes), "robot-coins: %i", robotCoins.GetPrice());
@@ -1117,7 +1117,7 @@ void SetRandomRobot(int client)
         {
             Robot item;
             GetRobotDefinition(robotname, item);
-            if (item.resources.IsEnabled())
+            if (item.restrictions.IsEnabled())
             {
                 break;
             }

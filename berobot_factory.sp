@@ -18,7 +18,7 @@ enum (<<= 1)
 }
 #include <berobot>
 #include <berobot_core>
-#include <berobot_core_resources>
+#include <berobot_core_restrictions>
 #pragma newdecls required
 #pragma semicolon 1
 
@@ -281,7 +281,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         wasRobot = _isRobot[targetClientId];
         SMLogTag(SML_VERBOSE, "%i. target: %i is currently %s", i, targetClientId, wasRobot);
 
-        bool paid = RobotCoin(item.resources, targetClientId);
+        bool paid = PayRobotCoin(item.restrictions, targetClientId);
         if (!paid)
         {
             char msg[256];
