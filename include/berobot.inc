@@ -29,7 +29,7 @@ methodmap TimeLeftResourceDefinition < StringMap {
         return view_as<TimeLeftResourceDefinition>(new StringMap());
     }
 }
-methodmap TeamResourceDefinition < StringMap {
+methodmap RobotCoinResourceDefinition < StringMap {
     property int PerRobot {
         public get(){ 
             int value;
@@ -51,8 +51,8 @@ methodmap TeamResourceDefinition < StringMap {
         }
     }
 
-    public TeamResourceDefinition() {
-        return view_as<TeamResourceDefinition>(new StringMap());
+    public RobotCoinResourceDefinition() {
+        return view_as<RobotCoinResourceDefinition>(new StringMap());
     }
 }
 methodmap ResourcesDefinition < StringMap {
@@ -66,14 +66,14 @@ methodmap ResourcesDefinition < StringMap {
             this.SetValue("TimeLeft", value);
         }
     }
-    property TeamResourceDefinition TeamResource {
+    property RobotCoinResourceDefinition RobotCoins {
         public get(){ 
-            TeamResourceDefinition value;
-            this.GetValue("TeamResource", value);
+            RobotCoinResourceDefinition value;
+            this.GetValue("RobotCoins", value);
             return value;
         }
-        public set(TeamResourceDefinition value){
-            this.SetValue("TeamResource", value);
+        public set(RobotCoinResourceDefinition value){
+            this.SetValue("RobotCoins", value);
         }
     }
 
@@ -159,7 +159,7 @@ native bool IsAnyRobot(int client);
             0: no error
             1: robot not found
             2: target error
-            3: could not pay resource
+            3: could not pay robot-coins
  */
 native int CreateRobot(char[] name, int client, char target[32]);
 

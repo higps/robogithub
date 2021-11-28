@@ -21,7 +21,7 @@ enum(<<= 1)
 #pragma semicolon 1
 
 ArrayList _resources[TEAMCOUNT];
-int _teamResources[TEAMCOUNT];
+int _robotCoins[TEAMCOUNT];
 char _lastUnrestrictedRobot[MAXPLAYERS + 1][NAMELENGTH];
 
 public Plugin myinfo =
@@ -53,81 +53,81 @@ public void OnPluginStart()
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-    CreateNative("AddTeamResource", Native_AddTeamResource);
-    CreateNative("AddTeamResourceFor", Native_AddTeamResourceFor);
-    CreateNative("GetTeamResource", Native_GetTeamResource);
-    CreateNative("GetTeamResourceFor", Native_GetTeamResourceFor);
-    CreateNative("PayResource", Native_PayResource);
+    CreateNative("AddRobotCoins", Native_AddRobotCoins);
+    CreateNative("AddRobotCoinsFor", Native_AddRobotCoinsFor);
+    CreateNative("GetRobotCoins", Native_GetRobotCoins);
+    CreateNative("GetRobotCoinsFor", Native_GetRobotCoinsFor);
+    CreateNative("RobotCoin", Native_RobotCoin);
     return APLRes_Success;
 }
 
-public any Native_AddTeamResourceFor(Handle plugin, int numParams)
+public any Native_AddRobotCoinsFor(Handle plugin, int numParams)
 {
     int clientId = GetNativeCell(1);
     int amount = GetNativeCell(2);
     
     TFTeam team = view_as<TFTeam>(GetClientTeam(clientId));
-    AddTeamResource(team, amount);
+    AddRobotCoins(team, amount);
 }
 
-public any Native_AddTeamResource(Handle plugin, int numParams)
+public any Native_AddRobotCoins(Handle plugin, int numParams)
 {
     TFTeam team = view_as<TFTeam>(GetNativeCell(1));
     int amount = GetNativeCell(2);
     
-    _teamResources[team] = _teamResources[team] + amount;
+    _robotCoins[team] = _robotCoins[team] + amount;
     UpdateResources();
 }
 
-public any Native_GetTeamResourceFor(Handle plugin, int numParams)
+public any Native_GetRobotCoinsFor(Handle plugin, int numParams)
 {
     int clientId = GetNativeCell(1);    
     TFTeam team = view_as<TFTeam>(GetClientTeam(clientId));
     
-    return GetTeamResource(team);
+    return GetRobotCoins(team);
 }
 
-public any Native_GetTeamResource(Handle plugin, int numParams)
+public any Native_GetRobotCoins(Handle plugin, int numParams)
 {
     TFTeam team = view_as<TFTeam>(GetNativeCell(1));
     
-    return _teamResources[team];
+    return _robotCoins[team];
 }
 
-public any Native_PayResource(Handle plugin, int numParams)
+public any Native_RobotCoin(Handle plugin, int numParams)
 {
     Resources resources = view_as<Resources>(GetNativeCell(1));
     int clientId = GetNativeCell(2);
     SMLogTag(SML_VERBOSE, "paying resources for %L ", clientId);
     
-    TeamResource teamResource = resources.GetTeamResourceFor(clientId);
+    RobotCoins robotCoins = resources.GetRobotCoinsFor(clientId);
     char robotName[NAMELENGTH];
-    teamResource.GetRobotName(robotName);
+    robotCoins.GetRobotName(robotName);
 
-    if (!teamResource.Active)
+    if (!robotCoins.Active)
     {
         SMLogTag(SML_VERBOSE, "%L paying nothing for %s, because it's free", clientId, robotName);
         return true;
     }
-    if (!teamResource.Enabled)
+    if (!robotCoins.Enabled)
     {
         SMLogTag(SML_ERROR, "%L could not pay for %s, because it's not enabled yet", clientId, robotName);
         return false;
     }
     
     int team = GetClientTeam(clientId);
-    int price = teamResource.GetPrice();
-    int available = _teamResources[team];
+    int price = robotCoins.GetPrice();
+    int available = _robotCoins[team];
     if (price > available)
     {
-        SMLogTag(SML_ERROR, "%L could not pay for %s, because price %i is too high (team-resources: %i)", clientId, robotName, price, available);
+        SMLogTag(SML_ERROR, "%L could not pay for %s, because price %i is too high (robot-coins: %i)", clientId, robotName, price, available);
         return false;
     }
 
     SaveLastUnrestrictedRobot(clientId);
 
-    SMLogTag(SML_VERBOSE, "%L paying %i from team %i's team-resources %i for %s", clientId, price, team, available, robotName);
-    _teamResources[team] = available - price;
+    SMLogTag(SML_VERBOSE, "%L paying %i from team %i's robot-coins %i for %s", clientId, price, team, available, robotName);
+    _robotCoins[team] = available - price;
     UpdateResources();
     return true;
 }
@@ -150,7 +150,7 @@ public Action Command_AddRobotCoins(int client, int numParams)
     int amount = StringToInt(rawAmount);
     
     SMLogTag(SML_VERBOSE, "Command_AddRobotCoins: adding %i bot-coins for team %i", amount, team);
-    AddTeamResource(team, amount);
+    AddRobotCoins(team, amount);
 
     return Plugin_Handled;
 }
@@ -159,7 +159,7 @@ public void OnMapStart()
 {
     SMLogTag(SML_VERBOSE, "OnMapStart called at %i", GetTime());
     GetResources();
-    ResetTeamResources();
+    ResetRobotCoins();
 }
 
 public void MM_OnRobotStorageChanged()
@@ -207,14 +207,14 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 
 void OnRoundFinished(const char[] output, int caller, int activator, float delay)
 {
-    ResetTeamResources();
+    ResetRobotCoins();
 }
 
-void ResetTeamResources()
+void ResetRobotCoins()
 {
     for(TFTeam i = TFTeam_Unassigned; i <= TFTeam_Blue; i++)
     {
-        _teamResources[i] = 0;
+        _robotCoins[i] = 0;
     }
 }
 
@@ -247,8 +247,8 @@ bool IsPaidRobot(int clientId, char robotName[NAMELENGTH])
     Robot robot;
     GetRobotDefinition(robotName, robot);
 
-    TeamResource teamResource = robot.resources.GetTeamResourceFor(clientId);
-    return teamResource.Active;
+    RobotCoins robotCoins = robot.resources.GetRobotCoinsFor(clientId);
+    return robotCoins.Active;
 }
 
 void UpdateResources()
@@ -261,16 +261,16 @@ void UpdateResourcesFor(TFTeam team)
 {
     for(int i = 0; i < _resources[team].Length; i++)
     {
-        TeamResource resource = _resources[team].Get(i);
+        RobotCoins resource = _resources[team].Get(i);
         char robotName[NAMELENGTH];
         resource.GetRobotName(robotName);
 
         int price = resource.GetPrice();
-        if (price > _teamResources[team])
+        if (price > _robotCoins[team])
         {
             if (!resource.Enabled)
             {
-                SMLogTag(SML_VERBOSE, "team %i robot %s: price %i not met (%i teamresources), but was disabled already", team, robotName, price, _teamResources[team]);
+                SMLogTag(SML_VERBOSE, "team %i robot %s: price %i not met (%i robot-coins), but was disabled already", team, robotName, price, _robotCoins[team]);
                 continue;
             }
 
@@ -279,7 +279,7 @@ void UpdateResourcesFor(TFTeam team)
         }
         if (resource.Enabled)
         {
-            SMLogTag(SML_VERBOSE, "team %i robot %s: price %i is met (%i teamresources), but was enabled already", team, robotName, price, _teamResources[team]);
+            SMLogTag(SML_VERBOSE, "team %i robot %s: price %i is met (%i robot-coins), but was enabled already", team, robotName, price, _robotCoins[team]);
             continue;
         }
 
@@ -287,7 +287,7 @@ void UpdateResourcesFor(TFTeam team)
     }
 }
 
-void SetResource(TeamResource resource, char robotName[NAMELENGTH], bool enable)
+void SetResource(RobotCoins resource, char robotName[NAMELENGTH], bool enable)
 {
     resource.Enabled = enable;
 
@@ -295,9 +295,9 @@ void SetResource(TeamResource resource, char robotName[NAMELENGTH], bool enable)
     
     char msg[256];
     if (enable)
-        Format(msg, sizeof(msg), "robot '%s' is not restricted by team-resources anymore", robotName);
+        Format(msg, sizeof(msg), "robot '%s' is not restricted by robot-coins anymore", robotName);
     else
-        Format(msg, sizeof(msg), "robot '%s' is restricted by team-resources again", robotName);
+        Format(msg, sizeof(msg), "robot '%s' is restricted by robot-coins again", robotName);
 
     SMLogTag(SML_VERBOSE, msg);
     MM_PrintToChatAll(msg);
@@ -309,7 +309,7 @@ void GetResources()
         return;
 
     ArrayList resources = GetRobotResources();
-    SMLogTag(SML_VERBOSE, "%i TeamDeaths-resources found", resources.Length);
+    SMLogTag(SML_VERBOSE, "%i resources found", resources.Length);
 
     GetResource(TFTeam_Red, resources);
     GetResource(TFTeam_Blue, resources);
@@ -323,10 +323,10 @@ void GetResource(TFTeam team, ArrayList resources)
     {
         Resources item = resources.Get(i);
 
-        TeamResource resource = item.GetTeamResource(team);
+        RobotCoins resource = item.GetRobotCoins(team);
         if (resource == null)
         {
-            SMLogTag(SML_ERROR, "could not find TeamResource for team %i", team);
+            SMLogTag(SML_ERROR, "could not find RobotCoins for team %i", team);
             return;
         }
 
@@ -334,21 +334,21 @@ void GetResource(TFTeam team, ArrayList resources)
             _resources[team].Push(resource);        
     }
 
-    _resources[team].SortCustom(TeamResourceComparision);
+    _resources[team].SortCustom(RobotCoinsComparision);
     
-    SMLogTag(SML_VERBOSE, "%i team-resources for team %i set", _resources[team].Length, team);
+    SMLogTag(SML_VERBOSE, "%i robot-coins for team %i set", _resources[team].Length, team);
     for(int i = 0; i < _resources[team].Length; i++)
     {
-        TeamResource resource = _resources[team].Get(i);
-        SMLogTag(SML_VERBOSE, "TeamResource set for team %i %i: %i PerRobot; %i Overall", team, i, resource.PerRobot, resource.Overall);
+        RobotCoins resource = _resources[team].Get(i);
+        SMLogTag(SML_VERBOSE, "RobotCoins set for team %i %i: %i PerRobot; %i Overall", team, i, resource.PerRobot, resource.Overall);
     }
 }
 
-int TeamResourceComparision(int index1, int index2, Handle array, Handle hndl)
+int RobotCoinsComparision(int index1, int index2, Handle array, Handle hndl)
 {
     ArrayList list = view_as<ArrayList>(array); 
-    TeamResource a = list.Get(index1);
-    TeamResource b = list.Get(index2);
+    RobotCoins a = list.Get(index1);
+    RobotCoins b = list.Get(index2);
 
     if (a.Overall < b.Overall)
         return -1;

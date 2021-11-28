@@ -284,7 +284,7 @@ methodmap TimeLeftResource < TimeLeftResourceDefinition {
     }
 }
 
-methodmap TeamResource < TeamResourceDefinition {
+methodmap RobotCoins < RobotCoinResourceDefinition {
     property bool Active {
         public get(){
             return this.Overall > 0 || this.PerRobot > 0;
@@ -304,12 +304,12 @@ methodmap TeamResource < TeamResourceDefinition {
         }
     }
 
-    public TeamResource(char robotName[NAMELENGTH]) {
-        TeamResource teamResource = view_as<TeamResource>(new StringMap());
-        teamResource.SetString("RobotName", robotName);
-        teamResource.PerRobot = 0;
-        teamResource.Overall = 0;
-        return teamResource;
+    public RobotCoins(char robotName[NAMELENGTH]) {
+        RobotCoins robotCoins = view_as<RobotCoins>(new StringMap());
+        robotCoins.SetString("RobotName", robotName);
+        robotCoins.PerRobot = 0;
+        robotCoins.Overall = 0;
+        return robotCoins;
     }
 
     public void GetRobotName(char buffer[NAMELENGTH])
@@ -326,11 +326,11 @@ methodmap TeamResource < TeamResourceDefinition {
         return robotCount * this.PerRobot;
     }
 
-    public TeamResource From(TeamResourceDefinition definition)
+    public RobotCoins From(RobotCoinResourceDefinition definition)
     {
         if (definition == null)
         {
-            SMLogTag(SML_VERBOSE, "TeamResourceDefinition does not exist");
+            SMLogTag(SML_VERBOSE, "RobotCoinResourceDefinition does not exist");
             return this;
         }
         SMLogTag(SML_VERBOSE, "assigning PerRobot to %i", definition.PerRobot);
@@ -353,24 +353,24 @@ methodmap Resources < StringMap {
             this.SetValue("TimeLeft", value);
         }
     }
-    property TeamResource TeamResourceRed {
+    property RobotCoins RobotCoinsRed {
         public get(){ 
-            TeamResource value;
-            this.GetValue("TeamResourceRed", value);
+            RobotCoins value;
+            this.GetValue("RobotCoinsRed", value);
             return value;
         }
-        public set(TeamResource value){
-            this.SetValue("TeamResourceRed", value);
+        public set(RobotCoins value){
+            this.SetValue("RobotCoinsRed", value);
         }
     }
-    property TeamResource TeamResourceBlu {
+    property RobotCoins RobotCoinsBlu {
         public get(){ 
-            TeamResource value;
-            this.GetValue("TeamResourceBlu", value);
+            RobotCoins value;
+            this.GetValue("RobotCoinsBlu", value);
             return value;
         }
-        public set(TeamResource value){
-            this.SetValue("TeamResourceBlu", value);
+        public set(RobotCoins value){
+            this.SetValue("RobotCoinsBlu", value);
         }
     }
 
@@ -380,26 +380,26 @@ methodmap Resources < StringMap {
 
     public bool IsEnabled()
     {
-        return this.TimeLeft.Enabled || this.TeamResourceRed.Enabled || this.TeamResourceBlu.Enabled;
+        return this.TimeLeft.Enabled || this.RobotCoinsRed.Enabled || this.RobotCoinsBlu.Enabled;
     }
 
-    public TeamResource GetTeamResource(TFTeam team)
+    public RobotCoins GetRobotCoins(TFTeam team)
     {
         switch (team)
         {
             case TFTeam_Blue:
-                return this.TeamResourceBlu;
+                return this.RobotCoinsBlu;
             case TFTeam_Red:
-                return this.TeamResourceRed;
+                return this.RobotCoinsRed;
             default:
                 return null;
         }
     }
     
-    public TeamResource GetTeamResourceFor(int clientId)
+    public RobotCoins GetRobotCoinsFor(int clientId)
     {        
         TFTeam team = view_as<TFTeam>(GetClientTeam(clientId));
-        return this.GetTeamResource(team);
+        return this.GetRobotCoins(team);
     }
 
     public void From(ResourcesDefinition definition, char robotName[NAMELENGTH])
@@ -411,10 +411,10 @@ methodmap Resources < StringMap {
         }
         TimeLeftResource timeLeft = new TimeLeftResource();        
         this.TimeLeft = timeLeft.From(definition.TimeLeft, robotName);
-        TeamResource teamResourceRed = new TeamResource(robotName);        
-        this.TeamResourceRed = teamResourceRed.From(definition.TeamResource);
-        TeamResource teamResourceBlu = new TeamResource(robotName);        
-        this.TeamResourceBlu = teamResourceBlu.From(definition.TeamResource);
+        RobotCoins robotCoinsRed = new RobotCoins(robotName);        
+        this.RobotCoinsRed = robotCoinsRed.From(definition.RobotCoins);
+        RobotCoins robotCoinsBlu = new RobotCoins(robotName);        
+        this.RobotCoinsBlu = robotCoinsBlu.From(definition.RobotCoins);
     }
 }
 enum struct Robot {

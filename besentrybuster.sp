@@ -47,8 +47,8 @@ public OnPluginStart()
     ResourcesDefinition resources = new ResourcesDefinition();
     resources.TimeLeft = new TimeLeftResourceDefinition();
     resources.TimeLeft.SecondsBeforeEndOfRound = 180;
-    resources.TeamResource = new TeamResourceDefinition();
-    resources.TeamResource.PerRobot = 3;
+    resources.RobotCoins = new RobotCoinResourceDefinition();
+    resources.RobotCoins.PerRobot = 3;
 	
     AddRobot(robot, MakeBuster, PLUGIN_VERSION, resources);
 

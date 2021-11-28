@@ -281,14 +281,14 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         wasRobot = _isRobot[targetClientId];
         SMLogTag(SML_VERBOSE, "%i. target: %i is currently %s", i, targetClientId, wasRobot);
 
-        bool paid = PayResource(item.resources, targetClientId);
+        bool paid = RobotCoin(item.resources, targetClientId);
         if (!paid)
         {
             char msg[256];
             Format(msg, 256, "could not pay for robot %s, please try again.", name);
             MM_PrintToChat(targetClientId, msg);
 
-            SMLogTag(SML_ERROR, "could not create robot '%s'. could not pay resource", name);
+            SMLogTag(SML_ERROR, "could not create robot '%s'. could not pay robot-coins", name);
             return 3;
         }
 

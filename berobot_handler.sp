@@ -1051,10 +1051,10 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
         return;
     }
 
-    TeamResource teamResource = item.resources.GetTeamResourceFor(client);
-    if (!teamResource.Enabled)
+    RobotCoins robotCoins = item.resources.GetRobotCoinsFor(client);
+    if (!robotCoins.Enabled)
     {
-        Format(notes, sizeof(notes), "resources: %i", teamResource.GetPrice());
+        Format(notes, sizeof(notes), "robot-coins: %i", robotCoins.GetPrice());
         draw = ITEMDRAW_DISABLED;
         return;
     }

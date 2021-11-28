@@ -25,38 +25,38 @@ native void OnResourceChanged(char name[NAMELENGTH]);
  * @return              true: succesfully paid
                         false: was not able to pay
  */
-native bool PayResource(Resources resources, int clientId);
+native bool RobotCoin(Resources resources, int clientId);
 
 /**
- * add a specified amount to the team-resources
+ * add a specified amount to the robot-coins
  * 
  * @param team      resources will be added to this team
  * @param amount    amount of resources to add
  * @noreturn
  */
-native void AddTeamResource(TFTeam team, int amount);
+native void AddRobotCoins(TFTeam team, int amount);
 
 /**
- * add a specified amount to the team-resources
+ * add a specified amount to the robot-coins
  * 
  * @param clientId  resources will be added to this clients team
  * @param amount    amount of resources to add
  * @noreturn
  */
-native void AddTeamResourceFor(int clientId, int amount);
+native void AddRobotCoinsFor(int clientId, int amount);
 
 /**
- * returns available team-resources
+ * returns available robot-coins
  * 
- * @param team      team-resources will be returned for this team
- * @return          amount of team-resources available to the clients team
+ * @param team      robot-coins will be returned for this team
+ * @return          amount of robot-coins available to the clients team
  */
-native int GetTeamResource(TFTeam team);
+native int GetRobotCoins(TFTeam team);
 
 /**
- * returns available team-resources
+ * returns available robot-coins
  * 
- * @param clientId  team-resources will be returned for this clients team
- * @return          amount of team-resources available to the clients team
+ * @param clientId  robot-coins will be returned for this clients team
+ * @return          amount of robot-coins available to the clients team
  */
-native int GetTeamResourceFor(int clientId);
+native int GetRobotCoinsFor(int clientId);
