@@ -102,6 +102,10 @@ public any Native_AddRobot(Handle plugin, int numParams)
     if (numParams >= 4)
         restrictionsDefinition = GetNativeCell(4);
 
+    int robotCoinsOnDeath = 1;
+    if (numParams >= 5)
+        robotCoinsOnDeath = GetNativeCell(5);
+
     SMLogTag(SML_VERBOSE, "adding robot %s from plugin-handle %x", robotDefinition.name, plugin);
 
     char simpleName[NAMELENGTH];
@@ -128,6 +132,8 @@ public any Native_AddRobot(Handle plugin, int numParams)
 
     robot.restrictions = new Restrictions();
     robot.restrictions.From(restrictionsDefinition, robot.name);
+
+    robot.robotCoinsOnDeath = robotCoinsOnDeath;
 
     SMLogTag(SML_VERBOSE, "robot %s uses privateForward %x", robot.name, privateForward);
     SMLogTag(SML_VERBOSE, "robot %s is class %s", robot.name, robot.class);

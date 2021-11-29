@@ -425,4 +425,5 @@ enum struct Robot {
   PrivateForward callback;
   RobotSounds sounds;
   Restrictions restrictions;
+  int robotCoinsOnDeath;
 }
