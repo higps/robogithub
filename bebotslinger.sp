@@ -481,12 +481,6 @@ public Action:SetModel(client, const String:model[])
 		
 	}
 }
-// public Action Dane(int client, int args)
-// {
-// 	// TF2_SetPlayerClass(client, TFClass_Engineer);
-//     // TF2_RegeneratePlayer(client);
-// 	MakeUncleDane(client);
-// }
 
 MakeUncleDane(client)
 {
@@ -1539,7 +1533,9 @@ public Action WeaponSwitch(client, weapon){
 
 	//if the building pda is opened
 	//Switches some buildings to sappers so the game doesn't count them as engie buildings
+	PrintToChatAll("Switching weapons");
 	if(GetPlayerWeaponSlot(client,3)==weapon){
+		PrintToChatAll("Running Function Allow Building");
 		function_AllowBuilding(client);
 		return Plugin_Continue;
 	}//else if the client is not holding the building tool
@@ -1648,6 +1644,7 @@ public void function_AllowBuilding(int client){
 		//not a dispenser,
 		}else if(type==view_as<int>(TFObject_Sentry)){
 			SentryCount++;
+			PrintToChatAll("Sentry count is %i", SentryCount);
 			SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
 			if(SentryCount>=SentryLimit){
 				//if the limit is reached, disallow building
