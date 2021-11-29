@@ -104,7 +104,7 @@ native void EquipWearable(int client, int item);
  * @noreturn
  */
  //CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
-native void CreateWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot);
+native void CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot);
 
 /**
  * Creates a weapon with level
@@ -119,7 +119,7 @@ native void CreateWeapon(int client, char[] classname, int itemindex, int qualit
  * @noreturn
  */
  //CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
-native void  CreateHat(int client, int itemindex, int level, int quality, float paint, float scale)
+native void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale)
 /**
  * scales the hitbox of player-hitbox
  * 

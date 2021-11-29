@@ -235,7 +235,7 @@ stock GiveGDeflectorH(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
+		CreateRoboWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
 
 		CreateHat(client, 30623, 10, 6, true);
 		CreateHat(client, 486, 10, 6, true);

@@ -54,7 +54,8 @@ public void OnPluginStart()
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	CreateNative("EquipWearable", Native_EquipWearable);
-	CreateNative("CreateWeapon", Native_CreateWeapon);
+	CreateNative("CreateRoboWeapon", Native_CreateRoboWeapon);
+	CreateNative("CreateRoboHat", Native_CreateRoboHat);
 	
 	return APLRes_Success;
 }
@@ -66,11 +67,11 @@ public any Native_EquipWearable(Handle plugin, int numParams)
 	SDKCall(g_hEquipWearable, client, item);
 }
 
-public bool Native_CreateWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot)
+public bool Native_CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot)
 {
 
 	int client = GetNativeCell(1);
-	char classname[64] = GetNativeCell(2);
+	//char classname[64] = GetNativeCell(2);
 	int itemindex = GetNativeCell(3);
 	int quality = GetNativeCell(4);
 	int slot = GetNativeCell(5);
@@ -115,7 +116,7 @@ public bool Native_CreateWeapon(int client, char[] classname, int itemindex, int
 	return true;
 }
 
-public any Native_CreateHat(int client, int itemindex, int level, int quality, float paint, float scale)
+public any Native_CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale)
 {
 	int client = GetNativeCell(1);
 	int itemindex = GetNativeCell(2);
