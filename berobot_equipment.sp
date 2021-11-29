@@ -67,14 +67,15 @@ public any Native_EquipWearable(Handle plugin, int numParams)
 	SDKCall(g_hEquipWearable, client, item);
 }
 
-public bool Native_CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot)
+public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 {
-
 	int client = GetNativeCell(1);
-	//char classname[64] = GetNativeCell(2);
+	char classname[64];
+	GetNativeString(2, classname, sizeof(classname));
 	int itemindex = GetNativeCell(3);
 	int quality = GetNativeCell(4);
-	int slot = GetNativeCell(5);
+	int level = GetNativeCell(5);
+	int slot = GetNativeCell(6);
 
 
 	TF2_RemoveWeaponSlot(client, slot);
@@ -116,14 +117,14 @@ public bool Native_CreateRoboWeapon(int client, char[] classname, int itemindex,
 	return true;
 }
 
-public any Native_CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale)
+public any Native_CreateRoboHat(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 	int itemindex = GetNativeCell(2);
-	int level = GetNativeCell(2);
+	int level = GetNativeCell(3);
 	int quality = GetNativeCell(4);
 	float paint = GetNativeCell(5);
-	float scale = GetNativeCell(5);
+	float scale = GetNativeCell(6);
 
 
 	int hat = CreateEntityByName("tf_wearable");
