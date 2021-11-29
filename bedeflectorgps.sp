@@ -163,15 +163,20 @@ MakeGDeflectorH(client)
 	
 	
 	int MaxHealth = 300;
-	// PrintToChatAll("MaxHealth %i", MaxHealth);
-	
 	int iAdditiveHP = iHealth - MaxHealth;
-	
+	float OverHealRate = 1.5;
+
+
 	TF2_SetHealth(client, iHealth);
+		// PrintToChatAll("MaxHealth %i", MaxHealth);
 	 // PrintToChatAll("iHealth %i", iHealth);
 	
 	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
+	float OverHeal = float(MaxHealth) * OverHealRate;
+	float TotalHealthOverHeal = iHealth * OverHealRate;
+
+	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
+	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
@@ -184,7 +189,8 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
+
+
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	//
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);

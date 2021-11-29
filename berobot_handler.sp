@@ -381,7 +381,7 @@ public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 {
     //Activates when doing OnRegenerate (touchihng resupply locker) and then ignoring it if you are a boss
 
-    if(!IsAnyRobot(pThis)){
+/*     if(!IsAnyRobot(pThis)){
          if(g_cv_bDebugMode) PrintToChatAll("Not a robot, removing forced skin on %N", pThis);
         SetEntProp(pThis, Prop_Send, "m_bForcedSkin", 0);
     }else
@@ -405,7 +405,7 @@ public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
         //unset to get uber animations to play right maybe?
         
   
-    }
+    } */
 
      if(isMiniBoss(pThis)){
         //PrintToChatAll("1");
@@ -415,8 +415,6 @@ public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
         SetEntityHealth(pThis, maxhealth);
         return MRES_Supercede; 
     }
-        
-        
 
     return MRES_Ignored;
 }
@@ -540,13 +538,13 @@ public Action Command_Robot_Selection(int client, int args)
         ServerCommand("mp_scrambleteams_auto 0");
         ServerCommand("mp_forceautoteam  0");
     
-    for(int i = 1; i < MaxClients; i++)
+/*     for(int i = 1; i < MaxClients; i++)
     {
         if (IsValidClient(i) && IsClientInGame(i))
         {
             ChangeClientTeam(i, SPECTATE);
         }
-    }
+    } */
  //   g_BossMode = true;
     g_cv_BlockTeamSwitch = true;
     g_SpectateSelection = true;
@@ -1103,6 +1101,11 @@ void SetRandomRobot(int client)
         return;
 
     ArrayList robotNames = GetRobotNames();
+    if (robotNames.Length <= 0)
+    {
+        SMLogTag(SML_VERBOSE, "no robots were found. %L will not be turned into a robot.", client);
+        return;
+    }
 
     char robotname[NAMELENGTH];  
     for (;;)  
@@ -1449,9 +1452,9 @@ int FindRandomVolunteer()
 
 stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
 {
-	SetEntProp(client, Prop_Send, "m_lifeState", 2);
+	//SetEntProp(client, Prop_Send, "m_lifeState", 2);
 	ChangeClientTeam(client, team);
-	SetEntProp(client, Prop_Send, "m_lifeState", 0);
+	//SetEntProp(client, Prop_Send, "m_lifeState", 0);
     int irandomclass = GetRandomInt(1, 9);
     TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
     TF2_RespawnPlayer(client);

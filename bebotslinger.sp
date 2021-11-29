@@ -17,9 +17,9 @@
 //#pragma newdecls required
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Bot Slinger"
+#define ROBOT_NAME	"Wrangler Bill"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION " Widowmaker, Jag"
+#define ROBOT_DESCRIPTION " Wrangler, Minisentries"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -112,6 +112,19 @@ public OnPluginStart()
 	{
 		SetFailState("[EngiPads] Unable to get m_hMatchingTeleporter offset from 'tf2.teleporters.txt'. Check gamedata!");
 	}
+
+
+	//Remove all sappers code
+	hGameConf = LoadGameConfigFile("bm_sh_data");
+	
+	
+	g_hUpdateOnRemove = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_CBaseEntity);
+	
+	if(!DHookSetFromConf(g_hUpdateOnRemove, hGameConf, SDKConf_Signature, "CBaseObject::UpdateOnRemove"))
+	SetFailState("Failed to find CBaseObject::UpdateOnRemove signature in the gamedata!");
+	
+	if(!DHookEnableDetour(g_hUpdateOnRemove, false, UpdateOnRemove))
+	SetFailState("Failed to enable CBaseObject::UpdateOnRemove detour!");
 	
 	CloseHandle(hGameConf);
 
@@ -131,17 +144,6 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeUncleDane, PLUGIN_VERSION);
-	
-	
-	PrecacheSound(ENGIE_SPAWN_SOUND, true);
-	PrecacheSound(ENGIE_SPAWN_SOUND2, true);
-	PrecacheSound(TELEPORTER_ACTIVATE1, true);
-	PrecacheSound(TELEPORTER_ACTIVATE2, true);
-	PrecacheSound(TELEPORTER_ACTIVATE3, true);
-	PrecacheSound(TELEPORTER_ACTIVATE4, true);
-	PrecacheSound(TELEPORTER_ACTIVATE5, true);
-	PrecacheSound(TELEPORTER_SPAWN, true);
-
 
     for(int client = 1 ; client <= MaxClients ; client++)
     {
@@ -151,45 +153,10 @@ public OnPluginStart()
             SDKHook(client, SDKHook_Touch, OnTouch);
         }
     }
-
-	//Multi Sentry Code
-
-	sm_dispenser_limit = CreateConVar("sm_dispenser_limit", "1", "Self explanatory");
-	sm_sentry_limit = CreateConVar("sm_sentry_limit", "3", "Self explanatory");
-	sm_instant_upgrade = CreateConVar("sm_instant_upgrade","0","Self explanatory");
-
-	HookEvent("player_builtobject",Evt_BuiltObject,EventHookMode_Pre);
-
-	RegConsoleCmd("sm_destroy_dispensers", Command_destroy_dispensers);
-	RegConsoleCmd("sm_destroy_sentries", Command_destroy_sentries);
-
+	
+	//Multi sentry 
 	OwnerOffset = FindSendPropInfo("CBaseObject", "m_hBuilder");
-
-	for(int client=1;client<MaxClients;client++){
-		if(!IsValidEntity(client)){
-			continue;
-		}
-		if(!IsClientConnected(client)){
-			continue;
-		}
-
-		SDKUnhook(client, SDKHook_WeaponSwitch, WeaponSwitch);
-		SDKHookEx(client, SDKHook_WeaponSwitch, WeaponSwitch);
-	}
-
-	//Remove all sappers code
-	hGameConf = LoadGameConfigFile("bm_sh_data");
 	
-	
-	g_hUpdateOnRemove = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_CBaseEntity);
-	
-	if(!DHookSetFromConf(g_hUpdateOnRemove, hGameConf, SDKConf_Signature, "CBaseObject::UpdateOnRemove"))
-	SetFailState("Failed to find CBaseObject::UpdateOnRemove signature in the gamedata!");
-	
-	if(!DHookEnableDetour(g_hUpdateOnRemove, false, UpdateOnRemove))
-	SetFailState("Failed to enable CBaseObject::UpdateOnRemove detour!");
-	
-	delete hGameConf;
 
 }
 
@@ -239,6 +206,15 @@ public OnMapStart()
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
+
+	PrecacheSound(ENGIE_SPAWN_SOUND, true);
+	PrecacheSound(ENGIE_SPAWN_SOUND2, true);
+	PrecacheSound(TELEPORTER_ACTIVATE1, true);
+	PrecacheSound(TELEPORTER_ACTIVATE2, true);
+	PrecacheSound(TELEPORTER_ACTIVATE3, true);
+	PrecacheSound(TELEPORTER_ACTIVATE4, true);
+	PrecacheSound(TELEPORTER_ACTIVATE5, true);
+	PrecacheSound(TELEPORTER_SPAWN, true);
 	
 	PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
 	PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
@@ -248,6 +224,25 @@ public OnMapStart()
 	PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
 	PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
 	PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
+
+
+	//Multi Sentry Code
+
+	sm_dispenser_limit = CreateConVar("sm_dispenser_limit", "1", "Self explanatory");
+	sm_sentry_limit = CreateConVar("sm_sentry_limit", "3", "Self explanatory");
+	//sm_instant_upgrade = CreateConVar("sm_instant_upgrade","0","Self explanatory");
+
+	//HookEvent("player_builtobject",Evt_BuiltObject,EventHookMode_Pre);
+
+	RegConsoleCmd("sm_destroy_dispensers", Command_destroy_dispensers);
+	RegConsoleCmd("sm_destroy_sentries", Command_destroy_sentries);
+
+	
+
+
+	
+
+
 }
 
 
@@ -273,6 +268,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	
 	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
 	int iObj = event.GetInt("index");
+	int flags = GetEntProp(iObj, Prop_Data, "m_spawnflags");
 	//int entRef = EntIndexToEntRef(iObj);
 	//PrintToChatAll("iObj %i", iObj);
 	
@@ -289,14 +285,14 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 			DispatchKeyValue(iObj, "defaultupgrade", "2"); 
 		}
 
-		// if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Sentry)
-		// {
-		// 	//PrintToChatAll("Buildt dispenser");
-		// 	//SetEntProp(iObj, Prop_Send, "m_iAmmoShells", 10000);
-		// 	//int flags = GetEntProp(iObj, Prop_Data, "m_spawnflags");
-		// 	//SetEntProp(iObj, Prop_Data, "m_spawnflags", flags|1<<3);
-		// 	//DispatchKeyValue(iObj, "defaultupgrade", "2"); 
-		// }
+		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Sentry)
+		{
+			//PrintToChatAll("Buildt dispenser");
+			//SetEntProp(iObj, Prop_Send, "m_iAmmoShells", 10000);
+			
+			SetEntProp(iObj, Prop_Data, "m_spawnflags", flags|1<<3);
+			//DispatchKeyValue(iObj, "defaultupgrade", "2"); 
+		}
 		
 		
 		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Teleporter){
@@ -498,6 +494,9 @@ MakeUncleDane(client)
 	TF2_SetPlayerClass(client, TFClass_Engineer);
 	TF2_RegeneratePlayer(client);
 
+	SDKUnhook(client, SDKHook_WeaponSwitch, WeaponSwitch);
+	SDKHookEx(client, SDKHook_WeaponSwitch, WeaponSwitch);
+
 	EngieTeam = GetClientTeam(client);
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
@@ -513,8 +512,8 @@ MakeUncleDane(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1800;
-	int MaxHealth = 125;
+	int iHealth = 1250;
+	int MaxHealth = 150;
 	int iAdditiveHP = iHealth - MaxHealth;
 
 	TF2_SetHealth(client, iHealth);
@@ -542,7 +541,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	
 	
-	
+	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
 
 	
 	//TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");
@@ -603,26 +602,31 @@ stock GiveBigRoboDane(client)
 		// CreateWeapon(client, "tf_weapon_pda_engineer_destroy", 26, 6, 1, 4, 0);
 		//TF2_RegeneratePlayer(client);
 
-		CreateHat(client, 30749, 10, 6, 0.0); // Winter Backup
-		//	CreateHat(client, 30178, 10, 6, 1315860);
-		CreateHat(client, 30804, 10, 6, 0.0); //El Paso Poncho
-		CreateHat(client, 755, 10, 6, 0.0); //Texas Half Pants
+		// CreateHat(client, 30749, 10, 6, 0.0); // Winter Backup
+		// //	CreateHat(client, 30178, 10, 6, 1315860);
+		// CreateHat(client, 30804, 10, 6, 0.0); //El Paso Poncho
+		// CreateHat(client, 755, 10, 6, 0.0); //Texas Half Pants
+// 993// antlers
+// 816 //Marxmann
+		CreateHat(client, 993, 10, 6, 0.0); //Cute suit
+		CreateHat(client, 816, 10, 6, 0.0); //Cute suit
+		CreateHat(client, 30367, 10, 6, 0.0); //Cute suit
 		
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		//int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+	//	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		if(IsValidEntity(Weapon1))
-		{
-			TF2Attrib_RemoveAll(Weapon1);
+		// if(IsValidEntity(Weapon1))
+		// {
+		// 	TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.6);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 30.0);
-			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
+		// 	TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.6);
+		// 	TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
+		// 	TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 30.0);
+		// 	TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
+		// 	TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
 			
-		}
+		// }
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_RemoveAll(Weapon3);
@@ -640,7 +644,8 @@ stock GiveBigRoboDane(client)
 
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
 			//TF2Attrib_SetByName(Weapon3, "engy disposable sentries", 1.0);
-			TF2Attrib_SetByName(Weapon3, "multiple sentries", 3.0);
+			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.8);
+			
 			
 		}
 	
@@ -1497,15 +1502,15 @@ stock void TF2_SetBuildingState(int iBuilding, int iState = 0)
 
 ///============MULTIPLE SENTRIES CODE//////
 
-public Action Evt_BuiltObject(Event event, const char[] name, bool dontBroadcast){
-	int ObjIndex = event .GetInt("index");
+// public Action Evt_BuiltObject(Event event, const char[] name, bool dontBroadcast){
+// 	int ObjIndex = event .GetInt("index");
 
-	if(GetConVarInt(sm_instant_upgrade)>0){
-		SetEntProp(ObjIndex, Prop_Send, "m_iUpgradeMetal", 600);
-		SetEntProp(ObjIndex,Prop_Send,"m_iUpgradeMetalRequired",0);
-	}
-	return Plugin_Continue;
-}
+// 	if(GetConVarInt(sm_instant_upgrade)>0){
+// 		SetEntProp(ObjIndex, Prop_Send, "m_iUpgradeMetal", 600);
+// 		SetEntProp(ObjIndex,Prop_Send,"m_iUpgradeMetalRequired",0);
+// 	}
+// 	return Plugin_Continue;
+// }
 
 
 public Action WeaponSwitch(client, weapon){
@@ -1602,15 +1607,15 @@ public Action Command_destroy_sentries(int client, int args){
 
 public void function_AllowBuilding(int client){
 
-	if(IsRobot(client, ROBOT_NAME))
-	{
+
 
 	int DispenserLimit = GetConVarInt(sm_dispenser_limit);
 	int SentryLimit = GetConVarInt(sm_sentry_limit);
 
 	int DispenserCount = 0;
 	int SentryCount = 0;
-
+	// if(IsRobot(client, ROBOT_NAME))
+	// {
 	for(int i=0;i<2048;i++){
 
 		if(!IsValidEntity(i)){
@@ -1623,7 +1628,7 @@ public void function_AllowBuilding(int client){
 			continue;
 		}
 
-		if(GetEntDataEnt2(i, OwnerOffset)!=client){
+		if(GetEntDataEnt2(i, OwnerOffset) != client && IsRobot(client, ROBOT_NAME)){
 			continue;
 		}
 
@@ -1651,9 +1656,9 @@ public void function_AllowBuilding(int client){
 		}
 	//every building is in the desired state
 
+	}
+	
 
-	}
-	}
 }
 public void function_AllowDestroying(int client){
 	for(int i=1;i<2048;i++){

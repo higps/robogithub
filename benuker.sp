@@ -164,6 +164,7 @@ stock GiveGiantDemoKnight(client)
 
 		//CreateWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 0, 0);
 		CreateWeapon(client, "tf_weapon_cannon", 996, 6, 1, 0, 0);
+		CreateWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 1, 0);
 
 		CreateWeapon(client, "tf_weapon_bottle", 609, 6, 1, 2, 0);
 
@@ -171,6 +172,9 @@ stock GiveGiantDemoKnight(client)
 		//CreateHat(client, 30945, 10, 6, false);//blast locker
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
@@ -188,7 +192,47 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
+			
+			
+		}
+		
+		if(IsValidEntity(Weapon2))
+		{
+			//TF2Attrib_RemoveAll(Weapon1);
+			
+			//TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 0.8);
+			TF2Attrib_SetByName(Weapon2, "damage bonus", 0.9);
+			//TF2Attrib_SetByName(Weapon2, "projectile spread angle penalty", 5.0);
+			
+			//TF2Attrib_SetByName(Weapon2, "damage causes airblast", 1.0);
+
+			TF2Attrib_SetByName(Weapon2, "blast radius increased", 1.25);
+			TF2Attrib_SetByName(Weapon2, "override projectile type", 3.0);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.2);
+			//TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 8.0);
+			TF2Attrib_SetByName(Weapon2, "reload time increased", 0.8);
+			//TF2Attrib_SetByName(Weapon2, "projectile speed decreased", 0.8);
+			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon2, "projectile spread angle penalty", 2.5);
+			
+			//TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.4);
+			
+			
+		}
+
+				if(IsValidEntity(Weapon3))
+		{
+			//TF2Attrib_RemoveAll(Weapon1);
+			
+
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
+
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 10.0);
+			
+			//TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.4);
 			
 			
 		}
