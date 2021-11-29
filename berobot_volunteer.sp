@@ -123,6 +123,12 @@ void LoadVipSteamIds()
 {
     _vipSteamIds = new StringMap();
     File file = OpenFile("mm_volunteer_vip.txt", "r");
+    if (file == null)
+    {
+        SMLogTag(SML_INFO, "VIPs could not be loaded, because file 'mm_volunteer_vip.txt' was not found", _vipSteamIds.Size);
+        return;
+    }
+
     while(!file.EndOfFile())
     {
         char steamId[64];
