@@ -36,6 +36,7 @@ int _autoVolunteerAdminFlag;
 ConVar _robocapTeamConVar;
 int _robocapTeam;
 
+StringMap _vipSteamIds;
 bool _automaticVolunteerVoteIsInProgress;
 Handle _countdownTimer;
 int _countdownTarget;
@@ -63,9 +64,12 @@ public void OnPluginStart()
 
     RegAdminCmd("sm_setvolunteer", Command_SetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to true/enabled");
     RegAdminCmd("sm_unsetvolunteer", Command_UnsetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to false/disabled");
+    RegAdminCmd("sm_reload_vip_volunteers", Command_ReloadVipVolunteers, ADMFLAG_SLAY, "reloads VIP-SteamIds from file");
 
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
     RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
+
+    LoadVipSteamIds();    
 
     Reset();
 }
@@ -113,6 +117,32 @@ void Reset()
         _volunteered[i] = false;
         _pickedOption[i] = false;
     }
+}
+
+void LoadVipSteamIds()
+{
+    _vipSteamIds = new StringMap();
+    File file = OpenFile("mm_volunteer_vip.txt", "r");
+    if (file == null)
+    {
+        SMLogTag(SML_INFO, "VIPs could not be loaded, because file 'mm_volunteer_vip.txt' was not found", _vipSteamIds.Size);
+        return;
+    }
+
+    while(!file.EndOfFile())
+    {
+        char steamId[64];
+        file.ReadLine(steamId, sizeof(steamId));
+        _vipSteamIds.SetValue(steamId, true);
+    }
+    CloseHandle(file);
+
+    SMLogTag(SML_INFO, "%i VIPs loaded", _vipSteamIds.Size);
+}
+
+public Action Command_ReloadVipVolunteers(int client, int args)
+{
+    LoadVipSteamIds();
 }
 
 public Action Command_SetVolunteer(int client, int args)
@@ -372,6 +402,7 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
     }
 
     ArrayList adminVolunteers = new ArrayList();
+    ArrayList vipVolunteers = new ArrayList();
     ArrayList volunteers = new ArrayList();
     ArrayList nonVolunteers = new ArrayList();
     
@@ -391,61 +422,45 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
             continue;
         }
 
-        if (_volunteered[i])
-        {
-            if (_autoVolunteerAdminFlag >= 0)
-            {
-                int userflags = GetUserFlagBits(i);
-                if (userflags & _autoVolunteerAdminFlag)
-                {
-                    SMLogTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they have admin-flag %i", i, _autoVolunteerAdminFlag);
-                    adminVolunteers.Push(i);
-                    continue;
-                }
-            }
-
-            SMLogTag(SML_VERBOSE, "%L has volunteered", i);
-            volunteers.Push(i);
-        }
-        else
+        if (!_volunteered[i])
         {
             SMLogTag(SML_VERBOSE, "%L has not volunteered", i);
             nonVolunteers.Push(i);
+            continue;
         }
+
+        if (_autoVolunteerAdminFlag >= 0)
+        {
+            int userflags = GetUserFlagBits(i);
+            if (userflags & _autoVolunteerAdminFlag)
+            {
+                SMLogTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they have admin-flag %i", i, _autoVolunteerAdminFlag);
+                adminVolunteers.Push(i);
+                continue;
+            }
+        }
+
+        char steamId[64];
+        GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId));        
+        if (_vipSteamIds.GetValue(steamId, value))
+        {
+            SMLogTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they are a vip", i);
+            vipVolunteers.Push(i);
+            continue;
+        }
+
+        SMLogTag(SML_VERBOSE, "%L has volunteered", i);
+        volunteers.Push(i);
     }
 
     ArrayList pickedVolunteers = new ArrayList();
-    while(pickedVolunteers.Length < neededVolunteers)      //add adminVolunteers until we have enough
-    {
-        if (adminVolunteers.Length == 0)
-            break;
-        
-        int i = GetRandomInt(0, adminVolunteers.Length -1);
-        pickedVolunteers.Push(adminVolunteers.Get(i));
-        adminVolunteers.Erase(i);
-    }
-
-    while(pickedVolunteers.Length < neededVolunteers)      //add volunteers until we have enough
-    {
-        if (volunteers.Length == 0)
-            break;
-        
-        int i = GetRandomInt(0, volunteers.Length -1);
-        pickedVolunteers.Push(volunteers.Get(i));
-        volunteers.Erase(i);
-    }
+    AddVolunteers(pickedVolunteers, adminVolunteers, neededVolunteers);     //add adminVolunteers until we have enough
+    AddVolunteers(pickedVolunteers, vipVolunteers, neededVolunteers);       //add vipVolunteers until we have enough
+    AddVolunteers(pickedVolunteers, volunteers, neededVolunteers);          //add volunteers until we have enough
 
     if (pickNonvolunteers)
     {
-        while(pickedVolunteers.Length < neededVolunteers)   //add nonvolunteers until we have enough
-        {
-            if (nonVolunteers.Length == 0)
-                break;
-            
-            int i = GetRandomInt(0, nonVolunteers.Length -1);
-            pickedVolunteers.Push(nonVolunteers.Get(i));
-            nonVolunteers.Erase(i);
-        }
+        AddVolunteers(pickedVolunteers, nonVolunteers, neededVolunteers);   //add nonvolunteers until we have enough
     }
 
     while(pickedVolunteers.Length > neededVolunteers)      //remove volunteers until we have just enough
@@ -459,6 +474,19 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
     delete nonVolunteers;
 
     return pickedVolunteers;
+}
+
+void AddVolunteers(ArrayList destination, ArrayList source, int neededVolunteers)
+{
+    while(destination.Length < neededVolunteers)      
+    {
+        if (source.Length == 0)
+            return;
+        
+        int i = GetRandomInt(0, source.Length -1);
+        destination.Push(source.Get(i));
+        source.Erase(i);
+    }
 }
 
 bool EveryClientAnsweredVote()
