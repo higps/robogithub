@@ -7,7 +7,7 @@
 #include <team_round_timer>
 #include <berobot_constants>
 #include <berobot>
-#include <berobot_core_resources>
+#include <berobot_core_restrictions>
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
 enum(<<= 1)
@@ -20,12 +20,12 @@ enum(<<= 1)
 #pragma newdecls required
 #pragma semicolon 1
 
-ArrayList _resources;
+ArrayList _restriciton;
 Handle _timer;
 
 public Plugin myinfo =
 {
-	name = "berobot_resource_timeLeft",
+	name = "berobot_restrictions_timeLeft",
 	author = "icebear",
 	description = "",
 	version = "0.1",
@@ -35,7 +35,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    SMLogTag(SML_INFO, "berobot_resource_timeLeft started at %i", GetTime());
+    SMLogTag(SML_INFO, "berobot_restrictions_timeLeft started at %i", GetTime());
 
     if (!IsEnabled())
         return;
@@ -48,13 +48,13 @@ public void MM_OnEnabledChanged(int enabled)
     SMLogTag(SML_VERBOSE, "MM_OnEnabledChanged called at %i with value %i", GetTime(), enabled);
     if (enabled == 0)
     {
-        KillResourceTimer();
+        KillRestrictionTimer();
         UnhookEvent("teamplay_setup_finished",    OnSetupFinished,   EventHookMode_PostNoCopy);
         UnhookEvent("teamplay_timer_time_added",  TimerTimeAdded,    EventHookMode_PostNoCopy);
         return;
     }
 
-    GetResources();
+    GetRestrictions();
     Start();
 }
 
@@ -62,8 +62,8 @@ public void OnMapStart()
 {
     SMLogTag(SML_VERBOSE, "OnMapStart called at %i", GetTime());
 
-    GetResources();
-    KillResourceTimer();
+    GetRestrictions();
+    KillRestrictionTimer();
     _timer = CreateTimer(0.1, Tick);
 }
 
@@ -71,8 +71,8 @@ public void MM_OnRobotStorageChanged()
 {
     SMLogTag(SML_VERBOSE, "MM_OnRobotStorageChanged called at %i", GetTime());
 
-    GetResources();
-    KillResourceTimer();
+    GetRestrictions();
+    KillRestrictionTimer();
     _timer = CreateTimer(0.1, Tick);
 }
 
@@ -80,7 +80,7 @@ public void TimerTimeAdded(Handle event, const char[] name, bool dontBroadcast)
 {
     SMLogTag(SML_VERBOSE, "TimerTimeAdded called at %i", GetTime());
 
-    KillResourceTimer();
+    KillRestrictionTimer();
     _timer = CreateTimer(0.1, Tick);
 }
 
@@ -88,7 +88,7 @@ public void OnSetupFinished(Handle event, const char[] name, bool dontBroadcast)
 {
     SMLogTag(SML_VERBOSE, "OnSetupFinished called at %i", GetTime());
 
-    KillResourceTimer();
+    KillRestrictionTimer();
     _timer = CreateTimer(0.1, Tick);
 }
 
@@ -97,11 +97,11 @@ void Start()
     HookEvent("teamplay_setup_finished",    OnSetupFinished,   EventHookMode_PostNoCopy);
     HookEvent("teamplay_timer_time_added",  TimerTimeAdded,    EventHookMode_PostNoCopy);
 
-    KillResourceTimer();
+    KillRestrictionTimer();
     _timer = CreateTimer(0.1, Tick);
 }
 
-void KillResourceTimer()
+void KillRestrictionTimer()
 {
     if (_timer == null)
         return;
@@ -112,32 +112,32 @@ void KillResourceTimer()
     _timer = null;
 }
 
-void GetResources()
+void GetRestrictions()
 {
     if (!IsEnabled())
         return;
 
-    _resources = new ArrayList();
+    _restriciton = new ArrayList();
 
-    ArrayList resources = GetRobotResources();
-    SMLogTag(SML_VERBOSE, "%i TimeLeft-resources found", resources.Length);
+    ArrayList restrictions = GetRobotRestrictions();
+    SMLogTag(SML_VERBOSE, "%i restrictions found", restrictions.Length);
     
-    for(int i = 0; i < resources.Length; i++)
+    for(int i = 0; i < restrictions.Length; i++)
     {
-        Resources item = resources.Get(i);
+        Restrictions item = restrictions.Get(i);
 
         if (!item.TimeLeft.Active)
             continue;
         
-        _resources.Push(item.TimeLeft);
+        _restriciton.Push(item.TimeLeft);
     }
-    _resources.SortCustom(TimeLeftResourceComparision);
+    _restriciton.SortCustom(TimeLeftRestrictionComparision);
 
-    SMLogTag(SML_VERBOSE, "%i TimeLeft-resources set", _resources.Length);
-    for(int i = 0; i < _resources.Length; i++)
+    SMLogTag(SML_VERBOSE, "%i TimeLeft-restrictions set", _restriciton.Length);
+    for(int i = 0; i < _restriciton.Length; i++)
     {
-        TimeLeftResource resource = _resources.Get(i);
-        SMLogTag(SML_VERBOSE, "TimeLeft-resource %i set: %i", i, resource.SecondsBeforeEndOfRound);
+        TimeLeftRestriction restriction = _restriciton.Get(i);
+        SMLogTag(SML_VERBOSE, "TimeLeft-restriction %i set: %i", i, restriction.SecondsBeforeEndOfRound);
     }
 }
  
@@ -154,7 +154,7 @@ Action Tick(Handle timer)
     float endtime;
     if (!teamRoundTimer.GetEndTime(endtime))
     {
-        SMLogTag(SML_VERBOSE, "round is not timed. TimeLeft-resources will not work.");
+        SMLogTag(SML_VERBOSE, "round is not timed. TimeLeft-restricitons will not work.");
         DisableFrom(0);
         _timer = null;
         return Plugin_Stop;
@@ -165,34 +165,34 @@ Action Tick(Handle timer)
     float timeleft = endtime - gametime;
     if (timeleft < 0)
     {
-        SMLogTag(SML_VERBOSE, "round is over. TimeLeft-resources will not work.");
+        SMLogTag(SML_VERBOSE, "round is over. TimeLeft-restricitons will not work.");
         DisableFrom(0);
         _timer = null;
         return Plugin_Stop;
     }
     SMLogTag(SML_VERBOSE, "timer tick with %f time left", timeleft);
 
-    int nextResourceSecondsBeforeEndOfRound;
-    int nextResourceIndex = MAX_INT;
-    for(int i = 0; i < _resources.Length; i++)
+    int nextRestricitionSecondsBeforeEndOfRound;
+    int nextRestricitionIndex = MAX_INT;
+    for(int i = 0; i < _restriciton.Length; i++)
     {
-        TimeLeftResource resource = _resources.Get(i);
-        if (resource.SecondsBeforeEndOfRound < timeleft)
+        TimeLeftRestriction restriction = _restriciton.Get(i);
+        if (restriction.SecondsBeforeEndOfRound < timeleft)
         {
-            nextResourceSecondsBeforeEndOfRound = resource.SecondsBeforeEndOfRound;
-            nextResourceIndex = i;
+            nextRestricitionSecondsBeforeEndOfRound = restriction.SecondsBeforeEndOfRound;
+            nextRestricitionIndex = i;
             break;
         }
 
-        if (resource.Enabled)
+        if (restriction.Enabled)
             continue;
 
-        resource.Enabled = true;
+        restriction.Enabled = true;
 
         char robotName[NAMELENGTH];
-        resource.GetRobotName(robotName);
+        restriction.GetRobotName(robotName);
 
-        OnResourceChanged(robotName);
+        OnRestrictionChanged(robotName);
 
         char msg[256];
         Format(msg, sizeof(msg), "timelimit for robot '%s' is not restricted anymore", robotName);
@@ -200,43 +200,43 @@ Action Tick(Handle timer)
         MM_PrintToChatAll(msg);
     }
 
-    //make sure remaining resources are disabled
-    DisableFrom(nextResourceIndex);
+    //make sure remaining restricitions are disabled
+    DisableFrom(nextRestricitionIndex);
 
-    if (nextResourceSecondsBeforeEndOfRound <= 0)
+    if (nextRestricitionSecondsBeforeEndOfRound <= 0)
     {
         float timeTillEnd = timeleft + 0.1;
-        SMLogTag(SML_VERBOSE, "no further timeleft-resources. setting end of loop in %f seconds", timeTillEnd);
+        SMLogTag(SML_VERBOSE, "no further timeleft-restricitions. setting end of loop in %f seconds", timeTillEnd);
         _timer = CreateTimer(timeTillEnd, Tick);
         return Plugin_Stop;
     }
 
-    float timeTillNextResource = timeleft - float(nextResourceSecondsBeforeEndOfRound);
-    if (timeTillNextResource < 0.1)
-        timeTillNextResource = 0.1;
-    SMLogTag(SML_VERBOSE, "setting next timer tick in %f seconds", timeTillNextResource);
-    _timer = CreateTimer(timeTillNextResource, Tick);
+    float timeTillNextRestricition = timeleft - float(nextRestricitionSecondsBeforeEndOfRound);
+    if (timeTillNextRestricition < 0.1)
+        timeTillNextRestricition = 0.1;
+    SMLogTag(SML_VERBOSE, "setting next timer tick in %f seconds", timeTillNextRestricition);
+    _timer = CreateTimer(timeTillNextRestricition, Tick);
     return Plugin_Stop;
 }
 
 void DisableFrom(int startIndex)
 {
-    for(int i = startIndex; i < _resources.Length; i++)
+    for(int i = startIndex; i < _restriciton.Length; i++)
     {
-        TimeLeftResource resource = _resources.Get(i);
-        resource.Enabled = false;
+        TimeLeftRestriction restriction = _restriciton.Get(i);
+        restriction.Enabled = false;
 
         char robotName[NAMELENGTH];
-        resource.GetRobotName(robotName);
+        restriction.GetRobotName(robotName);
         SMLogTag(SML_VERBOSE, "timelimit for robot '%s' is restricted", robotName);
     }
 }
 
-int TimeLeftResourceComparision(int index1, int index2, Handle array, Handle hndl)
+int TimeLeftRestrictionComparision(int index1, int index2, Handle array, Handle hndl)
 {
     ArrayList list = view_as<ArrayList>(array); 
-    TimeLeftResource a = list.Get(index1);
-    TimeLeftResource b = list.Get(index2);
+    TimeLeftRestriction a = list.Get(index1);
+    TimeLeftRestriction b = list.Get(index2);
 
     if (a.SecondsBeforeEndOfRound > b.SecondsBeforeEndOfRound)
         return -1;

@@ -46,6 +46,16 @@ methodmap TeamRoundTimerIterator < StringMap {
         return timer;
     }
 
+    public void HookOnFinished(EntityOutput callback, bool once = false)
+    {
+        HookSingleEntityOutput(this.EntityId, "OnFinished", callback, once);
+    }
+
+    public void UnhookOnFinished(EntityOutput callback)
+    {
+        UnhookSingleEntityOutput(this.EntityId, "OnFinished", callback);
+    }
+
     public bool FindNextTimer()
     {
         this.EntityId = FindEntityByClassname(this.EntityId, "team_round_timer");
@@ -58,6 +68,34 @@ methodmap TeamRoundTimer __nullable__ {
 
     public TeamRoundTimer() {
         return view_as<TeamRoundTimer>(0);
+    }
+    
+    public bool HookOnFinished(EntityOutput callback, bool once = false)
+    {        
+        TeamRoundTimerIterator internal = new TeamRoundTimerIterator();
+
+        bool found;
+        while (internal.FindNextTimer()) {
+            internal.HookOnFinished(callback, once);
+            found = true;
+        }
+        delete internal;
+
+        return found;
+    }
+    
+    public bool UnhookOnFinished(EntityOutput callback)
+    {        
+        TeamRoundTimerIterator internal = new TeamRoundTimerIterator();
+
+        bool found;
+        while (internal.FindNextTimer()) {
+            internal.UnhookOnFinished(callback);
+            found = true;
+        }
+        delete internal;
+
+        return found;
     }
     
     public bool GetEndTime(float& buffer)
