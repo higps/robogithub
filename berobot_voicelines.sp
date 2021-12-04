@@ -147,6 +147,13 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	{
 	EmitGameSoundToAll("Announcer.mvm_spybot_death");
 	}
+
+        //Plays engineer alert when the engineer bot is dead
+	// if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Engineer)
+	// {
+	// EmitGameSoundToAll("Announcer.mvm_an_engineer_bot_is_Dead");
+    
+	// }
 }
 
 public Action Event_player_escort_score(Event event, char[] name, bool dontBroadcast)

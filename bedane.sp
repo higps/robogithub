@@ -129,13 +129,13 @@ public OnPluginStart()
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeUncleDane, PLUGIN_VERSION);
 	
-	// PrecacheSound(ENGIE_SPAWN_SOUND, true);
-	// PrecacheSound(ENGIE_SPAWN_SOUND2, true);
-	// PrecacheSound(TELEPORTER_ACTIVATE1, true);
-	// PrecacheSound(TELEPORTER_ACTIVATE2, true);
-	// PrecacheSound(TELEPORTER_ACTIVATE3, true);
-	// PrecacheSound(TELEPORTER_ACTIVATE4, true);
-	// PrecacheSound(TELEPORTER_ACTIVATE5, true);
+	PrecacheSound(ENGIE_SPAWN_SOUND, true);
+	PrecacheSound(ENGIE_SPAWN_SOUND2, true);
+	PrecacheSound(TELEPORTER_ACTIVATE1, true);
+	PrecacheSound(TELEPORTER_ACTIVATE2, true);
+	PrecacheSound(TELEPORTER_ACTIVATE3, true);
+	PrecacheSound(TELEPORTER_ACTIVATE4, true);
+	PrecacheSound(TELEPORTER_ACTIVATE5, true);
 	PrecacheSound(TELEPORTER_SPAWN, true);
 
 
@@ -273,7 +273,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 						//Doesn't work for some reason
 						//EmitGameSoundToAll("Announcer.MVM_Engineer_Teleporter_Activated"); 
 						
-						int soundswitch = GetRandomInt(1,7);
+						int soundswitch = GetRandomInt(1,5);
 
 						switch(soundswitch)
 						{
@@ -500,7 +500,24 @@ MakeUncleDane(client)
 	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
 
 //	EmitGameSoundToAll("Announcer.MVM_Engineer_Teleporter_Activated");
-	EmitGameSoundToAll("Announcer.MVM_First_Engineer_Teleport_Spawned");
+//Doesn't work for whatever reason
+	///EmitGameSoundToAll("Announcer.MVM_First_Engineer_Teleport_Spawned");
+
+
+	int soundswitch = GetRandomInt(1, 2);
+	switch(soundswitch)
+	{
+		case 1:
+		{
+			EmitSoundToAll(ENGIE_SPAWN_SOUND);
+		}
+		case 2:
+		{
+			EmitSoundToAll(ENGIE_SPAWN_SOUND2);
+		}
+	}
+
+
 	
 }
 
@@ -546,7 +563,7 @@ stock GiveBigRoboDane(client)
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		
+
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
