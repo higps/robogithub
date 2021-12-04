@@ -304,7 +304,9 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 						// g_iObjectParticle[iObj] = EntIndexToEntRef(iObjParti);
 						//AcceptEntityInput(iObjParti, "Start");
 
-						
+						SetVariantInt(RoundFloat(500.0));
+						AcceptEntityInput(iObj, "AddHealth", iObj); //Spawns at 50% HP.
+						SetEntProp(iObj, Prop_Send, "m_iTimesUsed", 0);
 
 
 						float position[3];
@@ -518,7 +520,7 @@ MakeBotSlinger(client)
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 	TF2Attrib_SetByName(client, "metal regen", 150.0);
 	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
-	TF2Attrib_SetByName(client, "mod teleporter cost", 3.0);
+	TF2Attrib_SetByName(client, "mod teleporter cost", 4.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
@@ -733,6 +735,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	vecIsActuallyGoingToSpawn[2] += 15.0;	// Don't get stuck inside of teleporter
 	TeleportEntity(client, vecIsActuallyGoingToSpawn, vecRotation, NULL_VECTOR);
+	EmitSoundToAll(TELEPORTER_SPAWN, client);
 
 	float oober = 3.0;
 	if (oober != 0.0)
