@@ -163,6 +163,7 @@ MakeGiantPyro(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
+	
 	PrintHintText(client , "Your Scorch shot homes in on burning targets and has high knockback!");
 	
 	
