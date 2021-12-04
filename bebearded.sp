@@ -296,19 +296,15 @@ MakeBearded(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	//TF2Attrib_SetByName(client, "move speed penalty", 0.7);
+
 	TF2Attrib_SetByName(client, "damage force reduction", 0.1);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 0.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
-	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	
 	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
-	//TF2Attrib_SetByName(client, "mult charge turn control", 10.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 3.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -322,11 +318,10 @@ MakeBearded(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	TF2_AddCondition(client,TFCond_DefenseBuffed);
 
-	PrintToChat(client, "1. You are now Giant Bearded Expense bot!");
-	PrintToChat(client, "2. You have permanent Battalions Backup buff!");
-	PrintHintText(client, "Use taunt to leap. Land on players to kill everything!");
+	PrintHintText(client, "You are a Tank!\nYou can't contest objectives\nUse taunt to leap. Land on players to kill everything!\nInfinite battalions backup buff!");
+
+	EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
 	
-		
 }
  
 stock TF2_SetHealth(client, NewHealth)
@@ -530,18 +525,6 @@ stock bool:IsValidClient(client)
 }
 
 
-{
-	if (slot >= 0 && slot <= 5 && IsClientInGame(client) && IsPlayerAlive(client))
-	{
-		char wepclassname[64];
-		int wep = GetPlayerWeaponSlot(client, slot);
-		if (wep > MaxClients && IsValidEdict(wep) && GetEdictClassname(wep, wepclassname, sizeof(wepclassname)))
-		{
-			FakeClientCommandEx(client, "use %s", wepclassname);
-			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", wep);
-		}
-	}
-}
 
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {

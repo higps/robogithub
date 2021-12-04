@@ -133,7 +133,7 @@ MakeGiantMedic(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "You are %s\n %s,", ROBOT_NAME, ROBOT_DESCRIPTION);
+	PrintHintText(client , "You are %s\n %s with special attack (+attack3)\nTaunt to self heal", ROBOT_NAME, ROBOT_DESCRIPTION);
 
 
 }

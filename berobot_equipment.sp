@@ -56,6 +56,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("EquipWearable", Native_EquipWearable);
 	CreateNative("CreateRoboWeapon", Native_CreateRoboWeapon);
 	CreateNative("CreateRoboHat", Native_CreateRoboHat);
+	CreateNative("RoboRemoveAllWearables", Native_RoboRemoveAllWearables);
 	
 	return APLRes_Success;
 }
@@ -76,7 +77,7 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 	int quality = GetNativeCell(4);
 	int level = GetNativeCell(5);
 	int slot = GetNativeCell(6);
-
+	int paint = GetNativeCell(7);
 
 	TF2_RemoveWeaponSlot(client, slot);
 	
@@ -103,6 +104,11 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 		SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityLevel"), GetRandomInt(1,99));
 	}
 
+	//if (paint)
+	//{
+		TF2Attrib_SetByDefIndex(weapon, 834, view_as<float>(paint));	//Set Warpaint
+	//}
+
 	//Check if wearable, dispatch it.
 	if (itemindex == 405 || itemindex == 608 || itemindex == 1101 || itemindex == 133 || itemindex == 444 || itemindex == 57 || itemindex == 231 || itemindex == 642 || itemindex == 131 || itemindex == 406 || itemindex == 1099 || itemindex == 1144)
 	{
@@ -125,6 +131,7 @@ public any Native_CreateRoboHat(Handle plugin, int numParams)
 	int quality = GetNativeCell(4);
 	float paint = GetNativeCell(5);
 	float scale = GetNativeCell(6);
+	float style = GetNativeCell(7);
 
 
 	int hat = CreateEntityByName("tf_wearable");
@@ -151,22 +158,51 @@ public any Native_CreateRoboHat(Handle plugin, int numParams)
 	SetEntData(hat, FindSendPropInfo(entclass, "m_flModelScale"), scale);
 	}
 
+	if (style != -1.0){
+		TF2Attrib_SetByDefIndex(hat, 542, style);
+	}
+
 	DispatchSpawn(hat);
 	EquipWearable(client, hat);
 	return true;
 }
 
-stock void RemoveAllWearables(int client)
+public any Native_RoboRemoveAllWearables(Handle plugin, int numParams)
 {
-	int edict = MaxClients+1;
-	while((edict = FindEntityByClassname(edict, "tf_wearable")) != -1)
+	int client = GetNativeCell(1);
+	int wearable = -1;
+	while ((wearable = FindEntityByClassname(wearable, "tf_wearable*")) != -1)
 	{
-		char netclass[32];
-		if (GetEntityNetClass(edict, netclass, sizeof(netclass)) && StrEqual(netclass, "CTFWearable"))
+		if (IsValidEntity(wearable))
 		{
-			if (GetEntPropEnt(edict, Prop_Send, "m_hOwnerEntity") == client && !GetEntProp(edict, Prop_Send, "m_bDisguiseWearable"))
+			int player = GetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity");
+			if (client == player)
 			{
-				AcceptEntityInput(edict, "Kill");
+				TF2_RemoveWearable(client, wearable);
+			}
+		}
+	}
+
+	while ((wearable = FindEntityByClassname(wearable, "tf_powerup_bottle")) != -1)
+	{
+		if (IsValidEntity(wearable))
+		{
+			int player = GetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity");
+			if (client == player)
+			{
+				TF2_RemoveWearable(client, wearable);
+			}
+		}
+	}
+
+	while ((wearable = FindEntityByClassname(wearable, "tf_weapon_spellbook")) != -1)
+	{
+		if (IsValidEntity(wearable))
+		{
+			int player = GetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity");
+			if (client == player)
+			{
+				TF2_RemoveWearable(client, wearable);
 			}
 		}
 	}

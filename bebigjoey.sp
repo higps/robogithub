@@ -288,19 +288,6 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	}
 }
 
-
-{
-	if (slot >= 0 && slot <= 5 && IsClientInGame(client) && IsPlayerAlive(client))
-	{
-		char wepclassname[64];
-		int wep = GetPlayerWeaponSlot(client, slot);
-		if (wep > MaxClients && IsValidEdict(wep) && GetEdictClassname(wep, wepclassname, sizeof(wepclassname)))
-		{
-			FakeClientCommandEx(client, "use %s", wepclassname);
-			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", wep);
-		}
-	}
-}
 // - Regular paints -
 //set item tint RGB
 // A Color Similar to Slate					3100495
