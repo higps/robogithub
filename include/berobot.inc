@@ -104,10 +104,10 @@ native void EquipWearable(int client, int item);
  * @noreturn
  */
  //CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
-native bool CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot);
+native bool CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, int paint);
 
 /**
- * Creates a weapon with level
+ * Creates a hat with with paint and scale
  * 
  * @param client     the client who should wear the equipment/item
  * @param classname  the class name of the weapon like "tf_weapon_minigun"
@@ -119,7 +119,15 @@ native bool CreateRoboWeapon(int client, char[] classname, int itemindex, int qu
  * @noreturn
  */
  //CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
-native void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale);
+native void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale, float style);
+
+
+/**
+* Removes all wearables
+*
+**/
+native void RoboRemoveAllWearables(int client);
+
 /**
  * scales the hitbox of player-hitbox
  * 

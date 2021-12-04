@@ -533,6 +533,7 @@ MakeBotSlinger(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintToChat(client, "1. You are now Bot Slinger robot !");
+	PrintHintText(client , "Use build menu to build up to %i sentries!", sm_sentry_limit);
 	int soundswitch = GetRandomInt(1, 2);
 	switch(soundswitch)
 	{
@@ -636,18 +637,6 @@ stock GiveBigRoboDane(client)
 // 	return IsClientInGame(client);
 // }
 
-{
-	if (slot >= 0 && slot <= 5 && IsClientInGame(client) && IsPlayerAlive(client))
-	{
-		char wepclassname[64];
-		int wep = GetPlayerWeaponSlot(client, slot);
-		if (wep > MaxClients && IsValidEdict(wep) && GetEdictClassname(wep, wepclassname, sizeof(wepclassname)))
-		{
-			FakeClientCommandEx(client, "use %s", wepclassname);
-			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", wep);
-		}
-	}
-}
 
 //TELEPORTER CODE// VERSION 1
 

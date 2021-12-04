@@ -129,13 +129,13 @@ public OnPluginStart()
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeUncleDane, PLUGIN_VERSION);
 	
-	PrecacheSound(ENGIE_SPAWN_SOUND, true);
-	PrecacheSound(ENGIE_SPAWN_SOUND2, true);
-	PrecacheSound(TELEPORTER_ACTIVATE1, true);
-	PrecacheSound(TELEPORTER_ACTIVATE2, true);
-	PrecacheSound(TELEPORTER_ACTIVATE3, true);
-	PrecacheSound(TELEPORTER_ACTIVATE4, true);
-	PrecacheSound(TELEPORTER_ACTIVATE5, true);
+	// PrecacheSound(ENGIE_SPAWN_SOUND, true);
+	// PrecacheSound(ENGIE_SPAWN_SOUND2, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE1, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE2, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE3, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE4, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE5, true);
 	PrecacheSound(TELEPORTER_SPAWN, true);
 
 
@@ -267,9 +267,13 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 						TeleportEntity(attach, position, NULL_VECTOR, NULL_VECTOR);
 						TE_Particle("teleported_mvm_bot", position, _, _, attach, 1,0);	
 						//TE_Particle("teleporter_mvm_bot_persist", position, _, _, attach, 1,0);	
-						int soundswitch = GetRandomInt(1, 5);
-						
+
 						g_iPadType[iObj] = PadType_Boss;
+
+						//Doesn't work for some reason
+						//EmitGameSoundToAll("Announcer.MVM_Engineer_Teleporter_Activated"); 
+						
+						int soundswitch = GetRandomInt(1,7);
 
 						switch(soundswitch)
 						{
@@ -495,18 +499,8 @@ MakeUncleDane(client)
 	
 	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
 
-	int soundswitch = GetRandomInt(1, 2);
-	switch(soundswitch)
-	{
-		case 1:
-		{
-			EmitSoundToAll(ENGIE_SPAWN_SOUND);
-		}
-		case 2:
-		{
-			EmitSoundToAll(ENGIE_SPAWN_SOUND2);
-		}
-	}
+//	EmitGameSoundToAll("Announcer.MVM_Engineer_Teleporter_Activated");
+	EmitGameSoundToAll("Announcer.MVM_First_Engineer_Teleport_Spawned");
 	
 }
 
@@ -537,7 +531,6 @@ stock GiveBigRoboDane(client)
 	if (IsValidClient(client))
 	{
 		RoboRemoveAllWearables(client);
-	//	TF2_RegeneratePlayer(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
@@ -545,21 +538,15 @@ stock GiveBigRoboDane(client)
 
 		CreateRoboWeapon(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
 		CreateRoboWeapon(client, "tf_weapon_wrench", 329, 6, 1, 2, 0);
-		// CreateWeapon(client, "tf_weapon_pda_engineer_build", 25, 6, 1, 3, 0);
-		// CreateWeapon(client, "tf_weapon_pda_engineer_destroy", 26, 6, 1, 4, 0);
-		//TF2_RegeneratePlayer(client);
+
 
 		CreateRoboHat(client, THEDANGER, 10, 6, 15132390.0, 1.0, -1.0);
 		CreateRoboHat(client, GOLDDIGGER, 10, 6, 15132390.0, 1.0, -1.0);
 		CreateRoboHat(client, INSULATOR, 10, 6, 15132390.0, 1.0, -1.0);
 
-		// CreateHat2(client, 30420, 10, 6, 15132390.0); // the danger
-		// //	CreateHat(client, 30178, 10, 6, 1315860);
-		// CreateHat2(client, 30172, 10, 6, 15132390.0); //gold digger
-		// CreateHat2(client, 30539, 10, 6, 15132390.0); //insulator
-		
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
@@ -686,6 +673,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	vecIsActuallyGoingToSpawn[2] += 15.0;	// Don't get stuck inside of teleporter
 	TeleportEntity(client, vecIsActuallyGoingToSpawn, vecRotation, NULL_VECTOR);
+	EmitSoundToAll(TELEPORTER_SPAWN, client);
 
 	float oober = 3.0;
 	if (oober != 0.0)

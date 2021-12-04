@@ -84,9 +84,18 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'mvm_tank_alerts' was not found in %s", sample);
 		return Plugin_Continue;
 	}
+    if (StrContains(sample, "engbot", false) != -1)
+	{
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'engbot' was not found in %s", sample);
+		return Plugin_Continue;
+	}
+    if (StrContains(sample, "mvm_eng", false) != -1)
+	{
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'mvm_eng' was not found in %s", sample);
+		return Plugin_Continue;
+	}
 
-
-     if (StrContains(sample, "sentry_buster_alerts", false) != -1)
+    if (StrContains(sample, "sentry_buster_alerts", false) != -1)
 	{
 		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'sentry_buster_alerts' was not found in %s", sample);
 		return Plugin_Continue;
