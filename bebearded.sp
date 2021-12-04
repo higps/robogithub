@@ -7,6 +7,7 @@
 #include <berobot>
 #include <tf_custom_attributes>
 #include <dhooks>
+#include <tf_ontakedamage>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bearded Expense"
@@ -186,27 +187,27 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-	int weaponID = GetEventInt(event, "weapon_def_index");
+	// int weaponID = GetEventInt(event, "weapon_def_index");
 
-	char weapon_logname[MAX_NAME_LENGTH];
-	GetEventString(event, "weapon_logclassname", weapon_logname, sizeof(weapon_logname));
+	// char weapon_logname[MAX_NAME_LENGTH];
+	// GetEventString(event, "weapon_logclassname", weapon_logname, sizeof(weapon_logname));
 
 	
 	//int weaponID = GetEntPropEnt(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	
 	//PrintToChatAll("Attacker %N , weaponID %i, logname: %s", attacker, weaponID, weapon_logname);
 
-	if (IsRobot(attacker, ROBOT_NAME) && StrEqual(weapon_logname,"mantreads"))
-	{
-		//PrintToChatAll("Drop the bomb");
+	// if (IsRobot(attacker, ROBOT_NAME) && StrEqual(weapon_logname,"mantreads"))
+	// {
+	// 	//PrintToChatAll("Drop the bomb");
 		
-		Handle infokv = CreateKeyValues("infokv");
-		KvSetNum(infokv, "attacker", attacker);
-		KvSetNum(infokv, "victim", victim);
-		CreateTimer(0.0, BeardedBoom, infokv);
+	// 	Handle infokv = CreateKeyValues("infokv");
+	// 	KvSetNum(infokv, "attacker", attacker);
+	// 	KvSetNum(infokv, "victim", victim);
+	// 	CreateTimer(0.0, BeardedBoom, infokv);
 
-		SDKHooks_TakeDamage(attacker, 0, attacker, 120.0, 0, -1);
-	}
+	// 	SDKHooks_TakeDamage(attacker, 0, attacker, 120.0, 0, -1);
+	// }
 
 	if (IsRobot(attacker, ROBOT_NAME))
 	{
@@ -323,7 +324,8 @@ MakeBearded(client)
 
 	PrintToChat(client, "1. You are now Giant Bearded Expense bot!");
 	PrintToChat(client, "2. You have permanent Battalions Backup buff!");
-	PrintCenterText(client, "Use taunt to leap. Land on players to kill everything!");
+	PrintHintText(client, "Use taunt to leap. Land on players to kill everything!");
+	
 		
 }
  
@@ -527,7 +529,7 @@ stock bool:IsValidClient(client)
 	return IsClientInGame(client);
 }
 
-stock void TF2_SwitchtoSlot(int client, int slot)
+
 {
 	if (slot >= 0 && slot <= 5 && IsClientInGame(client) && IsPlayerAlive(client))
 	{
@@ -538,5 +540,22 @@ stock void TF2_SwitchtoSlot(int client, int slot)
 			FakeClientCommandEx(client, "use %s", wepclassname);
 			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", wep);
 		}
+	}
+}
+
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+if (IsValidClient(attacker) && IsValidClient(victim))
+	{
+		if (IsRobot(attacker, ROBOT_NAME) && damagecustom == TF_CUSTOM_BOOTS_STOMP)
+		{
+		Handle infokv = CreateKeyValues("infokv");
+		KvSetNum(infokv, "attacker", attacker);
+		KvSetNum(infokv, "victim", victim);
+		CreateTimer(0.0, BeardedBoom, infokv);
+
+		SDKHooks_TakeDamage(attacker, 0, attacker, 120.0, 0, -1);
+		}
+
 	}
 }
