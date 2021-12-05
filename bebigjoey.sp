@@ -4,12 +4,18 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+#include <sdkhooks>
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Big Joey"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Tomislav"
- 
+
+
+#define MODEL "models/weapons/shells/shell_minigun.mdl"
+
+#define TF_THROWABLE_BREAD_ENTITY "tf_projectile_throwable_breadmonster"
+
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -63,6 +69,8 @@ public OnPluginStart()
     robot.sounds.death = DEATH;
 
     AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION);
+	
+
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -111,6 +119,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
  
 public OnMapStart()
 {
+	PrecacheModel(MODEL, true);
 	PrecacheModel(GDEFLECTORH);
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
@@ -239,12 +248,14 @@ stock GiveBigJoey(client)
 //bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot)
 
 		CreateRoboWeapon(client, "tf_weapon_minigun", 424, 9, 1, 0, 0);
+		CreateRoboWeapon(client, "tf_weapon_shotgun_hwg", 863, 9, 1, 1, 0);
 
 		CreateRoboHat(client, WHITERUSSIAN, 10, 6, 15185211.0, 0.75, -1.0); 
 		CreateRoboHat(client, GRAYBANNS, 10, 6, 0.0, 0.75, -1.0); 
 		CreateRoboHat(client, COMBATSLACKS, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 
 		if(IsValidEntity(Weapon1))
 		{
@@ -256,6 +267,13 @@ stock GiveBigJoey(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
 		}
+
+		if(IsValidEntity(Weapon2))
+		{
+			TF2Attrib_SetByName(Weapon2, "override projectile type", 2.0);
+		}
+
+		
 	}
 }
 
@@ -287,6 +305,30 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 		
 	}
 }
+
+public void OnEntityCreated(int iEntity, const char[] sClassName) 
+{
+	if (StrContains(sClassName, "tf_projectile") == 0)
+	{
+		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+		SetEntityModel(iEntity, MODEL);
+		//SetEntProp(iEntity, Prop_Send, "m_bCritical", 1);
+	}
+	
+}
+
+public void Hook_OnProjectileSpawn(iEntity) {
+	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+		
+		SetEntityModel(iEntity, MODEL);
+		
+	//	SetEntPropFloat(iEntity, Prop_Send, "m_nModelIndex", 5.0);
+		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 2.75);
+		
+	}
+}
+
 
 // - Regular paints -
 //set item tint RGB
