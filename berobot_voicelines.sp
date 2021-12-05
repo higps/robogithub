@@ -75,6 +75,32 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'announcer' was not found in %s", sample);
 		return Plugin_Continue;
 	}
+    if (StrContains(sample, "mvm_spy", false) != -1)
+	{
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'mvm_spy' was not found in %s", sample);
+		return Plugin_Continue;
+	}
+    if (StrContains(sample, "mvm_tank_alerts", false) != -1)
+	{
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'mvm_tank_alerts' was not found in %s", sample);
+		return Plugin_Continue;
+	}
+    if (StrContains(sample, "engbot", false) != -1)
+	{
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'engbot' was not found in %s", sample);
+		return Plugin_Continue;
+	}
+    if (StrContains(sample, "mvm_eng", false) != -1)
+	{
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'mvm_eng' was not found in %s", sample);
+		return Plugin_Continue;
+	}
+
+    if (StrContains(sample, "sentry_buster_alerts", false) != -1)
+	{
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because 'sentry_buster_alerts' was not found in %s", sample);
+		return Plugin_Continue;
+	}
 	if (ClassHasDeepRobotVoiceLines(class))
 	{
 		ReplaceString(sample, sizeof(sample), "vo/", "vo/mvm/mght/", false);
@@ -116,6 +142,19 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     {
         PlayRobotKilledFriendVoiceOver();
     }
+
+    //Plays spy alert when the spy dies
+	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Spy)
+	{
+	EmitGameSoundToAll("Announcer.mvm_spybot_death");
+	}
+
+        //Plays engineer alert when the engineer bot is dead
+	// if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Engineer)
+	// {
+	// EmitGameSoundToAll("Announcer.mvm_an_engineer_bot_is_Dead");
+    
+	// }
 }
 
 public Action Event_player_escort_score(Event event, char[] name, bool dontBroadcast)
