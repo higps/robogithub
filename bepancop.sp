@@ -47,7 +47,15 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakePanCop, PLUGIN_VERSION);
+
+    RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.PerRobot = 1;
+
+
+    AddRobot(robot, MakePanCop, PLUGIN_VERSION, restrictions);
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)

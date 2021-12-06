@@ -262,10 +262,3 @@ stock GiveGiantPyro(client)
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 
-
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
-}

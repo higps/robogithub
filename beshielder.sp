@@ -37,7 +37,14 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
+	
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.Overall = 2;
+
+    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION, restrictions);
 }
 
 public void OnPluginEnd()
@@ -172,19 +179,10 @@ stock GiveGiantMedic(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "generate rage on heal", 1.0);
-			TF2Attrib_SetByName(Weapon2, "increase buff duration", 0.65);
+			TF2Attrib_SetByName(Weapon2, "increase buff duration", 0.8);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
 			TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.35");
-			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 3.0);
+			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 3.5);
 		}
 	}
-}
- 
-    
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	if (client <= 0 || client > MaxClients) return false;
-	return IsClientInGame(client);
 }

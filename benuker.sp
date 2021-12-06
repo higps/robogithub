@@ -37,7 +37,15 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeSolar, PLUGIN_VERSION);
+	    RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.Overall = 2;
+
+
+    AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
+
 }
 
 public void OnPluginEnd()
@@ -213,14 +221,6 @@ stock GiveGiantDemoKnight(client)
 		}
 		
 	}
-}
-
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	if (client <= 0 || client > MaxClients) return false;
-	return IsClientInGame(client);
 }
 
 public void OnEntityCreated(int iEntity, const char[] sClassName) 

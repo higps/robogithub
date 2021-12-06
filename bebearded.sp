@@ -517,12 +517,6 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	EmitSoundToAll(JUMP,client);
 	EmitSoundToAll(JUMP,client);
 }       
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
-}
 
 
 

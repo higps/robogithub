@@ -203,7 +203,7 @@ stock GiveGiantPyro(client)
 			TeamPaint = 12807213.0;
 		}
 		if (iTeam == TFTeam_Red){
-			TeamPaint = 2091445.0;
+			TeamPaint = 12091445.0;
 		}
 
 		CreateRoboHat(client, LOFILONGWAVE, 10, 6, TeamPaint, 1.0, -1.0);
@@ -321,11 +321,4 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 			}
 		}
 	}
-}
-	
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
 }

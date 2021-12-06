@@ -196,11 +196,3 @@ stock GiveGiantToofty(client)
 		}
 	}
 }
-
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	if (client <= 0 || client > MaxClients) return false;
-	return IsClientInGame(client);
-}

@@ -7,29 +7,29 @@
 #include <sdkhooks>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Big Joey"
+#define ROBOT_NAME	"Big Small Joey"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Tomislav"
+#define ROBOT_DESCRIPTION "Small Tomislav"
 
 
 //#define MODEL "models/weapons/shells/shell_minigun.mdl"
 
-// #define TF_THROWABLE_BREAD_ENTITY "tf_projectile_throwable_breadmonster"
+#define TF_THROWABLE_BREAD_ENTITY "tf_projectile_throwable_breadmonster"
 
-#define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
+#define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-#define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
-#define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
-#define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
-#define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
+// #define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
+// #define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
+// #define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
+// #define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
 
-#define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
+// #define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
+// #define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
+// #define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
+// #define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
 
 #define WHITERUSSIAN 30644
 #define GRAYBANNS 30104
@@ -53,7 +53,7 @@ public OnPluginStart()
 {
     LoadTranslations("common.phrases");
 
-    AddNormalSoundHook(BossGPS);
+//    AddNormalSoundHook(BossGPS);
 
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
@@ -62,10 +62,7 @@ public OnPluginStart()
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
-    robot.sounds.gunfire = SOUND_GUNFIRE;
-    robot.sounds.gunspin = SOUND_GUNSPIN;
-    robot.sounds.windup = SOUND_WINDUP;
-    robot.sounds.winddown = SOUND_WINDDOWN;
+
     robot.sounds.death = DEATH;
 
     AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION);
@@ -73,37 +70,37 @@ public OnPluginStart()
 
 }
 
-public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
+// public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
+// {
+// 	if (!IsValidClient(entity)) return Plugin_Continue;
+// 	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
 
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step01.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step03.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step02.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step04.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
-	}
-	return Plugin_Continue;
-}
+// 	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
+// 	{
+// 		if (StrContains(sample, "1.wav", false) != -1)
+// 		{
+// 			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step01.wav");
+// 			EmitSoundToAll(sample, entity);
+// 		}
+// 		else if (StrContains(sample, "3.wav", false) != -1)
+// 		{
+// 			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step03.wav");
+// 			EmitSoundToAll(sample, entity);
+// 		}
+// 		else if (StrContains(sample, "2.wav", false) != -1)
+// 		{
+// 			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step02.wav");
+// 			EmitSoundToAll(sample, entity);
+// 		}
+// 		else if (StrContains(sample, "4.wav", false) != -1)
+// 		{
+// 			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step04.wav");
+// 			EmitSoundToAll(sample, entity);
+// 		}
+// 		return Plugin_Changed;
+// 	}
+// 	return Plugin_Continue;
+// }
 
 public void OnPluginEnd()
 {
@@ -134,15 +131,15 @@ public OnMapStart()
 	// PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
 	
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
 
-	PrecacheSound(SOUND_GUNFIRE);
-	PrecacheSound(SOUND_GUNSPIN);
-	PrecacheSound(SOUND_WINDUP);
-	PrecacheSound(SOUND_WINDDOWN);
+	// PrecacheSound(SOUND_GUNFIRE);
+	// PrecacheSound(SOUND_GUNSPIN);
+	// PrecacheSound(SOUND_WINDUP);
+	// PrecacheSound(SOUND_WINDDOWN);
 }
  
 public Action:SetModel(client, const String:model[])
@@ -172,7 +169,7 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 5000;
+	int iHealth = 2500;
 	
 	
 	int MaxHealth = 300;
@@ -185,29 +182,32 @@ MakeGDeflectorH(client)
 	
 	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
-	
+	float scale = 0.65;
    
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.7);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.001);
-	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
+	TF2Attrib_SetByName(client, "aiming movespeed increased", 1.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
+	
+	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
+	//TF2Attrib_SetByName(client, "head scale", 0.75);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
-	UpdatePlayerHitbox(client, 1.75);
+	UpdatePlayerHitbox(client, scale);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintCenterText(client, "BIG JOEY!");
+	PrintCenterText(client, "SMALL JOEY!");
 
 	//g_IsGPS[client] = true;
 	
@@ -248,13 +248,14 @@ stock GiveBigJoey(client)
 //bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot)
 
 		CreateRoboWeapon(client, "tf_weapon_minigun", 424, 9, 1, 0, 0);
+	//	CreateRoboWeapon(client, "tf_weapon_shotgun_hwg", 863, 9, 1, 1, 0);
 
-		CreateRoboHat(client, WHITERUSSIAN, 10, 6, 15185211.0, 0.75, -1.0); 
-		CreateRoboHat(client, GRAYBANNS, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, WHITERUSSIAN, 10, 6, 15185211.0, 1.0, -1.0); 
+		CreateRoboHat(client, GRAYBANNS, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, COMBATSLACKS, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-
+		//int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 
 		if(IsValidEntity(Weapon1))
 		{
@@ -264,9 +265,13 @@ stock GiveBigJoey(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.65);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.2);
 		}
 
+		// if(IsValidEntity(Weapon2))
+		// {
+		// 	TF2Attrib_SetByName(Weapon2, "override projectile type", 2.0);
+		// }
 
 		
 	}

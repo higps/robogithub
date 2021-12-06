@@ -45,14 +45,14 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-
-    RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-    restrictions.TimeLeft.SecondsBeforeEndOfRound = 180;
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 3;
 	
-    AddRobot(robot, MakeBuster, PLUGIN_VERSION, restrictions);
+    RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.PerRobot = 1;
+
+	AddRobot(robot, MakeBuster, PLUGIN_VERSION, restrictions);
 
     for(int client = 1 ; client <= MaxClients ; client++)
     {
@@ -512,12 +512,4 @@ if (IsValidClient(attacker)) // This is a Sentry.
 	}
 return Plugin_Continue;
 
-}
-
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	if (client <= 0 || client > MaxClients) return false;
-	return IsClientInGame(client);
 }

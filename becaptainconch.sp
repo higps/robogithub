@@ -56,7 +56,12 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
+
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.Overall = 3;
+
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
 
 public void OnPluginEnd()
@@ -259,9 +264,3 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 
 	
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
-}

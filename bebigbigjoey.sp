@@ -7,14 +7,14 @@
 #include <sdkhooks>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Big Joey"
-#define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Tomislav"
+#define ROBOT_NAME	"Big Big Joey"
+#define ROBOT_ROLE "ZBOSS"
+#define ROBOT_DESCRIPTION "Slow Crit Tomislav"
 
 
 //#define MODEL "models/weapons/shells/shell_minigun.mdl"
 
-// #define TF_THROWABLE_BREAD_ENTITY "tf_projectile_throwable_breadmonster"
+//#define TF_THROWABLE_BREAD_ENTITY "tf_projectile_throwable_breadmonster"
 
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -31,9 +31,10 @@
 #define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
 
+
 #define WHITERUSSIAN 30644
 #define GRAYBANNS 30104
-#define COMBATSLACKS 30372
+#define JUNGLEBOOTY 30563
 
 public Plugin:myinfo =
 {
@@ -68,7 +69,13 @@ public OnPluginStart()
     robot.sounds.winddown = SOUND_WINDDOWN;
     robot.sounds.death = DEATH;
 
-    AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION);
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.PerRobot = 3;
+
+    AddRobot(robot, MakeBigBigJoey, PLUGIN_VERSION, restrictions);
 	
 
 }
@@ -105,6 +112,75 @@ public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH]
 	return Plugin_Continue;
 }
 
+public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
+{
+	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME))
+	{	
+		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
+		int iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+
+		if(IsValidEntity(weapon) && iWeapon == 424)//424==  tomislav
+		{
+			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
+			if (iWeaponState == 1 && !Locked1[iClient])
+			{
+				EmitSoundToAll(SOUND_WINDUP, iClient);
+			//	PrintToChatAll("WeaponState = Windup");
+				
+				Locked1[iClient] = true;
+				Locked2[iClient] = false;
+				Locked3[iClient] = false;
+				CanWindDown[iClient] = true;
+				
+				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
+				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
+			}
+			else if (iWeaponState == 2 && !Locked2[iClient])
+			{
+				EmitSoundToAll(SOUND_GUNFIRE, iClient);
+			//	PrintToChatAll("WeaponState = Firing");
+				
+				Locked2[iClient] = true;
+				Locked1[iClient] = true;
+				Locked3[iClient] = false;
+				CanWindDown[iClient] = true;
+				
+				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
+				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
+			}
+			else if (iWeaponState == 3 && !Locked3[iClient])
+			{
+				EmitSoundToAll(SOUND_GUNSPIN, iClient);
+			//	PrintToChatAll("WeaponState = Spun Up");
+				
+				Locked3[iClient] = true;
+				Locked1[iClient] = true;
+				Locked2[iClient] = false;
+				CanWindDown[iClient] = true;
+				
+				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
+				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
+			}
+			else if (iWeaponState == 0)
+			{
+				if (CanWindDown[iClient])
+				{
+			//		PrintToChatAll("WeaponState = WindDown");
+					EmitSoundToAll(SOUND_WINDDOWN, iClient);
+					CanWindDown[iClient] = false;
+				}
+				
+				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
+				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
+				
+				Locked1[iClient] = false;
+				Locked2[iClient] = false;
+				Locked3[iClient] = false;
+			}
+		}
+	}
+}
+
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
@@ -112,7 +188,7 @@ public void OnPluginEnd()
  
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-//	CreateNative("BeGDeflectorH_MakeGDeflectorH", Native_SetGDeflectorH);
+//	CreateNative("BeGDeflectorH_MakeBigBigJoey", Native_SetGDeflectorH);
 //	CreateNative("BeGDeflectorH_IsGDeflectorH", Native_IsGDeflectorH);
 	return APLRes_Success;
 }
@@ -156,7 +232,7 @@ public Action:SetModel(client, const String:model[])
 	}
 }
 
-MakeGDeflectorH(client)
+MakeBigBigJoey(client)
 {	
 	TF2_SetPlayerClass(client, TFClass_Heavy);
 	TF2_RegeneratePlayer(client);
@@ -172,7 +248,7 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 5000;
+	int iHealth = 7500;
 	
 	
 	int MaxHealth = 300;
@@ -185,29 +261,33 @@ MakeGDeflectorH(client)
 	
 	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
-	
+	float scale = 2.5;
    
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.7);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.001);
-	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
+	TF2Attrib_SetByName(client, "aiming movespeed increased", 0.2);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
+	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
+	
+	
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
-	UpdatePlayerHitbox(client, 1.75);
+	UpdatePlayerHitbox(client, scale);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+	TF2_AddCondition(client, TFCond_CritCanteen);
 	
-	PrintCenterText(client, "BIG JOEY!");
+	PrintCenterText(client, "BIG BIG JOEY!");
 
 	//g_IsGPS[client] = true;
 	
@@ -247,26 +327,35 @@ stock GiveBigJoey(client)
 
 //bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot)
 
+		//424 tomislav
 		CreateRoboWeapon(client, "tf_weapon_minigun", 424, 9, 1, 0, 0);
+	//	CreateRoboWeapon(client, "tf_weapon_shotgun_hwg", 863, 9, 1, 1, 0);
 
 		CreateRoboHat(client, WHITERUSSIAN, 10, 6, 15185211.0, 0.75, -1.0); 
 		CreateRoboHat(client, GRAYBANNS, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, COMBATSLACKS, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, JUNGLEBOOTY, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-
+	//	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 
 		if(IsValidEntity(Weapon1))
 		{
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
 			TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
 			TF2Attrib_SetByName(Weapon1, "item style override", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.65);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.65);
+			TF2Attrib_SetByName(Weapon1, "minigun spinup time decreased", 1.35);
+			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
 		}
 
+		// if(IsValidEntity(Weapon2))
+		// {
+		// 	TF2Attrib_SetByName(Weapon2, "override projectile type", 2.0);
+		// }
 
 		
 	}

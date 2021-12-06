@@ -5,7 +5,6 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
-#include <berobot_core>
 //#include <sendproxy>
 #include <tfobjects>
 #include <dhooks>
@@ -34,8 +33,6 @@
 // #define SPY_DEATH_SOUND6		"vo/mvm_spybot_death06.mp3"
 // #define SPY_DEATH_SOUND7		"vo/mvm_spybot_death07.mp3"
 
-bool g_isMrPaladin[MAXPLAYERS + 1];
-
 
 public Plugin:myinfo =
 {
@@ -62,7 +59,12 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeSpy, PLUGIN_VERSION);
+
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.PerRobot = 1;
+
+    AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 
 	PrecacheModel(MODEL);
 	PrecacheSound(SPAWN);
@@ -288,24 +290,4 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
 		}	
 	}
-}
-
-bool isMiniBoss(int client)
-{
-
-    if(IsValidClient(client))
-    {
-
-        if(GetEntProp(client, Prop_Send, "m_bIsMiniBoss"))
-        {
-           // if(g_cv_bDebugMode) PrintToChatAll("%N Was mini boss", client);
-               return true;
-        }
-        else
-        {
-           // if(g_cv_bDebugMode)PrintToChatAll("%N Was not mini boss", client);
-            return false;
-        }
-    }
-    return false;
 }

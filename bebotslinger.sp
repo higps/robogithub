@@ -51,7 +51,7 @@ int EngieTeam = 2;
 int OwnerOffset;
 ConVar sm_dispenser_limit;
 ConVar sm_sentry_limit;
-ConVar sm_instant_upgrade;
+//ConVar sm_instant_upgrade;
 
 float vecSpawns[2][3];
 
@@ -354,31 +354,31 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-int CreatePadParticle(int iPad, char[] szParticleName)
-{
-	//TFTeam iPadTeam = view_as<TFTeam>(GetEntProp(iPad, Prop_Send, "m_iTeamNum"));
-	//char szParticleName[128];
-	// switch (g_iPadType[iPad])
-	// {
-	// 	case PadType_Boost:	strcopy(szParticleName, sizeof(szParticleName), "powerup_icon_haste");
-	// 	case PadType_Jump:	strcopy(szParticleName, sizeof(szParticleName), "powerup_icon_agility");
-	// }
-	// switch (iPadTeam)
-	// {
-	// 	case TFTeam_Red:	StrCat(szParticleName, sizeof(szParticleName), "_red");
-	// 	case TFTeam_Blue:	StrCat(szParticleName, sizeof(szParticleName), "_blue");
-	// }
-	int iParticle = SpawnParticle(szParticleName);
+// int CreatePadParticle(int iPad, char[] szParticleName)
+// {
+// 	//TFTeam iPadTeam = view_as<TFTeam>(GetEntProp(iPad, Prop_Send, "m_iTeamNum"));
+// 	//char szParticleName[128];
+// 	// switch (g_iPadType[iPad])
+// 	// {
+// 	// 	case PadType_Boost:	strcopy(szParticleName, sizeof(szParticleName), "powerup_icon_haste");
+// 	// 	case PadType_Jump:	strcopy(szParticleName, sizeof(szParticleName), "powerup_icon_agility");
+// 	// }
+// 	// switch (iPadTeam)
+// 	// {
+// 	// 	case TFTeam_Red:	StrCat(szParticleName, sizeof(szParticleName), "_red");
+// 	// 	case TFTeam_Blue:	StrCat(szParticleName, sizeof(szParticleName), "_blue");
+// 	// }
+// 	int iParticle = SpawnParticle(szParticleName);
 	
-	float vPos[3];
-	GetEntPropVector(iPad, Prop_Data, "m_vecAbsOrigin", vPos);
-	//vPos[2] += 40.0;
-	TeleportEntity(iParticle, vPos, NULL_VECTOR, NULL_VECTOR);
+// 	float vPos[3];
+// 	GetEntPropVector(iPad, Prop_Data, "m_vecAbsOrigin", vPos);
+// 	//vPos[2] += 40.0;
+// 	TeleportEntity(iParticle, vPos, NULL_VECTOR, NULL_VECTOR);
 	
-	SetParent(iPad, iParticle);
+// 	SetParent(iPad, iParticle);
 	
-	return iParticle;
-}
+// 	return iParticle;
+// }
 
 stock int SpawnParticle(char[] szParticleType)
 {
@@ -1179,9 +1179,9 @@ public Action WeaponSwitch(client, weapon){
 
 	//if the building pda is opened
 	//Switches some buildings to sappers so the game doesn't count them as engie buildings
-	PrintToChatAll("Switching weapons");
+//	PrintToChatAll("Switching weapons");
 	if(GetPlayerWeaponSlot(client,3)==weapon){
-		PrintToChatAll("Running Function Allow Building");
+//		PrintToChatAll("Running Function Allow Building");
 		function_AllowBuilding(client);
 		return Plugin_Continue;
 	}//else if the client is not holding the building tool
@@ -1248,8 +1248,6 @@ public Action Command_destroy_sentries(int client, int args){
 }
 
 public void function_AllowBuilding(int client){
-
-
 
 	int DispenserLimit = GetConVarInt(sm_dispenser_limit);
 	int SentryLimit = GetConVarInt(sm_sentry_limit);
@@ -1348,7 +1346,7 @@ public MRESReturn UpdateOnRemove(int pThis)
 	//PrintToChatAll("Removed sapper %i", iObjectType);
 	int iBuiltOnEntity;
 	int iBuilderClient;
-	int iObjectTypeBOE;
+//	int iObjectTypeBOE;
 	
 	switch(iObjectType)
 	{
@@ -1400,6 +1398,7 @@ public MRESReturn UpdateOnRemove(int pThis)
 	//PrintToChatAll("Built on: %i", GetEntPropEnt(pThis, Prop_Send, "m_hBuiltOnEntity"));
 	//return MRES_Ignored;
 	}
+	return MRES_Ignored;
 }
 
 void DetonateObject(any iObj) {

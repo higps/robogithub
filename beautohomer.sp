@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Auto Homer"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "Auto Homing Rockets"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -28,7 +28,7 @@
 #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 
 
-#define BOBBYBONNET 31057
+#define BreachandBomb 31113
 
 public Plugin:myinfo = 
 {
@@ -64,7 +64,14 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
+
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 200;
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.PerRobot = 3;
+
+    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
 
 public void OnPluginEnd()
@@ -180,7 +187,7 @@ public Action:BossHomer(clients[64], &numClients, String:sample[PLATFORM_MAX_PAT
 
 MakeGiantSoldier(client)
 {
-	SMLogTag(SML_VERBOSE, "Createing Homer");
+	SMLogTag(SML_VERBOSE, "Createing Boss Homer");
 	TF2_SetPlayerClass(client, TFClass_Soldier);
 	TF2_RegeneratePlayer(client);
 
@@ -199,14 +206,14 @@ MakeGiantSoldier(client)
 	int iHealth = 3800;		
 	int MaxHealth = 200;
 	int iAdditiveHP = iHealth - MaxHealth;
-	
+	float Scale = 2.35;
 	TF2_SetHealth(client, iHealth);
 	
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", Scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.4);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
@@ -214,14 +221,15 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
-	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	UpdatePlayerHitbox(client, 1.75);
+	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.65);
+	UpdatePlayerHitbox(client, Scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintToChat(client, "1. You are now Homer soldier !");
+	PrintHintText(client , "Boss Boss\nAuto homing rockets\nCan't be healed.");
 	
 }
 
@@ -247,11 +255,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		
-			
-		CreateRoboHat(client, BOBBYBONNET, 10, 6, 0.0, 1.0, -1.0); //Bobby Bonnet
-
-
+		CreateRoboHat(client, BreachandBomb, 10, 6, 0.0, 1.0, -1.0); //Bobby Bonnet
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 513, 6, 1, 2, 0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
@@ -259,17 +263,19 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.5);
+			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.45);
+			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 3.0);
+			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.75);
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.25);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.7);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
+			TF2Attrib_SetByName(Weapon1, "Reload time increased", 5.0);
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=1000.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		}
+		TF2_AddCondition(client, TFCond_CritCanteen);
 	}
 }
 
@@ -277,12 +283,6 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 
 	
-stock bool:IsValidClient(client)
-{
-	if (client <= 0) return false;
-	if (client > MaxClients) return false;
-	return IsClientInGame(client);
-}
 
 public void OnEntityCreated(int iEntity, const char[] sClassName) 
 {
