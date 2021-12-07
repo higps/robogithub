@@ -188,21 +188,26 @@ void Start()
     HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy);
 }
 
+public void OnClientConnected(int client)
+{
+    _lastUnrestrictedRobot[client] = "";
+}
+
 public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 {
     int victimUserId = event.GetInt("userid", -1);
     int victimClientId = GetClientOfUserId(victimUserId);
-    SMLogTag(SML_VERBOSE, "OnDeath called at %i for %L (userid: %i) with last unresticted robot %s", GetTime(), victimClientId, victimUserId, _lastUnrestrictedRobot[victimUserId]);
+    SMLogTag(SML_VERBOSE, "OnDeath called at %i for %L with last unresticted robot %s", GetTime(), victimClientId, _lastUnrestrictedRobot[victimClientId]);
 
-    if (_lastUnrestrictedRobot[victimUserId][0] == '\0')
+    if (_lastUnrestrictedRobot[victimClientId][0] == '\0')
     {
-        SMLogTag(SML_VERBOSE, "not resetting %L (userid: %i)'s robot, because it was not bought", victimClientId, victimUserId);
+        SMLogTag(SML_VERBOSE, "not resetting %L's robot, because it was not bought", victimClientId);
         return;
     }
     
-    SMLogTag(SML_VERBOSE, "resetting %L (userid: %i)'s bought robot to %s after death", victimClientId, victimUserId, _lastUnrestrictedRobot[victimUserId]);
-    CreateRobot(_lastUnrestrictedRobot[victimUserId], victimClientId, "");
-    _lastUnrestrictedRobot[victimUserId] = "";
+    SMLogTag(SML_VERBOSE, "resetting %L's bought robot to %s after death", victimClientId, _lastUnrestrictedRobot[victimClientId]);
+    CreateRobot(_lastUnrestrictedRobot[victimClientId], victimClientId, "");
+    _lastUnrestrictedRobot[victimClientId] = "";
 }
 
 void OnRoundFinished(const char[] output, int caller, int activator, float delay)
@@ -237,9 +242,8 @@ void SaveLastUnrestrictedRobot(int clientId)
         return;
     }
 
-    int userId = GetClientUserId(clientId);
-    SMLogTag(SML_VERBOSE, "SaveLastUnrestrictedRobot for %L (userid: %i) to %s", clientId, userId, robotName);
-    _lastUnrestrictedRobot[userId] = robotName;
+    SMLogTag(SML_VERBOSE, "SaveLastUnrestrictedRobot for %L to %s", clientId, robotName);
+    _lastUnrestrictedRobot[clientId] = robotName;
 }
 
 bool IsPaidRobot(int clientId, char robotName[NAMELENGTH])
