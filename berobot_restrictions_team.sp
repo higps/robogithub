@@ -160,6 +160,11 @@ public void OnMapStart()
     SMLogTag(SML_VERBOSE, "OnMapStart called at %i", GetTime());
     GetRestrictions();
     ResetRobotCoins();
+
+    for(int i = 0; i <= MaxClients; i++)
+    {
+        _lastUnrestrictedRobot[i] = "";
+    }
 }
 
 public void MM_OnRobotStorageChanged()
