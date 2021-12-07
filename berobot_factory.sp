@@ -8,7 +8,6 @@
 #include <tf2attributes>
 #include <tf2_isPlayerInSpawn>
 #include <berobot_constants>
-#include <berobot>
 
 char LOG_TAGS[][] =	 {"VERBOSE", "INFO", "ERROR"};
 enum (<<= 1)
@@ -17,7 +16,9 @@ enum (<<= 1)
 	SML_INFO,
 	SML_ERROR,
 }
+#include <berobot>
 #include <berobot_core>
+#include <berobot_core_restrictions>
 #pragma newdecls required
 #pragma semicolon 1
 
@@ -109,7 +110,7 @@ public void Event_Player_Spawned(Handle event, const char[] name, bool dontBroad
     }
 
     StopSounds(client, item);   //moved here, because doing it inside Timer_Locker blocked the loop to start again (don't ask me why)
-    CreateTimer(1.0, Timer_Locker, client);
+    CreateTimer(0.1, Timer_Locker, client);
 }
 
 public void ResetPreviousRobot(int client)
@@ -283,9 +284,21 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	for (int i = 0; i < target_count; i++)
 	{
         int targetClientId = target_list[i];
+        SMLogTag(SML_VERBOSE, "%i. target: %i", i, targetClientId);
         char wasRobot[NAMELENGTH];
         wasRobot = _isRobot[targetClientId];
         SMLogTag(SML_VERBOSE, "%i. target: %i is currently %s", i, targetClientId, wasRobot);
+
+        bool paid = PayRobotCoin(item.restrictions, targetClientId);
+        if (!paid)
+        {
+            char msg[256];
+            Format(msg, 256, "could not pay for robot %s, please try again.", name);
+            MM_PrintToChat(targetClientId, msg);
+
+            SMLogTag(SML_ERROR, "could not create robot '%s'. could not pay robot-coins", name);
+            return 3;
+        }
 
         if (wasRobot[0] != '\0')            //disable previous robot
         {
