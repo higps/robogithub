@@ -94,6 +94,17 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
         return;
     }
 
+    char weapon_logname[MAX_NAME_LENGTH];
+	
+    GetEventString(event, "weapon_logclassname", weapon_logname, sizeof(weapon_logname));
+
+    if (StrEqual(weapon_logname, "player", true) || StrEqual(weapon_logname, "trigger", true) || StrEqual(weapon_logname, "world", true))
+    {
+       // PrintToChatAll("Logname %s", weapon_logname);
+        SMLogTag(SML_VERBOSE, "OnDeath canceled, because victim logname was player");
+        return;
+    }
+
     char robotName[NAMELENGTH];
     GetPickedRobot(victimClientId, robotName, NAMELENGTH);
     Robot robot;

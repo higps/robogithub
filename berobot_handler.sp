@@ -20,7 +20,6 @@
 #include <tf2>
 #include <tf2_stocks>
 #include <tf_ontakedamage>
-
 // #include <stocksoup/memory>
 // #include <stocksoup/tf/entity_prop_stocks>
 // #include <stocksoup/tf/tempents_stocks>
@@ -143,7 +142,7 @@ public void OnPluginStart()
     //Gamemode cvar
     g_cvCvarList[CV_g_Enable] = CreateConVar("sm_mm_enable", "0", "0 = Manned Machines disabled, 1 = Manned Machines enabled", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_mm_debug", "0", "Enable Debugging for Manned Machines Mode", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-    g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar(CONVAR_ROBOCAP_TEAM, "6", "The total amount of giant robots on a team", FCVAR_NOTIFY);  
+    g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar(CONVAR_ROBOCAP_TEAM, "6", "The total amount of giant robots on a team");  
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
     g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
     g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Needs vote to start boss mode, 1 = Start game by reaching enough volunteers");
@@ -194,6 +193,9 @@ public void OnPluginStart()
     RegConsoleCmd("sm_changerobot", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_chngrbt", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_cr", Command_ChangeRobot, "change your robot");
+
+    RegConsoleCmd("explode", BlockKill);
+    RegConsoleCmd("kill", BlockKill);
 
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
@@ -1269,13 +1271,38 @@ public Action OnClientCommand(int client, int args)
                 TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
                 TF2_RespawnPlayer(client);
             }
-
             return Plugin_Handled;
         }
     }
 
+    //  if(strcmp(cmd, "kill", true) == 0)
+    // {
+    //     PrintCenterText(client, "kill");
+    //     if(g_cv_bDebugMode) PrintToChatAll("attempted to explode %N", client);
+    //     return Plugin_Handled;
+    // }
+    
+    //  if(strcmp(cmd, "explode", true) == 0)
+    // {
+    //     PrintCenterText(client, "explode");
+    //     if(g_cv_bDebugMode) PrintToChatAll("attempted to kill %N", client);
+    //     return Plugin_Handled;
+    // }
+
     //PrintToChatAll("Team switch trigger");
 
+    return Plugin_Continue;
+}
+
+public Action BlockKill(int client, int args)
+{
+    // if (IsAnyRobot(client))
+    // {
+    //     int userid = GetClientUserId(client);
+    //     PrintCenterText(client,"blocked");
+    //     ServerCommand("sm_timebomb #%i", userid);
+    //     return Plugin_Handled;
+    // }
     return Plugin_Continue;
 }
 

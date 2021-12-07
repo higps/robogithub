@@ -9,7 +9,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Sentry Buster"
+#define ROBOT_NAME	"Buster"
 #define ROBOT_ROLE "Support"
 #define ROBOT_DESCRIPTION "Explode by taunting"
 
@@ -40,7 +40,7 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "";
+    robot.class = "Sentry";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

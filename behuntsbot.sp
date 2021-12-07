@@ -44,11 +44,11 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 
-	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 1;
+	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    // restrictions.RobotCoins.Overall = 1;
 
-    AddRobot(robot, MakeSniper, PLUGIN_VERSION, restrictions);
+    AddRobot(robot, MakeSniper, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()

@@ -118,8 +118,7 @@ MakeGiantMedic(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintToChat(client, "1. You are now %s !", ROBOT_NAME);
-	PrintToChat(client, "2. %s", ROBOT_DESCRIPTION);
+	PrintHintText(client, "%s", ROBOT_DESCRIPTION);
 }
 
 public TF2_OnConditionAdded(client, TFCond:condition)
