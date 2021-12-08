@@ -646,6 +646,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	if (!IsAnyRobot(client))
 	{
 		return Plugin_Continue;
+		PrintToChatAll("%N spawned and was not a robot", client);
 	}
 	
 	int team = GetClientTeam(client);
@@ -684,10 +685,14 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 			GetEntPropVector(ent, Prop_Send, "m_angRotation", vecRotation);	// Force players to look in the direction of teleporter on spawn
 		}
 	}
-	if (GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]) >= 70000)	// If no teleporters found
+	// If no teleporters found
+	if (GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]) >= 70000){
 		return Plugin_Continue;
+	}	
+		
 
 	vecIsActuallyGoingToSpawn[2] += 15.0;	// Don't get stuck inside of teleporter
+	//PrintToChatAll("%N was teleported", client);
 	TeleportEntity(client, vecIsActuallyGoingToSpawn, vecRotation, NULL_VECTOR);
 	EmitSoundToAll(TELEPORTER_SPAWN, client);
 

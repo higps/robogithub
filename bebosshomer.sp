@@ -273,7 +273,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 5.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=1000.0 homing_mode=1 projectilename=tf_projectile_rocket");			
+			TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=100.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		}
 		TF2_AddCondition(client, TFCond_CritCanteen);
 	}

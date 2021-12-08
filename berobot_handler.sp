@@ -194,8 +194,6 @@ public void OnPluginStart()
     RegConsoleCmd("sm_chngrbt", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_cr", Command_ChangeRobot, "change your robot");
 
-    RegConsoleCmd("explode", BlockKill);
-    RegConsoleCmd("kill", BlockKill);
 
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
@@ -1294,28 +1292,14 @@ public Action OnClientCommand(int client, int args)
     return Plugin_Continue;
 }
 
-public Action BlockKill(int client, int args)
-{
-    // if (IsAnyRobot(client))
-    // {
-    //     int userid = GetClientUserId(client);
-    //     PrintCenterText(client,"blocked");
-    //     ServerCommand("sm_timebomb #%i", userid);
-    //     return Plugin_Handled;
-    // }
-    return Plugin_Continue;
-}
-
 bool isMiniBoss(int client)
 {
-
     if(IsValidClient(client))
     {
-
         if(GetEntProp(client, Prop_Send, "m_bIsMiniBoss"))
         {
             if(g_cv_bDebugMode) PrintToChatAll("%N Was mini boss", client);
-               return true;
+            return true;
         }
         else
         {

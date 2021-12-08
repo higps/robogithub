@@ -180,7 +180,7 @@ public void OnPluginEnd()
 	GetEntityClassname(ent, entname, sizeof(entname));
 	
 	if (!StrContains(entname, "item_ammo") || !StrContains(entname, "item_health")){
-		PrintToChatAll("Ent: %s", entname);
+		//PrintToChatAll("Ent: %s", entname);
     	if(GetEntProp(ent, Prop_Data, "m_bDisabled") == 1)
         return;
 	}
@@ -215,15 +215,6 @@ public OnMapStart()
 	PrecacheSound(TELEPORTER_ACTIVATE4, true);
 	PrecacheSound(TELEPORTER_ACTIVATE5, true);
 	PrecacheSound(TELEPORTER_SPAWN, true);
-	
-	PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_04.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_05.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
 
 	//Multi Sentry Code
 
@@ -240,14 +231,14 @@ public OnMapStart()
 
 /* public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
 {	
-	PrintToChatAll("Returning false");
+	//PrintToChatAll("Returning false");
 	return false;
 }
  */
 //trigger the event
 // public void PlayerUpgradedobject(Event evnet, const char[] name, bool dontBroadcast)
 // {
-// PrintToChatAll("Upgrade complete");
+// //PrintToChatAll("Upgrade complete");
 // }
 
 public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
@@ -260,7 +251,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	int iObj = event.GetInt("index");
 	int flags = GetEntProp(iObj, Prop_Data, "m_spawnflags");
 	//int entRef = EntIndexToEntRef(iObj);
-	//PrintToChatAll("iObj %i", iObj);
+	////PrintToChatAll("iObj %i", iObj);
 	
 	if (IsValidClient(iBuilder) && IsRobot(iBuilder, ROBOT_NAME)){
 		// SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);
@@ -271,13 +262,13 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 				
 		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
 		{
-			//PrintToChatAll("Buildt dispenser");
+			////PrintToChatAll("Buildt dispenser");
 			DispatchKeyValue(iObj, "defaultupgrade", "2"); 
 		}
 
 		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Sentry)
 		{
-			//PrintToChatAll("Buildt dispenser");
+			////PrintToChatAll("Buildt dispenser");
 			//SetEntProp(iObj, Prop_Send, "m_iAmmoShells", 10000);
 			
 			SetEntProp(iObj, Prop_Data, "m_spawnflags", flags|1<<3);
@@ -412,7 +403,7 @@ stock void TF2_SetMatchingTeleporter(int iTele, int iMatch)	//Set the matching t
 
 	if (IsValidEntity(iTele) && HasEntProp(iTele, Prop_Send, g_szOffsetStartProp))
 	{
-		//PrintToChatAll("Matching telepoters");
+		////PrintToChatAll("Matching telepoters");
 		int iOffs = FindSendPropInfo("CObjectTeleporter", g_szOffsetStartProp) + g_iOffsetMatchingTeleporter;
 		SetEntDataEnt2(iTele, iOffs, iMatch, true);
 	}
@@ -428,7 +419,7 @@ public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
 	int iObj = event.GetInt("index");
 	//int entRef = EntIndexToEntRef(iObj);
-	//PrintToChatAll("iObj %i", iObj);
+	////PrintToChatAll("iObj %i", iObj);
 	
 	if (IsValidClient(iBuilder) && IsRobot(iBuilder, ROBOT_NAME)){
 		// SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);
@@ -449,7 +440,7 @@ public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 
 /* public Action:CH_PassFilter( ent1, ent2, &bool:result )
 {
-	PrintToChatAll("Should stop");
+	//PrintToChatAll("Should stop");
 			result = false;
 			return Plugin_Stop;
 
@@ -457,7 +448,7 @@ public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 
 /* public bool:ShouldCollide( entity, collisiongroup, contentsmask, bool:result )
 {
-	PrintToChatAll("Should not collide");
+	//PrintToChatAll("Should not collide");
     return false;
 }  */
 
@@ -533,8 +524,7 @@ MakeBotSlinger(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintToChat(client, "1. You are now Bot Slinger robot !");
-	PrintHintText(client , "Use build menu to build up to %i sentries!", sm_sentry_limit);
+	PrintHintText(client , "Use build menu to build up to 3 sentries!\nRemove all sappers at once");
 	int soundswitch = GetRandomInt(1, 2);
 	switch(soundswitch)
 	{
@@ -598,7 +588,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
 			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 4.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 2.5);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 6.0);
@@ -687,7 +677,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	//PrintToChatAll("%N spawned", client);
+	////PrintToChatAll("%N spawned", client);
 	if (!IsAnyRobot(client))
 	{
 		return Plugin_Continue;
@@ -755,7 +745,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		{
 		client = i;
 		EngieTeam = GetClientTeam(i);
-		//PrintToChatAll("%N is dane bot", i);
+		////PrintToChatAll("%N is dane bot", i);
 		}
 	}
 
@@ -988,7 +978,7 @@ public Action CommandListener_Build(client, const char[] command, argc)
 	// PrintToChat(client,"Object mode: %i", iObjectMode);
 	// for(int i = MaxClients + 1; i < g_iMaxEntities; i++)
 	// {
-	// 	PrintToChatAll("Client: %i", i);
+	// 	//PrintToChatAll("Client: %i", i);
 	// 	if(!IsValidEntity(i)) continue;
 		
 	// 	GetEntityNetClass(i, sClassName, sizeof(sClassName));
@@ -1015,14 +1005,14 @@ public void OnGameFrame()
 {
 	// if (cvarPads[PadsEnabled].IntValue == EngiPads_Disabled)
 	// 	return;
-	//PrintToChatAll("THINKING1!");
+	////PrintToChatAll("THINKING1!");
 	int i = -1;
 	while ((i = FindEntityByClassname2(i, "obj_teleporter")) != -1)
 	{
 		if (IsValidEntity(i))
 		{
 			if (g_iPadType[i] == PadType_Boss){
-				//PrintToChatAll("THINKING!");
+				////PrintToChatAll("THINKING!");
 				OnPadThink(i);
 			}
 				
@@ -1039,7 +1029,7 @@ void OnPadThink(int iPad)
 	bool bDisabled = view_as<bool>(GetEntProp(iPad, Prop_Send, "m_bDisabled"));
 	bool bSapped = view_as<bool>(GetEntProp(iPad, Prop_Send, "m_bHasSapper"));
 	
-	//PrintToChatAll("Teleporter state: %i", TF2_GetBuildingState(iPad));
+	////PrintToChatAll("Teleporter state: %i", TF2_GetBuildingState(iPad));
 
 	if (bCarried || bPlacing || bDisabled)
 	{
@@ -1066,7 +1056,7 @@ void OnPadThink(int iPad)
 			TF2_SetBuildingState(iPad, TELEPORTER_STATE_IDLE);
 			
 		}
-		//	PrintToChatAll("Sapped");
+		//	//PrintToChatAll("Sapped");
 		return;
 	}
 
@@ -1079,7 +1069,7 @@ void OnPadThink(int iPad)
 			
 		//	AcceptEntityInput(iObjParti, "Start");
 			// #if defined DEBUG
-			// PrintToChatAll("%i Ready!", iPad);
+			// //PrintToChatAll("%i Ready!", iPad);
 			// #endif
 		}
 		// if (TF2_GetBuildingState(iPad) == TELEPORTER_STATE_READY && IsValidEntity(iObjParti) && !bSapped)
@@ -1120,7 +1110,7 @@ stock void TF2_SetBuildingState(int iBuilding, int iState = 0)
 	if (IsValidEntity(iBuilding))
 	{
 		SetEntProp(iBuilding, Prop_Send, "m_iState", iState);
-	//	PrintToChatAll("Setting state to %i", iState);
+	//	//PrintToChatAll("Setting state to %i", iState);
 	}
 }
 
@@ -1179,9 +1169,9 @@ public Action WeaponSwitch(client, weapon){
 
 	//if the building pda is opened
 	//Switches some buildings to sappers so the game doesn't count them as engie buildings
-//	PrintToChatAll("Switching weapons");
+//	//PrintToChatAll("Switching weapons");
 	if(GetPlayerWeaponSlot(client,3)==weapon){
-//		PrintToChatAll("Running Function Allow Building");
+//		//PrintToChatAll("Running Function Allow Building");
 		function_AllowBuilding(client);
 		return Plugin_Continue;
 	}//else if the client is not holding the building tool
@@ -1288,7 +1278,7 @@ public void function_AllowBuilding(int client){
 		//not a dispenser,
 		}else if(type==view_as<int>(TFObject_Sentry)){
 			SentryCount++;
-			PrintToChatAll("Sentry count is %i", SentryCount);
+		//	//PrintToChatAll("Sentry count is %i", SentryCount);
 			SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
 			if(SentryCount>=SentryLimit){
 				//if the limit is reached, disallow building
@@ -1343,7 +1333,7 @@ public MRESReturn UpdateOnRemove(int pThis)
 {
 	int iObjectType = GetEntProp(pThis, Prop_Send, "m_iObjectType");
 	//int user = GetClientUserId(pThis);
-	//PrintToChatAll("Removed sapper %i", iObjectType);
+	////PrintToChatAll("Removed sapper %i", iObjectType);
 	int iBuiltOnEntity;
 	int iBuilderClient;
 //	int iObjectTypeBOE;
@@ -1362,19 +1352,19 @@ public MRESReturn UpdateOnRemove(int pThis)
 				new ent = -1;	//Check all buildings owned by robot and remove sappers
 				while ((ent = FindEntityByClassname(ent, "obj_attachment_sapper")) != -1)
 				{
-					PrintToChatAll("Looking for sappers!");
+					//PrintToChatAll("Looking for sappers!");
 
 					// int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
 					// if (IsValidClient(iBuilder))
 					// {
-					// 	PrintToChatAll("iBulder %N", iBuilder);	
+					// 	//PrintToChatAll("iBulder %N", iBuilder);	
 					// // }
 					if (IsValidEntity(ent))
 					{
 						
 						int uBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuiltOnEntity");
 						int uBuilderClient;
-						//PrintToChatAll("iBulder %N", uBuilder);	
+						////PrintToChatAll("iBulder %N", uBuilder);	
 						if(uBuilder != -1)
 						{
 							uBuilderClient = GetEntPropEnt(uBuilder, Prop_Send, "m_hBuilder");
@@ -1382,7 +1372,7 @@ public MRESReturn UpdateOnRemove(int pThis)
 							if (IsRobot(uBuilderClient, ROBOT_NAME))
 								{
 
-									PrintToChatAll("Removing sappers for %N, ent was: %i", uBuilderClient, ent);
+									//PrintToChatAll("Removing sappers for %N, ent was: %i", uBuilderClient, ent);
 									
 									//SetVariantInt(999);
         							RequestFrame(DetonateObject, ent);
@@ -1394,8 +1384,8 @@ public MRESReturn UpdateOnRemove(int pThis)
 				}
 				}
 		}
-	//PrintToChatAll("Remove Sapper: %i, OT: %i", pThis, GetEntProp(pThis, Prop_Send, "m_iObjectType"));
-	//PrintToChatAll("Built on: %i", GetEntPropEnt(pThis, Prop_Send, "m_hBuiltOnEntity"));
+	////PrintToChatAll("Remove Sapper: %i, OT: %i", pThis, GetEntProp(pThis, Prop_Send, "m_iObjectType"));
+	////PrintToChatAll("Built on: %i", GetEntPropEnt(pThis, Prop_Send, "m_hBuiltOnEntity"));
 	//return MRES_Ignored;
 	}
 	return MRES_Ignored;

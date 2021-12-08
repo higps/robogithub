@@ -152,7 +152,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 1000;
+	int iHealth = 1250;
 		
 	int MaxHealth = 125;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -229,6 +229,10 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);
 			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 0.05);
+			
+			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
+			TF2Attrib_SetByName(Weapon1, "mark for death", 10.0);
+			
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 			
 			

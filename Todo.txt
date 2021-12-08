@@ -1,16 +1,22 @@
 TODO:
   Todo:
-  0. Add enable/disable cvar
-1.  Unset and set volunteer
-2. Make !volunteer work after round has started
-3. Add resources (timed, kills) - Sentry Buster, bosses
-4. Robot model stays when not being a robot anymore (fixed by changing class)
-5. Stuck command bug
-6. When mode is over, robots return to normal
-7. Unset robot command
-8. Both teams have robot mode
-9. Make !rtr use proper player numbers to determine 60% players needed to enable/disable
 
+1. Need time passed resource added
+2. Robot model stays when not being a robot anymore (fixed by changing class)
+3. When mode is over, robots return to normal
+4. Unset robot command
+5. Both teams have robot mode
+6. Lower robot ratio.
+1 - 3 Humans = 1 robot
+4 - 6 Humans = 2 robots
+7 - 9 Humans = 3 robots
+10 - 12 humans = 4 robots
+13 - 15 = 5 robots
+16 - 18 = 6 robots 
+
+Every 4 player is one robot, rounding to floor.
+
+Make selection mode happen when MM_ENABLE 1 is on after waiting for players is over.
 
 
 unify sounds

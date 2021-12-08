@@ -41,7 +41,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 2;
+    restrictions.RobotCoins.Overall = 1;
 
 
     AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
@@ -135,7 +135,7 @@ MakeSolar(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client, "You can only fire after the smoke has settled!\nUse the stickybomb in the mean time");
+	PrintHintText(client, "You can only fire after the smoke has settled!\nUse the stickybomb in the mean time\nOn Melee kill: 10 seconds of minicrits");
 	PrintToChat(client, "1. You are now Giant Nuker !");
 }
 
