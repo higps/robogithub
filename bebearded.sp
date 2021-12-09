@@ -90,7 +90,7 @@ public void OnPluginEnd()
 
 void FindAndHookPlayers()
 {
-	for(int i = 1; i < MaxClients+1; i++)
+	for(int i = 1; i <= MaxClients+1; i++)
 	{
 		if(IsValidClient(i))
 		{

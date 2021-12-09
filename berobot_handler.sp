@@ -256,7 +256,7 @@ public void ResetMode()
     g_Volunteers.Clear();
     g_RobotCount.Clear();
 
-    for(int i = 0; i < MAXPLAYERS; i++)
+    for(int i = 0; i <= MAXPLAYERS; i++)
     {
         g_cv_Volunteered[i] = false;
         g_cv_RobotPicked[i] = "";
@@ -334,7 +334,7 @@ public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dont
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
     if (g_Enable){
-    for(int i = 1; i < MaxClients; i++)
+    for(int i = 1; i <= MaxClients; i++)
     {
         if(g_cv_Volunteered[i] == true)
         {
@@ -538,7 +538,7 @@ public Action Command_Robot_Selection(int client, int args)
         ServerCommand("mp_scrambleteams_auto 0");
         ServerCommand("mp_forceautoteam  0");
     
-/*     for(int i = 1; i < MaxClients; i++)
+/*     for(int i = 1; i <= MaxClients; i++)
     {
         if (IsValidClient(i) && IsClientInGame(i))
         {
@@ -623,7 +623,7 @@ public Action Command_YT_Robot_Start(int client, int args)
             //g_RoboTeam = BLUE;
 
             CheckIfYT();
-            // for(int i = 1; i < MaxClients; i++)
+            // for(int i = 1; i <= MaxClients; i++)
             // {
 
             //     if(IsClientInGame(i) && IsValidClient(i))
@@ -693,7 +693,7 @@ public Action Command_YT_Robot_Start(int client, int args)
             //ServerCommand("sm_ct @all spectate");
 
             //Make volunteer robots go here
-            for(int i = 0; i < MaxClients; i++)
+            for(int i = 0; i <= MaxClients; i++)
             {
 
                 //PrintToChatAll("Looping players %i", i);
@@ -1170,7 +1170,7 @@ void SetRobot(char robotname[NAMELENGTH], int client)
 
 void RedrawChooseRobotMenu()
 {
-    for(int i = 0; i < MaxClients; i++)
+    for(int i = 0; i <= MaxClients; i++)
     {
         RedrawChooseRobotMenuFor(i);
     }
@@ -1473,7 +1473,7 @@ stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
 
 stock void CheckIfYT()
 {
-            for(int i = 1; i < MaxClients; i++)
+            for(int i = 1; i <= MaxClients; i++)
             {
 
                 if(IsClientInGame(i) && IsValidClient(i))

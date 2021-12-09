@@ -203,7 +203,7 @@ stock void TF2_SwapTeamAndRespawn(int client, int team)
  */
 stock void MM_PrintToChatAll(char[] text)
 {
-    for(int i = 1; i < MaxClients; i++)
+    for(int i = 1; i <= MaxClients; i++)
     {
         if (!IsValidClient(i))
             continue;

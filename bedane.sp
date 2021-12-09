@@ -709,7 +709,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	
 	int client; 
-	for(int i = 1; i < MaxClients; i++)
+	for(int i = 1; i <= MaxClients; i++)
     {
 		if(IsRobot(i, ROBOT_NAME))
 		{
