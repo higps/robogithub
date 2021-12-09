@@ -18,6 +18,12 @@ Every 4 player is one robot, rounding to floor.
 
 Make selection mode happen when MM_ENABLE 1 is on after waiting for players is over.
 
+BUGS:
+Sometimes a player will be on the robot team when not a robot, tied to client stuff.
+Unset robots on autoteam balance
+Failsafe on robot team
+Failsafe on counter going below 0
+
 
 unify sounds
  OnMapStart precaches
