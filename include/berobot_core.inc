@@ -46,6 +46,19 @@ native int GetRobotDefinition(char name[NAMELENGTH], const any[] robot);
 native ArrayList GetRobotRestrictions();
 
 /**
+ * turns a player into a mercenary again
+ * 
+ * @param client     the client in whos context the command should be executed
+ * @param target     the target of the command (usualy "" can be "@me" etc.)
+ * 
+ * @return  error code 
+            0: no error
+            1: old robot not found. couldn't stop sounds
+            1024: targeting error
+ */
+native int TrashRobot(int client, char target[32] = "");
+
+/**
  * returns the name of the robot picked by a client
  * 
  * @param client            clientId to check
