@@ -181,10 +181,10 @@ public void OnPluginStart()
 
     _enabledChangedForward = new GlobalForward("MM_OnEnabledChanged", ET_Ignore, Param_Cell);
 
-    RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
-    RegAdminCmd("sm_mr", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
-    RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
-    RegAdminCmd("sm_selection_mode", Command_Robot_Selection, ADMFLAG_SLAY, "Forces selection mode");
+    RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_ROOT, "Become a robot");
+    RegAdminCmd("sm_mr", Command_BeRobot, ADMFLAG_ROOT, "Become a robot");
+    RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_ROOT, "Sets up the team and starts the robot");
+    RegAdminCmd("sm_selection_mode", Command_Robot_Selection, ADMFLAG_ROOT, "Forces selection mode");
     
     RegAdminCmd("sm_me_boss", Command_Me_Boss, ADMFLAG_SLAY, "Checks if you are a boss");
 
@@ -313,7 +313,8 @@ public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dont
         
     }else if(g_Enable && g_RoundCount == 1){
         //PrintToChatAll("== Not waiting for players !rtr available!");
-        MC_PrintToChatAll("[{orange}SM{default}]{orange} Type !rtr to vote to start Manned Machines");
+        Command_Robot_Selection(1, 1);
+        //MC_PrintToChatAll("[{orange}SM{default}]{orange} Type !rtr to vote to start Manned Machines");
         
         g_WaitingForPlayers = false;
         g_RoundCount++;

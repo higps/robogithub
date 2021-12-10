@@ -7,21 +7,20 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Toofty"
+#define ROBOT_NAME	"Mortar Mack"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Sticky jumper"
+#define ROBOT_DESCRIPTION "Scatter Shot"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
-
 public Plugin:myinfo =
 {
-	name = "[TF2] Be the Giant Toofty",
+	name = "[TF2] Be the Giant Major Bomber lite",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Demoknight from MvM",
+	description = "Play as the Giant Demoman",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -38,7 +37,10 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeToofty, PLUGIN_VERSION);
+
+	
+
+    AddRobot(robot, MakeSolar, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -48,7 +50,7 @@ public void OnPluginEnd()
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-	//	CreateNative("BeGiantDemoKnight_MakeToofty", Native_SetGiantDemoKnight);
+	//	CreateNative("BeGiantDemoKnight_MakeSolar", Native_SetGiantDemoKnight);
 	//	CreateNative("BeGiantDemoKnight_IsGiantDemoKnight", Native_IsGiantDemoKnight);
 	return APLRes_Success;
 }
@@ -59,6 +61,7 @@ public OnMapStart()
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
+
 
 }
 
@@ -73,7 +76,7 @@ public Action:SetModel(client, const String:model[])
 	}
 }
 
-MakeToofty(client)
+MakeSolar(client)
 {
 	TF2_SetPlayerClass(client, TFClass_DemoMan);
 	TF2_RegeneratePlayer(client);
@@ -91,8 +94,6 @@ MakeToofty(client)
 	SetModel(client, GDEKNIGHT);
 
 	int iHealth = 3000;
-	
-	
 	int MaxHealth = 175;
 	
 	int iAdditiveHP = iHealth - MaxHealth;
@@ -106,20 +107,20 @@ MakeToofty(client)
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.3);
-	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
+	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
+	
 	TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
+	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-
-	PrintHintText(client, "Land on enemies to deal stomp damage\nYou have parachute");
+	
+	PrintHintText(client , "Fire and reload clip at once!");
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -131,68 +132,47 @@ stock TF2_SetHealth(client, NewHealth)
 public Action:Timer_Switch(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
-	GiveGiantToofty(client);
+	GiveGiantDemoKnight(client);
 }
 
-#define BEARDEDBOMBARDIER 830
-#define WELLROUNDEDRIFLEMAN 30067
+#define ScotchBonnet 306
 
-
-stock GiveGiantToofty(client)
+stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
 	{
 		RoboRemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
+		
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
-		// TF2_RemoveWeaponSlot(client, 3);
-		// TF2_RemoveWeaponSlot(client, 4);
-		// TF2_RemoveWeaponSlot(client, 5);
-		
-		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 1151, 8, 1, 0, 213);
-		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 265, 6, 1, 1, 0);
-	//	CreateRoboWeapon(client, "tf_weapon_parachute", 1101, 6, 1, 2, 0);
-		
-		CreateRoboHat(client, BEARDEDBOMBARDIER, 10, 6, 0.0, 0.75, -1.0); //Bearded Bombardier
-		CreateRoboHat(client, WELLROUNDEDRIFLEMAN, 10, 6, 0.0, 0.75, -1.0); //well rounded rifle man
-		CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
+
+
+		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 19, 6, 1, 2, 0);
+
+		CreateRoboHat(client, ScotchBonnet, 10, 6, 0.0, 0.75, -1.0); 
+		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
+		//CreateHat(client, 30945, 10, 6, false);//blast locker
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
 		{
-
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.20);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
-			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 2.0);
+			TF2Attrib_RemoveAll(Weapon1);
 			
+			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
+			TF2Attrib_SetByName(Weapon1, "clip size bonus", 5.3);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.0);
+			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 1.15);
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.3);
+			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
+			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 16.0);
+			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.8);
+			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-		}
-		
-		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		if(IsValidEntity(Weapon3))
-		{
-			TF2Attrib_RemoveAll(Weapon3);
-			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.1);
-			TF2Attrib_SetByName(Weapon3, "max pipebombs decreased", 0.0);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			TF2CustAttr_SetString(Weapon3, "reload full clip at once", "1.0");
-		}
-
-		int iEntity2 = -1;
-		while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_weapon_parachute")) != -1)
-		{
-			if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
-			{				
-				//PrintToChatAll("going through entity");
-				TF2Attrib_SetByName(iEntity2, "major increased jump height", 2.75);		
-				
-				break;
-			}
+			
 		}
 	}
 }

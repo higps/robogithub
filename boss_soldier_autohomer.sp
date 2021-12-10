@@ -8,27 +8,10 @@
 #include <tf_custom_attributes>
 #include <sdkhooks>
 
-#include <tf2>
-#include <sdkhooks>
-#include <sdktools>
-
-
-bool ControllingRocket[MAXPLAYERS+1];
-bool PlayerControlRockets[MAXPLAYERS+1];
-bool RocketOverride[2049];
-int RocketID[MAXPLAYERS+1];
-
-//rocket settings
-int AimType;
-float RotRate;
-
-ConVar g_rocketTurnRate;
-ConVar g_rocketAimType;
-
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Remote Rocket"
-#define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Remotely control Rockets"
+#define ROBOT_NAME	"Auto Homer"
+#define ROBOT_ROLE "ZBOSS"
+#define ROBOT_DESCRIPTION "Auto Homing Rockets"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -45,7 +28,7 @@ ConVar g_rocketAimType;
 #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 
 
-#define CROSSCOMM 764
+#define BreachandBomb 31113
 
 public Plugin:myinfo = 
 {
@@ -64,8 +47,7 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-
-public void OnPluginStart()
+public OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
@@ -82,25 +64,14 @@ public void OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
-	g_rocketTurnRate = CreateConVar("rc_rocket_turn_rate", "100.0", "Degrees per second at which rockets rotate when being controlled by player movement");
-	g_rocketAimType = CreateConVar("rc_rocket_aim_type", "1", "Method for aiming rockets. 0 = player movement | 1 = player aim");
-	HookConVarChange(g_rocketAimType, OnRocketAimChanged);
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.PerRobot = 3;
 
-	//Events
-	AddCommandListener(PlayerJoinClass, "joinclass");
-	HookEvent("player_death", PlayerDeath);
-
-	RegConsoleCmd("sm_rc", CmdControl);
-
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (IsValidClient(client))
-		{
-			OnClientPostAdminCheck(client);
-		}
-	}
+    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
 
 public void OnPluginEnd()
@@ -216,7 +187,7 @@ public Action:BossHomer(clients[64], &numClients, String:sample[PLATFORM_MAX_PAT
 
 MakeGiantSoldier(client)
 {
-	SMLogTag(SML_VERBOSE, "Createing Homer");
+	SMLogTag(SML_VERBOSE, "Createing Boss Homer");
 	TF2_SetPlayerClass(client, TFClass_Soldier);
 	TF2_RegeneratePlayer(client);
 
@@ -235,14 +206,14 @@ MakeGiantSoldier(client)
 	int iHealth = 3800;		
 	int MaxHealth = 200;
 	int iAdditiveHP = iHealth - MaxHealth;
-	
+	float Scale = 1.85;
 	TF2_SetHealth(client, iHealth);
 	
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", Scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.4);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
@@ -250,14 +221,15 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
-	
-	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	UpdatePlayerHitbox(client, 1.75);
+	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.65);
+	UpdatePlayerHitbox(client, Scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintToChat(client, "1. You are now Homer soldier !");
+	PrintHintText(client , "Boss Boss\nAuto homing rockets\nCan't be healed.");
 	
 }
 
@@ -283,11 +255,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		
-			
-		CreateRoboHat(client, CROSSCOMM, 10, 6, 0.0, 0.75, -1.0); //Bobby Bonnet
-
-
+		CreateRoboHat(client, BreachandBomb, 10, 6, 0.0, 1.0, -1.0); //Bobby Bonnet
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 513, 6, 1, 2, 0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
@@ -295,212 +263,41 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.5);
+			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.45);
+			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 3.0);
+			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.75);
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.25);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.7);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
+			TF2Attrib_SetByName(Weapon1, "Reload time increased", 5.0);
+			TF2Attrib_SetByName(Weapon1, "mini rockets", 5.0);
+			 
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		}
-		SetVariantInt(1);
-		AcceptEntityInput(client, "SetForcedTauntCam");
+		TF2_AddCondition(client, TFCond_CritCanteen);
 	}
 }
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 
+	
 
-public void OnEntityCreated(int entity, const char[] classname)
+public void OnEntityCreated(int iEntity, const char[] sClassName) 
 {
-	if (!(StrContains(classname, "tf_projectile_rocket")))
+	if (StrContains(sClassName, "tf_projectile") == 0)
 	{
-		//SDKHook(entity, SDKHook_SpawnPost, OnRocketSpawned);
-		RequestFrame(OnRocketSpawned, entity);
-		SDKHook(entity, SDKHook_Touch, OnRocketEnd);
-		SDKHook(entity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
 	}
+	
 }
 
 public void Hook_OnProjectileSpawn(iEntity) {
 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.25);
 	}
-}
-
-
-public void OnRocketAimChanged(ConVar convar, char[] oldVal, char[] newVal)
-{
-	AimType = StringToInt(newVal);
-}
-
-public void OnRocketRateChanged(ConVar convar, char[] oldVal, char[] newVal)
-{
-	RotRate = StringToFloat(newVal);
-}
-
-public Action PlayerDeath(Handle event, const char[] name, bool dBroad)
-{
-	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (ControllingRocket[victim])
-	{
-		SetPlayerRCMode(victim, false);
-	}
-}
-
-public Action PlayerJoinClass(int client, const char[] command, int argc)
-{
-	if (TF2_GetPlayerClass(client) == TFClass_Soldier && PlayerControlRockets[client])
-	{
-		PlayerControlRockets[client] = false;
-		PrintToChat(client, "[SM] Disabling RC rockets due to class change.");
-	}
-	return Plugin_Continue;
-}
-
-public void OnClientPostAdminCheck(int client)
-{
-	//clear variables
-	ControllingRocket[client] = false;
-	PlayerControlRockets[client] = false;
-	RocketID[client] = INVALID_ENT_REFERENCE;
-}
-
-Action CmdControl(int client, int args)
-{
-	if (TF2_GetPlayerClass(client) != TFClass_Soldier)
-	{
-		PrintToChat(client, "[SM] You must be a soldier to use this command!");
-	}
-	else
-	{
-
-		PlayerControlRockets[client] = !PlayerControlRockets[client];
-	}
-}
-
-
-
-public void OnEntityDestroyed(int entity)
-{
-	if (entity <= 0 || entity > 2048) return; //prevent ent refs being used
-	if (IsValidEntity(entity))
-	{
-		RocketOverride[entity] = false;
-	}
-}
-
-public void OnRocketSpawned(int rocket)
-{
-	int owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");
-	if (PlayerControlRockets[owner])
-	{
-		RocketID[owner] = rocket;
-		RocketOverride[rocket] = true;
-		SetPlayerRCMode(owner, true);
-	}
-}
-
-void SetPlayerRCMode(int client, bool status)
-{
-	ControllingRocket[client] = status;
-	if (status && IsValidRocket(RocketID[client]))
-	{
-		SetClientViewEntity(client, RocketID[client]);
-		SetEntityMoveType(client, MOVETYPE_NONE);
-	}
-	else
-	{
-		SetClientViewEntity(client, client);
-		SetEntityMoveType(client, MOVETYPE_WALK);
-		RocketID[client] = INVALID_ENT_REFERENCE;
-	}
-}
-
-//Make sure to take the player out of the remote control state upon a rocket hitting something
-public Action OnRocketEnd(int rocket, int victim)
-{
-	if (RocketOverride[rocket])
-	{
-		int owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");
-		if (!IsValidClient(victim))
-		{
-			char classname[64];
-			GetEntityClassname(victim, classname, sizeof classname);
-			if (victim == 0 || !StrContains(classname, "prop_", false) || !StrContains(classname, "obj_", false) || !StrContains(classname, "func_door")) //solid props
-			{
-				SetPlayerRCMode(owner, false);
-			}
-		}
-		else if (IsValidClient(victim))
-		{
-			bool sameTeam = (GetClientTeam(owner) == GetClientTeam(victim)); //check if the player we hit is an enemy player
-			if (sameTeam)
-			{
-				//return Plugin_Handled; //pass through teammates to prevent control being lost on player overlap - DOESNT WORK NEED A BETTER METHOD
-			}
-			else
-			{
-				SetPlayerRCMode(owner, false);
-			}
-		}
-	}
-	return Plugin_Continue;
-}
-
-public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
-{
-	if (ControllingRocket[client] && IsValidRocket(RocketID[client]))
-	{
-		buttons &= ~IN_ATTACK;
-		int rocket = RocketID[client];
-		float rocketAngle[3], forwardVec[3], velocity[3], speed;
-		float rate = RotRate / 67.0; //this function executes ~67 times per second, so divide by 67 to get our turn rate in degrees per second.
-		GetEntPropVector(rocket, Prop_Data, "m_vecVelocity", velocity);
-		GetEntPropVector(rocket, Prop_Send, "m_angRotation", rocketAngle);
-		speed = GetVectorLength(velocity);
-		//movement
-		switch (AimType)
-		{
-			case 0: //player movement
-			{
-				if (buttons & IN_FORWARD) //angle down
-				{
-					rocketAngle[0] += rate;
-				}
-				if (buttons & IN_BACK) //angle up
-				{
-					rocketAngle[0] -= rate;
-				}
-				if (buttons & IN_MOVERIGHT)
-				{
-					rocketAngle[1] -= rate;
-				}
-				if (buttons & IN_MOVELEFT)
-				{
-					rocketAngle[1] += rate;
-				}
-			}
-			case 1:
-			{
-				GetClientEyeAngles(client, rocketAngle);
-			}
-		}
-		GetAngleVectors(rocketAngle, forwardVec, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(forwardVec, speed);
-		TeleportEntity(rocket, NULL_VECTOR, rocketAngle, forwardVec);
-	}
-}
-
-bool IsValidRocket(int rocket)
-{
-	if (RocketOverride[rocket] && IsValidEntity(rocket) && rocket > MaxClients)
-		return true;
-
-	return false;
 }

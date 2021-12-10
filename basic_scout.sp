@@ -7,9 +7,9 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Fan Scout"
-#define ROBOT_ROLE "Disrupter"
-#define ROBOT_DESCRIPTION "High Pushback"
+#define ROBOT_NAME	"Scout"
+#define ROBOT_ROLE "Basic"
+#define ROBOT_DESCRIPTION "Scattergun"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -20,6 +20,10 @@
 #define LEFTFOOT1       ")mvm/giant_scout/giant_scout_step_03.wav"
 #define RIGHTFOOT       ")mvm/giant_scout/giant_scout_step_02.wav"
 #define RIGHTFOOT1      ")mvm/giant_scout/giant_scout_step_04.wav"
+
+#define PRINNYPOUCH 30757
+#define GRAYBANNS 30104
+#define BROTHEROFARMS 30066
 
 public Plugin:myinfo = 
 {
@@ -42,11 +46,12 @@ public OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    AddNormalSoundHook(BossScout);
+	AddNormalSoundHook(BossScout);
 
-    RobotDefinition robot;
+
+	RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Scout";
@@ -54,7 +59,7 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null, 2);
 }
 
 public void OnPluginEnd()
@@ -162,28 +167,33 @@ MakeGiantscout(client)
 	
 	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
+	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
-	TF2Attrib_SetByName(client, "damage force reduction", 2.0);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 2.0);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
+	TF2Attrib_SetByName(client, "damage force reduction", 1.5);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.5);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "mult_patient_overheal_penalty_active", 0.0);
-	TF2Attrib_SetByName(client, "health from healers increased", 3.0);
+	
+	
 	TF2Attrib_SetByName(client, "increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	TF2Attrib_SetByName(client, "self dmg push force increased", 3.0);
+	
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Force'A'Nature: Extreme knockback");
-	
+	PrintHintText(client, "Fast Scout\n15 percent damage bonus on scattergun");
+	// SetEntProp(client, Prop_Send, "m_bForcedSkin", 1);
+	// SetEntProp(client, Prop_Send, "m_nForcedSkin", 0);
+
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -197,8 +207,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	if (IsValidClient(client))
 		GiveGiantPyro(client);
 }
-#define TheFedFightinFedora 780
-#define TheBoltBoy 30027
+
 stock GiveGiantPyro(client)
 {
 	if (IsValidClient(client))
@@ -209,32 +218,20 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_scattergun", 45, 6, 1, 2, 0);
-		
-		CreateRoboHat(client, TheFedFightinFedora, 10, 6, 0.0, 1.0, -1.0);
-		CreateRoboHat(client, TheBoltBoy, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboWeapon(client, "tf_weapon_scattergun", 13, 6, 1, 0, 0);//scattergun
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Scattergun = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 
-		if(IsValidEntity(Weapon1))
+		if(IsValidEntity(Scattergun))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
-			
-			TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
-			TF2Attrib_SetByName(Weapon1, "reload time increased", 1.1);
-			TF2Attrib_SetByName(Weapon1, "scattergun knockback mult", 6.0);
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.5);
-			TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.3);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			
+			TF2Attrib_RemoveAll(Scattergun);
+			TF2Attrib_SetByName(Scattergun, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.8);
+			TF2Attrib_SetByName(Scattergun, "dmg penalty vs players", 1.15);
 		}
 	}
 }
  
-
-
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 

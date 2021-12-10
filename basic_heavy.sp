@@ -6,28 +6,28 @@
 #include <berobot>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"HiGPS"
-#define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Deflector"
+#define ROBOT_NAME	"Heavy"
+#define ROBOT_ROLE "Basic"
+#define ROBOT_DESCRIPTION "Minigun"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-#define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
-#define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
-#define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
-#define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
+// #define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
+// #define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
+// #define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
+// #define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
 
 #define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
 #define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
 
-#define ROTATIONSENSATION 30623
-#define SUMMERSHADES 486
-#define WEIGHTROOMWARMER 30178
+// #define ROTATIONSENSATION 30623
+// #define SUMMERSHADES 486
+// #define WEIGHTROOMWARMER 30178
 
 public Plugin:myinfo =
 {
@@ -38,10 +38,10 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new bool:Locked1[MAXPLAYERS+1];
-new bool:Locked2[MAXPLAYERS+1];
-new bool:Locked3[MAXPLAYERS+1];
-new bool:CanWindDown[MAXPLAYERS+1];
+// new bool:Locked1[MAXPLAYERS+1];
+// new bool:Locked2[MAXPLAYERS+1];
+// new bool:Locked3[MAXPLAYERS+1];
+// new bool:CanWindDown[MAXPLAYERS+1];
  
 public OnPluginStart()
 {
@@ -56,13 +56,13 @@ public OnPluginStart()
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
-    robot.sounds.gunfire = SOUND_GUNFIRE;
-    robot.sounds.gunspin = SOUND_GUNSPIN;
-    robot.sounds.windup = SOUND_WINDUP;
-    robot.sounds.winddown = SOUND_WINDDOWN;
+    // robot.sounds.gunfire = SOUND_GUNFIRE;
+    // robot.sounds.gunspin = SOUND_GUNSPIN;
+    // robot.sounds.windup = SOUND_WINDUP;
+    // robot.sounds.winddown = SOUND_WINDDOWN;
     robot.sounds.death = DEATH;
 
-    AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION);
+    AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null, 2);
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -104,7 +104,7 @@ public void OnPluginEnd()
  
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-//	CreateNative("BeGDeflectorH_MakeGDeflectorH", Native_SetGDeflectorH);
+//	CreateNative("BeGDeflectorH_MakeGHeavy", Native_SetGDeflectorH);
 //	CreateNative("BeGDeflectorH_IsGDeflectorH", Native_IsGDeflectorH);
 	return APLRes_Success;
 }
@@ -130,10 +130,10 @@ public OnMapStart()
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
 
-	PrecacheSound(SOUND_GUNFIRE);
-	PrecacheSound(SOUND_GUNSPIN);
-	PrecacheSound(SOUND_WINDUP);
-	PrecacheSound(SOUND_WINDDOWN);
+	// PrecacheSound(SOUND_GUNFIRE);
+	// PrecacheSound(SOUND_GUNSPIN);
+	// PrecacheSound(SOUND_WINDUP);
+	// PrecacheSound(SOUND_WINDDOWN);
 }
  
 public Action:SetModel(client, const String:model[])
@@ -147,7 +147,7 @@ public Action:SetModel(client, const String:model[])
 	}
 }
 
-MakeGDeflectorH(client)
+MakeGHeavy(client)
 {	
 	TF2_SetPlayerClass(client, TFClass_Heavy);
 	TF2_RegeneratePlayer(client);
@@ -189,7 +189,7 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
-	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
+	//TF2Attrib_SetByName(client, "aiming movespeed increased", 1.5);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
@@ -199,7 +199,7 @@ MakeGDeflectorH(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client , "Shoot down projectiles!");
+	PrintHintText(client , "+50 percent damage done");
 
 }
  
@@ -227,109 +227,108 @@ stock GiveGDeflectorH(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		//Cosmetic code
-		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
-		float TeamPaint = 0.0;
+		// TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		// float TeamPaint = 0.0;
 
-		if (iTeam == TFTeam_Blue){
-			TeamPaint = 5801378.0;
+		// if (iTeam == TFTeam_Blue){
+		// 	TeamPaint = 5801378.0;
 			
-		}
-		if (iTeam == TFTeam_Red){
+		// }
+		// if (iTeam == TFTeam_Red){
 			
-			TeamPaint = 12073019.0;
-		}
+		// 	TeamPaint = 12073019.0;
+		// }
 
 
 		//void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale, float style);
 		//Default robo head scale = 0.75
-		CreateRoboHat(client, ROTATIONSENSATION, 10, 6, TeamPaint, 0.75, -1.0);//Rotation sensation
-		CreateRoboHat(client, SUMMERSHADES, 10, 6, 1315860.0, 0.75, -1.0);//Summer shades
-		CreateRoboHat(client, WEIGHTROOMWARMER, 10, 6, 0.0, 1.0, -1.0);//Weightroom warmer
+		// CreateRoboHat(client, ROTATIONSENSATION, 10, 6, TeamPaint, 0.75, -1.0);//Rotation sensation
+		// CreateRoboHat(client, SUMMERSHADES, 10, 6, 1315860.0, 0.75, -1.0);//Summer shades
+		// CreateRoboHat(client, WEIGHTROOMWARMER, 10, 6, 0.0, 1.0, -1.0);//Weightroom warmer
 		//Weapon Code
 		//CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, float style (-1.0 for none) );
-		CreateRoboWeapon(client, "tf_weapon_minigun", 850, 6, 1, 0, 0);
+		CreateRoboWeapon(client, "tf_weapon_minigun", 15, 6, 1, 0, 0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "attack projectiles", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
 		}
 	}
 }
 
-public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
-{
-	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME))
-	{	
-		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-		int iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+// public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
+// {
+// 	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME))
+// 	{	
+// 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
+// 		int iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 
-		if(IsValidEntity(weapon) && iWeapon == 850)//850 == deflector
-		{
-			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
-			if (iWeaponState == 1 && !Locked1[iClient])
-			{
-				EmitSoundToAll(SOUND_WINDUP, iClient);
-			//	PrintToChatAll("WeaponState = Windup");
+// 		if(IsValidEntity(weapon) && iWeapon == 850)//850 == deflector
+// 		{
+// 			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
+// 			if (iWeaponState == 1 && !Locked1[iClient])
+// 			{
+// 				EmitSoundToAll(SOUND_WINDUP, iClient);
+// 			//	PrintToChatAll("WeaponState = Windup");
 				
-				Locked1[iClient] = true;
-				Locked2[iClient] = false;
-				Locked3[iClient] = false;
-				CanWindDown[iClient] = true;
+// 				Locked1[iClient] = true;
+// 				Locked2[iClient] = false;
+// 				Locked3[iClient] = false;
+// 				CanWindDown[iClient] = true;
 				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-			}
-			else if (iWeaponState == 2 && !Locked2[iClient])
-			{
-				EmitSoundToAll(SOUND_GUNFIRE, iClient);
-			//	PrintToChatAll("WeaponState = Firing");
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
+// 			}
+// 			else if (iWeaponState == 2 && !Locked2[iClient])
+// 			{
+// 				EmitSoundToAll(SOUND_GUNFIRE, iClient);
+// 			//	PrintToChatAll("WeaponState = Firing");
 				
-				Locked2[iClient] = true;
-				Locked1[iClient] = true;
-				Locked3[iClient] = false;
-				CanWindDown[iClient] = true;
+// 				Locked2[iClient] = true;
+// 				Locked1[iClient] = true;
+// 				Locked3[iClient] = false;
+// 				CanWindDown[iClient] = true;
 				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-			}
-			else if (iWeaponState == 3 && !Locked3[iClient])
-			{
-				EmitSoundToAll(SOUND_GUNSPIN, iClient);
-			//	PrintToChatAll("WeaponState = Spun Up");
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
+// 			}
+// 			else if (iWeaponState == 3 && !Locked3[iClient])
+// 			{
+// 				EmitSoundToAll(SOUND_GUNSPIN, iClient);
+// 			//	PrintToChatAll("WeaponState = Spun Up");
 				
-				Locked3[iClient] = true;
-				Locked1[iClient] = true;
-				Locked2[iClient] = false;
-				CanWindDown[iClient] = true;
+// 				Locked3[iClient] = true;
+// 				Locked1[iClient] = true;
+// 				Locked2[iClient] = false;
+// 				CanWindDown[iClient] = true;
 				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-			}
-			else if (iWeaponState == 0)
-			{
-				if (CanWindDown[iClient])
-				{
-			//		PrintToChatAll("WeaponState = WindDown");
-					EmitSoundToAll(SOUND_WINDDOWN, iClient);
-					CanWindDown[iClient] = false;
-				}
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
+// 			}
+// 			else if (iWeaponState == 0)
+// 			{
+// 				if (CanWindDown[iClient])
+// 				{
+// 			//		PrintToChatAll("WeaponState = WindDown");
+// 					EmitSoundToAll(SOUND_WINDDOWN, iClient);
+// 					CanWindDown[iClient] = false;
+// 				}
 				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
 				
-				Locked1[iClient] = false;
-				Locked2[iClient] = false;
-				Locked3[iClient] = false;
-			}
-		}
-	}
-}
+// 				Locked1[iClient] = false;
+// 				Locked2[iClient] = false;
+// 				Locked3[iClient] = false;
+// 			}
+// 		}
+// 	}
+// }
 
 public TF2_OnConditionAdded(client, TFCond:condition)
 {

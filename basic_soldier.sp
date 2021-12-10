@@ -10,9 +10,9 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Soldier"
 #define ROBOT_ROLE "Basic"
-#define ROBOT_DESCRIPTION "Rocket Launcher, Shotgun, Market Gardner"
+#define ROBOT_DESCRIPTION "Rocket Launcher, Market Gardner"
 
-#define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
+#define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
@@ -28,7 +28,7 @@
 
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant Icebear Soldier",
+	name = "[TF2] Be the Giant Basic Soldier",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
 	description = "Play as the Giant Icebear from Frankfurt",
 	version = PLUGIN_VERSION,
@@ -186,7 +186,7 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 
 MakeGiantSoldier(client)
 {
-	SMLogTag(SML_VERBOSE, "Createing Icebear");
+	SMLogTag(SML_VERBOSE, "Createing Soldier");
 	TF2_SetPlayerClass(client, TFClass_Soldier);
 	TF2_RegeneratePlayer(client);
 
@@ -224,22 +224,25 @@ MakeGiantSoldier(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
-	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	
 	
-	TF2Attrib_SetByName(client, "self dmg push force increased", 3.0);
-	//TF2Attrib_SetByName(client, "health from healers increased", 3.0);
+	TF2Attrib_SetByName(client, "self dmg push force increased", 6.0);
+	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
+	
+	//
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "head scale", 0.5);
+	//TF2Attrib_SetByName(client, "head scale", 0.5);
 	UpdatePlayerHitbox(client,scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "You generate addotional resources on death for your team");
+	PrintHintText(client , "You generate addotional resources on death for your team\nYou can rocket jump");
 	
 }
 
@@ -270,35 +273,36 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
+		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
 		CreateRoboWeapon(client, "tf_weapon_shovel", 416, 6, 1, 2, 0);
 		
 		// CreateRoboHat(client, SergeantsDrillHat, 10, 6, 0.0, 0.75, -1.0);
 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon1))
 		{
 
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.00);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);							
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);				
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
-		if(IsValidEntity(Weapon2))
-		{
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
-			TF2Attrib_SetByName(Weapon2, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);							
-			TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
-		}
+		// if(IsValidEntity(Weapon2))
+		// {
+		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.00);
+		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Weapon2, "faster reload rate", 2.5);							
+		// 	TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
+		// }
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
-			TF2Attrib_SetByName(Weapon3, "maxammo primary increased", 2.5);
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
 		}
 		
