@@ -1068,13 +1068,13 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     {
         if (g_chooseRobotMenus[param1] == null)
             return;
+        g_chooseRobotMenus[param1] = null;
 
         char info[NAMELENGTH];
         bool found = menu.GetItem(param2, info, sizeof(info));
         PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
 
         SetRobot(info, param1);
-        g_chooseRobotMenus[param1] = null;
     }
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
@@ -1091,6 +1091,11 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     /* If the menu has ended, destroy it */
     else if(action == MenuAction_End)
     {
+        for(int i = 0; i <= MaxClients; i++)
+        {
+            if (g_chooseRobotMenus[i] == menu)
+                g_chooseRobotMenus[i] = null;
+        }
         delete menu;
     }
 }

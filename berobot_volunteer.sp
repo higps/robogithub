@@ -336,6 +336,9 @@ int Native_StartAutomaticVolunteerVote(Handle plugin, int numParams)
 Action Timer_Countdown(Handle timer)
 {
     int remainingSeconds = _countdownTarget - GetTime();
+    if (remainingSeconds < 0)
+        return Plugin_Stop;
+        
     int volunteerCount = CountVolunteers();
     char verb[5];
     if (volunteerCount == 1)
@@ -343,6 +346,8 @@ Action Timer_Countdown(Handle timer)
     else
         verb = "have";
     PrintCenterTextAll("%i seconds left to vote. %i/%i %s volunteered so far. Random volunteers are picked to be robots.", remainingSeconds, volunteerCount, _robocapTeam, verb);
+    
+    return Plugin_Continue;
 }
 
 Action Timer_VolunteerAutomaticVolunteers(Handle timer)
@@ -532,14 +537,13 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
         _pickedOption[param1] = true;
         if (EveryClientAnsweredVote())
         {
-            VolunteerAutomaticVolunteers();            
-            //if (IsValidHandle(_autoVolunteerTimer))
             KillTimer(_autoVolunteerTimer);
             if (_countdownTimer != null)
             {
                 KillTimer(_countdownTimer);
                 _countdownTimer = null;
             }
+            VolunteerAutomaticVolunteers();
         }
     }
     /* If the menu was cancelled, print a message to the server about it. */
