@@ -139,7 +139,7 @@ MakeGiantPyro(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
@@ -172,9 +172,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define FirewallHelmet 30038
-#define GoogolGlassEyes 30053
-#define RailSpikes 951
+#define FeatheredFiend 30903
+#define DeitysDress 30902
+#define PyromancersMask 316
 
 stock GiveGiantPyro(client)
 {
@@ -189,9 +189,9 @@ stock GiveGiantPyro(client)
 		CreateRoboWeapon(client, "tf_weapon_jar_gas", 1180, 6, 1, 2, 0);
 		CreateRoboWeapon(client, "tf_weapon_fireaxe", 348, 6, 1, 2, 0);
 
-		CreateRoboHat(client, FirewallHelmet, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, GoogolGlassEyes, 10, 6, 0.0, 1.2, -1.0); 
-		CreateRoboHat(client, RailSpikes, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, FeatheredFiend, 10, 6, 1315860, 1.0, -1.0); 
+		CreateRoboHat(client, DeitysDress, 10, 6, 1315860, 1.2, -1.0); 
+		CreateRoboHat(client, PyromancersMask, 10, 6, 1315860, 0.75, -1.0); 
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
