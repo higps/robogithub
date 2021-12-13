@@ -232,10 +232,13 @@ stock void MM_PrintToChat(int client, char[] text)
  */
 stock bool MM_Random(int trueCases, int maxCases)
 {
-    return true;
+    int random = GetRandomInt(trueCases, maxCases);
+    if(random <= trueCases){
+        return true;
+    }else{
+        return false;
+    }
     
-    int random = GetRandomInt(1, maxCases);
-    return random <= trueCases;
 }
 
 methodmap TimeLeftRestriction < TimeLeftRestrictionDefinition {
@@ -274,7 +277,7 @@ methodmap TimeLeftRestriction < TimeLeftRestrictionDefinition {
         this.SetString("RobotName", robotName);
         if (definition == null)
         {
-            SMLogTag(SML_VERBOSE, "TimeLeftRestrictionDefinition does not exist");
+        SMLogTag(SML_VERBOSE, "TimeLeftRestrictionDefinition does not exist");
             return this;
         }
         SMLogTag(SML_VERBOSE, "assigning SecondsBeforeEndOfRound to %i", definition.SecondsBeforeEndOfRound);

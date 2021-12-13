@@ -137,16 +137,17 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
         PlayRobotDeathVoiceOver(assister);
     }
 
+    int iTeam = GetClientTeam(victim);
     //player died to robot
     if (!IsAnyRobot(victim) && IsAnyRobot(attacker))
     {
-        PlayRobotKilledFriendVoiceOver();
+        PlayRobotKilledFriendVoiceOver(iTeam);
     }
 
     //Plays spy alert when the spy dies
 	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Spy)
 	{
-	EmitGameSoundToAll("Announcer.mvm_spybot_death");
+	    EmitGameSoundToAll("Announcer.mvm_spybot_death");
 	}
 
         //Plays engineer alert when the engineer bot is dead
@@ -259,7 +260,7 @@ void PlayRobotDeathVoiceOver(int client)
     EmitGameSoundToAll(szVO, client);
 }
 
-void PlayRobotKilledFriendVoiceOver()
+void PlayRobotKilledFriendVoiceOver(int Team)
 {
     for(int i = 1; i <= MaxClients; i++)
     {
@@ -273,21 +274,30 @@ void PlayRobotKilledFriendVoiceOver()
             SMLogTag(SML_VERBOSE, "PlayRobotKilledFriendVoiceOver ignored, because client %i was not alive", i);
             continue;
         }
-            
+        
+        TFClassType class = TF2_GetPlayerClass(i);
+        int iTeam = GetClientTeam(i);
+
+        //PrintToChatAll("Random! %i", MM_Random(1,3));
+
         char szVO[512];
-        switch(i)
-        {
-            case TFClass_Heavy:
+        if (class == TFClass_Heavy && iTeam == Team){
+        
+            if (MM_Random(1,3))
             {
-                if (MM_Random(1, 10)){
-                    SMLogTag(SML_VERBOSE, "PlayRobotKilledFriendVoiceOver for %L", i);
-                    strcopy(szVO, sizeof(szVO), "heavy_mvm_giant_robot01");
-                    EmitGameSoundToAll(szVO, i);
-                }
+            
+                SMLogTag(SML_VERBOSE, "PlayRobotKilledFriendVoiceOver for %L", i);
+                
+                strcopy(szVO, sizeof(szVO), "heavy_mvm_giant_robot01");
+                
+                PrintToChatAll("%N was Heavy class and said voiceline", i);
+                float random_timer = GetRandomFloat(10.5,30.5);
+                EmitSoundWithClamp(i, szVO, random_timer);
             }
         }
     }
 }
+
 
 void PlayRobotPushedCartVoiceOver(int clientId)
 {
@@ -324,7 +334,7 @@ void PlayRobotPushedCartVoiceOver(int clientId)
             return;
     }
 
-        float random_timer = GetRandomFloat(20.5,60.5);
+    float random_timer = GetRandomFloat(20.5,60.5);
     EmitSoundWithClamp(clientId, szVO, random_timer);
 }
 
@@ -392,7 +402,7 @@ void EmitSoundWithClamp(int client, char[] voiceline, float clamp)
     }
         
     EmitGameSoundToAll(voiceline, client);
-
+    PrintToChatAll("For %N",client);
     CreateTimer(clamp, calltimer_reset, client);
     g_VoiceCalloutClamp[client] = true;
 }
