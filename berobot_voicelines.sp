@@ -290,7 +290,7 @@ void PlayRobotKilledFriendVoiceOver(int Team)
                 
                 strcopy(szVO, sizeof(szVO), "heavy_mvm_giant_robot01");
                 
-                PrintToChatAll("%N was Heavy class and said voiceline", i);
+               // PrintToChatAll("%N was Heavy class and said voiceline", i);
                 float random_timer = GetRandomFloat(10.5,30.5);
                 EmitSoundWithClamp(i, szVO, random_timer);
             }
