@@ -402,7 +402,7 @@ void EmitSoundWithClamp(int client, char[] voiceline, float clamp)
     }
         
     EmitGameSoundToAll(voiceline, client);
-    PrintToChatAll("For %N",client);
+   // PrintToChatAll("For %N",client);
     CreateTimer(clamp, calltimer_reset, client);
     g_VoiceCalloutClamp[client] = true;
 }

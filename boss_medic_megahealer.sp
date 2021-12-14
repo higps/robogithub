@@ -114,8 +114,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
@@ -131,7 +130,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 	PrintHintText(client , "Mega Heal on Quick-Fix\nNo self healing or regenerating health");
-		
+	
 
 
 }
@@ -186,8 +185,21 @@ stock GiveGiantMedic(client)
 			//TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.5);
 			TF2Attrib_SetByName(Weapon2, "mod weapon blocks healing", 1.0);
 
-			SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
+			//SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 			
 		}
+
+		CreateTimer(0.5, set_uber, client);
+
+		SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 	}
+}
+
+public Action set_uber (Handle timer, int client)
+{
+	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	if(IsRobot(client, ROBOT_NAME))
+	{
+	SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
+	} 
 }

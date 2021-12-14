@@ -61,6 +61,8 @@ static int g_iObjectParticle[2048];
 static char g_szOffsetStartProp[64];
 static int g_iOffsetMatchingTeleporter = -1;
 
+bool g_ReadyToTeamPort[MAXPLAYERS + 1] = false;
+
 enum //Teleporter states
 {
 	TELEPORTER_STATE_BUILDING = 0,				// Building, not active yet
@@ -113,8 +115,8 @@ public OnPluginStart()
 	
 	CloseHandle(hGameConf);
 
-	AddCommandListener(CommandListener_Build, "build");
-	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
+	//AddCommandListener(CommandListener_Build, "build");
+	//HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
 
 	//RegConsoleCmd("sm_dane", Dane, "become dane");
 
@@ -197,7 +199,7 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 
-
+	
 
 }
 
@@ -230,83 +232,13 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	if (IsValidClient(iBuilder) && IsRobot(iBuilder, ROBOT_NAME)){
 		// SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);
 		// SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
-		
+		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter){
 		SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.65);
 		SetEntPropFloat(iObj, Prop_Send, "m_flPercentageConstructed", 1.0);
 		DispatchKeyValue(iObj, "defaultupgrade", "2"); 
-		
-		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Teleporter){
-						
-						SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
-						SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);	//Set Pads to level 3 for cosmetic reasons related to recharging
-						SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
-						SetEntProp(iObj, Prop_Send, "m_bMiniBuilding", true);	
-						 //Setting m_bMiniBuilding tries to set the skin to a 'mini' skin. Since teles don't have one, reset the skin.
-						SetEntProp(iObj, Prop_Send, "m_iTimesUsed", 0);
-						RequestFrame(ResetSkin, iObj);
-						TF2_SetMatchingTeleporter(iObj, iObj);
-
-						SetVariantInt(RoundFloat(500.0));
-						AcceptEntityInput(iObj, "AddHealth", iObj); //Spawns at 50% HP.
-						SetEntProp(iObj, Prop_Send, "m_iTimesUsed", 0);
-							
-
-						//Set teleporter to itself - does not work yet
-
-						// int iObjParti = CreatePadParticle(iObj, "teleporter_mvm_bot_persist");
-						// g_iObjectParticle[iObj] = EntIndexToEntRef(iObjParti);
-						//AcceptEntityInput(iObjParti, "Start");
-
-						
-
-
-						float position[3];
-						GetEntPropVector(iObj, Prop_Data, "m_vecOrigin", position);	
-						int attach = CreateEntityByName("trigger_push");
-						TeleportEntity(attach, position, NULL_VECTOR, NULL_VECTOR);
-						TE_Particle("teleported_mvm_bot", position, _, _, attach, 1,0);	
-						//TE_Particle("teleporter_mvm_bot_persist", position, _, _, attach, 1,0);	
-
-						g_iPadType[iObj] = PadType_Boss;
-
-						//Doesn't work for some reason
-						//EmitGameSoundToAll("Announcer.MVM_Engineer_Teleporter_Activated"); 
-						
-						int soundswitch = GetRandomInt(1,5);
-
-						switch(soundswitch)
-						{
-							case 1:
-							{
-								EmitSoundToAll(TELEPORTER_ACTIVATE1);
-							}
-							case 2:
-							{
-								EmitSoundToAll(TELEPORTER_ACTIVATE2);
-							}
-							case 3:
-							{
-								EmitSoundToAll(TELEPORTER_ACTIVATE3);
-							}
-							case 4:
-							{
-								EmitSoundToAll(TELEPORTER_ACTIVATE4);
-							}
-							case 5:
-							{
-								EmitSoundToAll(TELEPORTER_ACTIVATE5);
-							}
-						}
-		}
-		//SetEntProp(iObj, Prop_Send, "m_CollisionGroup", 2); 
-		//SetEntPropFloat(iObj, Prop_Send, "m_bDisposableBuilding", 1.0);	
-		
-		//SetEntPropFloat(iObj, Prop_Send, "m_iUpgradeMetalRequired ", 0.1);
-		//SDKHook(iObj, SDKHook_ShouldCollide, ShouldCollide );
-		//CH_PassFilter(iBuilder, iObj, false);
-		//SetEntData(iObj, g_offsCollisionGroup, 2, 4, false);
-						
 	
+		}
+
 	}
 }
 
@@ -490,11 +422,8 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-		
-	PrintToChat(client, "1. You are now Uncle Dane robot !");
-	PrintToChat(client, "2. Your Widowmaker deals 250%%% bonus damage to the target your sentry shoots.");
-	PrintToChat(client, "3. Your wrench builds lvl 3 buildings in one swing.");
-	PrintToChat(client, "4. Your teleporter exit is now a teamporter like in mvm.");
+	
+	PrintHintText(client, "Widowmaker deals 250 precent damage to your sentry's target\nYou build lvl 3 in one swing\nYou have teamporters");
 	PrintCenterText(client, "Use !stuck if you get stuck in buildings");
 	
 	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
@@ -567,7 +496,7 @@ stock GiveBigRoboDane(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.6);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 30.0);
@@ -639,71 +568,82 @@ stock GiveBigRoboDane(client)
 // 	delete bluspawn;
 // }
 
-public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
-{
+// public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+// {
 
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	//PrintToChatAll("%N spawned", client);
-	if (!IsAnyRobot(client))
-	{
-		return Plugin_Continue;
-		PrintToChatAll("%N spawned and was not a robot", client);
-	}
+// 	int client = GetClientOfUserId(event.GetInt("userid"));
+// 	//PrintToChatAll("%N spawned", client);
+// 	if (!IsAnyRobot(client))
+// 	{
+// 		return Plugin_Continue;
+// 		//PrintToChatAll("%N spawned and was not a robot", client);
+// 	}
 	
-	int team = GetClientTeam(client);
+// 	int team = GetClientTeam(client);
 
-	// if (team != EngieTeam)
-	// 	return Plugin_Continue;
+// 	// if (team != EngieTeam)
+// 	// 	return Plugin_Continue;
 
-	int ent = -1;
-	int i = (team == 2 ? 1 : 0);
-	float vecSpawn[3];
-	float vecIsActuallyGoingToSpawn[3] = {-99999.0, -99999.0, -99999.0};
-	float dist, otherdist = GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]);
-	float vecRotation[3];
+// 	int ent = -1;
+// 	int i = (team == 2 ? 1 : 0);
+// 	float vecSpawn[3];
+// 	float vecIsActuallyGoingToSpawn[3] = {-99999.0, -99999.0, -99999.0};
+// 	float dist, otherdist = GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]);
+// 	float vecRotation[3];
 
-	while ((ent = FindEntityByClassname(ent, "obj_teleporter")) != -1)
-	{
-		if (GetEntProp(ent, Prop_Send, "m_iTeamNum") != team)
-			continue;
-		if (GetEntProp(ent, Prop_Send, "m_bBuilding"))	// If being built
-			continue;
-		if (GetEntProp(ent, Prop_Send, "m_bCarried"))	// If being carried
-			continue;
-		if (GetEntProp(ent, Prop_Send, "m_iObjectMode") != 1)	// If not exit
-			continue;
-		if (GetEntProp(ent, Prop_Send, "m_bHasSapper"))//has sapper
-			continue;
-		if (!IsValidEntity(GetEntDataEnt2(ent, FindSendPropInfo("CObjectTeleporter", "m_bMatchBuilding")+4)))	// Props to Pelipoika
-			continue;
+// 	while ((ent = FindEntityByClassname(ent, "obj_teleporter")) != -1)
+// 	{
+// 		if (GetEntProp(ent, Prop_Send, "m_iTeamNum") != team)
+// 			continue;
+// 		if (GetEntProp(ent, Prop_Send, "m_bBuilding"))	// If being built
+// 			continue;
+// 		if (GetEntProp(ent, Prop_Send, "m_bCarried"))	// If being carried
+// 			continue;
+// 		if (GetEntProp(ent, Prop_Send, "m_iObjectMode") != 1)	// If not exit
+// 			continue;
+// 		if (GetEntProp(ent, Prop_Send, "m_bHasSapper"))//has sapper
+// 			continue;
+// 		if (!IsValidEntity(GetEntDataEnt2(ent, FindSendPropInfo("CObjectTeleporter", "m_bMatchBuilding")+4)))	// Props to Pelipoika
+// 			continue;
 
-		GetEntPropVector(ent, Prop_Send, "m_vecOrigin", vecSpawn);
-		dist = GetVectorDistance(vecSpawn, vecSpawns[i]);
-		if (dist < otherdist)
-		{
-			otherdist = dist;
-			vecIsActuallyGoingToSpawn = vecSpawn;
-			GetEntPropVector(ent, Prop_Send, "m_angRotation", vecRotation);	// Force players to look in the direction of teleporter on spawn
-		}
-	}
-	// If no teleporters found
-	if (GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]) >= 70000){
-		return Plugin_Continue;
-	}	
+// 		GetEntPropVector(ent, Prop_Send, "m_vecOrigin", vecSpawn);
+// 		dist = GetVectorDistance(vecSpawn, vecSpawns[i]);
+// 		if (dist < otherdist)
+// 		{
+// 			otherdist = dist;
+// 			vecIsActuallyGoingToSpawn = vecSpawn;
+// 			GetEntPropVector(ent, Prop_Send, "m_angRotation", vecRotation);	// Force players to look in the direction of teleporter on spawn
+// 		}
+// 	}
+// 	// If no teleporters found
+// 	if (GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]) >= 70000){
+// 		return Plugin_Continue;
+// 	}	
 		
 
-	vecIsActuallyGoingToSpawn[2] += 15.0;	// Don't get stuck inside of teleporter
-	//PrintToChatAll("%N was teleported", client);
-	TeleportEntity(client, vecIsActuallyGoingToSpawn, vecRotation, NULL_VECTOR);
-	EmitSoundToAll(TELEPORTER_SPAWN, client);
+// 	vecIsActuallyGoingToSpawn[2] += 15.0;	// Don't get stuck inside of teleporter
+// 	//PrintToChatAll("%N was teleported", client);
+// 	TeleportEntity(client, vecIsActuallyGoingToSpawn, vecRotation, NULL_VECTOR);
+// 	EmitSoundToAll(TELEPORTER_SPAWN, client);
 
-	float oober = 3.0;
-	if (oober != 0.0)
-		TF2_AddCondition(client, TFCond_Ubercharged, oober);
-	return Plugin_Continue;
-}
+// 	float oober = 3.0;
+// 	if (oober != 0.0)
+// 		TF2_AddCondition(client, TFCond_Ubercharged, oober);
+// 	return Plugin_Continue;
+// }
 
-
+// public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+// {
+// 	if(IsValidClient(client) && IsRobot(client, ROBOT_NAME) && buttons & IN_DUCK) 
+// 	{
+// 		g_ReadyToTeamPort[client] = true;
+// 		PrintToChatAll("Setting teamporter true for %N", client);
+// 	}else
+// 	{
+// 		g_ReadyToTeamPort[client] = false;
+// 		//PrintToChatAll("Setting teamporter false for %N", client);
+// 	}
+// }
 
 //TELEPORTER CODE// VERSION 2
 /* public Action Particle_Teleporter(Handle Timer)
@@ -937,31 +877,31 @@ public Action DeleteTrigger(Handle timer, any Ent)
 	return;
 }
 
-public Action CommandListener_Build(client, const char[] command, argc)
-{
-	char sObjectMode[256], sObjectType[256];
-	GetCmdArg(1, sObjectType, sizeof(sObjectType));
-	GetCmdArg(2, sObjectMode, sizeof(sObjectMode));
-	int iObjectMode = StringToInt(sObjectMode);
-	int iObjectType = StringToInt(sObjectType);
-	//char sClassName[32];
-	// PrintToChat(client,"Object type: %i", iObjectType);
-	// PrintToChat(client,"Object mode: %i", iObjectMode);
-	// for(int i = MaxClients + 1; i < g_iMaxEntities; i++)
-	// {
-	// 	PrintToChatAll("Client: %i", i);
-	// 	if(!IsValidEntity(i)) continue;
+// public Action CommandListener_Build(client, const char[] command, argc)
+// {
+// 	char sObjectMode[256], sObjectType[256];
+// 	GetCmdArg(1, sObjectType, sizeof(sObjectType));
+// 	GetCmdArg(2, sObjectMode, sizeof(sObjectMode));
+// 	int iObjectMode = StringToInt(sObjectMode);
+// 	int iObjectType = StringToInt(sObjectType);
+// 	//char sClassName[32];
+// 	// PrintToChat(client,"Object type: %i", iObjectType);
+// 	// PrintToChat(client,"Object mode: %i", iObjectMode);
+// 	// for(int i = MaxClients + 1; i < g_iMaxEntities; i++)
+// 	// {
+// 	// 	PrintToChatAll("Client: %i", i);
+// 	// 	if(!IsValidEntity(i)) continue;
 		
-	// 	GetEntityNetClass(i, sClassName, sizeof(sClassName));
-		if(IsRobot(client, ROBOT_NAME) && iObjectType == TF_OBJECT_TELEPORTER && iObjectMode == TF_TELEPORTER_ENTR)
-		{
-			PrintCenterText(client,"You can't build enterance, you can only build a exit teleporter!");
-			PrintToChat(client,"You can't build enterance , you can only build a exit teleporter!");
-			return Plugin_Handled;
-		}
-	// }
-	return Plugin_Continue;
-}
+// 	// 	GetEntityNetClass(i, sClassName, sizeof(sClassName));
+// 		if(IsRobot(client, ROBOT_NAME) && iObjectType == TF_OBJECT_TELEPORTER && iObjectMode == TF_TELEPORTER_ENTR)
+// 		{
+// 			PrintCenterText(client,"You can't build enterance, you can only build a exit teleporter!");
+// 			PrintToChat(client,"You can't build enterance , you can only build a exit teleporter!");
+// 			return Plugin_Handled;
+// 		}
+// 	// }
+// 	return Plugin_Continue;
+// }
 
 stock void ResetSkin(int iEnt)
 {

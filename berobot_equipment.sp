@@ -150,8 +150,8 @@ public any Native_CreateRoboHat(Handle plugin, int numParams)
 	SetEntProp(hat, Prop_Send, "m_bValidatedAttachedEntity", 1);  	
 
 	if (paint != 0.0){
-		TF2Attrib_SetByDefIndex(hat, 142, paint);
-		TF2Attrib_SetByDefIndex(hat, 261, paint);
+		TF2Attrib_SetByDefIndex(hat, 142, view_as<float>(paint));
+		TF2Attrib_SetByDefIndex(hat, 261, view_as<float>(paint));
 	}
 	
 	if (scale != 0.0){
