@@ -311,13 +311,15 @@ public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dont
         g_WaitingForPlayers = true;
 
         
-    }else if(g_Enable && g_RoundCount == 1){
+    }else if(g_Enable && g_RoundCount == 1 && !g_BossMode){
         //PrintToChatAll("== Not waiting for players !rtr available!");
         Command_Robot_Selection(1, 1);
         //MC_PrintToChatAll("[{orange}SM{default}]{orange} Type !rtr to vote to start Manned Machines");
         
         g_WaitingForPlayers = false;
         g_RoundCount++;
+    }else{
+        PrintCenterTextAll("Game has already started");
     }
 
     int totalplayers = RoundToCeil(float(GetClientCount(false)) * g_Rtr_percent);
