@@ -410,7 +410,7 @@ public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
   
     } */
 
-     if(isMiniBoss(pThis)){
+    if(isMiniBoss(pThis)){
         //PrintToChatAll("1");
 
     //sets the robot health when touc
@@ -430,7 +430,7 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
         g_CV_flSpyBackStabModifier = StringToFloat(sNewValue);
     if(convar == g_cvCvarList[CV_flYoutuberMode])
         g_CV_flYoutuberMode = StringToFloat(sNewValue);
-
+        
     if(convar == g_cvCvarList[CV_g_Rtr_precent])
         g_Rtr_percent = StringToFloat(sNewValue);
 
