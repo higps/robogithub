@@ -4,9 +4,8 @@ TODO:
 1. Need time passed resource added
 2. Robot model stays when not being a robot anymore (fixed by changing class)
 3. When mode is over, robots return to normal
-4. Unset robot command
-5. Both teams have robot mode
-6. Lower robot ratio.
+4. Both teams have robot mode
+5. Lower robot ratio.
 1 - 3 Humans = 1 robot
 4 - 6 Humans = 2 robots
 7 - 9 Humans = 3 robots

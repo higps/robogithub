@@ -51,6 +51,10 @@ public void Init()
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
     SMLogTag(SML_INFO, "berobot_factory started at %i", GetTime());
 
+    RegAdminCmd("sm_trashrobot", Command_TrashRobot, ADMFLAG_SLAY, "Trash a robot");
+    RegAdminCmd("sm_trshrbt", Command_TrashRobot, ADMFLAG_SLAY, "Trash a robot");
+    RegAdminCmd("sm_tr", Command_TrashRobot, ADMFLAG_SLAY, "Trash a robot");
+
     HookEvent("player_death", Event_Death, EventHookMode_Post);
     HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 
@@ -67,6 +71,7 @@ public void Init()
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	CreateNative("CreateRobot", Native_CreateRobot);
+	CreateNative("TrashRobot", Native_TrashRobot);
 	CreateNative("IsRobot", Native_IsRobot);
 	CreateNative("IsAnyRobot", Native_IsAnyRobot);
 
@@ -277,9 +282,6 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	{
         int targetClientId = target_list[i];
         SMLogTag(SML_VERBOSE, "%i. target: %i", i, targetClientId);
-        char wasRobot[NAMELENGTH];
-        wasRobot = _isRobot[targetClientId];
-        SMLogTag(SML_VERBOSE, "%i. target: %i is currently %s", i, targetClientId, wasRobot);
 
         bool paid = PayRobotCoin(item.restrictions, targetClientId);
         if (!paid)
@@ -292,47 +294,10 @@ public any Native_CreateRobot(Handle plugin, int numParams)
             return 3;
         }
 
-        if (wasRobot[0] != '\0')            //disable previous robot
-        {
-            if (_wasRobot[targetClientId][0] == '\0')
-                _wasRobot[targetClientId] = wasRobot;
-
-            //notify robots of change
-            for(int otherRobotClientIndex = 0; otherRobotClientIndex <= MaxClients; otherRobotClientIndex++)
-            {
-                if (!IsValidClient(otherRobotClientIndex))
-                    continue;
-                if (_isRobot[otherRobotClientIndex][0] == '\0')
-                    continue;
-                
-                SMLogTag(SML_VERBOSE, "notifying %L, about %L switch from '%s' to '%s'", otherRobotClientIndex, targetClientId, wasRobot, name);
-                MC_PrintToChatEx(otherRobotClientIndex, otherRobotClientIndex, "{teamcolor}%N switching from '%s' to '%s'", targetClientId, wasRobot, name);
-            }
-
-            Reset(targetClientId);
-            PrintToChat(targetClientId, "1. You are no longer %s!", wasRobot);
-            PrintToChat(targetClientId, "2. You will turn back by changing class or dying!");
-            
-            if (!TF2Spawn_IsClientInSpawn(targetClientId))
-            {
-                SMLogTag(SML_VERBOSE, "forcing suicide on %L to become robot '%s'", targetClientId, name);
-                ForcePlayerSuicide(targetClientId);
-
-
-                Robot oldRobot;
-                if (GetRobotDefinition(wasRobot, oldRobot) != 0)
-                {
-                    SMLogTag(SML_ERROR, "could not create robot. no robot with name '%s' found", wasRobot);
-                    return 1;
-                }
-
-                ResetOnDeath(client, oldRobot);
-                _isRobot[targetClientId] = name;
-                return 0;
-            }
-            else
-                TF2_RespawnPlayer(targetClientId);
-        }
+        char wasRobot[NAMELENGTH];
+        int trashError = Trash(targetClientId, wasRobot, name);
+        if (trashError > 0)
+            return trashError;            
 
         if (strcmp(name, wasRobot) == 0)    //don't enable robot, if client was already same robot as requested
             continue;
@@ -353,6 +318,29 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	return 0;
 }
 
+public Action Command_TrashRobot(int client, int numParams)
+{
+    char target[32];
+    if (numParams < 1)
+        target[0] = '\0';
+    else 
+        GetCmdArg(1, target, sizeof(target));
+
+    TrashTargetedRobot(client, target);
+    
+    return Plugin_Handled;
+}
+
+public any Native_TrashRobot(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    char target[32] = "";
+    if (numParams >= 2)
+        GetNativeString(2, target, 32);
+
+    return TrashTargetedRobot(client, target);
+}
+
 public any Native_IsRobot(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1);
@@ -370,6 +358,97 @@ public any Native_IsAnyRobot(Handle plugin, int numParams)
     int client = GetNativeCell(1);
 
     return _isRobot[client][0] != '\0';
+}
+
+int TrashTargetedRobot(int clientId, char target[32])
+{
+    int targetFilter = 0;
+    if (target[0] == '\0')
+    {
+        target = "@me";
+        targetFilter = COMMAND_FILTER_NO_IMMUNITY;
+    }
+
+    char target_name[MAX_TARGET_LENGTH];
+    int target_list[MAXPLAYERS];
+    int target_count;
+    bool tn_is_ml;
+
+    if ((target_count = ProcessTargetString(
+            target,
+            clientId,
+            target_list,
+            MAXPLAYERS,
+            targetFilter,
+            target_name,
+            sizeof(target_name),
+            tn_is_ml)) <= 0)
+    {
+        ReplyToTargetError(clientId, target_count);
+        return 1024;
+    }
+
+    int maxError = 0;
+    for (int i = 0; i < target_count; i++)
+    {
+        int targetClientId = target_list[i];
+
+        int trashError = Trash(targetClientId);
+        if (trashError > maxError)
+            maxError = trashError;
+    }
+
+    return maxError;
+}
+
+int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELENGTH] = "")
+{
+    strcopy(wasRobot, NAMELENGTH, _isRobot[clientId]);
+    if (wasRobot[0] == '\0')            //disable previous robot
+        return 0;
+    
+    SMLogTag(SML_VERBOSE, "disableing old robot %s for %L", wasRobot, clientId);
+    if (_wasRobot[clientId][0] == '\0')
+        _wasRobot[clientId] = wasRobot;
+
+    //notify robots of change
+    for(int otherRobotClientIndex = 0; otherRobotClientIndex <= MaxClients; otherRobotClientIndex++)
+    {
+        if (!IsValidClient(otherRobotClientIndex))
+            continue;
+        if (_isRobot[otherRobotClientIndex][0] == '\0')
+            continue;
+        
+        SMLogTag(SML_VERBOSE, "notifying %L, about %L switch from '%s' to '%s'", otherRobotClientIndex, clientId, wasRobot, newRobotName);
+        if (newRobotName[0] == '\0')
+            MC_PrintToChatEx(otherRobotClientIndex, otherRobotClientIndex, "{teamcolor}%N switching from '%s'", clientId, wasRobot);
+        else
+            MC_PrintToChatEx(otherRobotClientIndex, otherRobotClientIndex, "{teamcolor}%N switching from '%s' to '%s'", clientId, wasRobot, newRobotName);
+    }
+
+    Reset(clientId);
+    PrintToChat(clientId, "1. You are no longer %s!", wasRobot);
+    PrintToChat(clientId, "2. You will turn back by changing class or dying!");
+    
+    if (TF2Spawn_IsClientInSpawn(clientId))
+    {
+        TF2_RespawnPlayer(clientId);
+        return 0;
+    }
+
+    SMLogTag(SML_VERBOSE, "forcing suicide on %L to become robot '%s'", clientId, newRobotName);
+    ForcePlayerSuicide(clientId);
+
+    Robot oldRobot;
+    if (GetRobotDefinition(wasRobot, oldRobot) != 0)
+    {
+        SMLogTag(SML_ERROR, "could not create robot. no robot with name '%s' found", wasRobot);
+        return 1;
+    }
+
+    ResetOnDeath(clientId, oldRobot);
+    
+    return 0;
 }
 
 void CallCreate(int client, Robot item)
