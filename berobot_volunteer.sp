@@ -112,7 +112,7 @@ public void OnMapStart()
 void Reset()
 {
     _automaticVolunteerVoteIsInProgress = false;
-    for(int i = 0; i < MAXPLAYERS; i++)
+    for(int i = 0; i <= MAXPLAYERS; i++)
     {
         _volunteered[i] = false;
         _pickedOption[i] = false;
@@ -311,7 +311,7 @@ int Native_GetRandomVolunteer(Handle plugin, int numParams)
 int Native_StartAutomaticVolunteerVote(Handle plugin, int numParams)
 {
     _automaticVolunteerVoteIsInProgress = true;
-    for(int i = 1; i < MaxClients; i++)
+    for(int i = 1; i <= MaxClients; i++)
     {
         if (!IsValidClient(i) || !IsClientInGame(i))
             continue;
@@ -491,7 +491,7 @@ void AddVolunteers(ArrayList destination, ArrayList source, int neededVolunteers
 
 bool EveryClientAnsweredVote()
 {
-    for(int i = 1; i < MaxClients; i++)
+    for(int i = 1; i <= MaxClients; i++)
     {        
         if (!IsValidClient(i) || !IsClientInGame(i))
             continue;

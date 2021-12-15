@@ -650,7 +650,7 @@ stock GiveBigRoboDane(client)
 {
 	
 	int client; 
-	for(int i = 1; i < MaxClients; i++)
+	for(int i = 1; i <= MaxClients; i++)
     {
 		if(IsRobot(i, ROBOT_NAME))
 		{
