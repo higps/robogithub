@@ -267,9 +267,6 @@ stock GiveBigJoey(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
 		}
-
-
-		
 	}
 }
 
