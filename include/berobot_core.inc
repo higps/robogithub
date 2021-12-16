@@ -46,14 +46,14 @@ native int GetRobotDefinition(char name[NAMELENGTH], const any[] robot);
 native ArrayList GetRobotRestrictions();
 
 /**
- * returns the name of the robot picked by a client
+ * returns the name of the robot currently played by a client
  * 
  * @param client            clientId to check
  * @param dest              buffer to store value
  * @param maxDestLength     maximum length of string-buffer
  * @noreturn
  */
-native void GetPickedRobot(int client, char[] dest, int maxDestLength);
+native void GetRobot(int client, char[] dest, int maxDestLength);
 
 /**
  * returns the amount of robots per team

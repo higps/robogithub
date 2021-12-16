@@ -228,7 +228,6 @@ public void OnPluginStart()
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-    CreateNative("GetPickedRobot", Native_GetPickedRobot);
     CreateNative("GetRobotCountPerTeam", Native_GetRobotCountPerTeam);
     CreateNative("SetVolunteers", Native_SetVolunteers);
     CreateNative("EnsureRobotCount", Native_EnsureRobotCount);
@@ -1332,14 +1331,6 @@ public any Native_IsYTEnabled(Handle plugin, int numParams)
 public any Native_IsActive(Handle plugin, int numParams)
 {
     return g_BossMode;
-}
-
-public any Native_GetPickedRobot(Handle plugin, int numParams)
-{
-	int client = GetNativeCell(1);
-	int maxDestLength = GetNativeCell(3);
-
-	SetNativeString(2, g_cv_RobotPicked[client], maxDestLength);
 }
 
 public any Native_GetRobotCountPerTeam(Handle plugin, int numParams)
