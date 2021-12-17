@@ -450,6 +450,8 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
     ResetOnDeath(clientId, oldRobot);
     
     return 0;
+}
+
 public any Native_GetRobot(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
