@@ -441,6 +441,8 @@ public void OnEntityDestroyed(int entity)
 
 public void OnRocketSpawned(int rocket)
 {
+	if (IsValidEntity(rocket))
+	{
 	int owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");
 	if (!IsValidClient(owner)) return;
 
@@ -451,6 +453,7 @@ public void OnRocketSpawned(int rocket)
 		RocketOverride[rocket] = true;
 		int ref = EntIndexToEntRef(rocket);
 		CreateTimer(GetConVarFloat(g_rocketDelay), RocketTimer, ref, TIMER_FLAG_NO_MAPCHANGE);
+	}
 	}
 }
 

@@ -21,6 +21,8 @@ Every 4 player is one robot, rounding to floor.
 Make selection mode happen when MM_ENABLE 1 is on after waiting for players is over.
 
 BUGS:
+When reverting, the robot isn't grayed out in the menu, allowing players to de-robofy themselves if selecting the one they got reverted back to.
+
 Sometimes a player will be on the robot team when not a robot, tied to client stuff.
 Unset robots on autoteam balance
 Failsafe on robot team
