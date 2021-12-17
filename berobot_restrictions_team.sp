@@ -239,7 +239,7 @@ void SaveLastUnrestrictedRobot(int clientId)
     }
         
     char robotName[NAMELENGTH];
-    GetRobot(clientId, robotName, sizeof(robotName));
+    GetPickedRobot(clientId, robotName, sizeof(robotName));
 
     if (IsPaidRobot(clientId, robotName))
     {
