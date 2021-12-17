@@ -318,8 +318,6 @@ public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dont
         
         g_WaitingForPlayers = false;
         g_RoundCount++;
-    }else{
-        PrintCenterTextAll("Game has already started");
     }
 
     int totalplayers = RoundToCeil(float(GetClientCount(false)) * g_Rtr_percent);
