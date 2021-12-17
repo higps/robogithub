@@ -106,7 +106,7 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
     }
 
     char robotName[NAMELENGTH];
-    GetPickedRobot(victimClientId, robotName, NAMELENGTH);
+    GetRobot(victimClientId, robotName, NAMELENGTH);
     Robot robot;
     GetRobotDefinition(robotName, robot);
 

@@ -74,6 +74,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("TrashRobot", Native_TrashRobot);
 	CreateNative("IsRobot", Native_IsRobot);
 	CreateNative("IsAnyRobot", Native_IsAnyRobot);
+	CreateNative("GetRobot", Native_GetRobot);
 
 	return APLRes_Success;
 }
@@ -449,6 +450,12 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
     ResetOnDeath(clientId, oldRobot);
     
     return 0;
+public any Native_GetRobot(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	int maxDestLength = GetNativeCell(3);
+
+	SetNativeString(2, _isRobot[client], maxDestLength);
 }
 
 void CallCreate(int client, Robot item)
