@@ -1321,7 +1321,7 @@ public Action Block_Kill(int client, const char[] command, int args){
 }
 public Action cmd_blocker(int client, const char[] command, int argc)
 {	
-	if (!IsAnyRobot(client) && g_BossMode && !TF2Spawn_IsClientInSpawn(client))
+	if (!IsAnyRobot(client) && g_BossMode && !TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
 	{
 		PrintCenterText(client,"You can only change class in spawn");
 		
