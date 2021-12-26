@@ -338,8 +338,8 @@ stock GiveGiantPyro(client)
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
 		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
 
-		CreateRoboHat(client, WhirlyWarrior, 10, 6, 2960676.0, 1.0, -1.0);
-		CreateRoboHat(client, GourdGrin, 10, 6, 2960676.0, 1.0, -1.0);
+		CreateRoboHat(client, WhirlyWarrior, 10, 6, 12955537.0, 1.0, -1.0);
+		CreateRoboHat(client, GourdGrin, 10, 6, 12955537.0, 1.0, -1.0);
 		CreateRoboHat(client, Flakcatcher, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);

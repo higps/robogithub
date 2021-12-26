@@ -269,13 +269,13 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.7);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.65);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 5.0);
 			TF2Attrib_SetByName(Weapon1, "mini rockets", 5.0);
 			 
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
+			TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=0 projectilename=tf_projectile_rocket");			
 		}
 		TF2_AddCondition(client, TFCond_CritCanteen);
 	}
