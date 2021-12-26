@@ -90,7 +90,7 @@ public OnPluginStart()
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
 
-	g_rocketDelay = CreateConVar("mirv_v2__rocket_delay", "1.0", "Delay before a mirv_v2_ rocket splits into other rockets");
+	g_rocketDelay = CreateConVar("mirv_v2__rocket_delay", "0.4", "Delay before a mirv_v2_ rocket splits into other rockets");
 	g_rocketCount = CreateConVar("mirv_v2__rocket_count", "4", "How many rockets a mirv_v2_ rocket splits into", _, true, 2.0, true, 6.0);
 	g_rocketCurve = CreateConVar("mirv_v2__converge_rockets", "1", "Do rockets converge on a single point after splitting", _, true, 0.0, true, 1.0);
 	g_rocketAngle = CreateConVar("mirv_v2__split_angle", "25.0", "Positive angle from the down vector at which mirv_v2_ rockets will split at (0.0 = directly down, 90.0 = no deviation)");
