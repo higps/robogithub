@@ -294,8 +294,8 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "cancel falling damage", 0.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
-	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
-	TF2Attrib_SetByName(client, "dmg from melee increased", 3.0);
+	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.5);
+	TF2Attrib_SetByName(client, "dmg from melee increased", 4.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
@@ -306,7 +306,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	TF2_AddCondition(client,TFCond_DefenseBuffed);
+	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 
 	PrintHintText(client, "You are a Tank!\nYou can't contest objectives\nUse taunt to leap. Land on players to kill everything!\nInfinite battalions backup buff!");
 
@@ -379,7 +379,7 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 2.0);
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 600.0);
+			TF2Attrib_SetByName(Weapon3, "heal on kill", 400.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 			TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);

@@ -20,6 +20,7 @@
 #include <tf2>
 #include <tf2_stocks>
 #include <tf_ontakedamage>
+#include <tf2_isPlayerInSpawn>
 // #include <stocksoup/memory>
 // #include <stocksoup/tf/entity_prop_stocks>
 // #include <stocksoup/tf/tempents_stocks>
@@ -193,6 +194,14 @@ public void OnPluginStart()
     RegConsoleCmd("sm_changerobot", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_chngrbt", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_cr", Command_ChangeRobot, "change your robot");
+
+
+    AddCommandListener(Block_Kill, "kill"); 
+	AddCommandListener(Block_Kill, "explode"); 
+    
+    AddCommandListener(cmd_blocker, "changeclass");
+	AddCommandListener(cmd_blocker, "joinclass");
+	AddCommandListener(cmd_blocker, "join_class");
 
 
     /* Hooks */
@@ -1223,9 +1232,6 @@ public Action OnClientCommand(int client, int args)
 
     /* Get the argument */
     GetCmdArg(0, cmd, sizeof(cmd));
-
-    
-
     if(strcmp(cmd, "jointeam", true) == 0)
     {
     TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
@@ -1295,6 +1301,36 @@ public Action OnClientCommand(int client, int args)
     //PrintToChatAll("Team switch trigger");
 
     return Plugin_Continue;
+}
+
+public Action Block_Kill(int client, const char[] command, int args){
+
+
+    if (!IsAnyRobot(client) && g_BossMode && !TF2Spawn_IsClientInSpawn(client))
+    {
+        //PrintToChatAll("BLOCKED KILL on %N", client);
+        int playerID = GetClientUserId(client);
+
+        ServerCommand("sm_timebomb #%d", playerID);
+        return Plugin_Handled; 
+    }else
+    {
+        return Plugin_Continue;
+    }
+    
+}
+public Action cmd_blocker(int client, const char[] command, int argc)
+{	
+	if (!IsAnyRobot(client) && g_BossMode && !TF2Spawn_IsClientInSpawn(client))
+	{
+		PrintCenterText(client,"You can only change class in spawn");
+		
+		return Plugin_Handled;
+	}
+	else
+	{
+		return Plugin_Continue;
+	}
 }
 
 bool isMiniBoss(int client)
