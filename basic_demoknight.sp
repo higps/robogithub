@@ -114,9 +114,9 @@ MakeDemoKnight(client)
 float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
+	TF2Attrib_SetByName(client, "damage force reduction", 1.25);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 2.5);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.15);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 4.5);
@@ -180,16 +180,12 @@ stock GiveGiantDemoKnight(client)
 		{
 			//TF2Attrib_RemoveAll(Weapon3);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
-			TF2Attrib_SetByName(Weapon3, "charge meter on hit", 1.0);		
-			TF2Attrib_SetByName(Weapon3, "charge time increased", 10.0);		
+			TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
+			TF2Attrib_SetByName(Weapon3, "charge time increased", 3.0);		
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);			
 			TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
 			TF2Attrib_SetByName(Weapon3, "mult charge turn control", 10.0);		
-			
-			
-			
-			
-			
+			TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.5);
 		}
 	}
 }

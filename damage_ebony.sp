@@ -443,7 +443,12 @@ public void OnRocketSpawned(int rocket)
 {
 	if (IsValidEntity(rocket))
 	{
-	int owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");
+	
+	int owner;
+if (HasEntProp(rocket, Prop_Send, "m_hOwnerEntity"))
+{
+    owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");
+}
 	if (!IsValidClient(owner)) return;
 
 	if (IsRobot(owner, ROBOT_NAME) && !mirv_v2_Rocket[rocket])

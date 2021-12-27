@@ -84,6 +84,8 @@ bool g_ClientIsRepicking[MAXPLAYERS + 1];
 bool g_Voted[MAXPLAYERS + 1];
 Menu g_chooseRobotMenus[MAXPLAYERS + 1];
 
+bool g_GoingToDie[MAXPLAYERS + 1] = false;
+int g_TimeBombTime[MAXPLAYERS+1] = { 0, ... };
 
 GlobalForward _enabledChangedForward;
 
@@ -1308,10 +1310,21 @@ public Action Block_Kill(int client, const char[] command, int args){
 
     if (!IsAnyRobot(client) && g_BossMode && !TF2Spawn_IsClientInSpawn(client))
     {
-        //PrintToChatAll("BLOCKED KILL on %N", client);
-        int playerID = GetClientUserId(client);
+        PrintToChatAll("BLOCKED KILL on %N", client);
+       // int playerID = GetClientUserId(client);
+        if(!g_GoingToDie[client]){
 
-        ServerCommand("sm_timebomb #%d", playerID);
+        //PrintCenterText(client, "You will die in 10 seconds");
+        g_TimeBombTime[client] = 11;
+        CreateTimer(1.0, Timer_Kill, client, TIMER_REPEAT);
+        
+        g_GoingToDie[client] = true;
+        }else
+        {
+            g_GoingToDie[client] = false;
+        }
+       // TimeBombPlayer(client, 9000, false);
+        //ServerCommand("sm_timebomb #%d", playerID);
         return Plugin_Handled; 
     }else
     {
@@ -1319,6 +1332,36 @@ public Action Block_Kill(int client, const char[] command, int args){
     }
     
 }
+
+public Action Timer_Kill(Handle timer, any client)
+{
+    PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
+	if (IsValidClient(client) && IsPlayerAlive(client))
+    {
+        g_TimeBombTime[client]--;
+	
+        if (g_TimeBombTime[client] > 0 && g_GoingToDie[client])
+        {
+            PrintCenterText(client, "Death in %i", g_TimeBombTime[client]);
+            
+        }else
+        {
+            if (g_GoingToDie[client])
+            { 
+                ForcePlayerSuicide(client);
+                g_GoingToDie[client] = false;
+                KillTimer(timer);
+            }else{
+                PrintCenterText(client, "Cancelled death");
+                KillTimer(timer);
+            }
+        }
+
+        
+    }
+	
+}
+
 public Action cmd_blocker(int client, const char[] command, int argc)
 {	
 	if (!IsAnyRobot(client) && g_BossMode && !TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
@@ -1331,6 +1374,7 @@ public Action cmd_blocker(int client, const char[] command, int argc)
 	{
 		return Plugin_Continue;
 	}
+    
 }
 
 bool isMiniBoss(int client)

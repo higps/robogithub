@@ -230,7 +230,9 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
 		int iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 
-		if(IsValidEntity(weapon) && iWeapon == 594)//594 == phlogistinator
+		if(IsValidEntity(weapon)
+		{
+			if (iWeapon == 594)//594 == phlogistinator
 		{
 			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
 			if (iWeaponState == 1 && !Locked1[iClient])

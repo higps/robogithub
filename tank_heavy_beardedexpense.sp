@@ -294,7 +294,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "cancel falling damage", 0.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
-	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.5);
+	//TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.5);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 4.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
