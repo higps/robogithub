@@ -432,17 +432,19 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 //Doesn't work for whatever reason
 	///EmitGameSoundToAll("Announcer.MVM_First_Engineer_Teleport_Spawned");
 
-
-	int soundswitch = GetRandomInt(1, 2);
-	switch(soundswitch)
+	if (IsPlayerAlive(client))
 	{
-		case 1:
+		int soundswitch = GetRandomInt(1, 2);
+		switch(soundswitch)
 		{
-			EmitSoundToAll(ENGIE_SPAWN_SOUND);
-		}
-		case 2:
-		{
-			EmitSoundToAll(ENGIE_SPAWN_SOUND2);
+			case 1:
+			{
+				EmitSoundToAll(ENGIE_SPAWN_SOUND);
+			}
+			case 2:
+			{
+				EmitSoundToAll(ENGIE_SPAWN_SOUND2);
+			}
 		}
 	}
 
@@ -486,7 +488,7 @@ stock GiveBigRoboDane(client)
 		CreateRoboWeapon(client, "tf_weapon_wrench", 329, 6, 1, 2, 0);
 
 
-		CreateRoboHat(client, THEDANGER, 10, 6, 15132390.0, 1.0, -1.0);
+		CreateRoboHat(client, THEDANGER, 10, 6, 15132390.0, 1.25, -1.0);
 		CreateRoboHat(client, GOLDDIGGER, 10, 6, 15132390.0, 1.0, -1.0);
 		CreateRoboHat(client, INSULATOR, 10, 6, 15132390.0, 1.0, -1.0);
 

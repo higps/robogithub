@@ -203,7 +203,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 		//PrintToChatAll("applying slowed");
 		
 		TF2_AddCondition(attacker, TFCond_Slowed, 10.0);
-		PrintHintText(victim,"Bearded Expense has resistance to crit, but weakness to melee damage");
+		PrintHintText(victim,"Bearded Expense has weakness to melee damage");
 	}
 	
 	
@@ -295,7 +295,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	//TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.5);
-	TF2Attrib_SetByName(client, "dmg from melee increased", 4.0);
+	TF2Attrib_SetByName(client, "dmg from melee increased", 3.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
@@ -310,7 +310,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 
 	PrintHintText(client, "You are a Tank!\nYou can't contest objectives\nUse taunt to leap. Land on players to kill everything!\nInfinite battalions backup buff!");
 
-	EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
+	if(IsPlayerAlive(client)) EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
 	
 }
  
@@ -442,7 +442,7 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 
         if (tauntid == -1)
         {
-            TF2_AddCondition(client,TFCond_DefenseBuffed, 120.0);
+            //TF2_AddCondition(client,TFCond_DefenseBuffed, 120.0);
             
 
           //  CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);

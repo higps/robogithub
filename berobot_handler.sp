@@ -1310,7 +1310,7 @@ public Action Block_Kill(int client, const char[] command, int args){
 
     if (!IsAnyRobot(client) && g_BossMode && !TF2Spawn_IsClientInSpawn(client))
     {
-        PrintToChatAll("BLOCKED KILL on %N", client);
+      //  PrintToChatAll("BLOCKED KILL on %N", client);
        // int playerID = GetClientUserId(client);
         if(!g_GoingToDie[client]){
 
@@ -1335,7 +1335,7 @@ public Action Block_Kill(int client, const char[] command, int args){
 
 public Action Timer_Kill(Handle timer, any client)
 {
-    PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
+    //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
 	if (IsValidClient(client) && IsPlayerAlive(client))
     {
         g_TimeBombTime[client]--;
@@ -1348,6 +1348,7 @@ public Action Timer_Kill(Handle timer, any client)
         {
             if (g_GoingToDie[client])
             { 
+                PrintCenterText(client, "You are dead");
                 ForcePlayerSuicide(client);
                 g_GoingToDie[client] = false;
                 KillTimer(timer);

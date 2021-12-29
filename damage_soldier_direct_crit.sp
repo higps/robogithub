@@ -287,12 +287,12 @@ stock GiveGiantPyro(client)
 	//	CreateRoboHat(client, SteelShako, 10, 6, 0.0, 0.75, -1.0);
 
 	//	CreateHat(client, 30050, 10, 6, true); //Gatebot
-	//	CreateRoboWeapon(client, "tf_weapon_buff_item", 129, 6, 1, 1, 0);
+		CreateRoboWeapon(client, "tf_weapon_buff_item", 129, 6, 1, 1, 0);
 		//CreateHat(client, 647, 10, 6, true); //The All-Father
 		//CreateHat(client, 343, 10, 6, true);//Professor speks
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		
 		if(IsValidEntity(Weapon1))
 		{
@@ -304,7 +304,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.175);
 			//TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.6);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip penalty", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Reload time increased", 2.25);
+			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.25);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
 			
 			
@@ -326,13 +326,13 @@ stock GiveGiantPyro(client)
 						
 \			
 		}
-		// if(IsValidEntity(Weapon2))
-		// {
-		// 	TF2Attrib_RemoveAll(Weapon2);
-		// 	TF2Attrib_SetByName(Weapon2, "increase buff duration", 1.65);
-		// 	// TF2CustAttr_SetString(Weapon2, "custom buff type", "rocket-aiming-control");
-		// 	// TF2CustAttr_SetString(Weapon2, "rocket control buff turn rate", "0.25");
-		// }
+		if(IsValidEntity(Weapon2))
+		{
+			TF2Attrib_RemoveAll(Weapon2);
+		//	TF2Attrib_SetByName(Weapon2, "increase buff duration", 1.65);
+			// TF2CustAttr_SetString(Weapon2, "custom buff type", "rocket-aiming-control");
+			// TF2CustAttr_SetString(Weapon2, "rocket control buff turn rate", "0.25");
+		}
 
 		
 		

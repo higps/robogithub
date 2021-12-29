@@ -183,7 +183,7 @@ MakePanCop(client)
 
 	PrintHintText(client, "You are a Tank!\nYou can't contest objectives\nEat steak to heal and run fast and deal minicrits!");
 
-	EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
+	if(IsPlayerAlive(client)) EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
 
 }
  

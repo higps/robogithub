@@ -528,16 +528,19 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client , "Use build menu to build up to 3 sentries!\nRemove all sappers at once");
-	int soundswitch = GetRandomInt(1, 2);
-	switch(soundswitch)
+	if (IsPlayerAlive(client))
 	{
-		case 1:
+		int soundswitch = GetRandomInt(1, 2);
+		switch(soundswitch)
 		{
-			EmitSoundToAll(ENGIE_SPAWN_SOUND);
-		}
-		case 2:
-		{
-			EmitSoundToAll(ENGIE_SPAWN_SOUND2);
+			case 1:
+			{
+				EmitSoundToAll(ENGIE_SPAWN_SOUND);
+			}
+			case 2:
+			{
+				EmitSoundToAll(ENGIE_SPAWN_SOUND2);
+			}
 		}
 	}
 	

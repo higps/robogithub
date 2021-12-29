@@ -180,14 +180,14 @@ stock GiveGiantDemoKnight(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 4.0);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 5.0);
 			TF2Attrib_SetByName(Weapon1, "grenade launcher mortar mode", 0.0);
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
 			TF2Attrib_SetByName(Weapon1, "blast radius increased", 2.25);
 			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 20.0);
 			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.1);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.0);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 		}
@@ -196,12 +196,12 @@ stock GiveGiantDemoKnight(client)
 		{
 
 			TF2Attrib_SetByName(Weapon2, "damage bonus", 0.9);
-			TF2Attrib_SetByName(Weapon2, "blast radius increased", 1.25);
-			TF2Attrib_SetByName(Weapon2, "override projectile type", 3.0);
-			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 0.8);
+			TF2Attrib_SetByName(Weapon2, "blast radius increased", 1.5);
+			//TF2Attrib_SetByName(Weapon2, "override projectile type", 3.0);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 0.5);
 			TF2Attrib_SetByName(Weapon2, "reload time increased", 0.8);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "projectile spread angle penalty", 2.5);
+			TF2Attrib_SetByName(Weapon2, "projectile spread angle penalty", 5.0);
 		}
 
 				if(IsValidEntity(Weapon3))
