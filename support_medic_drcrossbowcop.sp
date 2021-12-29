@@ -186,7 +186,6 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon2, "heal on hit for slowfire", 50.0);
-			TF2Attrib_SetByName(Weapon2, "clip size bonus", 6.0);
 		}
 		
 	}

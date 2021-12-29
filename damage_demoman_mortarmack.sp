@@ -162,14 +162,14 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			TF2Attrib_SetByName(Weapon1, "clip size bonus", 5.3);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.0);
+			TF2Attrib_SetByName(Weapon1, "clip size bonus", 4.0);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.6);
 			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 1.15);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.3);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 16.0);
+			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 13.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.8);
 			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");

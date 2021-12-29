@@ -141,7 +141,7 @@ MakePanCop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 4950;
+	int iHealth = 7450;
 	
 	
 	int MaxHealth = 300;
@@ -160,16 +160,18 @@ MakePanCop(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.55);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-	TF2Attrib_SetByName(client, "health from packs decreased", 0.01);
-	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.75);
+
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	TF2Attrib_SetByName(client, "ammo regen", 100.0);
+	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
 	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
-	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
+	//TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	 

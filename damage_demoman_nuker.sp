@@ -41,7 +41,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 1;
+    restrictions.RobotCoins.Overall = 5;
 
 
     AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
@@ -190,10 +190,6 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			
-
-			
-			
 		}
 		
 		if(IsValidEntity(Weapon2))
@@ -202,12 +198,10 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon2, "damage bonus", 0.9);
 			TF2Attrib_SetByName(Weapon2, "blast radius increased", 1.25);
 			TF2Attrib_SetByName(Weapon2, "override projectile type", 3.0);
-			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.2);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 0.8);
 			TF2Attrib_SetByName(Weapon2, "reload time increased", 0.8);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "projectile spread angle penalty", 2.5);
-			
-			
 		}
 
 				if(IsValidEntity(Weapon3))
@@ -216,11 +210,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 10.0);
-			
-			
-			
-		}
-		
+		}	
 	}
 }
 

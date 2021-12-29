@@ -185,7 +185,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Harass Enemies with Rapid Cleavers!");
+	PrintHintText(client , "Cleaver On Hit: Marks for Death!\nBat: Deals crits whenever it would mini-crit\nBat on Kill: Gain 10 second speed boost");
 	
 }
 
@@ -216,6 +216,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		CreateRoboWeapon(client, "tf_weapon_cleaver", 812, 6, 1, 1, 0);
+		CreateRoboWeapon(client, "tf_weapon_bat", 30667, 6, 1, 2, 0);
 		
 		CreateRoboHat(client, CoPilot, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, GrayBanns, 10, 6, 0.0, 1.0, -1.0); 
@@ -230,13 +231,22 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);
 			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 0.05);
-			
 			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
 			TF2Attrib_SetByName(Weapon1, "mark for death", 10.0);
-			
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
+		}
+
+				int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		if(IsValidEntity(Weapon2))
+		{
+			TF2Attrib_RemoveAll(Weapon2);
+			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
+			TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
 			
-			
+			// TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.8);
+			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
+			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 		}
 	}
 }

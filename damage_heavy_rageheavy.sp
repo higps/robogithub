@@ -57,7 +57,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 4; 
+    restrictions.RobotCoins.Overall = 7; 
 
     AddRobot(robot, MakeGRageH, PLUGIN_VERSION, restrictions);
 }
@@ -232,7 +232,7 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
 			TF2Attrib_SetByName(Weapon1, "generate rage on damage", 1.0);
 			TF2Attrib_SetByName(Weapon1, "increase buff duration", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
 
 		}
