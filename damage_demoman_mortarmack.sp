@@ -121,7 +121,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Fire and reload clip at once!");
+	PrintHintText(client , "Fire and reload the entire clip at once!");
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -169,7 +169,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.3);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 13.0);
+			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 6.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.8);
 			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");

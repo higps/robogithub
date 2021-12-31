@@ -42,7 +42,7 @@ public void OnPluginStart()
     _enabledConVar.AddChangeHook(EnabledConVarChangeHook);
     _enabled = _enabledConVar.BoolValue;
 
-    _humansPerRobotConVar = CreateConVar("sm_berobot_dynamicRobotCount_humansPerRobot", "3.0", "ratio of humans-to-robot for dynamic robot count calculation");
+    _humansPerRobotConVar = CreateConVar("sm_berobot_dynamicRobotCount_humansPerRobot", "4.0", "ratio of humans-to-robot for dynamic robot count calculation");
     _humansPerRobotConVar.AddChangeHook(RoboCapTeamHumansPerRobotConVarChangeHook);
     _humansPerRobot = _humansPerRobotConVar.FloatValue;
 }
@@ -78,7 +78,7 @@ void SetRoboCapTeam()
         return;
 
     int count = GetClientCount();
-    float ratio = _humansPerRobot +1;
+    float ratio = _humansPerRobot +1.0;
     int robotCount = RoundToCeil(count/ratio);
 
     SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
