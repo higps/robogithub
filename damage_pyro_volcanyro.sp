@@ -192,7 +192,7 @@ stock GiveGiantPyro(client)
 
 		CreateRoboHat(client, FeatheredFiend, 10, 6, 1315860, 1.0, -1.0); 
 		CreateRoboHat(client, DeitysDress, 10, 6, 1315860, 1.2, -1.0); 
-		CreateRoboHat(client, PyromancersMask, 10, 6, 1315860, 0.75, -1.0); 
+		CreateRoboHat(client, PyromancersMask, 10, 6, 1315860, 1.2, -1.0); 
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -202,7 +202,7 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "explode_on_ignite", 1.0); //Damage should be changed match BMod Gas Passer
-			TF2Attrib_SetByName(Weapon2, "mult_item_meter_charge_rate", 0.4);
+			TF2Attrib_SetByName(Weapon2, "mult_item_meter_charge_rate", 0.25);
 
 		}
 
