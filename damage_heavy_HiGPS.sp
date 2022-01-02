@@ -29,6 +29,10 @@
 #define SUMMERSHADES 486
 #define WEIGHTROOMWARMER 30178
 
+float scale = 1.75;
+float spreadmodifier = 0.75;
+
+
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Deflector Heavy",
@@ -183,23 +187,25 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
    
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
+	
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	UpdatePlayerHitbox(client, 1.75);
+	UpdatePlayerHitbox(client, scale);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-
-	PrintHintText(client , "Shoot down projectiles!\n+30 percent damage done");
+	float spreadpenalty = scale * spreadmodifier;
+	PrintHintText(client , "Shoot down projectiles!\n+50 percent damage bons\n%f spread penalty", spreadpenalty);
 
 }
  
@@ -248,6 +254,8 @@ stock GiveGDeflectorH(client)
 		//Weapon Code
 		//CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, float style (-1.0 for none) );
 		CreateRoboWeapon(client, "tf_weapon_minigun", 850, 6, 1, 0, 0);
+		
+		float spreadpenalty = scale * spreadmodifier;
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
@@ -257,7 +265,11 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
+			TF2Attrib_SetByName(Weapon1, "mult_spread_scales_consecutive", 1.0);
+			TF2Attrib_SetByName(Weapon1, "spread penalty", spreadpenalty);
+			
+			
 		}
 	}
 }

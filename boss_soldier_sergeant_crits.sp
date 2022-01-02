@@ -29,6 +29,7 @@
 
 
 #define Tyrantium_Helmet 30014
+float scale = 1.85;
 
 public Plugin:myinfo = 
 {
@@ -69,7 +70,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 3;
+    restrictions.RobotCoins.PerRobot = 4;
 
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
@@ -206,10 +207,10 @@ MakeGiantSoldier(client)
 	int iHealth = 5800;		
 	int MaxHealth = 200;
 	int iAdditiveHP = iHealth - MaxHealth;
-	float Scale = 1.85;
+	
 	TF2_SetHealth(client, iHealth);
 	
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", Scale);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -223,7 +224,7 @@ MakeGiantSoldier(client)
 	
 	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.65);
-	UpdatePlayerHitbox(client, Scale);
+	UpdatePlayerHitbox(client, scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);

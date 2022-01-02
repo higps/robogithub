@@ -148,7 +148,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar(CONVAR_ROBOCAP_TEAM, "6", "The total amount of giant robots on a team");  
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
     g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
-    g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Needs vote to start boss mode, 1 = Start game by reaching enough volunteers");
+    g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Starts the mode when waiting for players is over, 1 = Start game by reaching enough volunteers");
 
     g_cvCvarList[CV_g_Rtr_precent] = CreateConVar("sm_mm_needed_rtr_ratio", "0.5", "The ratio of votes needed to start the mode with !rtr 1.0 = 100% 0.0 = 0%");
 
@@ -211,6 +211,7 @@ public void OnPluginStart()
 
     HookEvent("teamplay_round_start", Event_Waiting_Abouttoend, EventHookMode_Post);
     
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
@@ -313,6 +314,31 @@ void Reset(int client)
 }
 
 /* Publics */
+
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+        if (!IsAnyRobot(victim) && IsAnyRobot(attacker))
+        {
+            //PrintChatAll("You are not a robot %N", victim);
+            if (TF2_GetPlayerClass(victim) == TFClass_Scout){
+                CreateTimer(4.0, Timer_Respawn, victim);
+            }
+        }
+}
+
+public Action Timer_Respawn(Handle timer, any client)
+{
+    //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
+	if (IsValidClient(client) && !IsPlayerAlive(client))
+    {
+        TF2_RespawnPlayer(client);
+        //PrintHintText(client,"You have instant respawn as scout");
+    }
+}
+
 public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dontBroadcast)
 {
     if(g_Enable && g_RoundCount == 0){
@@ -392,36 +418,10 @@ public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 {
     //Activates when doing OnRegenerate (touchihng resupply locker) and then ignoring it if you are a boss
 
-/*     if(!IsAnyRobot(pThis)){
-         if(g_cv_bDebugMode) PrintToChatAll("Not a robot, removing forced skin on %N", pThis);
-        SetEntProp(pThis, Prop_Send, "m_bForcedSkin", 0);
-    }else
-    {
-        int iTeam = GetClientTeam(pThis);
-        switch(iTeam)
-        {
-            case RED:
-            {            	
-            if(g_cv_bDebugMode) PrintToChatAll("Forcing skin of %N, to RED", pThis);
-            SetEntProp(pThis, Prop_Send, "m_bForcedSkin", 1);
-            SetEntProp(pThis, Prop_Send, "m_nForcedSkin", 0);
-            }
-            case BLUE:
-            {
-            if(g_cv_bDebugMode) PrintToChatAll("Forcing skin of %N, to BLUE", pThis);
-            SetEntProp(pThis, Prop_Send, "m_bForcedSkin", 1);
-            SetEntProp(pThis, Prop_Send, "m_nForcedSkin", 1);
-            }
-        }
-        //unset to get uber animations to play right maybe?
-        
-  
-    } */
-
     if(isMiniBoss(pThis)){
         //PrintToChatAll("1");
 
-    //sets the robot health when touc
+    //sets the robot health when touch
 	int maxhealth = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, pThis);
         SetEntityHealth(pThis, maxhealth);
         return MRES_Supercede; 
@@ -446,7 +446,10 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
         g_RoboCap = StringToInt(sNewValue);
 
     if(convar == g_cvCvarList[CV_g_RoboCapTeam])
+    {   
         g_RoboCapTeam = StringToInt(sNewValue);
+        PrintHintTextToAll("Current Robots: %i", g_RoboCapTeam);
+    }
 
     if(convar == g_cvCvarList[CV_g_RoboTeamMode])
         g_RoboTeamMode = StringToInt(sNewValue);
@@ -479,11 +482,12 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
     //if(g_cv_bDebugMode) PrintToChatAll("On damage happened");
     
-    if(IsAnyRobot(victim) && iClassAttacker == TFClass_Spy)
+    if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
     {
         // Checks if boss is on
-        if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy and victim was robot");
-
+            if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy and victim was robot");
+            if (iClassAttacker == TFClass_Spy)
+            {
                 if(damagecustom == TF_CUSTOM_BACKSTAB)
                 {
                     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
@@ -492,7 +496,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                     return Plugin_Changed;
                 }
-            
+            }  
+            /*Damage code for scout */
+            // if (iClassAttacker == TFClass_Scout)
+            // {
+            //         if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+            //       //  damage *= 1.25;
+            //         //critType = CritType_Crit;
+            //         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+            //         return Plugin_Changed;
+            // }   
     }
     return Plugin_Continue;
 }
@@ -626,75 +639,8 @@ public Action Command_YT_Robot_Start(int client, int args)
 
         if(g_CV_flYoutuberMode)
         {
-            // ServerCommand("sm_ct @all red");
-            // ServerCommand("sm_ct @blue red");
             ServerCommand("sm_berobot_dynamicRobotCount_enable 0");
 
-            //Loops through all players and checks if the set ID's are present. Then sets them on blue while the rest is red
-            //g_RoboTeam = BLUE;
-
-            CheckIfYT();
-            // for(int i = 1; i <= MaxClients; i++)
-            // {
-
-            //     if(IsClientInGame(i) && IsValidClient(i))
-            //     {
-
-            //         char sSteamID[64];
-            //         GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
-            //         int playerID = GetClientUserId(i);
-
-
-            //         //PrintToChatAll("Looping on %i", playerID);
-            //         //Hardcoding
-            //         //GPS
-            //         if(StrEqual(sSteamID, "76561197963998743"))
-            //         {
-            //             CreateRobot("HiGPS", i, "");
-            //             // CreateRobot("Solar Light", i, "");
-            //             //ServerCommand("sm_begps #%i", playerID);
-            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-            //         }else if(StrEqual(sSteamID, "76561198031657211"))
-            //         {
-            //             //ServerCommand("sm_bebearded #%i", playerID);
-            //             CreateRobot("Bearded Expense", i, "");
-            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-            //             TF2_RespawnPlayer(i);
-            //         }else if(StrEqual(sSteamID, "76561198042407618"))
-            //         {
-            //             //   ServerCommand("sm_besentro #%i", playerID);
-            //             CreateRobot("Sentro", i, "");
-            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-            //             TF2_RespawnPlayer(i);
-            //         }else if(StrEqual(sSteamID, "76561198057999536"))//dane
-            //         {
-            //             //   ServerCommand("sm_bedane #%i", playerID);
-            //             CreateRobot("Uncle Dane", i, "");
-            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-            //             TF2_RespawnPlayer(i);
-            //         }else if(StrEqual(sSteamID, "76561197970498549"))//Agro
-            //         {
-            //             //   ServerCommand("sm_beagro #%i", playerID);
-            //             CreateRobot("Agro", i, "");
-            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-            //             TF2_RespawnPlayer(i);
-            //         }else if(StrEqual(sSteamID, "76561198070962612"))
-            //         {
-            //             ///     ServerCommand("sm_besolar #%i", playerID);
-            //             CreateRobot("Solar Light", i, "");
-            //             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-            //             TF2_RespawnPlayer(i);
-            //         }else
-            //         {
-            //             if(g_cv_bDebugMode) PrintToChatAll("%N was moved to Human team which was %i", i, g_HumanTeam);
-            //             if(g_cv_bDebugMode) PrintToChatAll("RobotTeam was %i", g_RoboTeam);
-            //             TF2_SwapTeamAndRespawnNoMsg(i, g_HumanTeam);
-            //             TF2_RespawnPlayer(i);
-            //         }
-
-
-            //     }
-            // }
         }else
         {
 
@@ -1547,69 +1493,4 @@ stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
     int irandomclass = GetRandomInt(1, 9);
     TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
     TF2_RespawnPlayer(client);
-}
-
-stock void CheckIfYT()
-{
-            for(int i = 1; i <= MaxClients; i++)
-            {
-
-                if(IsClientInGame(i) && IsValidClient(i))
-                {
-
-                    char sSteamID[64];
-                    GetClientAuthId(i, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
-                    int playerID = GetClientUserId(i);
-
-
-                    //PrintToChatAll("Looping on %i", playerID);
-                    //Hardcoding
-                    //GPS
-                    if(StrEqual(sSteamID, "76561197963998743"))
-                    {
-                        CreateRobot("HiGPS", i, "");
-                        // CreateRobot("Solar Light", i, "");
-                        //ServerCommand("sm_begps #%i", playerID);
-                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-                    }else if(StrEqual(sSteamID, "76561198031657211"))
-                    {
-                        //ServerCommand("sm_bebearded #%i", playerID);
-                        CreateRobot("Bearded Expense", i, "");
-                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-                        TF2_RespawnPlayer(i);
-                    }else if(StrEqual(sSteamID, "76561198042407618"))
-                    {
-                        //   ServerCommand("sm_besentro #%i", playerID);
-                        CreateRobot("Sentro", i, "");
-                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-                        TF2_RespawnPlayer(i);
-                    }else if(StrEqual(sSteamID, "76561198057999536"))//dane
-                    {
-                        //   ServerCommand("sm_bedane #%i", playerID);
-                        CreateRobot("Uncle Dane", i, "");
-                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-                        TF2_RespawnPlayer(i);
-                    }else if(StrEqual(sSteamID, "76561197970498549"))//Agro
-                    {
-                        //   ServerCommand("sm_beagro #%i", playerID);
-                        CreateRobot("Agro", i, "");
-                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-                        TF2_RespawnPlayer(i);
-                    }else if(StrEqual(sSteamID, "76561198070962612"))
-                    {
-                        ///     ServerCommand("sm_besolar #%i", playerID);
-                        CreateRobot("Solar Light", i, "");
-                        TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
-                        TF2_RespawnPlayer(i);
-                    }else
-                    {
-                        if(g_cv_bDebugMode) PrintToChatAll("%N was moved to Human team which was %i", i, g_HumanTeam);
-                        if(g_cv_bDebugMode) PrintToChatAll("RobotTeam was %i", g_RoboTeam);
-                        TF2_SwapTeamAndRespawnNoMsg(i, g_HumanTeam);
-                        TF2_RespawnPlayer(i);
-                    }
-
-
-                }
-            }
 }

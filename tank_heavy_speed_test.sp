@@ -4,56 +4,38 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
-#include <sdkhooks>
+#include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Big Joey"
-#define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Tomislav"
-
-
-//#define MODEL "models/weapons/shells/shell_minigun.mdl"
-
-// #define TF_THROWABLE_BREAD_ENTITY "tf_projectile_throwable_breadmonster"
-
+#define ROBOT_NAME	"Spped Pancop"
+#define ROBOT_ROLE "Tank"
+#define ROBOT_DESCRIPTION "Map testing."
+ 
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-#define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
-#define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
-#define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
-#define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
 
 #define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
 #define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
 
-#define WHITERUSSIAN 30644
-#define GRAYBANNS 30104
-#define COMBATSLACKS 30372
-
-float scale = 1.75;
-
 public Plugin:myinfo =
 {
-	name = "[TF2] Be the Giant Deflector Heavy",
+	name = "[TF2] Be the Giant Pancop",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
 	description = "Play as the Giant Deflector Heavy from MvM",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
 
-new bool:Locked1[MAXPLAYERS+1];
-new bool:Locked2[MAXPLAYERS+1];
-new bool:Locked3[MAXPLAYERS+1];
-new bool:CanWindDown[MAXPLAYERS+1];
- 
 public OnPluginStart()
 {
     LoadTranslations("common.phrases");
+
+    //HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 
     AddNormalSoundHook(BossGPS);
 
@@ -64,15 +46,16 @@ public OnPluginStart()
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
-    robot.sounds.gunfire = SOUND_GUNFIRE;
-    robot.sounds.gunspin = SOUND_GUNSPIN;
-    robot.sounds.windup = SOUND_WINDUP;
-    robot.sounds.winddown = SOUND_WINDDOWN;
     robot.sounds.death = DEATH;
 
-    AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION);
-	
+    RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.PerRobot = 1;
 
+
+    AddRobot(robot, MakePanCop, PLUGIN_VERSION, restrictions);
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -104,7 +87,6 @@ public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH]
 		}
 		return Plugin_Changed;
 	}
-	return Plugin_Continue;
 }
 
 public void OnPluginEnd()
@@ -114,37 +96,22 @@ public void OnPluginEnd()
  
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-//	CreateNative("BeGDeflectorH_MakeGDeflectorH", Native_SetGDeflectorH);
+//	CreateNative("BeGDeflectorH_MakePanCop", Native_SetGDeflectorH);
 //	CreateNative("BeGDeflectorH_IsGDeflectorH", Native_IsGDeflectorH);
 	return APLRes_Success;
 }
  
 public OnMapStart()
 {
-//	PrecacheModel(MODEL, true);
 	PrecacheModel(GDEFLECTORH);
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 	
-	// PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_04.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_05.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
-	
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
-
-	PrecacheSound(SOUND_GUNFIRE);
-	PrecacheSound(SOUND_GUNSPIN);
-	PrecacheSound(SOUND_WINDUP);
-	PrecacheSound(SOUND_WINDDOWN);
 }
  
 public Action:SetModel(client, const String:model[])
@@ -158,7 +125,7 @@ public Action:SetModel(client, const String:model[])
 	}
 }
 
-MakeGDeflectorH(client)
+MakePanCop(client)
 {	
 	TF2_SetPlayerClass(client, TFClass_Heavy);
 	TF2_RegeneratePlayer(client);
@@ -174,7 +141,7 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 5000;
+	int iHealth = 7450;
 	
 	
 	int MaxHealth = 300;
@@ -187,41 +154,37 @@ MakeGDeflectorH(client)
 	
 	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
+	
    
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.7);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
+	TF2Attrib_SetByName(client, "move speed penalty", 5.55);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.75);
+
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	TF2Attrib_SetByName(client, "ammo regen", 100.0);
+	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	
+	TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
+	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
+	//TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
-	UpdatePlayerHitbox(client, scale);
+	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	 
+
+	UpdatePlayerHitbox(client, 1.75);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	
-	PrintCenterText(client, "BIG JOEY!");
 
-	//g_IsGPS[client] = true;
-	
-/* 		PrintToChat(client, "1. You are now Giant Deflector GPS!");
-		PrintToChat(client, "2. Your Minigun deals 50 percent more damage and can destroy Rockets and Pipes !");
-		PrintToChat(client, "3. You will lose this status when you touch a locker");	 */
-	
-	//}
-	// else{
-	// PrintToChat(client, "You have to be heavy to become Deflector GPS");
-	// g_IsGPS[client] = false;
-	// }
+	PrintHintText(client, "You are a Tank!\nYou can't contest objectives\nEat steak to heal and run fast and deal minicrits!");
+
+	if(IsPlayerAlive(client)) EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
+
 }
  
 stock TF2_SetHealth(client, NewHealth)
@@ -233,13 +196,17 @@ stock TF2_SetHealth(client, NewHealth)
 public Action:Timer_Switch(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
-		GiveBigJoey(client);
+		GiveGDeflectorH(client);
 }
+
+#define Machomann 30085
+#define TheLaw 30362 
+#define SiberianSophisticate 946 
  
-stock GiveBigJoey(client)
+stock GiveGDeflectorH(client)
 {
 	if (IsValidClient(client))
-	{
+	{		
 		RoboRemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
@@ -247,27 +214,37 @@ stock GiveBigJoey(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 
-//bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot)
+	//	CreateRoboWeapon(client, "tf_weapon_club", 264, 6, 2, 2, 0);
+	//	CreateRoboWeapon(client, "tf_weapon_lunchbox", 311, 6, 2, 1, 0);
 
-		CreateRoboWeapon(client, "tf_weapon_minigun", 424, 9, 1, 0, 0);
+		CreateRoboHat(client, Machomann, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, TheLaw, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, SiberianSophisticate, 10, 6, 0.0, 1.0, -1.0); 
 
-		CreateRoboHat(client, WHITERUSSIAN, 10, 6, 15185211.0, 0.75, -1.0); 
-		CreateRoboHat(client, GRAYBANNS, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, COMBATSLACKS, 10, 6, 0.0, 1.0, -1.0);
-
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-
-		float spreadpenalty = scale;
-
+		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
-			TF2Attrib_SetByName(Weapon1, "item style override", 1.0);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
+			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
-			TF2Attrib_SetByName(Weapon1, "spread penalty", spreadpenalty);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.30);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
+			TF2Attrib_SetByName(Weapon1, "ragdolls plasma effect", 1.0);
+			TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 109.0);
+			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.35);
+			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
+			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
+
+		}
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		if(IsValidEntity(Weapon2))
+		{
+			TF2Attrib_RemoveAll(Weapon2);
+			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon2, "lunchbox adds minicrits", 7.0);
+			TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 40.0);
+			
+
+
 		}
 	}
 }
@@ -277,11 +254,12 @@ public TF2_OnConditionAdded(client, TFCond:condition)
     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
     {	
         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-
         if (tauntid == -1)
         {
-		// //	TF2_AddCondition(client, TFCond_SpawnOutline, 10);
-        	CreateTimer(1.5, Timer_Taunt_Cancel, client);
+		TF2_AddCondition(client, TFCond_CritCola, 30.0);
+		TF2_AddCondition(client, TFCond_RegenBuffed, 30.0);
+		TF2_AddCondition(client, TFCond_RestrictToMelee, 30.0);
+		CreateTimer(2.5, Timer_Taunt_Cancel, client);
         }	  
 	}
 }
@@ -289,33 +267,14 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 {
 	if (IsValidClient(client)){
+
 		TF2_RemoveCondition(client, TFCond_Taunting);
-		
+
+		int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
+		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon); 
 	}
 }
-
-// public void OnEntityCreated(int iEntity, const char[] sClassName) 
-// {
-// 	if (StrContains(sClassName, "tf_projectile") == 0)
-// 	{
-// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-// 		SetEntityModel(iEntity, MODEL);
-// 		//SetEntProp(iEntity, Prop_Send, "m_bCritical", 1);
-// 	}
-	
-// }
-
-// public void Hook_OnProjectileSpawn(iEntity) {
-// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		
-// 		SetEntityModel(iEntity, MODEL);
-		
-// 	//	SetEntPropFloat(iEntity, Prop_Send, "m_nModelIndex", 5.0);
-// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 2.75);
-		
-// 	}
-// }
 
 
 // - Regular paints -

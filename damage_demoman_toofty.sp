@@ -5,6 +5,7 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
+#include <sdkhooks.inc>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Toofty"
@@ -165,7 +166,7 @@ stock GiveGiantToofty(client)
 		{
 
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.20);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.5);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.75);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
@@ -195,5 +196,21 @@ stock GiveGiantToofty(client)
 				break;
 			}
 		}
+	}
+}
+
+public void OnEntityCreated(int iEntity, const char[] sClassName) 
+{
+	if (StrContains(sClassName, "tf_projectile") == 0)
+	{
+		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+	}
+	
+}
+
+public void Hook_OnProjectileSpawn(iEntity) {
+	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
 	}
 }

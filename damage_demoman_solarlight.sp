@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Solar Light"
@@ -193,7 +194,7 @@ stock GiveGiantDemoKnight(client)
 			if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
 			{				
 				//PrintToChatAll("going through entity");
-				TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.75);		
+				TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.5);		
 				TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);		
 				
 				break;
@@ -211,11 +212,11 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.3);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 3.0);
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.8);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 
 		}
@@ -226,13 +227,13 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_RemoveAll(Weapon3);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon3, "is_festivized", 1.0);		
-			TF2Attrib_SetByName(Weapon3, "charge meter on hit", 1.0);		
+			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 4.0);		
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);		
 			TF2Attrib_SetByName(Weapon3, "single wep deploy time decreased", 0.6);		
 			TF2Attrib_SetByName(Weapon3, "single wep holster time increased", 0.6);	
 			//TF2Attrib_SetByName(Weapon3, "melee cleave attack", 1.0);	
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 100.0);		
+			TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);		
 			
 			
 			

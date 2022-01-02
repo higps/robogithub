@@ -26,6 +26,8 @@
 #define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
 
+float scale = 1.75;
+
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Rage Heavy",
@@ -166,7 +168,7 @@ MakeGRageH(client)
 	
 	
    
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
@@ -181,7 +183,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.75);
 
-	UpdatePlayerHitbox(client, 1.75);
+	UpdatePlayerHitbox(client, scale);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
@@ -234,6 +236,7 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "increase buff duration", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
+			TF2Attrib_SetByName(Weapon1, "spread penalty", scale);
 
 		}
 		

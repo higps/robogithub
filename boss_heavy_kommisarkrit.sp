@@ -7,7 +7,7 @@
 #include <sdkhooks>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Soviet Unifier"
+#define ROBOT_NAME	"Kommisar Krit"
 #define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "Slow Crit Minigun"
 
@@ -34,7 +34,9 @@
 
 #define Uclanka 840
 #define CommisarsCoat 30633
-#define Dictator 30306
+#define TheLittleBear 1097
+
+float scale = 1.85;
 
 public Plugin:myinfo =
 {
@@ -73,7 +75,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 3;
+    restrictions.RobotCoins.PerRobot = 4;
 
     AddRobot(robot, MakeBigBigJoey, PLUGIN_VERSION, restrictions);
 	
@@ -251,20 +253,21 @@ MakeBigBigJoey(client)
 	
 	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
-	float scale = 1.85;
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.7);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
-	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
+
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
+	
 	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
+	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	
 	
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
@@ -323,11 +326,12 @@ stock GiveBigJoey(client)
 
 		CreateRoboHat(client, Uclanka, 10, 6, 0.0, 0.75, -1.0); 
 		CreateRoboHat(client, CommisarsCoat, 10, 6, 0.75, 1.0, -1.0); 
-		CreateRoboHat(client, Dictator, 10, 6, 0.0, 0.75, -1.0);
+		//CreateRoboHat(client, TheLittleBear, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 	//	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-
+		
+		float spreadpenalty = scale;
 		if(IsValidEntity(Weapon1))
 		{
 			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 2.0);
@@ -336,8 +340,9 @@ stock GiveBigJoey(client)
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.65);
 			TF2Attrib_SetByName(Weapon1, "minigun spinup time decreased", 1.25);
 			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
+			TF2Attrib_SetByName(Weapon1, "spread penalty", spreadpenalty);
 		}
-		
 	}
 }
 

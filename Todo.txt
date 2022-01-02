@@ -16,7 +16,29 @@ Every 4 player is one robot, rounding to floor.
 
 7. Add mvm_start_wave.wav to the beginning of a round.
 
-
+Rework menus:
+Menu
+-> Select free robot
+   Select Robot Type
+   -> Tank (1) (displays amount of total available robots, unavailable robots are whited out like normal)
+      Tanks
+           -> Heavy: Bearded
+   -> Damage (16)
+      Damage
+         -> Soldier: Icebear
+         -> Demoman: Solarlight
+           etc..
+   -> Support (6)
+         Support
+          - Medic: Array Seven
+    ... etc
+-> Buy one-time robot
+   -> Tank (1)
+       Tank
+         -> Heavy: Pancop
+   -> Damage (16)
+   -> Support (6)
+   -> ZBOSS (3)
 
 Make selection mode happen when MM_ENABLE 1 is on after waiting for players is over.
 

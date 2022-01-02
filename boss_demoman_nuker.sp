@@ -8,7 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Nuker"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "Nuke Shot"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
@@ -37,7 +37,7 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-	    RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
@@ -98,7 +98,7 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 3000;
+	int iHealth = 5000;
 	
 	
 	int MaxHealth = 175;
@@ -135,8 +135,9 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+	TF2_AddCondition(client, TFCond_CritCanteen);
 	
-	PrintHintText(client, "You can only fire after the smoke has settled!\nUse the stickybomb in the mean time\nOn Melee kill: 10 seconds of minicrits");
+	PrintHintText(client, "Shoot big bombs that go boom");
 	PrintToChat(client, "1. You are now Giant Nuker !");
 }
 
@@ -166,8 +167,8 @@ stock GiveGiantDemoKnight(client)
 
 
 		CreateRoboWeapon(client, "tf_weapon_cannon", 996, 6, 1, 0, 0);
-		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 1, 0);
-		CreateRoboWeapon(client, "tf_weapon_bottle", 609, 6, 1, 2, 0);
+		// CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 1, 0);
+		// CreateRoboWeapon(client, "tf_weapon_bottle", 609, 6, 1, 2, 0);
 
 		CreateRoboHat(client, TheFragProofFragger, 10, 6, 0.0, 0.75, -1.0); 
 
@@ -180,37 +181,38 @@ stock GiveGiantDemoKnight(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 5.0);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.5);
 			TF2Attrib_SetByName(Weapon1, "grenade launcher mortar mode", 0.0);
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
 			TF2Attrib_SetByName(Weapon1, "blast radius increased", 2.25);
 			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 20.0);
-			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.1);
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 4.0);
+			TF2Attrib_SetByName(Weapon1, "reload time increased", 1.25);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
 		}
 		
-		if(IsValidEntity(Weapon2))
-		{
+		// if(IsValidEntity(Weapon2))
+		// {
 
-			TF2Attrib_SetByName(Weapon2, "damage bonus", 0.9);
-			TF2Attrib_SetByName(Weapon2, "blast radius increased", 1.5);
-			//TF2Attrib_SetByName(Weapon2, "override projectile type", 3.0);
-			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 0.5);
-			TF2Attrib_SetByName(Weapon2, "reload time increased", 0.8);
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "projectile spread angle penalty", 5.0);
-		}
+		// 	TF2Attrib_SetByName(Weapon2, "damage bonus", 0.9);
+		// 	TF2Attrib_SetByName(Weapon2, "blast radius increased", 1.5);
+		// 	//TF2Attrib_SetByName(Weapon2, "override projectile type", 3.0);
+		// 	TF2Attrib_SetByName(Weapon2, "fire rate penalty", 0.5);
+		// 	TF2Attrib_SetByName(Weapon2, "reload time increased", 0.8);
+		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Weapon2, "projectile spread angle penalty", 5.0);
+		// }
 
-				if(IsValidEntity(Weapon3))
-		{
+	// 			if(IsValidEntity(Weapon3))
+	// 	{
 			
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 10.0);
-		}	
+	// 		TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
+	// 		TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+	// 		TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 10.0);
+	// 	}	
 	}
 }
 
