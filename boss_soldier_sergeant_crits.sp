@@ -70,7 +70,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 4;
+    restrictions.RobotCoins.PerRobot = 3;
 
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }

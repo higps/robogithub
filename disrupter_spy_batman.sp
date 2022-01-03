@@ -12,7 +12,7 @@
 #include <tf_ontakedamage.inc>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Batman"
+#define ROBOT_NAME	"Batmann"
 #define ROBOT_ROLE "Disrupter"
 #define ROBOT_DESCRIPTION "You have grappling hook"
 
@@ -64,9 +64,8 @@ public OnPluginStart()
 	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
     // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
     // restrictions.RobotCoins.PerRobot = 1;
-	
-	AddRobot(robot, MakeSpy, PLUGIN_VERSION, null, 2);
 
+	AddRobot(robot, MakeSpy, PLUGIN_VERSION, null, 2);
 	PrecacheModel(MODEL);
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
@@ -193,7 +192,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	PrintToChat(client, "1. You are now Giant Batmann robot!");
 	PrintHintText(client, "Use grappling hook!\nYou can't kill, only hurt and stun targets\nHits from the back stuns harder than from the front\nSapper, no disguise kit or invis watch");
 
-	EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
+	//EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
 
 }
 
@@ -266,8 +265,8 @@ stock GiveBigRoboDane(client)
 		{
 			TF2Attrib_RemoveAll(Knife);
 			
-			
-						
+			//TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
+			TF2Attrib_SetByName(Knife, "damage bonus", 1.75);
 		}
 
 	if(IsValidEntity(Sapper)) //

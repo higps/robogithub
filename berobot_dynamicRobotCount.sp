@@ -42,7 +42,7 @@ public void OnPluginStart()
     _enabledConVar.AddChangeHook(EnabledConVarChangeHook);
     _enabled = _enabledConVar.BoolValue;
 
-    _humansPerRobotConVar = CreateConVar("sm_berobot_dynamicRobotCount_humansPerRobot", "3.5", "ratio of humans-to-robot for dynamic robot count calculation");
+    _humansPerRobotConVar = CreateConVar("sm_berobot_dynamicRobotCount_humansPerRobot", "3.0", "ratio of humans-to-robot for dynamic robot count calculation");
     _humansPerRobotConVar.AddChangeHook(RoboCapTeamHumansPerRobotConVarChangeHook);
     _humansPerRobot = _humansPerRobotConVar.FloatValue;
 }

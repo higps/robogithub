@@ -280,7 +280,8 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 	{	
 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
 		int iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-
+		if (HasEntProp(weapon, Prop_Send, "m_iWeaponState"))
+		{
 		if(IsValidEntity(weapon) && iWeapon == 850)//850 == deflector
 		{
 			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
@@ -340,6 +341,7 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 				Locked3[iClient] = false;
 			}
 		}
+	}
 	}
 }
 
