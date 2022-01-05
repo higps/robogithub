@@ -15,6 +15,12 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
+#define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
+#define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
+#define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
+#define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
+
+
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Demoknight",
@@ -28,6 +34,8 @@ public OnPluginStart()
 {
     LoadTranslations("common.phrases");
 
+	AddNormalSoundHook(BossMortar);
+
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
@@ -37,6 +45,35 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 2);
+}
+
+public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
+{
+	if (!IsValidClient(entity)) return Plugin_Continue;
+	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
+
+	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
+	{
+		if (StrContains(sample, "1.wav", false) != -1)
+		{
+			EmitSoundToAll(LEFTFOOT, entity);
+		}
+		else if (StrContains(sample, "3.wav", false) != -1)
+		{
+			EmitSoundToAll(LEFTFOOT1, entity);
+		}
+		else if (StrContains(sample, "2.wav", false) != -1)
+		{
+			EmitSoundToAll(RIGHTFOOT, entity);
+		}
+		else if (StrContains(sample, "4.wav", false) != -1)
+		{
+			EmitSoundToAll(RIGHTFOOT1, entity);
+		}
+		return Plugin_Changed;
+	}
+
+	return Plugin_Continue;
 }
 
 public void OnPluginEnd()
@@ -118,8 +155,8 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.15);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
-	TF2Attrib_SetByName(client, "charge impact damage increased", 4.5);
+	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
+	TF2Attrib_SetByName(client, "charge impact damage increased", 2.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
 	UpdatePlayerHitbox(client, 1.75);

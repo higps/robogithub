@@ -17,9 +17,11 @@
 // #define TF_THROWABLE_BREAD_ENTITY "tf_projectile_throwable_breadmonster"
 
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
-#define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
-#define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
+
+// #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
+// #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
+
 
 #define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
 #define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
@@ -30,6 +32,11 @@
 #define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
 #define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
+
+#define DEATH   "later.wav"
+#define SPAWN   "bigjoey.wav"
+// #define JUMP  "bigjoey.wav"
+// #define ALARM       "later.wav"
 
 #define WHITERUSSIAN 30644
 #define GRAYBANNS 30104
@@ -46,10 +53,10 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-new bool:Locked1[MAXPLAYERS+1];
-new bool:Locked2[MAXPLAYERS+1];
-new bool:Locked3[MAXPLAYERS+1];
-new bool:CanWindDown[MAXPLAYERS+1];
+// new bool:Locked1[MAXPLAYERS+1];
+// new bool:Locked2[MAXPLAYERS+1];
+// new bool:Locked3[MAXPLAYERS+1];
+// new bool:CanWindDown[MAXPLAYERS+1];
  
 public OnPluginStart()
 {
@@ -84,23 +91,19 @@ public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH]
 	{
 		if (StrContains(sample, "1.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step01.wav");
-			EmitSoundToAll(sample, entity);
+			EmitSoundToAll(LEFTFOOT, entity);
 		}
 		else if (StrContains(sample, "3.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step03.wav");
-			EmitSoundToAll(sample, entity);
+			EmitSoundToAll(LEFTFOOT1, entity);
 		}
 		else if (StrContains(sample, "2.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step02.wav");
-			EmitSoundToAll(sample, entity);
+			EmitSoundToAll(RIGHTFOOT, entity);
 		}
 		else if (StrContains(sample, "4.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step04.wav");
-			EmitSoundToAll(sample, entity);
+			EmitSoundToAll(RIGHTFOOT1, entity);
 		}
 		return Plugin_Changed;
 	}
@@ -126,7 +129,7 @@ public OnMapStart()
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
-	
+
 	// PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
@@ -136,10 +139,10 @@ public OnMapStart()
 	// PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
 	
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
+	PrecacheSound(LEFTFOOT);
+	PrecacheSound(LEFTFOOT1);
+	PrecacheSound(RIGHTFOOT);
+	PrecacheSound(RIGHTFOOT1);
 
 	PrecacheSound(SOUND_GUNFIRE);
 	PrecacheSound(SOUND_GUNSPIN);
@@ -193,8 +196,10 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.7);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
+
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -209,8 +214,8 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintCenterText(client, "BIG JOEY!");
-
+	PrintCenterText(client, "IT'S BIG JOEY!");
+	EmitSoundToAll(SPAWN, client);
 	//g_IsGPS[client] = true;
 	
 /* 		PrintToChat(client, "1. You are now Giant Deflector GPS!");
@@ -257,7 +262,7 @@ stock GiveBigJoey(client)
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 
-		float spreadpenalty = scale;
+		// float spreadpenalty = scale;
 
 		if(IsValidEntity(Weapon1))
 		{
@@ -267,7 +272,6 @@ stock GiveBigJoey(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
-			TF2Attrib_SetByName(Weapon1, "spread penalty", spreadpenalty);
 		}
 	}
 }

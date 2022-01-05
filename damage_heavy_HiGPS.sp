@@ -78,23 +78,19 @@ public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH]
 	{
 		if (StrContains(sample, "1.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step01.wav");
-			EmitSoundToAll(sample, entity);
+			EmitSoundToAll(LEFTFOOT, entity);
 		}
 		else if (StrContains(sample, "3.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step03.wav");
-			EmitSoundToAll(sample, entity);
+			EmitSoundToAll(LEFTFOOT1, entity);
 		}
 		else if (StrContains(sample, "2.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step02.wav");
-			EmitSoundToAll(sample, entity);
+			EmitSoundToAll(RIGHTFOOT, entity);
 		}
 		else if (StrContains(sample, "4.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step04.wav");
-			EmitSoundToAll(sample, entity);
+			EmitSoundToAll(RIGHTFOOT1, entity);
 		}
 		return Plugin_Changed;
 	}
@@ -129,10 +125,10 @@ public OnMapStart()
 	// PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
 	
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
+	PrecacheSound(LEFTFOOT);
+	PrecacheSound(LEFTFOOT1);
+	PrecacheSound(RIGHTFOOT);
+	PrecacheSound(RIGHTFOOT1);
 
 	PrecacheSound(SOUND_GUNFIRE);
 	PrecacheSound(SOUND_GUNSPIN);
@@ -204,8 +200,8 @@ MakeGDeflectorH(client)
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	float spreadpenalty = scale * spreadmodifier;
-	PrintHintText(client , "Shoot down projectiles!\n+50 percent damage bons\n%f spread penalty", spreadpenalty);
+//	float spreadpenalty = scale * spreadmodifier;
+	PrintHintText(client , "Shoot down projectiles!\n+50 percent damage bonus");
 
 }
  
@@ -255,7 +251,7 @@ stock GiveGDeflectorH(client)
 		//CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, float style (-1.0 for none) );
 		CreateRoboWeapon(client, "tf_weapon_minigun", 850, 6, 1, 0, 0);
 		
-		float spreadpenalty = scale * spreadmodifier;
+		//float spreadpenalty = scale * spreadmodifier;
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
@@ -267,7 +263,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon1, "mult_spread_scales_consecutive", 1.0);
-			TF2Attrib_SetByName(Weapon1, "spread penalty", spreadpenalty);
+			//TF2Attrib_SetByName(Weapon1, "spread penalty", spreadpenalty);
 			
 			
 		}

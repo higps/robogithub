@@ -16,6 +16,13 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
+#define GUNFIRE	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
+
+#define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
+#define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
+#define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
+#define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
+
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Major Bomber lite",
@@ -29,6 +36,8 @@ public OnPluginStart()
 {
     LoadTranslations("common.phrases");
 
+	AddNormalSoundHook(BossMortar);
+
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
@@ -41,6 +50,46 @@ public OnPluginStart()
 	
 
     AddRobot(robot, MakeSolar, PLUGIN_VERSION);
+}
+
+public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
+{
+	if (!IsValidClient(entity)) return Plugin_Continue;
+	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
+
+	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
+	{
+		if (StrContains(sample, "1.wav", false) != -1)
+		{
+			EmitSoundToAll(LEFTFOOT, entity);
+		}
+		else if (StrContains(sample, "3.wav", false) != -1)
+		{
+			EmitSoundToAll(LEFTFOOT1, entity);
+		}
+		else if (StrContains(sample, "2.wav", false) != -1)
+		{
+			EmitSoundToAll(RIGHTFOOT, entity);
+		}
+		else if (StrContains(sample, "4.wav", false) != -1)
+		{
+			EmitSoundToAll(RIGHTFOOT1, entity);
+		}
+		return Plugin_Changed;
+	}
+
+	if (strncmp(sample, ")weapons/", 9, false) == 0)
+	{
+		if (StrContains(sample, "grenade_launcher_shoot.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE);
+			EmitSoundToAll(sample, entity,_,_,_, 0.07);	
+		//	PrintToChatAll("SOUND!--");
+			return Plugin_Changed;	
+		}
+		
+	}
+	return Plugin_Continue;
 }
 
 public void OnPluginEnd()
@@ -62,6 +111,12 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 
+	PrecacheSound(LEFTFOOT);
+	PrecacheSound(LEFTFOOT1);
+	PrecacheSound(RIGHTFOOT);
+	PrecacheSound(RIGHTFOOT1);
+
+	PrecacheSound(GUNFIRE);
 
 }
 
@@ -111,7 +166,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
-	TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
+	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -150,7 +205,7 @@ stock GiveGiantDemoKnight(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 
-		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 308, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 19, 6, 1, 2, 0);
 		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
 
 		CreateRoboHat(client, ScotchBonnet, 10, 6, 0.0, 0.75, -1.0); 
@@ -166,17 +221,18 @@ stock GiveGiantDemoKnight(client)
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 3.5);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.6);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.8);
 			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 1.15);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.3);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 8.0);
+			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 10.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.8);
 			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
-			TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
-			TF2Attrib_SetByName(Weapon1, "grenade no spin", 0.0);
+			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
+			// TF2Attrib_SetByName(Weapon1, "grenade no spin", 0.0);
 		}
 	}
 }
+

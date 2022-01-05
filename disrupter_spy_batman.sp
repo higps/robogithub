@@ -238,7 +238,7 @@ stock GiveBigRoboDane(client)
 	
 	// CreateRoboWeapon(client, "tf_weapon_revolver", 224, 6, 1, 0, 0);
 	CreateRoboWeapon(client, "tf_weapon_knife", 638, 6, 1, 2, 0); //sharp dresser
-	CreateRoboWeapon(client, "tf_weapon_grapplinghook", 1152, 6, 1, 4, 0); 
+	CreateRoboWeapon(client, "tf_weapon_grapplinghook", 1152, 6, 1, 0, 0); 
 		
 
 	CreateRoboHat(client, BattersBracers, 10, 6, 0.0, 1.0, -1.0); 

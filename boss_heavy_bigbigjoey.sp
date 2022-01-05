@@ -17,9 +17,12 @@
 //#define TF_THROWABLE_BREAD_ENTITY "tf_projectile_throwable_breadmonster"
 
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
-#define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
-#define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
+//#define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
+//#define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
+
+#define DEATH   "later.wav"
+#define SPAWN   "bigbigjoey.wav"
 
 #define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
 #define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
@@ -290,6 +293,7 @@ MakeBigBigJoey(client)
 	
 	PrintCenterText(client, "BIG BIG JOEY!");
 
+	EmitSoundToAll(SPAWN, client);
 	//g_IsGPS[client] = true;
 	
 /* 		PrintToChat(client, "1. You are now Giant Deflector GPS!");

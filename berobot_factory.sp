@@ -468,7 +468,7 @@ void CallCreate(int client, Robot item)
     Call_Finish();
     
     SMLogTag(SML_VERBOSE, "starting loop-sound %s for %L as %s", item.sounds.loop, client, item.name);
-    EmitSoundToAll(item.sounds.loop, client);
+    EmitSoundToAll(item.sounds.loop, client,_,_,_, 0.25);
 
     _isRobot[client] = item.name;
     _robotIsCreated[client] = true;

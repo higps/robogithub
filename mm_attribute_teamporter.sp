@@ -350,7 +350,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 			#endif
 	
 	TeleportEntity(client, vecIsActuallyGoingToSpawn, vecRotation, NULL_VECTOR);
-	EmitSoundToAll(TELEPORTER_SPAWN, client);
+	EmitSoundToAll(TELEPORTER_SPAWN, client, _,_,_, 0.3);
 
 	float oober = 3.0;
 	if (oober != 0.0)

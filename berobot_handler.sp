@@ -448,7 +448,7 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
     if(convar == g_cvCvarList[CV_g_RoboCapTeam])
     {   
         g_RoboCapTeam = StringToInt(sNewValue);
-        PrintHintTextToAll("Current Robots: %i", g_RoboCapTeam);
+        if (g_Enable) PrintHintTextToAll("Current Robots: %i", g_RoboCapTeam);
     }
 
     if(convar == g_cvCvarList[CV_g_RoboTeamMode])
@@ -485,9 +485,10 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
     {
         // Checks if boss is on
-            if(g_cv_bDebugMode) PrintToChatAll("Attacker was spy and victim was robot");
+            
             if (iClassAttacker == TFClass_Spy)
-            {
+            
+            if(g_cv_bDebugMode) PrintToChatAll("Attacker  %N was aspy and victim %N was robot", attacker, victim);{
                 if(damagecustom == TF_CUSTOM_BACKSTAB)
                 {
                     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
@@ -497,15 +498,41 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     return Plugin_Changed;
                 }
             }  
-            /*Damage code for scout */
-            // if (iClassAttacker == TFClass_Scout)
-            // {
-            //         if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-            //       //  damage *= 1.25;
-            //         //critType = CritType_Crit;
-            //         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-            //         return Plugin_Changed;
-            // }   
+    }
+    return Plugin_Continue;
+}
+
+public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+    // if (!g_Enable)
+    //     return Plugin_Continue;
+    if(!IsValidClient(victim))
+        return Plugin_Continue;    
+    if(!IsValidClient(attacker))
+        return Plugin_Continue;
+
+    TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
+
+    //if(g_cv_bDebugMode) PrintToChatAll("On damage happened");
+    
+    if(IsAnyRobot(victim))
+    {
+            /*Damage code for Heavy*/
+            if (iClassAttacker == TFClass_Heavy)
+            {
+                int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
+
+                    
+                if (weapon == iWeapon)
+                {
+                    if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                    damage *= 0.75;
+                    return Plugin_Changed;
+                    if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                }
+                    
+                    
+            }   
     }
     return Plugin_Continue;
 }

@@ -25,6 +25,8 @@
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
+#define MUSIC "uncle_dane_dispenser.wav"
+
 
 #define ENGIE_SPAWN_SOUND		"vo/announcer_mvm_engbot_arrive02.mp3"
 #define ENGIE_SPAWN_SOUND2		"vo/announcer_mvm_engbot_arrive03.mp3"
@@ -97,7 +99,7 @@ public OnPluginStart()
     //g_offsCollisionGroup = FindSendPropInfo("DT_BaseEntity", "m_CollisionGroup");
     HookEvent("player_builtobject", ObjectBuilt, EventHookMode_Post);
 	HookEvent("player_carryobject", ObjectCarry, EventHookMode_Post);
-//	HookEvent("player_upgradedobject", ObjectCarry, EventHookMode_Post);
+	HookEvent("player_upgradedobject", ObjectBuilt, EventHookMode_Post);
 
 	Handle hGameConf = LoadGameConfigFile("tf2.teleporters");
 	if (hGameConf == INVALID_HANDLE)
@@ -199,6 +201,7 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 
+	PrecacheSound(MUSIC);
 	
 
 }
@@ -239,8 +242,27 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	
 		}
 
+		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
+		{
+			//PrintToChatAll("Playing Music");
+			EmitSoundToAll(MUSIC, iObj);
+			EmitSoundToAll(MUSIC, iObj);
+			EmitSoundToAll(MUSIC, iObj);
+			EmitSoundToAll(MUSIC, iObj);
+		}
+
+		//FakeClientCommandEx(iBuilder, "stuck");
+
 	}
 }
+
+// public void UpgradeOjbect(Event event, const char[] name, bool dontBroadcast)
+// {
+// 	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
+// 	//int iObj = event.GetInt("index");
+	
+// 	FakeClientCommandEx(iBuilder, "stuck");
+// }
 
 // int CreatePadParticle(int iPad, char[] szParticleName)
 // {

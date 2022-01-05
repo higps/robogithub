@@ -10,9 +10,9 @@
 #include <tf_ontakedamage>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Robot Santa Claus"
+#define ROBOT_NAME	"Robot Hoovy"
 #define ROBOT_ROLE "Disruptor"
-#define ROBOT_DESCRIPTION "Robot Santa Claus"
+#define ROBOT_DESCRIPTION "Robot Hoovy"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -34,8 +34,8 @@
 #define sBoomNoise3  "weapons/tacky_grenadier_explode3.wav"
 
 #define ALLFATHER 647
-#define BMOC 666
-#define GIFTBRINGER 30747
+#define BMOC 97
+//#define GIFTBRINGER 30747
 
 public Plugin:myinfo =
 {
@@ -253,9 +253,9 @@ stock GiveGDeflectorH(client)
 
 		//void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale, float style);
 		//Default robo head scale = 0.75
-		CreateRoboHat(client, ALLFATHER, 10, 6, TeamPaint, 1.0, -1.0);//Rotation sensation
-		CreateRoboHat(client, BMOC, 10, 6, 0.0, 1.0, -1.0);//Summer shades
-		CreateRoboHat(client, GIFTBRINGER, 10, 6, 0.0, 1.0, -1.0);//Weightroom warmer
+		CreateRoboHat(client, ALLFATHER, 10, 6, 16738740.0, 1.0, -1.0);//Rotation sensation
+		CreateRoboHat(client, BMOC, 10, 6, 0.0, 0.0, -1.0);//Summer shades
+	//	CreateRoboHat(client, GIFTBRINGER, 10, 6, 0.0, 1.0, -1.0);//Weightroom warmer
 		//Weapon Code
 		//CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, float style (-1.0 for none) );
 		CreateRoboWeapon(client, "tf_weapon_fists", 656, 6, 1, 0, 0);
@@ -291,7 +291,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	Handle infokv = CreateKeyValues("infokv");
 	KvSetNum(infokv, "attacker", attacker);
 	KvSetNum(infokv, "victim", victim);
-	CreateTimer(0.0, SantaBoom, infokv);
+	CreateTimer(0.0, HoovyBoom, infokv);
 
 		
 	}
@@ -302,7 +302,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	
 }
 
-public Action SantaBoom(Handle timer, any data)
+public Action HoovyBoom(Handle timer, any data)
 {
 	Handle infokv = data;
 	int attacker = KvGetNum(infokv, "attacker");
