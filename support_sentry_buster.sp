@@ -50,7 +50,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 1;
+    restrictions.RobotCoins.Overall = 4;
 
 	AddRobot(robot, MakeBuster, PLUGIN_VERSION, restrictions);
 
@@ -74,11 +74,27 @@ public void OnPluginEnd()
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (IsRobot(victim, ROBOT_NAME) )
+	
+	if (IsRobotWhenDead(victim, ROBOT_NAME))
 	{
 		AboutToExplode[victim] = false;
+		CreateTimer(0.5, Timer_Respawn, victim);
+		PrintToChat(victim,"Creating timer");
 	}
+
+
 }
+
+public Action Timer_Respawn(Handle timer, any client)
+{
+    //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
+	if (IsValidClient(client) && !IsPlayerAlive(client))
+    {
+        TF2_RespawnPlayer(client);
+        PrintToChat(client,"You have instant respawn as scout");
+    }
+}
+
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {

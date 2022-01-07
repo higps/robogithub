@@ -28,14 +28,14 @@
 
 #define TF_OBJECT_TELEPORTER	1
 #define TF_TELEPORTER_ENTR	0
-// #define DEBUG
+//#define DEBUG
 //new g_offsCollisionGroup;
 
 bool engibotactive;
 bool teleportercheck;
 bool AnnouncerQuiet;
 
-
+bool g_Teleported[MAXPLAYERS + 1];
 
 int EngieTeam = 2;
 int engieid = -1;
@@ -173,6 +173,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 						//TE_Particle("teleporter_mvm_bot_persist", position, _, _, attach, 1,0);	
 
 						g_iPadType[iObj] = PadType_Boss;
+						
 
 						#if defined DEBUG
 			PrintToChatAll("SetPadtype to %i", g_iPadType[iObj]);
@@ -280,6 +281,9 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 
 	int client = GetClientOfUserId(event.GetInt("userid"));
+	if (g_Teleported[client]){
+		return Plugin_Continue;
+	}
 	#if defined DEBUG
 	PrintToChatAll("%N spawned", client);
 	#endif 
@@ -351,11 +355,20 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	
 	TeleportEntity(client, vecIsActuallyGoingToSpawn, vecRotation, NULL_VECTOR);
 	EmitSoundToAll(TELEPORTER_SPAWN, client, _,_,_, 0.3);
-
+	CreateTimer(0.5, Teleport_Clamp, client);
+	g_Teleported[client] = true;
 	float oober = 3.0;
 	if (oober != 0.0)
 	TF2_AddCondition(client, TFCond_Ubercharged, oober);
 	return Plugin_Continue;
+}
+
+
+
+public Action Teleport_Clamp(Handle timer, int client)
+{
+
+	g_Teleported[client] = false;
 }
 
 

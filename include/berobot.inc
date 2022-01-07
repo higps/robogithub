@@ -140,6 +140,17 @@ native void GetRobotClass(char name[NAMELENGTH], char class[9]);
 native bool IsRobot(int client, char name[NAMELENGTH]);
 
 /**
+ * checks if a client is the specified robot when dead
+ * 
+ * @param client    clientId to check for robot
+ * @param name      name of the robot in question (call GetRobotNames() to get a list of all possible robot-names)
+ * 
+ * @return          true: client is specified robot;
+ *                  false: client is _not_ specified robot
+ */
+ native bool IsRobotWhenDead(int client, char name[NAMELENGTH]);
+
+/**
  * checks if a client is any robot
  * 
  * @param client    clientId to check for robot

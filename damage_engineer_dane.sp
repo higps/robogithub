@@ -49,7 +49,6 @@ bool teleportercheck;
 bool AnnouncerQuiet;
 
 
-
 int EngieTeam = 2;
 int engieid = -1;
 int g_iMaxEntities;
@@ -81,6 +80,13 @@ enum //Custom ObjectType
 {
 	PadType_None = 0,
 	PadType_Boss,
+}
+
+enum OBJSOLIDTYPE
+{
+	SOLID_TO_PLAYER_USE_DEFAULT = 0,
+	SOLID_TO_PLAYER_YES,
+	SOLID_TO_PLAYER_NO,
 }
 
 public Plugin:myinfo =
@@ -147,9 +153,11 @@ public OnPluginStart()
     // {
     //     if(IsClientInGame(client))
     //     {
-    //         //SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
-	// 		//PrintToChatAll("Hooking %N", client);
-    //        // SDKHook(client, SDKHook_Touch, OnTouch);
+    //       //  SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
+	// 	//PrintToChatAll("Hooking %N", client);
+	// 	SDKHook(client, SDKHook_Touch, OnTouch);
+    //     //SDKHook(client, SDKHook_EndTouchPost, OnTouch);
+	// 	//SDKHook(client,SDKHook_EndTouch, OnTouchPost);
     //     }
     // }
 
@@ -159,28 +167,48 @@ public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
 }
-/* public OnEntityCreated(entity, const String:classname[])
-{
-    if(StrContains(classname[1], "item_ammopack", false) != -1 || StrContains(classname[1], "item_healthkit", false) != -1)
-    {
-        SDKHook(entity,    SDKHook_StartTouch,     StartTouch);
-        SDKHook(entity,    SDKHook_Touch,             OnTouch);
-    }
-} */
+// public OnEntityCreated(entity, const String:classname[])
+// {
+//     if(StrContains(classname[1], "item_ammopack", false) != -1 || StrContains(classname[1], "item_healthkit", false) != -1)
+//     {
+//        // SDKHook(entity,    SDKHook_StartTouch,     StartTouch);
+//         SDKHook(entity,    SDKHook_Touch,             OnTouch);
+//     }
+// }
 
-/* public Action OnTouch(int client, int ent)
-{
-	char entname[MAX_NAME_LENGTH];
-	GetEntityClassname(ent, entname, sizeof(entname));
-	
-	if (!StrContains(entname, "item_ammo") || !StrContains(entname, "item_health")){
-		PrintToChatAll("Ent: %s", entname);
-    	if(GetEntProp(ent, Prop_Data, "m_bDisabled") == 1)
-        return;
-	}
 
+
+
+// public Action OnTouchPost(int client, int ent)
+// {
+// 	// char entname[MAX_NAME_LENGTH];
+// 	// GetEntityClassname(ent, entname, sizeof(entname));
+// 	// //PrintToChatAll("Touching %N", client);
+// 	// // if (!StrContains(entname, "dispenser") || !StrContains(entname, "sentry")){
+// 	// // 	PrintToChatAll("Ent: %s", entname);
+//     // // 	if(GetEntProp(ent, Prop_Data, "m_bDisabled") == 1)
+//     // //     return;
+// 	// // }
+// 	// if (IsRobot(client, ROBOT_NAME))
+// 	// {
+
+// 	// 	if (!StrContains(entname, "obj_dispenser") || !StrContains(entname, "obj_sentrygun")){
+// 	// 		PrintToChatAll("Ent: %s", entname);
+
+// 	// 		int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+
+// 	// 		PrintToChatAll("Builder was %i", iBuilder);
+// 	// 		// if(GetEntProp(ent, Prop_Data, "m_bDisabled") == 1)
+// 	// 		// return;
+
+// 	// 		SetEntPropEnt(ent, Prop_Send, "m_hBuilder", client);
+
+// 	// 	}
+		
+// 	// }
 	
-} */
+	
+// }
 
 // public Action OnTouch(int client)
 // {
@@ -233,6 +261,9 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	//PrintToChatAll("iObj %i", iObj);
 	
 	if (IsValidClient(iBuilder) && IsRobot(iBuilder, ROBOT_NAME)){
+
+	// 	SetVariantInt(0);
+    // AcceptEntityInput(iObj, "SolidToPlayer");
 		// SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);
 		// SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
 		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter){
@@ -251,44 +282,13 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 			EmitSoundToAll(MUSIC, iObj);
 		}
 
+		// SetVariantInt(2);
+		// AcceptEntityInput(iObj, "SetSolidToPlayer");
 		//FakeClientCommandEx(iBuilder, "stuck");
 
 	}
 }
 
-// public void UpgradeOjbect(Event event, const char[] name, bool dontBroadcast)
-// {
-// 	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
-// 	//int iObj = event.GetInt("index");
-	
-// 	FakeClientCommandEx(iBuilder, "stuck");
-// }
-
-// int CreatePadParticle(int iPad, char[] szParticleName)
-// {
-// 	//TFTeam iPadTeam = view_as<TFTeam>(GetEntProp(iPad, Prop_Send, "m_iTeamNum"));
-// 	//char szParticleName[128];
-// 	// switch (g_iPadType[iPad])
-// 	// {
-// 	// 	case PadType_Boost:	strcopy(szParticleName, sizeof(szParticleName), "powerup_icon_haste");
-// 	// 	case PadType_Jump:	strcopy(szParticleName, sizeof(szParticleName), "powerup_icon_agility");
-// 	// }
-// 	// switch (iPadTeam)
-// 	// {
-// 	// 	case TFTeam_Red:	StrCat(szParticleName, sizeof(szParticleName), "_red");
-// 	// 	case TFTeam_Blue:	StrCat(szParticleName, sizeof(szParticleName), "_blue");
-// 	// }
-// 	int iParticle = SpawnParticle(szParticleName);
-	
-// 	float vPos[3];
-// 	GetEntPropVector(iPad, Prop_Data, "m_vecAbsOrigin", vPos);
-// 	//vPos[2] += 40.0;
-// 	TeleportEntity(iParticle, vPos, NULL_VECTOR, NULL_VECTOR);
-	
-// 	SetParent(iPad, iParticle);
-	
-// 	return iParticle;
-// }
 
 stock int SpawnParticle(char[] szParticleType)
 {
@@ -317,17 +317,17 @@ stock void SetParent(int iParent, int iChild, char[] szAttachPoint = "")
 	}
 }
 
-stock void TF2_SetMatchingTeleporter(int iTele, int iMatch)	//Set the matching teleporter entity of a given Teleporter
-{
+// stock void TF2_SetMatchingTeleporter(int iTele, int iMatch)	//Set the matching teleporter entity of a given Teleporter
+// {
 
-	if (IsValidEntity(iTele) && HasEntProp(iTele, Prop_Send, g_szOffsetStartProp))
-	{
-		//PrintToChatAll("Matching telepoters");
-		int iOffs = FindSendPropInfo("CObjectTeleporter", g_szOffsetStartProp) + g_iOffsetMatchingTeleporter;
-		SetEntDataEnt2(iTele, iOffs, iMatch, true);
-	}
+// 	if (IsValidEntity(iTele) && HasEntProp(iTele, Prop_Send, g_szOffsetStartProp))
+// 	{
+// 		//PrintToChatAll("Matching telepoters");
+// 		int iOffs = FindSendPropInfo("CObjectTeleporter", g_szOffsetStartProp) + g_iOffsetMatchingTeleporter;
+// 		SetEntDataEnt2(iTele, iOffs, iMatch, true);
+// 	}
 	
-}
+// }
 
 public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 {
@@ -353,7 +353,14 @@ public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 		//SDKHook(iObj, SDKHook_ShouldCollide, ShouldCollide );
 		//CH_PassFilter(iBuilder, iObj, false);
 		//SetEntData(iObj, g_offsCollisionGroup, 2, 4, false);
-	
+		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
+			{
+			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
+			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
+			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
+			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
+			PrintToChatAll("Attempting music stop");
+		}
 	}
 }
 
@@ -377,6 +384,8 @@ public Action:SetModel(client, const String:model[])
 	{
 		SetVariantString(model);
 		AcceptEntityInput(client, "SetCustomModel");
+
+
 
 		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
 		
@@ -418,18 +427,19 @@ MakeUncleDane(client)
 	float OverHeal = float(MaxHealth) * OverHealRate;
 	float TotalHealthOverHeal = iHealth * OverHealRate;
 	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
+	float scale = 1.65;
 	
 	TF2_SetHealth(client, iHealth);
 	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
 	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.3);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
@@ -440,7 +450,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
-	UpdatePlayerHitbox(client, 1.65);
+	UpdatePlayerHitbox(client, scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
@@ -507,7 +517,10 @@ stock GiveBigRoboDane(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		CreateRoboWeapon(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_wrench", 329, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_wrench", 197, 9, 1, 2, 0);
+
+
+		//CreateWeapon(client, "tf_weapon_wrench", 7, 9, 69, 2, 0);
 
 
 		CreateRoboHat(client, THEDANGER, 10, 6, 15132390.0, 1.25, -1.0);
@@ -516,6 +529,8 @@ stock GiveBigRoboDane(client)
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
+		//SetEntData(Weapon3, FindSendPropInfo(entclass, "m_iEntityQuality"), 11);
 
 		if(IsValidEntity(Weapon1))
 		{
@@ -530,7 +545,9 @@ stock GiveBigRoboDane(client)
 		}
 		if(IsValidEntity(Weapon3))
 		{
-			TF2Attrib_RemoveAll(Weapon3);
+			//TF2Attrib_RemoveAll(Weapon3);
+			// TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
+			// TF2Attrib_SetByName(Weapon1, "item style override", 1.0);
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.85);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.0);
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
@@ -546,250 +563,6 @@ stock GiveBigRoboDane(client)
 		
 	}
 }
-
-
-//TELEPORTER CODE// VERSION 1
-
-//ConVar bEnabled, cvUber;
-
-//float vecSpawns[2][3];	// 0 for red, 1 for blue
-
-// public void OnPluginStart()
-// {
-// 	bEnabled = CreateConVar("sm_teamporter_enable", "1", "Enable the TF2 Teamporter plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-// 	cvUber = CreateConVar("sm_teamporter_uber", "3.0", "Seconds to add ubercharge after teleportation. 0 to disable", FCVAR_NOTIFY, true, 0.0);
-// 	CreateConVar("sm_teamporter_version", PLUGIN_VERSION, "TF2 Teamporter plugin version", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_SPONLY | FCVAR_DONTRECORD);
-
-
-	// HookEvent("teamplay_round_start", OnNeedReset);
-	// HookEvent("teamplay_point_captured", OnNeedReset);
-// }
-
-// public void OnNeedReset(Event event, const char[] name, bool dontBroadcast)
-// {
-// 	int spawnteam, ent = -1;
-// 	ArrayList redspawn = new ArrayList();
-// 	ArrayList bluspawn = new ArrayList();
-
-// 	while ((ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1)
-// 	{
-// 		if (GetEntProp(ent, Prop_Data, "m_bDisabled"))
-// 			continue;
-
-// 		spawnteam = GetEntProp(ent, Prop_Send, "m_iTeamNum");
-// 		if (spawnteam == 2)	// Push ents to according team arraylist
-// 			redspawn.Push(ent);
-// 		else if (spawnteam == 3)
-// 			bluspawn.Push(ent);
-// 	}
-
-// 	ent = redspawn.Get( GetRandomInt(0, redspawn.Length-1) );	// This may be an issue on custom maps with wacky spawn locations, so random one will do
-// 	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", vecSpawns[0]);
-// 	ent = bluspawn.Get( GetRandomInt(0, bluspawn.Length-1) );
-// 	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", vecSpawns[1]);
-
-// 	delete redspawn;
-// 	delete bluspawn;
-// }
-
-// public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
-// {
-
-// 	int client = GetClientOfUserId(event.GetInt("userid"));
-// 	//PrintToChatAll("%N spawned", client);
-// 	if (!IsAnyRobot(client))
-// 	{
-// 		return Plugin_Continue;
-// 		//PrintToChatAll("%N spawned and was not a robot", client);
-// 	}
-	
-// 	int team = GetClientTeam(client);
-
-// 	// if (team != EngieTeam)
-// 	// 	return Plugin_Continue;
-
-// 	int ent = -1;
-// 	int i = (team == 2 ? 1 : 0);
-// 	float vecSpawn[3];
-// 	float vecIsActuallyGoingToSpawn[3] = {-99999.0, -99999.0, -99999.0};
-// 	float dist, otherdist = GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]);
-// 	float vecRotation[3];
-
-// 	while ((ent = FindEntityByClassname(ent, "obj_teleporter")) != -1)
-// 	{
-// 		if (GetEntProp(ent, Prop_Send, "m_iTeamNum") != team)
-// 			continue;
-// 		if (GetEntProp(ent, Prop_Send, "m_bBuilding"))	// If being built
-// 			continue;
-// 		if (GetEntProp(ent, Prop_Send, "m_bCarried"))	// If being carried
-// 			continue;
-// 		if (GetEntProp(ent, Prop_Send, "m_iObjectMode") != 1)	// If not exit
-// 			continue;
-// 		if (GetEntProp(ent, Prop_Send, "m_bHasSapper"))//has sapper
-// 			continue;
-// 		if (!IsValidEntity(GetEntDataEnt2(ent, FindSendPropInfo("CObjectTeleporter", "m_bMatchBuilding")+4)))	// Props to Pelipoika
-// 			continue;
-
-// 		GetEntPropVector(ent, Prop_Send, "m_vecOrigin", vecSpawn);
-// 		dist = GetVectorDistance(vecSpawn, vecSpawns[i]);
-// 		if (dist < otherdist)
-// 		{
-// 			otherdist = dist;
-// 			vecIsActuallyGoingToSpawn = vecSpawn;
-// 			GetEntPropVector(ent, Prop_Send, "m_angRotation", vecRotation);	// Force players to look in the direction of teleporter on spawn
-// 		}
-// 	}
-// 	// If no teleporters found
-// 	if (GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]) >= 70000){
-// 		return Plugin_Continue;
-// 	}	
-		
-
-// 	vecIsActuallyGoingToSpawn[2] += 15.0;	// Don't get stuck inside of teleporter
-// 	//PrintToChatAll("%N was teleported", client);
-// 	TeleportEntity(client, vecIsActuallyGoingToSpawn, vecRotation, NULL_VECTOR);
-// 	EmitSoundToAll(TELEPORTER_SPAWN, client);
-
-// 	float oober = 3.0;
-// 	if (oober != 0.0)
-// 		TF2_AddCondition(client, TFCond_Ubercharged, oober);
-// 	return Plugin_Continue;
-// }
-
-// public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
-// {
-// 	if(IsValidClient(client) && IsRobot(client, ROBOT_NAME) && buttons & IN_DUCK) 
-// 	{
-// 		g_ReadyToTeamPort[client] = true;
-// 		PrintToChatAll("Setting teamporter true for %N", client);
-// 	}else
-// 	{
-// 		g_ReadyToTeamPort[client] = false;
-// 		//PrintToChatAll("Setting teamporter false for %N", client);
-// 	}
-// }
-
-//TELEPORTER CODE// VERSION 2
-/* public Action Particle_Teleporter(Handle Timer)
-{
-	
-	int client; 
-	for(int i = 1; i <= MaxClients; i++)
-    {
-		if(IsRobot(i, ROBOT_NAME))
-		{
-		client = i;
-		EngieTeam = GetClientTeam(i);
-		//PrintToChatAll("%N is dane bot", i);
-		}
-	}
-
-	if(IsRobot(client, ROBOT_NAME))
-	{
-		CreateTimer(3.0, Particle_Teleporter);
-		int TeleporterExit = -1;	
-		if((TeleporterExit = FindEntityByClassname(TeleporterExit,"obj_teleporter")) != -1)
-		{
-			if(GetEntProp(TeleporterExit, Prop_Send, "m_iTeamNum") == EngieTeam && GetEntPropEnt(TeleporterExit, Prop_Send, "m_hBuilder") == engieid)
-			{
-				char modelname[128];
-				GetEntPropString(TeleporterExit, Prop_Data, "m_ModelName", modelname, 128);
-				if(StrContains(modelname, "light") != -1)
-				{
-					float position[3];
-					GetEntPropVector(TeleporterExit,Prop_Send, "m_vecOrigin",position);
-					int attach = CreateEntityByName("trigger_push");
-					CreateTimer(3.0, DeleteTrigger, attach);
-					TeleportEntity(attach, position, NULL_VECTOR, NULL_VECTOR);
-					AttachParticle(attach,"teleporter_mvm_bot_persist");
-					if (EngieTeam == 3)
-					{
-						AttachParticle(attach,"teleporter_blue_floorglow");
-						AttachParticle(attach,"teleporter_blue_entrance_disc");
-						AttachParticle(attach,"teleporter_blue_exit_level3");
-						AttachParticle(attach,"teleporter_blue_charged_wisps");
-						AttachParticle(attach,"teleporter_blue_charged");
-					}
-					else if (EngieTeam == 2)
-					{
-						AttachParticle(attach,"teleporter_red_floorglow");
-						AttachParticle(attach,"teleporter_red_entrance_disc");
-						AttachParticle(attach,"teleporter_red_exit_level3");
-						AttachParticle(attach,"teleporter_red_charged_wisps");
-						AttachParticle(attach,"teleporter_red_charged");
-					}
-					if(!AnnouncerQuiet)
-					{
-						int soundswitch = GetRandomInt(1, 5);
-						switch(soundswitch)
-						{
-							case 1:
-							{
-								EmitSoundToAll(TELEPORTER_ACTIVATE1);
-							}
-							case 2:
-							{
-								EmitSoundToAll(TELEPORTER_ACTIVATE2);
-							}
-							case 3:
-							{
-								EmitSoundToAll(TELEPORTER_ACTIVATE3);
-							}
-							case 4:
-							{
-								EmitSoundToAll(TELEPORTER_ACTIVATE4);
-							}
-							case 5:
-							{
-								EmitSoundToAll(TELEPORTER_ACTIVATE5);
-							}
-						}
-						AnnouncerQuiet = true;
-					}
-				}
-			}
-		}
-	}
-} */
-
-/* stock AttachParticle(entity, char[] particleType, float offset[]={0.0,0.0,0.0}, bool attach=true)
-{
-	int particle = CreateEntityByName("info_particle_system");
-
-	char targetName[128];
-	float position[3];
-	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", position);
-	position[0]+=offset[0];
-	position[1]+=offset[1];
-	position[2]+=offset[2];
-	TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
-
-	Format(targetName, sizeof(targetName), "target%i", entity);
-	DispatchKeyValue(entity, "targetname", targetName);
-
-	DispatchKeyValue(particle, "targetname", "tf2particle");
-	DispatchKeyValue(particle, "parentname", targetName);
-	DispatchKeyValue(particle, "effect_name", particleType);
-	DispatchSpawn(particle);
-	SetVariantString(targetName);
-	if(attach)
-	{
-		AcceptEntityInput(particle, "SetParent", particle, particle, 0);
-		SetEntPropEnt(particle, Prop_Send, "m_hOwnerEntity", entity);
-	}
-	ActivateEntity(particle);
-	AcceptEntityInput(particle, "start");
-	CreateTimer(3.0, DeleteParticle, particle);
-	return particle;
-} */
-/* public Action DeleteParticle(Handle timer, any Ent)
-{
-	if (!IsValidEntity(Ent)) return;
-	char cls[25];
-	GetEdictClassname(Ent, cls, sizeof(cls));
-	if (StrEqual(cls, "info_particle_system", false)) AcceptEntityInput(Ent, "Kill");
-	return;
-} */
 
 stock TE_Particle(char[] Name, float origin[3] = NULL_VECTOR, float start[3] = NULL_VECTOR, float angles[3] = NULL_VECTOR, entindex=-1, attachtype=-1, attachpoint=-1, bool resetParticles=true, customcolors = 0, float color1[3] = NULL_VECTOR, float color2[3] = NULL_VECTOR, controlpoint = -1, controlpointattachment = -1, float controlpointoffset[3] = NULL_VECTOR)
 {

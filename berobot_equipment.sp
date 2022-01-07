@@ -104,6 +104,13 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 		SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityLevel"), GetRandomInt(1,99));
 	}
 
+
+	if(quality == 9)
+	{
+		TF2Attrib_SetByName(weapon, "is australium item", 1.0);
+		TF2Attrib_SetByName(weapon, "item style override", 1.0);
+		SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityQuality"), 11);
+	}
 	//if (paint)
 	//{
 		TF2Attrib_SetByDefIndex(weapon, 834, view_as<float>(paint));	//Set Warpaint

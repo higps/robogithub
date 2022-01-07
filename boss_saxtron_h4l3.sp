@@ -187,7 +187,7 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 MakeGiantSoldier(client)
 {
 	SMLogTag(SML_VERBOSE, "Createing Heavy");
-	TF2_SetPlayerClass(client, TFClass_Heavy);
+	TF2_SetPlayerClass(client, TFClass_Soldier);
 	TF2_RegeneratePlayer(client);
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
@@ -275,15 +275,15 @@ stock GiveGiantPyro(client)
 
 		//CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
 		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_fists", 5, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_shovel", 5, 6, 1, 2, 0);
 		
 		// CreateRoboHat(client, SergeantsDrillHat, 10, 6, 0.0, 0.75, -1.0);
 
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		//int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		
+	//	SetEntityModel(Weapon3, GSOLDIER);
 		// if(IsValidEntity(Weapon1))
 		// {
 

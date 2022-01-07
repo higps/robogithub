@@ -7,8 +7,8 @@
 #include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Spped Pancop"
-#define ROBOT_ROLE "Tank"
+#define ROBOT_NAME	"Speed Pancop"
+#define ROBOT_ROLE "Zoomer"
 #define ROBOT_DESCRIPTION "Map testing."
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"

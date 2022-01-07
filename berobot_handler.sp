@@ -320,6 +320,9 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 
+    //PrintToChatAll("You died  %N", victim);
+    //GetRobotNames();
+
         if (!IsAnyRobot(victim) && IsAnyRobot(attacker))
         {
             //PrintChatAll("You are not a robot %N", victim);
