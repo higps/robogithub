@@ -139,7 +139,7 @@ MakeGiantPyro(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -190,9 +190,9 @@ stock GiveGiantPyro(client)
 		CreateRoboWeapon(client, "tf_weapon_jar_gas", 1180, 6, 1, 2, 0);
 		CreateRoboWeapon(client, "tf_weapon_fireaxe", 348, 6, 1, 2, 0);
 
-		CreateRoboHat(client, FeatheredFiend, 10, 6, 1315860, 1.0, -1.0); 
-		CreateRoboHat(client, DeitysDress, 10, 6, 1315860, 1.2, -1.0); 
-		CreateRoboHat(client, PyromancersMask, 10, 6, 1315860, 0.75, -1.0); 
+		CreateRoboHat(client, FeatheredFiend, 10, 6, 1315860.0, 1.0, -1.0); 
+		CreateRoboHat(client, DeitysDress, 10, 6, 1315860.0, 1.2, -1.0); 
+		CreateRoboHat(client, PyromancersMask, 10, 6, 1315860.0, 1.0, -1.0); 
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -202,7 +202,8 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "explode_on_ignite", 1.0); //Damage should be changed match BMod Gas Passer
-			TF2Attrib_SetByName(Weapon2, "mult_item_meter_charge_rate", 0.4);
+			TF2Attrib_SetByName(Weapon2, "mult_item_meter_charge_rate", 0.25);
+			TF2Attrib_SetByName(Weapon2, "weapon burn time increased", 1.67); //This should factor in BMod's duration nerf, so 5 seconds total
 
 		}
 
@@ -214,6 +215,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "fire rate penalty", 1.2);
 			TF2Attrib_SetByName(Weapon3, "damage bonus vs burning", 1.35);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", 1.25); //65 damage per hit, allowing him to 4 shot unhealed Level 3 buildings instead of 5
+			TF2Attrib_SetByName(Weapon3, "weapon burn dmg reduced", 0.5); //Since it crits, this should do about 7.5 per tick instead of 13 per tick
 	}
 }
 }
