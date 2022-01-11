@@ -142,8 +142,8 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
@@ -191,8 +191,8 @@ stock GiveGiantPyro(client)
 		CreateRoboWeapon(client, "tf_weapon_fireaxe", 348, 6, 1, 2, 0);
 
 		CreateRoboHat(client, FeatheredFiend, 10, 6, 1315860.0, 1.0, -1.0); 
-		CreateRoboHat(client, DeitysDress, 10, 6, 1315860.0, 1.2, -1.0); 
-		CreateRoboHat(client, PyromancersMask, 10, 6, 1315860.0, 1.0, -1.0); 
+		CreateRoboHat(client, DeitysDress, 10, 6, 1315860.0, 1.0, -1.0); 
+		CreateRoboHat(client, PyromancersMask, 10, 6, 1315860.0, 1.15, -1.0); 
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
