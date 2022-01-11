@@ -78,8 +78,8 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	if (IsRobotWhenDead(victim, ROBOT_NAME))
 	{
 		AboutToExplode[victim] = false;
-		CreateTimer(0.5, Timer_Respawn, victim);
-		PrintToChat(victim,"Creating timer");
+		CreateTimer(4.0, Timer_Respawn, victim);
+		//PrintToChat(victim,"Creating timer");
 	}
 
 
@@ -91,7 +91,7 @@ public Action Timer_Respawn(Handle timer, any client)
 	if (IsValidClient(client) && !IsPlayerAlive(client))
     {
         TF2_RespawnPlayer(client);
-        PrintToChat(client,"You have instant respawn as scout");
+        //PrintToChat(client,"You have instant respawn as scout");
     }
 }
 

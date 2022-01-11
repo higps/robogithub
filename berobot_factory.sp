@@ -73,7 +73,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("CreateRobot", Native_CreateRobot);
 	CreateNative("TrashRobot", Native_TrashRobot);
 	CreateNative("IsRobot", Native_IsRobot);
-    CreateNative("IsRoboWhenDead", Native_IsRobotWhenDead);
+    CreateNative("IsRobotWhenDead", Native_IsRobotWhenDead);
 	CreateNative("IsAnyRobot", Native_IsAnyRobot);
 	CreateNative("GetRobot", Native_GetRobot);
 
