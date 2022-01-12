@@ -359,7 +359,7 @@ public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
 			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
 			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
-			PrintToChatAll("Attempting music stop");
+			//PrintToChatAll("Attempting music stop");
 		}
 	}
 }

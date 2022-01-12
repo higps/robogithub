@@ -8,11 +8,11 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Saxtron"
-#define ROBOT_ROLE "Basic"
-#define ROBOT_DESCRIPTION "SAXTRON HALE!"
+#define ROBOT_NAME	"Equalizor"
+#define ROBOT_ROLE "Tank"
+#define ROBOT_DESCRIPTION "Equalizor"
 
-#define GSOLDIER		"models/bots/saxtron/bot_saxtron_v2.mdl"
+#define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
@@ -28,9 +28,9 @@
 
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant Saxtron",
+	name = "[TF2] Be the Giant Basic Soldier",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Saxtron",
+	description = "Play as the Giant Icebear from Frankfurt",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -148,45 +148,12 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 		return Plugin_Changed;
 	}
 
-	
-	// if (strncmp(sample, ")weapons/", 9, false) == 0)
-	// {
-	// 	if (StrContains(sample, "rocket_shoot.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE);
-	// 		EmitSoundToAll(sample, entity);
-			
-	// 	}
-	// 	else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_CRIT);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
-		
-	// 	//Explosion doesnæt quite work
-	// 	/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
-	// 	else if (StrContains(sample, "explode2.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
-	// 	else if (StrContains(sample, "explode3.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	} */
-	// 	return Plugin_Changed;
-	// }
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 }
 
 MakeGiantSoldier(client)
 {
-	SMLogTag(SML_VERBOSE, "Createing Heavy");
+	SMLogTag(SML_VERBOSE, "Createing Soldier");
 	TF2_SetPlayerClass(client, TFClass_Soldier);
 	TF2_RegeneratePlayer(client);
 
@@ -202,9 +169,9 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 7500;
+	int iHealth = 5800;
 		
-	int MaxHealth = 300;
+	int MaxHealth = 200;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
 	int iAdditiveHP = iHealth - MaxHealth;
@@ -217,33 +184,36 @@ MakeGiantSoldier(client)
 
 	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
 
-	float scale = 1.25;
+	float scale = 1.65;
 	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 2.25);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
+	TF2Attrib_SetByName(client, "increased air control", 3.0);
 	
+	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+
+	//TF2Attrib_SetByName(client, "blast_dmg_to_self", 0.1);
 	
 	TF2Attrib_SetByName(client, "self dmg push force increased", 6.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
 	
 	//
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	//TF2Attrib_SetByName(client, "head scale", 0.5);
+	TF2Attrib_SetByName(client, "head scale", 0.75);
 	UpdatePlayerHitbox(client,scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Kill all hippies");
+	PrintHintText(client , "Kill some hippies");
 	
 }
 
@@ -259,7 +229,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-// #define SergeantsDrillHat 183
+#define LordCockswain 439
+#define Pipe 440
 // 
 
 stock GiveGiantPyro(client)
@@ -273,17 +244,18 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		//CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
+	//	CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
 		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_shovel", 5, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_shovel", 775, 6, 1, 2, 0);
 		
-		// CreateRoboHat(client, SergeantsDrillHat, 10, 6, 0.0, 0.75, -1.0);
+		CreateRoboHat(client, LordCockswain, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, Pipe, 10, 6, 0.0, 1.0, -1.0);
 
 
-		//int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+	//	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-	//	SetEntityModel(Weapon3, GSOLDIER);
+		
 		// if(IsValidEntity(Weapon1))
 		// {
 
@@ -302,9 +274,37 @@ stock GiveGiantPyro(client)
 		// }
 		if(IsValidEntity(Weapon3))
 		{
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
+			TF2Attrib_RemoveAll(Weapon3);
+
+
+			// TF2Attrib_SetByName(Weapon3, "mod shovel damage boost", 0.0);
+
+			//TF2Attrib_SetByDefIndex(Weapon3, 115, 2.0);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
+			TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", 2.5);
+			
+			// TF2Attrib_SetByName(Weapon3, "mod shovel speed boost", 2.0);
+			
+			TF2Attrib_SetByName(Weapon3, "self mark for death", 0.0);
+			TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);
+
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
+		}
+
+
+		CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
+
+		int iEntity2 = -1;
+		while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_weapon_parachute")) != -1)
+		{
+			if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
+			{				
+				//PrintToChatAll("going through entity");
+				TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.75);		
+				
+				break;
+			}
 		}
 		
 

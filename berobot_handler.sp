@@ -535,6 +535,16 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 }
                     
                     
+            }
+            
+            if (iClassAttacker == TFClass_DemoMan && !IsAnyRobot(attacker))
+            {
+
+                if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                damage *= 1.35;
+                return Plugin_Changed;
+                if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                    
             }   
     }
     return Plugin_Continue;
