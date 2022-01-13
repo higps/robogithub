@@ -213,6 +213,8 @@ public void OnPluginStart()
     
     HookEvent("player_death", Event_Death, EventHookMode_Post);
 
+    HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
 
@@ -315,6 +317,19 @@ void Reset(int client)
 
 /* Publics */
 
+public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+{
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+    if (IsAnyRobot(client))
+    {
+        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
+    }
+
+    
+    
+}
+
 public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
@@ -330,6 +345,8 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
                 CreateTimer(4.0, Timer_Respawn, victim);
             }
         }
+
+        g_GoingToDie[victim] = false;
 }
 
 public Action Timer_Respawn(Handle timer, any client)
@@ -374,8 +391,14 @@ public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dont
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
     if (g_Enable){
+
+        MC_PrintToChatAll("{Green}Type {orange}!info{Green} to see more info about this gamemode");
+        MC_PrintToChatAll("{Green}Visit {orange}balancemod.tf/mannedmachines {Green} To get the assetpack to get the most out of this mode");
+
     for(int i = 1; i <= MaxClients; i++)
     {
+
+
         if(g_cv_Volunteered[i] == true)
         {
             int iTeam = GetClientTeam(i);
