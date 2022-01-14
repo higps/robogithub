@@ -272,8 +272,9 @@ stock GiveGDeflectorH(client)
 
 public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
 {
-	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME))
+	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME) && IsPlayerAlive(iClient))
 	{	
+
 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
 		int iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 		if (HasEntProp(weapon, Prop_Send, "m_iWeaponState"))
@@ -338,6 +339,7 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 			}
 		}
 	}
+	
 	}
 }
 

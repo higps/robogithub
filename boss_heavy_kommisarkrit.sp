@@ -116,7 +116,7 @@ public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH]
 
 public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
 {
-	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME))
+	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME) && IsPlayerAlive(iClient))
 	{	
 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
 		int iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
