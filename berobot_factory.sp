@@ -372,6 +372,17 @@ public any Native_IsAnyRobot(Handle plugin, int numParams)
     return _isRobot[client][0] != '\0';
 }
 
+// public any Native_IsBossRobot(Handle plugin, int numParams)
+// {
+//     int client = GetNativeCell(1);
+
+//     GetRobot(client, robotrole, namelength);
+    
+    
+
+//     return _isRobot[client][0] != '\0';
+// }
+
 int TrashTargetedRobot(int clientId, char target[32])
 {
     int targetFilter = 0;
@@ -442,9 +453,63 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
     PrintToChat(clientId, "1. You are no longer %s!", wasRobot);
     PrintToChat(clientId, "2. You will turn back by changing class or dying!");
     
+    
+    //This resets the model back to normal
+    TFClassType iClass = TF2_GetPlayerClass(clientId);
+    char model[32];
+    
+    switch(iClass)
+    {
+        case TFClass_Scout:
+        {
+            model = "models/player/scout.mdl";
+        }
+        case TFClass_Soldier:
+        {
+            model = "models/player/soldier.mdl";
+
+        }
+        case TFClass_Pyro:
+        {
+            model = "models/player/pyro.mdl";
+        }
+        case TFClass_DemoMan:
+        {
+            model = "models/player/demo.mdl";
+        }
+        case TFClass_Heavy:
+        {
+           model = "models/player/heavy.mdl";
+        }
+        case TFClass_Engineer:
+        {
+          model = "models/player/engineer.mdl";
+        }
+        case TFClass_Medic:
+        {
+           model = "models/player/medic.mdl";
+        }
+        case TFClass_Sniper:
+        {
+         model = "models/player/sniper.mdl";
+        }
+        case TFClass_Spy:
+        {
+           model = "models/player/spy.mdl";
+        }
+
+    }
+
+    SetVariantString(model);
+    AcceptEntityInput(clientId, "SetCustomModel");
+    SetEntProp(clientId, Prop_Send, "m_bUseClassAnimations", 1);
+
     if (TF2Spawn_IsClientInSpawn(clientId))
     {
+        
         TF2_RespawnPlayer(clientId);
+        //TF2_SetPlayerClass(clientId, TFClass_Heavy);
+
         return 0;
     }
 
@@ -459,7 +524,7 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
     }
 
     ResetOnDeath(clientId, oldRobot);
-    
+
     return 0;
 }
 

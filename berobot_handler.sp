@@ -21,6 +21,8 @@
 #include <tf2_stocks>
 #include <tf_ontakedamage>
 #include <tf2_isPlayerInSpawn>
+#include <particle>
+
 // #include <stocksoup/memory>
 // #include <stocksoup/tf/entity_prop_stocks>
 // #include <stocksoup/tf/tempents_stocks>
@@ -321,13 +323,36 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 {
     int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-    if (IsAnyRobot(client))
-    {
-        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
-    }
+    CreateTimer(0.2, Boss_check, client);
 
-    
-    
+}
+
+public Action Boss_check(Handle timer, any client)
+{
+
+    if (IsValidClient(client) && IsPlayerAlive(client))
+    {
+        int clientId = GetClientUserId(client);
+
+        if (IsAnyRobot(client))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
+
+            char robotName[NAMELENGTH];
+
+            Robot robot;
+            GetRobot(client, robotName, NAMELENGTH);
+            GetRobotDefinition(robotName, robot);
+
+            
+
+            if (StrEqual(robot.role,"ZBOSS"))
+            {
+                PrintToChatAll("Robot role: %s", robot.role);
+                ServerCommand("sm_setboss #%i", clientId);
+            } 
+        }
+    }
 }
 
 public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
@@ -346,7 +371,30 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
             }
         }
 
+        //Removes the robot ragdoll and causes explosion
+        if (IsAnyRobot(victim))
+        {
+
+            CreateTimer(0.0, RemoveBody, victim);
+            float position[3];
+            GetEntPropVector(victim, Prop_Data, "m_vecOrigin", position);	
+            int attach = CreateEntityByName("trigger_push");
+            TeleportEntity(attach, position, NULL_VECTOR, NULL_VECTOR);
+            TE_Particle("hightower_explosion", position, _, _, attach, 1,0);	
+        }
+//        fireSmokeExplosion//
+// 
         g_GoingToDie[victim] = false;
+}
+
+	
+public Action RemoveBody(Handle timer, any client)
+{
+    int BodyRagdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
+    if(IsValidEdict(BodyRagdoll))
+    {
+        AcceptEntityInput(BodyRagdoll, "kill");
+    }
 }
 
 public Action Timer_Respawn(Handle timer, any client)

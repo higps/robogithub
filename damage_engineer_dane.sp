@@ -290,17 +290,17 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 }
 
 
-stock int SpawnParticle(char[] szParticleType)
-{
-	int iParti = CreateEntityByName("info_particle_system");
-	if (IsValidEntity(iParti))
-	{
-		DispatchKeyValue(iParti, "effect_name", szParticleType);
-		DispatchSpawn(iParti);
-		ActivateEntity(iParti);
-	}
-	return iParti;
-}
+// stock int SpawnParticle(char[] szParticleType)
+// {
+// 	int iParti = CreateEntityByName("info_particle_system");
+// 	if (IsValidEntity(iParti))
+// 	{
+// 		DispatchKeyValue(iParti, "effect_name", szParticleType);
+// 		DispatchSpawn(iParti);
+// 		ActivateEntity(iParti);
+// 	}
+// 	return iParti;
+// }
 
 stock void SetParent(int iParent, int iChild, char[] szAttachPoint = "")
 {
@@ -562,82 +562,6 @@ stock GiveBigRoboDane(client)
 		}
 		
 	}
-}
-
-stock TE_Particle(char[] Name, float origin[3] = NULL_VECTOR, float start[3] = NULL_VECTOR, float angles[3] = NULL_VECTOR, entindex=-1, attachtype=-1, attachpoint=-1, bool resetParticles=true, customcolors = 0, float color1[3] = NULL_VECTOR, float color2[3] = NULL_VECTOR, controlpoint = -1, controlpointattachment = -1, float controlpointoffset[3] = NULL_VECTOR)
-{
-    // find string table
-    int tblidx = FindStringTable("ParticleEffectNames");
-    if (tblidx == INVALID_STRING_TABLE) 
-    {
-        LogError("Could not find string table: ParticleEffectNames");
-        return;
-    }
-    float delay = 3.0;
-    // find particle index
-    char tmp[256];
-    int count = GetStringTableNumStrings(tblidx);
-    int stridx = INVALID_STRING_INDEX;
-    
-    for (int i = 0; i < count; i++)
-    {
-        ReadStringTable(tblidx, i, tmp, sizeof(tmp));
-        if (StrEqual(tmp, Name, false))
-        {
-            stridx = i;
-            break;
-        }
-    }
-    if (stridx == INVALID_STRING_INDEX)
-    {
-        LogError("Could not find particle: %s", Name);
-        return;
-    }
-
-    TE_Start("TFParticleEffect");
-    TE_WriteFloat("m_vecOrigin[0]", origin[0]);
-    TE_WriteFloat("m_vecOrigin[1]", origin[1]);
-    TE_WriteFloat("m_vecOrigin[2]", origin[2]);
-    TE_WriteFloat("m_vecStart[0]", start[0]);
-    TE_WriteFloat("m_vecStart[1]", start[1]);
-    TE_WriteFloat("m_vecStart[2]", start[2]);
-    TE_WriteVector("m_vecAngles", angles);
-    TE_WriteNum("m_iParticleSystemIndex", stridx);
-    if (entindex !=- 1)
-    {
-        TE_WriteNum("entindex", entindex);
-    }
-    if (attachtype != -1)
-    {
-        TE_WriteNum("m_iAttachType", attachtype);
-    }
-    if (attachpoint != -1)
-    {
-        TE_WriteNum("m_iAttachmentPointIndex", attachpoint);
-    }
-    TE_WriteNum("m_bResetParticles", resetParticles ? 1 : 0);    
-    
-    if(customcolors)
-    {
-        TE_WriteNum("m_bCustomColors", customcolors);
-        TE_WriteVector("m_CustomColors.m_vecColor1", color1);
-        if(customcolors == 2)
-        {
-            TE_WriteVector("m_CustomColors.m_vecColor2", color2);
-        }
-    }
-    if(controlpoint != -1)
-    {
-        TE_WriteNum("m_bControlPoint1", controlpoint);
-        if(controlpointattachment != -1)
-        {
-            TE_WriteNum("m_ControlPoint1.m_eParticleAttachment", controlpointattachment);
-            TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", controlpointoffset[0]);
-            TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", controlpointoffset[1]);
-            TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", controlpointoffset[2]);
-        }
-    }    
-    TE_SendToAll(delay);
 }
 
 stock DestroyBuildings(int client)
