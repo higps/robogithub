@@ -61,6 +61,8 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
+
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
 public void OnPluginEnd()
@@ -94,9 +96,34 @@ public OnMapStart()
 	
 	//PrecacheSound(SOUND_GUNFIRE);
 	//PrecacheSound(SOUND_WINDUP);
+
+	
 	
 }
 
+
+public Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+// 	int target = attacker;
+// //	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+// TFTeam buffTeam = TF2_GetClientTeam(owner);
+	
+// // disallow enemies, allow disguised players, disallow cloaked
+// if (TF2_GetClientTeamFromClient(target, owner) != buffTeam
+// {
+// 	return;
+// }
+
+// 	if (IsRobot(attacker, ROBOT_NAME))
+// 	{
+// 		//PrintToChatAll("applying slowed");
+// 		//TF2_AddCondition(target, TFCond_MarkedForDeath, BUFF_PULSE_CONDITION_DURATION, owner);
+// 		TF2_AddCondition(attacker, TFCond_DefenseBuffNoCritBlock, 10.0, attacker);
+// 	}
+	
+}
 /* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
@@ -191,18 +218,18 @@ MakeGiantSoldier(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
-	TF2Attrib_SetByName(client, "increased air control", 3.0);
+	TF2Attrib_SetByName(client, "increased air control", 2.0);
 	
 	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 
 	//TF2Attrib_SetByName(client, "blast_dmg_to_self", 0.1);
 	
-	TF2Attrib_SetByName(client, "self dmg push force increased", 6.0);
+	TF2Attrib_SetByName(client, "self dmg push force increased", 4.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
 	
 	//
@@ -213,7 +240,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Kill some hippies");
+	PrintHintText(client , "Kill All Humans");
 	
 }
 
@@ -245,7 +272,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 	//	CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
-		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_buff_item", 226, 6, 1, 2, 0);
 		CreateRoboWeapon(client, "tf_weapon_shovel", 775, 6, 1, 2, 0);
 		
 		CreateRoboHat(client, LordCockswain, 10, 6, 0.0, 1.0, -1.0);
@@ -253,7 +280,7 @@ stock GiveGiantPyro(client)
 
 
 	//	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		// if(IsValidEntity(Weapon1))
@@ -265,13 +292,11 @@ stock GiveGiantPyro(client)
 		// 	TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);				
 		// 	TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		// }
-		// if(IsValidEntity(Weapon2))
-		// {
-		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.00);
-		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-		// 	TF2Attrib_SetByName(Weapon2, "faster reload rate", 2.5);							
-		// 	TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
-		// }
+		if(IsValidEntity(Weapon2))
+		{						
+			TF2CustAttr_SetString(Weapon2, "custom buff type", "mvm-banner");
+		}
+
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_RemoveAll(Weapon3);
@@ -282,7 +307,7 @@ stock GiveGiantPyro(client)
 			//TF2Attrib_SetByDefIndex(Weapon3, 115, 2.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
-			TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", 2.5);
+			TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", 1.5);
 			
 			// TF2Attrib_SetByName(Weapon3, "mod shovel speed boost", 2.0);
 			

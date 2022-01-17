@@ -260,6 +260,8 @@ public void OnMapStart()
     g_RoundCount = 0;
     ResetMode();
 
+    PrecacheSound("Announcer.MVM_General_Destruction");
+
 }
 
 public void ResetMode()
@@ -385,7 +387,12 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-
+    
+    //EmitSoundToAll("Announcer.MVM_General_Destruction");
+    
+    //EmitAmbientGameSound("Announcer.MVM_General_Destruction");
+    //EmitGameSoundToAll("Announcer.MVM_General_Destruction", victim);
+    //EmitGameSoundToAll("Announcer.MVM_Engineer_Teleporter_Activated");
     //PrintToChatAll("You died  %N", victim);
     //GetRobotNames();
 
@@ -411,12 +418,26 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
             //     TE_Particle("fireSmokeExplosion2", position, _, _, attach, 1,0);	
             // }else{
                 
-                TE_Particle("hightower_explosion", position, _, _, attach, 1,0);	
+            TE_Particle("hightower_explosion", position, _, _, attach, 1,0);	
+
+            int irandom = GetRandomInt(1,3);
+            
+            if (irandom == 1)
+            {
+                CreateTimer(1.5, SayDeathVoiceline);
+            }
             // } 
+            
         }
 //        fireSmokeExplosion//
 // 
         g_GoingToDie[victim] = false;
+}
+
+public Action SayDeathVoiceline(Handle timer)
+{
+
+    EmitGameSoundToAll("Announcer.MVM_General_Destruction");
 }
 
 	
