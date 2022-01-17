@@ -17,9 +17,10 @@
 //#define TF_THROWABLE_BREAD_ENTITY "tf_projectile_throwable_breadmonster"
 
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
-#define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
-#define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
+#define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
+#define DEATH   "mvm/mvm_tank_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
+#define DEATHBOOM "fireSmokeExplosion2"
 
 #define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
 #define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
@@ -70,6 +71,7 @@ public OnPluginStart()
     robot.sounds.windup = SOUND_WINDUP;
     robot.sounds.winddown = SOUND_WINDDOWN;
     robot.sounds.death = DEATH;
+	//robot.deatheffect = DEATHBOOM;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
@@ -91,22 +93,22 @@ public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH]
 	{
 		if (StrContains(sample, "1.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step01.wav");
+			Format(sample, sizeof(sample), LEFTFOOT);
 			EmitSoundToAll(sample, entity);
 		}
 		else if (StrContains(sample, "3.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step03.wav");
+			Format(sample, sizeof(sample), RIGHTFOOT);
 			EmitSoundToAll(sample, entity);
 		}
 		else if (StrContains(sample, "2.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step02.wav");
+			Format(sample, sizeof(sample), LEFTFOOT1);
 			EmitSoundToAll(sample, entity);
 		}
 		else if (StrContains(sample, "4.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step04.wav");
+			Format(sample, sizeof(sample), RIGHTFOOT);
 			EmitSoundToAll(sample, entity);
 		}
 		return Plugin_Changed;
@@ -282,6 +284,9 @@ MakeBigBigJoey(client)
 	
 	PrintHintText(client, "100% critical chance\nCan't get healed");
 
+	//int clientId = GetClientUserId(client);
+	SetBossHealth(client);
+//	ServerCommand("sm_setbosshud #%i",clientId);
 	//g_IsGPS[client] = true;
 	
 /* 		PrintToChat(client, "1. You are now Giant Deflector GPS!");
@@ -341,6 +346,7 @@ stock GiveBigJoey(client)
 			TF2Attrib_SetByName(Weapon1, "minigun spinup time decreased", 1.25);
 			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
+			
 			TF2Attrib_SetByName(Weapon1, "spread penalty", spreadpenalty);
 		}
 	}

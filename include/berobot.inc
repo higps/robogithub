@@ -87,6 +87,7 @@ enum struct RobotDefinition {
   char class[9];
   char shortDescription[NAMELENGTH];
   RobotSounds sounds;
+  char deatheffect[64];
 }
 typedef RobotCallback = function void (int client);
 
@@ -159,6 +160,35 @@ native bool IsRobot(int client, char name[NAMELENGTH]);
  *                  false: client is _not_ a robot
  */
 native bool IsAnyRobot(int client);
+
+/**
+ * checks if a client is any robot
+ * 
+ * @param client    clientId to check for robot
+ * 
+ * @return          return handled
+ */
+ native bool IsBoss(int client);
+
+ /**
+ * Sets the boss healthbar
+ * 
+ * @param client    clientId to check for robot
+ * 
+ * @return          Handled
+ *                  
+ */
+ native void SetBossHealth(int client);
+
+ /**
+ * Sets the boss healthbar
+ * 
+ * @param client    clientId to check for robot
+ * 
+ * @return          Handled
+ *                  
+ */
+ native void UnSetBossHealth(int client);
 
 /**
  * turns a player into a registered robot

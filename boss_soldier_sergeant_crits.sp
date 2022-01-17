@@ -14,7 +14,7 @@
 #define ROBOT_DESCRIPTION "Critical Rockets"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
-#define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
 
@@ -230,7 +230,7 @@ MakeGiantSoldier(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client , "Boss Boss\nCritical Rockets\nCan't be healed.");
-	
+	SetBossHealth(client);
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -268,10 +268,11 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 7.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.6);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.75);
+			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.5);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.9);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Reload time increased", 4.0);
+			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.75);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.25);
 			//TF2Attrib_SetByName(Weapon1, "mini rockets", 5.0);
 			//TF2Attrib_SetByName(Weapon1, "auto fires when full", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "auto fires full clip", 1.0);

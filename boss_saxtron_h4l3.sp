@@ -9,11 +9,11 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Saxtron"
-#define ROBOT_ROLE "Basic"
+#define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "SAXTRON HALE!"
 
 #define GSOLDIER		"models/bots/saxtron/bot_saxtron_v2.mdl"
-#define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
 
@@ -244,7 +244,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client , "Kill all hippies");
-	
+	SetBossHealth(client);
 }
 
 stock TF2_SetHealth(client, NewHealth)

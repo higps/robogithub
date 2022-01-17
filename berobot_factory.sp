@@ -75,6 +75,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("IsRobot", Native_IsRobot);
     CreateNative("IsRobotWhenDead", Native_IsRobotWhenDead);
 	CreateNative("IsAnyRobot", Native_IsAnyRobot);
+    CreateNative("IsBoss", Native_IsBoss);
 	CreateNative("GetRobot", Native_GetRobot);
 
 	return APLRes_Success;
@@ -155,6 +156,10 @@ public Action Timer_Locker(Handle timer, any client)
     }
 
     CallCreate(client, item);
+    if (IsPlayerAlive(client))
+    { 
+        EmitSoundToAll(item.sounds.spawn);
+    }
     return Plugin_Handled;
 }
 
@@ -193,7 +198,9 @@ void ResetOnDeath(int client, Robot item)
     StopSounds(client, item);
     
     TF2Attrib_RemoveAll(client);
+    if (IsPlayerAlive(client)){
     EmitSoundToAll(item.sounds.death);
+    }
     _robotIsCreated[client] = false;    
 }
 
@@ -314,7 +321,9 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	if (robotWasCreated)
 	{
 		SMLogTag(SML_VERBOSE, "playing robot spawn sound %s to all for call by client %i for target %s", item.sounds.spawn, client, target);
-		EmitSoundToAll(item.sounds.spawn);
+		if (IsPlayerAlive(client)){
+            EmitSoundToAll(item.sounds.spawn);
+        } 
 	}
 
 	return 0;
@@ -372,16 +381,24 @@ public any Native_IsAnyRobot(Handle plugin, int numParams)
     return _isRobot[client][0] != '\0';
 }
 
-// public any Native_IsBossRobot(Handle plugin, int numParams)
-// {
-//     int client = GetNativeCell(1);
+public any Native_IsBoss(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
 
-//     GetRobot(client, robotrole, namelength);
-    
-    
+    char robotName[NAMELENGTH];
 
-//     return _isRobot[client][0] != '\0';
-// }
+    Robot robot;
+    GetRobot(client, robotName, NAMELENGTH);
+    GetRobotDefinition(robotName, robot);
+
+
+    if (StrEqual(robot.role,"ZBOSS"))
+    {
+       // PrintToChatAll("Robot role from factory: %s", robot.role);
+        
+        return true;
+    }
+}
 
 int TrashTargetedRobot(int clientId, char target[32])
 {
@@ -544,8 +561,10 @@ void CallCreate(int client, Robot item)
     Call_Finish();
     
     SMLogTag(SML_VERBOSE, "starting loop-sound %s for %L as %s", item.sounds.loop, client, item.name);
-    EmitSoundToAll(item.sounds.loop, client,_,_,_, 0.25);
 
+    if (IsPlayerAlive(client)){
+    EmitSoundToAll(item.sounds.loop, client,_,_,_, 0.25);
+    }
     _isRobot[client] = item.name;
     _robotIsCreated[client] = true;
 }

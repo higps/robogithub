@@ -215,7 +215,7 @@ public void OnPluginStart()
     
     HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+    //HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
@@ -319,41 +319,67 @@ void Reset(int client)
 
 /* Publics */
 
-public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
-{
-    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+// public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+// {
+//     int client = GetClientOfUserId(GetEventInt(event, "userid"));
+    
+//     if (IsAnyRobot(client)){ 
+        
+//         //PrintToChatAll("%N spawned, checking if boss", client);
 
-    CreateTimer(0.2, Boss_check, client);
+//         CreateTimer(1.0, Boss_check, client);
+//     }
 
-}
+// }
 
-public Action Boss_check(Handle timer, any client)
-{
+// public Action Boss_check(Handle timer, any client)
+// {
+    
+//     if (IsValidClient(client) && IsPlayerAlive(client))
+//     {
+//         //int clientId = GetClientUserId(client);
 
-    if (IsValidClient(client) && IsPlayerAlive(client))
-    {
-        int clientId = GetClientUserId(client);
+//         if (IsAnyRobot(client))
+//         {
+//             MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
 
-        if (IsAnyRobot(client))
-        {
-            MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
+//             if (IsBoss(client))
+//             {
+//                // PrintToChatAll("Setting boss to %N", client);
+//                 ServerCommand("sm_setbosshud #%i", client);
+//             }
+//             // else
+//             // {
+//             //     PrintToChatAll("Did not find boss on %N", client);
+//             // }
+//         }
+//     }
+// }
 
-            char robotName[NAMELENGTH];
+// bool IsBoss(client)
+// {
 
-            Robot robot;
-            GetRobot(client, robotName, NAMELENGTH);
-            GetRobotDefinition(robotName, robot);
+//     char robotName[NAMELENGTH];
 
-            
+//     Robot robot;
+//     GetRobot(client, robotName, NAMELENGTH);
+//     GetRobotDefinition(robotName, robot);
 
-            if (StrEqual(robot.role,"ZBOSS"))
-            {
-                PrintToChatAll("Robot role: %s", robot.role);
-                ServerCommand("sm_setboss #%i", clientId);
-            } 
-        }
-    }
-}
+    
+
+//     if (StrEqual(robot.role,"ZBOSS"))
+//     {
+//         PrintToChatAll("Robot role in handler: %s", robot.role);
+        
+//         return true;
+//     }else
+//     {
+//         return false;
+//     }
+// }
+
+
+
 
 public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
@@ -380,7 +406,13 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
             GetEntPropVector(victim, Prop_Data, "m_vecOrigin", position);	
             int attach = CreateEntityByName("trigger_push");
             TeleportEntity(attach, position, NULL_VECTOR, NULL_VECTOR);
-            TE_Particle("hightower_explosion", position, _, _, attach, 1,0);	
+
+            // if (IsBoss(victim)){
+            //     TE_Particle("fireSmokeExplosion2", position, _, _, attach, 1,0);	
+            // }else{
+                
+                TE_Particle("hightower_explosion", position, _, _, attach, 1,0);	
+            // } 
         }
 //        fireSmokeExplosion//
 // 
@@ -390,10 +422,14 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	
 public Action RemoveBody(Handle timer, any client)
 {
-    int BodyRagdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
-    if(IsValidEdict(BodyRagdoll))
+
+    if (HasEntProp(client, Prop_Send, "m_hRagdoll"))
     {
-        AcceptEntityInput(BodyRagdoll, "kill");
+        int BodyRagdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
+        if(IsValidEdict(BodyRagdoll))
+        {
+            AcceptEntityInput(BodyRagdoll, "kill");
+        }
     }
 }
 
@@ -601,8 +637,9 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 {
                     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
                     damage *= 0.75;
-                    return Plugin_Changed;
                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                    return Plugin_Changed;
+                    
                 }
                     
                     
@@ -613,8 +650,9 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
                 if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
                 damage *= 1.35;
-                return Plugin_Changed;
                 if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                return Plugin_Changed;
+                
                     
             }   
     }
@@ -640,6 +678,9 @@ public Action Command_BeRobot(int client, int numParams)
         GetCmdArg(2, target, sizeof(target));
 
     SMLogTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
+    // //Remove the boss healthbar when changing robots, boss health bar is created on boss spawn
+    // UnSetBossHealth(client);
+
     CreateRobot(name, client, target);
     
     SetEntProp(client, Prop_Send, "m_bIsMiniBoss", 1);

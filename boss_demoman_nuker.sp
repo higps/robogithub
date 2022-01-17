@@ -12,7 +12,7 @@
 #define ROBOT_DESCRIPTION "Nuke Shot"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
-#define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
@@ -139,6 +139,8 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	
 	PrintHintText(client, "Shoot big bombs that go boom");
 	PrintToChat(client, "1. You are now Giant Nuker !");
+
+	SetBossHealth(client);
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -186,12 +188,17 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
 			TF2Attrib_SetByName(Weapon1, "blast radius increased", 2.25);
 			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 4.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 2.5);
 			TF2Attrib_SetByName(Weapon1, "reload time increased", 1.25);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.75);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.1);
+
+			
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
+
+			
 		}
 		
 		// if(IsValidEntity(Weapon2))

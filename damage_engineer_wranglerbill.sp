@@ -61,6 +61,8 @@ static int g_iPadType[2048];
 static char g_szOffsetStartProp[64];
 static int g_iOffsetMatchingTeleporter = -1;
 
+bool g_Announcerquiet = false;
+
 enum //Teleporter states
 {
 	TELEPORTER_STATE_BUILDING = 0,				// Building, not active yet
@@ -491,8 +493,10 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client , "Use build menu to build up to 3 sentries!\nRemove all sappers at once");
-	if (IsPlayerAlive(client))
+	if (IsPlayerAlive(client) && !g_Announcerquiet)
 	{
+		// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND);
+		// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND2);
 		int soundswitch = GetRandomInt(1, 2);
 		switch(soundswitch)
 		{
@@ -505,9 +509,20 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 				EmitSoundToAll(ENGIE_SPAWN_SOUND2);
 			}
 		}
+		g_Announcerquiet = true;
+		CreateTimer(10.0, Spawn_Clamp, client);
 	}
+
+
 	
 }
+
+public Action Spawn_Clamp(Handle timer, any client)
+{
+	g_Announcerquiet = false;
+}
+	
+
 
 stock TF2_SetHealth(client, NewHealth)
 {

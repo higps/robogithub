@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #include <sourcemod>
-
+#include <berobot_constants>
+#include <berobot>
 #include <sdkhooks>
 
 #pragma newdecls required
@@ -93,16 +94,29 @@ public Plugin myinfo = {
 	url = "https://github.com/nosoop/"
 }
 
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	CreateNative("SetBossHealth", Native_SetBossHealth);
+	CreateNative("UnSetBossHealth", Native_UnSetBossHealth);
+
+	return APLRes_Success;
+}
+
 int g_iBossTarget = -1;
 
 public void OnPluginStart() {
 	LoadTranslations("common.phrases");
 	
 	RegAdminCmd("sm_setboss", SetBossHealthTarget, ADMFLAG_ROOT);
+	//RegAdminCmd("sm_setbosshud", SetBossHealth, ADMFLAG_ROOT);
+//	RegServerCmd("sm_unsetbosshud", UnSetBossHealth);
+	
 	
 	HookEvent("post_inventory_application", OnInventoryApplied);
 
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
+	HookEvent("player_death", Event_Death_RemoveHUD, EventHookMode_Post);
+
+	
 }
 
 public void OnPluginEnd() {
@@ -112,35 +126,62 @@ public void OnPluginEnd() {
 	}
 }
 
-public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+public Action Event_Death_RemoveHUD(Event event, const char[] name, bool dontBroadcast)
 {
-	//int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-	int clientid = GetClientUserId(client);
 
+	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	//The client was a boss and died
 	if (client == g_iBossTarget) {
 		SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
-		g_iBossTarget = -1;
-		int iEnt = MaxClients + 1;
-		while ((iEnt = FindEntityByClassname(iEnt, "monster_resource")) != -1)
-		{
-			if (IsValidEntity(iEnt))
-			{
-				AcceptEntityInput(iEnt, "Kill");
-				
-			}
-		} 
+	
+	RemoveHUD();
 	}
 
 }
 
+public void RemoveHUD(){
+	g_iBossTarget = -1;
+	int iEnt = MaxClients + 1;
+	while ((iEnt = FindEntityByClassname(iEnt, "monster_resource")) != -1)
+	{
+		if (IsValidEntity(iEnt))
+		{
+			AcceptEntityInput(iEnt, "Kill");
+			
+		}
+	} 
+
+}
+
+
 public void OnInventoryApplied(Event event, const char[] name, bool dontBroadcast) {
-	int client = GetClientOfUserId(event.GetInt("userid"));
 	
+	int client = GetClientOfUserId(event.GetInt("userid"));
+
 	if (TF2_IsGameModeMvM() && client == g_iBossTarget) {
 		// should be forced to regenerate on next think
 		SetEntProp(client, Prop_Send, "m_bUseBossHealthBar", false);
 	}
+
+	int iTarget = client;
+
+	if (IsAnyRobot(client) && !IsBoss(client) && client == g_iBossTarget){
+		//PrintToChatAll("%N was not a ZBOSS! but is the target, removing hud and target", client);
+		RemoveHUD();
+	}
+	
+	// if (iTarget != -1 && g_iBossTarget != iTarget) {
+	// 	if (IsValidEntity(g_iBossTarget)) {
+	// 		SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
+	// 	}
+	// 	g_iBossTarget = iTarget;
+	// 	SDKHook(iTarget, SDKHook_PostThink, OnBossPostThink);
+	// 	ReplyToCommand(client, "Switched boss target to %N", iTarget);
+		
+	// }
+
+	
 }
 
 public Action SetBossHealthTarget(int client, int argc) {
@@ -159,15 +200,62 @@ public Action SetBossHealthTarget(int client, int argc) {
 		}
 		g_iBossTarget = iTarget;
 		SDKHook(iTarget, SDKHook_PostThink, OnBossPostThink);
-		ReplyToCommand(client, "Switched boss target to %N", iTarget);
+	//	ReplyToCommand(client, "Switched boss target to %N", iTarget);
 	} else {
 		g_iBossTarget = -1;
-		ReplyToCommand(client, "Removed boss target");
+	//	ReplyToCommand(client, "Removed boss target");
 		
 	}
 	
 	return Plugin_Handled;
 }
+
+
+public any Native_SetBossHealth(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+
+	int iTarget = client;
+	
+	if (iTarget != -1 && g_iBossTarget != iTarget) {
+		if (IsValidEntity(g_iBossTarget)) {
+			SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
+		}
+		g_iBossTarget = iTarget;
+		SDKHook(iTarget, SDKHook_PostThink, OnBossPostThink);
+		//ReplyToCommand(client, "Switched boss target to %N", iTarget);
+	}
+	
+	return Plugin_Handled;
+}
+
+// public Action SetBossHealth(int client) {
+
+// 	int iTarget = client;
+	
+// 	if (iTarget != -1 && g_iBossTarget != iTarget) {
+// 		if (IsValidEntity(g_iBossTarget)) {
+// 			SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
+// 		}
+// 		g_iBossTarget = iTarget;
+// 		SDKHook(iTarget, SDKHook_PostThink, OnBossPostThink);
+// 		ReplyToCommand(client, "Switched boss target to %N", iTarget);
+// 	}
+	
+// 	return Plugin_Handled;
+// }
+
+public any Native_UnSetBossHealth(Handle plugin, int numParams) {
+
+	RemoveHUD();
+	//PrintToChatAll("Removed Via call");
+	
+	return Plugin_Handled;
+}
+
+
+
+
 
 public void OnBossPostThink(int client) {
 	if (client != g_iBossTarget) {
@@ -199,10 +287,6 @@ public void OnBossPostThink(int client) {
 				
 			}
 		} 
-
-		
-		
-		
 	}
 }
 

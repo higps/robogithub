@@ -52,7 +52,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 1;
+    restrictions.RobotCoins.Overall = 50;
 
 
     AddRobot(robot, MakePanCop, PLUGIN_VERSION, restrictions);
@@ -174,6 +174,7 @@ MakePanCop(client)
 	//TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	TF2Attrib_SetByName(client, "increased jump height", 5.3);
 	 
 
 	UpdatePlayerHitbox(client, 1.75);
@@ -214,38 +215,38 @@ stock GiveGDeflectorH(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 
-	//	CreateRoboWeapon(client, "tf_weapon_club", 264, 6, 2, 2, 0);
-	//	CreateRoboWeapon(client, "tf_weapon_lunchbox", 311, 6, 2, 1, 0);
+	// //	CreateRoboWeapon(client, "tf_weapon_club", 264, 6, 2, 2, 0);
+	// //	CreateRoboWeapon(client, "tf_weapon_lunchbox", 311, 6, 2, 1, 0);
 
-		CreateRoboHat(client, Machomann, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, TheLaw, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, SiberianSophisticate, 10, 6, 0.0, 1.0, -1.0); 
+	// 	CreateRoboHat(client, Machomann, 10, 6, 0.0, 0.75, -1.0); 
+	// 	CreateRoboHat(client, TheLaw, 10, 6, 0.0, 0.75, -1.0); 
+	// 	CreateRoboHat(client, SiberianSophisticate, 10, 6, 0.0, 1.0, -1.0); 
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		if(IsValidEntity(Weapon1))
-		{
-			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.30);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
-			TF2Attrib_SetByName(Weapon1, "ragdolls plasma effect", 1.0);
-			TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 109.0);
-			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.35);
-			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
-			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
+	// 	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+	// 	if(IsValidEntity(Weapon1))
+	// 	{
+	// 		TF2Attrib_RemoveAll(Weapon1);
+	// 		TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+	// 		TF2Attrib_SetByName(Weapon1, "damage bonus", 1.30);
+	// 		TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
+	// 		TF2Attrib_SetByName(Weapon1, "ragdolls plasma effect", 1.0);
+	// 		TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 109.0);
+	// 		TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.35);
+	// 		TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
+	// 		TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 
-		}
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		if(IsValidEntity(Weapon2))
-		{
-			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "lunchbox adds minicrits", 7.0);
-			TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 40.0);
+	// 	}
+	// 	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	// 	if(IsValidEntity(Weapon2))
+	// 	{
+	// 		TF2Attrib_RemoveAll(Weapon2);
+	// 		TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+	// 		TF2Attrib_SetByName(Weapon2, "lunchbox adds minicrits", 7.0);
+	// 		TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 40.0);
 			
 
 
-		}
+	// 	}
 	}
 }
 

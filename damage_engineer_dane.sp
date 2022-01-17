@@ -63,6 +63,7 @@ static char g_szOffsetStartProp[64];
 static int g_iOffsetMatchingTeleporter = -1;
 
 bool g_ReadyToTeamPort[MAXPLAYERS + 1] = false;
+bool g_Announcerquiet = false;
 
 enum //Teleporter states
 {
@@ -289,19 +290,6 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-
-// stock int SpawnParticle(char[] szParticleType)
-// {
-// 	int iParti = CreateEntityByName("info_particle_system");
-// 	if (IsValidEntity(iParti))
-// 	{
-// 		DispatchKeyValue(iParti, "effect_name", szParticleType);
-// 		DispatchSpawn(iParti);
-// 		ActivateEntity(iParti);
-// 	}
-// 	return iParti;
-// }
-
 stock void SetParent(int iParent, int iChild, char[] szAttachPoint = "")
 {
 	SetVariantString("!activator");
@@ -317,17 +305,7 @@ stock void SetParent(int iParent, int iChild, char[] szAttachPoint = "")
 	}
 }
 
-// stock void TF2_SetMatchingTeleporter(int iTele, int iMatch)	//Set the matching teleporter entity of a given Teleporter
-// {
 
-// 	if (IsValidEntity(iTele) && HasEntProp(iTele, Prop_Send, g_szOffsetStartProp))
-// 	{
-// 		//PrintToChatAll("Matching telepoters");
-// 		int iOffs = FindSendPropInfo("CObjectTeleporter", g_szOffsetStartProp) + g_iOffsetMatchingTeleporter;
-// 		SetEntDataEnt2(iTele, iOffs, iMatch, true);
-// 	}
-	
-// }
 
 public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 {
@@ -464,8 +442,11 @@ MakeUncleDane(client)
 //Doesn't work for whatever reason
 	///EmitGameSoundToAll("Announcer.MVM_First_Engineer_Teleport_Spawned");
 
-	if (IsPlayerAlive(client))
+	
+	if (IsPlayerAlive(client) && !g_Announcerquiet)
 	{
+		// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND);
+		// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND2);
 		int soundswitch = GetRandomInt(1, 2);
 		switch(soundswitch)
 		{
@@ -478,10 +459,17 @@ MakeUncleDane(client)
 				EmitSoundToAll(ENGIE_SPAWN_SOUND2);
 			}
 		}
+		g_Announcerquiet = true;
+		CreateTimer(10.0, Spawn_Clamp, client);
 	}
 
 
 	
+}
+
+public Action Spawn_Clamp(Handle timer, any client)
+{
+	g_Announcerquiet = false;
 }
 
 stock TF2_SetHealth(client, NewHealth)
