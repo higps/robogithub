@@ -247,8 +247,16 @@ public any Native_SetBossHealth(Handle plugin, int numParams)
 
 public any Native_UnSetBossHealth(Handle plugin, int numParams) {
 
+	for(int i = 0; i <= MAXPLAYERS; i++)
+    {
+		if (i == g_iBossTarget) {
+			SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
+    	}
+	}
+	
+
 	RemoveHUD();
-	//PrintToChatAll("Removed Via call");
+	
 	
 	return Plugin_Handled;
 }
