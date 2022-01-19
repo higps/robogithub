@@ -397,6 +397,9 @@ public any Native_IsBoss(Handle plugin, int numParams)
        // PrintToChatAll("Robot role from factory: %s", robot.role);
         
         return true;
+    }else
+    {
+        return false;
     }
 }
 
@@ -443,6 +446,8 @@ int TrashTargetedRobot(int clientId, char target[32])
 
 int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELENGTH] = "")
 {
+    if (IsValidClient(clientId) && IsClientInGame(clientId)){
+
     strcopy(wasRobot, NAMELENGTH, _isRobot[clientId]);
     if (wasRobot[0] == '\0')            //disable previous robot
         return 0;
@@ -543,6 +548,7 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
     ResetOnDeath(clientId, oldRobot);
 
     return 0;
+    }
 }
 
 public any Native_GetRobot(Handle plugin, int numParams)

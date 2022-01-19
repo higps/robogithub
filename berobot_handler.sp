@@ -215,7 +215,7 @@ public void OnPluginStart()
     
     HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    //HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+    HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
     g_RobotCount = new StringMap();
@@ -240,6 +240,8 @@ public void OnPluginStart()
         SetFailState("Failed to detour OnRegenerate!");
 
     delete g_hGameConf;
+
+    
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -260,7 +262,8 @@ public void OnMapStart()
     g_RoundCount = 0;
     ResetMode();
 
-    PrecacheSound("Announcer.MVM_General_Destruction");
+    PrecacheScriptSound("Announcer.MVM_General_Destruction");
+    
 
 }
 
@@ -321,18 +324,19 @@ void Reset(int client)
 
 /* Publics */
 
-// public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
-// {
-//     int client = GetClientOfUserId(GetEventInt(event, "userid"));
+public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+{
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
     
-//     if (IsAnyRobot(client)){ 
+    if (IsAnyRobot(client)){ 
         
-//         //PrintToChatAll("%N spawned, checking if boss", client);
+        //PrintToChatAll("%N spawned, checking if boss", client);
+        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
+        
+        //CreateTimer(1.0, Boss_check, client);
+    }
 
-//         CreateTimer(1.0, Boss_check, client);
-//     }
-
-// }
+}
 
 // public Action Boss_check(Handle timer, any client)
 // {
@@ -388,10 +392,11 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
     
-    //EmitSoundToAll("Announcer.MVM_General_Destruction");
+    //EmitSoundToAll("Announcer.MVM_General_Destruction",victim, 7);
     
     //EmitAmbientGameSound("Announcer.MVM_General_Destruction");
-    //EmitGameSoundToAll("Announcer.MVM_General_Destruction", victim);
+  //  EmitGameSoundToAll("Announcer.MVM_General_Destruction", victim);
+    //EmitGameSoundToAll("Announcer.MVM_General_Destruction");
     //EmitGameSoundToAll("Announcer.MVM_Engineer_Teleporter_Activated");
     //PrintToChatAll("You died  %N", victim);
     //GetRobotNames();
@@ -419,9 +424,10 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
             // }else{
                 
             TE_Particle("hightower_explosion", position, _, _, attach, 1,0);	
+            // } 
 
             int irandom = GetRandomInt(1,3);
-            
+           // EmitGameSoundToAll("Announcer.MVM_General_Destruction");
             if (irandom == 1)
             {
                 CreateTimer(1.5, SayDeathVoiceline);
@@ -436,11 +442,9 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 public Action SayDeathVoiceline(Handle timer)
 {
-
     EmitGameSoundToAll("Announcer.MVM_General_Destruction");
 }
 
-	
 public Action RemoveBody(Handle timer, any client)
 {
 

@@ -569,24 +569,24 @@ void OnPadThink(int iPad)
 	
 		
 
-	// if (TF2_GetBuildingState(iPad) > TELEPORTER_STATE_BUILDING && TF2_GetBuildingState(iPad) < TELEPORTER_STATE_UPGRADING)
-	// {
-	// 	if (TF2_GetBuildingState(iPad) != TELEPORTER_STATE_READY)/*  && GetEntPropFloat(iPad, Prop_Send, "m_flRechargeTime") <= GetGameTime() */
-	// 	{
-	// 		//AcceptEntityInput(iPad, "Start");
-	// 		TF2_SetBuildingState(iPad, TELEPORTER_STATE_READY);	//Make sure the Pad always re-activates when it's supposed to.
+	if (TF2_GetBuildingState(iPad) > TELEPORTER_STATE_BUILDING && TF2_GetBuildingState(iPad) < TELEPORTER_STATE_UPGRADING)
+	{
+		if (TF2_GetBuildingState(iPad) != TELEPORTER_STATE_READY)/*  && GetEntPropFloat(iPad, Prop_Send, "m_flRechargeTime") <= GetGameTime() */
+		{
+			//AcceptEntityInput(iPad, "Start");
+			TF2_SetBuildingState(iPad, TELEPORTER_STATE_READY);	//Make sure the Pad always re-activates when it's supposed to.
 			
-	// 	//	AcceptEntityInput(iObjParti, "Start");
-	// 		// #if defined DEBUG
-	// 		// PrintToChatAll("%i Ready!", iPad);
-	// 		// #endif
-	// 	}
-		// if (TF2_GetBuildingState(iPad) == TELEPORTER_STATE_READY && IsValidEntity(iObjParti) && !bSapped)
-		// {
-		// 	AcceptEntityInput(iObjParti, "Start");
-		// }
+		//	AcceptEntityInput(iObjParti, "Start");
+			// #if defined DEBUG
+			// PrintToChatAll("%i Ready!", iPad);
+			// #endif
+		}
+		if (TF2_GetBuildingState(iPad) == TELEPORTER_STATE_READY && IsValidEntity(iObjParti) && !bSapped)
+		{
+			AcceptEntityInput(iObjParti, "Start");
+		}
 			
-	//}
+	}
 	SetEntPropFloat(iPad, Prop_Send, "m_flCurrentRechargeDuration", 1.0);
 	SetEntPropFloat(iPad, Prop_Send, "m_flYawToExit", GetEntPropFloat(iPad, Prop_Send, "m_flYawToExit") + 10.0);	//Make the arrow spin for fun, and to indicate its not a Teleporter (but mostly for fun)
 	if (GetEntPropFloat(iPad, Prop_Send, "m_flYawToExit") > 360.0){
