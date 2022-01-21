@@ -332,9 +332,12 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         
         //PrintToChatAll("%N spawned, checking if boss", client);
         MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
-        
+
         //CreateTimer(1.0, Boss_check, client);
     }
+            // int Humans = GetTeamClientCount(g_HumanTeam);
+            // int Robots = GetTeamClientCount(g_RoboTeam);
+            // PrintToChatAll("Human players %i, robot players %i", Humans, Robots);
 
 }
 
@@ -543,6 +546,7 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
                 return Plugin_Handled;
             }
         }
+
     }
     }
 
@@ -864,6 +868,7 @@ public Action Command_YT_Robot_Start(int client, int args)
                     }
                 }
             }
+
         }
     }
     }else

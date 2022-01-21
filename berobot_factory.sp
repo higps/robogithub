@@ -156,9 +156,10 @@ public Action Timer_Locker(Handle timer, any client)
     }
 
     CallCreate(client, item);
-    if (IsPlayerAlive(client))
+    if (IsPlayerAlive(client) && IsAnyRobot(client))
     { 
         EmitSoundToAll(item.sounds.spawn);
+        
     }
     return Plugin_Handled;
 }
@@ -321,9 +322,9 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	if (robotWasCreated)
 	{
 		SMLogTag(SML_VERBOSE, "playing robot spawn sound %s to all for call by client %i for target %s", item.sounds.spawn, client, target);
-		if (IsPlayerAlive(client)){
-            EmitSoundToAll(item.sounds.spawn);
-        } 
+		// if (IsPlayerAlive(client)){
+        //     EmitSoundToAll(item.sounds.spawn);
+        // } 
 	}
 
 	return 0;

@@ -161,7 +161,7 @@ stock GiveBigRoboJbird(client)
 
 	CreateRoboWeapon(client, "tf_weapon_sniperrifle", 14, 6, 1, 0, 0);
 	//CreateRoboWeapon(client, "tf_weapon_smg", 16, 6, 1, 1, 0);
-	//CreateRoboWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
+	CreateRoboWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
 
 		
 	CreateRoboWeapon(client, "tf_wearable", 642, 6, 1, 3, 0); 
@@ -173,7 +173,7 @@ stock GiveBigRoboJbird(client)
 
 		
 	int SniperRifle = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //SniperRifle
-	// int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
+	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
 	// int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
 
@@ -194,16 +194,16 @@ stock GiveBigRoboJbird(client)
 			
 			
 		}
-	// if(IsValidEntity(Kukri))
-	// 	{
-	// 		TF2Attrib_RemoveAll(Kukri);
+	if(IsValidEntity(Kukri))
+		{
+			TF2Attrib_RemoveAll(Kukri);
 			
-	// 		TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
-	// 		TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
-	// 		TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
-	// 		TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
+			TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
+			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
 
-	// 	}
+		}
 	// if(IsValidEntity(SMG))
 	// 	{
 	// 		TF2Attrib_RemoveAll(SMG);

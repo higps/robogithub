@@ -104,6 +104,30 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 		SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityLevel"), GetRandomInt(1,99));
 	}
 
+	switch (itemindex)
+    {
+    case 25, 26:
+        {
+            DispatchSpawn(weapon);
+            EquipPlayerWeapon(client, weapon); 
+
+            return true;             
+        }
+    case 735, 736, 810, 933, 1080, 1102: //sapper
+        {
+            SetEntProp(weapon, Prop_Send, "m_iObjectType", 3);
+            SetEntProp(weapon, Prop_Data, "m_iSubType", 3);
+            SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 0, _, 0);
+            SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 0, _, 1);
+            SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 0, _, 2);
+            SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 1, _, 3);
+        }    
+    case 998:
+        {
+            SetEntProp(weapon, Prop_Send, "m_nChargeResistType", GetRandomInt(0,2));
+        }
+    }
+
 
 	if(quality == 9)
 	{
@@ -127,6 +151,8 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 		DispatchSpawn(weapon);
 		EquipPlayerWeapon(client, weapon);
 	}
+
+
 	return true;
 }
 

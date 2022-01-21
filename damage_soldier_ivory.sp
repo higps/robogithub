@@ -42,7 +42,7 @@ int glow;
 
 ConVar g_rocketDelay;
 ConVar g_rocketCount;
-ConVar g_rocketCurve;
+int g_rocketCurve;
 ConVar g_showDebug;
 ConVar g_rocketAngle;
 ConVar g_rocketDiverge;
@@ -90,23 +90,26 @@ public OnPluginStart()
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
 
-	g_rocketDelay = CreateConVar("mirv_rocket_delay", "1.0", "Delay before a mirv rocket splits into other rockets");
-	g_rocketCount = CreateConVar("mirv_rocket_count", "4", "How many rockets a mirv rocket splits into", _, true, 2.0, true, 6.0);
-	g_rocketCurve = CreateConVar("mirv_converge_rockets", "0", "Do rockets converge on a single point after splitting", _, true, 0.0, true, 1.0);
-	g_rocketAngle = CreateConVar("mirv_split_angle", "25.0", "Positive angle from the down vector at which mirv rockets will split at (0.0 = directly down, 90.0 = no deviation)");
-	g_rocketDiverge = CreateConVar("mirv_split_variance", "20.0", "Random angle variance added onto mirv rockets");
+	g_rocketDelay = CreateConVar("mirv_rocket_delay", "0.4", "Delay before a mirv rocket splits into other rockets");
+	g_rocketCount = CreateConVar("mirv_rocket_count", "3", "How many rockets a mirv rocket splits into", _, true, 2.0, true, 6.0);
+	g_rocketCurve = 1;
+	//g_rocketCurve = CreateConVar("mirv_converge_rockets", "0", "Do rockets converge on a single point after splitting", _, true, 0.0, true, 1.0);
 	g_showDebug = CreateConVar("mirv_converge_debug", "0", "Show debug angles and trajectory for converging rockets", _, true, 0.0, true, 1.0);
-	HookConVarChange(g_rocketCurve, OnMirvSettingsChanged);
-	
-	ShouldMirvConverge = GetConVarBool(g_rocketCurve);
+	g_rocketAngle = CreateConVar("mirv_split_angle", "30.0", "Positive angle from the down vector at which mirv rockets will split at (0.0 = directly down, 90.0 = no deviation)");
+	g_rocketDiverge = CreateConVar("mirv_split_variance", "10.0", "Random angle variance added onto mirv rockets");
+	//HookConVarChange(g_rocketCurve, OnMirvSettingsChanged);
+
+	ShouldMirvConverge =  view_as<bool>(g_rocketCurve);
 
 	ExplodeSprite = PrecacheModel("sprites/sprite_fire01.vmt");
 	PrecacheSound(ExplodeSound);
 
 	//Events
-//	AddCommandListener(PlayerJoinClass, "joinclass");
+	// AddCommandListener(MirvModeToggle, "+use");
+	// AddCommandListener(MirvModeToggle, "+attack2");
+	// AddCommandListener(MirvModeToggle, "+reload");
 
-	RegConsoleCmd("sm_mirv", CmdControl);
+	//RegConsoleCmd("sm_mirv", CmdControl);
 
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -154,7 +157,6 @@ public OnMapStart()
 	ExplodeSprite = PrecacheModel("sprites/sprite_fire01.vmt");
 	glow = PrecacheModel("materials/sprites/laser.vmt");
 	PrecacheSound(ExplodeSound);
-	
 }
 
 /* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
@@ -207,40 +209,6 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 		}
 		return Plugin_Changed;
 	}
-
-	
-	// if (strncmp(sample, ")weapons/", 9, false) == 0)
-	// {
-	// 	if (StrContains(sample, "rocket_shoot.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE);
-	// 		EmitSoundToAll(sample, entity);
-			
-	// 	}
-	// 	else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_CRIT);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
-		
-	// 	//Explosion doesnæt quite work
-	// 	/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
-	// 	else if (StrContains(sample, "explode2.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
-	// 	else if (StrContains(sample, "explode3.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	} */
-	// 	return Plugin_Changed;
-	// }
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 }
 
@@ -302,7 +270,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Your rockets explodes in to more rockets!");
+	PrintHintText(client , "Your rockets explodes in to more rockets!\nUse M2, reload or special attack to change modes!");
 	
 }
 
@@ -336,15 +304,12 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
-		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
 
 		CreateRoboHat(client, WhirlyWarrior, 10, 6, 2960676.0, 1.0, -1.0);
 		CreateRoboHat(client, GourdGrin, 10, 6, 2960676.0, 1.0, -1.0);
 		CreateRoboHat(client, Flakcatcher, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		//int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon1))
 		{
@@ -357,13 +322,6 @@ stock GiveGiantPyro(client)
 			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
-		// if(IsValidEntity(Weapon2))
-		// {
-		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.00);
-		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-		// 	TF2Attrib_SetByName(Weapon2, "faster reload rate", 2.5);							
-		// 	TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
-		// }
 
 	}
 }
@@ -372,6 +330,11 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 	
 
+#pragma semicolon 1
+#include <tf2>
+#include <tf2_stocks>
+#include <sdkhooks>
+#include <sdktools>
 
 public Plugin MyInfo =
 {
@@ -380,6 +343,7 @@ public Plugin MyInfo =
 	description = "Rockets split into smaller rockets after a short delay."
 };
 
+#define ExplodeSound	"ambient/explosions/explode_8.wav"
 
 public void OnMirvSettingsChanged(ConVar convar, char[] oldVal, char[] newVal)
 {
@@ -387,35 +351,52 @@ public void OnMirvSettingsChanged(ConVar convar, char[] oldVal, char[] newVal)
 	ShouldMirvConverge = view_as<bool>(cvarValue);
 }
 
+bool g_PushButton[MAXPLAYERS + 1] = false;
+
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+{
+	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_RELOAD|IN_USE|IN_ATTACK2) && !g_PushButton[client])
+	{
+		if (g_rocketCurve == 1)
+		{	
+			g_rocketCurve = 0;
+			ShouldMirvConverge = false;
+			PrintCenterText(client, "MIRV MODE:  MORTAR");
+		}else{
+			g_rocketCurve = 1;
+			ShouldMirvConverge = true;
+			PrintCenterText(client, "MIRV MODE: CONVERGE");
+		}
+		g_PushButton[client] = true;
+		CreateTimer(0.2, Button_Reset, client);
+		
+		
+	}
+}
 
 
-// public Action PlayerJoinClass(int client, const char[] command, int argc)
-// {
-// 	if (TF2_GetPlayerClass(client) == TFClass_Soldier && PlayerHasMirv[client])
-// 	{
-// 		PlayerHasMirv[client] = false;
-// 		PrintToChat(client, "[SM] Disabling MIRV rockets due to class change.");
-// 	}
-// 	return Plugin_Continue;
-// }
+public Action Button_Reset(Handle timer, int client)
+{
+	g_PushButton[client] = false;
+}
 
 public void OnClientPostAdminCheck(int client)
 {
 	PlayerHasMirv[client] = false;
 }
 
-Action CmdControl(int client, int args)
-{
-	if (TF2_GetPlayerClass(client) != TFClass_Soldier)
-	{
-		PrintToChat(client, "[SM] You must be a soldier to use this command!");
-	}
-	else
-	{
-		PlayerHasMirv[client] = !PlayerHasMirv[client];
-		PrintToChat(client, "[SM] MIRV Rockets %s!", PlayerHasMirv[client] ? "enabled" : "disabled");
-	}
-}
+// Action CmdControl(int client, int args)
+// {
+// 	if (TF2_GetPlayerClass(client) != TFClass_Soldier)
+// 	{
+// 		PrintToChat(client, "[SM] You must be a soldier to use this command!");
+// 	}
+// 	else
+// 	{
+// 		PlayerHasMirv[client] = !PlayerHasMirv[client];
+// 		PrintToChat(client, "[SM] MIRV Rockets %s!", PlayerHasMirv[client] ? "enabled" : "disabled");
+// 	}
+// }
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
@@ -423,7 +404,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 	{
 		//SDKHook(entity, SDKHook_SpawnPost, OnRocketSpawned);
 		RequestFrame(OnRocketSpawned, entity);
-		
 		SDKHook(entity, SDKHook_Touch, OnRocketEnd);
 	}
 }
@@ -441,23 +421,17 @@ public void OnEntityDestroyed(int entity)
 
 public void OnRocketSpawned(int rocket)
 {
-	if (IsValidEntity(rocket))
-	{
-	int owner;
-if (HasEntProp(rocket, Prop_Send, "m_hOwnerEntity"))
-{
-    owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");
-}
+	if (!HasEntProp(rocket, Prop_Send, "m_hOwnerEntity")) return; //prevent errors if this function somehow hooks an entity that isn't a rocket
+	
+	int owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");
 	if (!IsValidClient(owner)) return;
 
 	if (IsRobot(owner, ROBOT_NAME) && !MirvRocket[rocket])
 	{
 		//PrintToChat(owner, "Rocket Spawned");
-		SetEntPropFloat(rocket, Prop_Send, "m_flModelScale", 1.5);
 		RocketOverride[rocket] = true;
 		int ref = EntIndexToEntRef(rocket);
 		CreateTimer(GetConVarFloat(g_rocketDelay), RocketTimer, ref, TIMER_FLAG_NO_MAPCHANGE);
-	}
 	}
 }
 
@@ -467,7 +441,7 @@ public Action RocketTimer(Handle timer, any ref)
 	//PrintToChatAll("Rocket: %i", rocket);
 	if (IsValidRocket(rocket) && RocketOverride[rocket])
 	{
-		SplitRocket(rocket, GetConVarBool(g_rocketCurve));
+		SplitRocket(rocket, g_rocketCurve);
 	}
 }
 
@@ -482,15 +456,7 @@ void SplitRocket(int rocket, bool converge)
 	GetEntPropVector(rocket, Prop_Data, "m_vecOrigin", pos);
 	GetEntPropVector(rocket, Prop_Send, "m_angRotation", rocketAngle);
 	GetEntPropVector(rocket, Prop_Data, "m_vecVelocity", rocketVel);
-	//speed = GetVectorLength(rocketVel);
-	//Setting speed to use normal rockets
-	speed = 1100.0;
-
-	// if (GetConVarBool(g_showDebug))
-	// {
-	// 	PrintToChatAll("Speed Was %f", speed);
-	// }
-	
+	speed = GetVectorLength(rocketVel);
 	int crit = 0;
 	if (HasEntProp(rocket, Prop_Send, "m_bCritical"))
 		crit = GetEntProp(rocket, Prop_Send, "m_bCritical");
@@ -507,10 +473,8 @@ void SplitRocket(int rocket, bool converge)
 		variance = ClampFloat((GetVectorDistance(pos, convergePos) / 5.0), 3.0, 30.0);
 	}
 	else
-		//rocketAngle[0] += GetRandomFloat(1.0, 10.0);
 		rocketAngle[0] = (89.0 - GetConVarFloat(g_rocketAngle));
-		
-	EmitSoundToAll(ExplodeSound, rocket);
+
 	EmitSoundToAll(ExplodeSound, rocket);
 	TE_SetupExplosion(pos, ExplodeSprite, 3.0, 1, 0, 1, 1);
 	TE_SendToAll();
@@ -647,7 +611,7 @@ void ConvergeRocket(int rocket)
 		NormalizeVector(angleVec, angleVec);
 		ScaleVector(angleVec, 150.0);
 		AddVectors(curPos, angleVec, angleVec);
-		
+
 		if (GetConVarBool(g_showDebug))
 		{
 			//forward visual

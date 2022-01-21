@@ -11,9 +11,9 @@
 //#include <tf2items_giveweapon>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Mr Paladin"
+#define ROBOT_NAME	"Mystery Machine"
 #define ROBOT_ROLE "Support"
-#define ROBOT_DESCRIPTION "Turn invisible on backstab"
+#define ROBOT_DESCRIPTION "Shoot your gun"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -49,7 +49,7 @@ public OnPluginStart()
 {
     LoadTranslations("common.phrases");
 
-    HookEvent("player_death", Event_Death, EventHookMode_Post);
+    //HookEvent("player_death", Event_Death, EventHookMode_Post);
 
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
@@ -60,11 +60,11 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 
-	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 1;
+	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    // restrictions.RobotCoins.PerRobot = 1;
 
-    AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
+    AddRobot(robot, MakeSpy, PLUGIN_VERSION, null);
 
 	PrecacheModel(MODEL);
 	PrecacheSound(SPAWN);
@@ -107,18 +107,18 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 // }
 
-public Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-	int weaponID = GetEventInt(event, "weapon_def_index");
-	int customkill = GetEventInt(event, "customkill");
+// public Event_Death(Event event, const char[] name, bool dontBroadcast)
+// {
+// 	// int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+// 	// int weaponID = GetEventInt(event, "weapon_def_index");
+// 	// int customkill = GetEventInt(event, "customkill");
 
-	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 356 && customkill == 2)
-	{
-		TF2_AddCondition(attacker, TFCond_StealthedUserBuffFade, 5.0);
-	}
+// 	// if (IsRobot(attacker, ROBOT_NAME) && weaponID == 356 && customkill == 2)
+// 	// {
+// 	// 	TF2_AddCondition(attacker, TFCond_StealthedUserBuffFade, 5.0);
+// 	// }
 
-}
+// }
 
 
 
@@ -153,7 +153,7 @@ MakeSpy(client)
 	SetModel(client, MODEL);
 
 
-	int iHealth = 955;
+	int iHealth = 1250;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -174,13 +174,10 @@ MakeSpy(client)
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
-	// TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
-	// TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
-	// TF2Attrib_SetByName(client, "metal regen", 50.0);
 	
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
+	
 	
 	
 	UpdatePlayerHitbox(client, 1.65);
@@ -189,13 +186,12 @@ MakeSpy(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 	
-	PrintToChat(client, "1. You are now Giant Mr Paladin robot!");
-	PrintHintText(client, "Infinite Cloak\nStab enemies to gain buff to kill while stealthed!\nHeal from sapping buildings");
+	PrintToChat(client, "1. You are now Giant Mystery Machine!");
+	PrintHintText(client, "Infinite Cloak\nNo Knife\nPowerful Enforcer that penetrates players\nThrowable sapper\nSapper Heals you when sapping");
 
 	if (IsPlayerAlive(client)){
 	EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
 	} 
-
 
 }
 
@@ -217,10 +213,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	// GiveBigRoboDane(client);
 // }
 
-#define Noir 319
-#define LadyKiller 30476
-#define Spek 343
-#define WhitePaint 15132390.0
+#define HatToKillFor 30753
+#define LurkerLeathers 30631
 
 
 
@@ -233,18 +227,24 @@ stock GiveBigRoboDane(client)
 	RoboRemoveAllWearables(client);
 
 	TF2_RemoveWeaponSlot(client, 0); //Revolver
-	TF2_RemoveWeaponSlot(client, 2); // Gun
-	TF2_RemoveWeaponSlot(client, 4);// inviswatch
+	TF2_RemoveWeaponSlot(client, 1); // Sapper
+	TF2_RemoveWeaponSlot(client, 2); // Knife
+	//TF2_RemoveWeaponSlot(client, 3);// Disguise kit
+	//TF2_RemoveWeaponSlot(client, 4);// inviswatch
 
 	
-	CreateRoboWeapon(client, "tf_weapon_revolver", 224, 6, 1, 0, 0);
-	CreateRoboWeapon(client, "tf_weapon_knife", 356, 6, 1, 2, 0); //kunai
-	CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
-	CreateRoboWeapon(client, "tf_weapon_sapper", 1102, 6, 1, 1, 0);//snack attack
+	CreateRoboWeapon(client, "tf_weapon_revolver", 460, 6, 1, 0, 0);
+	CreateRoboWeapon(client, "tf_weapon_sapper", 810, 6, 1, 1, 0);
+	
+	
+	 //CreateWeapon(client, "tf_weapon_sapper", 933, 6); //Ap-Sap
+	//CreateRoboWeapon(client, "tf_weapon_knife", 356, 6, 1, 2, 0); //kunai
+	//CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
+		
 
-	CreateRoboHat(client, Noir, 10, 6, WhitePaint, 1.0, -1.0); 
-	CreateRoboHat(client, LadyKiller, 10, 6, 0.0, 1.0, -1.0);
-	CreateRoboHat(client, Spek, 10, 6, 0.0, 1.0, -1.0);
+	CreateRoboHat(client, HatToKillFor, 10, 6, 0.0, 1.1, -1.0); 
+	CreateRoboHat(client, LurkerLeathers, 10, 6, 0.0, 1.0, 1.0);
+	//CreateRoboHat(client, Spek, 10, 6, 0.0, 1.0, -1.0);
 	
 		
 	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
@@ -254,26 +254,32 @@ stock GiveBigRoboDane(client)
 
 	if(IsValidEntity(Revolver)) //Revovler
 		{
-			TF2Attrib_RemoveAll(Revolver);
+			//TF2Attrib_RemoveAll(Revolver);
 			
-			TF2Attrib_SetByName(Revolver, "fire rate bonus", 2.5);
-			TF2Attrib_SetByName(Revolver, "damage bonus", 2.0);
+			TF2Attrib_SetByName(Revolver, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Revolver, "fire rate penalty", 1.0);
+			TF2Attrib_SetByName(Revolver, "projectile penetration heavy", 1.0);
+			
+			
+			//TF2Attrib_SetByName(Revolver, "damage bonus while disguised", 1.0);
+			TF2Attrib_SetByName(Revolver, "weapon spread bonus", 0.75);
+			
 						
 		}
 
-	if(IsValidEntity(Knife)) //
-		{
-			TF2Attrib_RemoveAll(Knife);
+	// if(IsValidEntity(Knife)) //
+	// 	{
+	// 		TF2Attrib_RemoveAll(Knife);
 			
-			//TF2Attrib_SetByName(Knife, "fire rate bonus", 0.8);
-			//TF2Attrib_SetByName(Knife, "damage bonus", 1.5);
-			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
-			TF2Attrib_SetByName(Knife, "restore health on kill", 10.0);
+	// 		//TF2Attrib_SetByName(Knife, "fire rate bonus", 0.8);
+	// 		//TF2Attrib_SetByName(Knife, "damage bonus", 1.5);
+	// 		TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
+	// 		TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
+	// 		TF2Attrib_SetByName(Knife, "restore health on kill", 10.0);
 			
 						
-		}
+	// 	}
 	if(IsValidEntity(Cloak)) //
 		{
 			TF2Attrib_RemoveAll(Cloak);
@@ -296,3 +302,32 @@ stock GiveBigRoboDane(client)
 		}	
 	}
 }
+
+
+// bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int level = 0)
+// {
+//     int weapon = CreateEntityByName(classname);
+
+//     if (!IsValidEntity(weapon))
+//     {
+//         return false;
+//     }
+    
+//     char entclass[64];
+//     GetEntityNetClass(weapon, entclass, sizeof(entclass));
+//     SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", itemindex);     
+//     SetEntProp(weapon, Prop_Send, "m_bInitialized", 1);
+//     SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);        
+// 	SetEntProp(weapon, Prop_Send, "m_iEntityLevel", GetRandomInt(1,99));
+
+//             SetEntProp(weapon, Prop_Send, "m_iObjectType", 3);
+//             SetEntProp(weapon, Prop_Data, "m_iSubType", 3);
+//             SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 0, _, 0);
+//             SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 0, _, 1);
+//             SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 0, _, 2);
+//             SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 1, _, 3);
+// 			DispatchSpawn(weapon);
+//         EquipPlayerWeapon(client, weapon); 
+    
+//     return true;
+// }

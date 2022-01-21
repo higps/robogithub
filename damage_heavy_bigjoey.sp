@@ -215,7 +215,7 @@ MakeGDeflectorH(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintCenterText(client, "IT'S BIG JOEY!");
-	EmitSoundToAll(SPAWN, client);
+	//EmitSoundToAll(SPAWN, client);
 	//g_IsGPS[client] = true;
 	
 /* 		PrintToChat(client, "1. You are now Giant Deflector GPS!");
