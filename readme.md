@@ -6,6 +6,9 @@ https://forums.alliedmods.net/showthread.php?t=185016
 
 https://github.com/peace-maker/DHooks2
 
+Particle: https://github.com/GIider/Upgrademod/blob/master/third_party/sourcemod/scripting/include/particle.inc
+
+
 Bot types:
 ```
 Heavy - Juggernaut - Bearded
