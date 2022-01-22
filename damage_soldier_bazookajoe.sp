@@ -5,6 +5,7 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"BazookaJoe2002"
@@ -287,17 +288,18 @@ stock GiveGiantSoldier(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.7);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 17.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.3);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.15);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 4.5);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.65);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.55);
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 9.0);
 			TF2Attrib_SetByName(Weapon1, "auto fires when full", 1.0);
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 		
 

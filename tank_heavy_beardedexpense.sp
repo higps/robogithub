@@ -277,7 +277,7 @@ MakeBearded(client)
 	SetModel(client, SHWC);
    
 		
-	int iHealth = 7500;
+	int iHealth = 6000;
 	TF2_SetHealth(client, iHealth);
 	
 	int MaxHealth = 300;

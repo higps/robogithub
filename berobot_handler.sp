@@ -186,10 +186,10 @@ public void OnPluginStart()
 
     _enabledChangedForward = new GlobalForward("MM_OnEnabledChanged", ET_Ignore, Param_Cell);
 
-    RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_ROOT, "Become a robot");
-    RegAdminCmd("sm_mr", Command_BeRobot, ADMFLAG_ROOT, "Become a robot");
-    RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_ROOT, "Sets up the team and starts the robot");
-    RegAdminCmd("sm_selection_mode", Command_Robot_Selection, ADMFLAG_ROOT, "Forces selection mode");
+    RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
+    RegAdminCmd("sm_mr", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
+    RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
+    RegAdminCmd("sm_selection_mode", Command_Robot_Selection, ADMFLAG_SLAY, "Forces selection mode");
     
     RegAdminCmd("sm_me_boss", Command_Me_Boss, ADMFLAG_SLAY, "Checks if you are a boss");
 
@@ -1062,7 +1062,7 @@ public Action MakeRobot(int client, bool volunteering)
     if(g_RoboCapTeam == g_Volunteers.Length)
     {
         //MC_PrintToChatExAll
-        MC_PrintToChatAllEx(client, "{orange}The max amount of %i volunteers has been reached, use {green}!rtr {orange} to start the mode", g_RoboCapTeam);
+        //MC_PrintToChatAllEx(client, "{orange}The max amount of %i volunteers has been reached, use {green}!rtr {orange} to start the mode", g_RoboCapTeam);
        if(!g_BossMode)Command_YT_Robot_Start(client, true);
 
         g_Volunteers.Resize(g_RoboCapTeam);

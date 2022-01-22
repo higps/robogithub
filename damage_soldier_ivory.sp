@@ -12,7 +12,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Ivory"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "MIRV Rocket Launcherr"
+#define ROBOT_DESCRIPTION "MIRV Rocket Launcher"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -90,7 +90,7 @@ public OnPluginStart()
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
 
-	g_rocketDelay = CreateConVar("mirv_rocket_delay", "0.4", "Delay before a mirv rocket splits into other rockets");
+	g_rocketDelay = CreateConVar("mirv_rocket_delay", "0.6", "Delay before a mirv rocket splits into other rockets");
 	g_rocketCount = CreateConVar("mirv_rocket_count", "3", "How many rockets a mirv rocket splits into", _, true, 2.0, true, 6.0);
 	g_rocketCurve = 1;
 	//g_rocketCurve = CreateConVar("mirv_converge_rockets", "0", "Do rockets converge on a single point after splitting", _, true, 0.0, true, 1.0);

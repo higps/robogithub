@@ -12,7 +12,7 @@
 #include <tf_ontakedamage.inc>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Batmann"
+#define ROBOT_NAME	"BatBot"
 #define ROBOT_ROLE "Disrupter"
 #define ROBOT_DESCRIPTION "You have grappling hook"
 
@@ -65,7 +65,7 @@ public OnPluginStart()
     // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
     // restrictions.RobotCoins.PerRobot = 1;
 
-	AddRobot(robot, MakeSpy, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeSpy, PLUGIN_VERSION);
 	PrecacheModel(MODEL);
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
@@ -154,7 +154,7 @@ MakeSpy(client)
 	SetModel(client, MODEL);
 
 
-	int iHealth = 2250;
+	int iHealth = 1250;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -163,7 +163,7 @@ MakeSpy(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	//TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
 float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -190,7 +190,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 
 	
 	PrintToChat(client, "1. You are now Giant Batmann robot!");
-	PrintHintText(client, "Use grappling hook!\nYou can't kill, only hurt and stun targets\nHits from the back stuns harder than from the front\nSapper, no disguise kit or invis watch");
+	PrintHintText(client, "No Revolver\nSharp Dresser\nUse grappling hook with reload or specialattack!\nDead Ringer\nSapper that heals you");
 
 	//EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
 
@@ -230,15 +230,18 @@ stock GiveBigRoboDane(client)
 	RoboRemoveAllWearables(client);
 
 	TF2_RemoveWeaponSlot(client, 0); //Revolver
-	//TF2_RemoveWeaponSlot(client, 1);// sapper
-	TF2_RemoveWeaponSlot(client, 2); // Gun
-	TF2_RemoveWeaponSlot(client, 3);// inviswatch
+	TF2_RemoveWeaponSlot(client, 1); // Sapper
+	TF2_RemoveWeaponSlot(client, 2); // Knife
+	TF2_RemoveWeaponSlot(client, 3);// Disguise kit
 	TF2_RemoveWeaponSlot(client, 4);// inviswatch
+
 
 	
 	// CreateRoboWeapon(client, "tf_weapon_revolver", 224, 6, 1, 0, 0);
 	CreateRoboWeapon(client, "tf_weapon_knife", 638, 6, 1, 2, 0); //sharp dresser
-	CreateRoboWeapon(client, "tf_weapon_grapplinghook", 1152, 6, 1, 0, 0); 
+	CreateRoboWeapon(client, "tf_weapon_grapplinghook", 1152, 6, 1, 3, 0);
+//	CreateRoboWeapon(client, "tf_weapon_sapper", 735, 6, 1, 1, 0); 
+	//CreateRoboWeapon(client, "tf_weapon_invis", 59, 6, 1, 4, 0); 
 		
 
 	CreateRoboHat(client, BattersBracers, 10, 6, 0.0, 1.0, -1.0); 
@@ -248,7 +251,7 @@ stock GiveBigRoboDane(client)
 		
 //	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
 	int Knife = GetPlayerWeaponSlot(client, 2); //Knife
-	int Cloak = GetPlayerWeaponSlot(client, 4); //Invis watch
+	// int Cloak = GetPlayerWeaponSlot(client, 4); //Invis watch
 	int Sapper = GetPlayerWeaponSlot(client, 1); //Sapper
 
 	// if(IsValidEntity(Revolver)) //Revovler
@@ -266,7 +269,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Knife);
 			
 			//TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
-			TF2Attrib_SetByName(Knife, "damage bonus", 1.75);
+			//TF2Attrib_SetByName(Knife, "damage bonus", 1.75);
 		}
 
 	if(IsValidEntity(Sapper)) //
@@ -283,49 +286,50 @@ stock GiveBigRoboDane(client)
 }
 
 /* Plugin Exclusive Functions */
-public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
-{
-    // if (!g_Enable)
-    //     return Plugin_Continue;
-    if(!IsValidClient(victim))
-        return Plugin_Continue;    
-    if(!IsValidClient(attacker))
-        return Plugin_Continue;
+//Code that stuns players
+// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+// {
+//     // if (!g_Enable)
+//     //     return Plugin_Continue;
+//     if(!IsValidClient(victim))
+//         return Plugin_Continue;    
+//     if(!IsValidClient(attacker))
+//         return Plugin_Continue;
 
 
-	if(IsRobot(attacker, ROBOT_NAME))
-    {
-		if(damagecustom == TF_CUSTOM_BACKSTAB)
-		{
+// 	if(IsRobot(attacker, ROBOT_NAME))
+//     {
+// 		if(damagecustom == TF_CUSTOM_BACKSTAB)
+// 		{
 			
-			damage = 0.0;
-			TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
+// 			damage = 0.0;
+// 			TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
 			
-			return Plugin_Changed;
-		}
-		if (damage+10.0 > GetClientHealth(victim))
-		{
-			damage = 0.0;
-			TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAGS_LOSERSTATE, attacker);
-			return Plugin_Changed;
-		}
-	}  
-            /*Damage code for scout */
-	return Plugin_Continue;   // if (iClassAttacker == TFClass_Scout)
-            // {
-            //         if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-            //       //  damage *= 1.25;
-            //         //critType = CritType_Crit;
-            //         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-            //         return Plugin_Changed;
-            // }   
+// 			return Plugin_Changed;
+// 		}
+// 		if (damage+10.0 > GetClientHealth(victim))
+// 		{
+// 			damage = 0.0;
+// 			TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAGS_LOSERSTATE, attacker);
+// 			return Plugin_Changed;
+// 		}
+// 	}  
+//             /*Damage code for scout */
+// 	return Plugin_Continue;   // if (iClassAttacker == TFClass_Scout)
+//             // {
+//             //         if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+//             //       //  damage *= 1.25;
+//             //         //critType = CritType_Crit;
+//             //         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+//             //         return Plugin_Changed;
+//             // }   
     
     
-}
+//}
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_RELOAD|IN_USE|IN_ATTACK2))
+	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_RELOAD|IN_USE))
 	{
 		//0 = fireball
 		//PrintToChat(client, "Throwing spell!");

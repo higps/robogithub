@@ -230,7 +230,7 @@ stock GiveBigRoboDane(client)
 	TF2_RemoveWeaponSlot(client, 1); // Sapper
 	TF2_RemoveWeaponSlot(client, 2); // Knife
 	//TF2_RemoveWeaponSlot(client, 3);// Disguise kit
-	//TF2_RemoveWeaponSlot(client, 4);// inviswatch
+	TF2_RemoveWeaponSlot(client, 4);// inviswatch
 
 	
 	CreateRoboWeapon(client, "tf_weapon_revolver", 460, 6, 1, 0, 0);
@@ -239,7 +239,7 @@ stock GiveBigRoboDane(client)
 	
 	 //CreateWeapon(client, "tf_weapon_sapper", 933, 6); //Ap-Sap
 	//CreateRoboWeapon(client, "tf_weapon_knife", 356, 6, 1, 2, 0); //kunai
-	//CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
+	CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 		
 
 	CreateRoboHat(client, HatToKillFor, 10, 6, 0.0, 1.1, -1.0); 
@@ -256,7 +256,7 @@ stock GiveBigRoboDane(client)
 		{
 			//TF2Attrib_RemoveAll(Revolver);
 			
-			TF2Attrib_SetByName(Revolver, "damage bonus", 1.25);
+			TF2Attrib_SetByName(Revolver, "dmg penalty vs players", 1.15);
 			TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Revolver, "fire rate penalty", 1.0);
 			TF2Attrib_SetByName(Revolver, "projectile penetration heavy", 1.0);
@@ -294,7 +294,9 @@ stock GiveBigRoboDane(client)
 		{
 			TF2Attrib_RemoveAll(Sapper);
 			
-		//	TF2Attrib_SetByName(Sapper, "mult cloak meter consume rate", 0.0);
+			
+			TF2Attrib_SetByName(Sapper, "sapper damage penalty", 1.0);
+			TF2Attrib_SetByName(Sapper, "sapper degenerates buildings", 0.0);
 			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 50.0);
 			TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
 			

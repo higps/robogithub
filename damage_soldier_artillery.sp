@@ -91,7 +91,7 @@ public OnPluginStart()
 	
 	//HookEvent("post_inventory_application", Event_PlayerResupply);
 	
-	g_arcDelay = CreateConVar("tf_rocket_arc_delay", "0.6", "Delay in seconds before a rocket is affected by gravity");
+	g_arcDelay = CreateConVar("tf_rocket_arc_delay", "0.5", "Delay in seconds before a rocket is affected by gravity");
 	g_arcGrav = CreateConVar("tf_rocket_arc_gravity", "3.5", "Gravity to apply to arcing rockets");
 }
 
@@ -288,11 +288,11 @@ stock GiveGiantPyro(client)
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.25);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);				
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);
+			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);				
 			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.25);
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.0);
+			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
 
 			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");

@@ -581,10 +581,10 @@ void OnPadThink(int iPad)
 			// PrintToChatAll("%i Ready!", iPad);
 			// #endif
 		}
-		if (TF2_GetBuildingState(iPad) == TELEPORTER_STATE_READY && IsValidEntity(iObjParti) && !bSapped)
-		{
-			AcceptEntityInput(iObjParti, "Start");
-		}
+		// if (TF2_GetBuildingState(iPad) == TELEPORTER_STATE_READY && IsValidEntity(iObjParti) && !bSapped)
+		// {
+		// 	AcceptEntityInput(iObjParti, "Start");
+		// }
 			
 	}
 	SetEntPropFloat(iPad, Prop_Send, "m_flCurrentRechargeDuration", 1.0);
