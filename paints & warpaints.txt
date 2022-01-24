@@ -1,0 +1,170 @@
+
+// - Regular paints -
+//set item tint RGB
+// A Color Similar to Slate					3100495
+// A Deep Commitment to Purple					8208497
+// A Distinctive Lack of Hue					1315860
+// A Mann's Mint								12377523
+// After Eight									2960676
+// Aged Moustache Grey							8289918
+// An Extraordinary Abundance of Tinge			15132390
+// Australium Gold								15185211	
+// Color No. 216-190-216						14204632
+// Dark Salmon Injustice						15308410
+// Drably Olive								8421376
+// Indubitably Green							7511618
+// Mann Co. Orange								13595446
+// Muskelmannbraun								10843461
+// Noble Hatter's Violet						5322826
+// Peculiarly Drab Tincture					12955537
+// Pink as Hell								16738740
+// Radigan Conagher Brown						6901050
+// The Bitter Taste of Defeat and Lime			3329330
+// The Color of a Gentlemann's Business Pants	15787660
+// Ye Olde Rustic Colour						8154199
+// Zepheniah's Greed							4345659
+
+// - Team colors -
+
+// An Air of Debonair:
+// set item tint RGB : 6637376
+// set item tint RGB 2 : 2636109
+
+// Balaclavas Are Forever
+// set item tint RGB : 3874595
+// set item tint RGB 2 : 1581885
+
+// Cream Spirit
+// set item tint RGB : 12807213
+// set item tint RGB 2 : 12091445
+
+// Operator's Overalls
+// set item tint RGB : 4732984
+// set item tint RGB 2 : 3686984
+
+// Team Spirit
+// set item tint RGB : 12073019
+// set item tint RGB 2 : 5801378
+
+// The Value of Teamwork
+// set item tint RGB : 8400928
+// set item tint RGB 2 : 2452877
+
+// Waterlogged Lab Coat
+// set item tint RGB : 11049612
+// set item tint RGB 2 : 8626083
+
+
+Warpaints:
+
+200 Bloom Buffed
+201 Quack Canvased
+202 Bank Rolled
+203 Merc Stained
+204 Kill Covered
+205 Fire Glazed
+206 Pizza Polished
+207 Bonk Varnished
+208 Star Crossed
+209 Clover Camo'd
+210 Freedom Wrapped
+211 Cardboard Boxed
+212 Dream Piped
+213 Miami Element
+214 Neo Tokyo
+215 Geometrical Teams
+216 NOT USED
+217 Bomber Soul
+218 Uranium
+219 NOT USED
+220 Cabin Fevered
+221 Polar Surprise
+222 NOT USED
+223 Hana
+224 Dovetailed
+225 Cosmic Calamity
+226 Hazard Warning
+227 NOT USED
+228 Mosaic
+229 NOT USED
+230 Jazzy
+231 NOT USED
+232 Alien Tech
+233 NOT USED
+234 Damascus Mahogany
+235 Skull Study
+236 Haunted Ghosts
+237 Spectral Shimmered
+238 Spirit of Halloween
+239 Horror Holiday
+240 Totally Boned
+241 Electroshocked
+242 Ghost Town
+243 Tumor Toasted
+244 Calvera Canvas
+245 Snow Covered
+246 Frost Ornamented
+247 Smissmas Village
+248 Igloo
+249 Seriously Snowed
+250 Smissmas Camo
+251 Sleighin Style
+252 Alpine
+253 Gift Wrapped
+254 Winterland
+255 Helldriver
+256 Organ-ically Hellraised
+257 Spectrum Splattered
+258 Candy Coated
+259 Pumpkin Pied
+260 Sweet Toothed
+261 Crawlspace Critters
+262 Portal Plastered
+263 Death Deluxe
+264 Raving Dead
+265 Eyestalker
+266 Spiders Cluster
+267 Gourdy Green
+268 Mummified Mimic
+269 Spider Season
+270 Gingerbread Winner
+271 Saccharine Striped
+272 Elfin Enamel
+273 Peppermint Swirl
+274 NOT USED
+275 Snow Globalization
+276 Gifting Manns Wrapping Paper
+277 Snowflake Swirled
+278 Smissmas Spycrabs
+279 Frozen Aurora
+280 Starlight Serenity
+281 Frosty Delivery
+282 Glacial Glazed
+283 Cookie Fortress
+284 Sarsparilla Sprayed
+285 Swashbuckled
+286 Skull Cracked
+287 Misfortunate
+288 NOT USED
+289 Neon-Ween
+290 Simple Spirits
+291 Broken Bones
+292 Potent Poison
+293 Searing Souls
+294 Party Phantoms
+295 Polter-Guised
+296 Kiln Conquer
+297 Necromanced
+300 Yeti Coated
+301 Park Pigmented
+302 Mannana Peeled
+303 Macaw Masked
+304 Sax Waxed
+305 Anodized
+306 Bamboo Brushed
+307 Tiger Buffed
+308 Croc Dusted
+309 Pina Polished
+310 Leopard Printed
+390 Dragon Slayer (only on some weapons)
+391 Smissmas Sweater
