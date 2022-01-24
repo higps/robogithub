@@ -343,29 +343,29 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 	}
 }
 
-public TF2_OnConditionAdded(client, TFCond:condition)
-{
-    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-    {	
-        int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+// public TF2_OnConditionAdded(client, TFCond:condition)
+// {
+//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+//     {	
+//         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
 
-	//PrintToChatAll("Taunt ID %i", tauntid);
+// 	//PrintToChatAll("Taunt ID %i", tauntid);
 	
 
-        if (tauntid == -1)
-        {
-		//	TF2_AddCondition(client, TFCond_SpawnOutline, 10);
-           	 CreateTimer(1.2, Timer_Taunt_Cancel, client);
-        }	  
+//         if (tauntid == -1)
+//         {
+// 		//	TF2_AddCondition(client, TFCond_SpawnOutline, 10);
+//            	 CreateTimer(1.2, Timer_Taunt_Cancel, client);
+//         }	  
 
-	}
-}
+// 	}
+// }
 
-public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
-{
-	if (IsValidClient(client)){
-		TF2_RemoveCondition(client, TFCond_Taunting);
+// public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
+// {
+// 	if (IsValidClient(client)){
+// 		TF2_RemoveCondition(client, TFCond_Taunting);
 		
-	}
-}
+// 	}
+// }
 

@@ -6,13 +6,14 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
+//#include <tf_ontakedamage>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"ICBM"
-#define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Artillery Rocket Launcher"
+#define ROBOT_NAME	"Elmaxo"
+#define ROBOT_ROLE "Disrupter"
+#define ROBOT_DESCRIPTION "Rocket Launcher, Market Gardner"
 
-#define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
+#define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
@@ -26,33 +27,9 @@
 // #define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
 // #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 
-//Artillery code
-
-#include <sdktools>
-#include <sdkhooks>
-#include <tf2>
-#include <tf2_stocks>
-
-
-public Plugin MyInfo =
-{
-	name = "[TF2] Artillery Rocket Launcher",
-	author = "IvoryPal",
-	description = "Rocket launcher that fires volleys of rockets.",
-	version = "1.0"
-}
-
-ConVar g_arcDelay;
-ConVar g_arcGrav;
-bool arcRockets[MAXPLAYERS+1];
-bool weaponArc[2049];
-bool shouldArc[2049];
-float arcDelay[2049];
-
-
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the ICBM",
+	name = "[TF2] Be the Giant Basic Soldier",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
 	description = "Play as the Giant Icebear from Frankfurt",
 	version = PLUGIN_VERSION,
@@ -85,14 +62,6 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
-
-	//Artillery Code
-	RegConsoleCmd("sm_arcrocket", CmdToggleArc);
-	
-	//HookEvent("post_inventory_application", Event_PlayerResupply);
-	
-	g_arcDelay = CreateConVar("tf_rocket_arc_delay", "0.5", "Delay in seconds before a rocket is affected by gravity");
-	g_arcGrav = CreateConVar("tf_rocket_arc_gravity", "3.5", "Gravity to apply to arcing rockets");
 }
 
 public void OnPluginEnd()
@@ -179,6 +148,40 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 		}
 		return Plugin_Changed;
 	}
+
+	
+	// if (strncmp(sample, ")weapons/", 9, false) == 0)
+	// {
+	// 	if (StrContains(sample, "rocket_shoot.wav", false) != -1)
+	// 	{
+	// 		Format(sample, sizeof(sample), GUNFIRE);
+	// 		EmitSoundToAll(sample, entity);
+			
+	// 	}
+	// 	else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
+	// 	{
+	// 		Format(sample, sizeof(sample), GUNFIRE_CRIT);
+	// 		EmitSoundToAll(sample, entity);
+	// 	}
+		
+	// 	//Explosion doesnæt quite work
+	// 	/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
+	// 	{
+	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+	// 		EmitSoundToAll(sample, entity);
+	// 	}
+	// 	else if (StrContains(sample, "explode2.wav", false) != -1)
+	// 	{
+	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+	// 		EmitSoundToAll(sample, entity);
+	// 	}
+	// 	else if (StrContains(sample, "explode3.wav", false) != -1)
+	// 	{
+	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+	// 		EmitSoundToAll(sample, entity);
+	// 	} */
+	// 	return Plugin_Changed;
+	// }
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 }
 
@@ -200,7 +203,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 3800;
+	int iHealth = 2000;
 		
 	int MaxHealth = 200;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -222,26 +225,29 @@ MakeGiantSoldier(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.25);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	
 	
-	// TF2Attrib_SetByName(client, "self dmg push force increased", 6.0);
-	// TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
+	TF2Attrib_SetByName(client, "self dmg push force increased", 6.0);
+	//TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
+	TF2Attrib_SetByName(client, "rocket jump damage reduction", 0.0);
+	
 	
 	//
+	TF2Attrib_SetByName(client, "deploy time decreased", 0.6);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	//TF2Attrib_SetByName(client, "head scale", 0.5);
+	TF2Attrib_SetByName(client, "head scale", 0.65);
 	UpdatePlayerHitbox(client,scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "You have rocket specialist\nRockets travel in an arc");
+	PrintHintText(client , "You generate addotional resources on death for your team\nYou can rocket jump");
 	
 }
 
@@ -257,9 +263,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-// #define SergeantsDrillHat 183
-// 
-#define peacebreaker 31044
+
+
 
 stock GiveGiantPyro(client)
 {
@@ -272,32 +277,49 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 1104, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 513, 6, 1, 2, 0);
 		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
-		//CreateRoboWeapon(client, "tf_weapon_shovel", 416, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_shovel", 416, 6, 1, 2, 0);
+
+		//CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
+
 		
-		CreateRoboHat(client, 31044, 10, 6, 0.0, 0.75, -1.0);
+		#define TyrantHelm 99
+		#define MistakenMovember 30554
+		#define Gunboats 133
+
+		CreateRoboHat(client, TyrantHelm, 10, 6, 1315860.0, 1.2, -1.0);
+		CreateRoboHat(client, MistakenMovember, 10, 6, 0.0, 1.265, -1.0);
+		CreateRoboHat(client, Gunboats, 10, 6, 0.0, 0.75, -1.0);
 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-
+		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon1))
 		{
-
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 2.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.00);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);				
-			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.0);
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
-
-			
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.35);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);				
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
-
+		// if(IsValidEntity(Weapon2))
+		// {
+		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.00);
+		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Weapon2, "faster reload rate", 2.5);							
+		// 	TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
+		// }
+		if(IsValidEntity(Weapon3))
+		{
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
+			TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);
+		}
 		
 
 	}
@@ -306,106 +328,40 @@ stock GiveGiantPyro(client)
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 	
-
-
-public void OnClientPutInServer(int client)
-{
-	arcRockets[client] = false;
-}
-
-public Action CmdToggleArc(int client, int args)
-{
-	arcRockets[client] = !arcRockets[client];
-	PrintToChat(client, "Artillery Launcher %s", arcRockets[client] ? "Enabled. Resupply to obtain it." : "Removed.");
-}
-
-// public Action Event_PlayerResupply(Handle event, const char[] name, bool dbroad)
+// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 // {
-// 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-// 	if (0 < client <= MaxClients && IsClientInGame(client))
-// 	{
-// 		int launcher = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-// 		if (IsValidEntity(launcher) && launcher > MaxClients && arcRockets[client])
+
+// 		if (!IsRobot(victim, ROBOT_NAME))
 // 		{
-// 			weaponArc[launcher] = true;
-// 			TF2Attrib_SetByName(launcher, "clip size bonus", 5.0);
+// 			if (damagecustom == TF_CUSTOM_BOOTS_STOMP)
+// 			{
+				
+// 				PrintToChatAll("Damage was %f, type was %i on %N", damage, damagetype, victim);
+// 				return Plugin_Changed;
+
+// 			}
 // 		}
-// 	}
-// 	return Plugin_Continue;
+// //if (StrEqual(robot.role,"ZBOSS"))
+// 		if (IsRobot(victim, ROBOT_NAME) && attacker == 0)
+// 		{
+// 			if (damagetype == 32){
+// 				damage = 0.0;
+// 				PrintToChatAll("Was victim %N, attacker was %N", victim, attacker);
+// 				//return Plugin_Changed;
+// 			}
+
+// 		}
+
+// 		// if (IsRobot(attacker, ROBOT_NAME))
+// 		// {
+// 		// 	if (damagetype == 32){
+// 		// 		//damage = 0.0;
+// 		// 		PrintToChatAll("%N was attacker", attacker);
+// 		// 		//return Plugin_Changed;
+// 		// 	}
+
+// 		// }
+
+	
+
 // }
-
-public void OnEntityDestroyed(int ent)
-{
-	if (IsValidEntity(ent) && ent > MaxClients && weaponArc[ent])
-	{
-		weaponArc[ent] = false;
-	}
-}
-
-public void OnEntityCreated(int ent, const char[] classname)
-{
-	if (StrEqual(classname, "tf_projectile_rocket") || StrEqual(classname, "tf_projectile_energy_rocket"))
-	{
-		SDKHook(ent, SDKHook_SpawnPost, OnProjSpawn);
-		SDKHook(ent, SDKHook_Spawn, Hook_OnProjectileSpawn);
-	}
-}
-
-public void Hook_OnProjectileSpawn(iEntity) {
-	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.5);
-	}
-}
-
-public void OnGameFrame()
-{
-	int ent = MaxClients + 1;
-	while ((ent = FindEntityByClassname(ent, "tf_projectile_rocket")) != -1 || (ent = FindEntityByClassname(ent, "tf_projectile_energy_rocket")) != -1)
-	{
-		if (shouldArc[ent] && arcDelay[ent] <= GetEngineTime())
-		{
-			ArcRocket(ent);
-		}
-	}
-}
-
-public Action OnProjSpawn(int proj)
-{
-	int owner = GetEntPropEnt(proj, Prop_Send, "m_hOwnerEntity");
-	//int launcher = GetEntPropEnt(proj, Prop_Send, "m_hLauncher");
-	
-	if (IsRobot(owner, ROBOT_NAME))
-	{
-		shouldArc[proj] = true;
-		arcDelay[proj] = GetEngineTime() + GetConVarFloat(g_arcDelay);
-	}
-	else
-		shouldArc[proj] = false;
-}
-
-public void ArcRocket(int rocket)
-{
-	float vel[3], rot[3];
-	float grav = GetConVarFloat(g_arcGrav);
-	
-	GetEntPropVector(rocket, Prop_Data, "m_vecVelocity", vel);
-	GetEntPropVector(rocket, Prop_Send, "m_angRotation", rot);
-	
-	vel[2] -= Pow(grav, 2.0);
-	
-	GetVectorAngles(vel, rot);
-	ClampAngle(rot);
-	
-	SetEntPropVector(rocket, Prop_Data, "m_vecVelocity", vel);
-	SetEntPropVector(rocket, Prop_Send, "m_angRotation", rot);
-	TeleportEntity(rocket, NULL_VECTOR, rot, vel);
-}
-
-stock void ClampAngle(float fAngles[3])
-{
-	while(fAngles[0] > 89.0)  fAngles[0]-=360.0;
-	while(fAngles[0] < -89.0) fAngles[0]+=360.0;
-	while(fAngles[1] > 180.0) fAngles[1]-=360.0;
-	while(fAngles[1] <-180.0) fAngles[1]+=360.0;
-}

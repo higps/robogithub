@@ -285,7 +285,7 @@ MakeBigBigJoey(client)
 	PrintHintText(client, "100% critical chance\nCan't get healed");
 
 	//int clientId = GetClientUserId(client);
-	SetBossHealth(client);
+	//SetBossHealth(client);
 //	ServerCommand("sm_setbosshud #%i",clientId);
 	//g_IsGPS[client] = true;
 	

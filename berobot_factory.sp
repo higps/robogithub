@@ -447,8 +447,8 @@ int TrashTargetedRobot(int clientId, char target[32])
 
 int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELENGTH] = "")
 {
-    if (!IsValidClient(clientId) && !IsClientInGame(clientId))
-    return;
+    if (!IsValidClient(clientId) || !IsClientInGame(clientId))
+    return 0;
 
     strcopy(wasRobot, NAMELENGTH, _isRobot[clientId]);
     if (wasRobot[0] == '\0')            //disable previous robot

@@ -186,7 +186,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		CreateRoboWeapon(client, "tf_weapon_flamethrower", 594, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_flaregun", 39, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_flaregun_revenge", 595, 6, 1, 2, 0);
 
 		CreateRoboHat(client, FlameboyantFlamenco, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, LastBreath, 10, 6, 0.0, 1.0, -1.0); 

@@ -230,7 +230,7 @@ MakeGiantSoldier(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client , "Boss Boss\nCritical Rockets\nCan't be healed.");
-	SetBossHealth(client);
+	//SetBossHealth(client);
 }
 
 stock TF2_SetHealth(client, NewHealth)

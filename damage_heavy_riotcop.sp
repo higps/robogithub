@@ -220,9 +220,9 @@ stock GiveGDeflectorH(client)
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.15);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.0);
 			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 10.0);
-			TF2Attrib_SetByName(Weapon2, "damage penalty", 0.4);
+			TF2Attrib_SetByName(Weapon2, "damage penalty", 0.5);
 			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.25);
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);

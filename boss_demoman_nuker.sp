@@ -140,7 +140,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	PrintHintText(client, "Shoot big bombs that go boom");
 	PrintToChat(client, "1. You are now Giant Nuker !");
 
-	SetBossHealth(client);
+	//SetBossHealth(client);
 }
 
 stock TF2_SetHealth(client, NewHealth)

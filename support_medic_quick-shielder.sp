@@ -182,8 +182,8 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "generate rage on heal", 1.0);
 			TF2Attrib_SetByName(Weapon2, "increase buff duration", 0.8);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
-			TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.35");
-			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 3.5);
+			TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.5");
+			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 4.0);
 		}
 	}
 }
