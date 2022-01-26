@@ -11,7 +11,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Huntsbot"
-#define ROBOT_ROLE "Support"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Penetrating Huntsman"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
@@ -189,7 +189,7 @@ stock GiveBigRoboHuntsbot(client)
 
 	CreateRoboWeapon(client, "tf_weapon_compound_bow", 56, 6, 1, 0, 0);
 
-	CreateRoboWeapon(client, "tf_weapon_club", 4, 6, 1, 2, 0); //shahansah
+	CreateRoboWeapon(client, "tf_weapon_club", 3, 6, 1, 2, 0); //shahansah
 		
 	//CreateWeapon(client, "tf_wearable", 642, 6, 1, 3, 0); 
 
@@ -217,7 +217,7 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_SetByName(Huntsman, "sniper aiming movespeed decreased", 1.0);
 			TF2Attrib_SetByName(Huntsman, "projectile penetration", 1.0);
 			TF2Attrib_SetByName(Huntsman, "damage bonus", 1.5);
-			TF2Attrib_SetByName(Huntsman, "fire rate bonus", 0.8);
+			TF2Attrib_SetByName(Huntsman, "fire rate bonus", 0.7);
 
 		}
 

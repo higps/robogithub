@@ -190,7 +190,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 
 	
 	PrintToChat(client, "1. You are now Giant Batmann robot!");
-	PrintHintText(client, "No Revolver\nSharp Dresser\nUse grappling hook with reload or specialattack!\nDead Ringer\nSapper that heals you");
+	PrintHintText(client, "No Revolver\nSharp Dresser\nUse grappling hook with reload or specialattack!");
 
 	//EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
 

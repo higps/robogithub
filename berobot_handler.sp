@@ -433,7 +433,10 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
            // EmitGameSoundToAll("Announcer.MVM_General_Destruction");
             if (irandom == 1)
             {
+               if (TF2_GetPlayerClass(victim) != TFClass_Spy){
+
                 CreateTimer(1.5, SayDeathVoiceline);
+               }
             }
             // } 
             

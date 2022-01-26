@@ -13,7 +13,7 @@
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
-#define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
+#define DEATH	"mvm/mvm_tank_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
 public Plugin:myinfo =
@@ -98,6 +98,7 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
+	float scale = 1.85;	
 	int iHealth = 5000;
 	
 	
@@ -113,7 +114,7 @@ MakeSolar(client)
 	
 	
 
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
@@ -129,9 +130,11 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	TF2Attrib_SetByName(client, "hand scale", 1.8);
+	
 	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
 	
-	UpdatePlayerHitbox(client, 1.75);
+	UpdatePlayerHitbox(client, scale);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
@@ -188,7 +191,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
 			TF2Attrib_SetByName(Weapon1, "blast radius increased", 2.25);
 			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 2.5);
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.8);
 			TF2Attrib_SetByName(Weapon1, "reload time increased", 1.25);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.1);

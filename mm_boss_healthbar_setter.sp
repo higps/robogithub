@@ -96,8 +96,8 @@ public Plugin myinfo = {
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	CreateNative("SetBossHealth", Native_SetBossHealth);
-	CreateNative("UnSetBossHealth", Native_UnSetBossHealth);
+	// CreateNative("SetBossHealth", Native_SetBossHealth);
+	// CreateNative("UnSetBossHealth", Native_UnSetBossHealth);
 
 	return APLRes_Success;
 }
@@ -114,9 +114,9 @@ public void OnPluginStart() {
 	
 	HookEvent("post_inventory_application", OnInventoryApplied);
 
-	HookEvent("player_death", Event_Death_RemoveHUD, EventHookMode_Post);
+	//HookEvent("player_death", Event_Death_RemoveHUD, EventHookMode_Post);
 
-	
+	PrecacheScriptSound("Announcer.MVM_General_Destruction");
 }
 
 public void OnPluginEnd() {
@@ -126,32 +126,38 @@ public void OnPluginEnd() {
 	}
 }
 
-public Action Event_Death_RemoveHUD(Event event, const char[] name, bool dontBroadcast)
+public void OnMapStart()
 {
 
-	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	//The client was a boss and died
-	if (client == g_iBossTarget) {
-		SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
-	
-	RemoveHUD();
-	}
+    PrecacheScriptSound("Announcer.MVM_General_Destruction");
 
 }
 
+// public Action Event_Death_RemoveHUD(Event event, const char[] name, bool dontBroadcast)
+// {
+
+// 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+// 	//The client was a boss and died
+// 	if (client == g_iBossTarget) {
+// 		SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
+	
+// 		//RemoveHUD();
+// 		g_iBossTarget = -1;
+// 	}
+
+// }
+
 public void RemoveHUD(){
-	g_iBossTarget = -1;
+	
 	int iEnt = MaxClients + 1;
 	while ((iEnt = FindEntityByClassname(iEnt, "monster_resource")) != -1)
 	{
 		if (IsValidEntity(iEnt))
 		{
 			AcceptEntityInput(iEnt, "Kill");
-			
 		}
 	} 
-
 }
 
 
@@ -164,12 +170,21 @@ public void OnInventoryApplied(Event event, const char[] name, bool dontBroadcas
 		SetEntProp(client, Prop_Send, "m_bUseBossHealthBar", false);
 	}
 
-	int iTarget = client;
+	// int iTarget = client;
 
-	if (IsAnyRobot(client) && !IsBoss(client) && client == g_iBossTarget){
-		//PrintToChatAll("%N was not a ZBOSS! but is the target, removing hud and target", client);
-		RemoveHUD();
+	// if (IsAnyRobot(client) && !IsBoss(client) && client == g_iBossTarget){
+	// 	//PrintToChatAll("%N was not a ZBOSS! but is the target, removing hud and target", client);
+	// 	RemoveHUD();
+	// }
+
+	//PrintToChatAll("Did inventory!");
+
+	if (IsBoss(client))
+	{
+		//PrintToChatAll("WAS BOSS!");
+		SetBossHealthTargetCommand(client);	
 	}
+
 	
 	// if (iTarget != -1 && g_iBossTarget != iTarget) {
 	// 	if (IsValidEntity(g_iBossTarget)) {
@@ -180,7 +195,6 @@ public void OnInventoryApplied(Event event, const char[] name, bool dontBroadcas
 	// 	ReplyToCommand(client, "Switched boss target to %N", iTarget);
 		
 	// }
-
 	
 }
 
@@ -211,9 +225,7 @@ public Action SetBossHealthTarget(int client, int argc) {
 }
 
 
-public any Native_SetBossHealth(Handle plugin, int numParams)
-{
-    int client = GetNativeCell(1);
+public Action SetBossHealthTargetCommand(int client) {
 
 	int iTarget = client;
 	
@@ -223,8 +235,13 @@ public any Native_SetBossHealth(Handle plugin, int numParams)
 		}
 		g_iBossTarget = iTarget;
 		SDKHook(iTarget, SDKHook_PostThink, OnBossPostThink);
-		//ReplyToCommand(client, "Switched boss target to %N", iTarget);
-	}
+	//	ReplyToCommand(client, "Switched boss target to %N", iTarget);
+	} 
+	// else {
+	// 	g_iBossTarget = -1;
+	// //	ReplyToCommand(client, "Removed boss target");
+		
+	// }
 	
 	return Plugin_Handled;
 }
@@ -245,42 +262,45 @@ public any Native_SetBossHealth(Handle plugin, int numParams)
 // 	return Plugin_Handled;
 // }
 
-public any Native_UnSetBossHealth(Handle plugin, int numParams) {
+// public any Native_UnSetBossHealth(Handle plugin, int numParams) {
 
-	for(int i = 0; i <= MAXPLAYERS; i++)
-    {
-		if (i == g_iBossTarget) {
-			SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
-    	}
-	}
+// 	for(int i = 0; i <= MAXPLAYERS; i++)
+//     {
+// 		if (i == g_iBossTarget) {
+// 			SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
+//     	}
+// 	}
 	
 
-	RemoveHUD();
+// 	RemoveHUD();
 	
 	
-	return Plugin_Handled;
-}
-
-
-
-
+// 	return Plugin_Handled;
+// }
 
 public void OnBossPostThink(int client) {
+
 	if (client != g_iBossTarget) {
 		SDKUnhook(client, SDKHook_PostThink, OnBossPostThink);
 	} else {
 		if (!TF2_IsGameModeMvM()) {
 			// non-MvM, use monster resource health bar
 			if (IsPlayerAlive(client)) {
+				//PrintToChatAll("Player is alive");
 				TFMonsterResource.GetEntity(true).LinkHealth(client);
 			} else {
 				TFMonsterResource.GetEntity(true).BossHealthPercentageByte = 0;
+				//PrintToChatAll("Player is dead");
+				g_iBossTarget = -1;
 			}
 		} else if (!GetEntProp(client, Prop_Send, "m_bUseBossHealthBar")) {
 			// MvM, display boss health bar if it isn't already
 			SetEntProp(client, Prop_Send, "m_bUseBossHealthBar", true);
 		}
 	}
+
+	//PrintToChatAll("Player is alive");
+	
 
 	if (g_iBossTarget == -1){
 

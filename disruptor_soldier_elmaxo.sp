@@ -233,9 +233,9 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	
 	
-	TF2Attrib_SetByName(client, "self dmg push force increased", 6.0);
+	TF2Attrib_SetByName(client, "self dmg push force increased", 8.0);
 	//TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
-	TF2Attrib_SetByName(client, "rocket jump damage reduction", 0.0);
+	//TF2Attrib_SetByName(client, "rocket jump damage reduction", 0.2);
 	
 	
 	//
@@ -303,7 +303,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.35);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);				
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);			
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);	
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 		// if(IsValidEntity(Weapon2))

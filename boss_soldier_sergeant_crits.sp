@@ -15,7 +15,7 @@
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
-#define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
+#define DEATH   "mvm/mvm_tank_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
 
 #define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
@@ -29,7 +29,7 @@
 
 
 #define Tyrantium_Helmet 30014
-float scale = 1.85;
+float scale = 1.95;
 
 public Plugin:myinfo = 
 {
@@ -224,6 +224,7 @@ MakeGiantSoldier(client)
 	
 	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.65);
+	TF2Attrib_SetByName(client, "hand scale", 1.3);
 	UpdatePlayerHitbox(client, scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);

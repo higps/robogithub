@@ -271,7 +271,7 @@ MakeBigBigJoey(client)
 	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	
-	
+	TF2Attrib_SetByName(client, "hand scale", 1.3);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
