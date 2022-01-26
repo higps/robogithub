@@ -87,6 +87,8 @@ public void Event_Player_Spawned(Handle event, const char[] name, bool dontBroad
     if (!IsValidClient(client))
         return;
 
+    TrackRobotCreation(client, false);
+
     bool isAlive = IsPlayerAlive(client);
     char robotName[NAMELENGTH];
     GetRobot(client, robotName, NAMELENGTH);
@@ -192,7 +194,7 @@ void ResetOnDeath(int client, Robot item)
     if (IsPlayerAlive(client)){
         EmitSoundToAll(item.sounds.death);
     }
-    TrackRobot(client, ""); 
+    TrackRobotCreation(client, false);
 }
 
 void StopSounds(int client, Robot item)
@@ -233,6 +235,7 @@ public void FullReset(int client)
 public void Reset(int client)
 {
     TrackRobot(client, "");
+    TrackRobotCreation(client, false);
 }
 
 public any Native_CreateRobot(Handle plugin, int numParams)
@@ -508,5 +511,6 @@ void CallCreate(int client, Robot item)
     if (IsPlayerAlive(client)){
         EmitSoundToAll(item.sounds.loop, client,_,_,_, 0.25);
     }
-    TrackRobot(client, item.name, true);
+    TrackRobot(client, item.name);
+    TrackRobotCreation(client, true);
 }

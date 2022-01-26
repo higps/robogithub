@@ -131,10 +131,18 @@ native void UnmakeRobot(int clientId);
  * 
  * @param clientId      clientId to keep track of
  * @param robotname     name of the robot of the client
- * @param created       true if the robot was just created, false otherwise (Default: false)
  * @noreturn
  */
-native void TrackRobot(int clientId, char robotname[NAMELENGTH], bool created = false);
+native void TrackRobot(int clientId, char robotname[NAMELENGTH]);
+
+/**
+ * keeps track of which clients robot was created
+ * 
+ * @param clientId      clientId to keep track of
+ * @param created       true if the robot was just created, false otherwise
+ * @noreturn
+ */
+native void TrackRobotCreation(int clientId, bool created);
 
 /**
  * get the amount of robots picked per robot-type

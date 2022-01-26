@@ -44,15 +44,16 @@ public void OnPluginStart()
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	CreateNative("TrackRobot", Native_TrackRobot);
-	CreateNative("GetRobotCount", Native_GetRobotCount);
-	CreateNative("IsRobot", Native_IsRobot);
+    CreateNative("TrackRobot", Native_TrackRobot);
+    CreateNative("TrackRobotCreation", Native_TrackRobotCreation);
+    CreateNative("GetRobotCount", Native_GetRobotCount);
+    CreateNative("IsRobot", Native_IsRobot);
     CreateNative("IsRobotWhenDead", Native_IsRobotWhenDead);
-	CreateNative("IsAnyRobot", Native_IsAnyRobot);
+    CreateNative("IsAnyRobot", Native_IsAnyRobot);
     CreateNative("IsBoss", Native_IsBoss);
-	CreateNative("GetRobot", Native_GetRobot);
+    CreateNative("GetRobot", Native_GetRobot);
 
-	return APLRes_Success;
+    return APLRes_Success;
 }
 
 public void MM_ModeResetRequested()
@@ -60,65 +61,12 @@ public void MM_ModeResetRequested()
     ResetMode();
 }
 
-public void OnClientDisconnect(int clientId)
-{
-    TrackRobot(clientId, "");
-}
-
-public void Event_Player_Spawned(Handle event, const char[] name, bool dontBroadcast)
-{
-    int client = GetClientOfUserId(GetEventInt(event, "userid"));
-    if (!IsValidClient(client))
-        return;
-
-    _robotIsCreated[client] = false;
-}
-
-public void Event_Death(Handle event, const char[] name, bool dontBroadcast)
-{
-    int client = GetClientOfUserId(GetEventInt(event, "userid"));
-    int deathflags = GetEventInt(event, "death_flags");
-    SMLogTag(SML_VERBOSE, "Event_Death for %L received with name %s, dontBroadcast %b and deathflags %i", client, name, dontBroadcast, deathflags);
-
-    if ((deathflags & TF_DEATHFLAG_DEADRINGER))
-    {
-        SMLogTag(SML_VERBOSE, "skipped Event_Death, because %i is dead-ringering", client);
-        return;
-    }
-    
-    if(!IsValidClient(client))
-    {
-        SMLogTag(SML_VERBOSE, "skipped Event_Death, because %i is not a valid client", client);
-        return;
-    }
-    
-    if(_isRobot[client][0] == '\0')
-    {
-        SMLogTag(SML_VERBOSE, "skipped Event_Death, because %L is no robot", client);
-        return;
-    }
-
-    Robot item;
-    if (GetRobotDefinition(_isRobot[client], item) != 0)
-    {
-        SMLogTag(SML_ERROR, "skipped Event_Death, because no robot with name '%s' found for %L", _isRobot[client], client);
-        return;
-    }
-
-    _robotIsCreated[client] = false;    
-}
-
 public any Native_TrackRobot(Handle plugin, int numParams)
 {
     int clientId = GetNativeCell(1);
     char robotname[NAMELENGTH];
     GetNativeString(2, robotname, NAMELENGTH);
-    SMLogTag(SML_VERBOSE, "tracking %L as robot '%s'", clientId, robotname);
-
-    bool created = false;
-    if (numParams >= 3)
-        created = GetNativeCell(3);
-    _robotIsCreated[clientId] = created;
+    SMLogTag(SML_VERBOSE, "tracking %i as robot '%s'", clientId, robotname);
 
     if (strcmp(_isRobot[clientId], robotname) == 0)
         return;
@@ -144,13 +92,22 @@ public any Native_TrackRobot(Handle plugin, int numParams)
         char loggingRobotname[NAMELENGTH];
         int robotCount;
         StringMapSnapshot robotNames = _robotCount.Snapshot();
-        for(int i = 0; i <= robotNames.Length; i++)
+        for(int i = 0; i < robotNames.Length; i++)
         {
             robotNames.GetKey(i, loggingRobotname, NAMELENGTH);
             _robotCount.GetValue(loggingRobotname, robotCount);
             SMLogTag(SML_VERBOSE, "tracking %i players as robot '%s'", robotCount, loggingRobotname);
         }
     }
+}
+
+public any Native_TrackRobotCreation(Handle plugin, int numParams)
+{
+    int clientId = GetNativeCell(1);
+    bool created = GetNativeCell(2);
+    SMLogTag(SML_VERBOSE, "tracking client %i robot-creation '%b'", clientId, created);
+
+    _robotIsCreated[clientId] = created;
 }
 
 public any Native_GetRobotCount(Handle plugin, int numParams)
@@ -226,6 +183,8 @@ public any Native_GetRobot(Handle plugin, int numParams)
 
 void ResetMode()
 {
+    SMLogTag(SML_VERBOSE, "resetting mode");
+
     if (_robotCount == null)
         _robotCount = new StringMap();
     _robotCount.Clear();
