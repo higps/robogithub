@@ -852,10 +852,8 @@ public Action Command_YT_Robot_Start(int client, int args)
                             //PrintToChatAll("%N is on robot team, which is %i", i, g_RoboTeam);
                             // ServerCommand("sm_begps #%i", playerID);
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
-                            TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
                         //    TF2_RespawnPlayer(i);
-                            g_ClientIsRepicking[i] = false;
-                            Menu_ChooseRobot(i);
+                            MoveToRobots(i);
                         }
                         else
                         {
@@ -1037,9 +1035,7 @@ public Action MakeRobot(int client, bool volunteering)
         {
             SMLogTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
             //int playerID = GetClientUserId(client);
-            TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
-            g_ClientIsRepicking[client] = false;
-            Menu_ChooseRobot(client);
+            MoveToRobots(client);
         }
     }
     else if(!volunteering && g_cv_Volunteered[client]) //Remove from volunteer list
@@ -1085,6 +1081,14 @@ public Action MakeRobot(int client, bool volunteering)
     //Menu Stuff here
 
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
+}
+
+void MoveToRobots(int client)
+{    
+    TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
+    SetRandomRobot(client);
+    g_ClientIsRepicking[client] = false;
+    Menu_ChooseRobot(client);
 }
 
 int RobotDefinitionComparision(int index1, int index2, Handle array, Handle hndl)
@@ -1255,6 +1259,7 @@ void SetRandomRobot(int client)
     for (;;)  
     {
         int i = GetRandomInt(0, robotNames.Length -1);
+        SMLogTag(SML_VERBOSE, "picked random %i (between %i and %i)", i, 0, robotNames.Length -1);
 
         robotNames.GetString(i, robotname, sizeof(robotname));
 

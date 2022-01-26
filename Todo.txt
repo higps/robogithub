@@ -3,7 +3,6 @@ TODO:
 
   Priority:
   1. Robot menu is grayed out when reverting back from paid robot.
-  2. Turn players into a random robot when first joining the robot team.
   3. New robot menu
 
 1. Need time passed resource added
