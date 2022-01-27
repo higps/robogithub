@@ -200,7 +200,7 @@ void ResetOnDeath(int client, Robot item)
     
     TF2Attrib_RemoveAll(client);
     if (IsPlayerAlive(client)){
-    EmitSoundToAll(item.sounds.death);
+    EmitSoundToAll(item.sounds.death, client);
     }
     _robotIsCreated[client] = false;    
 }

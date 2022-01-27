@@ -336,7 +336,9 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         //CreateTimer(1.0, Boss_check, client);
     }
             // int Humans = GetTeamClientCount(g_HumanTeam);
-            // int Robots = GetTeamClientCount(g_RoboTeam);
+    // if (!IsBoss(client)){
+    //     SetEntProp(client, Prop_Send, "m_bGlowEnabled", 0);
+    //         }        // int Robots = GetTeamClientCount(g_RoboTeam);
             // PrintToChatAll("Human players %i, robot players %i", Humans, Robots);
 
 }
@@ -403,7 +405,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     //EmitGameSoundToAll("Announcer.MVM_Engineer_Teleporter_Activated");
     //PrintToChatAll("You died  %N", victim);
     //GetRobotNames();
-
+    //EmitGameSoundToAll("Announcer.MVM_General_Destruction");
         if (!IsAnyRobot(victim) && IsAnyRobot(attacker))
         {
             //PrintChatAll("You are not a robot %N", victim);
@@ -413,6 +415,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
         }
 
         //Removes the robot ragdoll and causes explosion
+       
         if (IsAnyRobot(victim))
         {
 
@@ -427,15 +430,16 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
             // }else{
                 
             TE_Particle("hightower_explosion", position, _, _, attach, 1,0);	
+           // EmitGameSoundToAll("Announcer.MVM_General_Destruction");
             // } 
 
-            int irandom = GetRandomInt(1,3);
-           // EmitGameSoundToAll("Announcer.MVM_General_Destruction");
+            int irandom = GetRandomInt(1,4);
+            
             if (irandom == 1)
             {
                if (TF2_GetPlayerClass(victim) != TFClass_Spy){
 
-                CreateTimer(1.5, SayDeathVoiceline);
+                CreateTimer(2.5, SayDeathVoiceline);
                }
             }
             // } 
@@ -460,6 +464,7 @@ public Action RemoveBody(Handle timer, any client)
         if(IsValidEdict(BodyRagdoll))
         {
             AcceptEntityInput(BodyRagdoll, "kill");
+             
         }
     }
 }

@@ -8,6 +8,9 @@
 
 #include <sdktools>
 
+//#define BOSSTUNE "music.mvm_end_mid_wave"
+#define BOSSTUNE "#*music/mvm_start_last_wave.wav"
+
 enum TFBossHealthState {
 	HealthState_Default = 0,
 	HealthState_Healing // displays a green health bar
@@ -108,6 +111,7 @@ public void OnPluginStart() {
 	LoadTranslations("common.phrases");
 	
 	RegAdminCmd("sm_setboss", SetBossHealthTarget, ADMFLAG_ROOT);
+	//RegAdminCmd("sm_pt", PlayTune, ADMFLAG_ROOT);
 	//RegAdminCmd("sm_setbosshud", SetBossHealth, ADMFLAG_ROOT);
 //	RegServerCmd("sm_unsetbosshud", UnSetBossHealth);
 	
@@ -116,7 +120,6 @@ public void OnPluginStart() {
 
 	//HookEvent("player_death", Event_Death_RemoveHUD, EventHookMode_Post);
 
-	PrecacheScriptSound("Announcer.MVM_General_Destruction");
 }
 
 public void OnPluginEnd() {
@@ -129,8 +132,8 @@ public void OnPluginEnd() {
 public void OnMapStart()
 {
 
-    PrecacheScriptSound("Announcer.MVM_General_Destruction");
-
+    //PrecacheScriptSound(BOSSTUNE);
+	PrecacheSound(BOSSTUNE);
 }
 
 // public Action Event_Death_RemoveHUD(Event event, const char[] name, bool dontBroadcast)
@@ -202,6 +205,9 @@ public Action SetBossHealthTarget(int client, int argc) {
 	if (!argc) {
 		return Plugin_Handled;
 	}
+
+
+	//EmitGameSoundToAll(BOSSTUNE);
 	
 	char target[MAX_NAME_LENGTH + 1];
 	GetCmdArg(1, target, sizeof(target));
@@ -211,9 +217,14 @@ public Action SetBossHealthTarget(int client, int argc) {
 	if (iTarget != -1 && g_iBossTarget != iTarget) {
 		if (IsValidEntity(g_iBossTarget)) {
 			SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
+	//		SetEntProp(g_iBossTarget, Prop_Send, "m_bGlowEnabled", 0);
 		}
 		g_iBossTarget = iTarget;
 		SDKHook(iTarget, SDKHook_PostThink, OnBossPostThink);
+		// if (IsValidEntity(g_iBossTarget)){
+		// 	SetEntProp(g_iBossTarget, Prop_Send, "m_bGlowEnabled", 0);
+		// }
+		EmitSoundToAll(BOSSTUNE);
 	//	ReplyToCommand(client, "Switched boss target to %N", iTarget);
 	} else {
 		g_iBossTarget = -1;
@@ -232,9 +243,14 @@ public Action SetBossHealthTargetCommand(int client) {
 	if (iTarget != -1 && g_iBossTarget != iTarget) {
 		if (IsValidEntity(g_iBossTarget)) {
 			SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
+//			SetEntProp(g_iBossTarget, Prop_Send, "m_bGlowEnabled", 1);
 		}
 		g_iBossTarget = iTarget;
 		SDKHook(iTarget, SDKHook_PostThink, OnBossPostThink);
+		EmitSoundToAll(BOSSTUNE);
+		// if (IsValidEntity(g_iBossTarget)){
+		// 	SetEntProp(iTarget, Prop_Send, "m_bGlowEnabled", 0);
+		// }
 	//	ReplyToCommand(client, "Switched boss target to %N", iTarget);
 	} 
 	// else {
