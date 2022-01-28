@@ -87,18 +87,18 @@ public any Native_TrackRobot(Handle plugin, int numParams)
         _robotCount.SetValue(_isRobot[i], value + 1);
     }
 
-    if (IsLogAllowed(SML_VERBOSE))
-    {
-        char loggingRobotname[NAMELENGTH];
-        int robotCount;
-        StringMapSnapshot robotNames = _robotCount.Snapshot();
-        for(int i = 0; i < robotNames.Length; i++)
-        {
-            robotNames.GetKey(i, loggingRobotname, NAMELENGTH);
-            _robotCount.GetValue(loggingRobotname, robotCount);
-            SMLogTag(SML_VERBOSE, "tracking %i players as robot '%s'", robotCount, loggingRobotname);
-        }
-    }
+    // if (IsLogAllowed(SML_VERBOSE))
+    // {
+    //     char loggingRobotname[NAMELENGTH];
+    //     int robotCount;
+    //     StringMapSnapshot robotNames = _robotCount.Snapshot();
+    //     for(int i = 0; i < robotNames.Length; i++)
+    //     {
+    //         robotNames.GetKey(i, loggingRobotname, NAMELENGTH);
+    //         _robotCount.GetValue(loggingRobotname, robotCount);
+    //         SMLogTag(SML_VERBOSE, "tracking %i players as robot '%s'", robotCount, loggingRobotname);
+    //     }
+    // }
 }
 
 public any Native_TrackRobotCreation(Handle plugin, int numParams)
@@ -125,6 +125,8 @@ public any Native_GetRobotCount(Handle plugin, int numParams)
 public any Native_IsRobot(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1);
+    if (!IsValidClient(client))
+        return false;
     if (!_robotIsCreated[client])
         return false;
 

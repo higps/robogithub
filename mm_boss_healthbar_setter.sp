@@ -173,31 +173,13 @@ public void OnInventoryApplied(Event event, const char[] name, bool dontBroadcas
 		SetEntProp(client, Prop_Send, "m_bUseBossHealthBar", false);
 	}
 
-	// int iTarget = client;
-
-	// if (IsAnyRobot(client) && !IsBoss(client) && client == g_iBossTarget){
-	// 	//PrintToChatAll("%N was not a ZBOSS! but is the target, removing hud and target", client);
-	// 	RemoveHUD();
-	// }
-
-	//PrintToChatAll("Did inventory!");
-
 	if (IsBoss(client))
 	{
 		//PrintToChatAll("WAS BOSS!");
 		SetBossHealthTargetCommand(client);	
 	}
 
-	
-	// if (iTarget != -1 && g_iBossTarget != iTarget) {
-	// 	if (IsValidEntity(g_iBossTarget)) {
-	// 		SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
-	// 	}
-	// 	g_iBossTarget = iTarget;
-	// 	SDKHook(iTarget, SDKHook_PostThink, OnBossPostThink);
-	// 	ReplyToCommand(client, "Switched boss target to %N", iTarget);
-		
-	// }
+
 	
 }
 
@@ -247,12 +229,14 @@ public Action SetBossHealthTargetCommand(int client) {
 		}
 		g_iBossTarget = iTarget;
 		SDKHook(iTarget, SDKHook_PostThink, OnBossPostThink);
-		EmitSoundToAll(BOSSTUNE);
+		
 		// if (IsValidEntity(g_iBossTarget)){
 		// 	SetEntProp(iTarget, Prop_Send, "m_bGlowEnabled", 0);
 		// }
 	//	ReplyToCommand(client, "Switched boss target to %N", iTarget);
 	} 
+
+	EmitSoundToAll(BOSSTUNE);
 	// else {
 	// 	g_iBossTarget = -1;
 	// //	ReplyToCommand(client, "Removed boss target");
@@ -262,52 +246,24 @@ public Action SetBossHealthTargetCommand(int client) {
 	return Plugin_Handled;
 }
 
-// public Action SetBossHealth(int client) {
-
-// 	int iTarget = client;
-	
-// 	if (iTarget != -1 && g_iBossTarget != iTarget) {
-// 		if (IsValidEntity(g_iBossTarget)) {
-// 			SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
-// 		}
-// 		g_iBossTarget = iTarget;
-// 		SDKHook(iTarget, SDKHook_PostThink, OnBossPostThink);
-// 		ReplyToCommand(client, "Switched boss target to %N", iTarget);
-// 	}
-	
-// 	return Plugin_Handled;
-// }
-
-// public any Native_UnSetBossHealth(Handle plugin, int numParams) {
-
-// 	for(int i = 0; i <= MAXPLAYERS; i++)
-//     {
-// 		if (i == g_iBossTarget) {
-// 			SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
-//     	}
-// 	}
-	
-
-// 	RemoveHUD();
-	
-	
-// 	return Plugin_Handled;
-// }
 
 public void OnBossPostThink(int client) {
 
-	if (client != g_iBossTarget) {
+//PrintToChatAll("THINK");
+	if (client != g_iBossTarget || !IsBoss(client)) {
 		SDKUnhook(client, SDKHook_PostThink, OnBossPostThink);
+		g_iBossTarget = -1;
 	} else {
 		if (!TF2_IsGameModeMvM()) {
 			// non-MvM, use monster resource health bar
-			if (IsPlayerAlive(client)) {
+			if (IsPlayerAlive(client) && IsClientInGame(client)) {
 				//PrintToChatAll("Player is alive");
 				TFMonsterResource.GetEntity(true).LinkHealth(client);
 			} else {
 				TFMonsterResource.GetEntity(true).BossHealthPercentageByte = 0;
 				//PrintToChatAll("Player is dead");
 				g_iBossTarget = -1;
+				//RemoveHUD();
 			}
 		} else if (!GetEntProp(client, Prop_Send, "m_bUseBossHealthBar")) {
 			// MvM, display boss health bar if it isn't already
@@ -320,17 +276,7 @@ public void OnBossPostThink(int client) {
 
 	if (g_iBossTarget == -1){
 
-		//PrintToChatAll("REMOVE HUD");
-
-		int iEnt = MaxClients + 1;
-		while ((iEnt = FindEntityByClassname(iEnt, "monster_resource")) != -1)
-		{
-			if (IsValidEntity(iEnt))
-			{
-				AcceptEntityInput(iEnt, "Kill");
-				
-			}
-		} 
+		RemoveHUD();
 	}
 }
 
@@ -338,6 +284,7 @@ public void OnClientDisconnect(int client) {
 	if (client == g_iBossTarget) {
 		SDKUnhook(g_iBossTarget, SDKHook_PostThink, OnBossPostThink);
 		g_iBossTarget = -1;
+		RemoveHUD();
 	}
 }
 

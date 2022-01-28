@@ -3,16 +3,15 @@ TODO:
   Top Priority:
   1. Fix Memory Leak in volunteers
   Priority:
-  2. Turn players into a random robot when first joining the robot team.
-  3. New robot menu
+  2. Use players numbers for players present in a team, not players connecting.
+  3. Turn players into a random robot when first joining the robot team.
+  4. New robot menu
 
 1. Need time passed resource added
-2. Robot model stays when not being a robot anymore (fixed by changing class)
-3. When mode is over, robots return to normal
-4. Both teams have robot mode
+2. When mode is over, robots return to normal
+3. Both teams have robot mode
 Every 4 player is one robot, rounding to floor.
 
-7. Add mvm_start_wave.wav to the beginning of a round.
 
 Rework menus:
 Menu
@@ -39,13 +38,6 @@ Menu
    -> ZBOSS (3)
 
 
-BUGS:
-When reverting, the robot isn't grayed out in the menu, allowing players to de-robofy themselves if selecting the one they got reverted back to.
-
-How to become a forever paid robot:
-1. Be a free robot
-2. Select paid robot outside of spawn.
-3. You forever respawn as paid robot
 
 Sometimes a player will be on the robot team when not a robot, tied to client stuff.
 Unset robots on autoteam balance

@@ -190,7 +190,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 
 	
 	PrintToChat(client, "1. You are now Giant Batmann robot!");
-	PrintHintText(client, "No Revolver\nSharp Dresser\nUse grappling hook with reload or specialattack!");
+	PrintHintText(client, "No Revolver\nSharp Dresser\nCan only backstab\nUse grappling hook with reload or specialattack!");
 
 	//EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
 
@@ -240,7 +240,7 @@ stock GiveBigRoboDane(client)
 	// CreateRoboWeapon(client, "tf_weapon_revolver", 224, 6, 1, 0, 0);
 	CreateRoboWeapon(client, "tf_weapon_knife", 638, 6, 1, 2, 0); //sharp dresser
 	CreateRoboWeapon(client, "tf_weapon_grapplinghook", 1152, 6, 1, 3, 0);
-//	CreateRoboWeapon(client, "tf_weapon_sapper", 735, 6, 1, 1, 0); 
+	CreateRoboWeapon(client, "tf_weapon_sapper", 735, 6, 1, 1, 0); 
 	//CreateRoboWeapon(client, "tf_weapon_invis", 59, 6, 1, 4, 0); 
 		
 
@@ -269,7 +269,8 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Knife);
 			
 			//TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
-			//TF2Attrib_SetByName(Knife, "damage bonus", 1.75);
+			TF2Attrib_SetByName(Knife, "fire rate bonus", 0.55);
+			TF2Attrib_SetByName(Knife, "dmg penalty vs buildings", 0.0);
 		}
 
 	if(IsValidEntity(Sapper)) //
@@ -277,7 +278,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Sapper);
 			
 		//	TF2Attrib_SetByName(Sapper, "mult cloak meter consume rate", 0.0);
-			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 50.0);
+			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 25.0);
 			TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
 			
 			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
@@ -287,45 +288,28 @@ stock GiveBigRoboDane(client)
 
 /* Plugin Exclusive Functions */
 //Code that stuns players
-// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
-// {
-//     // if (!g_Enable)
-//     //     return Plugin_Continue;
-//     if(!IsValidClient(victim))
-//         return Plugin_Continue;    
-//     if(!IsValidClient(attacker))
-//         return Plugin_Continue;
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+    // if (!g_Enable)
+    //     return Plugin_Continue;
+    if(!IsValidClient(victim))
+        return Plugin_Continue;    
+    if(!IsValidClient(attacker))
+        return Plugin_Continue;
 
 
-// 	if(IsRobot(attacker, ROBOT_NAME))
-//     {
-// 		if(damagecustom == TF_CUSTOM_BACKSTAB)
-// 		{
+	if(IsRobot(attacker, ROBOT_NAME))
+    {
+		if(damagecustom != TF_CUSTOM_BACKSTAB)
+		{
 			
-// 			damage = 0.0;
-// 			TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
-			
-// 			return Plugin_Changed;
-// 		}
-// 		if (damage+10.0 > GetClientHealth(victim))
-// 		{
-// 			damage = 0.0;
-// 			TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAGS_LOSERSTATE, attacker);
-// 			return Plugin_Changed;
-// 		}
-// 	}  
-//             /*Damage code for scout */
-// 	return Plugin_Continue;   // if (iClassAttacker == TFClass_Scout)
-//             // {
-//             //         if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-//             //       //  damage *= 1.25;
-//             //         //critType = CritType_Crit;
-//             //         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-//             //         return Plugin_Changed;
-//             // }   
+			damage = 0.0;
+			return Plugin_Changed;
+		}
+	}  
     
     
-//}
+}
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {

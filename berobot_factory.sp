@@ -323,7 +323,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 
         if (IsPlayerAlive(client))
         { 
-            PrintToChatAll("PLAYER WAS ALIVE");
+          //  PrintToChatAll("PLAYER WAS ALIVE");
             EmitSoundToAll(item.sounds.spawn);
             
         }

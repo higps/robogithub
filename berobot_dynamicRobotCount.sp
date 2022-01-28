@@ -79,7 +79,7 @@ void SetRoboCapTeam()
 
     int count = GetClientCount();
     float ratio = _humansPerRobot +1.0;
-    int robotCount = RoundToCeil(count/ratio);
+    int robotCount = RoundToFloor(count/ratio);
 
     SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
     _roboCapTeamConVar.SetInt(robotCount);

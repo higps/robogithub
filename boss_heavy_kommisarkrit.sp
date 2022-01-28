@@ -64,7 +64,6 @@ public OnPluginStart()
     robot.role = ROBOT_ROLE;
     robot.class = "Heavy";
     robot.shortDescription = ROBOT_DESCRIPTION;
-	robot.ShowHPBar = true;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.gunfire = SOUND_GUNFIRE;

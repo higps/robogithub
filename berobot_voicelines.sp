@@ -255,11 +255,11 @@ public Action Event_teamplay_setup_finished_timer (Handle timer)
             continue;
         }  
 
-        // if (!MM_Random(1,2))
-        // {
-        //     SMLogTag(SML_VERBOSE, "Event_teamplay_setup_finished ignored for %i, because random says no", i);
-        //     continue;
-        // }  
+        if (!MM_Random(1,2))
+        {
+            SMLogTag(SML_VERBOSE, "Event_teamplay_setup_finished ignored for %i, because random says no", i);
+            continue;
+        }  
 
         
         PlayRobotRoundStartVoiceOver(i);
@@ -283,10 +283,11 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
         PlayRobotDeathVoiceOver(assister, victim);
     }
 
-    int iTeam = GetClientTeam(victim);
+
     //player died to robot
     if (!IsAnyRobot(victim) && IsAnyRobot(attacker))
     {
+        int iTeam = GetClientTeam(victim);
         PlayRobotKilledFriendVoiceOver(iTeam);
     }
 
@@ -297,15 +298,15 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	}
 	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) != TFClass_Spy)
 	{
-	       int irandom = GetRandomInt(1,4);
+        int irandom = GetRandomInt(1,4);
             
-            if (irandom == 1)
-            {
-               if (TF2_GetPlayerClass(victim) != TFClass_Spy){
+        if (irandom == 1)
+        {
+            if (TF2_GetPlayerClass(victim) != TFClass_Spy){
 
-                CreateTimer(2.5, SayDeathVoiceline);
-               }
+            CreateTimer(2.5, SayDeathVoiceline);
             }
+        }
     }
 	
 
@@ -671,11 +672,11 @@ void PlayRobotTakeDamageVoiceOver(int attackerClientId, TFClassType attackerClas
         SMLogTag(SML_VERBOSE, "PlayRobotTakeDamageVoiceOver ignored, because victim %i was not a robot", victimClientId);
         return;
     }
-    // if (!MM_Random(1,4))
-    // {
-    //     SMLogTag(SML_VERBOSE, "PlayRobotTakeDamageVoiceOver ignored, because random says no");
-    //     return;
-    // }
+    if (!MM_Random(1,4))
+    {
+        SMLogTag(SML_VERBOSE, "PlayRobotTakeDamageVoiceOver ignored, because random says no");
+        return;
+    }
     if (IsAnyRobot(attackerClientId))
     {
         SMLogTag(SML_VERBOSE, "PlayRobotTakeDamageVoiceOver ignored, because attacker %i was a robot", victimClientId);
@@ -758,7 +759,7 @@ void PlayRobotTakeDamageVoiceOver(int attackerClientId, TFClassType attackerClas
     }
 
     float random_timer = GetRandomFloat(20.5,60.5);
-    EmitSoundWithClamp(attackerClientId, szVO, 1.0);
+    EmitSoundWithClamp(attackerClientId, szVO, random_timer);
 }
 
 void EmitSoundWithClamp(int client, char[] voiceline, float clamp)

@@ -152,7 +152,7 @@ float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 1.25);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.15);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);

@@ -26,6 +26,7 @@
  
 int g_Recharge[MAXPLAYERS + 1] = 1;
 int g_RechargeCap = 75;
+bool g_SpellClamp = false;
 
 public Plugin:myinfo =
 {
@@ -233,13 +234,20 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		//0 = fireball
 		//PrintToChat(client, "Throwing spell!");
-			if (g_Recharge[client] >= g_RechargeCap)
-	{
-		CastSpell(client, 0);
-		g_Recharge[client] = 1;
-	}
+		if (g_Recharge[client] >= g_RechargeCap && !g_SpellClamp)
+		{
+			CastSpell(client, 0);
+			g_Recharge[client] = 1;
+			CreateTimer(1.0, SpellClamp_Timer);
+			g_SpellClamp = true;
+		}
 		
 	}
+}
+
+public Action SpellClamp_Timer(Handle hTimer)
+{
+	g_SpellClamp = false;
 }
 
 public void CastSpell(int client, int index) {
@@ -328,7 +336,7 @@ void UpdateCharge(int client)
 	
 	if(IsRobot(client, ROBOT_NAME))//only add charge if you are sentro
 	{ 
-		g_Recharge[client] += 2;
+		g_Recharge[client] += 20;
 	}
 	//m_iLastHealingAmount[client] = iActualHealingAmount;
 	

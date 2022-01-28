@@ -1,0 +1,14 @@
+"Games"
+{
+	"tf"
+	{
+		"Offsets"
+		{
+			"CMonsterResource::SetBossHealthPercentage"
+			{
+				"linux"		"194"
+				"windows"	"193"
+			}
+		}
+	}
+}

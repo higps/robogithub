@@ -230,11 +230,11 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	
 	
 	TF2Attrib_SetByName(client, "self dmg push force increased", 8.0);
-	//TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
+	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	//TF2Attrib_SetByName(client, "rocket jump damage reduction", 0.2);
 	
 	

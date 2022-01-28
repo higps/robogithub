@@ -91,11 +91,11 @@ public OnPluginStart()
 
 
 	g_rocketDelay = CreateConVar("mirv_rocket_delay", "0.6", "Delay before a mirv rocket splits into other rockets");
-	g_rocketCount = CreateConVar("mirv_rocket_count", "3", "How many rockets a mirv rocket splits into", _, true, 2.0, true, 6.0);
+	g_rocketCount = CreateConVar("mirv_rocket_count", "5", "How many rockets a mirv rocket splits into", _, true, 2.0, true, 6.0);
 	g_rocketCurve = 1;
 	//g_rocketCurve = CreateConVar("mirv_converge_rockets", "0", "Do rockets converge on a single point after splitting", _, true, 0.0, true, 1.0);
 	g_showDebug = CreateConVar("mirv_converge_debug", "0", "Show debug angles and trajectory for converging rockets", _, true, 0.0, true, 1.0);
-	g_rocketAngle = CreateConVar("mirv_split_angle", "30.0", "Positive angle from the down vector at which mirv rockets will split at (0.0 = directly down, 90.0 = no deviation)");
+	g_rocketAngle = CreateConVar("mirv_split_angle", "60.0", "Positive angle from the down vector at which mirv rockets will split at (0.0 = directly down, 90.0 = no deviation)");
 	g_rocketDiverge = CreateConVar("mirv_split_variance", "10.0", "Random angle variance added onto mirv rockets");
 	//HookConVarChange(g_rocketCurve, OnMirvSettingsChanged);
 
