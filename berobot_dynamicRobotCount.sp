@@ -46,23 +46,19 @@ public void OnPluginStart()
     _humansPerRobotConVar = CreateConVar("sm_berobot_dynamicRobotCount_humansPerRobot", "3.0", "ratio of humans-to-robot for dynamic robot count calculation");
     _humansPerRobotConVar.AddChangeHook(RoboCapTeamHumansPerRobotConVarChangeHook);
     _humansPerRobot = _humansPerRobotConVar.FloatValue;
-
-    HookEvent("player_team", EventPlayerTeam);
-
     
 }
 
-
-public Action EventPlayerTeam(Event event, const char[] name, bool dontBroadcast)
+public void OnGameFrame()
 {
    
-   if (!g_timer)
+   if (g_timer)
    {
     CreateTimer(2.0, Timer_Check_Teams);
    g_timer = true;
    }
-   
-} 
+}
+
 
 public Action Timer_Check_Teams(Handle timer)
 {
@@ -108,11 +104,11 @@ void SetRoboCapTeam()
     //PrintToChatAll("Team 2 was %i, Team 3 was %i", team2, team3);
 
     float ratio = _humansPerRobot +1.0;
-    int robotCount = RoundToFloor(count/ratio);
+    int robotCount = RoundToCeil(count/ratio);
 
-    if (robotCount == 0){
-        robotCount++;
-    }
+    // if (robotCount == 0){
+    //     robotCount++;
+    // }
 
     SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
     _roboCapTeamConVar.SetInt(robotCount);

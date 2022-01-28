@@ -336,7 +336,7 @@ void UpdateCharge(int client)
 	
 	if(IsRobot(client, ROBOT_NAME))//only add charge if you are sentro
 	{ 
-		g_Recharge[client] += 20;
+		g_Recharge[client] += 2;
 	}
 	//m_iLastHealingAmount[client] = iActualHealingAmount;
 	

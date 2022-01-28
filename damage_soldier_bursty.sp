@@ -287,7 +287,7 @@ stock GiveGiantPyro(client)
 	//	CreateRoboHat(client, SteelShako, 10, 6, 0.0, 0.75, -1.0);
 
 	//	CreateHat(client, 30050, 10, 6, true); //Gatebot
-		CreateRoboWeapon(client, "tf_weapon_buff_item", 129, 6, 1, 1, 0);
+		//CreateRoboWeapon(client, "tf_weapon_buff_item", 129, 6, 1, 1, 0);
 		//CreateHat(client, 647, 10, 6, true); //The All-Father
 		//CreateHat(client, 343, 10, 6, true);//Professor speks
 
@@ -305,7 +305,7 @@ stock GiveGiantPyro(client)
 			//TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.6);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip penalty", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.25);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);
 			
 			
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 1.0);

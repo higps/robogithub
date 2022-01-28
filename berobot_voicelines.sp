@@ -698,7 +698,7 @@ void PlayRobotTakeDamageVoiceOver(int attackerClientId, TFClassType attackerClas
             if(IsTank(victimClientId))
             {
             char voiceline[][] = {"heavy_mvm_tank_alert01", "heavy_mvm_tank_alert02", "heavy_mvm_tank_alert03"}; 
-            digit = GetRandomInt(0,3);
+            digit = GetRandomInt(0,2);
             Format(szVO, sizeof(szVO), "%s", voiceline[digit]);
             
             }
