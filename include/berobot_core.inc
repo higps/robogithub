@@ -127,6 +127,32 @@ native void EnsureRobotCount();
 native void UnmakeRobot(int clientId);
 
 /**
+ * keeps track of which client uses which robot and how many robots are used
+ * 
+ * @param clientId      clientId to keep track of
+ * @param robotname     name of the robot of the client
+ * @noreturn
+ */
+native void TrackRobot(int clientId, char robotname[NAMELENGTH]);
+
+/**
+ * keeps track of which clients robot was created
+ * 
+ * @param clientId      clientId to keep track of
+ * @param created       true if the robot was just created, false otherwise
+ * @noreturn
+ */
+native void TrackRobotCreation(int clientId, bool created);
+
+/**
+ * get the amount of robots picked per robot-type
+ * 
+ * @param robotname     name of the robot
+ * @return              amount of robots picked for the specified robotname
+ */
+native int GetRobotCount(char robotname[NAMELENGTH]);
+
+/**
  * Called after robot-definition was added/removed
  * 
  * @noreturn
@@ -139,6 +165,13 @@ forward void MM_OnRobotStorageChanged();
  * @noreturn
  */
 forward void MM_OnEnabledChanged(int enabled);
+
+/**
+ * Called when mode-reset was requested
+ * 
+ * @noreturn
+ */
+forward void MM_ModeResetRequested();
 
 /**
  * returns which classes have deep robot voicelines (opposed to only normal robot voicelines)

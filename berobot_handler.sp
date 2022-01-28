@@ -90,6 +90,7 @@ bool g_GoingToDie[MAXPLAYERS + 1] = false;
 int g_TimeBombTime[MAXPLAYERS+1] = { 0, ... };
 
 GlobalForward _enabledChangedForward;
+GlobalForward _modeResetRequestedForward;
 
 float g_CV_flSpyBackStabModifier;
 
@@ -109,7 +110,6 @@ int g_iVotesNeeded;
 int g_RoundCount;
 
 ArrayList g_Volunteers;
-StringMap g_RobotCount;
 
 
 // Handle g_SDKCallInternalGetEffectBarRechargeTime;
@@ -185,6 +185,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_Rtr_precent].AddChangeHook(CvarChangeHook);
 
     _enabledChangedForward = new GlobalForward("MM_OnEnabledChanged", ET_Ignore, Param_Cell);
+    _modeResetRequestedForward = new GlobalForward("MM_ModeResetRequested", ET_Ignore);
 
     RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
     RegAdminCmd("sm_mr", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
@@ -218,7 +219,6 @@ public void OnPluginStart()
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
-    g_RobotCount = new StringMap();
 
     g_Volunteers.Clear();
 
@@ -274,7 +274,6 @@ public void ResetMode()
     g_SpectateSelection = false;
     g_iVotes = 0;
     g_Volunteers.Clear();
-    g_RobotCount.Clear();
 
     for(int i = 0; i <= MAXPLAYERS; i++)
     {
@@ -287,6 +286,9 @@ public void ResetMode()
     int totalplayers = RoundToCeil(float(GetClientCount(false)) * g_Rtr_percent);
     g_iVotesNeeded = totalplayers;
     //g_iVotesNeeded = 6;
+
+    Call_StartForward(_modeResetRequestedForward);
+    Call_Finish();
 }
 
 public void OnClientDisconnect(int client)
@@ -302,9 +304,6 @@ void Reset(int client)
     char robotName[NAMELENGTH];
     robotName = g_cv_RobotPicked[client];
 
-    int currentCount;
-    g_RobotCount.GetValue(robotName, currentCount);
-    g_RobotCount.SetValue(robotName, currentCount - 1);
     g_cv_Volunteered[client] = false;
     g_cv_RobotPicked[client] = "";
     int index = FindValueInArray(g_Volunteers, client);
@@ -1177,8 +1176,7 @@ Action Menu_ChooseRobot(int client)
 
 void GenerateNotes(Robot item, int client, char notes[15], int& draw)
 {
-    int count;
-    g_RobotCount.GetValue(item.name, count);
+    int count = GetRobotCount(item.name);
     if (count >= g_RoboCap)
     {
         Format(notes, sizeof(notes), "%i / %i", count, g_RoboCap);
@@ -1269,8 +1267,7 @@ void SetRandomRobot(int client)
 
         robotNames.GetString(i, robotname, sizeof(robotname));
 
-        int count;
-        g_RobotCount.GetValue(robotname, count);
+        int count = GetRobotCount(robotname);
         if (count < g_RoboCap)
         {
             Robot item;
@@ -1302,21 +1299,6 @@ void SetRobot(char robotname[NAMELENGTH], int client)
         return;
     }
 
-    //reset count for current robot
-    SMLogTag(SML_VERBOSE, "volunteered by %L is currently robot '%s'", client, g_cv_RobotPicked[client]);
-    if (g_cv_RobotPicked[client][0] != '\0')
-    {
-        int count;
-        g_RobotCount.GetValue(g_cv_RobotPicked[client], count);
-
-        SMLogTag(SML_VERBOSE, "%L decrements robot-count for robot '%s' from %i", client, g_cv_RobotPicked[client], count);
-        g_RobotCount.SetValue(g_cv_RobotPicked[client], count - 1);
-
-    }
-
-    int currentCount;
-    g_RobotCount.GetValue(robotname, currentCount);
-    g_RobotCount.SetValue(robotname, currentCount + 1);
     g_cv_RobotPicked[client] = robotname;
     g_ClientIsRepicking[client] = false;
 
