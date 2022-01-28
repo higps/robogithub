@@ -162,13 +162,22 @@ native bool IsRobot(int client, char name[NAMELENGTH]);
 native bool IsAnyRobot(int client);
 
 /**
- * checks if a client is any robot
+ * checks if a client is a boss
  * 
  * @param client    clientId to check for robot
  * 
  * @return          return handled
  */
  native bool IsBoss(int client);
+
+ /**
+ * checks if a client is a tank
+ * @param client    clientId to check for robot
+ * 
+ * @return          return handled
+ */
+ native bool IsTank(int client);
+
 
  /**
  * Sets the boss healthbar

@@ -42,6 +42,11 @@ Menu
 BUGS:
 When reverting, the robot isn't grayed out in the menu, allowing players to de-robofy themselves if selecting the one they got reverted back to.
 
+How to become a forever paid robot:
+1. Be a free robot
+2. Select paid robot outside of spawn.
+3. You forever respawn as paid robot
+
 Sometimes a player will be on the robot team when not a robot, tied to client stuff.
 Unset robots on autoteam balance
 Failsafe on robot team

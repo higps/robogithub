@@ -262,7 +262,7 @@ public void OnMapStart()
     g_RoundCount = 0;
     ResetMode();
 
-    PrecacheScriptSound("Announcer.MVM_General_Destruction");
+
     
 
 }
@@ -433,15 +433,6 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
            // EmitGameSoundToAll("Announcer.MVM_General_Destruction");
             // } 
 
-            int irandom = GetRandomInt(1,4);
-            
-            if (irandom == 1)
-            {
-               if (TF2_GetPlayerClass(victim) != TFClass_Spy){
-
-                CreateTimer(2.5, SayDeathVoiceline);
-               }
-            }
             // } 
             
         }
@@ -450,10 +441,8 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
         g_GoingToDie[victim] = false;
 }
 
-public Action SayDeathVoiceline(Handle timer)
-{
-    EmitGameSoundToAll("Announcer.MVM_General_Destruction");
-}
+
+
 
 public Action RemoveBody(Handle timer, any client)
 {
@@ -714,6 +703,8 @@ public Action Command_BeRobot(int client, int numParams)
     else 
         GetCmdArg(2, target, sizeof(target));
 
+    
+
     SMLogTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
     // //Remove the boss healthbar when changing robots, boss health bar is created on boss spawn
     // UnSetBossHealth(client);
@@ -939,6 +930,12 @@ public Action Command_RoboVote(int client, int args)
 
 public Action Command_ChangeRobot(int client, int args)
 {
+
+    if (!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
+    {
+        PrintCenterText(client, "You can only change robot when in spawn or dead");
+        return Plugin_Handled;
+    }
     char target[32];
     if(args < 1)
     {
@@ -1213,6 +1210,12 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     /* If an option was selected, tell the client about the item. */
     if(action == MenuAction_Select)
     {
+
+        if (!TF2Spawn_IsClientInSpawn(param1) && IsPlayerAlive(param1))
+        {
+            PrintCenterText(param1, "You can only select robot when dead or in spawn");
+            return;
+        }
         if (g_chooseRobotMenus[param1] == null)
             return;
         g_chooseRobotMenus[param1] = null;

@@ -76,6 +76,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("IsRobotWhenDead", Native_IsRobotWhenDead);
 	CreateNative("IsAnyRobot", Native_IsAnyRobot);
     CreateNative("IsBoss", Native_IsBoss);
+    CreateNative("IsTank", Native_IsTank);
 	CreateNative("GetRobot", Native_GetRobot);
 
 	return APLRes_Success;
@@ -155,12 +156,14 @@ public Action Timer_Locker(Handle timer, any client)
         return Plugin_Handled;
     }
 
-    CallCreate(client, item);
-    // if (IsPlayerAlive(client) && IsAnyRobot(client))
-    // { 
-    //     EmitSoundToAll(item.sounds.spawn);
+    if (IsPlayerAlive(client))
+    { 
+        EmitSoundToAll(item.sounds.spawn);
         
-    // }
+    }
+
+    CallCreate(client, item);
+
     return Plugin_Handled;
 }
 
@@ -322,9 +325,14 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	if (robotWasCreated)
 	{
 		SMLogTag(SML_VERBOSE, "playing robot spawn sound %s to all for call by client %i for target %s", item.sounds.spawn, client, target);
-		if (IsPlayerAlive(client)){
+
+        if (IsPlayerAlive(client))
+        { 
+            PrintToChatAll("PLAYER WAS ALIVE");
             EmitSoundToAll(item.sounds.spawn);
-        } 
+            
+        }
+
 	}
 
 	return 0;
@@ -396,6 +404,28 @@ public any Native_IsBoss(Handle plugin, int numParams)
     if (StrEqual(robot.role,"ZBOSS"))
     {
        // PrintToChatAll("Robot role from factory: %s", robot.role);
+        
+        return true;
+    }else
+    {
+        return false;
+    }
+}
+
+public any Native_IsTank(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+
+    char robotName[NAMELENGTH];
+
+    Robot robot;
+    GetRobot(client, robotName, NAMELENGTH);
+    GetRobotDefinition(robotName, robot);
+
+
+    if (StrEqual(robot.role,"Tank"))
+    {
+       //PrintToChatAll("Robot role from factory: %s", robot.role);
         
         return true;
     }else
