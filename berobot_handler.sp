@@ -1358,7 +1358,7 @@ public Action OnClientCommand(int client, int args)
     if(strcmp(cmd, "jointeam", true) == 0)
     {
     TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
-
+    
     //PrintToChatAll("Join team triggered. %N's team was %i", client, iTeam);
 
         if (g_SpectateSelection)
