@@ -9,7 +9,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Burst firer"
+#define ROBOT_NAME	"Bursty"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Burst fire 3 rockets"
 
