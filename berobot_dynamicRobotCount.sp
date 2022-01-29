@@ -2,7 +2,7 @@
 #include <sdktools>
 #include <sdkhooks>
 #include <tf2>
-#include <sm_logger>
+//#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 
@@ -36,8 +36,8 @@ bool g_timer;
 
 public void OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    SMLogTag(SML_INFO, "berobot_dynamicRobotCount started at %i", GetTime());
+    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    // SMLogTag(SML_INFO, "berobot_dynamicRobotCount started at %i", GetTime());
 
     _enabledConVar = CreateConVar("sm_berobot_dynamicRobotCount_enable", "1", "enables dynamically setting sm_robocap_team from the ratio of humans-to-robot");
     _enabledConVar.AddChangeHook(EnabledConVarChangeHook);
@@ -50,22 +50,22 @@ public void OnPluginStart()
     g_timer = false;
 }
 
-public void OnGameFrame()
-{
+// public void OnGameFrame()
+// {
    
-   if (!g_timer)
-   {
-    CreateTimer(3.0, Timer_Check_Teams);
-   g_timer = true;
-   }
-}
+//    if (!g_timer)
+//    {
+//     CreateTimer(3.0, Timer_Check_Teams);
+//    g_timer = true;
+//    }
+// }
 
 
-public Action Timer_Check_Teams(Handle timer)
-{
-    SetRoboCapTeam();
-    g_timer = false;
-}
+// public Action Timer_Check_Teams(Handle timer)
+// {
+//     SetRoboCapTeam();
+//     g_timer = false;
+// }
 
 public void OnConfigsExecuted()
 {
@@ -82,10 +82,10 @@ public void RoboCapTeamHumansPerRobotConVarChangeHook(ConVar convar, const char[
     _humansPerRobot = StringToFloat(sNewValue);
 }
 
-// public void OnClientPutInServer(int client)
-// {
-//     SetRoboCapTeam();
-// }
+public void OnClientPutInServer(int client)
+{
+    SetRoboCapTeam();
+}
 
 public void OnClientDisconnect_Post(int client)
 {
@@ -97,12 +97,12 @@ void SetRoboCapTeam()
     if (!_enabled)
         return;
 
-    //int count = GetClientCount();
-    int Spectate = GetTeamClientCount(1);
-    int Red = GetTeamClientCount(2);
-    int Blue = GetTeamClientCount(3);
+    int count = GetClientCount();
+    // int Spectate = GetTeamClientCount(1);
+    // int Red = GetTeamClientCount(2);
+    // int Blue = GetTeamClientCount(3);
 
-    int count = Red+Blue+Spectate;
+    // int count = Red+Blue+Spectate;
     // PrintToChatAll("Red Team had: %i players", Red);
     // PrintToChatAll("Blue Team had: %i players", Blue);
     // PrintToChatAll("Spectate Team had: %i players", Spectate);
@@ -114,7 +114,7 @@ void SetRoboCapTeam()
     //     robotCount++;
     // }
 
-//    SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
+//    // SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
     _roboCapTeamConVar.SetInt(robotCount);
 
     EnsureRobotCount();

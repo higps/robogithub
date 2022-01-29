@@ -2,7 +2,7 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
-#include <sm_logger>
+//#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 
@@ -40,7 +40,7 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
 
@@ -136,7 +136,7 @@ public Action:BossScout(clients[64], &numClients, String:sample[PLATFORM_MAX_PAT
 
 MakeGiantscout(client)
 {
-	SMLogTag(SML_VERBOSE, "Createing ScoutName");
+	// SMLogTag(SML_VERBOSE, "Createing ScoutName");
 	TF2_SetPlayerClass(client, TFClass_Scout);
 	TF2_RegeneratePlayer(client);
 

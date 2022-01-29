@@ -2,14 +2,15 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
-#include <sm_logger>
+//#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
+#include <tf_ontakedamage>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Saxtron"
-#define ROBOT_ROLE "ZBOSS"
+#define ROBOT_ROLE "ABOSS"
 #define ROBOT_DESCRIPTION "SAXTRON HALE!"
 
 #define GSOLDIER		"models/bots/saxtron/bot_saxtron_v2.mdl"
@@ -25,6 +26,44 @@
 // #define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
 // #define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
 // #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
+
+/// Saxton Hale voicelines
+#define HaleComicArmsFallSound	"saxtron_h413/saxtron_h413_responce_2.wav"
+#define HaleLastB		"vo/announcer_am_lastmanalive"
+#define HaleKSpree		"saxtron_h413/saxtron_h413_responce_3.wav"
+#define HaleKSpree2		"saxtron_h413/saxtron_h413_responce_4.wav"		/// this line is broken and unused
+#define HaleRoundStart		"saxtron_h413/saxtron_h413_responce_start"	/// 1-5
+#define HaleJump		"saxtron_h413/saxtron_h413_responce_jump"			/// 1-2
+#define HaleRageSound		"saxtron_h413/saxtron_h413_responce_rage"		/// 1-4
+#define HaleKillMedic		"saxtron_h413/saxtron_h413_responce_kill_medic.wav"
+#define HaleKillSniper1		"saxtron_h413/saxtron_h413_responce_kill_sniper1.wav"
+#define HaleKillSniper2		"saxtron_h413/saxtron_h413_responce_kill_sniper2.wav"
+#define HaleKillSpy1		"saxtron_h413/saxtron_h413_responce_kill_spy1.wav"
+#define HaleKillSpy2		"saxtron_h413/saxtron_h413_responce_kill_spy2.wav"
+#define HaleKillEngie1		"saxtron_h413/saxtron_h413_responce_kill_eggineer1.wav"
+#define HaleKillEngie2		"saxtron_h413/saxtron_h413_responce_kill_eggineer2.wav"
+#define HaleKSpreeNew		"saxtron_h413/saxtron_h413_responce_spree"  /// 1-5
+#define HaleWin			"saxtron_h413/saxtron_h413_responce_win"		  /// 1-2
+#define HaleLastMan		"saxtron_h413/saxtron_h413_responce_lastman"  /// 1-5
+#define HaleFail		"saxtron_h413/saxtron_h413_responce_fail"			/// 1-3
+#define HaleJump132		"saxtron_h413/saxtron_h413_132_jump_" //1-2
+#define HaleStart132		"saxtron_h413/saxtron_h413_132_start_"   /// 1-5
+#define HaleKillDemo132		"saxtron_h413/saxtron_h413_132_kill_demo.wav"
+#define HaleKillEngie132	"saxtron_h413/saxtron_h413_132_kill_engie_" /// 1-2
+#define HaleKillHeavy132	"saxtron_h413/saxtron_h413_132_kill_heavy.wav"
+#define HaleKillScout132	"saxtron_h413/saxtron_h413_132_kill_scout.wav"
+#define HaleKillSpy132		"saxtron_h413/saxtron_h413_132_kill_spie.wav"
+#define HaleKillPyro132		"saxtron_h413/saxtron_h413_132_kill_w_and_m1.wav"
+#define HaleSappinMahSentry132	"saxtron_h413/saxtron_h413_132_kill_toy.wav"
+#define HaleKillKSpree132	"saxtron_h413/saxtron_h413_132_kspree_"	/// 1-2
+#define HaleKillLast132		"saxtron_h413/saxtron_h413_132_last.wav"
+#define HaleStubbed132		"saxtron_h413/saxtron_h413_132_stub_"  /// 1-4
+
+#define HALESPEED		340.0
+
+#define HALE_JUMPCHARGE		(25*1.0)
+#define HALERAGEDIST		800.0
+#define HALE_WEIGHDOWN_TIME	3.0
 
 public Plugin:myinfo = 
 {
@@ -45,7 +84,7 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
     LoadTranslations("common.phrases");
 
@@ -60,7 +99,11 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
+
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
+
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
+	HookEvent("object_destroyed",           ObjectDestroyed, EventHookMode_Pre);
 }
 
 public void OnPluginEnd()
@@ -94,6 +137,108 @@ public OnMapStart()
 	
 	//PrecacheSound(SOUND_GUNFIRE);
 	//PrecacheSound(SOUND_WINDUP);
+	// PrecacheSound(HaleComicArmsFallSound);
+	// PrecacheSound(HaleLastB);
+	// PrecacheSound(HaleKSpree);
+	// PrecacheSound(HaleKSpree2);
+	// PrecacheSound(HaleRoundStart);
+	// PrecacheSound(HaleJump);
+	// PrecacheSound(HaleRageSound);
+	// PrecacheSound(HaleKillMedic);
+	// PrecacheSound(HaleKillSniper1);
+	// PrecacheSound(HaleKillSniper2);
+	// PrecacheSound(HaleKillSpy1);
+	// PrecacheSound(HaleKillSpy2);
+	// PrecacheSound(HaleKillEngie1);
+	// PrecacheSound(HaleKillEngie2);
+	// PrecacheSound(HaleKSpreeNew);
+	// PrecacheSound(HaleWin);
+	// PrecacheSound(HaleLastMan);
+	// PrecacheSound(HaleFail);
+	// PrecacheSound(HaleJump132);
+	// PrecacheSound(HaleStart132);
+	// PrecacheSound(HaleKillDemo132);
+	// PrecacheSound(HaleKillEngie132);
+	// PrecacheSound(HaleKillHeavy132);
+	// PrecacheSound(HaleKillScout132);
+	// PrecacheSound(HaleKillSpy132);
+	// PrecacheSound(HaleKillPyro132);
+	// PrecacheSound(HaleSappinMahSentry132);
+	// PrecacheSound(HaleKillKSpree132);
+	// PrecacheSound(HaleKillLast132);
+	// PrecacheSound(HaleStubbed132);
+
+		PrecacheSound(HaleKSpree);
+
+	char s[PLATFORM_MAX_PATH];
+	int i;
+	for( i=1; i <= 4; i++ ) {
+		Format(s, PLATFORM_MAX_PATH, "%s0%i.wav", HaleLastB, i);
+		(s, true);
+	}
+	
+	PrecacheSound(HaleKillMedic);
+	PrecacheSound(HaleKillSniper1);
+	PrecacheSound(HaleKillSniper2);
+	PrecacheSound(HaleKillSpy1);
+	PrecacheSound(HaleKillSpy2);
+	PrecacheSound(HaleKillEngie1);
+	PrecacheSound(HaleKillEngie2);
+	PrecacheSound(HaleKillDemo132);
+	PrecacheSound(HaleKillHeavy132);
+	PrecacheSound(HaleKillScout132);
+	PrecacheSound(HaleKillSpy132);
+	PrecacheSound(HaleKillPyro132);
+	PrecacheSound(HaleKillDemo132);
+	PrecacheSound(HaleKillDemo132);
+	PrecacheSound(HaleKillDemo132);
+	PrecacheSound(HaleKillDemo132);
+	PrecacheSound(HaleKillDemo132);
+	PrecacheSound(HaleSappinMahSentry132);
+	PrecacheSound(HaleKillLast132);
+	
+	for( i=1; i <= 5; i++ ) {
+		if( i <= 2 ) {
+			Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleJump, i);
+			PrecacheSound(s);
+			
+			Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleWin, i);
+			PrecacheSound(s);
+			
+			Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleJump132, i);
+			PrecacheSound(s);
+			
+			Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleKillEngie132, i);
+			PrecacheSound(s);
+			
+			Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleKillKSpree132, i);
+			PrecacheSound(s);
+		}
+		if( i <= 3 ) {
+			Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleFail, i);
+			PrecacheSound(s);
+		}
+		
+		if( i <= 4 ) {
+			Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleRageSound, i);
+			PrecacheSound(s);
+			
+			Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleStubbed132, i);
+			PrecacheSound(s);
+		}
+		
+		Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleRoundStart, i);
+		PrecacheSound(s);
+		
+		Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleKSpreeNew, i);
+		PrecacheSound(s);
+		
+		Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleLastMan, i);
+		PrecacheSound(s);
+		
+		Format(s, PLATFORM_MAX_PATH, "%s%i.wav", HaleStart132, i);
+		PrecacheSound(s);
+	}
 	
 }
 
@@ -186,7 +331,7 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 
 MakeGiantSoldier(client)
 {
-	SMLogTag(SML_VERBOSE, "Createing Heavy");
+	// SMLogTag(SML_VERBOSE, "Createing Heavy");
 	TF2_SetPlayerClass(client, TFClass_Soldier);
 	TF2_RegeneratePlayer(client);
 
@@ -227,8 +372,8 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 2.25);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	
 	
@@ -244,7 +389,8 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client , "Kill all hippies");
-	SetBossHealth(client);
+	//SetBossHealth(client);
+	PlaySpawnClip(client);
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -314,3 +460,130 @@ stock GiveGiantPyro(client)
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 	
+//VSH CODE
+
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType){
+
+	if(IsValidClient(attacker) && IsRobot(victim, ROBOT_NAME))
+	{
+                if(damagecustom == TF_CUSTOM_BACKSTAB)
+                {
+					Stabbed(victim);
+				}
+	}
+
+}
+
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	//EmitSoundToAll(HaleKillDemo132, attacker);
+
+	if (IsRobot(attacker, ROBOT_NAME) && IsValidClient(victim)){
+		KilledPlayer(attacker, victim);
+		
+	}
+	// if (IsRobot(victim, ROBOT_NAME)){
+	// 	PrintToChatAll("HALE DIED!");
+	// 	EmitSoundToAll("saxtron_h413/saxtron_h413_responce_fail2.wav");
+	// 	EmitSoundToAll("saxtron_h413/saxtron_h413_responce_fail2.wav");
+	// }
+    
+}
+
+public void KilledPlayer(int attacker, int victim)
+{
+	//event.SetString("weapon", "fists");
+	// if( !GetRandomInt(0, 2) ) {
+		char kill_snd[PLATFORM_MAX_PATH];
+		// TFClassType playerclass = TF2_GetPlayerClass(victim);
+		switch(TF2_GetPlayerClass(victim)) {
+			case TFClass_Scout: strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKillScout132);
+			case TFClass_Pyro: strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKillPyro132);
+			case TFClass_DemoMan: strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKillDemo132);
+			case TFClass_Heavy: strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKillHeavy132);
+			case TFClass_Medic: strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKillMedic);
+			case TFClass_Sniper: strcopy(kill_snd, PLATFORM_MAX_PATH, GetRandomInt(0, 1) ? HaleKillSniper1 : HaleKillSniper2);
+			
+			case TFClass_Spy: {
+				int see = GetRandomInt(0, 2);
+				if( see )
+					strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKillSpy1);
+				else if( see == 1 )
+					strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKillSpy2);
+				else strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKillSpy132);
+			}
+			case TFClass_Engineer: {
+				int see = GetRandomInt(0, 3);
+				if( !see )
+					strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKillEngie1);
+				else if( see == 1 )
+					strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKillEngie2);
+				else Format(kill_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleKillEngie132, GetRandomInt(1, 2));
+			}
+		}
+		if( kill_snd[0] != '\0' )
+			EmitSoundToAll(kill_snd, attacker);
+			EmitSoundToAll(kill_snd, attacker);
+			// EmitSoundToAll(kill_snd, attacker);
+			// EmitSoundToAll(kill_snd, attacker);
+	// }
+	// int iKills = 0;
+	// float curtime = GetGameTime();
+	// if( curtime <= flKillSpree )
+	// 	iKills++;
+	// else iKills = 0;
+	
+	// if( this.iKills == 3 && GetLivingPlayers(VSH2Team_Red) != 1 ) {
+	// 	char spree_snd[PLATFORM_MAX_PATH];
+	// 	int randsound = GetRandomInt(0, 7);
+	// 	if( !randsound || randsound == 1 )
+	// 		strcopy(spree_snd, PLATFORM_MAX_PATH, HaleKSpree);
+	// 	else if( randsound < 5 && randsound > 1 )
+	// 		Format(spree_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleKSpreeNew, GetRandomInt(1, 5));
+	// 	else Format(spree_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleKillKSpree132, GetRandomInt(1, 2));
+		
+	// 	EmitSoundToAll(spree_snd, attacker);
+	// 	EmitSoundToAll(spree_snd, attacker);
+	// 	iKills = 0;
+	// }
+	// else flKillSpree = curtime+5;
+}
+	
+public void Stabbed(int victim) {
+	char stab_snd[PLATFORM_MAX_PATH];
+	Format(stab_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleStubbed132, GetRandomInt(1, 4));
+	EmitSoundToAll(stab_snd, victim);
+	EmitSoundToAll(stab_snd, victim);
+	EmitSoundToAll(stab_snd, victim);
+	
+}
+
+public void PlaySpawnClip(int client) {
+	char start_snd[PLATFORM_MAX_PATH];
+	// if( !GetRandomInt(0, 1) )
+	Format(start_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleRoundStart, GetRandomInt(1, 5));
+	// else 
+	//Format(start_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleStart132, GetRandomInt(1, 5));
+	
+	EmitSoundToAll(start_snd);
+	EmitSoundToAll(start_snd);
+	
+}
+
+public Action ObjectDestroyed(Event event, const char[] name, bool dontBroadcast)
+{
+
+	
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	
+	if (IsRobot(attacker, ROBOT_NAME))
+	{
+		EmitSoundToAll(HaleSappinMahSentry132, attacker);
+		EmitSoundToAll(HaleSappinMahSentry132, attacker);
+		// EmitSoundToAll(HaleSappinMahSentry132, attacker);
+	}
+	
+}

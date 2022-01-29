@@ -7,7 +7,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bot Father"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "⚔︎"
 #define ROBOT_DESCRIPTION "Raoud Shotgun. Taunt: Surpress Police"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
