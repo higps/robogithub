@@ -158,7 +158,15 @@ public void RemoveHUD(){
 	{
 		if (IsValidEntity(iEnt))
 		{
-			AcceptEntityInput(iEnt, "Kill");
+			 DispatchKeyValue(iEnt, "rendermode", "0");
+			
+			DispatchSpawn(iEnt);
+			//AcceptEntityInput(iEnt, "Kill");
+			// float fPos[3];
+			// fPos[0] = 15.0;
+			// fPos[1] = 15.0;
+			// fPos[2] = 15.0;
+			// TeleportEntity(iEnt, fPos, NULL_VECTOR, NULL_VECTOR);
 		}
 	} 
 }

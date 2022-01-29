@@ -32,7 +32,7 @@ bool _enabled;
 ConVar _humansPerRobotConVar;
 float _humansPerRobot;
 ConVar _roboCapTeamConVar;
-bool g_timer = false;
+bool g_timer;
 
 public void OnPluginStart()
 {
@@ -47,14 +47,15 @@ public void OnPluginStart()
     _humansPerRobotConVar.AddChangeHook(RoboCapTeamHumansPerRobotConVarChangeHook);
     _humansPerRobot = _humansPerRobotConVar.FloatValue;
     
+    g_timer = false;
 }
 
 public void OnGameFrame()
 {
    
-   if (g_timer)
+   if (!g_timer)
    {
-    CreateTimer(2.0, Timer_Check_Teams);
+    CreateTimer(3.0, Timer_Check_Teams);
    g_timer = true;
    }
 }
@@ -97,11 +98,14 @@ void SetRoboCapTeam()
         return;
 
     //int count = GetClientCount();
-    int team2 = GetTeamClientCount(2);
-    int team3 = GetTeamClientCount(3);
+    int Spectate = GetTeamClientCount(1);
+    int Red = GetTeamClientCount(2);
+    int Blue = GetTeamClientCount(3);
 
-    int count = team2+team3;
-    //PrintToChatAll("Team 2 was %i, Team 3 was %i", team2, team3);
+    int count = Red+Blue+Spectate;
+    // PrintToChatAll("Red Team had: %i players", Red);
+    // PrintToChatAll("Blue Team had: %i players", Blue);
+    // PrintToChatAll("Spectate Team had: %i players", Spectate);
 
     float ratio = _humansPerRobot +1.0;
     int robotCount = RoundToCeil(count/ratio);
@@ -110,7 +114,7 @@ void SetRoboCapTeam()
     //     robotCount++;
     // }
 
-    SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
+//    SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
     _roboCapTeamConVar.SetInt(robotCount);
 
     EnsureRobotCount();
