@@ -369,7 +369,7 @@ public any Native_IsTank(Handle plugin, int numParams)
 
     if (StrEqual(robot.role,"Tank"))
     {
-       //PrintToChatAll("Robot role from factory: %s", robot.role);
+     //  PrintToChatAll("Robot role from factory: %s", robot.role);
         
         return true;
     }else

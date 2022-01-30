@@ -45,6 +45,7 @@ enum (<<= 1)
 #pragma semicolon 1
 
 
+#define RESISTANCE "player/resistance_medium4.wav"
 
 enum //Convar names
 {
@@ -119,6 +120,7 @@ ArrayList g_Volunteers;
 
 Handle g_hRegen;
 Handle g_hGameConf;
+Handle g_hIsDeflectable;
 //Handle g_m_bTeamsSwitched;
 
 //In OnPluginStart
@@ -155,7 +157,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_Rtr_precent] = CreateConVar("sm_mm_needed_rtr_ratio", "0.5", "The ratio of votes needed to start the mode with !rtr 1.0 = 100% 0.0 = 0%");
 
     //Gameplay cvar
-    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "83.2", "Backstab damage that will be multipled by crit multiplier");
+    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "83.3", "Backstab damage that will be multipled by crit multiplier");
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_mm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
     /* Convar global variables init */
 
@@ -239,10 +241,56 @@ public void OnPluginStart()
     if(!DHookEnableDetour(g_hRegen, false, OnRegenerate))
         SetFailState("Failed to detour OnRegenerate!");
 
-    delete g_hGameConf;
-
+    g_hGameConf = LoadGameConfigFile("bm_charge_airblast_immunity_data");
+	
+    //IsDeflectable
+	g_hIsDeflectable = DHookCreate(0, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, IsPlayerDeflectable);
+	if(g_hIsDeflectable == null) SetFailState("Failed to setup hook for CTFPlayer::IsDeflectable!"); 
+	
+	if(!DHookSetFromConf(g_hIsDeflectable, g_hGameConf, SDKConf_Virtual, "CTFPlayer::IsDeflectable"))
+	SetFailState("Failed to find CTFPlayer::IsDeflectable offset in the gamedata!");
+	
+	//Finds players to hook for IsDeflectable
+	FindAndHookPlayers();
+	
+	delete g_hGameConf;
     
 }
+
+void FindAndHookPlayers()
+{
+	for(int i = 1; i <= MaxClients+1; i++)
+	{
+		if(IsValidClient(i))
+		{
+			DHookEntity(g_hIsDeflectable, false, i);
+		}
+	}
+}
+
+public void OnClientPutInServer(int client)
+{
+	DHookEntity(g_hIsDeflectable, false, client);
+}
+
+public MRESReturn IsPlayerDeflectable(int pThis, Handle hReturn, Handle hParams)
+{
+    //PrintToChatAll("Shouldn't airblast target %N", pThis);
+    //int clientID = GetClientOfUserId(pThis);
+	if(IsTank(pThis))
+	{
+	//	PrintToChatAll("Shouldn't airblast target %N", pThis);
+		
+    DHookSetReturn(hReturn, false);
+    
+    EmitSoundToAll(RESISTANCE, pThis);
+    
+    
+    return MRES_Override;
+	}
+	return MRES_Ignored;
+}
+
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
@@ -262,7 +310,7 @@ public void OnMapStart()
     g_RoundCount = 0;
     ResetMode();
 
-
+    PrecacheSound(RESISTANCE);
     
 
 }
@@ -409,7 +457,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
         {
             //PrintChatAll("You are not a robot %N", victim);
             if (TF2_GetPlayerClass(victim) == TFClass_Scout){
-                CreateTimer(4.0, Timer_Respawn, victim);
+                CreateTimer(6.0, Timer_Respawn, victim);
             }
         }
 
@@ -621,9 +669,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     {
         // Checks if boss is on
             
-            if (iClassAttacker == TFClass_Spy)
-            
-            if(g_cv_bDebugMode) PrintToChatAll("Attacker  %N was aspy and victim %N was robot", attacker, victim);{
+
                 if(damagecustom == TF_CUSTOM_BACKSTAB)
                 {
                     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
@@ -632,7 +678,37 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                     return Plugin_Changed;
                 }
-            }  
+
+                // //                if(damagecustom == TF_CUSTOM_BACKSTAB)
+                // {
+                //     int MaxHealth = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, victim);
+                //     if(g_cv_bDebugMode)PrintToChatAll("MAXHEALTH WAS %i", MaxHealth);
+
+                //     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                //     damage = float(MaxHealth)/g_CV_flSpyBackStabModifier;
+                //     critType = CritType_Crit;
+
+                //     if (damage > 170.0){
+                //         damage = 166.67;
+                //     }
+                //     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                //     return Plugin_Changed;
+                // }
+
+                switch (damagecustom)
+                {
+                case TF_CUSTOM_TAUNT_HADOUKEN, TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, 
+                TF_CUSTOM_TAUNT_FENCING, TF_CUSTOM_TAUNT_ARROW_STAB, TF_CUSTOM_TELEFRAG,
+                 TF_CUSTOM_TAUNT_GRENADE, TF_CUSTOM_TAUNT_BARBARIAN_SWING, TF_CUSTOM_TAUNT_UBERSLICE, 
+                 TF_CUSTOM_TAUNT_ENGINEER_SMASH, TF_CUSTOM_TAUNT_ENGINEER_ARM, TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF,
+                 TF_CUSTOM_TAUNTATK_GASBLAST:
+                {
+                    damage *= 3.0;
+                    return Plugin_Changed;
+                }
+                
+                    }
+             
     }
     return Plugin_Continue;
 }
@@ -674,14 +750,45 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             {
 
                 if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-                damage *= 1.35;
+                damage *= 1.25;
                 if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                 return Plugin_Changed;
                 
                     
+            }
+            if (iClassAttacker == TFClass_Soldier && TF2_IsPlayerInCondition(attacker, TFCond_BlastJumping))
+            {
+                //int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
+
+                    
+                if (IsMarketGardner(weapon))
+                {
+                    if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                    damage *= 1.5;
+                    if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                    return Plugin_Changed;
+                    
+                }
+                    
+                    
             }   
     }
     return Plugin_Continue;
+}
+
+bool IsMarketGardner(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If Market gardner gets skins in future with different indices, add them here
+	case 416: //Reserve Shooter
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 public void MM_OnRestrictionChanged(char name[NAMELENGTH])

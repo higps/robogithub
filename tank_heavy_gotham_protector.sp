@@ -5,9 +5,10 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
+#include <tf_ontakedamage>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"BatBot"
+#define ROBOT_NAME	"Gotham Protector"
 #define ROBOT_ROLE "Tank"
 #define ROBOT_DESCRIPTION "Punish Criminals"
  
@@ -22,9 +23,56 @@
 #define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
 
+enum eRuneTypes
+{
+    Rune_Invalid = -1,
+    Rune_Strength,
+    Rune_Haste,
+    Rune_Regen,
+    Rune_Resist,
+    Rune_Vampire,
+    Rune_Reflect,
+    Rune_Precision,
+    Rune_Agility,
+    Rune_Plague,
+    Rune_King,
+    Rune_Knockout,
+    Rune_Supernova,
+
+    Rune_LENGTH
+}
+
+#define RuneTypes                     eRuneTypes
+#define RuneTypes_t                 eRuneTypes     // Cuz
+
+#define BLINK_TIME                     10.0
+
+#define RUNE_REPOSITION_TIME         60.0
+// In freeforall mode, killed players drop enemy team colored powerups. These powerups reposition quicker
+#define RUNE_REPOSITION_TIME_ANY    30.0
+
+#define TF_RUNE_TEMP_RESPAWN_DELAY     90.0
+#define TF_RUNE_TEMP_UBER_RESPAWN_DELAY     180.0
+
+#define TF_RUNE_STRENGTH        "models/pickups/pickup_powerup_strength.mdl"
+#define TF_RUNE_RESIST            "models/pickups/pickup_powerup_defense.mdl"
+#define TF_RUNE_REGEN            "models/pickups/pickup_powerup_regen.mdl"
+#define TF_RUNE_HASTE            "models/pickups/pickup_powerup_haste.mdl"
+#define TF_RUNE_VAMPIRE            "models/pickups/pickup_powerup_vampire.mdl"
+#define TF_RUNE_REFLECT         "models/pickups/pickup_powerup_reflect.mdl"
+#define TF_RUNE_PRECISION         "models/pickups/pickup_powerup_precision.mdl"
+#define TF_RUNE_AGILITY         "models/pickups/pickup_powerup_agility.mdl"
+#define TF_RUNE_KNOCKOUT         "models/pickups/pickup_powerup_knockout.mdl"
+#define TF_RUNE_KING            "models/pickups/pickup_powerup_king.mdl"
+#define TF_RUNE_PLAGUE            "models/pickups/pickup_powerup_plague.mdl"
+#define TF_RUNE_SUPERNOVA        "models/pickups/pickup_powerup_supernova.mdl"
+
+#define TF_RUNE_TEMP_CRIT        "models/pickups/pickup_powerup_crit.mdl"
+#define TF_RUNE_TEMP_UBER        "models/pickups/pickup_powerup_uber.mdl"
+
 public Plugin:myinfo =
 {
-	name = "[TF2] Be the Giant Pancop",
+	name = "[TF2] Be the Gotham Protector",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
 	description = "Play as the Giant Deflector Heavy from MvM",
 	version = PLUGIN_VERSION,
@@ -36,8 +84,9 @@ public OnPluginStart()
     LoadTranslations("common.phrases");
 
     //HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-
-    AddNormalSoundHook(BossGPS);
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
+    
+	AddNormalSoundHook(BossGPS);
 
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
@@ -48,14 +97,57 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 
-    RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 1;
+	
+
+    // RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+    // // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+    // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    // restrictions.RobotCoins.PerRobot= 1;
 
 
-    AddRobot(robot, MakePanCop, PLUGIN_VERSION, restrictions);
+    AddRobot(robot, MakePanCop, PLUGIN_VERSION);
+}
+
+public Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	if (IsRobot(attacker, ROBOT_NAME))
+	{
+		PrintHintText(victim,"%s has 50% damage taken from melee attacks at 50% weakness to critical attacks", ROBOT_NAME);
+
+	}
+
+		if (IsRobotWhenDead(victim, ROBOT_NAME))
+	{
+		//PrintToChatAll("Attempting to kill powerup");
+		//Delte the powerup:
+		KillRune();
+	}
+	
+	
+}
+
+public void KillRune(){
+
+			int iEnt = MaxClients + 1;
+		while ((iEnt = FindEntityByClassname(iEnt, "item_powerup_rune")) != -1)
+		{
+			if (IsValidEntity(iEnt))
+			{
+					//DispatchKeyValue(iEnt, "rendermode", "0");
+				
+				//DispatchSpawn(iEnt);
+				AcceptEntityInput(iEnt, "Kill");
+				// float fPos[3];
+				// fPos[0] = 15.0;
+				// fPos[1] = 15.0;
+				// fPos[2] = 15.0;
+				// TeleportEntity(iEnt, fPos, NULL_VECTOR, NULL_VECTOR);
+			}
+		} 
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -141,7 +233,7 @@ MakePanCop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 3000;
+	int iHealth = 5000;
 	
 	
 	int MaxHealth = 300;
@@ -158,24 +250,24 @@ MakePanCop(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.00);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.75);
+	
+	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.15);
 
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
+	//TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
+	//TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
 	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
-	//TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
+	TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
+	TF2Attrib_SetByName(client, "dmg taken from crit increased", 1.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-	TF2Attrib_SetByName(client, "head scale", 0.9);
-
+	TF2Attrib_SetByName(client, "head scale", 0.95);
 	 
 
 	UpdatePlayerHitbox(client, 1.75);
@@ -183,9 +275,11 @@ MakePanCop(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client, "You are a Tank!\nYou can't contest objectives\nEat steak to heal and run fast and deal minicrits!");
+	PrintHintText(client, "You are a Tank!\nYou can't contest objectives\nOn Hit: Gain a 1.5 second buff depending on class");
+	
 
 	if(IsPlayerAlive(client)) EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
+	// SetEntityRenderColor(client, 0, 0, 0, 0);
 
 }
  
@@ -229,14 +323,19 @@ stock GiveGDeflectorH(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 2.00);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.3);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.2);
-			TF2Attrib_SetByName(Weapon1, "ragdolls plasma effect", 1.0);
-			TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 109.0);
+			//TF2Attrib_SetByName(Weapon1, "ragdolls become ash", 1.0);
+			//TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 109.0);
 			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.35);
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
-
+			TF2Attrib_SetByName(Weapon1, "move speed penalty", 0.8);
+			
+			
+			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.7);
+			// TF2Attrib_SetByName(Weapon1, "increased air control", 1000.0);
+			
 		}
 		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		// if(IsValidEntity(Weapon2))
@@ -251,6 +350,156 @@ stock GiveGDeflectorH(client)
 		// }
 	}
 }
+
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+    // if (!g_Enable)
+    //     return Plugin_Continue;
+    if(!IsValidClient(victim))
+        return Plugin_Continue;    
+    if(!IsValidClient(attacker))
+        return Plugin_Continue;
+
+	if (IsRobot(attacker, ROBOT_NAME))
+	{
+		float duration = 4.0;
+		TF2_AddCondition(attacker, TFCond_RuneHaste, duration);
+		TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, duration+1.0);
+		//TF2_AddCondition(attacker, TFCond_BlastImmune, 10.0);
+		// float pos[3];
+		
+		// GetClientAbsAngles(attacker, pos);
+
+		// MakeRune(Rune_Regen, pos, NULL_VECTOR, NULL_VECTOR);
+	// switch(TF2_GetPlayerClass(victim)) {
+	// 		case TFClass_Scout: PrintToChatAll("");
+	// 		case TFClass_Pyro: PrintToChatAll("");
+	
+		switch (TF2_GetPlayerClass(victim))
+		{
+			
+			case TFClass_Soldier, TFClass_DemoMan:{
+				TF2_AddCondition(attacker, TFCond_SmallBlastResist, duration);
+				TF2_AddCondition(attacker, TFCond_BlastImmune, duration);
+			}
+			case TFClass_Pyro:{
+			TF2_AddCondition(attacker, TFCond_SmallFireResist, duration);
+			TF2_AddCondition(attacker, TFCond_FireImmune, duration);
+			}
+			case TFClass_Heavy, TFClass_Engineer, TFClass_Sniper, TFClass_Scout:{ 
+				TF2_AddCondition(attacker, TFCond_SmallBulletResist, duration);
+				TF2_AddCondition(attacker, TFCond_BulletImmune, duration);
+				
+			}
+			case TFClass_Medic:{
+				TF2_AddCondition(attacker, TFCond_RadiusHealOnDamage, duration);
+				
+			}
+			case TFClass_Spy:{
+				TF2_AddCondition(attacker, TFCond_Stealthed, duration);
+			}
+		
+			
+		}
+		//TF2_RemoveCondition(attacker, TFCond_RuneHaste);
+
+
+		//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 1.0);
+		KillRune();
+	}
+
+}
+
+public void TF2_OnConditionAdded(int client, TFCond condition)
+{
+	
+   if (IsValidClient(client) && !IsRobot(client, ROBOT_NAME)){
+
+    if(condition == TFCond_RuneVampire || condition == TFCond_RuneHaste){
+
+		TF2_RemoveCondition(client, condition);
+
+	}
+   }
+}
+
+public Action RemoveHaste_Timer (Handle timer, int client)
+{
+	//PrintToChatAll("REMOVING HAST");
+ 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+}
+
+
+
+
+stock int MakeRune(RuneTypes type, float pos[3], float ang[3] = NULL_VECTOR, float vel[3] = NULL_VECTOR)
+{
+    int ent = CreateEntityByName("item_powerup_rune");
+    TeleportEntity(ent, pos, ang, vel);
+    DispatchSpawn(ent);
+    SetRuneType(ent, type);
+    return ent;
+}
+
+stock void SetRuneType(int rune, RuneTypes type)
+{
+    SetEntData(rune, FindDataMapInfo(rune, "m_iszModel") + 24, view_as< int >(type));
+}
+
+stock RuneTypes GetRuneType(int rune)
+{
+    return view_as< RuneTypes >(GetEntData(rune, FindDataMapInfo(rune, "m_iszModel") + 24));
+}
+
+// Runes will not die if there are no info_powerup_spawn s!!
+// It's better to set this to a gargantuan amount
+stock void SetRuneKillTime(int rune, float time)
+{
+    SetEntDataFloat(rune, FindDataMapInfo(rune, "m_iszModel") + 32, time);
+}
+
+stock float GetRuneKillTime(int rune)
+{
+    return GetEntDataFloat(rune, FindDataMapInfo(rune, "m_iszModel") + 32);
+}
+
+// Alternatively, you can perpetually set this to 0 and it won' blink like it's 
+// gonna be deleted
+stock void SetRuneBlinkCount(int rune, int count)
+{
+    SetEntData(rune, FindDataMapInfo(rune, "m_iszModel") + 28, count);
+}
+
+stock int GetRuneBlinkCount(int rune)
+{
+    return GetEntData(rune, FindDataMapInfo(rune, "m_iszModel") + 28);
+}
+
+stock RuneTypes GetCarryingRuneType(int client)
+{
+    static TFCond runeconds[] = {
+        TFCond_RuneStrength,
+        TFCond_RuneHaste,
+        TFCond_RuneRegen,
+        TFCond_RuneResist,
+        TFCond_RuneVampire,
+        TFCond_RuneWarlock,
+        TFCond_RunePrecision,
+        TFCond_RuneAgility,
+        TFCond_PlagueRune,
+        TFCond_KingRune,
+        TFCond_RuneKnockout,
+        TFCond_SupernovaRune
+    }
+
+    int count;
+    do    
+        if (TF2_IsPlayerInCondition(client, runeconds[count]))
+            return view_as< RuneTypes >(count);
+        while ++count < view_as< int >(Rune_LENGTH);        // This tagging makes me want to scream
+
+    return Rune_Invalid;
+} 
 
 // public TF2_OnConditionAdded(client, TFCond:condition)
 // {

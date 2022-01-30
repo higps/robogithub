@@ -228,7 +228,7 @@ MakeGiantSoldier(client)
 	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 
 	//TF2Attrib_SetByName(client, "blast_dmg_to_self", 0.1);
-	
+	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 4.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
 	

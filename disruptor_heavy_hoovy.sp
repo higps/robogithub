@@ -10,7 +10,7 @@
 #include <tf_ontakedamage>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Robot Hoovy"
+#define ROBOT_NAME	"Hoovy"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_DESCRIPTION "Robot Hoovy"
  
@@ -286,20 +286,12 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 	if (IsRobot(attacker, ROBOT_NAME) && StrEqual(weapon_logname,"taunt_heavy"))
 	{
-		//PrintToChatAll("Drop the bomb");
-		
+		//PrintToChatAll("Drop the bomb");	
 	Handle infokv = CreateKeyValues("infokv");
 	KvSetNum(infokv, "attacker", attacker);
 	KvSetNum(infokv, "victim", victim);
 	CreateTimer(0.0, HoovyBoom, infokv);
-
-		
 	}
-
-
-
-	
-	
 }
 
 public Action HoovyBoom(Handle timer, any data)
@@ -339,15 +331,15 @@ public Action HoovyBoom(Handle timer, any data)
 				{
 					case 1:
 					{
-EmitAmbientSound(sBoomNoise1, pos22, client, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
+						EmitAmbientSound(sBoomNoise1, pos22, client, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
 					}
 					case 2:
 					{
-EmitAmbientSound(sBoomNoise2, pos22, client, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
+						EmitAmbientSound(sBoomNoise2, pos22, client, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
 					}
 					case 3:
 					{
-EmitAmbientSound(sBoomNoise3, pos22, client, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
+						EmitAmbientSound(sBoomNoise3, pos22, client, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
 					}
 				}
 				
@@ -358,58 +350,28 @@ EmitAmbientSound(sBoomNoise3, pos22, client, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, 
 	}
 }
 
+// public TF2_OnConditionAdded(client, TFCond:condition)
+// {
+//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+//     {	
+//         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
 
-// - Regular paints -
-//set item tint RGB
-// A Color Similar to Slate					3100495
-// A Deep Commitment to Purple					8208497
-// A Distinctive Lack of Hue					1315860
-// A Mann's Mint								12377523
-// After Eight									2960676
-// Aged Moustache Grey							8289918
-// An Extraordinary Abundance of Tinge			15132390
-// Australium Gold								15185211	
-// Color No. 216-190-216						14204632
-// Dark Salmon Injustice						15308410
-// Drably Olive								8421376
-// Indubitably Green							7511618
-// Mann Co. Orange								13595446
-// Muskelmannbraun								10843461
-// Noble Hatter's Violet						5322826
-// Peculiarly Drab Tincture					12955537
-// Pink as Hell								16738740
-// Radigan Conagher Brown						6901050
-// The Bitter Taste of Defeat and Lime			3329330
-// The Color of a Gentlemann's Business Pants	15787660
-// Ye Olde Rustic Colour						8154199
-// Zepheniah's Greed							4345659
+// 	PrintToChatAll("Taunt ID %i", tauntid);
+	
 
-// - Team colors -
+//         if (tauntid == -1)
+//         {
+// 		//	TF2_AddCondition(client, TFCond_SpawnOutline, 10);
+//            	 //CreateTimer(0.5, Timer_Taunt_Cancel, client);
+//         }	  
 
-// An Air of Debonair:
-// set item tint RGB : 6637376
-// set item tint RGB 2 : 2636109
+// 	}
+// }
 
-// Balaclavas Are Forever
-// set item tint RGB : 3874595
-// set item tint RGB 2 : 1581885
-
-// Cream Spirit
-// set item tint RGB : 12807213
-// set item tint RGB 2 : 12091445
-
-// Operator's Overalls
-// set item tint RGB : 4732984
-// set item tint RGB 2 : 3686984
-
-// Team Spirit
-// set item tint RGB : 12073019
-// set item tint RGB 2 : 5801378
-
-// The Value of Teamwork
-// set item tint RGB : 8400928
-// set item tint RGB 2 : 2452877
-
-// Waterlogged Lab Coat
-// set item tint RGB : 11049612
-// set item tint RGB 2 : 8626083
+// public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
+// {
+// 	if (IsValidClient(client)){
+// 		TF2_RemoveCondition(client, TFCond_Taunting);
+		
+// 	}
+// }

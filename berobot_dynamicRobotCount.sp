@@ -111,7 +111,7 @@ void SetRoboCapTeam()
     int robotCount = RoundToCeil(count/ratio);
 
     // if (robotCount == 0){
-    //     robotCount++;
+    //     robotCount == 1;
     // }
 
 //    // SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
