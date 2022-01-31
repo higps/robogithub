@@ -116,7 +116,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 	if (IsRobot(attacker, ROBOT_NAME))
 	{
-		PrintHintText(victim,"%s has 50% damage taken from melee attacks at 50% weakness to critical attacks", ROBOT_NAME);
+		PrintHintText(victim,"%s has 50% damage vulnerability to melee & critical attacks", ROBOT_NAME);
 
 	}
 
@@ -364,8 +364,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		float duration = 4.0;
 		TF2_AddCondition(attacker, TFCond_RuneHaste, duration);
-		TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, duration+1.0);
-		//TF2_AddCondition(attacker, TFCond_BlastImmune, 10.0);
+		TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, duration+0.5);
+		//TF2_AddCondition(attacker, TFCond_RuneResist, duration);
 		// float pos[3];
 		
 		// GetClientAbsAngles(attacker, pos);
@@ -379,16 +379,21 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			
 			case TFClass_Soldier, TFClass_DemoMan:{
-				TF2_AddCondition(attacker, TFCond_SmallBlastResist, duration);
-				TF2_AddCondition(attacker, TFCond_BlastImmune, duration);
+				//TF2_AddCondition(attacker, TFCond_SmallBlastResist, duration);
+				TF2_AddCondition(attacker, TFCond_UberBlastResist, duration, attacker);
+				TF2Attrib_AddCustomPlayerAttribute(attacker, "dmg taken from blast reduced", 0.35, duration);
 			}
 			case TFClass_Pyro:{
-			TF2_AddCondition(attacker, TFCond_SmallFireResist, duration);
-			TF2_AddCondition(attacker, TFCond_FireImmune, duration);
+			//TF2_AddCondition(attacker, TFCond_SmallFireResist, duration);
+			TF2_AddCondition(attacker, TFCond_UberFireResist, duration, attacker);
+			TF2Attrib_AddCustomPlayerAttribute(attacker, "dmg taken from fire reduced", 0.35, duration);
+			
 			}
 			case TFClass_Heavy, TFClass_Engineer, TFClass_Sniper, TFClass_Scout:{ 
-				TF2_AddCondition(attacker, TFCond_SmallBulletResist, duration);
-				TF2_AddCondition(attacker, TFCond_BulletImmune, duration);
+				
+				TF2_AddCondition(attacker, TFCond_UberBulletResist, duration);
+				TF2Attrib_AddCustomPlayerAttribute(attacker, "dmg taken from bullets reduced", 0.35, duration);
+				//TF2_AddCondition(attacker, TFCond_BulletImmune, duration);
 				
 			}
 			case TFClass_Medic:{
@@ -413,6 +418,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
 	
+	PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
    if (IsValidClient(client) && !IsRobot(client, ROBOT_NAME)){
 
     if(condition == TFCond_RuneVampire || condition == TFCond_RuneHaste){

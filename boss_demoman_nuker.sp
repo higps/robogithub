@@ -192,7 +192,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "blast radius increased", 2.25);
 			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.8);
-			TF2Attrib_SetByName(Weapon1, "reload time increased", 1.25);
+			TF2Attrib_SetByName(Weapon1, "reload time increased", 2.25);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.1);
 
