@@ -4,7 +4,6 @@ TODO:
   1. Fix Memory Leak in volunteers
   Priority:
   2. Turn players into a random robot when first joining the robot team.
-  3. New robot menu
 
 1. Need time passed resource added
 2. Robot model stays when not being a robot anymore (fixed by changing class)

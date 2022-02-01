@@ -82,14 +82,13 @@ bool g_WaitingForPlayers = true;
 
 bool g_cv_Volunteered[MAXPLAYERS + 1];
 char g_cv_RobotPicked[MAXPLAYERS + 1][NAMELENGTH];
-bool g_ClientIsRepicking[MAXPLAYERS + 1];
 bool g_Voted[MAXPLAYERS + 1];
-Menu g_chooseRobotMenus[MAXPLAYERS + 1];
 
 bool g_GoingToDie[MAXPLAYERS + 1] = false;
 int g_TimeBombTime[MAXPLAYERS+1] = { 0, ... };
 
 GlobalForward _enabledChangedForward;
+GlobalForward _clientReseting;
 GlobalForward _modeResetRequestedForward;
 
 float g_CV_flSpyBackStabModifier;
@@ -185,6 +184,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_Rtr_precent].AddChangeHook(CvarChangeHook);
 
     _enabledChangedForward = new GlobalForward("MM_OnEnabledChanged", ET_Ignore, Param_Cell);
+    _clientReseting = new GlobalForward("MM_OnClientReseting", ET_Ignore, Param_Cell);
     _modeResetRequestedForward = new GlobalForward("MM_ModeResetRequested", ET_Ignore);
 
     RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
@@ -246,6 +246,7 @@ public void OnPluginStart()
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
+    CreateNative("GetRobotCap", Native_GetRobotCap);
     CreateNative("GetRobotCountPerTeam", Native_GetRobotCountPerTeam);
     CreateNative("SetVolunteers", Native_SetVolunteers);
     CreateNative("EnsureRobotCount", Native_EnsureRobotCount);
@@ -253,6 +254,10 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("IsYTEnabled", Native_IsYTEnabled);
     CreateNative("IsActive", Native_IsActive);
     CreateNative("UnmakeRobot", Native_UnmakeRobot);
+    CreateNative("RedrawChooseRobotMenu", Native_RedrawChooseRobotMenu);
+    CreateNative("RedrawChooseRobotMenuFor", Native_RedrawChooseRobotMenuFor);
+    CreateNative("SetRobot", Native_SetRobot);
+
     return APLRes_Success;
 }
 
@@ -310,12 +315,9 @@ void Reset(int client)
     if (index >= 0)
         g_Volunteers.Erase(index);
 
-    if (g_chooseRobotMenus[client] != null)
-    {
-        SMLogTag(SML_VERBOSE, "canceling ChooseRobot-menu for %L", client);
-        g_chooseRobotMenus[client].Cancel();
-        g_chooseRobotMenus[client] = null;
-    }
+    Call_StartForward(_clientReseting);
+    Call_PushCell(client);
+    Call_Finish();
 
     RedrawChooseRobotMenu();
     EnsureRobotCount();
@@ -852,8 +854,8 @@ public Action Command_YT_Robot_Start(int client, int args)
                             //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
                             TF2_SwapTeamAndRespawnNoMsg(i, g_RoboTeam);
                         //    TF2_RespawnPlayer(i);
-                            g_ClientIsRepicking[i] = false;
-                            Menu_ChooseRobot(i);
+                            SetClientRepicking(i, false);
+                            ChooseRobot(i);
                         }
                         else
                         {
@@ -975,8 +977,8 @@ public Action Command_ChangeRobot(int client, int args)
             continue;
 
         g_cv_Volunteered[targetClientId] = true;
-        g_ClientIsRepicking[targetClientId] = true;
-        Menu_ChooseRobot(targetClientId);
+        SetClientRepicking(targetClientId, true);
+        ChooseRobot(targetClientId);
     }
             
     return Plugin_Handled;
@@ -1042,8 +1044,8 @@ public Action MakeRobot(int client, bool volunteering)
             SMLogTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
             //int playerID = GetClientUserId(client);
             TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
-            g_ClientIsRepicking[client] = false;
-            Menu_ChooseRobot(client);
+            SetClientRepicking(client, false);
+            ChooseRobot(client);
         }
     }
     else if(!volunteering && g_cv_Volunteered[client]) //Remove from volunteer list
@@ -1091,30 +1093,7 @@ public Action MakeRobot(int client, bool volunteering)
     //PrintToChatAll("%i arraylength", g_Volunteers.Length);
 }
 
-int RobotDefinitionComparision(int index1, int index2, Handle array, Handle hndl)
-{
-    ArrayList list = view_as<ArrayList>(array); 
-    Robot a, b;
-    list.GetArray(index1, a);
-    list.GetArray(index2, b);
-
-
-    int rolecmp = strcmp(a.role, b.role);
-    if (rolecmp != 0)
-        return rolecmp;
-
-    int classcmp = strcmp(a.class, b.class);
-    if (classcmp != 0)
-        return classcmp;
-
-    int namecmp = strcmp(a.name, b.name);
-    if (namecmp != 0)
-        return namecmp;
-
-    return strcmp(a.shortDescription, b.shortDescription);
-}
-
-Action Menu_ChooseRobot(int client)
+Action ChooseRobot(int client)
 {
     if (IsFakeClient(client))
     {
@@ -1122,130 +1101,8 @@ Action Menu_ChooseRobot(int client)
         return Plugin_Handled;
     }
 
-    ArrayList robotNames = GetRobotNames();
-    SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
-
-    ArrayList robotDefinitions = new ArrayList(sizeof(Robot));
-    for(int i = 0; i < robotNames.Length; i++)
-    {
-        char name[NAMELENGTH];
-        robotNames.GetString(i, name, NAMELENGTH);
-        Robot item;
-        if (GetRobotDefinition(name, item) != 0)
-        {
-            SMLogTag(SML_ERROR, "could not volunteer. no robot with name '%s' found", name);
-            return Plugin_Handled;
-        }
-
-        robotDefinitions.PushArray(item);
-    }
-    robotDefinitions.SortCustom(RobotDefinitionComparision);
-
-    Menu menu = new Menu(MenuHandler);
-
-    menu.SetTitle("Select Your Robot Type");
-    menu.ExitButton = g_ClientIsRepicking[client];
-
-    for(int i = 0; i < robotDefinitions.Length; i++)
-    {
-        Robot item;
-        robotDefinitions.GetArray(i, item, sizeof(item));
-
-        char notes[15];
-        int draw;
-        GenerateNotes(item, client, notes, draw);
-
-        char display[128];
-        Format(display, sizeof(display), "%s: %s - %s - %s (%s)", item.role, item.class, item.name, item.shortDescription, notes);
-
-        menu.AddItem(item.name, display, draw);
-
-        SMLogTag(SML_VERBOSE, "added option for %s: %s", item.name, display);
-    }
-    
-    if (g_chooseRobotMenus[client] != null)
-        g_chooseRobotMenus[client].Cancel();
-    g_chooseRobotMenus[client] = menu;
-
-    int timeout = MENU_TIME_FOREVER;
-    menu.Display(client, timeout);
-    SMLogTag(SML_VERBOSE, "menu displayed to %L for %i seconds", client, timeout);
-
+    Menu_RobotSelection(client);
     return Plugin_Handled;
-}
-
-void GenerateNotes(Robot item, int client, char notes[15], int& draw)
-{
-    int count = GetRobotCount(item.name);
-    if (count >= g_RoboCap)
-    {
-        Format(notes, sizeof(notes), "%i / %i", count, g_RoboCap);
-        draw = ITEMDRAW_DISABLED;
-        return;
-    }
-
-    if (!item.restrictions.TimeLeft.Enabled)
-    {
-        Format(notes, sizeof(notes), "timeleft: %is", item.restrictions.TimeLeft.SecondsBeforeEndOfRound);
-        draw = ITEMDRAW_DISABLED;
-        return;
-    }
-
-    RobotCoins robotCoins = item.restrictions.GetRobotCoinsFor(client);
-    if (!robotCoins.Enabled)
-    {
-        Format(notes, sizeof(notes), "robot-coins: %i", robotCoins.GetPrice());
-        draw = ITEMDRAW_DISABLED;
-        return;
-    }
-
-    Format(notes, sizeof(notes), "%i / %i", count, g_RoboCap);
-    draw = ITEMDRAW_DEFAULT;
-}
-
-public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
-{
-    /* If an option was selected, tell the client about the item. */
-    if(action == MenuAction_Select)
-    {
-
-        if (!TF2Spawn_IsClientInSpawn(param1) && IsPlayerAlive(param1))
-        {
-            PrintCenterText(param1, "You can only select robot when dead or in spawn");
-            return;
-        }
-        if (g_chooseRobotMenus[param1] == null)
-            return;
-        g_chooseRobotMenus[param1] = null;
-
-        char info[NAMELENGTH];
-        bool found = menu.GetItem(param2, info, sizeof(info));
-        PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
-
-        SetRobot(info, param1);
-    }
-    /* If the menu was cancelled, print a message to the server about it. */
-    else if(action == MenuAction_Cancel)
-    {
-        g_chooseRobotMenus[param1] = null;
-
-        if (param2 == MenuCancel_Exit)
-        {
-            g_ClientIsRepicking[param1] = false;
-        }
-        // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
-    }
-
-    /* If the menu has ended, destroy it */
-    else if(action == MenuAction_End)
-    {
-        for(int i = 0; i <= MaxClients; i++)
-        {
-            if (g_chooseRobotMenus[i] == menu)
-                g_chooseRobotMenus[i] = null;
-        }
-        delete menu;
-    }
 }
 
 void SetRandomRobot(int client)
@@ -1290,8 +1147,12 @@ void SetRandomRobot(int client)
     SetRobot(robotname, client);
 }
 
-void SetRobot(char robotname[NAMELENGTH], int client)
+any Native_SetRobot(Handle plugin, int numParams)
 {
+    char robotname[NAMELENGTH];
+    GetNativeString(1, robotname, sizeof(robotname));
+    int client = GetNativeCell(2);
+
     int error = CreateRobot(robotname, client, "");
     if (error != 0)
     {
@@ -1300,12 +1161,12 @@ void SetRobot(char robotname[NAMELENGTH], int client)
     }
 
     g_cv_RobotPicked[client] = robotname;
-    g_ClientIsRepicking[client] = false;
+    SetClientRepicking(client, false);
 
     RedrawChooseRobotMenu();
 }
 
-void RedrawChooseRobotMenu()
+any Native_RedrawChooseRobotMenu(Handle plugin, int numParams)
 {
     for(int i = 0; i <= MaxClients; i++)
     {
@@ -1313,15 +1174,17 @@ void RedrawChooseRobotMenu()
     }
 }
 
-void RedrawChooseRobotMenuFor(int clientId)
+any Native_RedrawChooseRobotMenuFor(Handle plugin, int numParams)
 {
+    int clientId = GetNativeCell(1);
+    
     if(!IsValidClient(clientId))
     {
         SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for client %i, because client is not valid", clientId);
         return;
     }
 
-    if(g_cv_RobotPicked[clientId][0] != '\0' && !g_ClientIsRepicking[clientId]) //don't open menu for players, who have already picked a robot
+    if(g_cv_RobotPicked[clientId][0] != '\0' && !IsRepicking(clientId)) //don't open menu for players, who have already picked a robot
     {
         SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is already robot and not repicking", clientId);
         return;
@@ -1346,7 +1209,7 @@ void RedrawChooseRobotMenuFor(int clientId)
     }
 
     SMLogTag(SML_VERBOSE, "redrawing ChooseRobotMenu for %L", clientId);
-    Menu_ChooseRobot(clientId);
+    ChooseRobot(clientId);
 }
 
 public Action OnClientCommand(int client, int args)
@@ -1578,6 +1441,14 @@ int Native_UnmakeRobot(Handle plugin, int numParams)
     
     int clientId = GetNativeCell(1);
     MakeRobot(clientId, false);
+}
+
+int Native_GetRobotCap(Handle plugin, int numParams)
+{
+    if (!g_BossMode)
+        return 0;
+
+    return g_RoboCap;
 }
 
 bool AddRandomVolunteer()
