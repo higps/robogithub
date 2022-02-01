@@ -5,7 +5,6 @@ TODO:
   Priority:
   2. Use players numbers for players present in a team, not players connecting.
   3. Turn players into a random robot when first joining the robot team.
-  4. New robot menu
 
 1. Need time passed resource added (opposite of time remaining)
  Type A- Resource for X amount of time passed, is available after X amount of time has passed
@@ -15,7 +14,6 @@ Example B: Gotham Protector becomes available after 60 seconds of gametime, but 
 
 3. Both teams have robot mode
   1. Robot menu is grayed out when reverting back from paid robot.
-  3. New robot menu
 
 Every 4 player is one robot, rounding to floor. (better scaling sometimes?)
 

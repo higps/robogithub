@@ -114,6 +114,13 @@ public any Native_GetRobotCount(Handle plugin, int numParams)
 {
     char robotname[NAMELENGTH];
     GetNativeString(1, robotname, NAMELENGTH);
+    
+    if (_robotCount == null)
+    {
+        int value = 0;
+        // SMLogTag(SML_VERBOSE, "returning count %i for '%s', because plugin is not yet initialized", value, robotname);
+        return value;
+    }
 
     int value = 0;
     _robotCount.GetValue(robotname, value);

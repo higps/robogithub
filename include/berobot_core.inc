@@ -77,6 +77,22 @@ native void GetRobot(int client, char[] dest, int maxDestLength);
 native int GetRobotCountPerTeam();
 
 /**
+ * returns how many robots of a specified type are on the battlefield
+ * 
+ * @param robotname     name of the robot to check
+ * @return              count of robots on the battlefield
+ */
+native int GetRobotCount(char robotname[NAMELENGTH]);
+
+/**
+ * returns the how many robots of a specified type are allowed on the battlefield
+ * 
+ * @param robotname     name of the robot to check
+ * @return              count of robots on the battlefield
+ */
+native int GetRobotCap(char robotname[NAMELENGTH]);
+
+/**
  * starts a vote who wants to be robot
  * 
  * @noreturn
@@ -127,6 +143,59 @@ native void EnsureRobotCount();
 native void UnmakeRobot(int clientId);
 
 /**
+ * turns a human into a specified robot
+ * 
+ * @param robotname     name robot that should be created
+ * @param clientId      clientId of human
+ * @noreturn
+ */
+native void SetRobot(char robotname[NAMELENGTH], int clientId);
+
+/**
+ * saves whether the provided client is repicking a robot
+ *
+ * @param clientId      client to whom repicking should be saved
+ * @param repicking     true if client is repicking a robot; false otherwise;
+ * 
+ * @noreturn
+ */
+native void SetClientRepicking(int clientId, bool repicking);
+
+/**
+ * redraws robot-selection-menu 
+ * 
+ * @noreturn
+ */
+native void RedrawChooseRobotMenu();
+
+/**
+ * redraws robot-selection-menu for the provided client
+ * 
+ * @param clientId      client for whom the menu should be drawn again
+ *
+ * @noreturn
+ */
+native void RedrawChooseRobotMenuFor(int client);
+
+/**
+ * displays the robot-selection-menu to the provided client
+ *
+ * @param clientId      client to whom the menu should be displayed
+ * 
+ * @noreturn
+ */
+native void Menu_RobotSelection(int clientId);
+
+/**
+ * checks if client is repicking a robot
+ *
+ * @param clientId      client to check
+ * 
+ * @noreturn
+ */
+native bool IsRepicking(int clientId);
+
+/**
  * keeps track of which client uses which robot and how many robots are used
  * 
  * @param clientId      clientId to keep track of
@@ -145,14 +214,6 @@ native void TrackRobot(int clientId, char robotname[NAMELENGTH]);
 native void TrackRobotCreation(int clientId, bool created);
 
 /**
- * get the amount of robots picked per robot-type
- * 
- * @param robotname     name of the robot
- * @return              amount of robots picked for the specified robotname
- */
-native int GetRobotCount(char robotname[NAMELENGTH]);
-
-/**
  * Called after robot-definition was added/removed
  * 
  * @noreturn
@@ -165,6 +226,13 @@ forward void MM_OnRobotStorageChanged();
  * @noreturn
  */
 forward void MM_OnEnabledChanged(int enabled);
+
+/**
+ * Called while reseting a client from being a robot
+ * 
+ * @noreturn
+ */
+forward void MM_OnClientReseting(int clientId);
 
 /**
  * Called when mode-reset was requested
@@ -426,6 +494,11 @@ methodmap Restrictions < StringMap {
 
     public Restrictions() {
         return view_as<Restrictions>(new StringMap());
+    }
+
+    public bool IsActive()
+    {
+        return this.TimeLeft.Active || this.RobotCoinsRed.Active || this.RobotCoinsBlu.Active;
     }
 
     public bool IsEnabled()
