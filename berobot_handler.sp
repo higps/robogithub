@@ -213,11 +213,11 @@ public void OnPluginStart()
 
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
-
     HookEvent("teamplay_round_start", Event_Waiting_Abouttoend, EventHookMode_Post);
+
+    HookEvent("teams_changed", Event_Teams_Changed, EventHookMode_Post);
     
     HookEvent("player_death", Event_Death, EventHookMode_Post);
-
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
@@ -514,6 +514,67 @@ public Action Timer_Respawn(Handle timer, any client)
         //PrintHintText(client,"You have instant respawn as scout");
     }
 }
+int g_counter = 0;
+bool b_counter = false;
+public Action Event_Teams_Changed(Event event, const char[] name, bool dontBroadcast)
+{
+    //Only do this if active
+    if (!g_BossMode)
+    return;
+
+    //This triggers twice per team switch, once goingo off the team and once arriving to the new team
+    g_counter++;
+
+    if (!b_counter){
+        CreateTimer(0.2, Timer_ResetCounter);
+        b_counter = true;
+    }
+    
+}
+
+public Action Timer_ResetCounter(Handle timer, any client)
+{
+
+    int Spectate = GetTeamClientCount(1);
+    int Red = GetTeamClientCount(2);
+    int Blue = GetTeamClientCount(3);
+    int TotalPlayersInATeam = Spectate+Red+Blue;
+
+    
+
+    PrintToChatAll("Total players was %i | counter was %i", TotalPlayersInATeam*2, g_counter); 
+    //Checks if all players have swapped teams, Counter triggers twice.
+    //Ignores players in spectate as they can't be team switched
+    if (g_counter == TotalPlayersInATeam*2-Spectate*2){
+        
+        
+       if(g_cv_bDebugMode)PrintToChatAll("Teams were switched, robot team is %i", g_RoboTeam);
+
+//Changes which team is robot team
+        switch(g_RoboTeam)
+        {
+            case RED:
+            {
+                if(g_cv_bDebugMode)PrintToChatAll("RoboTeam was RED changing to BLUE...");
+                g_RoboTeam = BLUE;
+                g_HumanTeam = RED;
+            }
+            case BLUE:
+            {
+                if(g_cv_bDebugMode)PrintToChatAll("RoboTeam was BLU changing to RED...");
+                g_RoboTeam = RED;
+                g_HumanTeam = BLUE;
+            }
+        }
+    }else{
+       if(g_cv_bDebugMode) PrintToChatAll("Teams were not switched");
+    }
+
+
+    g_counter = 0;
+    b_counter = false;
+
+}
 
 public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dontBroadcast)
 {
@@ -551,47 +612,39 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
         MC_PrintToChatAll("{Green}Type {orange}!info{Green} to see more info about this gamemode");
         MC_PrintToChatAll("{Green}Visit {orange}balancemod.tf/mannedmachines {Green} To get the assetpack to get the most out of this mode");
 
-    for(int i = 1; i <= MaxClients; i++)
-    {
+    // for(int i = 1; i <= MaxClients; i++)
+    // {
 
 
-        if(g_cv_Volunteered[i] == true)
-        {
-            int iTeam = GetClientTeam(i);
-            if(iTeam != g_RoboTeam)
-            {
-               // PrintToChatAll("Was not the same for %N", i);
+    //     if(g_cv_Volunteered[i] == true)
+    //     {
+    //         int iTeam = GetClientTeam(i);
+    //         if(iTeam != g_RoboTeam)
+    //         {
+    //            // PrintToChatAll("Was not the same for %N", i);
 
-                switch(iTeam)
-                {
-                case BLUE:
-                {
-                 //   PrintToChatAll("RoboTeam was RED changing to BLUE...");
-                    g_RoboTeam = BLUE;
-                    g_HumanTeam = RED;
-                }
-                case RED:
-                {
-                //    PrintToChatAll("RoboTeam was BLU changing to RED...");
-                    g_RoboTeam = RED;
-                    g_HumanTeam = BLUE;
-                }
-                case UNASSIGNED:
-                {
-                 //   PrintToChatAll("RoboTeam was UNASSIGNED");
-                }
-                case SPECTATE:
-                {
-                 //   PrintToChatAll("RoboTeam was Spectate");
-                }
-                }
-                //We found a volunteer that was not on the robo team, no need to check the rest
-               // PrintToChatAll("Breaking off the loop on %N", i);
-                return Plugin_Handled;
-            }
-        }
+    //             switch(iTeam)
+    //             {
+    //                 case BLUE:
+    //                 {
+    //                   if(g_cv_bDebugMode) PrintToChatAll("RoboTeam was RED changing to BLUE...");
+    //                     g_RoboTeam = BLUE;
+    //                     g_HumanTeam = RED;
+    //                 }
+    //                 case RED:
+    //                 {
+    //                   if(g_cv_bDebugMode) PrintToChatAll("RoboTeam was BLU changing to RED...");
+    //                     g_RoboTeam = RED;
+    //                     g_HumanTeam = BLUE;
+    //                 }
+    //             }
+    //             //We found a volunteer that was not on the robo team, no need to check the rest
+    //            // PrintToChatAll("Breaking off the loop on %N", i);
+    //             return Plugin_Handled;
+    //         }
+    //     }
 
-    }
+    // }
     }
 
     return Plugin_Continue;
@@ -668,7 +721,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
     {
         // Checks if boss is on
-            
+
 
                 if(damagecustom == TF_CUSTOM_BACKSTAB)
                 {
@@ -706,9 +759,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     damage *= 3.0;
                     return Plugin_Changed;
                 }
-                
-                    }
-             
+                //TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
+                }
     }
     return Plugin_Continue;
 }
@@ -728,6 +780,18 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     
     if(IsAnyRobot(victim))
     {
+
+            switch(damagecustom){
+                case TF_CUSTOM_PLASMA_CHARGED: 
+                {
+                    damage *= 1.5;
+                    TF2_StunPlayer(victim, 3.5, 0.9, TF_STUNFLAG_SLOWDOWN, attacker);
+                    TF2_AddCondition(victim, TFCond_Sapped, 3.5, attacker);
+                    critType = CritType_Crit;
+                    return Plugin_Changed;
+
+                }   
+            }
             /*Damage code for Heavy*/
             if (iClassAttacker == TFClass_Heavy)
             {
@@ -771,7 +835,8 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 }
                     
                     
-            }   
+            }
+
     }
     return Plugin_Continue;
 }
@@ -857,7 +922,7 @@ public Action Command_Robot_Selection(int client, int args)
     } */
  //   g_BossMode = true;
     g_cv_BlockTeamSwitch = true;
-    g_SpectateSelection = true;
+    //g_SpectateSelection = false;
 
     StartAutomaticVolunteerVote();
     }

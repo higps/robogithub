@@ -50,7 +50,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 4;
+    restrictions.RobotCoins.Overall = 3;
 
 	AddRobot(robot, MakeBuster, PLUGIN_VERSION, restrictions);
 

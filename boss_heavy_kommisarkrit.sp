@@ -77,7 +77,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 3;
+    restrictions.RobotCoins.PerRobot = 4;
 
     AddRobot(robot, MakeBigBigJoey, PLUGIN_VERSION, restrictions);
 	
@@ -273,7 +273,7 @@ MakeBigBigJoey(client)
 	
 	TF2Attrib_SetByName(client, "hand scale", 1.3);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	
+	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	UpdatePlayerHitbox(client, scale);

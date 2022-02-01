@@ -5,6 +5,7 @@
 #include <berobot_constants>
 #include <berobot>
 #include <sdkhooks>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Nuker"
@@ -41,7 +42,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 3;
+    restrictions.RobotCoins.PerRobot = 4;
 
 
     AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
@@ -116,12 +117,12 @@ MakeSolar(client)
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.3);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.3);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
@@ -132,7 +133,8 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "hand scale", 1.8);
 	
-	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
+	
+	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
 	
 	UpdatePlayerHitbox(client, scale);
 
@@ -192,7 +194,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "blast radius increased", 2.25);
 			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.8);
-			TF2Attrib_SetByName(Weapon1, "reload time increased", 2.25);
+			TF2Attrib_SetByName(Weapon1, "reload time increased", 7.0);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.1);
 
@@ -200,6 +202,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 
 			
 		}
