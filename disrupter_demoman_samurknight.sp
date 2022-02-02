@@ -7,7 +7,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Samurai"
-#define ROBOT_ROLE "Disrupter"
+#define ROBOT_ROLE "Disruptor"
 #define ROBOT_DESCRIPTION "Half-Zatoichi, Splendid Screen"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"

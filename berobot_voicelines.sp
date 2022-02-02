@@ -4,7 +4,7 @@
 #include <tf2>
 #include <tf2_stocks>
 #include <tf_ontakedamage>
-//#include <sm_logger>
+#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 

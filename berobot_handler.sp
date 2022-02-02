@@ -15,7 +15,7 @@
 #include <morecolors_newsyntax>
 #include <sdkhooks>
 #include <sdktools>
-//#include <sm_logger>
+#include <sm_logger>
 #include <sourcemod>
 #include <tf2>
 #include <tf2_stocks>
@@ -537,22 +537,23 @@ public Action Event_Teams_Changed(Event event, const char[] name, bool dontBroad
 public Action Timer_ResetCounter(Handle timer, any client)
 {
 
+    int Unassigned = GetTeamClientCount(0);
     int Spectate = GetTeamClientCount(1);
     int Red = GetTeamClientCount(2);
     int Blue = GetTeamClientCount(3);
-    int TotalPlayersInATeam = Spectate+Red+Blue;
+    int TotalPlayersInATeam = Spectate+Red+Blue+Unassigned;
 
     
 
-    PrintToChatAll("Total players was %i | counter was %i", TotalPlayersInATeam*2, g_counter); 
+    if(g_cv_bDebugMode) PrintToChatAll("Total players was %i | counter was %i", TotalPlayersInATeam*2, g_counter); 
     //Checks if all players have swapped teams, Counter triggers twice.
     //Ignores players in spectate as they can't be team switched
-    if (g_counter == TotalPlayersInATeam*2-Spectate*2){
+    if (g_counter == TotalPlayersInATeam*2-((Spectate*2)-(Unassigned*2))){
         
         
        if(g_cv_bDebugMode)PrintToChatAll("Teams were switched, robot team is %i", g_RoboTeam);
 
-//Changes which team is robot team
+        //Changes which team is robot team
         switch(g_RoboTeam)
         {
             case RED:

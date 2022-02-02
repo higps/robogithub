@@ -2,7 +2,7 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
-//#include <sm_logger>
+#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Elmaxo"
-#define ROBOT_ROLE "Disrupter"
+#define ROBOT_ROLE "Disruptor"
 #define ROBOT_DESCRIPTION "Rocket Launcher, Market Gardner"
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"

@@ -2,7 +2,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
-//#include <sm_logger>
+#include <sm_logger>
 #include <morecolors_newsyntax>
 #include <berobot_constants>
 #include <berobot_core_restrictions>

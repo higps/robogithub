@@ -2,7 +2,7 @@
 #include <sdktools>
 #include <sdkhooks>
 #include <tf2>
-//#include <sm_logger>
+#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 

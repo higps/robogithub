@@ -13,7 +13,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"BatBot"
-#define ROBOT_ROLE "Disrupter"
+#define ROBOT_ROLE "Disruptor"
 #define ROBOT_DESCRIPTION "You have grappling hook"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"

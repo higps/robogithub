@@ -2,13 +2,13 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
-//#include <sm_logger>
+#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Funke"
-#define ROBOT_ROLE "Disrupter"
+#define ROBOT_ROLE "Disruptor"
 #define ROBOT_DESCRIPTION "Rapid Cleaver"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
