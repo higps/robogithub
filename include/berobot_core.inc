@@ -181,10 +181,11 @@ native void RedrawChooseRobotMenuFor(int client);
  * displays the robot-selection-menu to the provided client
  *
  * @param clientId      client to whom the menu should be displayed
+ * @param redrawing     indicates if the menu is being redrawn (keeps the current menu-level)
  * 
  * @noreturn
  */
-native void Menu_RobotSelection(int clientId);
+native void Menu_RobotSelection(int clientId, bool redrawing);
 
 /**
  * checks if client is repicking a robot

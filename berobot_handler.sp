@@ -1229,7 +1229,7 @@ void MoveToRobots(int client)
     ChooseRobot(client);
 }
 
-Action ChooseRobot(int client)
+Action ChooseRobot(int client, bool redrawing = false)
 {
     if (IsFakeClient(client))
     {
@@ -1237,7 +1237,7 @@ Action ChooseRobot(int client)
         return Plugin_Handled;
     }
 
-    Menu_RobotSelection(client);
+    Menu_RobotSelection(client, redrawing);
     return Plugin_Handled;
 }
 
@@ -1346,7 +1346,7 @@ any Native_RedrawChooseRobotMenuFor(Handle plugin, int numParams)
     }
 
     // SMLogTag(SML_VERBOSE, "redrawing ChooseRobotMenu for %L", clientId);
-    ChooseRobot(clientId);
+    ChooseRobot(clientId, true);
 }
 
 public Action OnClientCommand(int client, int args)

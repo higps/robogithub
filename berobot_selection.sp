@@ -381,21 +381,32 @@ any Native_IsRepicking(Handle plugin, int numParams)
 
 any Native_Menu_RobotSelection(Handle plugin, int numParams)
 {
-    int client = GetNativeCell(1);
+    int clientId = GetNativeCell(1);
+    bool redrawing = GetNativeCell(2);
 
-    Menu_TopLevel(client);
+    if (!redrawing)
+    {
+        g_selections[clientId][0] = "";
+        g_selections[clientId][1] = "";
+    }
+
+    Menu_TopLevel(clientId);
 }
 
 void Menu_TopLevel(int clientId)
 {
-    g_selections[clientId][0] = "";
-    g_selections[clientId][1] = "";
     g_menu.Hydrate();
+
+    if (g_selections[clientId][0][0] != '\0')
+    {
+        Menu_SecondLevel(clientId, g_selections[clientId][0]);
+        return;
+    }
 
     Menu menu = new Menu(Menu_TopLevel_Handler);
 
     menu.SetTitle("Select Your Robot Type");
-    menu.ExitButton = g_ClientIsRepicking[clientId];
+    menu.ExitButton = true;
 
     g_menu.AddMenuItem(menu);
     
@@ -473,10 +484,16 @@ void Menu_SecondLevel(int clientId, char key[NAMELENGTH])
 
 void Menu_RobotCategory(int clientId, RobotCategory category)
 {
+    if (g_selections[clientId][1][0] != '\0')
+    {
+        Menu_ThirdLevel(clientId, g_selections[clientId][1]);
+        return;
+    }
+
     Menu menu = new Menu(Menu_RobotCategory_Handler);
 
     menu.SetTitle("Select Your Robot Type");
-    menu.ExitButton = g_ClientIsRepicking[clientId];
+    menu.ExitButton = true;
 
     category.AddMenuItem(menu);
     
@@ -504,20 +521,7 @@ public int Menu_RobotCategory_Handler(Menu menu, MenuAction action, int param1, 
 
         g_selections[param1][1] = info;
 
-        RobotCategory category;
-        switch(g_selections[param1][0][0])
-        {
-            case 'F':   //Free
-            {
-                category = g_menu.Get(true);
-            }
-            case 'P':   //Paid
-            {
-                category = g_menu.Get(false);
-            }
-        }
-        RobotRole robotRole = category.Get(info);
-        Menu_RobotsPerRole(param1, robotRole);
+        Menu_ThirdLevel(param1, info);
     }
 
     /* If the menu was cancelled, print a message to the server about it. */
@@ -544,6 +548,24 @@ public int Menu_RobotCategory_Handler(Menu menu, MenuAction action, int param1, 
     }
 }
 
+void Menu_ThirdLevel(int clientId, char key[NAMELENGTH])
+{
+    RobotCategory category;
+    switch(g_selections[clientId][0][0])
+    {
+        case 'F':   //Free
+        {
+            category = g_menu.Get(true);
+        }
+        case 'P':   //Paid
+        {
+            category = g_menu.Get(false);
+        }
+    }
+    RobotRole robotRole = category.Get(key);
+    Menu_RobotsPerRole(clientId, robotRole);
+}
+
 void Menu_RobotsPerRole(int client, RobotRole robotRole)
 {
     SMLogTag(SML_VERBOSE, "showing %i robots per role for %L", robotRole.Robots.Length, client);
@@ -551,7 +573,7 @@ void Menu_RobotsPerRole(int client, RobotRole robotRole)
     Menu menu = new Menu(MenuHandler);
 
     menu.SetTitle("Select Your Robot Type");
-    menu.ExitButton = g_ClientIsRepicking[client];
+    menu.ExitButton = true;
 
     for(int i = 0; i < robotRole.Robots.Length; i++)
     {
