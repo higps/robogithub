@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Riotcop"
@@ -160,11 +161,11 @@ MakeRiotcop(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.55);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.7);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -223,10 +224,13 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.0);
 			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 10.0);
 			TF2Attrib_SetByName(Weapon2, "damage penalty", 0.5);
-			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.25);
+			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.3);
+			TF2Attrib_SetByName(Weapon2, "spread penalty", 1.5);
+			
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.6);
+			//TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
 
 		}
 
@@ -253,7 +257,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 		if (TF2_IsPlayerInCondition(client, TFCond_Taunting))
 		{
 		TF2_RemoveCondition(client, TFCond_Taunting);
-		TF2_AddCondition(client, TFCond_CritCola, 6.0);
+		TF2_AddCondition(client, TFCond_CritCola, 6.5);
 		}
 	}
 }

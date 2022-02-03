@@ -11,12 +11,7 @@ TODO:
 Example A: Pan Cop becomes available after 180 seconds of gametime has passed, can be picked again
 Example B: Gotham Protector becomes available after 60 seconds of gametime, but can't be picked until another 60 seconds has passed after his death or switching of robot.
 
-3. Both teams have robot mode
-  1. Robot menu is grayed out when reverting back from paid robot.
-
 Every 4 player is one robot, rounding to floor. (better scaling sometimes?)
-
-
 
 Bugs:
 Become Human Robot:
@@ -24,6 +19,8 @@ Become Human Robot:
 2. Retry in console
 3. Volunteer - You now become robot on human team.
 4. Volunteer again, you now get moved to the correct team.
+
+If you are the only player and you don't want to become a robot, you become a robot.
 
 
 unify sounds
