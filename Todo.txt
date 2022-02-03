@@ -1,10 +1,9 @@
 TODO:
   Todo:
-  Top Priority:
-  1. Fix Memory Leak in volunteers
   Priority:
+  1. Turn players into a random robot when first joining the robot team. Players sometimes don't get turned in to robts
   2. Use players numbers for players present in a team, not players connecting.
-  3. Turn players into a random robot when first joining the robot team.
+  
 
 1. Need time passed resource added (opposite of time remaining)
  Type A- Resource for X amount of time passed, is available after X amount of time has passed
@@ -18,36 +17,13 @@ Example B: Gotham Protector becomes available after 60 seconds of gametime, but 
 Every 4 player is one robot, rounding to floor. (better scaling sometimes?)
 
 
-Rework menus:
-Menu
--> Select free robot
-   Select Robot Type
-   -> Tank (1) (displays amount of total available robots, unavailable robots are whited out like normal)
-      Tanks
-           -> Heavy: Bearded
-   -> Damage (16)
-      Damage
-         -> Soldier: Icebear
-         -> Demoman: Solarlight
-           etc..
-   -> Support (6)
-         Support
-          - Medic: Array Seven
-    ... etc
--> Buy one-time robot
-   -> Tank (1)
-       Tank
-         -> Heavy: Pancop
-   -> Damage (16)
-   -> Support (6)
-   -> ZBOSS (3)
 
-
-
-Sometimes a player will be on the robot team when not a robot, tied to client stuff.
-Unset robots on autoteam balance
-Failsafe on robot team
-Failsafe on counter going below 0
+Bugs:
+Become Human Robot:
+1. Volunteer and get selected as robot
+2. Retry in console
+3. Volunteer - You now become robot on human team.
+4. Volunteer again, you now get moved to the correct team.
 
 
 unify sounds
