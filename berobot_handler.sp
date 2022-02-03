@@ -206,6 +206,7 @@ public void OnPluginStart()
     AddCommandListener(Block_Kill, "kill"); 
 	AddCommandListener(Block_Kill, "explode"); 
     
+    //AddCommandListener(cmd_blocker, "autoteam");
     AddCommandListener(cmd_blocker, "changeclass");
 	AddCommandListener(cmd_blocker, "joinclass");
 	AddCommandListener(cmd_blocker, "join_class");
@@ -215,7 +216,7 @@ public void OnPluginStart()
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
     HookEvent("teamplay_round_start", Event_Waiting_Abouttoend, EventHookMode_Post);
 
-    HookEvent("teams_changed", Event_Teams_Changed, EventHookMode_Post);
+    
     
     HookEvent("player_death", Event_Death, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
@@ -516,68 +517,7 @@ public Action Timer_Respawn(Handle timer, any client)
         //PrintHintText(client,"You have instant respawn as scout");
     }
 }
-int g_counter = 0;
-bool b_counter = false;
-public Action Event_Teams_Changed(Event event, const char[] name, bool dontBroadcast)
-{
-    //Only do this if active
-    if (!g_BossMode)
-    return;
-
-    //This triggers twice per team switch, once goingo off the team and once arriving to the new team
-    g_counter++;
-
-    if (!b_counter){
-        CreateTimer(0.2, Timer_ResetCounter);
-        b_counter = true;
-    }
-    
-}
-
-public Action Timer_ResetCounter(Handle timer, any client)
-{
-
-    int Unassigned = GetTeamClientCount(0);
-    int Spectate = GetTeamClientCount(1);
-    int Red = GetTeamClientCount(2);
-    int Blue = GetTeamClientCount(3);
-    int TotalPlayersInATeam = Spectate+Red+Blue+Unassigned;
-
-    
-
-    if(g_cv_bDebugMode) PrintToChatAll("Total players was %i | counter was %i", TotalPlayersInATeam*2, g_counter); 
-    //Checks if all players have swapped teams, Counter triggers twice.
-    //Ignores players in spectate as they can't be team switched
-    if (g_counter == TotalPlayersInATeam*2-((Spectate*2)-(Unassigned*2))){
-        
-        
-       if(g_cv_bDebugMode)PrintToChatAll("Teams were switched, robot team is %i", g_RoboTeam);
-
-        //Changes which team is robot team
-        switch(g_RoboTeam)
-        {
-            case RED:
-            {
-                if(g_cv_bDebugMode)PrintToChatAll("RoboTeam was RED changing to BLUE...");
-                g_RoboTeam = BLUE;
-                g_HumanTeam = RED;
-            }
-            case BLUE:
-            {
-                if(g_cv_bDebugMode)PrintToChatAll("RoboTeam was BLU changing to RED...");
-                g_RoboTeam = RED;
-                g_HumanTeam = BLUE;
-            }
-        }
-    }else{
-       if(g_cv_bDebugMode) PrintToChatAll("Teams were not switched");
-    }
-
-
-    g_counter = 0;
-    b_counter = false;
-
-}
+// 
 
 public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dontBroadcast)
 {
@@ -614,6 +554,25 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
 
         MC_PrintToChatAll("{Green}Type {orange}!info{Green} to see more info about this gamemode");
         MC_PrintToChatAll("{Green}Visit {orange}balancemod.tf/mannedmachines {Green} To get the assetpack to get the most out of this mode");
+
+    if (GameRules_GetProp("m_bSwitchedTeamsThisRound"))
+    {
+         switch(g_RoboTeam)
+        {
+            case RED:
+            {
+                if(g_cv_bDebugMode)PrintToChatAll("RoboTeam was RED changing to BLUE...");
+                g_RoboTeam = BLUE;
+                g_HumanTeam = RED;
+            }
+            case BLUE:
+            {
+                if(g_cv_bDebugMode)PrintToChatAll("RoboTeam was BLU changing to RED...");
+                g_RoboTeam = RED;
+                g_HumanTeam = BLUE;
+            }
+        }
+    }
 
     // for(int i = 1; i <= MaxClients; i++)
     // {
@@ -1396,7 +1355,7 @@ public Action OnClientCommand(int client, int args)
 
     /* Get the argument */
     GetCmdArg(0, cmd, sizeof(cmd));
-    if(strcmp(cmd, "jointeam", true) == 0)
+    if(strcmp(cmd, "jointeam", true) == 0 || strcmp(cmd, "autoteam", true) == 0 )
     {
     TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
     
@@ -1718,3 +1677,69 @@ stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
     TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
     TF2_RespawnPlayer(client);
 }
+
+
+//OLD TEAM SWITCH CODE, MAY NOT WORK RIGHT
+//HookEvent("teams_changed", Event_Teams_Changed, EventHookMode_Post);
+//int g_counter = 0;
+// bool b_counter = false;
+// public Action Event_Teams_Changed(Event event, const char[] name, bool dontBroadcast)
+// {
+//     //Only do this if active
+//     if (!g_BossMode)
+//     return;
+
+//     //This triggers twice per team switch, once goingo off the team and once arriving to the new team
+//     g_counter++;
+
+//     if (!b_counter){
+//         CreateTimer(0.2, Timer_ResetCounter);
+//         b_counter = true;
+//     }
+    
+// }
+
+// public Action Timer_ResetCounter(Handle timer, any client)
+// {
+
+//     int Unassigned = GetTeamClientCount(0);
+//     int Spectate = GetTeamClientCount(1);
+//     int Red = GetTeamClientCount(2);
+//     int Blue = GetTeamClientCount(3);
+//     int TotalPlayersInATeam = Spectate+Red+Blue+Unassigned;
+
+    
+
+//     if(g_cv_bDebugMode) PrintToChatAll("Total players was %i | counter was %i", TotalPlayersInATeam*2, g_counter); 
+//     //Checks if all players have swapped teams, Counter triggers twice.
+//     //Ignores players in spectate as they can't be team switched
+//     if (g_counter == TotalPlayersInATeam*2-((Spectate*2)-(Unassigned*2))){
+        
+        
+//        if(g_cv_bDebugMode)PrintToChatAll("Teams were switched, robot team is %i", g_RoboTeam);
+
+//         //Changes which team is robot team
+//         switch(g_RoboTeam)
+//         {
+//             case RED:
+//             {
+//                 if(g_cv_bDebugMode)PrintToChatAll("RoboTeam was RED changing to BLUE...");
+//                 g_RoboTeam = BLUE;
+//                 g_HumanTeam = RED;
+//             }
+//             case BLUE:
+//             {
+//                 if(g_cv_bDebugMode)PrintToChatAll("RoboTeam was BLU changing to RED...");
+//                 g_RoboTeam = RED;
+//                 g_HumanTeam = BLUE;
+//             }
+//         }
+//     }else{
+//        if(g_cv_bDebugMode) PrintToChatAll("Teams were not switched");
+//     }
+
+
+//     g_counter = 0;
+//     b_counter = false;
+
+// }
