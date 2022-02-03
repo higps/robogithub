@@ -1,0 +1,19 @@
+"Games"
+{
+	"tf"
+	{
+		"Offsets"
+		{
+			"CTFPlayer::IsDeflectable"
+			{
+				"linux"			"156"
+				"windows"		"155"
+			}
+			//"CTFFlameThrower::DeflectPlayer"
+			//{
+			//	"linux"			"422"
+			//	"windows"		"415"
+			//}
+		}
+	}
+}

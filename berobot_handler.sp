@@ -788,7 +788,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 case TF_CUSTOM_PLASMA_CHARGED: 
                 {
                     damage *= 1.5;
-                    TF2_StunPlayer(victim, 3.5, 0.9, TF_STUNFLAG_SLOWDOWN, attacker);
+                    TF2_StunPlayer(victim, 2.5, 0.75, TF_STUNFLAG_SLOWDOWN, attacker);
                     TF2_AddCondition(victim, TFCond_Sapped, 3.5, attacker);
                     critType = CritType_Crit;
                     return Plugin_Changed;
