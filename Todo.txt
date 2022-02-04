@@ -20,6 +20,8 @@ Become Human Robot:
 3. Volunteer - You now become robot on human team.
 4. Volunteer again, you now get moved to the correct team.
 
+If you mash boss menu button you revert back to human
+
 Sometimes a player who is a robot, but disconnects gets autobalanced to the other team
 
 

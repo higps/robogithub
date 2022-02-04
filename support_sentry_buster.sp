@@ -74,12 +74,12 @@ public void OnPluginEnd()
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-	
+	// PrintToChat(victim,"You died as sentry buster");
 	if (IsRobotWhenDead(victim, ROBOT_NAME))
 	{
 		AboutToExplode[victim] = false;
 		CreateTimer(4.0, Timer_Respawn, victim);
-		//PrintToChat(victim,"Creating timer");
+		// PrintToChat(victim,"Creating timer");
 	}
 
 
@@ -175,7 +175,7 @@ public Action OnTouch(int client, int ent)
 				//PrintToChatAll("not the same team");
 				FakeClientCommand(client, "taunt");
 				g_Taunt_clamp = true;
-				CreateTimer(0.5, FakeCommand_Clamp);
+				CreateTimer(0.1, FakeCommand_Clamp);
 			}
         //	PrintToChatAll("after ent name was %s", entname);
          

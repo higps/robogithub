@@ -252,11 +252,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	char target[32];
 	GetNativeString(3, target, 32);
 
-    //  if(!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
-    // {
-    //     PrintCenterText(client, "You have to be in spawn or dead to select a robot");
-    //     return 0;
-    // }
+
 
     
 	int targetFilter = 0;

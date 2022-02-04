@@ -1294,6 +1294,13 @@ any Native_SetRobot(Handle plugin, int numParams)
     GetNativeString(1, robotname, sizeof(robotname));
     int client = GetNativeCell(2);
 
+        if(!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
+    {
+        PrintCenterText(client, "You have to be in spawn or dead to select a robot");
+        SetClientRepicking(client, false);
+        return;
+    }
+
     int error = CreateRobot(robotname, client, "");
     if (error != 0)
     {

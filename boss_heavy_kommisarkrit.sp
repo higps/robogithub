@@ -204,10 +204,11 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
+	PrecacheSound(LEFTFOOT);
+	PrecacheSound(LEFTFOOT1);
+	PrecacheSound(RIGHTFOOT);
+	PrecacheSound(RIGHTFOOT1);
+
 
 	PrecacheSound(SOUND_GUNFIRE);
 	PrecacheSound(SOUND_GUNSPIN);
