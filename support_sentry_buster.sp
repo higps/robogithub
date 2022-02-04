@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Buster"
-#define ROBOT_ROLE "Support"
+#define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_DESCRIPTION "Explode by taunting"
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
@@ -32,7 +32,7 @@ public Plugin:myinfo =
 }
 
 //new bool:g_bIsGBUSTER[MAXPLAYERS + 1];
-
+bool g_Taunt_clamp = false;
 public OnPluginStart()
 {
     LoadTranslations("common.phrases");
@@ -171,9 +171,11 @@ public Action OnTouch(int client, int ent)
 		//	PrintToChatAll("iBuildingTeam: %i || Client teamL %i", iBuildingTeam, iClientTeam);
 
 
-			if(iClientTeam != iBuildingTeam){
+			if(iClientTeam != iBuildingTeam && !g_Taunt_clamp){
 				//PrintToChatAll("not the same team");
 				FakeClientCommand(client, "taunt");
+				g_Taunt_clamp = true;
+				CreateTimer(0.5, FakeCommand_Clamp);
 			}
         //	PrintToChatAll("after ent name was %s", entname);
          
@@ -261,8 +263,8 @@ MakeBuster(client)
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 2.0);
@@ -316,7 +318,14 @@ stock DoDamage(client, target, amount) // from Goomba Stomp.
 		DispatchKeyValue(pointHurt, "classname", "point_hurt");
 		DispatchKeyValue(target, "targetname", "");
 		RemoveEdict(pointHurt);
+		
 	}
+}
+
+
+public Action FakeCommand_Clamp(Handle timer)
+{
+	g_Taunt_clamp = false;
 }
 
 public TF2_OnConditionAdded(client, TFCond:condition)

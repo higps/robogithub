@@ -251,6 +251,13 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	int client = GetNativeCell(2);
 	char target[32];
 	GetNativeString(3, target, 32);
+
+    //  if(!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
+    // {
+    //     PrintCenterText(client, "You have to be in spawn or dead to select a robot");
+    //     return 0;
+    // }
+
     
 	int targetFilter = 0;
 	if (target[0] == '\0')
@@ -278,12 +285,15 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 		return 2;
 	}
 
+
 	Robot item;
 	if (GetRobotDefinition(name, item) != 0)
 	{
 		// SMLogTag(SML_ERROR, "could not create robot. no robot with name '%s' found", name);
 		return 1;
 	}
+
+
 
 	bool robotWasCreated = false;
 	for (int i = 0; i < target_count; i++)

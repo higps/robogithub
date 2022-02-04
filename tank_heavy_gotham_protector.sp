@@ -323,7 +323,7 @@ stock GiveGDeflectorH(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.3);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.15);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.2);
 			//TF2Attrib_SetByName(Weapon1, "ragdolls become ash", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 109.0);
@@ -331,7 +331,7 @@ stock GiveGDeflectorH(client)
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 			TF2Attrib_SetByName(Weapon1, "move speed penalty", 0.8);
-			
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.7);
 			// TF2Attrib_SetByName(Weapon1, "increased air control", 1000.0);
@@ -364,7 +364,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		float duration = 4.0;
 		TF2_AddCondition(attacker, TFCond_RuneHaste, duration);
-		TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, duration+0.5);
+		// CreateTimer(duration+0.1,RemoveHaste_Timer, attacker);
 		//TF2_AddCondition(attacker, TFCond_RuneResist, duration);
 		// float pos[3];
 		
@@ -429,11 +429,26 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
    }
 }
 
-public Action RemoveHaste_Timer (Handle timer, int client)
+
+public void TF2_OnConditionRemoved(int client, TFCond condition)
 {
-	//PrintToChatAll("REMOVING HAST");
- 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+	//PrintToChatAll("CONDITION REMOVED!");
+	if (IsRobot(client, ROBOT_NAME)){
+
+    if(condition == TFCond_RuneHaste){
+
+		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+
+	}
+   }
+
 }
+
+// public Action RemoveHaste_Timer (Handle timer, int client)
+// {
+// 	//PrintToChatAll("REMOVING HAST");
+ 	
+// }
 
 
 

@@ -747,8 +747,8 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 case TF_CUSTOM_PLASMA_CHARGED: 
                 {
                     damage *= 1.5;
-                    TF2_StunPlayer(victim, 2.5, 0.75, TF_STUNFLAG_SLOWDOWN, attacker);
-                    TF2_AddCondition(victim, TFCond_Sapped, 3.5, attacker);
+                    TF2_StunPlayer(victim, 1.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
+                    TF2_AddCondition(victim, TFCond_Sapped, 1.5, attacker);
                     critType = CritType_Crit;
                     return Plugin_Changed;
 
@@ -1179,7 +1179,11 @@ public Action MakeRobot(int client, bool volunteering)
     else if(!volunteering && g_cv_Volunteered[client]) //Remove from volunteer list
     {
         // SMLogTag(SML_VERBOSE, "volunteer-state changed to false for %L", client);
-        
+    //          if(!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
+    // {
+    //     PrintCenterText(client, "You have to be in spawn or dead to select a robot");
+    //     return;
+    // }
         SetRobot(g_cv_RobotPicked[client], client);
         Reset(client);
         TF2_SwapTeamAndRespawnNoMsg(client, g_HumanTeam);
