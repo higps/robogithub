@@ -34,8 +34,8 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    // SMLogTag(SML_INFO, "berobot_restrictions_timeLeft started at %i", GetTime());
+    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //SMLOGTag(SML_INFO, "berobot_restrictions_timeLeft started at %i", GetTime());
 
     if (!IsEnabled())
         return;
@@ -45,7 +45,7 @@ public void OnPluginStart()
 
 public void MM_OnEnabledChanged(int enabled)
 {
-    // SMLogTag(SML_VERBOSE, "MM_OnEnabledChanged called at %i with value %i", GetTime(), enabled);
+    //SMLOGTag(SML_VERBOSE, "MM_OnEnabledChanged called at %i with value %i", GetTime(), enabled);
     if (enabled == 0)
     {
         KillRestrictionTimer();
@@ -60,7 +60,7 @@ public void MM_OnEnabledChanged(int enabled)
 
 public void OnMapStart()
 {
-    // SMLogTag(SML_VERBOSE, "OnMapStart called at %i", GetTime());
+    //SMLOGTag(SML_VERBOSE, "OnMapStart called at %i", GetTime());
 
     GetRestrictions();
     KillRestrictionTimer();
@@ -69,7 +69,7 @@ public void OnMapStart()
 
 public void MM_OnRobotStorageChanged()
 {
-    // SMLogTag(SML_VERBOSE, "MM_OnRobotStorageChanged called at %i", GetTime());
+    //SMLOGTag(SML_VERBOSE, "MM_OnRobotStorageChanged called at %i", GetTime());
 
     GetRestrictions();
     KillRestrictionTimer();
@@ -78,7 +78,7 @@ public void MM_OnRobotStorageChanged()
 
 public void TimerTimeAdded(Handle event, const char[] name, bool dontBroadcast)
 {
-    // SMLogTag(SML_VERBOSE, "TimerTimeAdded called at %i", GetTime());
+    //SMLOGTag(SML_VERBOSE, "TimerTimeAdded called at %i", GetTime());
 
     KillRestrictionTimer();
     _timer = CreateTimer(0.1, Tick);
@@ -86,7 +86,7 @@ public void TimerTimeAdded(Handle event, const char[] name, bool dontBroadcast)
 
 public void OnSetupFinished(Handle event, const char[] name, bool dontBroadcast)
 {
-    // SMLogTag(SML_VERBOSE, "OnSetupFinished called at %i", GetTime());
+    //SMLOGTag(SML_VERBOSE, "OnSetupFinished called at %i", GetTime());
 
     KillRestrictionTimer();
     _timer = CreateTimer(0.1, Tick);
@@ -120,7 +120,7 @@ void GetRestrictions()
     _restriciton = new ArrayList();
 
     ArrayList restrictions = GetRobotRestrictions();
-    // SMLogTag(SML_VERBOSE, "%i restrictions found", restrictions.Length);
+    //SMLOGTag(SML_VERBOSE, "%i restrictions found", restrictions.Length);
     
     for(int i = 0; i < restrictions.Length; i++)
     {
@@ -133,11 +133,11 @@ void GetRestrictions()
     }
     _restriciton.SortCustom(TimeLeftRestrictionComparision);
 
-    // SMLogTag(SML_VERBOSE, "%i TimeLeft-restrictions set", _restriciton.Length);
+    //SMLOGTag(SML_VERBOSE, "%i TimeLeft-restrictions set", _restriciton.Length);
     for(int i = 0; i < _restriciton.Length; i++)
     {
         TimeLeftRestriction restriction = _restriciton.Get(i);
-        // SMLogTag(SML_VERBOSE, "TimeLeft-restriction %i set: %i", i, restriction.SecondsBeforeEndOfRound);
+        //SMLOGTag(SML_VERBOSE, "TimeLeft-restriction %i set: %i", i, restriction.SecondsBeforeEndOfRound);
     }
 }
  
@@ -145,7 +145,7 @@ Action Tick(Handle timer)
 {
     if (!IsEnabled())
     {
-        // SMLogTag(SML_INFO, "Tick skipped, because MM is disabled.");
+        //SMLOGTag(SML_INFO, "Tick skipped, because MM is disabled.");
         _timer = null;
         return Plugin_Stop;
     }
@@ -154,23 +154,23 @@ Action Tick(Handle timer)
     float endtime;
     if (!teamRoundTimer.GetEndTime(endtime))
     {
-        // SMLogTag(SML_VERBOSE, "round is not timed. TimeLeft-restricitons will not work.");
+        //SMLOGTag(SML_VERBOSE, "round is not timed. TimeLeft-restricitons will not work.");
         DisableFrom(0);
         _timer = null;
         return Plugin_Stop;
     }
 
     float gametime = GetGameTime();
-    // SMLogTag(SML_VERBOSE, "timer tick with gametime %f; endtime %f", gametime, endtime);
+    //SMLOGTag(SML_VERBOSE, "timer tick with gametime %f; endtime %f", gametime, endtime);
     float timeleft = endtime - gametime;
     if (timeleft < 0)
     {
-        // SMLogTag(SML_VERBOSE, "round is over. TimeLeft-restricitons will not work.");
+        //SMLOGTag(SML_VERBOSE, "round is over. TimeLeft-restricitons will not work.");
         DisableFrom(0);
         _timer = null;
         return Plugin_Stop;
     }
-    // SMLogTag(SML_VERBOSE, "timer tick with %f time left", timeleft);
+    //SMLOGTag(SML_VERBOSE, "timer tick with %f time left", timeleft);
 
     int nextRestricitionSecondsBeforeEndOfRound;
     int nextRestricitionIndex = MAX_INT;
@@ -196,7 +196,7 @@ Action Tick(Handle timer)
 
         char msg[256];
         Format(msg, sizeof(msg), "timelimit for robot '%s' is not restricted anymore", robotName);
-        // SMLogTag(SML_VERBOSE, msg);
+        //SMLOGTag(SML_VERBOSE, msg);
         MM_PrintToChatAll(msg);
     }
 
@@ -206,7 +206,7 @@ Action Tick(Handle timer)
     if (nextRestricitionSecondsBeforeEndOfRound <= 0)
     {
         float timeTillEnd = timeleft + 0.1;
-        // SMLogTag(SML_VERBOSE, "no further timeleft-restricitions. setting end of loop in %f seconds", timeTillEnd);
+        //SMLOGTag(SML_VERBOSE, "no further timeleft-restricitions. setting end of loop in %f seconds", timeTillEnd);
         _timer = CreateTimer(timeTillEnd, Tick);
         return Plugin_Stop;
     }
@@ -214,7 +214,7 @@ Action Tick(Handle timer)
     float timeTillNextRestricition = timeleft - float(nextRestricitionSecondsBeforeEndOfRound);
     if (timeTillNextRestricition < 0.1)
         timeTillNextRestricition = 0.1;
-    // SMLogTag(SML_VERBOSE, "setting next timer tick in %f seconds", timeTillNextRestricition);
+    //SMLOGTag(SML_VERBOSE, "setting next timer tick in %f seconds", timeTillNextRestricition);
     _timer = CreateTimer(timeTillNextRestricition, Tick);
     return Plugin_Stop;
 }
@@ -228,7 +228,7 @@ void DisableFrom(int startIndex)
 
         char robotName[NAMELENGTH];
         restriction.GetRobotName(robotName);
-        // SMLogTag(SML_VERBOSE, "timelimit for robot '%s' is restricted", robotName);
+        //SMLOGTag(SML_VERBOSE, "timelimit for robot '%s' is restricted", robotName);
     }
 }
 

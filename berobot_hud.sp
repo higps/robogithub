@@ -34,8 +34,8 @@ Handle _timer;
 
 public void OnPluginStart()
 {
-    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    // SMLogTag(SML_INFO, "berobot_hud started at %i", GetTime());
+    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //SMLOGTag(SML_INFO, "berobot_hud started at %i", GetTime());
 
     _hudSynchronizer = CreateHudSynchronizer();
     if (IsEnabled())
@@ -44,7 +44,7 @@ public void OnPluginStart()
 
 public void MM_OnEnabledChanged(int enabled)
 {
-    // SMLogTag(SML_VERBOSE, "MM_OnEnabledChanged called at %i with value %i", GetTime(), enabled);
+    //SMLOGTag(SML_VERBOSE, "MM_OnEnabledChanged called at %i with value %i", GetTime(), enabled);
     if (enabled == 0)
     {
         Stop();

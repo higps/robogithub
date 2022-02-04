@@ -41,7 +41,7 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
 
@@ -163,7 +163,7 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 
 MakeGiantSoldier(client)
 {
-	// SMLogTag(SML_VERBOSE, "Createing Icebear");
+	//SMLOGTag(SML_VERBOSE, "Createing Icebear");
 	TF2_SetPlayerClass(client, TFClass_Soldier);
 	TF2_RegeneratePlayer(client);
 

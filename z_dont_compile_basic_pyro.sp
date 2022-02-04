@@ -49,7 +49,7 @@ new bool:CanWindDown[MAXPLAYERS+1];
 
 public OnPluginStart()
 {
-    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
     LoadTranslations("common.phrases");
 
@@ -104,7 +104,7 @@ public Action:SetModel(client, const String:model[])
 
 MakeGiantPyro(client)
 {
-	// SMLogTag(SML_VERBOSE, "Createing Agro");
+	//SMLOGTag(SML_VERBOSE, "Createing Agro");
 	TF2_SetPlayerClass(client, TFClass_Pyro);
 	//TF2_RespawnPlayer(client);
 	TF2_RegeneratePlayer(client);

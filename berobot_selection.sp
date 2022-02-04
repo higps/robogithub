@@ -133,7 +133,7 @@ methodmap RobotCategory < StringMap {
     {
         int count = 0;
         int max = 0;
-        SMLogTag(SML_VERBOSE, "hydrating %i Categories in RobotCategory", this.Roles.Size);
+        //SMLOGTag(SML_VERBOSE, "hydrating %i Categories in RobotCategory", this.Roles.Size);
         StringMapSnapshot snapshot = this.Roles.Snapshot();
         for(int i = 0; i < snapshot.Length; i++)
         {
@@ -148,7 +148,7 @@ methodmap RobotCategory < StringMap {
         this.Count = count;
         this.Max = max;
         
-        SMLogTag(SML_VERBOSE, "hydrated RobotCategory %i / %i", this.Count, this.Max);
+        //SMLOGTag(SML_VERBOSE, "hydrated RobotCategory %i / %i", this.Count, this.Max);
     }
 
     public void AddMenuItem(Menu menu)
@@ -262,8 +262,8 @@ char g_selections[MAXPLAYERS + 1][3][NAMELENGTH];
 
 public void OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    SMLogTag(SML_INFO, "berobot_selection started at %i", GetTime());
+    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //SMLOGTag(SML_INFO, "berobot_selection started at %i", GetTime());
 	
     LoadMenuTree();
 }
@@ -284,7 +284,7 @@ public void MM_OnClientReseting(int clientId)
     if (g_chooseRobotMenus[clientId] == null)
         return;
     
-    SMLogTag(SML_VERBOSE, "canceling ChooseRobot-menu for %L", clientId);
+    //SMLOGTag(SML_VERBOSE, "canceling ChooseRobot-menu for %L", clientId);
     g_chooseRobotMenus[clientId].Cancel();
     g_chooseRobotMenus[clientId] = null;
 }
@@ -297,7 +297,7 @@ public void MM_OnRobotStorageChanged()
 public void LoadMenuTree()
 {
     ArrayList robotNames = GetRobotNames();
-    SMLogTag(SML_VERBOSE, "%i robots found", robotNames.Length);
+    //SMLOGTag(SML_VERBOSE, "%i robots found", robotNames.Length);
 
     ArrayList robotDefinitions = new ArrayList(sizeof(Robot));
     for(int i = 0; i < robotNames.Length; i++)
@@ -307,7 +307,7 @@ public void LoadMenuTree()
         Robot item;
         if (GetRobotDefinition(name, item) != 0)
         {
-            SMLogTag(SML_ERROR, "could not volunteer. no robot with name '%s' found", name);
+            //SMLOGTag(SML_ERROR, "could not volunteer. no robot with name '%s' found", name);
             return;
         }
 
@@ -333,7 +333,7 @@ public void LoadMenuTree()
                 menu.SetBosses(bossRobotRole);
             }
             bossRobotRole.Robots.PushArray(robot);
-            SMLogTag(SML_VERBOSE, "adding Boss-Robot %s", robot.name);
+            //SMLOGTag(SML_VERBOSE, "adding Boss-Robot %s", robot.name);
         }
         else
         {
@@ -351,14 +351,14 @@ public void LoadMenuTree()
                 category.Roles.SetValue(robot.role, robotRole);
             }
             robotRole.Robots.PushArray(robot);
-            SMLogTag(SML_VERBOSE, "adding nonBoss-Robot %s (free: %i)", robot.name, isFree);
+            //SMLOGTag(SML_VERBOSE, "adding nonBoss-Robot %s (free: %i)", robot.name, isFree);
         }
     }
 
     StringMap freeCategory = menu.Get(true);
-    SMLogTag(SML_VERBOSE, "Free-Robots %i", freeCategory);
+    //SMLOGTag(SML_VERBOSE, "Free-Robots %i", freeCategory);
     StringMap paidCategory = menu.Get(false);
-    SMLogTag(SML_VERBOSE, "Paid-Robots %i", paidCategory);
+    //SMLOGTag(SML_VERBOSE, "Paid-Robots %i", paidCategory);
 
     menu.Hydrate();
     g_menu = menu;
@@ -416,7 +416,7 @@ void Menu_TopLevel(int clientId)
 
     int timeout = MENU_TIME_FOREVER;
     menu.Display(clientId, timeout);
-    SMLogTag(SML_VERBOSE, "menu displayed to %L for %i seconds", clientId, timeout);
+    //SMLOGTag(SML_VERBOSE, "menu displayed to %L for %i seconds", clientId, timeout);
 
 }
 public int Menu_TopLevel_Handler(Menu menu, MenuAction action, int param1, int param2)
@@ -461,7 +461,7 @@ public int Menu_TopLevel_Handler(Menu menu, MenuAction action, int param1, int p
 
 void Menu_SecondLevel(int clientId, char key[NAMELENGTH])
 {
-    SMLogTag(SML_VERBOSE, "choosing second level based on key %s with first char %c for %L", key, key, clientId);
+    //SMLOGTag(SML_VERBOSE, "choosing second level based on key %s with first char %c for %L", key, key, clientId);
     switch(key[0])
     {
         case 'F':   //Free
@@ -503,7 +503,7 @@ void Menu_RobotCategory(int clientId, RobotCategory category)
 
     int timeout = MENU_TIME_FOREVER;
     menu.Display(clientId, timeout);
-    SMLogTag(SML_VERBOSE, "menu displayed to %L for %i seconds", clientId, timeout);
+    //SMLOGTag(SML_VERBOSE, "menu displayed to %L for %i seconds", clientId, timeout);
 
 }
 public int Menu_RobotCategory_Handler(Menu menu, MenuAction action, int param1, int param2)
@@ -568,7 +568,7 @@ void Menu_ThirdLevel(int clientId, char key[NAMELENGTH])
 
 void Menu_RobotsPerRole(int client, RobotRole robotRole)
 {
-    SMLogTag(SML_VERBOSE, "showing %i robots per role for %L", robotRole.Robots.Length, client);
+    //SMLOGTag(SML_VERBOSE, "showing %i robots per role for %L", robotRole.Robots.Length, client);
 
     Menu menu = new Menu(MenuHandler);
 
@@ -589,7 +589,7 @@ void Menu_RobotsPerRole(int client, RobotRole robotRole)
 
         menu.AddItem(item.name, display, draw);
 
-        SMLogTag(SML_VERBOSE, "added option for %s: %s", item.name, display);
+        //SMLOGTag(SML_VERBOSE, "added option for %s: %s", item.name, display);
     }
     
     if (g_chooseRobotMenus[client] != null)
@@ -598,7 +598,7 @@ void Menu_RobotsPerRole(int client, RobotRole robotRole)
 
     int timeout = MENU_TIME_FOREVER;
     menu.Display(client, timeout);
-    SMLogTag(SML_VERBOSE, "menu displayed to %L for %i seconds", client, timeout);
+    //SMLOGTag(SML_VERBOSE, "menu displayed to %L for %i seconds", client, timeout);
 }
 
 void GenerateNotes(Robot item, int client, char notes[15], int& draw)
@@ -612,8 +612,8 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
         return;
     }
 
-    SMLogTag(SML_VERBOSE, "Restrictions handle %b for robot %s", item.restrictions, item.name);
-    SMLogTag(SML_VERBOSE, "TimeLeft handle %b for robot %s", item.restrictions.TimeLeft, item.name);
+    //SMLOGTag(SML_VERBOSE, "Restrictions handle %b for robot %s", item.restrictions, item.name);
+    //SMLOGTag(SML_VERBOSE, "TimeLeft handle %b for robot %s", item.restrictions.TimeLeft, item.name);
     if (!item.restrictions.TimeLeft.Enabled)
     {
         Format(notes, sizeof(notes), "timeleft: %is", item.restrictions.TimeLeft.SecondsBeforeEndOfRound);

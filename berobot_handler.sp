@@ -138,8 +138,8 @@ public Plugin myinfo =
 };
 public void OnPluginStart()
 {
-    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    // SMLogTag(SML_INFO, "berobot_handler started at %i", GetTime());
+    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //SMLOGTag(SML_INFO, "berobot_handler started at %i", GetTime());
 
     /* Convars */
 //
@@ -820,7 +820,7 @@ bool IsMarketGardner(int weapon)
 
 public void MM_OnRestrictionChanged(char name[NAMELENGTH])
 {
-    // SMLogTag(SML_VERBOSE, "MM_OnRestrictionChanged called at %i", GetTime());
+    //SMLOGTag(SML_VERBOSE, "MM_OnRestrictionChanged called at %i", GetTime());
 
     RedrawChooseRobotMenu();
 }
@@ -838,7 +838,7 @@ public Action Command_BeRobot(int client, int numParams)
 
     
 
-    // SMLogTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
+    //SMLOGTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
     // //Remove the boss healthbar when changing robots, boss health bar is created on boss spawn
     // UnSetBossHealth(client);
 
@@ -1155,13 +1155,13 @@ public Action MakeRobot(int client, bool volunteering)
     if (!g_Enable)
     {
         MM_PrintToChat(client, "Unable to make robot, robot-mode is not enabled");
-        // SMLogTag(SML_VERBOSE, "MakeRobot cancled for %L, because robot-mode is not enabled", client);
+        //SMLOGTag(SML_VERBOSE, "MakeRobot cancled for %L, because robot-mode is not enabled", client);
         return;
     }
 
     if(volunteering && !g_cv_Volunteered[client])
     {
-        // SMLogTag(SML_VERBOSE, "volunteer-state changed to true for %L", client);
+        //SMLOGTag(SML_VERBOSE, "volunteer-state changed to true for %L", client);
 
         g_cv_Volunteered[client] = true;
 
@@ -1171,14 +1171,14 @@ public Action MakeRobot(int client, bool volunteering)
 
         if(g_BossMode)
         {
-            // SMLogTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
+            //SMLOGTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
             //int playerID = GetClientUserId(client);
             MoveToRobots(client);
         }
     }
     else if(!volunteering && g_cv_Volunteered[client]) //Remove from volunteer list
     {
-        // SMLogTag(SML_VERBOSE, "volunteer-state changed to false for %L", client);
+        //SMLOGTag(SML_VERBOSE, "volunteer-state changed to false for %L", client);
     //          if(!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
     // {
     //     PrintCenterText(client, "You have to be in spawn or dead to select a robot");
@@ -1194,7 +1194,7 @@ public Action MakeRobot(int client, bool volunteering)
     }
     else
     {
-        // SMLogTag(SML_VERBOSE, "volunteer-state did not change for %L (still %b)", client, g_cv_Volunteered[client]);
+        //SMLOGTag(SML_VERBOSE, "volunteer-state did not change for %L (still %b)", client, g_cv_Volunteered[client]);
     }
 
     if(g_RoboCapTeam == g_Volunteers.Length)
@@ -1253,7 +1253,7 @@ void SetRandomRobot(int client)
     ArrayList robotNames = GetRobotNames();
     if (robotNames.Length <= 0)
     {
-        // SMLogTag(SML_VERBOSE, "no robots were found. %L will not be turned into a robot.", client);
+        //SMLOGTag(SML_VERBOSE, "no robots were found. %L will not be turned into a robot.", client);
         return;
     }
 
@@ -1261,7 +1261,7 @@ void SetRandomRobot(int client)
     for (;;)  
     {
         int i = GetRandomInt(0, robotNames.Length -1);
-        //SMLogTag(SML_VERBOSE, "picked random %i (between %i and %i)", i, 0, robotNames.Length -1);
+        ////SMLOGTag(SML_VERBOSE, "picked random %i (between %i and %i)", i, 0, robotNames.Length -1);
 
         robotNames.GetString(i, robotname, sizeof(robotname));
 
@@ -1279,12 +1279,12 @@ void SetRandomRobot(int client)
         robotNames.Erase(i);
         if (robotNames.Length <= 0)
         {
-            // SMLogTag(SML_VERBOSE, "no robot left to choose. %L will not be turned into a robot.", client);
+            //SMLOGTag(SML_VERBOSE, "no robot left to choose. %L will not be turned into a robot.", client);
             return;
         }
     }
 
-    // SMLogTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
+    //SMLOGTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
     SetRobot(robotname, client);
 }
 
@@ -1328,35 +1328,35 @@ any Native_RedrawChooseRobotMenuFor(Handle plugin, int numParams)
     
     if(!IsValidClient(clientId))
     {
-        // SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for client %i, because client is not valid", clientId);
+        //SMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for client %i, because client is not valid", clientId);
         return;
     }
 
     if(g_cv_RobotPicked[clientId][0] != '\0' && !IsRepicking(clientId)) //don't open menu for players, who have already picked a robot
     {
-        // SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is already robot and not repicking", clientId);
+        //SMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is already robot and not repicking", clientId);
         return;
     }
 
     if(!IsClientInGame(clientId))
     {
-        // SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is not in game", clientId);
+        //SMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is not in game", clientId);
         return;
     }
 
     if(IsFakeClient(clientId))
     {
-        // SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is fake", clientId);
+        //SMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is fake", clientId);
         return;
     }
 
     if(!g_cv_Volunteered[clientId])
     {
-        // SMLogTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is not a robot", clientId);
+        //SMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is not a robot", clientId);
         return;
     }
 
-    // SMLogTag(SML_VERBOSE, "redrawing ChooseRobotMenu for %L", clientId);
+    //SMLOGTag(SML_VERBOSE, "redrawing ChooseRobotMenu for %L", clientId);
     ChooseRobot(clientId, true);
 }
 
@@ -1569,14 +1569,14 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
     while (g_Volunteers.Length < g_RoboCapTeam)
     {
         bool success = AddRandomVolunteer();
-        // SMLogTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
+        //SMLOGTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
         if (!success)
             break;
     }
     while (g_Volunteers.Length > g_RoboCapTeam)
     {
         bool success = RemoveRandomRobot();
-        // SMLogTag(SML_VERBOSE, "removing random robot succcess: %b", success);
+        //SMLOGTag(SML_VERBOSE, "removing random robot succcess: %b", success);
         if (!success)
             break;
     }
@@ -1603,7 +1603,7 @@ bool AddRandomVolunteer()
 {
     if (!g_BossMode)
     {
-        // SMLogTag(SML_INFO, "will not add random volunteer, because g_BossMode is not enabled");
+        //SMLOGTag(SML_INFO, "will not add random volunteer, because g_BossMode is not enabled");
         return false;
     }
 
@@ -1613,17 +1613,17 @@ bool AddRandomVolunteer()
         ignoredVolunteers[i] = g_Volunteers.Get(i);
     }
     int newVolunteer = GetRandomVolunteer(ignoredVolunteers, g_Volunteers.Length);
-    // SMLogTag(SML_VERBOSE, "GetRandomVolunteer returned %i", newVolunteer);
+    //SMLOGTag(SML_VERBOSE, "GetRandomVolunteer returned %i", newVolunteer);
     if (!IsValidClient(newVolunteer))
     {
-        // SMLogTag(SML_VERBOSE, "no volunteer found notifying players of open spot", newVolunteer);
+        //SMLOGTag(SML_VERBOSE, "no volunteer found notifying players of open spot", newVolunteer);
         int islots = g_RoboCapTeam - g_Volunteers.Length;
         PrintToChatAll("A new robot-slot is available. There is now %i available robot slots remains. Type !volunteer to become a giant robot", islots);
 
         return false;
     }
 
-    // SMLogTag(SML_VERBOSE, "turning %L into a robot", newVolunteer);
+    //SMLOGTag(SML_VERBOSE, "turning %L into a robot", newVolunteer);
     PrintToChatAll("A new robot-slot is available. %N was automatically chosen to fillup the robot-team.", newVolunteer);
     MakeRobot(newVolunteer, true);
     ChangeClientTeam(newVolunteer, g_RoboTeam);
@@ -1635,19 +1635,19 @@ bool RemoveRandomRobot()
 {
     if (!g_BossMode)
     {
-        // SMLogTag(SML_INFO, "will not remove random robot, because g_BossMode is not enabled");
+        //SMLOGTag(SML_INFO, "will not remove random robot, because g_BossMode is not enabled");
         return false;
     }
     if (g_Volunteers.Length == 0)
     {
-        // SMLogTag(SML_INFO, "can't remove random robot, because no volunteers are found");
+        //SMLOGTag(SML_INFO, "can't remove random robot, because no volunteers are found");
         return false;
     }
 
     int clientId = FindRandomVolunteer();
     if (clientId < 0)
     {
-        // SMLogTag(SML_INFO, "can't remove random robot, because no volunteers are found");
+        //SMLOGTag(SML_INFO, "can't remove random robot, because no volunteers are found");
         return false;
     }
 

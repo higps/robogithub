@@ -35,8 +35,8 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    // SMLogTag(SML_INFO, "berobot_restrictions_team started at %i", GetTime());
+    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //SMLOGTag(SML_INFO, "berobot_restrictions_team started at %i", GetTime());
 
     char description[64];
     Format(description, sizeof(description), "add robot-coins for a team (%i for red; %i for blu)", TFTeam_Red, TFTeam_Blue);
@@ -98,7 +98,7 @@ public any Native_PayRobotCoin(Handle plugin, int numParams)
 {
     Restrictions restrictions = view_as<Restrictions>(GetNativeCell(1));
     int clientId = GetNativeCell(2);
-    // SMLogTag(SML_VERBOSE, "paying robot-coins for %L ", clientId);
+    //SMLOGTag(SML_VERBOSE, "paying robot-coins for %L ", clientId);
     
     RobotCoins robotCoins = restrictions.GetRobotCoinsFor(clientId);
     char robotName[NAMELENGTH];
@@ -106,12 +106,12 @@ public any Native_PayRobotCoin(Handle plugin, int numParams)
 
     if (!robotCoins.Active)
     {
-        // SMLogTag(SML_VERBOSE, "%L paying nothing for %s, because it's free", clientId, robotName);
+        //SMLOGTag(SML_VERBOSE, "%L paying nothing for %s, because it's free", clientId, robotName);
         return true;
     }
     if (!robotCoins.Enabled)
     {
-        // SMLogTag(SML_ERROR, "%L could not pay for %s, because it's not enabled yet", clientId, robotName);
+        //SMLOGTag(SML_ERROR, "%L could not pay for %s, because it's not enabled yet", clientId, robotName);
         return false;
     }
     
@@ -120,13 +120,13 @@ public any Native_PayRobotCoin(Handle plugin, int numParams)
     int available = _robotCoins[team];
     if (price > available)
     {
-        // SMLogTag(SML_ERROR, "%L could not pay for %s, because price %i is too high (robot-coins: %i)", clientId, robotName, price, available);
+        //SMLOGTag(SML_ERROR, "%L could not pay for %s, because price %i is too high (robot-coins: %i)", clientId, robotName, price, available);
         return false;
     }
 
     SaveLastUnrestrictedRobot(clientId);
 
-    // SMLogTag(SML_VERBOSE, "%L paying %i from team %i's robot-coins %i for %s", clientId, price, team, available, robotName);
+    //SMLOGTag(SML_VERBOSE, "%L paying %i from team %i's robot-coins %i for %s", clientId, price, team, available, robotName);
     _robotCoins[team] = available - price;
     UpdateRestrictions();
     return true;
@@ -149,7 +149,7 @@ public Action Command_AddRobotCoins(int client, int numParams)
     GetCmdArg(2, rawAmount, sizeof(rawAmount));
     int amount = StringToInt(rawAmount);
     
-    // SMLogTag(SML_VERBOSE, "Command_AddRobotCoins: adding %i bot-coins for team %i", amount, team);
+    //SMLOGTag(SML_VERBOSE, "Command_AddRobotCoins: adding %i bot-coins for team %i", amount, team);
     AddRobotCoins(team, amount);
 
     return Plugin_Handled;
@@ -157,7 +157,7 @@ public Action Command_AddRobotCoins(int client, int numParams)
 
 public void OnMapStart()
 {
-    // SMLogTag(SML_VERBOSE, "OnMapStart called at %i", GetTime());
+    //SMLOGTag(SML_VERBOSE, "OnMapStart called at %i", GetTime());
     GetRestrictions();
     ResetRobotCoins();
 
@@ -169,13 +169,13 @@ public void OnMapStart()
 
 public void MM_OnRobotStorageChanged()
 {
-    // SMLogTag(SML_VERBOSE, "MM_OnRobotStorageChanged called at %i", GetTime());
+    //SMLOGTag(SML_VERBOSE, "MM_OnRobotStorageChanged called at %i", GetTime());
     GetRestrictions();
 }
 
 public void MM_OnEnabledChanged(int enabled)
 {
-    // SMLogTag(SML_VERBOSE, "MM_OnEnabledChanged called at %i with value %i", GetTime(), enabled);
+    //SMLOGTag(SML_VERBOSE, "MM_OnEnabledChanged called at %i with value %i", GetTime(), enabled);
     if (enabled == 0)
     {
         UnhookEvent("player_death", OnDeath, EventHookMode_PostNoCopy);
@@ -187,7 +187,7 @@ public void MM_OnEnabledChanged(int enabled)
 
 void Start()
 {
-    // SMLogTag(SML_VERBOSE, "berobot_restrictions_team started at %i", GetTime());
+    //SMLOGTag(SML_VERBOSE, "berobot_restrictions_team started at %i", GetTime());
 
     GetRestrictions();
     HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy);
@@ -202,15 +202,15 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 {
     int victimUserId = event.GetInt("userid", -1);
     int victimClientId = GetClientOfUserId(victimUserId);
-    // SMLogTag(SML_VERBOSE, "OnDeath called at %i for %L with last unresticted robot %s", GetTime(), victimClientId, _lastUnrestrictedRobot[victimClientId]);
+    //SMLOGTag(SML_VERBOSE, "OnDeath called at %i for %L with last unresticted robot %s", GetTime(), victimClientId, _lastUnrestrictedRobot[victimClientId]);
 
     if (_lastUnrestrictedRobot[victimClientId][0] == '\0')
     {
-        // SMLogTag(SML_VERBOSE, "not resetting %L's robot, because it was not bought", victimClientId);
+        //SMLOGTag(SML_VERBOSE, "not resetting %L's robot, because it was not bought", victimClientId);
         return;
     }
     
-    // SMLogTag(SML_VERBOSE, "resetting %L's bought robot to %s after death", victimClientId, _lastUnrestrictedRobot[victimClientId]);
+    //SMLOGTag(SML_VERBOSE, "resetting %L's bought robot to %s after death", victimClientId, _lastUnrestrictedRobot[victimClientId]);
     CreateRobot(_lastUnrestrictedRobot[victimClientId], victimClientId, "");
     _lastUnrestrictedRobot[victimClientId] = "";
 }
@@ -230,11 +230,11 @@ void ResetRobotCoins()
 
 void SaveLastUnrestrictedRobot(int clientId)
 {
-    // SMLogTag(SML_VERBOSE, "SaveLastUnrestrictedRobot called for %L", clientId);
+    //SMLOGTag(SML_VERBOSE, "SaveLastUnrestrictedRobot called for %L", clientId);
 
     if (!IsAnyRobot(clientId))
     {
-        // SMLogTag(SML_VERBOSE, "ignoring SaveLastUnrestrictedRobot for %L, because client is not a robot", clientId);
+        //SMLOGTag(SML_VERBOSE, "ignoring SaveLastUnrestrictedRobot for %L, because client is not a robot", clientId);
         return;
     }
         
@@ -243,11 +243,11 @@ void SaveLastUnrestrictedRobot(int clientId)
 
     if (IsPaidRobot(clientId, robotName))
     {
-        // SMLogTag(SML_VERBOSE, "ignoring SaveLastUnrestrictedRobot for %L, because client is paid robot", clientId);
+        //SMLOGTag(SML_VERBOSE, "ignoring SaveLastUnrestrictedRobot for %L, because client is paid robot", clientId);
         return;
     }
 
-    // SMLogTag(SML_VERBOSE, "SaveLastUnrestrictedRobot for %L to %s", clientId, robotName);
+    //SMLOGTag(SML_VERBOSE, "SaveLastUnrestrictedRobot for %L to %s", clientId, robotName);
     _lastUnrestrictedRobot[clientId] = robotName;
 }
 
@@ -279,7 +279,7 @@ void UpdateRestrictionsFor(TFTeam team)
         {
             if (!restriction.Enabled)
             {
-                // SMLogTag(SML_VERBOSE, "team %i robot %s: price %i not met (%i robot-coins), but was disabled already", team, robotName, price, _robotCoins[team]);
+                //SMLOGTag(SML_VERBOSE, "team %i robot %s: price %i not met (%i robot-coins), but was disabled already", team, robotName, price, _robotCoins[team]);
                 continue;
             }
 
@@ -288,7 +288,7 @@ void UpdateRestrictionsFor(TFTeam team)
         }
         if (restriction.Enabled)
         {
-            // SMLogTag(SML_VERBOSE, "team %i robot %s: price %i is met (%i robot-coins), but was enabled already", team, robotName, price, _robotCoins[team]);
+            //SMLOGTag(SML_VERBOSE, "team %i robot %s: price %i is met (%i robot-coins), but was enabled already", team, robotName, price, _robotCoins[team]);
             continue;
         }
 
@@ -308,7 +308,7 @@ void SetRestriciton(RobotCoins restriction, char robotName[NAMELENGTH], bool ena
     else
         Format(msg, sizeof(msg), "robot '%s' is restricted by robot-coins again", robotName);
 
-    // SMLogTag(SML_VERBOSE, msg);
+    //SMLOGTag(SML_VERBOSE, msg);
     MM_PrintToChatAll(msg);
 }
 
@@ -318,7 +318,7 @@ void GetRestrictions()
         return;
 
     ArrayList restrictions = GetRobotRestrictions();
-    // SMLogTag(SML_VERBOSE, "%i restrictions found", restrictions.Length);
+    //SMLOGTag(SML_VERBOSE, "%i restrictions found", restrictions.Length);
 
     GetRestriction(TFTeam_Red, restrictions);
     GetRestriction(TFTeam_Blue, restrictions);
@@ -335,7 +335,7 @@ void GetRestriction(TFTeam team, ArrayList restrictions)
         RobotCoins restriction = item.GetRobotCoins(team);
         if (restriction == null)
         {
-            // SMLogTag(SML_ERROR, "could not find RobotCoins for team %i", team);
+            //SMLOGTag(SML_ERROR, "could not find RobotCoins for team %i", team);
             return;
         }
 
@@ -345,11 +345,11 @@ void GetRestriction(TFTeam team, ArrayList restrictions)
 
     _restrictions[team].SortCustom(RobotCoinsComparision);
     
-    // SMLogTag(SML_VERBOSE, "%i robot-coins for team %i set", _restrictions[team].Length, team);
+    //SMLOGTag(SML_VERBOSE, "%i robot-coins for team %i set", _restrictions[team].Length, team);
     for(int i = 0; i < _restrictions[team].Length; i++)
     {
         RobotCoins restriction = _restrictions[team].Get(i);
-        // SMLogTag(SML_VERBOSE, "RobotCoins set for team %i %i: %i PerRobot; %i Overall", team, i, restriction.PerRobot, restriction.Overall);
+        //SMLOGTag(SML_VERBOSE, "RobotCoins set for team %i %i: %i PerRobot; %i Overall", team, i, restriction.PerRobot, restriction.Overall);
     }
 }
 

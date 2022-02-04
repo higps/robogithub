@@ -32,8 +32,8 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    // SMLogTag(SML_INFO, "berobot_restrictions started at %i", GetTime());
+    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //SMLOGTag(SML_INFO, "berobot_restrictions started at %i", GetTime());
 
     _restrictionChangedForward = new GlobalForward("MM_OnRestrictionChanged", ET_Ignore, Param_String);
 }

@@ -32,8 +32,8 @@ Handle g_hEquipWearable;
 
 public void OnPluginStart()
 {
-    // SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-	// SMLogTag(SML_INFO, "berobot_equipment started at %i", GetTime());
+    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	//SMLOGTag(SML_INFO, "berobot_equipment started at %i", GetTime());
 
 	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
 	
