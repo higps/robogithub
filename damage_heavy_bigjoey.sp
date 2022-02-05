@@ -270,7 +270,7 @@ stock GiveBigJoey(client)
 			TF2Attrib_SetByName(Weapon1, "item style override", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.15);
 		}
 	}

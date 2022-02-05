@@ -173,9 +173,11 @@ public Action OnTouch(int client, int ent)
 
 			if(iClientTeam != iBuildingTeam && !g_Taunt_clamp){
 				//PrintToChatAll("not the same team");
+				GetReadyToExplode(client);
 				FakeClientCommand(client, "taunt");
+				TF2_AddCondition(client, TFCond_FreezeInput);
 				g_Taunt_clamp = true;
-				CreateTimer(0.1, FakeCommand_Clamp);
+				CreateTimer(1.5, FakeCommand_Clamp);
 			}
         //	PrintToChatAll("after ent name was %s", entname);
          
@@ -396,7 +398,7 @@ public Action:Bewm(Handle:timer, any:userid)
 	AttachParticle(client, "fluidSmokeExpl_ring_mvm");
 	DoDamage(client, client, 2500);
 	FakeClientCommand(client, "kill");
-	CreateTimer(0.0, Timer_RemoveRagdoll, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+	//CreateTimer(0.0, Timer_RemoveRagdoll, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 	return Plugin_Handled;
 }
 
@@ -434,14 +436,14 @@ public Action:DeleteParticle(Handle:timer, any:Ent)
 	return;
 }
 
-public Action:Timer_RemoveRagdoll(Handle:timer, any:uid)
-{
-	new client = GetClientOfUserId(uid);
-	if (!IsValidClient(client)) return;
-	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
-	if (!IsValidEntity(ragdoll) || ragdoll <= MaxClients) return;
-	AcceptEntityInput(ragdoll, "Kill");
-}
+// public Action:Timer_RemoveRagdoll(Handle:timer, any:uid)
+// {
+// 	new client = GetClientOfUserId(uid);
+// 	if (!IsValidClient(client)) return;
+// 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
+// 	if (!IsValidEntity(ragdoll) || ragdoll <= MaxClients) return;
+// 	AcceptEntityInput(ragdoll, "Kill");
+// }
 
 stock TF2_SetHealth(client, NewHealth)
 {

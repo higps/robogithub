@@ -225,11 +225,11 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 10.0);
 			TF2Attrib_SetByName(Weapon2, "damage penalty", 0.5);
 			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.3);
-			TF2Attrib_SetByName(Weapon2, "spread penalty", 1.5);
+			TF2Attrib_SetByName(Weapon2, "spread penalty", 1.2);
 			
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.6);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.8);
 			//TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
 
 		}

@@ -100,7 +100,7 @@ MakeSolar(client)
 	SetModel(client, GDEKNIGHT);
 
 	float scale = 1.85;	
-	int iHealth = 5000;
+	int iHealth = 10000;
 	
 	
 	int MaxHealth = 175;

@@ -523,8 +523,8 @@ stock GiveBigRoboDane(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
+			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 30.0);
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
@@ -536,13 +536,13 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_RemoveAll(Weapon3);
 			// TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
 			// TF2Attrib_SetByName(Weapon1, "item style override", 1.0);
-			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.85);
+			//TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.0);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.0);
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
 			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 4.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);
+			TF2Attrib_SetByName(Weapon3, "single wep deploy time increased", 1.6);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 6.0);

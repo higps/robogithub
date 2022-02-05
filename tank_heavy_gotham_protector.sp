@@ -252,7 +252,7 @@ MakePanCop(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.15);
+	//TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.15);
 
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
@@ -262,7 +262,7 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	//TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
-	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
+	//TF2Attrib_SetByName(client, "increase buff duration", 10.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
 	TF2Attrib_SetByName(client, "dmg taken from crit increased", 1.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -330,7 +330,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.35);
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
-			TF2Attrib_SetByName(Weapon1, "move speed penalty", 0.8);
+			TF2Attrib_SetByName(Weapon1, "move speed penalty", 0.9);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.7);

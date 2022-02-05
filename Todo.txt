@@ -24,6 +24,8 @@ If you mash boss menu button you revert back to human
 
 Sometimes a player who is a robot, but disconnects gets autobalanced to the other team
 
+Somteimes, selecting a robot doesn't close the menu.
+
 
 unify sounds
  OnMapStart precaches

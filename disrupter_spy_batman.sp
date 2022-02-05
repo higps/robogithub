@@ -269,6 +269,9 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Knife);
 			
 			//TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
+			
+			
+			TF2Attrib_SetByName(Knife, "damage penalty", 0.25);
 			TF2Attrib_SetByName(Knife, "fire rate bonus", 0.55);
 			TF2Attrib_SetByName(Knife, "dmg penalty vs buildings", 0.0);
 		}
@@ -288,28 +291,28 @@ stock GiveBigRoboDane(client)
 
 /* Plugin Exclusive Functions */
 //Code that stuns players
-public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
-{
-    // if (!g_Enable)
-    //     return Plugin_Continue;
-    if(!IsValidClient(victim))
-        return Plugin_Continue;    
-    if(!IsValidClient(attacker))
-        return Plugin_Continue;
+// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+// {
+//     // if (!g_Enable)
+//     //     return Plugin_Continue;
+//     if(!IsValidClient(victim))
+//         return Plugin_Continue;    
+//     if(!IsValidClient(attacker))
+//         return Plugin_Continue;
 
 
-	if(IsRobot(attacker, ROBOT_NAME))
-    {
-		if(damagecustom != TF_CUSTOM_BACKSTAB)
-		{
+// 	if(IsRobot(attacker, ROBOT_NAME))
+//     {
+// 		if(damagecustom != TF_CUSTOM_BACKSTAB)
+// 		{
 			
-			damage = 0.0;
-			return Plugin_Changed;
-		}
-	}  
+// 			damage = 0.0;
+// 			return Plugin_Changed;
+// 		}
+// 	}  
     
     
-}
+// }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
