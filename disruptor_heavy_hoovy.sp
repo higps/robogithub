@@ -318,7 +318,7 @@ public Action HoovyBoom(Handle timer, any data)
 		if(IsClientInGame(client))
 		{
 			GetClientAbsOrigin(client, pos22);
-			if(GetVectorDistance(pos1, pos22) <= 500.0 && TF2_GetClientTeam(attacker) != TF2_GetClientTeam(client))
+			if(GetVectorDistance(pos1, pos22) <= 250.0 && TF2_GetClientTeam(attacker) != TF2_GetClientTeam(client))
 			{
 				SDKHooks_TakeDamage(client, 0, attacker, 650.0, 0, -1);
 				

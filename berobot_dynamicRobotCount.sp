@@ -2,7 +2,7 @@
 #include <sdktools>
 #include <sdkhooks>
 #include <tf2>
-#include <sm_logger>
+//#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 
@@ -36,8 +36,8 @@ bool g_timer;
 
 public void OnPluginStart()
 {
-    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    //SMLOGTag(SML_INFO, "berobot_dynamicRobotCount started at %i", GetTime());
+    //aSMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //aSMLOGTag(SML_INFO, "berobot_dynamicRobotCount started at %i", GetTime());
 
     _enabledConVar = CreateConVar("sm_berobot_dynamicRobotCount_enable", "1", "enables dynamically setting sm_robocap_team from the ratio of humans-to-robot");
     _enabledConVar.AddChangeHook(EnabledConVarChangeHook);
@@ -114,7 +114,7 @@ void SetRoboCapTeam()
     //     robotCount == 1;
     // }
 
-//    //SMLOGTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
+//    //aSMLOGTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
     _roboCapTeamConVar.SetInt(robotCount);
 
     EnsureRobotCount();

@@ -15,14 +15,13 @@
 #include <morecolors_newsyntax>
 #include <sdkhooks>
 #include <sdktools>
-#include <sm_logger>
+//#include <sm_logger>
 #include <sourcemod>
 #include <tf2>
 #include <tf2_stocks>
 #include <tf_ontakedamage>
 #include <tf2_isPlayerInSpawn>
 #include <particle>
-
 // #include <stocksoup/memory>
 // #include <stocksoup/tf/entity_prop_stocks>
 // #include <stocksoup/tf/tempents_stocks>
@@ -87,6 +86,8 @@ bool g_Voted[MAXPLAYERS + 1];
 
 bool g_GoingToDie[MAXPLAYERS + 1] = false;
 int g_TimeBombTime[MAXPLAYERS+1] = { 0, ... };
+int g_PlayerHealth[MAXPLAYERS +1] = -1;
+bool g_PlayerDied[MAXPLAYERS + 1] = false;
 
 GlobalForward _enabledChangedForward;
 GlobalForward _clientReseting;
@@ -138,8 +139,8 @@ public Plugin myinfo =
 };
 public void OnPluginStart()
 {
-    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    //SMLOGTag(SML_INFO, "berobot_handler started at %i", GetTime());
+    //aSMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //aSMLOGTag(SML_INFO, "berobot_handler started at %i", GetTime());
 
     /* Convars */
 //
@@ -210,13 +211,15 @@ public void OnPluginStart()
     AddCommandListener(cmd_blocker, "changeclass");
 	AddCommandListener(cmd_blocker, "joinclass");
 	AddCommandListener(cmd_blocker, "join_class");
+    // AddCommandListener(cmd_blocker, "load_itempreset 0");
+    // AddCommandListener(cmd_blocker, "load_itempreset 1");
+    // AddCommandListener(cmd_blocker, "load_itempreset 2");
+    AddCommandListener(cmd_blocker, "tf_respawn_on_loadoutchanges 1");
 
 
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
     HookEvent("teamplay_round_start", Event_Waiting_Abouttoend, EventHookMode_Post);
-
-    
     
     HookEvent("player_death", Event_Death, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
@@ -272,6 +275,8 @@ void FindAndHookPlayers()
 public void OnClientPutInServer(int client)
 {
 	DHookEntity(g_hIsDeflectable, false, client);
+    g_PlayerDied[client] = false;
+    g_PlayerHealth[client] = -1;
 }
 
 public MRESReturn IsPlayerDeflectable(int pThis, Handle hReturn, Handle hParams)
@@ -382,8 +387,11 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         
         //PrintToChatAll("%N spawned, checking if boss", client);
         MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
-
-        //CreateTimer(1.0, Boss_check, client);
+        //FakeClientCommand(client, "tf_respawn_on_loadoutchanges 0");
+        if (!g_PlayerDied[client]){
+            //PrintToChatAll("Player didn't die, setting health!");
+            CreateTimer(0.5, Timer_SetHealth, client);
+        } 
     }
             // int Humans = GetTeamClientCount(g_HumanTeam);
     // if (!IsBoss(client)){
@@ -469,6 +477,8 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
         if (IsAnyRobot(victim))
         {
 
+            g_PlayerDied[victim] = true;
+
             CreateTimer(0.0, RemoveBody, victim);
             float position[3];
             GetEntPropVector(victim, Prop_Data, "m_vecOrigin", position);	
@@ -518,6 +528,26 @@ public Action Timer_Respawn(Handle timer, any client)
     }
 }
 // 
+
+
+// public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
+// {
+
+//     int client = GetClientOfUserId(GetEventInt(event, "userid"));
+//     if (IsAnyRobot(client) && g_BossMode)
+//     {
+//         PrintToChatAll("Creating the timer");
+//         CreateTimer(1.0, Timer_SetHealth, client);
+//     }
+// }
+
+public Action Timer_SetHealth(Handle timer, any client)
+{
+    //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
+        int currenthealth = GetClientHealth(client);
+        if (g_PlayerHealth[client] > 0 || g_PlayerHealth[client] < currenthealth) TF2_SetHealth(client, g_PlayerHealth[client]);
+        //PrintHintText(client,"You have instant respawn as scout");
+}
 
 public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dontBroadcast)
 {
@@ -618,10 +648,10 @@ public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 
     if(isMiniBoss(pThis)){
         //PrintToChatAll("1");
-
+    PrintCenterText(pThis,"Error: Incompatible locker, must be a human");
     //sets the robot health when touch
-	int maxhealth = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, pThis);
-        SetEntityHealth(pThis, maxhealth);
+	// int maxhealth = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, pThis);
+    //     SetEntityHealth(pThis, maxhealth);
         return MRES_Supercede; 
     }
 
@@ -679,10 +709,19 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
 
     //if(g_cv_bDebugMode) PrintToChatAll("On damage happened");
-    
+    if (IsAnyRobot(victim))
+    {
+         //Code to track each robot health to prevent abuse with loadout rsupply
+        int health = GetClientHealth(victim);
+        if(g_cv_bDebugMode)PrintToChatAll("Setting health for %N to %i", victim, health);
+        g_PlayerHealth[victim] = health;
+        g_PlayerDied[victim] = false;
+    }
     if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
     {
-        // Checks if boss is on
+
+       
+
 
 
                 if(damagecustom == TF_CUSTOM_BACKSTAB)
@@ -820,7 +859,7 @@ bool IsMarketGardner(int weapon)
 
 public void MM_OnRestrictionChanged(char name[NAMELENGTH])
 {
-    //SMLOGTag(SML_VERBOSE, "MM_OnRestrictionChanged called at %i", GetTime());
+    //aSMLOGTag(SML_VERBOSE, "MM_OnRestrictionChanged called at %i", GetTime());
 
     RedrawChooseRobotMenu();
 }
@@ -838,7 +877,7 @@ public Action Command_BeRobot(int client, int numParams)
 
     
 
-    //SMLOGTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
+    //aSMLOGTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
     // //Remove the boss healthbar when changing robots, boss health bar is created on boss spawn
     // UnSetBossHealth(client);
 
@@ -1155,13 +1194,13 @@ public Action MakeRobot(int client, bool volunteering)
     if (!g_Enable)
     {
         MM_PrintToChat(client, "Unable to make robot, robot-mode is not enabled");
-        //SMLOGTag(SML_VERBOSE, "MakeRobot cancled for %L, because robot-mode is not enabled", client);
+        //aSMLOGTag(SML_VERBOSE, "MakeRobot cancled for %L, because robot-mode is not enabled", client);
         return;
     }
 
     if(volunteering && !g_cv_Volunteered[client])
     {
-        //SMLOGTag(SML_VERBOSE, "volunteer-state changed to true for %L", client);
+        //aSMLOGTag(SML_VERBOSE, "volunteer-state changed to true for %L", client);
 
         g_cv_Volunteered[client] = true;
 
@@ -1171,14 +1210,14 @@ public Action MakeRobot(int client, bool volunteering)
 
         if(g_BossMode)
         {
-            //SMLOGTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
+            //aSMLOGTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
             //int playerID = GetClientUserId(client);
             MoveToRobots(client);
         }
     }
     else if(!volunteering && g_cv_Volunteered[client]) //Remove from volunteer list
     {
-        //SMLOGTag(SML_VERBOSE, "volunteer-state changed to false for %L", client);
+        //aSMLOGTag(SML_VERBOSE, "volunteer-state changed to false for %L", client);
     //          if(!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
     // {
     //     PrintCenterText(client, "You have to be in spawn or dead to select a robot");
@@ -1194,7 +1233,7 @@ public Action MakeRobot(int client, bool volunteering)
     }
     else
     {
-        //SMLOGTag(SML_VERBOSE, "volunteer-state did not change for %L (still %b)", client, g_cv_Volunteered[client]);
+        //aSMLOGTag(SML_VERBOSE, "volunteer-state did not change for %L (still %b)", client, g_cv_Volunteered[client]);
     }
 
     if(g_RoboCapTeam == g_Volunteers.Length)
@@ -1253,7 +1292,7 @@ void SetRandomRobot(int client)
     ArrayList robotNames = GetRobotNames();
     if (robotNames.Length <= 0)
     {
-        //SMLOGTag(SML_VERBOSE, "no robots were found. %L will not be turned into a robot.", client);
+        //aSMLOGTag(SML_VERBOSE, "no robots were found. %L will not be turned into a robot.", client);
         return;
     }
 
@@ -1261,7 +1300,7 @@ void SetRandomRobot(int client)
     for (;;)  
     {
         int i = GetRandomInt(0, robotNames.Length -1);
-        ////SMLOGTag(SML_VERBOSE, "picked random %i (between %i and %i)", i, 0, robotNames.Length -1);
+        ////aSMLOGTag(SML_VERBOSE, "picked random %i (between %i and %i)", i, 0, robotNames.Length -1);
 
         robotNames.GetString(i, robotname, sizeof(robotname));
 
@@ -1279,12 +1318,12 @@ void SetRandomRobot(int client)
         robotNames.Erase(i);
         if (robotNames.Length <= 0)
         {
-            //SMLOGTag(SML_VERBOSE, "no robot left to choose. %L will not be turned into a robot.", client);
+            //aSMLOGTag(SML_VERBOSE, "no robot left to choose. %L will not be turned into a robot.", client);
             return;
         }
     }
 
-    //SMLOGTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
+    //aSMLOGTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
     SetRobot(robotname, client);
 }
 
@@ -1328,35 +1367,35 @@ any Native_RedrawChooseRobotMenuFor(Handle plugin, int numParams)
     
     if(!IsValidClient(clientId))
     {
-        //SMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for client %i, because client is not valid", clientId);
+        //aSMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for client %i, because client is not valid", clientId);
         return;
     }
 
     if(g_cv_RobotPicked[clientId][0] != '\0' && !IsRepicking(clientId)) //don't open menu for players, who have already picked a robot
     {
-        //SMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is already robot and not repicking", clientId);
+        //aSMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is already robot and not repicking", clientId);
         return;
     }
 
     if(!IsClientInGame(clientId))
     {
-        //SMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is not in game", clientId);
+        //aSMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is not in game", clientId);
         return;
     }
 
     if(IsFakeClient(clientId))
     {
-        //SMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is fake", clientId);
+        //aSMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is fake", clientId);
         return;
     }
 
     if(!g_cv_Volunteered[clientId])
     {
-        //SMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is not a robot", clientId);
+        //aSMLOGTag(SML_VERBOSE, "not redrawing ChooseRobotMenu for %L, because client is not a robot", clientId);
         return;
     }
 
-    //SMLOGTag(SML_VERBOSE, "redrawing ChooseRobotMenu for %L", clientId);
+    //aSMLOGTag(SML_VERBOSE, "redrawing ChooseRobotMenu for %L", clientId);
     ChooseRobot(clientId, true);
 }
 
@@ -1497,12 +1536,20 @@ public Action Timer_Kill(Handle timer, any client)
 
 public Action cmd_blocker(int client, const char[] command, int argc)
 {	
+    //PrintToChatAll("TEST");
 	if (!IsAnyRobot(client) && g_BossMode && !TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
 	{
 		PrintCenterText(client,"You can only change class in spawn");
 		
 		return Plugin_Handled;
 	}
+    else if (IsAnyRobot(client) && g_BossMode && IsPlayerAlive(client))
+    {
+        PrintCenterText(client,"Unable to change class. Use !cr to change robot or !stuck if you are stuck");
+
+        return Plugin_Handled;
+    }
+
 	else
 	{
 		return Plugin_Continue;
@@ -1569,14 +1616,14 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
     while (g_Volunteers.Length < g_RoboCapTeam)
     {
         bool success = AddRandomVolunteer();
-        //SMLOGTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
+        //aSMLOGTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
         if (!success)
             break;
     }
     while (g_Volunteers.Length > g_RoboCapTeam)
     {
         bool success = RemoveRandomRobot();
-        //SMLOGTag(SML_VERBOSE, "removing random robot succcess: %b", success);
+        //aSMLOGTag(SML_VERBOSE, "removing random robot succcess: %b", success);
         if (!success)
             break;
     }
@@ -1603,7 +1650,7 @@ bool AddRandomVolunteer()
 {
     if (!g_BossMode)
     {
-        //SMLOGTag(SML_INFO, "will not add random volunteer, because g_BossMode is not enabled");
+        //aSMLOGTag(SML_INFO, "will not add random volunteer, because g_BossMode is not enabled");
         return false;
     }
 
@@ -1613,17 +1660,17 @@ bool AddRandomVolunteer()
         ignoredVolunteers[i] = g_Volunteers.Get(i);
     }
     int newVolunteer = GetRandomVolunteer(ignoredVolunteers, g_Volunteers.Length);
-    //SMLOGTag(SML_VERBOSE, "GetRandomVolunteer returned %i", newVolunteer);
+    //aSMLOGTag(SML_VERBOSE, "GetRandomVolunteer returned %i", newVolunteer);
     if (!IsValidClient(newVolunteer))
     {
-        //SMLOGTag(SML_VERBOSE, "no volunteer found notifying players of open spot", newVolunteer);
+        //aSMLOGTag(SML_VERBOSE, "no volunteer found notifying players of open spot", newVolunteer);
         int islots = g_RoboCapTeam - g_Volunteers.Length;
         PrintToChatAll("A new robot-slot is available. There is now %i available robot slots remains. Type !volunteer to become a giant robot", islots);
 
         return false;
     }
 
-    //SMLOGTag(SML_VERBOSE, "turning %L into a robot", newVolunteer);
+    //aSMLOGTag(SML_VERBOSE, "turning %L into a robot", newVolunteer);
     PrintToChatAll("A new robot-slot is available. %N was automatically chosen to fillup the robot-team.", newVolunteer);
     MakeRobot(newVolunteer, true);
     ChangeClientTeam(newVolunteer, g_RoboTeam);
@@ -1635,19 +1682,19 @@ bool RemoveRandomRobot()
 {
     if (!g_BossMode)
     {
-        //SMLOGTag(SML_INFO, "will not remove random robot, because g_BossMode is not enabled");
+        //aSMLOGTag(SML_INFO, "will not remove random robot, because g_BossMode is not enabled");
         return false;
     }
     if (g_Volunteers.Length == 0)
     {
-        //SMLOGTag(SML_INFO, "can't remove random robot, because no volunteers are found");
+        //aSMLOGTag(SML_INFO, "can't remove random robot, because no volunteers are found");
         return false;
     }
 
     int clientId = FindRandomVolunteer();
     if (clientId < 0)
     {
-        //SMLOGTag(SML_INFO, "can't remove random robot, because no volunteers are found");
+        //aSMLOGTag(SML_INFO, "can't remove random robot, because no volunteers are found");
         return false;
     }
 
@@ -1687,6 +1734,12 @@ stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
     int irandomclass = GetRandomInt(1, 9);
     TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
     TF2_RespawnPlayer(client);
+}
+
+stock void TF2_SetHealth(int client, int NewHealth)
+{
+	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
 }
 
 

@@ -263,7 +263,7 @@ stock bool ClassHasDeepRobotVoiceLines(TFClassType class)
 		case TFClass_Spy: return false;
 		default: 
 		{
-			//SMLOGTag(SML_ERROR, "unknown class when checking for deep robot voice lines: %s", class);
+			//aSMLOGTag(SML_ERROR, "unknown class when checking for deep robot voice lines: %s", class);
 			return false;
 		}
 	}
@@ -392,12 +392,12 @@ methodmap TimeLeftRestriction < TimeLeftRestrictionDefinition {
         this.SetString("RobotName", robotName);
         if (definition == null)
         {
-        //SMLOGTag(SML_VERBOSE, "TimeLeftRestrictionDefinition does not exist");
+        //aSMLOGTag(SML_VERBOSE, "TimeLeftRestrictionDefinition does not exist");
             return this;
         }
-        //SMLOGTag(SML_VERBOSE, "assigning SecondsBeforeEndOfRound to %i", definition.SecondsBeforeEndOfRound);
+        //aSMLOGTag(SML_VERBOSE, "assigning SecondsBeforeEndOfRound to %i", definition.SecondsBeforeEndOfRound);
         this.SecondsBeforeEndOfRound = definition.SecondsBeforeEndOfRound;
-        //SMLOGTag(SML_VERBOSE, "SecondsBeforeEndOfRound is %i", this.SecondsBeforeEndOfRound);
+        //aSMLOGTag(SML_VERBOSE, "SecondsBeforeEndOfRound is %i", this.SecondsBeforeEndOfRound);
         return this;
     }
 }
@@ -448,12 +448,12 @@ methodmap RobotCoins < RobotCoinRestrictionDefinition {
     {
         if (definition == null)
         {
-            //SMLOGTag(SML_VERBOSE, "RobotCoinRestrictionDefinition does not exist");
+            //aSMLOGTag(SML_VERBOSE, "RobotCoinRestrictionDefinition does not exist");
             return this;
         }
-        //SMLOGTag(SML_VERBOSE, "assigning PerRobot to %i", definition.PerRobot);
+        //aSMLOGTag(SML_VERBOSE, "assigning PerRobot to %i", definition.PerRobot);
         this.PerRobot = definition.PerRobot;
-        //SMLOGTag(SML_VERBOSE, "assigning Overall to %i", definition.Overall);
+        //aSMLOGTag(SML_VERBOSE, "assigning Overall to %i", definition.Overall);
         this.Overall = definition.Overall;
         
         return this;
@@ -529,7 +529,7 @@ methodmap Restrictions < StringMap {
     {
         if (definition == null)
         {
-            //SMLOGTag(SML_VERBOSE, "RestrictionsDefinition created");
+            //aSMLOGTag(SML_VERBOSE, "RestrictionsDefinition created");
             definition = new RestrictionsDefinition();
         }
         TimeLeftRestriction timeLeft = new TimeLeftRestriction();        

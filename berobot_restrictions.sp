@@ -2,7 +2,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
-#include <sm_logger>
+//#include <sm_logger>
 #include <morecolors_newsyntax>
 #include <berobot_constants>
 #include <berobot_core_restrictions>
@@ -32,8 +32,8 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    //SMLOGTag(SML_INFO, "berobot_restrictions started at %i", GetTime());
+    //aSMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //aSMLOGTag(SML_INFO, "berobot_restrictions started at %i", GetTime());
 
     _restrictionChangedForward = new GlobalForward("MM_OnRestrictionChanged", ET_Ignore, Param_String);
 }
