@@ -390,7 +390,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         //FakeClientCommand(client, "tf_respawn_on_loadoutchanges 0");
         if (!g_PlayerDied[client]){
             //PrintToChatAll("Player didn't die, setting health!");
-            CreateTimer(0.5, Timer_SetHealth, client);
+          //  CreateTimer(0.5, Timer_SetHealth, client);
         } 
     }
             // int Humans = GetTeamClientCount(g_HumanTeam);
@@ -545,7 +545,7 @@ public Action Timer_SetHealth(Handle timer, any client)
 {
     //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
         int currenthealth = GetClientHealth(client);
-        if (g_PlayerHealth[client] > 0 || g_PlayerHealth[client] < currenthealth) TF2_SetHealth(client, g_PlayerHealth[client]);
+        if (g_PlayerHealth[client] > 0) TF2_SetHealth(client, g_PlayerHealth[client]);
         //PrintHintText(client,"You have instant respawn as scout");
 }
 
@@ -1101,6 +1101,8 @@ public Action Command_RoboVote(int client, int args)
 public Action Command_ChangeRobot(int client, int args)
 {
 
+    if (g_cv_bDebugMode)PrintToChatAll("Got to 1");
+
     if (!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
     {
         PrintCenterText(client, "You can only change robot when in spawn or dead");
@@ -1125,6 +1127,20 @@ public Action Command_ChangeRobot(int client, int args)
     int target_list[MAXPLAYERS], target_count;
     bool tn_is_ml;
 
+
+    //For the times when someone is not a robot, but is on the robot team.
+    int iTeam = GetClientTeam(client);
+    
+    if (g_cv_bDebugMode)PrintToChatAll("Client team was %i:", iTeam);
+    if (g_cv_bDebugMode)PrintToChatAll("Robogteam was: %i", g_RoboTeam);
+
+    if (iTeam == g_RoboTeam){
+    if (g_cv_bDebugMode)PrintToChatAll("Attempting to allow menu selection for %N", client);
+    SetClientRepicking(client, true);
+    ChooseRobot(client);
+    return Plugin_Handled;
+    }
+
     if((target_count = ProcessTargetString(
           target,
           client,
@@ -1142,14 +1158,16 @@ public Action Command_ChangeRobot(int client, int args)
     for(int i = 0; i < target_count; i++)
     {
         int targetClientId = target_list[i];
+
         if (!IsAnyRobot(targetClientId))
             continue;
+
 
         g_cv_Volunteered[targetClientId] = true;
         SetClientRepicking(targetClientId, true);
         ChooseRobot(targetClientId);
     }
-            
+
     return Plugin_Handled;
 }
 
@@ -1309,8 +1327,10 @@ void SetRandomRobot(int client)
         {
             Robot item;
             GetRobotDefinition(robotname, item);
-            if (item.restrictions.IsEnabled())
+            if (!item.restrictions.IsActive())
             {
+                if(g_cv_bDebugMode)PrintToChatAll("For %N, the restriction was active for %s, i was: %i", client, robotname, i);
+                //SetRandomRobot(client);
                 break;
             }
         }        
@@ -1318,6 +1338,7 @@ void SetRandomRobot(int client)
         robotNames.Erase(i);
         if (robotNames.Length <= 0)
         {
+            if(g_cv_bDebugMode)PrintToChatAll("no robot left to choose. %N will not be turned into a robot.", client);
             //aSMLOGTag(SML_VERBOSE, "no robot left to choose. %L will not be turned into a robot.", client);
             return;
         }

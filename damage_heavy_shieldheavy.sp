@@ -7,9 +7,9 @@
 #include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Rager"
+#define ROBOT_NAME	"Shield-Heavy"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Use rage to push enemies back!"
+#define ROBOT_DESCRIPTION "Use rage create a shield!"
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -59,7 +59,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 4; 
+    restrictions.RobotCoins.Overall = 6; 
 
     AddRobot(robot, MakeGRageH, PLUGIN_VERSION, restrictions);
 }
@@ -181,7 +181,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "head scale", 0.75);
+	//TF2Attrib_SetByName(client, "head scale", 0.75);
 
 	UpdatePlayerHitbox(client, scale);
    
@@ -203,9 +203,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGRageH(client);
 }
 
-#define Mask 1087
-#define Panzer 1088
-#define Madmask 30815
+#define Starboard 30981
+#define Tsar 30980
+//#define Madmask 30815
 
  
 stock GiveGRageH(client)
@@ -218,12 +218,12 @@ stock GiveGRageH(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_minigun", 15, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_minigun", 41, 6, 1, 2, 0);
 
 
-		CreateRoboHat(client, Mask, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, Panzer, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, Madmask, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, Starboard, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, Tsar, 10, 6, 0.0, 1.0, -1.0); 
+		//CreateRoboHat(client, Madmask, 10, 6, 0.0, 1.0, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
@@ -233,9 +233,13 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
 			TF2Attrib_SetByName(Weapon1, "generate rage on damage", 1.0);
-			TF2Attrib_SetByName(Weapon1, "increase buff duration", 1.0);
+			TF2Attrib_SetByName(Weapon1, "increase buff duration", 0.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
+			TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 1.0);
+			
 			TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
+			////TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");		
+			TF2CustAttr_SetString(Weapon1, "minigun rage creates shield on deploy", "level=1.0 min_rage=1.0 rage_cancelable=0.0 rage_redeployable=1.0");
 			TF2Attrib_SetByName(Weapon1, "spread penalty", scale);
 
 		}
