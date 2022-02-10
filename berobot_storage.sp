@@ -2,7 +2,7 @@
 #include <sdktools>
 #include <sdkhooks>
 #include <tf2>
-#include <sm_logger>
+//#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 
@@ -42,8 +42,8 @@ public void Init()
     if (_init)
         return;
 
-    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    //SMLOGTag(SML_INFO, "berobot_store started at %i", GetTime());
+    //aSMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //aSMLOGTag(SML_INFO, "berobot_store started at %i", GetTime());
 
     _robots = new StringMap();
     _init = true;
@@ -81,7 +81,7 @@ public Action Command_DumpRobotStorage(int client, int numParams)
         Robot item;
         _robots.GetArray(name, item, sizeof(item));
         
-        //SMLOGTag(SML_INFO, "Robot {%s: %s, callback: %x, sounds: {spawn: %s}, restrictions: {timeLeft: %i}}", 
+        //aSMLOGTag(SML_INFO, "Robot {%s: %s, callback: %x, sounds: {spawn: %s}, restrictions: {timeLeft: %i}}", 
         //    item.name, item.class, item.callback, item.sounds.spawn, item.restrictions.TimeLeft);
     }
     }
@@ -106,7 +106,7 @@ public any Native_AddRobot(Handle plugin, int numParams)
     if (numParams >= 5)
         robotCoinsOnDeath = GetNativeCell(5);
 
-    //SMLOGTag(SML_VERBOSE, "adding robot %s from plugin-handle %x", robotDefinition.name, plugin);
+    //aSMLOGTag(SML_VERBOSE, "adding robot %s from plugin-handle %x", robotDefinition.name, plugin);
 
     char simpleName[NAMELENGTH];
     simpleName = robotDefinition.name;
@@ -135,10 +135,10 @@ public any Native_AddRobot(Handle plugin, int numParams)
 
     robot.robotCoinsOnDeath = robotCoinsOnDeath;
 
-    //SMLOGTag(SML_VERBOSE, "robot %s uses privateForward %x", robot.name, privateForward);
-    //SMLOGTag(SML_VERBOSE, "robot %s is class %s", robot.name, robot.class);
-    //SMLOGTag(SML_VERBOSE, "robot %s has sounds {spawn: %s; loop: %s; death: %s }", robot.name, robot.sounds.spawn, robot.sounds.loop, robot.sounds.death);
-    //SMLOGTag(SML_VERBOSE, "robot %s has timeleft-restrictions {Active: %b; SecondsBeforeEndOfRound: %i }", robot.name, robot.restrictions.TimeLeft.Active, robot.restrictions.TimeLeft.SecondsBeforeEndOfRound);
+    //aSMLOGTag(SML_VERBOSE, "robot %s uses privateForward %x", robot.name, privateForward);
+    //aSMLOGTag(SML_VERBOSE, "robot %s is class %s", robot.name, robot.class);
+    //aSMLOGTag(SML_VERBOSE, "robot %s has sounds {spawn: %s; loop: %s; death: %s }", robot.name, robot.sounds.spawn, robot.sounds.loop, robot.sounds.death);
+    //aSMLOGTag(SML_VERBOSE, "robot %s has timeleft-restrictions {Active: %b; SecondsBeforeEndOfRound: %i }", robot.name, robot.restrictions.TimeLeft.Active, robot.restrictions.TimeLeft.SecondsBeforeEndOfRound);
 
     _robots.SetArray(robot.name, robot, sizeof(robot));
     OnRobotStorageChanged();
@@ -153,7 +153,7 @@ public any Native_RemoveRobot(Handle plugin, int numParams)
 
     if (!_robots.Remove(name))
     {
-        //SMLOGTag(SML_VERBOSE, "could not remove robot. no robot with name '%s' found", name);
+        //aSMLOGTag(SML_VERBOSE, "could not remove robot. no robot with name '%s' found", name);
         return 1;
     }
 
@@ -189,7 +189,7 @@ public any Native_GetRobotClass(Handle plugin, int numParams)
 	Robot item;
 	if (!_robots.GetArray(name, item, sizeof(item)))
 	{
-		//SMLOGTag(SML_ERROR, "could not retrieve class. no robot with name '%s' found", name);
+		//aSMLOGTag(SML_ERROR, "could not retrieve class. no robot with name '%s' found", name);
 		return 1;
 	}
 
@@ -207,7 +207,7 @@ public any Native_GetRobotDefinition(Handle plugin, int numParams)
 	Robot item;
 	if (!_robots.GetArray(name, item, sizeof(item)))
 	{
-		//SMLOGTag(SML_ERROR, "could not retrieve class. no robot with name '%s' found", name);
+		//aSMLOGTag(SML_ERROR, "could not retrieve class. no robot with name '%s' found", name);
 		return 1;
 	}
 

@@ -2,7 +2,7 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
-#include <sm_logger>
+//#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
@@ -67,7 +67,7 @@ enum(<<= 1)
 
 public void OnPluginStart()
 {
-    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    //aSMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
     LoadTranslations("common.phrases");
 
@@ -216,7 +216,7 @@ public Action:BossHomer(clients[64], &numClients, String:sample[PLATFORM_MAX_PAT
 
 MakeGiantSoldier(client)
 {
-	//SMLOGTag(SML_VERBOSE, "Createing Homer");
+	//aSMLOGTag(SML_VERBOSE, "Createing Homer");
 	TF2_SetPlayerClass(client, TFClass_Soldier);
 	TF2_RegeneratePlayer(client);
 

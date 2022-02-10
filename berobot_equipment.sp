@@ -1,7 +1,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
-#include <sm_logger>
+//#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 #include <tf2_stocks>
@@ -32,8 +32,8 @@ Handle g_hEquipWearable;
 
 public void OnPluginStart()
 {
-    //SMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-	//SMLOGTag(SML_INFO, "berobot_equipment started at %i", GetTime());
+    //aSMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	//aSMLOGTag(SML_INFO, "berobot_equipment started at %i", GetTime());
 
 	GameData hTF2 = new GameData("sm-tf2.games"); // sourcemod's tf2 gamdata
 	
