@@ -6,7 +6,6 @@
 #include <berobot_constants>
 #include <berobot>
 //#include <sendproxy>
-#include <tfobjects>
 #include <dhooks>
 
 #define PLUGIN_VERSION "1.0"

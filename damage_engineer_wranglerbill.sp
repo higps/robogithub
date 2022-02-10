@@ -7,7 +7,6 @@
 #include <berobot_constants>
 #include <berobot>
 //#include <sendproxy>
-#include <tfobjects>
 #include <dhooks>
 #include <sdktools>
 //#include <collisionhook>

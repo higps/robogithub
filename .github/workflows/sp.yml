@@ -1,0 +1,173 @@
+name: Compile with SourceMod
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sm-version: [ '1.10.x']
+        # sm-version: [ '1.10.x', '1.10.6528', '1.11.x', '1.11.6467', '>= 1.11.6478']
+
+    name: SM version ${{ matrix.sm-version }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set environment variables
+        run: echo SCRIPTS_PATH=$(pwd) >> $GITHUB_ENV
+
+      - name: create folders
+        run: |
+          mkdir -p "./lib-include/stocksoup/tf/"
+        working-directory: ${{ env.SCRIPTS_PATH }}
+
+      - name: Setup SourcePawn Compiler ${{ matrix.SM_VERSION }}
+        id: Setup_SourcePawn
+        uses: rumblefrog/setup-sp@master
+        with:
+          version: ${{ matrix.sm-version }}
+          version-file: ./berobot_handler.sp
+          define-name: PLUGIN_VERSION
+      - name: diag for Setup_SourcePawn
+        run: |
+          echo outputs = ${{ join(steps.Setup_SourcePawn.outputs.*, ', ') }}
+          echo version = ${{ steps.Setup_SourcePawn.outputs.version }}
+          echo plugin-version = ${{ steps.Setup_SourcePawn.outputs.plugin-version }}
+        working-directory: ${{ env.SCRIPTS_PATH }}
+
+      # Dependecies
+        # nosoop/tf2attributes
+      - name: Download nosoop/tf2attributes
+        uses: Legion2/download-release-action@v2.1.0
+        with:
+          repository: nosoop/tf2attributes
+          tag: '1.7.1.1'
+          path: './lib-include'
+          file: tf2attributes.inc
+        # nosoop/SM-TFCustAttr
+      - name: Download nosoop/SM-TFCustAttr
+        uses: Legion2/download-release-action@v2.1.0
+        with:
+          repository: nosoop/SM-TFCustAttr
+          tag: 'workflow-build8'
+          path: './lib-zips'
+          file: package.zip
+      - name: Unzip nosoop/SM-TFCustAttr
+        uses: montudor/action-zip@v1
+        with:
+          args: unzip -qq lib-zips/package.zip -d lib-zips/SM-TFCustAttr-workflow-build8
+      - name: copy nosoop/SM-TFCustAttr        
+        uses: canastro/copy-file-action@master
+        with:
+          source: "lib-zips/SM-TFCustAttr-workflow-build8/scripting/include/tf_custom_attributes.inc"
+          target: "./lib-include/tf_custom_attributes.inc"
+        # nosoop/SM-TFOnTakeDamage
+      - name: Download nosoop/SM-TFOnTakeDamage
+        uses: Legion2/download-release-action@v2.1.0
+        with:
+          repository: nosoop/SM-TFOnTakeDamage
+          tag: '1.2.0'
+          path: './lib-include'
+          file: tf_ontakedamage.inc
+        # morecolors_newsyntax.inc
+      - name: Download morecolors_newsyntax.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/JoinedSenses/SourceMod-IncludeLibrary/master/include/morecolors.inc'
+          location: './lib-download'
+      - name: copy morecolors_newsyntax.inc       
+        uses: canastro/copy-file-action@master
+        with:
+          source: "./lib-download/morecolors.inc"
+          target: "./lib-include/morecolors_newsyntax.inc"
+        # peace-maker/DHooks2
+      - name: Download peace-maker/DHooks2
+        uses: Legion2/download-release-action@v2.1.0
+        with:
+          repository: peace-maker/DHooks2
+          tag: 'v2.2.0-detours17'
+          path: './lib-zips'
+          file: dhooks-2.2.0-detours17-sm110.zip
+      - name: Unzip peace-maker/DHooks2
+        uses: montudor/action-zip@v1
+        with:
+          args: unzip -qq lib-zips/dhooks-2.2.0-detours17-sm110.zip -d lib-zips/dhooks-2.2.0-detours17-sm110
+      - name: copy peace-maker/DHooks2        
+        uses: canastro/copy-file-action@master
+        with:
+          source: "lib-zips/dhooks-2.2.0-detours17-sm110/addons/sourcemod/scripting/include/dhooks.inc"
+          target: "./lib-include/dhooks.inc"
+        # morecolors.inc
+      - name: Download particle.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/GIider/Upgrademod/master/third_party/sourcemod/scripting/include/particle.inc'
+          location: './lib-include'
+        # sm_logger.inc
+      - name: Download sm_logger.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/raziEiL/SM-Logger/master/scripting/include/sm_logger.inc'
+          location: './lib-include'
+        # tf2_isPlayerInSpawn.inc
+      - name: Download tf2_isPlayerInSpawn.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'http://ddhoward.com/sourcemod/updater/scripting/include/tf2_isPlayerInSpawn.inc'
+          location: './lib-include'
+        # stocksoup/tf/teams.inc
+      - name: Download entity_prop_stocks.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/teams.inc'
+          location: './lib-include/stocksoup/tf'
+        # stocksoup/tf/entity_prop_stocks.inc
+      - name: Download entity_prop_stocks.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/entity_prop_stocks.inc'
+          location: './lib-include/stocksoup/tf'
+        # tf_cattr_buff_override.inc
+      - name: Download tf_cattr_buff_override.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/SM-TFCustomAttributeStarterPack/master/scripting/include/tf_cattr_buff_override.inc'
+          location: './lib-include'
+
+
+      # Compile
+      - name: Compile plugins
+        run: |
+          mkdir plugins
+          for file in *.sp;
+          do
+            if [[ $file == "joke"* ]]; then
+                echo "skipping " $file
+                continue;
+            fi
+            if [[ $file == *"dont_compile"* ]]; then
+                echo "skipping " $file
+                continue;
+            fi
+            if [[ $file == *"don_compile"* ]]; then
+                echo "skipping " $file
+                continue;
+            fi
+            if [[ $file == *"test"* ]]; then
+                echo "skipping " $file
+                continue;
+            fi
+            echo -e "\nCompiling $file..."
+            spcomp -O2 -v2 -i include -i lib-include -o "plugins/$(basename -- "$file" .sp).smx" $file
+          done
+          echo "===OUT FILES==="
+          ls
+          echo "===PLUGINS FILES==="
+          cd plugins
+          ls
+          echo "===VERSIONS==="
+          echo version = ${{ steps.Setup_SourcePawn.outputs.version }}
+          echo plugin-version = ${{ steps.Setup_SourcePawn.outputs.plugin-version }}
+        working-directory: ${{ env.SCRIPTS_PATH }}

@@ -6,7 +6,6 @@
 #include <berobot_constants>
 #include <berobot>
 //#include <sendproxy>
-#include <tfobjects>
 #include <dhooks>
 //#include <tf2items_giveweapon>
 #include <tf_ontakedamage.inc>

@@ -2,7 +2,6 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <sdkhooks>
-#include <tfobjects>
 #include <dhooks>
 
 Handle g_hGameConf;
