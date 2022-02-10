@@ -33,8 +33,7 @@
 #define sBoomNoise2  "weapons/tacky_grenadier_explode2.wav"
 #define sBoomNoise3  "weapons/tacky_grenadier_explode3.wav"
 
-#define ALLFATHER 647
-#define BMOC 97
+
 //#define GIFTBRINGER 30747
 
 public Plugin:myinfo =
@@ -169,7 +168,7 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 5000;
+	int iHealth = 3000;
 	
 	
 	int MaxHealth = 300;
@@ -225,7 +224,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	if (IsValidClient(client))
 		GiveGDeflectorH(client);
 }
- 
+#define ALLFATHER 647
+#define Toque 97
 stock GiveGDeflectorH(client)
 {
 	if (IsValidClient(client))
@@ -252,12 +252,9 @@ stock GiveGDeflectorH(client)
 
 
 		//void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale, float style);
-		//Default robo head scale = 0.75
-		CreateRoboHat(client, ALLFATHER, 10, 6, 16738740.0, 1.0, -1.0);//Rotation sensation
-		CreateRoboHat(client, BMOC, 10, 6, 0.0, 0.0, -1.0);//Summer shades
-	//	CreateRoboHat(client, GIFTBRINGER, 10, 6, 0.0, 1.0, -1.0);//Weightroom warmer
-		//Weapon Code
-		//CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, float style (-1.0 for none) );
+		CreateRoboHat(client, ALLFATHER, 10, 6, 0.0, 1.0, -1.0);//Rotation sensation
+		CreateRoboHat(client, Toque, 10, 6, 0.0, 1.0, -1.0);//Summer shades
+
 		CreateRoboWeapon(client, "tf_weapon_fists", 656, 6, 1, 0, 0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -318,7 +315,7 @@ public Action HoovyBoom(Handle timer, any data)
 		if(IsClientInGame(client))
 		{
 			GetClientAbsOrigin(client, pos22);
-			if(GetVectorDistance(pos1, pos22) <= 250.0 && TF2_GetClientTeam(attacker) != TF2_GetClientTeam(client))
+			if(GetVectorDistance(pos1, pos22) <= 400.0 && TF2_GetClientTeam(attacker) != TF2_GetClientTeam(client))
 			{
 				SDKHooks_TakeDamage(client, 0, attacker, 650.0, 0, -1);
 				
