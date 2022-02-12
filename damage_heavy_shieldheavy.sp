@@ -9,7 +9,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Shield-Heavy"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Use rage create a shield!"
+#define ROBOT_DESCRIPTION "Rage + Shield"
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

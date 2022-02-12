@@ -9,7 +9,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Rager"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Use rage to push enemies back!"
+#define ROBOT_DESCRIPTION "Pushback rage"
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

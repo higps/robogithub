@@ -622,12 +622,25 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
     }
 
     RobotCoins robotCoins = item.restrictions.GetRobotCoinsFor(client);
+
+
     if (!robotCoins.Enabled)
     {
-        Format(notes, sizeof(notes), "robot-coins: %i", robotCoins.GetPrice());
+        Format(notes, sizeof(notes), "R₡: %i", robotCoins.GetPrice());
         draw = ITEMDRAW_DISABLED;
         return;
     }
+    int RobotCost = robotCoins.GetPrice();
+   // PrintToChatAll("RoboCost %i", RobotCost);
+    if (RobotCost > 0)
+    {
+        Format(notes, sizeof(notes), "R₡: %i", robotCoins.GetPrice());
+        draw = ITEMDRAW_DEFAULT;
+        return;
+    }
+
+
+
 
     Format(notes, sizeof(notes), "%i / %i", count, roboCap);
     draw = ITEMDRAW_DEFAULT;

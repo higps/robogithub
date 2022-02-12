@@ -11,7 +11,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Buster"
 #define ROBOT_ROLE "Sentry Buster"
-#define ROBOT_DESCRIPTION "Explode by taunting"
+#define ROBOT_DESCRIPTION ""
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
 #define SPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"
@@ -50,7 +50,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 3;
+    restrictions.RobotCoins.Overall = 2;
 
 	AddRobot(robot, MakeBuster, PLUGIN_VERSION, restrictions);
 

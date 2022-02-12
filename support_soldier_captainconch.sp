@@ -7,9 +7,9 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Captain Conch"
+#define ROBOT_NAME	"Capt Conch"
 #define ROBOT_ROLE "Support"
-#define ROBOT_DESCRIPTION "Black Box, Concheror"
+#define ROBOT_DESCRIPTION "Conch"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -195,8 +195,8 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
@@ -226,6 +226,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 #define HONGKONGCONE 30177
+#define ShogunShoulderGuard 30126
 
 stock GiveGiantSoldier(client)
 {
@@ -244,8 +245,10 @@ stock GiveGiantSoldier(client)
 		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 100.0);
 
 		CreateRoboHat(client, HONGKONGCONE, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, ShogunShoulderGuard, 10, 6, 0.0, 0.75, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
 		if(IsValidEntity(Weapon1))
 		{
@@ -256,7 +259,15 @@ stock GiveGiantSoldier(client)
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.6);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.85);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon1, "health on radius damage", 50.0);
+			TF2Attrib_SetByName(Weapon1, "health on radius damage", 30.0);
+		}
+
+		if(IsValidEntity(Weapon2))
+		{
+			TF2Attrib_RemoveAll(Weapon2);
+			TF2Attrib_SetByName(Weapon2, "maxammo primary increased", 2.5);
+			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);				
+			TF2Attrib_SetByName(Weapon2, "restore health on kill", 25.0);
 		}
 	}
 }

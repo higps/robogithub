@@ -96,6 +96,6 @@ void DrawTeamHud(TFTeam team, int r, int g, int b, int a)
         if (actualTeam != team)
             continue;
 
-        ShowSyncHudText(i, _hudSynchronizer, "robot-coins: %i", robotCoins);
+        ShowSyncHudText(i, _hudSynchronizer, "Robot-₡oins: %i", robotCoins);
     }
 }

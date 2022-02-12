@@ -304,9 +304,9 @@ void SetRestriciton(RobotCoins restriction, char robotName[NAMELENGTH], bool ena
     
     char msg[256];
     if (enable)
-        Format(msg, sizeof(msg), "robot '%s' is not restricted by robot-coins anymore", robotName);
+        Format(msg, sizeof(msg), "Robot '%s' now available for purchase", robotName);
     else
-        Format(msg, sizeof(msg), "robot '%s' is restricted by robot-coins again", robotName);
+        Format(msg, sizeof(msg), "Robot '%s' currently not affordable", robotName);
 
     //aSMLOGTag(SML_VERBOSE, msg);
     MM_PrintToChatAll(msg);

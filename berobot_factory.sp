@@ -301,7 +301,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         if (!paid)
         {
             char msg[256];
-            Format(msg, 256, "could not pay for robot %s, please try again.", name);
+            Format(msg, 256, "could not pay for robot %s, please try again when you have enough coins.", name);
             MM_PrintToChat(targetClientId, msg);
 
             //aSMLOGTag(SML_ERROR, "could not create robot '%s'. could not pay robot-coins", name);
@@ -454,7 +454,7 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
         if (newRobotName[0] == '\0')
             MC_PrintToChatEx(otherRobotClientIndex, otherRobotClientIndex, "{teamcolor}%N switching from '%s'", clientId, wasRobot);
         else
-            MC_PrintToChatEx(otherRobotClientIndex, otherRobotClientIndex, "{teamcolor}%N switching from '%s' to '%s'", clientId, wasRobot, newRobotName);
+            MC_PrintToChatEx(otherRobotClientIndex, otherRobotClientIndex, "{teamcolor}%N switched from '%s' to '%s'", clientId, wasRobot, newRobotName);
     }
 
     Reset(clientId);

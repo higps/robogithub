@@ -11,7 +11,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Mystery Machine"
-#define ROBOT_ROLE "Support"
+#define ROBOT_ROLE "Anti-Sentry"
 #define ROBOT_DESCRIPTION "Shoot your gun"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
@@ -59,11 +59,11 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 
-	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    // restrictions.RobotCoins.PerRobot = 1;
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.Overall = 3; 
 
-    AddRobot(robot, MakeSpy, PLUGIN_VERSION, null);
+    AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 
 	PrecacheModel(MODEL);
 	PrecacheSound(SPAWN);

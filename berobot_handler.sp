@@ -87,7 +87,6 @@ bool g_Voted[MAXPLAYERS + 1];
 bool g_GoingToDie[MAXPLAYERS + 1] = false;
 int g_TimeBombTime[MAXPLAYERS+1] = { 0, ... };
 int g_PlayerHealth[MAXPLAYERS +1] = -1;
-bool g_PlayerDied[MAXPLAYERS + 1] = false;
 
 GlobalForward _enabledChangedForward;
 GlobalForward _clientReseting;
@@ -275,7 +274,7 @@ void FindAndHookPlayers()
 public void OnClientPutInServer(int client)
 {
 	DHookEntity(g_hIsDeflectable, false, client);
-    g_PlayerDied[client] = false;
+
     g_PlayerHealth[client] = -1;
 }
 
@@ -388,9 +387,9 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         //PrintToChatAll("%N spawned, checking if boss", client);
         MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
         //FakeClientCommand(client, "tf_respawn_on_loadoutchanges 0");
-        if (!g_PlayerDied[client]){
+        if (g_PlayerHealth[client] != -1){
             //PrintToChatAll("Player didn't die, setting health!");
-          //  CreateTimer(0.5, Timer_SetHealth, client);
+           CreateTimer(0.5, Timer_SetHealth, client);
         } 
     }
             // int Humans = GetTeamClientCount(g_HumanTeam);
@@ -476,8 +475,9 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
        
         if (IsAnyRobot(victim))
         {
-
-            g_PlayerDied[victim] = true;
+            
+            //To deal with players using loadout switches to gain health back
+            g_PlayerHealth[victim] = -1;
 
             CreateTimer(0.0, RemoveBody, victim);
             float position[3];
@@ -536,7 +536,7 @@ public Action Timer_Respawn(Handle timer, any client)
 //     int client = GetClientOfUserId(GetEventInt(event, "userid"));
 //     if (IsAnyRobot(client) && g_BossMode)
 //     {
-//         PrintToChatAll("Creating the timer");
+//         if(g_cv_bDebugMode)PrintToChatAll("Creating the timer");
 //         CreateTimer(1.0, Timer_SetHealth, client);
 //     }
 // }
@@ -545,7 +545,13 @@ public Action Timer_SetHealth(Handle timer, any client)
 {
     //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
         int currenthealth = GetClientHealth(client);
-        if (g_PlayerHealth[client] > 0) TF2_SetHealth(client, g_PlayerHealth[client]);
+        if (g_cv_bDebugMode)PrintToChatAll("Current health %i", currenthealth);
+        if (g_cv_bDebugMode)PrintToChatAll("g_Player health for %N was %i", client, g_PlayerHealth[client]);
+        if (g_PlayerHealth[client] < currenthealth)
+        { 
+        TF2_SetHealth(client, g_PlayerHealth[client]);
+
+        }
         //PrintHintText(client,"You have instant respawn as scout");
 }
 
@@ -646,7 +652,7 @@ public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 {
     //Activates when doing OnRegenerate (touchihng resupply locker) and then ignoring it if you are a boss
 
-    if(isMiniBoss(pThis)){
+    if(isMiniBoss(pThis) && IsPlayerAlive(pThis)){
         //PrintToChatAll("1");
     PrintCenterText(pThis,"Error: Incompatible locker, must be a human");
     //sets the robot health when touch
@@ -713,9 +719,9 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     {
          //Code to track each robot health to prevent abuse with loadout rsupply
         int health = GetClientHealth(victim);
-        if(g_cv_bDebugMode)PrintToChatAll("Setting health for %N to %i", victim, health);
-        g_PlayerHealth[victim] = health;
-        g_PlayerDied[victim] = false;
+        int intdamage = RoundToCeil(damage);
+        g_PlayerHealth[victim] = health - intdamage;
+        if(g_cv_bDebugMode)PrintToChatAll("Setting health for %N to %i", victim, g_PlayerHealth[victim]);
     }
     if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
     {
@@ -733,22 +739,6 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     return Plugin_Changed;
                 }
 
-                // //                if(damagecustom == TF_CUSTOM_BACKSTAB)
-                // {
-                //     int MaxHealth = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, victim);
-                //     if(g_cv_bDebugMode)PrintToChatAll("MAXHEALTH WAS %i", MaxHealth);
-
-                //     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-                //     damage = float(MaxHealth)/g_CV_flSpyBackStabModifier;
-                //     critType = CritType_Crit;
-
-                //     if (damage > 170.0){
-                //         damage = 166.67;
-                //     }
-                //     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                //     return Plugin_Changed;
-                // }
-
                 switch (damagecustom)
                 {
                 case TF_CUSTOM_TAUNT_HADOUKEN, TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, 
@@ -758,6 +748,18 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                  TF_CUSTOM_TAUNTATK_GASBLAST:
                 {
                     damage *= 3.0;
+                    return Plugin_Changed;
+                }
+                }
+
+                switch (damagecustom)
+                {
+                case TF_CUSTOM_CHARGE_IMPACT:
+                {
+                    //damage *= 1.5;
+                    if (IsTank(victim)){
+                        TF2_StunPlayer(victim, 0.5, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
+                    }
                     return Plugin_Changed;
                 }
                 //TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
@@ -797,18 +799,23 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             if (iClassAttacker == TFClass_Heavy)
             {
                 int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
-
                     
                 if (weapon == iWeapon)
                 {
                     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-                    damage *= 0.75;
+                    damage *= 0.8;
                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                     return Plugin_Changed;
                     
                 }
                     
                     
+            }
+
+            if (IsElectric(weapon) && IsAnyRobot(victim))
+            {
+                TF2_StunPlayer(victim, 0.5, 0.4, TF_STUNFLAG_SLOWDOWN, attacker);
+                TF2_AddCondition(victim, TFCond_Sapped, 0.5, attacker);
             }
             
             if (iClassAttacker == TFClass_DemoMan && !IsAnyRobot(attacker))
@@ -849,7 +856,22 @@ bool IsMarketGardner(int weapon)
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 		//If Market gardner gets skins in future with different indices, add them here
-	case 416: //Reserve Shooter
+	case 416: //Market Gardner
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsElectric(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If Market gardner gets skins in future with different indices, add them here
+	case 528, 442, 588: //Reserve Shooter
 		{
 			return true;
 		}
@@ -1136,8 +1158,12 @@ public Action Command_ChangeRobot(int client, int args)
 
     if (iTeam == g_RoboTeam){
     if (g_cv_bDebugMode)PrintToChatAll("Attempting to allow menu selection for %N", client);
+    
+    g_PlayerHealth[client] = -1;
+
     SetClientRepicking(client, true);
     ChooseRobot(client);
+    
     return Plugin_Handled;
     }
 
@@ -1162,7 +1188,7 @@ public Action Command_ChangeRobot(int client, int args)
         if (!IsAnyRobot(targetClientId))
             continue;
 
-
+        g_PlayerHealth[client] = -1;
         g_cv_Volunteered[targetClientId] = true;
         SetClientRepicking(targetClientId, true);
         ChooseRobot(targetClientId);
@@ -1568,7 +1594,11 @@ public Action cmd_blocker(int client, const char[] command, int argc)
     {
         PrintCenterText(client,"Unable to change class. Use !cr to change robot or !stuck if you are stuck");
 
+        SetClientRepicking(client, true);
+        ChooseRobot(client);
+        
         return Plugin_Handled;
+
     }
 
 	else

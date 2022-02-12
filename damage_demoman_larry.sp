@@ -5,11 +5,12 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
+#include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Mortar Mack"
-#define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Scatter Shot"
+#define ROBOT_NAME	"Loch'n Larry"
+#define ROBOT_ROLE "Anti-Sentry"
+#define ROBOT_DESCRIPTION "Rapid Loch-n-Load"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -47,9 +48,11 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 
-	
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.Overall = 3; 
 
-    AddRobot(robot, MakeSolar, PLUGIN_VERSION);
+    AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
 }
 
 public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -191,7 +194,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	GiveGiantDemoKnight(client);
 }
 
-#define ScotchBonnet 306
+#define HazardHeadgear 31115
+#define BlastBlocker 30945
 
 stock GiveGiantDemoKnight(client)
 {
@@ -205,10 +209,11 @@ stock GiveGiantDemoKnight(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 
-		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 19, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 308, 6, 1, 2, 0);
 		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
 
-		CreateRoboHat(client, ScotchBonnet, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, HazardHeadgear, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, BlastBlocker, 10, 6, 0.0, 0.75, -1.0); 
 		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
 		//CreateHat(client, 30945, 10, 6, false);//blast locker
 
@@ -220,19 +225,36 @@ stock GiveGiantDemoKnight(client)
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 3.5);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.1);
-			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 1.15);
+			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.4);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.8);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.15);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.3);
-			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 10.0);
-			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.4);
-			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
+			//TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.9);
+			// TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
+			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 0.5);
+			TF2Attrib_SetByName(Weapon1, "fuse bonus", 2.4);
+			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
 			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
 			// TF2Attrib_SetByName(Weapon1, "grenade no spin", 0.0);
 		}
+	}
+}
+
+public void OnEntityCreated(int iEntity, const char[] sClassName) 
+{
+	if (StrContains(sClassName, "tf_projectile") == 0)
+	{
+		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+	}
+	
+}
+
+public void Hook_OnProjectileSpawn(iEntity) {
+	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
 	}
 }
 

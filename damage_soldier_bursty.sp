@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bursty"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Anti-Sentry"
 #define ROBOT_DESCRIPTION "Burst fire 3 rockets"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -83,7 +83,11 @@ public OnPluginStart()
     // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
     // restrictions.RobotCoins.Overall = 5;
 
-    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.Overall = 3; 
+
+    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
 
 public void OnPluginEnd()
@@ -266,7 +270,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 #define Patriot 30780
-//#define SteelShako 30017
+#define TheCloudCrasher 30071
 stock GiveGiantPyro(client)
 {
 	if (IsValidClient(client))
@@ -284,6 +288,7 @@ stock GiveGiantPyro(client)
 		
 		
 		CreateRoboHat(client, Patriot, 10, 6, 0.0, 0.75, -1.0);
+		CreateRoboHat(client, TheCloudCrasher, 10, 6, 6901050.0, 0.75, -1.0);
 	//	CreateRoboHat(client, SteelShako, 10, 6, 0.0, 0.75, -1.0);
 
 	//	CreateHat(client, 30050, 10, 6, true); //Gatebot
