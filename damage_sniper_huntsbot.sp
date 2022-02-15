@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Huntsbot"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Support"
 #define ROBOT_DESCRIPTION "Penetrating Huntsman"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"

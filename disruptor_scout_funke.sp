@@ -169,15 +169,13 @@ MakeGiantscout(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
-	TF2Attrib_SetByName(client, "damage force reduction", 1.25);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.25);
-	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	TF2Attrib_SetByName(client, "damage force increase", 100.25);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 2.25);
+	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 2.0);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
-	
 	TF2Attrib_SetByName(client, "increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
@@ -236,13 +234,13 @@ stock GiveGiantPyro(client)
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 		}
 
-				int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
-			TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
+			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
+			// TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
 			
 			// TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.8);
 			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);

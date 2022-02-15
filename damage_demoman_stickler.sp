@@ -44,7 +44,7 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeToofty, PLUGIN_VERSION, null, 2);
+    AddRobot(robot, MakeToofty, PLUGIN_VERSION);
 
 	AddNormalSoundHook(BossMortar);
 }

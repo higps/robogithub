@@ -228,7 +228,7 @@ stock GiveGiantDemoKnight(client)
 			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.4);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.8);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.15);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.8);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.9);
@@ -242,19 +242,19 @@ stock GiveGiantDemoKnight(client)
 	}
 }
 
-public void OnEntityCreated(int iEntity, const char[] sClassName) 
-{
-	if (StrContains(sClassName, "tf_projectile") == 0)
-	{
-		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-	}
+// public void OnEntityCreated(int iEntity, const char[] sClassName) 
+// {
+// 	if (StrContains(sClassName, "tf_projectile") == 0)
+// 	{
+// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+// 	}
 	
-}
+// }
 
-public void Hook_OnProjectileSpawn(iEntity) {
-	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
-	}
-}
+// public void Hook_OnProjectileSpawn(iEntity) {
+// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+// 	}
+// }
 

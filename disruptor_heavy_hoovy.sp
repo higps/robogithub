@@ -307,7 +307,7 @@ public Action HoovyBoom(Handle timer, any data)
 	TeleportEntity(particle, pos22, NULL_VECTOR, NULL_VECTOR);
 	DispatchSpawn(particle);
 	ActivateEntity(particle);
-	float pos2[3];
+//	float pos2[3];
 //	float ignitetime = GetConVarFloat(FindConVar("sharpened_volcano_fragment_firetime"));
 	
 	for(int client = 1 ; client <= MaxClients ; client++ )
@@ -315,7 +315,7 @@ public Action HoovyBoom(Handle timer, any data)
 		if(IsClientInGame(client))
 		{
 			GetClientAbsOrigin(client, pos22);
-			if(GetVectorDistance(pos1, pos22) <= 400.0 && TF2_GetClientTeam(attacker) != TF2_GetClientTeam(client))
+			if(GetVectorDistance(pos1, pos22) <= 300.0 && TF2_GetClientTeam(attacker) != TF2_GetClientTeam(client))
 			{
 				SDKHooks_TakeDamage(client, 0, attacker, 650.0, 0, -1);
 				

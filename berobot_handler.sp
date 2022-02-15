@@ -547,9 +547,9 @@ public Action Timer_SetHealth(Handle timer, any client)
         int currenthealth = GetClientHealth(client);
         if (g_cv_bDebugMode)PrintToChatAll("Current health %i", currenthealth);
         if (g_cv_bDebugMode)PrintToChatAll("g_Player health for %N was %i", client, g_PlayerHealth[client]);
-        if (g_PlayerHealth[client] < currenthealth)
+        if (g_PlayerHealth[client] < currenthealth && g_PlayerHealth[client] <= 0)
         { 
-        TF2_SetHealth(client, g_PlayerHealth[client]);
+        //TF2_SetHealth(client, g_PlayerHealth[client]);
 
         }
         //PrintHintText(client,"You have instant respawn as scout");
@@ -754,7 +754,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                 switch (damagecustom)
                 {
-                case TF_CUSTOM_CHARGE_IMPACT:
+                case TF_CUSTOM_CHARGE_IMPACT, TF_CUSTOM_BOOTS_STOMP, TF_CUSTOM_BASEBALL:
                 {
                     //damage *= 1.5;
                     if (IsTank(victim)){

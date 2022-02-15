@@ -35,7 +35,7 @@ public Action MakeTestWeapon(int client, int args)
 {
 		//TF2_RemoveWeaponSlot(client, 0);
 		
-		CreateTestWeapon(client, "tf_weapon_medigun", 29, 6, 1, 1, 0);
+	//	CreateTestWeapon(client, "tf_weapon_medigun", 29, 6, 1, 1, 0);
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 
