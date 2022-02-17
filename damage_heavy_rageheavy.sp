@@ -238,6 +238,8 @@ stock GiveGRageH(client)
 			TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
 			TF2Attrib_SetByName(Weapon1, "spread penalty", scale);
 
+			TF2CustAttr_SetString(Weapon1, "generate rage on damage patch", "disable_rage_damage_penalty=1.0");
+
 		}
 		
 		PrintHintText(client, "Taunt To activate rage mode!");

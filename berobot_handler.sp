@@ -386,8 +386,9 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         
         //PrintToChatAll("%N spawned, checking if boss", client);
         MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
+        if(g_cv_bDebugMode)PrintToChatAll("%N spawned, with %i health from previous life", client, g_PlayerHealth[client]);
         //FakeClientCommand(client, "tf_respawn_on_loadoutchanges 0");
-        if (g_PlayerHealth[client] != -1){
+        if (g_PlayerHealth[client] > 0){
             //PrintToChatAll("Player didn't die, setting health!");
            CreateTimer(0.5, Timer_SetHealth, client);
         } 
@@ -547,9 +548,9 @@ public Action Timer_SetHealth(Handle timer, any client)
         int currenthealth = GetClientHealth(client);
         if (g_cv_bDebugMode)PrintToChatAll("Current health %i", currenthealth);
         if (g_cv_bDebugMode)PrintToChatAll("g_Player health for %N was %i", client, g_PlayerHealth[client]);
-        if (g_PlayerHealth[client] < currenthealth && g_PlayerHealth[client] <= 0)
+        if (g_PlayerHealth[client] < currenthealth && g_PlayerHealth[client] != -1)
         { 
-        //TF2_SetHealth(client, g_PlayerHealth[client]);
+        TF2_SetHealth(client, g_PlayerHealth[client]);
 
         }
         //PrintHintText(client,"You have instant respawn as scout");
@@ -714,15 +715,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
     TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
 
-    //if(g_cv_bDebugMode) PrintToChatAll("On damage happened");
-    if (IsAnyRobot(victim))
-    {
-         //Code to track each robot health to prevent abuse with loadout rsupply
-        int health = GetClientHealth(victim);
-        int intdamage = RoundToCeil(damage);
-        g_PlayerHealth[victim] = health - intdamage;
-        if(g_cv_bDebugMode)PrintToChatAll("Setting health for %N to %i", victim, g_PlayerHealth[victim]);
-    }
+
     if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
     {
 
@@ -765,6 +758,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 //TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
                 }
     }
+
+
     return Plugin_Continue;
 }
 
@@ -780,6 +775,19 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
 
     //if(g_cv_bDebugMode) PrintToChatAll("On damage happened");
+
+            //Code to handle remembering damage to prevent spawn shenanigans for robots
+    if (IsAnyRobot(victim))
+    {
+         //Code to track each robot health to prevent abuse with loadout rsupply
+        
+        //int intdamage = RoundToCeil(damage);
+
+        
+        
+        RequestFrame(Set_g_PlayerHealth, victim);        
+        
+    }
     
     if(IsAnyRobot(victim))
     {
@@ -847,6 +855,22 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
     }
     return Plugin_Continue;
+}
+
+void Set_g_PlayerHealth(int victim)
+{
+    int health = GetClientHealth(victim);
+    if(g_cv_bDebugMode)PrintToChatAll("Health was %i for %N", health, victim);
+
+    g_PlayerHealth[victim] = health;
+    
+    if (IsPlayerAlive(victim)){
+        if(g_cv_bDebugMode)PrintToChatAll("Setting health for %N to %i", victim, g_PlayerHealth[victim]);
+    }else{
+        g_PlayerHealth[victim] = -1;
+        if(g_cv_bDebugMode)PrintToChatAll("%N is dead, setting g_PlayerHealth to -1", victim);
+
+    }
 }
 
 bool IsMarketGardner(int weapon)

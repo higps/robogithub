@@ -7,9 +7,10 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Funke"
+#define ROBOT_NAME	"Bonk Scout"
 #define ROBOT_ROLE "Disruptor"
-#define ROBOT_DESCRIPTION "Rapid Cleaver"
+#define ROBOT_DESCRIPTION "Bonk+Rapid Sandman"
+#define ROBOT_DETAILS "Use bonk to take sentry fire\nShoot a ball to begin generating more"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -56,7 +57,11 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 	
-	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null, 2);
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.Overall = 5; 
+
+	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, restrictions, 2);
 }
 
 public void OnPluginEnd()
@@ -169,7 +174,7 @@ MakeGiantscout(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
-	TF2Attrib_SetByName(client, "damage force increase", 10.0);
+	//TF2Attrib_SetByName(client, "damage force increase", 10.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 2.25);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 2.0);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -183,7 +188,7 @@ MakeGiantscout(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Cleaver On Hit: Marks for Death!\nBat: Deals crits whenever it would mini-crit\nBat on Kill: Gain 10 second speed boost");
+	PrintHintText(client , ROBOT_DETAILS);
 	
 }
 
@@ -199,9 +204,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define CoPilot 30576
-#define GrayBanns 30104
-#define TheMuttonMann 986
+#define BonkHelm 106
+#define TrackTerrorizer 827
+
 
 stock GiveGiantPyro(client)
 {
@@ -213,26 +218,21 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_cleaver", 812, 6, 1, 1, 0);
-		CreateRoboWeapon(client, "tf_weapon_bat", 30667, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_lunchbox_drink", 46, 6, 1, 1, 0);
+		CreateRoboWeapon(client, "tf_weapon_bat_wood", 44, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, CoPilot, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, GrayBanns, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, TheMuttonMann, 10, 6, 0.0, 0.75, -1.0); 
-		
+		CreateRoboHat(client, BonkHelm, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, TrackTerrorizer, 10, 6, 0.0, 1.0, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
+			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 0.75);
+			TF2Attrib_SetByName(Weapon1, "increase buff duration", 0.15);
 			
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);
-			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 0.05);
-			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
-			TF2Attrib_SetByName(Weapon1, "mark for death", 10.0);
-			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 		}
+
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon2))
@@ -241,9 +241,11 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
-			
-			// TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.8);
-			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
+			 TF2Attrib_SetByName(Weapon2, "maxammo grenades1 increased", 21.0);
+			 TF2Attrib_SetByName(Weapon2, "effect bar recharge rate increased", 0.2);
+			 
+			TF2Attrib_SetByName(Weapon2, "damage bonus", 1.33);
+			//TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 10.0);
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 		}
 	}

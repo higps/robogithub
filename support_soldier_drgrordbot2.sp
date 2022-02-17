@@ -257,6 +257,9 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.4);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.2);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
+			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);			
+			
+			//TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 5.0);			
 			//TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);
 			
