@@ -175,7 +175,7 @@ stock GiveGiantDemoKnight(client)
 
 		CreateRoboWeapon(client, "tf_weapon_cannon", 996, 6, 1, 0, 0);
 		// CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 1, 0);
-		// CreateRoboWeapon(client, "tf_weapon_bottle", 609, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_bottle", 609, 6, 1, 2, 0);
 
 		CreateRoboHat(client, TheFragProofFragger, 10, 6, 0.0, 0.75, -1.0); 
 
@@ -219,13 +219,13 @@ stock GiveGiantDemoKnight(client)
 		// 	TF2Attrib_SetByName(Weapon2, "projectile spread angle penalty", 5.0);
 		// }
 
-	// 			if(IsValidEntity(Weapon3))
-	// 	{
+				if(IsValidEntity(Weapon3))
+		{
 			
-	// 		TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
-	// 		TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-	// 		TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 10.0);
-	// 	}	
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+			//TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 10.0);
+		}	
 	}
 }
 
