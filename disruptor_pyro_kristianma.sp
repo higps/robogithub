@@ -2,7 +2,7 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
-//#include <sm_logger>
+#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 
@@ -45,7 +45,7 @@ new bool:CanWindDown[MAXPLAYERS+1];
 
 public OnPluginStart()
 {
-    //aSMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
     LoadTranslations("common.phrases");
 
@@ -100,7 +100,7 @@ public Action:SetModel(client, const String:model[])
 
 MakeGiantPyro(client)
 {
-	//aSMLOGTag(SML_VERBOSE, "Createing Kristianma");
+	SMLogTag(SML_VERBOSE, "Createing Kristianma");
 	TF2_SetPlayerClass(client, TFClass_Pyro);
 	//TF2_RespawnPlayer(client);
 	TF2_RegeneratePlayer(client);

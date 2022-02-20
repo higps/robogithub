@@ -2,7 +2,7 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
-//#include <sm_logger>
+#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
@@ -84,7 +84,7 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    //aSMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
     LoadTranslations("common.phrases");
 
@@ -331,7 +331,7 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 
 MakeGiantSoldier(client)
 {
-	//aSMLOGTag(SML_VERBOSE, "Createing Heavy");
+	SMLogTag(SML_VERBOSE, "Createing Heavy");
 	TF2_SetPlayerClass(client, TFClass_Soldier);
 	TF2_RegeneratePlayer(client);
 

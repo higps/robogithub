@@ -2,8 +2,9 @@ TODO:
   Todo:
   Priority:
   1. Add Back button to all menu levels.
-  2. Using Item loadout preset binds now counts as a death, resetting your paid robot to an unpaid robot.
-  3. Add counter for Tank, Engineer and Sentry Buster
+  2. Change spawn sounds. Should only trigger on first spawn, and when changing robot. Using Item preset command should not trigger it.
+  3. Using Item loadout preset binds now counts as a death, resetting your paid robot to an unpaid robot.
+  4. Add counter for Tank, Engineer and Sentry Buster
   
 
 1. Need time passed resource added (opposite of time remaining)

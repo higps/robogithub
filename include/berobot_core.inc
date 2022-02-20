@@ -181,10 +181,11 @@ native void RedrawChooseRobotMenuFor(int client);
  * displays the robot-selection-menu to the provided client
  *
  * @param clientId      client to whom the menu should be displayed
+ * @param redrawing     indicates if the menu is being redrawn (keeps the current menu-level)
  * 
  * @noreturn
  */
-native void Menu_RobotSelection(int clientId);
+native void Menu_RobotSelection(int clientId, bool redrawing);
 
 /**
  * checks if client is repicking a robot
@@ -263,7 +264,7 @@ stock bool ClassHasDeepRobotVoiceLines(TFClassType class)
 		case TFClass_Spy: return false;
 		default: 
 		{
-			//aSMLOGTag(SML_ERROR, "unknown class when checking for deep robot voice lines: %s", class);
+			// SMLogTag(SML_ERROR, "unknown class when checking for deep robot voice lines: %s", class);
 			return false;
 		}
 	}
@@ -392,12 +393,12 @@ methodmap TimeLeftRestriction < TimeLeftRestrictionDefinition {
         this.SetString("RobotName", robotName);
         if (definition == null)
         {
-        //aSMLOGTag(SML_VERBOSE, "TimeLeftRestrictionDefinition does not exist");
+        // SMLogTag(SML_VERBOSE, "TimeLeftRestrictionDefinition does not exist");
             return this;
         }
-        //aSMLOGTag(SML_VERBOSE, "assigning SecondsBeforeEndOfRound to %i", definition.SecondsBeforeEndOfRound);
+        // SMLogTag(SML_VERBOSE, "assigning SecondsBeforeEndOfRound to %i", definition.SecondsBeforeEndOfRound);
         this.SecondsBeforeEndOfRound = definition.SecondsBeforeEndOfRound;
-        //aSMLOGTag(SML_VERBOSE, "SecondsBeforeEndOfRound is %i", this.SecondsBeforeEndOfRound);
+        // SMLogTag(SML_VERBOSE, "SecondsBeforeEndOfRound is %i", this.SecondsBeforeEndOfRound);
         return this;
     }
 }
@@ -448,12 +449,12 @@ methodmap RobotCoins < RobotCoinRestrictionDefinition {
     {
         if (definition == null)
         {
-            //aSMLOGTag(SML_VERBOSE, "RobotCoinRestrictionDefinition does not exist");
+            // SMLogTag(SML_VERBOSE, "RobotCoinRestrictionDefinition does not exist");
             return this;
         }
-        //aSMLOGTag(SML_VERBOSE, "assigning PerRobot to %i", definition.PerRobot);
+        // SMLogTag(SML_VERBOSE, "assigning PerRobot to %i", definition.PerRobot);
         this.PerRobot = definition.PerRobot;
-        //aSMLOGTag(SML_VERBOSE, "assigning Overall to %i", definition.Overall);
+        // SMLogTag(SML_VERBOSE, "assigning Overall to %i", definition.Overall);
         this.Overall = definition.Overall;
         
         return this;
@@ -529,7 +530,7 @@ methodmap Restrictions < StringMap {
     {
         if (definition == null)
         {
-            //aSMLOGTag(SML_VERBOSE, "RestrictionsDefinition created");
+            // SMLogTag(SML_VERBOSE, "RestrictionsDefinition created");
             definition = new RestrictionsDefinition();
         }
         TimeLeftRestriction timeLeft = new TimeLeftRestriction();        

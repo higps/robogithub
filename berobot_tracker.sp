@@ -4,7 +4,7 @@
 #include <tf2>
 #include <tf2_stocks>
 #include <morecolors_newsyntax>
-//#include <sm_logger>
+#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
 
@@ -36,8 +36,8 @@ StringMap _robotCount;
 
 public void OnPluginStart()
 {
-    //aSMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    //aSMLOGTag(SML_INFO, "berobot_tracker started at %i", GetTime());
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    SMLogTag(SML_INFO, "berobot_tracker started at %i", GetTime());
 
     ResetMode();
 }
@@ -66,7 +66,7 @@ public any Native_TrackRobot(Handle plugin, int numParams)
     int clientId = GetNativeCell(1);
     char robotname[NAMELENGTH];
     GetNativeString(2, robotname, NAMELENGTH);
-    //aSMLOGTag(SML_VERBOSE, "tracking %i as robot '%s'", clientId, robotname);
+    SMLogTag(SML_VERBOSE, "tracking %i as robot '%s'", clientId, robotname);
 
     if (strcmp(_isRobot[clientId], robotname) == 0)
         return;
@@ -96,7 +96,7 @@ public any Native_TrackRobot(Handle plugin, int numParams)
     //     {
     //         robotNames.GetKey(i, loggingRobotname, NAMELENGTH);
     //         _robotCount.GetValue(loggingRobotname, robotCount);
-    //         //aSMLOGTag(SML_VERBOSE, "tracking %i players as robot '%s'", robotCount, loggingRobotname);
+    //         SMLogTag(SML_VERBOSE, "tracking %i players as robot '%s'", robotCount, loggingRobotname);
     //     }
     // }
 }
@@ -105,7 +105,7 @@ public any Native_TrackRobotCreation(Handle plugin, int numParams)
 {
     int clientId = GetNativeCell(1);
     bool created = GetNativeCell(2);
-    //aSMLOGTag(SML_VERBOSE, "tracking client %i robot-creation '%b'", clientId, created);
+    SMLogTag(SML_VERBOSE, "tracking client %i robot-creation '%b'", clientId, created);
 
     _robotIsCreated[clientId] = created;
 }
@@ -118,14 +118,14 @@ public any Native_GetRobotCount(Handle plugin, int numParams)
     if (_robotCount == null)
     {
         int value = 0;
-        //aSMLOGTag(SML_VERBOSE, "returning count %i for '%s', because plugin is not yet initialized", value, robotname);
+        SMLogTag(SML_VERBOSE, "returning count %i for '%s', because plugin is not yet initialized", value, robotname);
         return value;
     }
 
     int value = 0;
     _robotCount.GetValue(robotname, value);
 
-    //aSMLOGTag(SML_VERBOSE, "returning count %i for '%s'", value, robotname);
+    SMLogTag(SML_VERBOSE, "returning count %i for '%s'", value, robotname);
     return value;
 }
 
@@ -192,7 +192,7 @@ public any Native_GetRobot(Handle plugin, int numParams)
 
 void ResetMode()
 {
-    //aSMLOGTag(SML_VERBOSE, "resetting mode");
+    SMLogTag(SML_VERBOSE, "resetting mode");
 
     if (_robotCount == null)
         _robotCount = new StringMap();

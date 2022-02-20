@@ -2,7 +2,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
-//#include <sm_logger>
+#include <sm_logger>
 #include <morecolors_newsyntax>
 #include <berobot_constants>
 #include <berobot>
@@ -46,8 +46,8 @@ bool _volunteered[MAXPLAYERS + 1];
 
 public void OnPluginStart()
 {
-    //aSMLOGgerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
-    //aSMLOGTag(SML_INFO, "berobot_volunteer started at %i", GetTime());
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+    SMLogTag(SML_INFO, "berobot_volunteer started at %i", GetTime());
 
     _autoVolunteerTimeoutConVar = CreateConVar("sm_auto_volunteer_timeout", "20", "duration the automatic volunteer-menu will be shown (in seconds) ('0' to disable)");
     _autoVolunteerTimeoutConVar.AddChangeHook(AutoVolunteerTimeoutCvarChangeHook);
@@ -125,7 +125,7 @@ void LoadVipSteamIds()
     File file = OpenFile("mm_volunteer_vip.txt", "r");
     if (file == null)
     {
-        //aSMLOGTag(SML_INFO, "VIPs could not be loaded, because file 'mm_volunteer_vip.txt' was not found", _vipSteamIds.Size);
+        SMLogTag(SML_INFO, "VIPs could not be loaded, because file 'mm_volunteer_vip.txt' was not found", _vipSteamIds.Size);
         return;
     }
 
@@ -137,7 +137,7 @@ void LoadVipSteamIds()
     }
     CloseHandle(file);
 
-    //aSMLOGTag(SML_INFO, "%i VIPs loaded", _vipSteamIds.Size);
+    SMLogTag(SML_INFO, "%i VIPs loaded", _vipSteamIds.Size);
 }
 
 public Action Command_ReloadVipVolunteers(int client, int args)
@@ -150,14 +150,14 @@ public Action Command_SetVolunteer(int client, int args)
     if (!IsEnabled())
     {
         MM_PrintToChat(client, "Unable to volunteer, robot-mode is not enabled");
-        //aSMLOGTag(SML_VERBOSE, "Command_SetVolunteer cancled for %L, because robot-mode is not enabled", client);
+        SMLogTag(SML_VERBOSE, "Command_SetVolunteer cancled for %L, because robot-mode is not enabled", client);
         return Plugin_Handled;
     }
 
     if (IsYTEnabled())
     {
         MM_PrintToChat(client, "Unable to volunteer, robot-mode is not enabled");
-        //aSMLOGTag(SML_VERBOSE, "Command_SetVolunteer cancled for %L, because robot-mode is not enabled", client);
+        SMLogTag(SML_VERBOSE, "Command_SetVolunteer cancled for %L, because robot-mode is not enabled", client);
         return Plugin_Handled;
     }
 
@@ -179,7 +179,7 @@ public Action Command_UnsetVolunteer(int client, int args)
     if (!IsEnabled())
     {
         MM_PrintToChat(client, "Unable to volunteer, robot-mode is not enabled");
-        //aSMLOGTag(SML_VERBOSE, "Command_UnsetVolunteer cancled for %L, because robot-mode is not enabled", client);
+        SMLogTag(SML_VERBOSE, "Command_UnsetVolunteer cancled for %L, because robot-mode is not enabled", client);
         return Plugin_Handled;
     }
 
@@ -198,18 +198,18 @@ public Action Command_UnsetVolunteer(int client, int args)
 
 public Action Command_Volunteer(int client, int args)
 {
-    //aSMLOGTag(SML_VERBOSE, "Command_Volunteer called for %L", client);
+    SMLogTag(SML_VERBOSE, "Command_Volunteer called for %L", client);
 
     if (!IsEnabled())
     {
         MM_PrintToChat(client, "Unable to volunteer, robot-mode is not enabled");
-        //aSMLOGTag(SML_VERBOSE, "Command_Volunteer cancled for %L, because robot-mode is not enabled", client);
+        SMLogTag(SML_VERBOSE, "Command_Volunteer cancled for %L, because robot-mode is not enabled", client);
         return Plugin_Handled;
     }
     //     if (IsYTEnabled())
     // {
     //     MM_PrintToChat(client, "Unable to volunteer, because Youtube mode is active");
-    //     //aSMLOGTag(SML_VERBOSE, "Command_Volunteer cancled for %L, because robot-mode is in youtube mode", client);
+    //     SMLogTag(SML_VERBOSE, "Command_Volunteer cancled for %L, because robot-mode is in youtube mode", client);
     //     return Plugin_Handled;
     // }
 
@@ -294,14 +294,14 @@ int Native_GetRandomVolunteer(Handle plugin, int numParams)
     int length = GetNativeCell(2);
     int[] ignoredClientIds = new int[length];
     GetNativeArray(1, ignoredClientIds, length);
-    //aSMLOGTag(SML_VERBOSE, "Native_GetRandomVolunteer read %i ignroedClientIds", length);
+    SMLogTag(SML_VERBOSE, "Native_GetRandomVolunteer read %i ignroedClientIds", length);
 
     ArrayList pickedVolunteers = PickVolunteers(1, ignoredClientIds, length, false);
     if (pickedVolunteers.Length <= 0)
         return -1;
 
     int clientId = pickedVolunteers.Get(0);
-    //aSMLOGTag(SML_VERBOSE, "Native_GetRandomVolunteer picked %L", clientId);
+    SMLogTag(SML_VERBOSE, "Native_GetRandomVolunteer picked %L", clientId);
 
     delete pickedVolunteers;
 
@@ -383,13 +383,13 @@ void VolunteerAutomaticVolunteers()
     for(int i = 0; i < pickedVolunteers.Length; i++)
     {
         volunteerArray[i] = pickedVolunteers.Get(i);
-        //aSMLOGTag(SML_VERBOSE, "setting %L as volunteered", volunteerArray[i]);
+        SMLogTag(SML_VERBOSE, "setting %L as volunteered", volunteerArray[i]);
     }
     SetVolunteers(volunteerArray, pickedVolunteers.Length);
 
     delete pickedVolunteers;
 
-    //aSMLOGTag(SML_VERBOSE, "setting _automaticVolunteerVoteIsInProgress to false");
+    SMLogTag(SML_VERBOSE, "setting _automaticVolunteerVoteIsInProgress to false");
     _automaticVolunteerVoteIsInProgress = false;
 }
 
@@ -402,7 +402,7 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         char str[10];
         IntToString(ignoredClientId, str, 10);
 
-        //aSMLOGTag(SML_VERBOSE, "adding %s for %i to ignored volunteers", str, ignoredClientId);
+        SMLogTag(SML_VERBOSE, "adding %s for %i to ignored volunteers", str, ignoredClientId);
         ignoredClientIdLookup.SetValue(str, true);
     }
 
@@ -423,13 +423,13 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         bool value;
         if (ignoredClientIdLookup.GetValue(str, value))
         {
-            //aSMLOGTag(SML_VERBOSE, "ignoring %L for picking volunteers", i);
+            SMLogTag(SML_VERBOSE, "ignoring %L for picking volunteers", i);
             continue;
         }
 
         if (!_volunteered[i])
         {
-            //aSMLOGTag(SML_VERBOSE, "%L has not volunteered", i);
+            SMLogTag(SML_VERBOSE, "%L has not volunteered", i);
             nonVolunteers.Push(i);
             continue;
         }
@@ -439,7 +439,7 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
             int userflags = GetUserFlagBits(i);
             if (userflags & _autoVolunteerAdminFlag)
             {
-                //aSMLOGTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they have admin-flag %i", i, _autoVolunteerAdminFlag);
+                SMLogTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they have admin-flag %i", i, _autoVolunteerAdminFlag);
                 adminVolunteers.Push(i);
                 continue;
             }
@@ -449,12 +449,12 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId));        
         if (_vipSteamIds.GetValue(steamId, value))
         {
-            //aSMLOGTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they are a vip", i);
+            SMLogTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they are a vip", i);
             vipVolunteers.Push(i);
             continue;
         }
 
-        //aSMLOGTag(SML_VERBOSE, "%L has volunteered", i);
+        SMLogTag(SML_VERBOSE, "%L has volunteered", i);
         volunteers.Push(i);
     }
 
@@ -519,7 +519,7 @@ Action Menu_AutomaticVolunteer(int client)
 
     int timeout = _autoVolunteerTimeout;
     menu.Display(client, timeout);
-    //aSMLOGTag(SML_VERBOSE, "AutomaticVolunteer-menu displayed to %L for %i seconds", client, timeout);
+    SMLogTag(SML_VERBOSE, "AutomaticVolunteer-menu displayed to %L for %i seconds", client, timeout);
 
     return Plugin_Handled;
 }
