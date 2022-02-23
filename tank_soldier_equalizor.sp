@@ -222,7 +222,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "increased air control", 2.0);
 	
 	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
@@ -249,6 +249,10 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
+SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	//SetEntProp(client, Prop_Send, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -295,7 +299,8 @@ stock GiveGiantPyro(client)
 		// }
 		if(IsValidEntity(Weapon2))
 		{						
-			TF2CustAttr_SetString(Weapon2, "custom buff type", "mvm-banner");
+			TF2CustAttr_SetString(Weapon2, "custom buff type", "mm-conch");
+			//TF2CustAttr_SetString(Weapon2, "custom buff type", "mvm-banner");
 		}
 
 		if(IsValidEntity(Weapon3))
