@@ -11,7 +11,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bursty"
 #define ROBOT_ROLE "Anti-Sentry"
-#define ROBOT_DESCRIPTION "Burst fire 3 rockets"
+#define ROBOT_DESCRIPTION "Anti-Wrangler"
+#define ROBOT_COST 5
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -22,6 +23,7 @@
 #define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
 #define RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
+
 
 // #define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
 // #define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
@@ -85,7 +87,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 3; 
+    restrictions.RobotCoins.Overall = ROBOT_COST; 
 
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
@@ -254,7 +256,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Burst fire 3 rockets\nRockets deal less damage to buildings");
+	PrintHintText(client , "Burst fire 3 rockets\nRockets deal increased damage wrangled sentries\nRockets ignore damage resistance");
 	
 }
 
@@ -262,6 +264,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
+SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -306,11 +309,13 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", -1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.175);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.2);
 			//TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.6);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip penalty", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.35);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.45);
+			TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
+			
 			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.65);
 			
 			

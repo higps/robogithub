@@ -163,6 +163,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
+SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -205,7 +206,7 @@ stock GiveGiantToofty(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 2.0);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.8);
 			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}

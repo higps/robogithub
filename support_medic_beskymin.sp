@@ -136,6 +136,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
+SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -184,11 +185,11 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
 			TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.5);
 			TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.15);
-			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.5);
+			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.75);
 			TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.15);
-			TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.5);
+			TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.75);
 			TF2Attrib_SetByName(Weapon2, "medigun fire resist passive", 0.15);
-			TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.5);
+			TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.75);
 			TF2Attrib_SetByName(Weapon2, "ubercharge overheal rate penalty", 1.0);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 

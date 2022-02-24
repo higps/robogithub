@@ -195,6 +195,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
+SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -236,7 +237,7 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "increase buff duration", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
-			TF2Attrib_SetByName(Weapon1, "spread penalty", scale);
+			// TF2Attrib_SetByName(Weapon1, "spread penalty", scale);
 
 			TF2CustAttr_SetString(Weapon1, "generate rage on damage patch", "disable_rage_damage_penalty=1.0");
 

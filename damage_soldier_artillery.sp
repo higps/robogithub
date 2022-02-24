@@ -9,8 +9,9 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"ICBM"
-#define ROBOT_ROLE "Anti-Sentry"
-#define ROBOT_DESCRIPTION "Artillery Rocket Launcher"
+#define ROBOT_ROLE "Damage"
+#define ROBOT_DESCRIPTION "Rapid Long Range Artillery"
+#define ROBOT_COST 5
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -89,7 +90,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 3; 
+    restrictions.RobotCoins.Overall = ROBOT_COST; 
 
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 	//Artillery Code
@@ -255,6 +256,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
+SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -296,13 +298,13 @@ stock GiveGiantPyro(client)
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);				
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.3);				
 			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.0);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.85);
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
 
-			
+			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 2.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 

@@ -9,7 +9,7 @@
 #include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Dr GrordBot Mk I"
+#define ROBOT_NAME	"Dr GrordBot"
 #define ROBOT_ROLE "Support"
 #define ROBOT_DESCRIPTION "Cowmangler"
 #define ROBOT_SPAWNTIP "You have rapid reload cow mangler\n Only one clip"
@@ -206,6 +206,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
+SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -228,7 +229,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		CreateRoboWeapon(client, "tf_weapon_particle_cannon", 441, 6, 1, 2, 0);
-		
+		CreateRoboWeapon(client, "tf_weapon_raygun", 442, 6, 1, 2, 0);
 //		CreateWeapon(client, "tf_weapon_shovel", 447, 6, 1, 2, 0);
 		
 		CreateRoboHat(client, LordCockswain, 10, 6, 0.0, 1.0, -1.0);
@@ -249,26 +250,30 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.75);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.85);
-			
-		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
 			TF2Attrib_SetByName(Weapon1, "clip size bonus upgrade", 1.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.25);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "crits_become_minicrits", 0.0);			
-			
-			//TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);
-			
-			//TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 
-			//TF2Attrib_SetByName(Weapon1, "reload full clip at once", 1.0);
+		}
+
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		//int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		
+		if(IsValidEntity(Weapon2))
+		{
+			TF2Attrib_RemoveAll(Weapon2);
 			
-			
-		//	SetEntProp(Weapon1, Prop_Send, "m_bInReload", 1.0);
-			
-		//	TF2Attrib_SetByName(Weapon1, "disable fancy class select anim", 1.0);
-						
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 3.0);
+			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 2.0);
+			TF2Attrib_SetByName(Weapon2, "clip size bonus upgrade", 3.0);
+			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.4);
+			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.2);
+			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);			
+			TF2Attrib_SetByName(Weapon2, "auto fires full clip all at once", 1.0);			
+
 			
 		}
 		

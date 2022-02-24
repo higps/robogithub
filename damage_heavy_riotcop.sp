@@ -189,6 +189,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
+SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -230,6 +231,8 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.8);
+			TF2Attrib_SetByName(Weapon2, "mult_spread_scales_consecutive", 0.0);
+			
 			//TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
 
 		}

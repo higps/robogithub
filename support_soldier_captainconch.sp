@@ -5,6 +5,7 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Capt Conch"
@@ -217,6 +218,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
+SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -249,6 +251,22 @@ stock GiveGiantSoldier(client)
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
+		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		
+		// if(IsValidEntity(Weapon1))
+		// {
+
+		// 	TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.00);
+		// 	TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+		// 	TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
+		// 	TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);				
+		// 	TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+		// }
+		if(IsValidEntity(Weapon3))
+		{						
+			TF2CustAttr_SetString(Weapon3, "custom buff type", "mm-conch");
+		}
 
 		if(IsValidEntity(Weapon1))
 		{

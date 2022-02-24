@@ -477,7 +477,8 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
     delete adminVolunteers;
     delete volunteers;
     delete nonVolunteers;
-
+    delete vipVolunteers;
+    
     return pickedVolunteers;
 }
 

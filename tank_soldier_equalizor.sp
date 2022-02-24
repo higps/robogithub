@@ -249,8 +249,6 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-	//SetEntProp(client, Prop_Send, "m_iMaxHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 	
 }
@@ -299,8 +297,8 @@ stock GiveGiantPyro(client)
 		// }
 		if(IsValidEntity(Weapon2))
 		{						
-			TF2CustAttr_SetString(Weapon2, "custom buff type", "mm-conch");
-			//TF2CustAttr_SetString(Weapon2, "custom buff type", "mvm-banner");
+			//TF2CustAttr_SetString(Weapon2, "custom buff type", "mm-conch");
+			TF2CustAttr_SetString(Weapon2, "custom buff type", "mvm-banner");
 		}
 
 		if(IsValidEntity(Weapon3))

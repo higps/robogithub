@@ -9,6 +9,8 @@
 #include <dhooks>
 #include <sdktools>
 //#include <collisionhook>
+#include <tf2_isPlayerInSpawn>
+#include <morecolors_newsyntax>
 
 #pragma semicolon 1
 //#pragma newdecls required
@@ -24,6 +26,7 @@
 #define TELEPORTER_ACTIVATE5	"vo/announcer_mvm_eng_tele_activated05.mp3"
 
 #define TELEPORTER_SPAWN		"mvm/mvm_tele_deliver.wav"
+#define TELEPORTER_ACTIVATE	"mvm/mvm_tele_activate.wav"
 
 #define TF_OBJECT_TELEPORTER	1
 #define TF_TELEPORTER_ENTR	0
@@ -48,6 +51,9 @@ static int g_iObjectParticle[2048];
 
 static char g_szOffsetStartProp[64];
 static int g_iOffsetMatchingTeleporter = -1;
+
+int g_Recharge[MAXPLAYERS + 1] = 0;
+int g_RechargeCap = 250;
 
 enum //Teleporter states
 {
@@ -112,6 +118,7 @@ public OnPluginStart()
 	PrecacheSound(TELEPORTER_ACTIVATE4, true);
 	PrecacheSound(TELEPORTER_ACTIVATE5, true);
 	PrecacheSound(TELEPORTER_SPAWN, true);
+	PrecacheSound(TELEPORTER_ACTIVATE, true);
 }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -291,9 +298,81 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		#if defined DEBUG
 		PrintToChatAll("%N spawned and was not a robot", client);
 		#endif
-		return Plugin_Continue;
+		return Plugin_Changed;
 	}
 	
+	int team = GetClientTeam(client);
+
+	// if (team != EngieTeam)
+	// 	return Plugin_Continue;
+
+	int ent = -1;
+	int i = (team == 2 ? 1 : 0);
+	float vecSpawn[3];
+	float vecIsActuallyGoingToSpawn[3] = {-99999.0, -99999.0, -99999.0};
+	float dist, otherdist = GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]);
+	float vecRotation[3];
+
+	while ((ent = FindEntityByClassname(ent, "obj_teleporter")) != -1)
+	{
+		if (GetEntProp(ent, Prop_Send, "m_iTeamNum") != team)
+			continue;
+		if (GetEntProp(ent, Prop_Send, "m_bBuilding"))	// If being built
+			continue;
+		if (GetEntProp(ent, Prop_Send, "m_bCarried"))	// If being carried
+			continue;
+		if (GetEntProp(ent, Prop_Send, "m_iObjectMode") != 1)	// If not exit
+			continue;
+		if (GetEntProp(ent, Prop_Send, "m_bHasSapper"))//has sapper
+			continue;
+
+		 //check if the padtype is a poss
+			
+		// if (!IsValidEntity(GetEntDataEnt2(ent, FindSendPropInfo("CObjectTeleporter", "m_bMatchBuilding")+4)))	// Props to Pelipoika
+		// 	continue;
+
+		if (g_iPadType[ent] != PadType_Boss)
+			continue;
+
+
+		GetEntPropVector(ent, Prop_Send, "m_vecOrigin", vecSpawn);
+		dist = GetVectorDistance(vecSpawn, vecSpawns[i]);
+		if (dist < otherdist)
+		{
+			otherdist = dist;
+			vecIsActuallyGoingToSpawn = vecSpawn;
+			GetEntPropVector(ent, Prop_Send, "m_angRotation", vecRotation);	// Force players to look in the direction of teleporter on spawn
+		}
+	}
+	// If no teleporters found
+	if (GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]) >= 70000){
+			#if defined DEBUG
+			PrintToChatAll("No teleporters found!");
+			#endif
+		return Plugin_Continue;
+	}	
+	
+
+
+	MC_PrintToChatEx(client, client, "{orange}==[TEAMPORTER ACTIVE]==");
+	MC_PrintToChatEx(client, client, "{teamcolor}==[HOLD CROUCH TO CHARGE TELEPORT IN SPAWN!]==");
+
+	EmitSoundToAll(TELEPORTER_ACTIVATE, client, _,_,_,0.3);
+
+	return Plugin_Continue;
+}
+
+public Action Teleport_Player(int client)
+{
+
+
+	if (g_Teleported[client]){
+		return Plugin_Continue;
+	}
+	#if defined DEBUG
+	PrintToChatAll("%N spawned", client);
+	#endif 
+
 	int team = GetClientTeam(client);
 
 	// if (team != EngieTeam)
@@ -355,19 +434,128 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	TeleportEntity(client, vecIsActuallyGoingToSpawn, vecRotation, NULL_VECTOR);
 	EmitSoundToAll(TELEPORTER_SPAWN, client, _,_,_, 0.3);
 	CreateTimer(0.5, Teleport_Clamp, client);
+	g_Recharge[client] = 1;
 	g_Teleported[client] = true;
 	float oober = 3.0;
 	if (oober != 0.0)
 	TF2_AddCondition(client, TFCond_Ubercharged, oober);
+	TF2_AddCondition(client, TFCond_TeleportedGlow, 5.0);
 	return Plugin_Continue;
+
 }
-
-
 
 public Action Teleport_Clamp(Handle timer, int client)
 {
 
 	g_Teleported[client] = false;
+}
+//bool g_SpellClamp = false;
+
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+{
+	if (IsAnyRobot(client) && buttons & (IN_DUCK))
+	{
+		//0 = fireball
+
+		if(TF2Spawn_IsClientInSpawn(client))
+		{
+		//PrintToChat(client, "Recharge %i", g_Recharge[client]);
+		UpdateCharge(client);
+		DrawHUD(client);
+		}
+		else
+		{
+		
+		g_Recharge[client] = 0;
+			
+		}
+		
+		// if (g_Recharge[client] >= g_RechargeCap)
+		// {
+			
+			
+		// 	// CastSpell(client, 0);
+		// 	// g_Recharge[client] = 1;
+		// 	// CreateTimer(1.0, SpellClamp_Timer);
+		// 	// g_SpellClamp = true;
+		// }
+		
+	}
+}
+
+
+//Charging the tele to spawn
+
+void UpdateCharge(int client)
+{
+	// if we are already at max charge, no need to check anything
+
+		if(IsAnyRobot(client))
+	{
+		g_Recharge[client] += 1;
+		TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
+	}
+
+	if(g_Recharge[client] >= g_RechargeCap)
+	{
+		g_Recharge[client] = g_RechargeCap;
+		TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
+	}
+	
+
+
+	if(g_Recharge[client] >= g_RechargeCap)
+	{
+		//g_Recharge[client] = g_RechargeCap;
+		Teleport_Player(client);
+		
+		//TELEPORT TO TELE
+		//EmitSoundToAll(SOUND_HEAL_READY_VO, client);
+	}
+	//UpdatePoseParameter(client, GetWeaponWithAttribute(client));
+}
+
+// public Action Timer_Think(Handle hTimer, any data)
+// {
+// 	for (int i = 1; i <= MAXPLAYERS; i++)
+// 	{
+// 		if(IsValidClient(i))
+// 		{
+// 			if(IsAnyRobot(i))
+// 			{
+				
+// 				UpdateCharge(i);
+// 				DrawHUD(i);
+				
+// 			}
+// 		}
+// 	}
+// }
+
+#define CHAR_FULL "■"
+#define CHAR_EMPTY "□"
+
+void DrawHUD(int client)
+{
+	char sHUDText[128];
+	char sProgress[32];
+	int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCap) * 100.0);
+
+	for (int j = 1; j <= 10; j++)
+	{
+		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
+		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
+	}
+
+	Format(sHUDText, sizeof(sHUDText), "Teleport: %d%%%%   \n%s   ", iPercents, sProgress);
+
+	if(iPercents >= 100)
+	{
+		SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
+	} else {
+		SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
+	}
+	ShowHudText(client, -2, sHUDText);
 }
 
 

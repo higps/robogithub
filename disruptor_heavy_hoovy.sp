@@ -217,6 +217,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
+SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -345,6 +346,40 @@ public Action HoovyBoom(Handle timer, any data)
 			}
 		}
 	}
+}
+
+/* Plugin Exclusive Functions */
+//Code that stuns players
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+    // if (!g_Enable)
+    //     return Plugin_Continue;
+    if(!IsValidClient(victim))
+        return Plugin_Continue;    
+    if(!IsValidClient(attacker))
+        return Plugin_Continue;
+
+
+	if(IsRobot(attacker, ROBOT_NAME))
+    {
+			
+		RequestFrame(StunPlayer, victim);	
+
+		
+	}  
+    
+    
+}
+
+void StunPlayer (int victim)
+{
+		if (!TF2_IsPlayerInCondition(victim, TFCond_Taunting)){
+	
+		TF2_StunPlayer(victim, 3.5, 0.0, TF_STUNFLAG_BONKSTUCK);
+		//return Plugin_Changed;
+	}
+		
+		
 }
 
 // public TF2_OnConditionAdded(client, TFCond:condition)
