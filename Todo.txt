@@ -2,9 +2,10 @@ TODO:
   Todo:
   Priority:
   1. Add Back button to all menu levels.
-  2. Change spawn sounds. Should only trigger on first spawn, and when changing robot. Using Item preset command should not trigger it.
-  3. Using Item loadout preset binds now counts as a death, resetting your paid robot to an unpaid robot.
-  4. Add counter for Tank, Engineer and Sentry Buster
+  2. Random robot selection is broken again
+  3. Change spawn sounds. Should only trigger on first spawn, and when changing robot. Using Item preset command should not trigger it.
+  4. Using Item loadout preset binds now counts as a death, resetting your paid robot to an unpaid robot.
+  5. Add counter for Tank, Engineer and Sentry Buster
   
 
 1. Need time passed resource added (opposite of time remaining)
@@ -26,7 +27,7 @@ If you mash boss menu button you revert back to human
 
 Sometimes a player who is a robot, but disconnects gets autobalanced to the other team
 
-Somteimes, selecting a robot doesn't close the menu.
+Somteimes, selecting a robot doesn't close the menu, and allows you to select the same robot again (happens with paid robots)
 
 
 unify sounds
