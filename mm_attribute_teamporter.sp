@@ -53,7 +53,7 @@ static char g_szOffsetStartProp[64];
 static int g_iOffsetMatchingTeleporter = -1;
 
 int g_Recharge[MAXPLAYERS + 1] = 0;
-int g_RechargeCap = 250;
+int g_RechargeCap = 100;
 
 enum //Teleporter states
 {
@@ -437,7 +437,6 @@ public Action Teleport_Player(int client)
 	g_Recharge[client] = 1;
 	g_Teleported[client] = true;
 	float oober = 3.0;
-	if (oober != 0.0)
 	TF2_AddCondition(client, TFCond_Ubercharged, oober);
 	TF2_AddCondition(client, TFCond_TeleportedGlow, 5.0);
 	return Plugin_Continue;
@@ -551,8 +550,10 @@ void DrawHUD(int client)
 
 	if(iPercents >= 100)
 	{
+		Format(sHUDText, sizeof(sHUDText), "Teleport inactive: %d%%%%   \n%s   ", iPercents, sProgress);
 		SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
 	} else {
+		
 		SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
 	}
 	ShowHudText(client, -2, sHUDText);

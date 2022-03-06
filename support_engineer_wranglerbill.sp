@@ -17,7 +17,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Wrangler Bill"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Support"
 #define ROBOT_DESCRIPTION " Wrangler, 3 Minisentries, Teamporter"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"

@@ -1520,9 +1520,9 @@ public Action OnClientCommand(int client, int args)
                     
 
                 //Sets you as random class when you join when boss mode is active
-                int irandomclass = GetRandomInt(1, 9);
-                TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
-                TF2_RespawnPlayer(client);
+                // int irandomclass = GetRandomInt(1, 9);
+                // TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
+                // TF2_RespawnPlayer(client);
             }
             return Plugin_Handled;
         }
@@ -1806,8 +1806,59 @@ stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
 	//SetEntProp(client, Prop_Send, "m_lifeState", 2);
 	ChangeClientTeam(client, team);
 	//SetEntProp(client, Prop_Send, "m_lifeState", 0);
-    int irandomclass = GetRandomInt(1, 9);
-    TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
+    // int irandomclass = GetRandomInt(1, 9);
+    // TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
+
+        //This resets the model back to normal
+    TFClassType iClass = TF2_GetPlayerClass(client);
+    char model[32];
+    
+    switch(iClass)
+    {
+        case TFClass_Scout:
+        {
+            model = "models/player/scout.mdl";
+        }
+        case TFClass_Soldier:
+        {
+            model = "models/player/soldier.mdl";
+
+        }
+        case TFClass_Pyro:
+        {
+            model = "models/player/pyro.mdl";
+        }
+        case TFClass_DemoMan:
+        {
+            model = "models/player/demo.mdl";
+        }
+        case TFClass_Heavy:
+        {
+           model = "models/player/heavy.mdl";
+        }
+        case TFClass_Engineer:
+        {
+          model = "models/player/engineer.mdl";
+        }
+        case TFClass_Medic:
+        {
+           model = "models/player/medic.mdl";
+        }
+        case TFClass_Sniper:
+        {
+         model = "models/player/sniper.mdl";
+        }
+        case TFClass_Spy:
+        {
+           model = "models/player/spy.mdl";
+        }
+
+    }
+
+    SetVariantString(model);
+    AcceptEntityInput(client, "SetCustomModel");
+    SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
+
     TF2_RespawnPlayer(client);
 }
 
@@ -1815,7 +1866,7 @@ stock void TF2_SetHealth(int client, int NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+    SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 

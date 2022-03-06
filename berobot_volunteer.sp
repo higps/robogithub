@@ -6,6 +6,7 @@
 #include <morecolors_newsyntax>
 #include <berobot_constants>
 #include <berobot>
+#include <tf2_isPlayerInSpawn>
 
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
@@ -227,7 +228,17 @@ public Action Command_Volunteer(int client, int args)
     else
         GetCmdArg(1, target, sizeof(target));
 
-    VolunteerTargets(client, target, !_volunteered[client]);
+
+    if (!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
+    {
+        MM_PrintToChat(client, "You can only volunteer when in spawn or dead.");
+        
+    }else
+    {
+        VolunteerTargets(client, target, !_volunteered[client]);
+    }
+
+   
 
     return Plugin_Handled;
 }
@@ -272,6 +283,7 @@ public Action Volunteer(int client, bool volunteering)
 {
     _volunteered[client] = volunteering;
     _pickedOption[client] = true;
+
 
     if (volunteering)
         MM_PrintToChat(client, "You volunteered to be a robot.");
