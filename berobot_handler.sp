@@ -1414,14 +1414,14 @@ void SetRandomRobot(int client)
             GetRobotDefinition(robotname, item);
             if (item.restrictions.IsEnabled() && !item.restrictions.IsActive())
             {
-                /* if(g_cv_bDebugMode) */PrintToChatAll("For %N, the robot %s, was enabled, index was: %i", client, robotname, i);
+                if(g_cv_bDebugMode)PrintToChatAll("For %N, the robot %s, was enabled, index was: %i", client, robotname, i);
 
                 SMLogTag(SML_VERBOSE, "For %N, the robot %s, was enabled & not active, index was: %i", client, robotname, i);
                 //SetRandomRobot(client);
                 break;
             }else{
 
-                PrintToChatAll("For %N, the robot %s, was not enabled & active, index was: %i", client, robotname, i);
+                if(g_cv_bDebugMode)PrintToChatAll("For %N, the robot %s, was not enabled & active, index was: %i", client, robotname, i);
 
                 SMLogTag(SML_VERBOSE, "For %N, the robot %s, was not enabled & active, index was: %i", client, robotname, i);
             }
@@ -1437,7 +1437,7 @@ void SetRandomRobot(int client)
     }
 
     SMLogTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
-    PrintToChatAll("setting bot %L to be robot '%s'", client, robotname);
+    if(g_cv_bDebugMode)PrintToChatAll("setting bot %L to be robot '%s'", client, robotname);
     SetRobot(robotname, client);
 }
 
