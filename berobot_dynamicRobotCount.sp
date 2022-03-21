@@ -32,7 +32,7 @@ bool _enabled;
 ConVar _humansPerRobotConVar;
 float _humansPerRobot;
 ConVar _roboCapTeamConVar;
-bool g_timer;
+//bool g_timer;
 
 public void OnPluginStart()
 {
@@ -47,7 +47,7 @@ public void OnPluginStart()
     _humansPerRobotConVar.AddChangeHook(RoboCapTeamHumansPerRobotConVarChangeHook);
     _humansPerRobot = _humansPerRobotConVar.FloatValue;
     
-    g_timer = false;
+    //g_timer = false;
 }
 
 // public void OnGameFrame()
@@ -117,5 +117,11 @@ void SetRoboCapTeam()
 //    SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
     _roboCapTeamConVar.SetInt(robotCount);
 
+    //RequestFrame(EnsureRobotCountDelay, robotCount);
     EnsureRobotCount();
 }
+
+// void EnsureRobotCountDelay(int roboCount){
+
+// EnsureRobotCount();
+// }

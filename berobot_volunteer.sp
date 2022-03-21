@@ -238,8 +238,6 @@ public Action Command_Volunteer(int client, int args)
         VolunteerTargets(client, target, !_volunteered[client]);
     }
 
-   
-
     return Plugin_Handled;
 }
 

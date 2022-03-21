@@ -349,7 +349,7 @@ public void ResetMode()
     Call_Finish();
 }
 
-public void OnClientDisconnect(int client)
+public void OnClientDisconnect_Post(int client)
 {
     Reset(client);
 }
@@ -385,6 +385,13 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     if (IsAnyRobot(client)){ 
         
         //PrintToChatAll("%N spawned, checking if boss", client);
+
+        RequestFrame(RobotTeamCheck, client);
+
+        // else
+        // {
+        //     MC_PrintToChatEx(client, client, "{teamcolor}You're a robot on the robot team!");
+        // }
         MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
         if(g_cv_bDebugMode)PrintToChatAll("%N spawned, with %i health from previous life", client, g_PlayerHealth[client]);
         //FakeClientCommand(client, "tf_respawn_on_loadoutchanges 0");
@@ -542,6 +549,13 @@ public Action Timer_Respawn(Handle timer, any client)
 //     }
 // }
 
+
+
+
+public Action Timer_Regen(Handle timer, any client)
+{
+TF2_RegeneratePlayer(client);
+}
 public Action Timer_SetHealth(Handle timer, any client)
 {
     //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
@@ -594,8 +608,11 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
 
     if (GameRules_GetProp("m_bSwitchedTeamsThisRound"))
     {
-         switch(g_RoboTeam)
+        if(g_cv_bDebugMode) PrintToChatAll("Teamswitch detected!");
+
+        switch(g_RoboTeam)
         {
+            
             case RED:
             {
                 if(g_cv_bDebugMode)PrintToChatAll("RoboTeam was RED changing to BLUE...");
@@ -855,6 +872,21 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
     }
     return Plugin_Continue;
+}
+
+void RobotTeamCheck(int client)
+{
+    if(IsClientInGame(client))
+    {
+        int iTeam = GetClientTeam(client);
+        if (iTeam != g_RoboTeam)
+        {
+            if(g_cv_bDebugMode)MC_PrintToChatEx(client, client, "{teamcolor}You're a robot not on the robot team!");
+               
+            TrashRobot(client);
+            CreateTimer(0.5, Timer_Regen, client);       
+        }
+    }
 }
 
 void Set_g_PlayerHealth(int victim)
@@ -1335,18 +1367,20 @@ public Action MakeRobot(int client, bool volunteering)
 void MoveToRobots(int client)
 {    
     TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
-    SetRandomRobot(client);
+    RequestFrame(SetRandomRobot,client);
     SetClientRepicking(client, false);
     ChooseRobot(client);
 }
 
 Action ChooseRobot(int client, bool redrawing = false)
 {
-    if (IsFakeClient(client))
-    {
-        SetRandomRobot(client);
-        return Plugin_Handled;
-    }
+
+    //Setting of bots is handled elsewhere
+    // if (IsFakeClient(client))
+    // {
+    //     SetRandomRobot(client);
+    //     return Plugin_Handled;
+    // }
 
     Menu_RobotSelection(client, redrawing);
     return Plugin_Handled;
@@ -1376,12 +1410,20 @@ void SetRandomRobot(int client)
         if (count < g_RoboCap)
         {
             Robot item;
+            
             GetRobotDefinition(robotname, item);
-            if (!item.restrictions.IsActive())
+            if (item.restrictions.IsEnabled() && !item.restrictions.IsActive())
             {
-                if(g_cv_bDebugMode)PrintToChatAll("For %N, the restriction was active for %s, i was: %i", client, robotname, i);
+                /* if(g_cv_bDebugMode) */PrintToChatAll("For %N, the robot %s, was enabled, index was: %i", client, robotname, i);
+
+                SMLogTag(SML_VERBOSE, "For %N, the robot %s, was enabled & not active, index was: %i", client, robotname, i);
                 //SetRandomRobot(client);
                 break;
+            }else{
+
+                PrintToChatAll("For %N, the robot %s, was not enabled & active, index was: %i", client, robotname, i);
+
+                SMLogTag(SML_VERBOSE, "For %N, the robot %s, was not enabled & active, index was: %i", client, robotname, i);
             }
         }        
 
@@ -1395,6 +1437,7 @@ void SetRandomRobot(int client)
     }
 
     SMLogTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
+    PrintToChatAll("setting bot %L to be robot '%s'", client, robotname);
     SetRobot(robotname, client);
 }
 
@@ -1507,6 +1550,11 @@ public Action OnClientCommand(int client, int args)
                 if(!IsAnyRobot(client)){
                     if(g_cv_bDebugMode) PrintToChatAll("Was not a robot %N", client);
                     ChangeClientTeam(client, g_HumanTeam);
+
+                    //Set as random class when trying to pick a team
+                    int irandomclass = GetRandomInt(1, 9);
+                    TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
+                    TF2_RespawnPlayer(client);
                     //ShowVGUIPanel(client, GetClientTeam(client) == 3 ? "class_blue" : "class_red");
                 }
                     
@@ -1687,7 +1735,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 {
     if (!g_BossMode)
         return;
-        
+
     while (g_Volunteers.Length < g_RoboCapTeam)
     {
         bool success = AddRandomVolunteer();
@@ -1695,6 +1743,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         if (!success)
             break;
     }
+
     while (g_Volunteers.Length > g_RoboCapTeam)
     {
         bool success = RemoveRandomRobot();
@@ -1702,6 +1751,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         if (!success)
             break;
     }
+
 }
 
 int Native_UnmakeRobot(Handle plugin, int numParams)
@@ -1743,6 +1793,14 @@ bool AddRandomVolunteer()
         PrintToChatAll("A new robot-slot is available. There is now %i available robot slots remains. Type !volunteer to become a giant robot", islots);
 
         return false;
+    }
+
+    if (!IsClientInGame(newVolunteer)){
+        PrintToChatAll("%N is not ingame", newVolunteer);
+        return false;
+    }else
+    {
+        PrintToChatAll("%N is ingame", newVolunteer);
     }
 
     SMLogTag(SML_VERBOSE, "turning %L into a robot", newVolunteer);
