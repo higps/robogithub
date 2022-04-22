@@ -26,8 +26,8 @@ public OnPluginStart()
 	HookEvent("player_upgradedobject", ObjectBuilt, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-	RegAdminCmd("sm_tinydeskengineer", MakeTinyDeskEngineer, ADMFLAG_ROOT, "Get the experimental medigun");
-	RegAdminCmd("sm_tde", MakeTinyDeskEngineer, ADMFLAG_ROOT, "Get the experimental medigun");
+	RegConsoleCmd("sm_tinydeskengineer", MakeTinyDeskEngineer, "Get the experimental medigun");
+	RegConsoleCmd("sm_tde", MakeTinyDeskEngineer, "Get the experimental medigun");
 }
 
 public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
@@ -98,6 +98,7 @@ public Action MakeTinyDeskEngineer(int client, int args)
     SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
 	TF2_SetPlayerClass(client, TFClass_Engineer);
 	TF2_RegeneratePlayer(client);
+	TF2_RespawnPlayer(client);
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", g_scale);
 	UpdatePlayerHitbox(client, g_scale);
 

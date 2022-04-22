@@ -419,6 +419,13 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
            CreateTimer(0.5, Timer_SetHealth, client);
         } 
     }
+
+    if (!IsAnyRobot(client)){ 
+        if (g_AprilEnable && g_BossMode && g_Enable)
+        {
+            CreateTimer(0.1, SetRandomRobot_Timer, client);
+        }
+    }
             // int Humans = GetTeamClientCount(g_HumanTeam);
     // if (!IsBoss(client)){
     //     SetEntProp(client, Prop_Send, "m_bGlowEnabled", 0);
@@ -575,6 +582,17 @@ public Action Timer_Respawn(Handle timer, any client)
         //PrintHintText(client,"You have instant respawn as scout");
     }
 }
+
+public Action SetRandomRobot_Timer(Handle timer, any client)
+{
+
+    if (!IsAnyRobot(client))
+    {
+        SetRandomRobot(client);
+    }
+}
+// 
+
 // 
 
 
@@ -770,15 +788,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
     TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
 
-    if(IsAnyRobot(victim) && IsAnyRobot(attacker) && g_AprilEnable)
-    {
-        float randomdmg = GetRandomFloat(1.0,5.0);
 
-        damage *= randomdmg;
-        return Plugin_Changed;
-
-        //view_as<bool>FloatToInt(sNewValue));
-    }
 
     if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
     {
@@ -920,6 +930,29 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     }
     return Plugin_Continue;
 }
+
+// public Action TF2_OnTakeDamageModifyRulesEx(int victim, int &attacker, int &inflictor, float &damage, float &maxdamage, float &basedamage, float &damagebonus, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float &damageforforce, CritType &critType){
+
+//     if(IsAnyRobot(victim) && IsAnyRobot(attacker) && g_AprilEnable)
+//     {
+//         float randomdmg = GetRandomFloat(1.0,5.0);
+
+//         damage *= randomdmg;
+//         switch (critType){
+//             case CritType_MiniCrit:
+//             {
+//                 critType = CritType_MiniCrit;
+//             }
+//             case CritType_Crit:
+//             {
+//                 critType = CritType_Crit;
+//             }
+//         }
+//         return Plugin_Changed;
+
+//         //view_as<bool>FloatToInt(sNewValue));
+//     }
+// }
 
 void RobotTeamCheck(int client)
 {
