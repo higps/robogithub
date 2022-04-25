@@ -81,8 +81,6 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 		CreateTimer(4.0, Timer_Respawn, victim);
 		// PrintToChat(victim,"Creating timer");
 	}
-
-
 }
 
 public Action Timer_Respawn(Handle timer, any client)
