@@ -186,7 +186,7 @@ MakeSpy(client)
 
 	
 	PrintToChat(client, "1. You are now Giant Mystery Machine!");
-	PrintHintText(client, "Infinite Cloak\nNo Knife\nPowerful Enforcer that penetrates players\nThrowable sapper\nSapper Heals you when sapping");
+	PrintHintText(client, "Infinite Cloak\nNo Knife\nPowerful Enforcer that penetrates players\nThrowable sapper\nSapper Heals you when sapping\nWaveDash");
 
 	if (IsPlayerAlive(client)){
 	EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
@@ -299,10 +299,70 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Sapper, "sapper degenerates buildings", 0.0);
 			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 50.0);
 			TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
-			
+			TF2Attrib_SetByName(Sapper, "major increased jump height", 1.35);		
 			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
 		}	
 	}
+}
+bool g_PressedButton[MAXPLAYERS + 1] = false;
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+{
+	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_RELOAD|IN_USE))
+	{
+		//0 = fireball
+		//PrintToChat(client, "Throwing spell!");
+		if (!g_PressedButton[client])
+		{
+		WaveDash(client);
+		CreateTimer(0.1, Timer_Button, client);
+		}
+		g_PressedButton[client] = true;
+		//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", tf_weapon_grapplinghook");
+	}
+}
+
+void WaveDash(int client)
+{
+	float vOrigin[3], vAngles[3], vForward[3], vVelocity[3];
+	GetClientEyePosition(client, vOrigin);
+	GetClientEyeAngles(client, vAngles);
+	
+	// Get the direction we want to go
+	GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
+	
+	// make it usable
+	float flDistance = 0.0;
+
+	ScaleVector(vForward, flDistance);	
+	
+	// add it to the current velocity to avoid just being able to do full 180s
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVelocity);
+	AddVectors(vVelocity, vForward, vVelocity);
+	
+	float flDistanceVertical = -1500.0;
+		
+	vVelocity[2] += flDistanceVertical; // we always want to go a bit up
+	
+	// And set it
+	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vVelocity);
+
+	//TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.20);
+
+
+float flCloakDrain = 5.0;
+
+				float flCloak = GetEntPropFloat(client, Prop_Send, "m_flCloakMeter");
+
+			flCloak -= flCloakDrain;
+
+			if (flCloak < 0.0) flCloak = 0.0;
+
+			SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", flCloak);
+}
+
+public Action Timer_Button(Handle timer, any client)
+{
+	g_PressedButton[client] = false;
 }
 
 

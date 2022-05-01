@@ -11,6 +11,7 @@
 #define ROBOT_NAME	"Gotham Protector"
 #define ROBOT_ROLE "Tank"
 #define ROBOT_DESCRIPTION "Punish Criminals"
+#define ROBOT_INFO "Immune to tickles\nGains uber from uberchains"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -251,7 +252,6 @@ MakePanCop(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	//TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.15);
 
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -268,6 +268,8 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "head scale", 0.95);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
+	 
 	 
 
 	UpdatePlayerHitbox(client, 1.75);
@@ -336,6 +338,9 @@ stock GiveGDeflectorH(client)
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.7);
 			// TF2Attrib_SetByName(Weapon1, "increased air control", 1000.0);
+			// TF2Attrib_SetByName(Weapon1, "taunt move speed", 500.0);
+			// TF2Attrib_SetByName(Weapon1, "taunt turn acceleration time", 500.0);
+			// TF2Attrib_SetByName(Weapon1, "taunt move speed", 500.0);
 			
 		}
 		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -365,17 +370,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		float duration = 4.0;
 		TF2_AddCondition(attacker, TFCond_RuneHaste, duration);
-		// CreateTimer(duration+0.1,RemoveHaste_Timer, attacker);
-		//TF2_AddCondition(attacker, TFCond_RuneResist, duration);
-		// float pos[3];
-		
-		// GetClientAbsAngles(attacker, pos);
 
-		// MakeRune(Rune_Regen, pos, NULL_VECTOR, NULL_VECTOR);
-	// switch(TF2_GetPlayerClass(victim)) {
-	// 		case TFClass_Scout: PrintToChatAll("");
-	// 		case TFClass_Pyro: PrintToChatAll("");
-	
 		switch (TF2_GetPlayerClass(victim))
 		{
 			
@@ -407,13 +402,27 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 			
 		}
-		//TF2_RemoveCondition(attacker, TFCond_RuneHaste);
 
-
-		//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 1.0);
 		KillRune();
 	}
 
+	//Function to add vs uberchaining
+	if (IsRobot(victim, ROBOT_NAME))
+	{
+	
+
+		switch (TF2_GetPlayerClass(attacker))
+		{
+			
+			case TFClass_Medic:{
+				if (TF2_IsPlayerInCondition(attacker, TFCond_Ubercharged))
+				{
+					TF2_AddCondition(victim, TFCond_UberchargedCanteen, 4.0);
+				}
+
+			}
+		}
+	}
 }
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
@@ -425,9 +434,17 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
     if(condition == TFCond_RuneVampire || condition == TFCond_RuneHaste){
 
 		TF2_RemoveCondition(client, condition);
-
 	}
    }
+
+		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+		{	
+			int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+			if (tauntid == 463){
+			TF2_RemoveCondition(client, condition);
+			}
+		}
+	
 }
 
 
@@ -436,172 +453,15 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	//PrintToChatAll("CONDITION REMOVED!");
 	if (IsRobot(client, ROBOT_NAME)){
 
+	
     if(condition == TFCond_RuneHaste){
 
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 	}
+	// TF2_RemoveCondition(client, TFCond_Dazed);
+	// TF2_RemoveCondition(client, TFCond_KnockedIntoAir);
+	// PrintToChatAll("Condition was: %i", condition);
    }
 
 }
-
-// public Action RemoveHaste_Timer (Handle timer, int client)
-// {
-// 	//PrintToChatAll("REMOVING HAST");
- 	
-// }
-
-
-
-
-// stock int MakeRune(RuneTypes type, float pos[3], float ang[3] = NULL_VECTOR, float vel[3] = NULL_VECTOR)
-// {
-//     int ent = CreateEntityByName("item_powerup_rune");
-//     TeleportEntity(ent, pos, ang, vel);
-//     DispatchSpawn(ent);
-//     SetRuneType(ent, type);
-//     return ent;
-// }
-
-// stock void SetRuneType(int rune, RuneTypes type)
-// {
-//     SetEntData(rune, FindDataMapInfo(rune, "m_iszModel") + 24, view_as< int >(type));
-// }
-
-// stock RuneTypes GetRuneType(int rune)
-// {
-//     return view_as< RuneTypes >(GetEntData(rune, FindDataMapInfo(rune, "m_iszModel") + 24));
-// }
-
-// // Runes will not die if there are no info_powerup_spawn s!!
-// // It's better to set this to a gargantuan amount
-// stock void SetRuneKillTime(int rune, float time)
-// {
-//     SetEntDataFloat(rune, FindDataMapInfo(rune, "m_iszModel") + 32, time);
-// }
-
-// stock float GetRuneKillTime(int rune)
-// {
-//     return GetEntDataFloat(rune, FindDataMapInfo(rune, "m_iszModel") + 32);
-// }
-
-// // Alternatively, you can perpetually set this to 0 and it won' blink like it's 
-// // gonna be deleted
-// stock void SetRuneBlinkCount(int rune, int count)
-// {
-//     SetEntData(rune, FindDataMapInfo(rune, "m_iszModel") + 28, count);
-// }
-
-// stock int GetRuneBlinkCount(int rune)
-// {
-//     return GetEntData(rune, FindDataMapInfo(rune, "m_iszModel") + 28);
-// }
-
-// stock RuneTypes GetCarryingRuneType(int client)
-// {
-//     static TFCond runeconds[] = {
-//         TFCond_RuneStrength,
-//         TFCond_RuneHaste,
-//         TFCond_RuneRegen,
-//         TFCond_RuneResist,
-//         TFCond_RuneVampire,
-//         TFCond_RuneWarlock,
-//         TFCond_RunePrecision,
-//         TFCond_RuneAgility,
-//         TFCond_PlagueRune,
-//         TFCond_KingRune,
-//         TFCond_RuneKnockout,
-//         TFCond_SupernovaRune
-//     }
-
-//     int count;
-//     do    
-//         if (TF2_IsPlayerInCondition(client, runeconds[count]))
-//             return view_as< RuneTypes >(count);
-//         while ++count < view_as< int >(Rune_LENGTH);        // This tagging makes me want to scream
-
-//     return Rune_Invalid;
-// } 
-
-// public TF2_OnConditionAdded(client, TFCond:condition)
-// {
-//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-//     {	
-//         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-//         if (tauntid == -1)
-//         {
-// 		TF2_AddCondition(client, TFCond_CritCola, 30.0);
-// 		TF2_AddCondition(client, TFCond_RegenBuffed, 30.0);
-// 		TF2_AddCondition(client, TFCond_RestrictToMelee, 30.0);
-// 		CreateTimer(2.5, Timer_Taunt_Cancel, client);
-//         }	  
-// 	}
-// }
-
-// public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
-// {
-// 	if (IsValidClient(client)){
-
-// 		TF2_RemoveCondition(client, TFCond_Taunting);
-
-// 		int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-
-// 		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon); 
-// 	}
-// }
-
-
-// - Regular paints -
-//set item tint RGB
-// A Color Similar to Slate					3100495
-// A Deep Commitment to Purple					8208497
-// A Distinctive Lack of Hue					1315860
-// A Mann's Mint								12377523
-// After Eight									2960676
-// Aged Moustache Grey							8289918
-// An Extraordinary Abundance of Tinge			15132390
-// Australium Gold								15185211	
-// Color No. 216-190-216						14204632
-// Dark Salmon Injustice						15308410
-// Drably Olive								8421376
-// Indubitably Green							7511618
-// Mann Co. Orange								13595446
-// Muskelmannbraun								10843461
-// Noble Hatter's Violet						5322826
-// Peculiarly Drab Tincture					12955537
-// Pink as Hell								16738740
-// Radigan Conagher Brown						6901050
-// The Bitter Taste of Defeat and Lime			3329330
-// The Color of a Gentlemann's Business Pants	15787660
-// Ye Olde Rustic Colour						8154199
-// Zepheniah's Greed							4345659
-
-// - Team colors -
-
-// An Air of Debonair:
-// set item tint RGB : 6637376
-// set item tint RGB 2 : 2636109
-
-// Balaclavas Are Forever
-// set item tint RGB : 3874595
-// set item tint RGB 2 : 1581885
-
-// Cream Spirit
-// set item tint RGB : 12807213
-// set item tint RGB 2 : 12091445
-
-// Operator's Overalls
-// set item tint RGB : 4732984
-// set item tint RGB 2 : 3686984
-
-// Team Spirit
-// set item tint RGB : 12073019
-// set item tint RGB 2 : 5801378
-
-// The Value of Teamwork
-// set item tint RGB : 8400928
-// set item tint RGB 2 : 2452877
-
-// Waterlogged Lab Coat
-// set item tint RGB : 11049612
-// set item tint RGB 2 : 8626083

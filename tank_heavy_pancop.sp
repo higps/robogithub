@@ -174,7 +174,7 @@ MakePanCop(client)
 	//TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-	 
+	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 
 	UpdatePlayerHitbox(client, 1.75);
    

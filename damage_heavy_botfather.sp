@@ -7,10 +7,10 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bot Father"
-#define ROBOT_ROLE "⚔︎"
-#define ROBOT_DESCRIPTION "Raoud Shotgun. Taunt: Surpress Police"
+#define ROBOT_ROLE "Damage"
+#define ROBOT_DESCRIPTION "Family Business, Eviction Notice"
  
-#define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
+#define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
@@ -23,9 +23,9 @@
 
 public Plugin:myinfo =
 {
-	name = "[TF2] Be the Giant Riotcop",
+	name = "[TF2] Be the Giant Bot Father",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Deflector Heavy from MvM",
+	description = "Play as the Giant Bot Bather",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -160,7 +160,7 @@ MakeRiotcop(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.7);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -171,7 +171,7 @@ MakeRiotcop(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	//TF2Attrib_SetByName(client, "head scale", 0.8);
-
+TF2Attrib_SetByName(client, "deploy time decreased", 0.6);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
@@ -211,13 +211,14 @@ stock GiveGDeflectorH(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		CreateRoboWeapon(client, "tf_weapon_shotgun_hwg", 425, 6, 2, 2,0);
+		CreateRoboWeapon(client, "tf_weapon_fists", 426, 6, 2, 3,0);
 
 #define SecurityShades 479
 #define CaponeCapper 427
 #define DeadOfNight 30309
 
-		CreateRoboHat(client, SecurityShades, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, CaponeCapper, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, SecurityShades, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, CaponeCapper, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, DeadOfNight, 10, 6, 0.0, 1.0, -1.0); 
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -226,41 +227,31 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			//TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.0);
 			//TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 10.0);
+//			TF2Attrib_SetByName(Weapon2, "damage penalty", 1.25);
 			TF2Attrib_SetByName(Weapon2, "damage penalty", 1.25);
-			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.25);
+			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.5);
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.6);
+			TF2Attrib_SetByName(Weapon2, "weapon spread bonus", 0.75);
 
+		}
+
+		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		if(IsValidEntity(Weapon3))
+		{
+			TF2Attrib_RemoveAll(Weapon3);
+			//TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.0);
+			//TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 10.0);
+			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.35);
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 6.0);
+			TF2Attrib_SetByName(Weapon3, "mod_maxhealth_drain_rate", 0.0);
+			TF2Attrib_SetByName(Weapon3, "self mark for death", 2.0);
+			TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.22);
 		}
 
 	}
 }
-
-// public TF2_OnConditionAdded(client, TFCond:condition)
-// {
-//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-//     {	
-//         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-//         if (tauntid == -1)
-//         {
-//         CreateTimer(3.2, Timer_Taunt_Cancel, client);
-//         }	  
-
-// 	}
-// }
-
-// public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
-// {
-// 	if (IsValidClient(client)){
-
-// 		if (TF2_IsPlayerInCondition(client, TFCond_Taunting))
-// 		{
-// 		TF2_RemoveCondition(client, TFCond_Taunting);
-// 		TF2_AddCondition(client, TFCond_CritCola, 6.0);
-// 		}
-// 	}
-// }
 
 // - Regular paints -
 //set item tint RGB

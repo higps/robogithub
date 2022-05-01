@@ -6,7 +6,7 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Samurai"
+#define ROBOT_NAME	"Samur-A.I."
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_DESCRIPTION "Half-Zatoichi, Splendid Screen"
 
@@ -45,6 +45,8 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 2);
+
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
 public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -95,6 +97,48 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 
+}
+
+public Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	if (IsRobotWhenDead(victim, ROBOT_NAME))
+	{
+		char weaponName[32];
+		GetEventString(event, "weapon", weaponName, sizeof(weaponName));
+
+
+		int weaponid = GetEventInt(event, "weaponid");
+	//	PrintToChatAll("%i a ", weaponid);
+			//PrintToChatAll("%i", GetEventInt(event, "weaponid"));
+			// if (weaponid == -1) return;
+			
+			//int weapondef = GetEntProp(weaponid, Prop_Send, "m_iItemDefinitionIndex");	
+			
+		if (StrEqual(weaponName, "demokatana"))//If killed by katana you respawn faster
+		{
+		//PrintToChatAll("%N was killed by weapon id %i which was named %s", victim, weaponid, weaponName);
+		
+		CreateTimer(4.0, Timer_Respawn, victim);
+		}
+			
+		
+		 
+		
+	}
+
+
+}
+
+public Action Timer_Respawn(Handle timer, any client)
+{
+    //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
+	if (IsValidClient(client) && !IsPlayerAlive(client))
+    {
+        TF2_RespawnPlayer(client);
+        //PrintToChat(client,"You have instant respawn as scout");
+    }
 }
 
 public Action:SetModel(client, const String:model[])

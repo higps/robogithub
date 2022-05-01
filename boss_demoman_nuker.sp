@@ -42,7 +42,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 4;
+    restrictions.RobotCoins.PerRobot = 3;
 
 
     AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
@@ -189,15 +189,15 @@ stock GiveGiantDemoKnight(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.5);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
 			TF2Attrib_SetByName(Weapon1, "grenade launcher mortar mode", 0.0);
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
 			TF2Attrib_SetByName(Weapon1, "blast radius increased", 2.25);
 			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.8);
-			TF2Attrib_SetByName(Weapon1, "reload time increased", 7.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 2.0);
+			TF2Attrib_SetByName(Weapon1, "reload time increased", 1.5);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.1);
+			//TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.1);
 
 			
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);

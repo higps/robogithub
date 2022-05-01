@@ -220,7 +220,6 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "increased air control", 2.0);
@@ -232,7 +231,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "self dmg push force increased", 4.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-	
+	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	//
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.75);

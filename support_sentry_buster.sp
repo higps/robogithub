@@ -173,9 +173,9 @@ public Action OnTouch(int client, int ent)
 				//PrintToChatAll("not the same team");
 				GetReadyToExplode(client);
 				FakeClientCommand(client, "taunt");
-				TF2_AddCondition(client, TFCond_FreezeInput);
+				TF2_AddCondition(client, TFCond_FreezeInput, 7.0);
 				g_Taunt_clamp = true;
-				CreateTimer(1.5, FakeCommand_Clamp);
+				CreateTimer(2.5, FakeCommand_Clamp);
 			}
         //	PrintToChatAll("after ent name was %s", entname);
          
@@ -204,6 +204,7 @@ public Action OnTouch(int client, int ent)
 					if (StrEqual(entname, "obj_sentrygun") && !AboutToExplode[client])
         			{
 						GetReadyToExplode(client);
+						TF2_AddCondition(client, TFCond_FreezeInput);
 						FakeClientCommand(client, "taunt");
 					}
 		}
@@ -341,7 +342,9 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 	{
 	//	if (AboutToExplode[client]) return Plugin_Continue;
 //		if (GetEntProp(client, Prop_Send, "m_hGroundEntity") == -1) return Plugin_Continue;
+
 		GetReadyToExplode(client);
+		TF2_AddCondition(client, TFCond_FreezeInput, 7.0);
 	}	  
 
 	}

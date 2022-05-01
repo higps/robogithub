@@ -215,6 +215,9 @@ public void OnPluginStart()
     RegConsoleCmd("sm_chngrbt", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_cr", Command_ChangeRobot, "change your robot");
 
+
+    RegConsoleCmd("sm_mount", Command_MountRobot, "change your robot");
+    RegConsoleCmd("sm_mt", Command_MountRobot, "change your robot");
 //April Fools
     //RegConsoleCmd("sm_rtd", Command_RTDRobot, "become random robot");
 
@@ -400,6 +403,8 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 {
     int client = GetClientOfUserId(GetEventInt(event, "userid"));
     
+   // RequestFrame(RobotTeamCheck, client);
+
     if (IsAnyRobot(client)){ 
         
         //PrintToChatAll("%N spawned, checking if boss", client);
@@ -411,7 +416,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         // {
         //     MC_PrintToChatEx(client, client, "{teamcolor}You're a robot on the robot team!");
         // }
-        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} to change robot!");
+        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} or {orange}change class{teamcolor} in spawn to change robot!");
         if(g_cv_bDebugMode)PrintToChatAll("%N spawned, with %i health from previous life", client, g_PlayerHealth[client]);
         //FakeClientCommand(client, "tf_respawn_on_loadoutchanges 0");
         if (g_PlayerHealth[client] > 0){
@@ -723,11 +728,12 @@ public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 
     if(isMiniBoss(pThis) && IsPlayerAlive(pThis)){
         //PrintToChatAll("1");
-    PrintCenterText(pThis,"Error: Incompatible locker, must be a human");
+    PrintCenterText(pThis,"Error: Incompatible locker technology");
     //sets the robot health when touch
 	// int maxhealth = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, pThis);
     //     SetEntityHealth(pThis, maxhealth);
-        return MRES_Supercede; 
+    // TF2_AddCondition(pThis, TFCond_HalloweenQuickHeal, 10.0);
+    return MRES_Supercede; 
     }
 
     return MRES_Ignored;
@@ -966,6 +972,10 @@ void RobotTeamCheck(int client)
             TrashRobot(client);
             CreateTimer(0.5, Timer_Regen, client);       
         }
+        // else if (iTeam == g_RoboTeam)
+        // {
+        //     SetRandomRobot(client);
+        // }
     }
 }
 
@@ -1369,6 +1379,39 @@ public Action Command_ChangeRobot(int client, int args)
     return Plugin_Handled;
 }
 
+public Action Command_MountRobot(int client, int args)
+{
+
+    if (!g_Enable)
+    {
+        return Plugin_Handled;
+    }
+
+    if (IsAnyRobot(client))
+    {
+        int playerID = GetClientUserId(client);
+        int taunt;
+        int random = GetRandomInt(1,2);
+        switch (random)
+        {
+            case 1:
+            {
+                taunt = 1172; //victory lap
+            }
+            case 2:
+            {
+                taunt = 30672; // zoomin broom
+            }
+        }
+
+        ServerCommand("sm_tauntem #%d %i", playerID, taunt);
+    }
+
+    
+
+    return Plugin_Handled;
+}
+
 // public Action Command_RTDRobot(int client, int args)
 // {
 
@@ -1509,8 +1552,8 @@ void MoveToRobots(int client)
 {    
     TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
     RequestFrame(SetRandomRobot,client);
-    SetClientRepicking(client, false);
-    ChooseRobot(client);
+    // SetClientRepicking(client, false);
+    // ChooseRobot(client);
 }
 
 Action ChooseRobot(int client, bool redrawing = false)

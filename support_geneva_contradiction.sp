@@ -9,7 +9,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Geneva Contradiction"
 #define ROBOT_ROLE "Support"
-#define ROBOT_DESCRIPTION "Mediknight"
+#define ROBOT_DESCRIPTION "Syringe Gun AOE Heal"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -119,6 +119,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.75);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+
 	
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -147,7 +148,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -168,14 +169,14 @@ stock GiveGiantMedic(client)
 		
 		CreateRoboWeapon(client, "tf_weapon_syringegun_medic", 17, 6, 1, 0, 0);
 		//CreateRoboWeapon(client, "tf_wearable_demoshield", 131, 6, 1, 1, 0);
-		CreateRoboWeapon(client, "tf_weapon_bonesaw", 8, 6, 1, 2, 0);
+		// CreateRoboWeapon(client, "tf_weapon_bonesaw", 8, 6, 1, 2, 0);
 
 		CreateRoboHat(client, 30109, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, 30098, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, 30149, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon1))
 		{
@@ -187,7 +188,6 @@ stock GiveGiantMedic(client)
 			 
 			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
-			
 			//TF2Attrib_SetByName(Weapon1, "heal on kill", 200.0);
 			//TF2Attrib_SetByName(Weapon1, "add uber charge on hit", 3.0);
 			//TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 3.0);
@@ -217,8 +217,8 @@ stock GiveGiantMedic(client)
 		// }
 	}
 }
-bool g_SpellClamp = false;
-float g_chargetime = 5.0;
+// bool g_SpellClamp = false;
+// float g_chargetime = 5.0;
 
 // public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 // {
@@ -240,40 +240,40 @@ float g_chargetime = 5.0;
 // 	}
 // }
 
-public Action SpellClamp_Timer(Handle hTimer)
-{
-	g_SpellClamp = false;
-}
+// public Action SpellClamp_Timer(Handle hTimer)
+// {
+// 	g_SpellClamp = false;
+// }
 
-public Action Timer_TargeCharging(Handle timer, any userid)
-{
-	new client = GetClientOfUserId(userid);
-	if (!IsValidClient(client) || !IsPlayerAlive(client) || !TF2_IsPlayerInCondition(client, TFCond_Charging))
-	{
-		if (IsValidClient(client)) SetEntProp(client, Prop_Send, "m_iNextMeleeCrit", 0);
-		return Plugin_Stop;
-	}
-	float charge = g_chargetime;
-	if (charge <= 0)
-	{
-		SetEntProp(client, Prop_Send, "m_iNextMeleeCrit", 0);
-		return Plugin_Stop;
-	}
-	if (GetPlayerWeaponSlot(client, TFWeaponSlot_Melee) == 8) charge -= (0.1 / 2.0 * 100.0);
-	else charge -= (0.1 / 1.5 * 100.0);
-	if (charge <= 0) charge = 0.0;
-	if (charge <= 33) SetEntProp(client, Prop_Send, "m_iNextMeleeCrit", 2);	//Full crit
-	else if (charge <= 75) SetEntProp(client, Prop_Send, "m_iNextMeleeCrit", 1);	//Mini-crit
-	SetEntPropFloat(client, Prop_Send, "m_flChargeMeter", charge);
-	SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 750.0);
-	return Plugin_Continue;
-}
+// public Action Timer_TargeCharging(Handle timer, any userid)
+// {
+// 	new client = GetClientOfUserId(userid);
+// 	if (!IsValidClient(client) || !IsPlayerAlive(client) || !TF2_IsPlayerInCondition(client, TFCond_Charging))
+// 	{
+// 		if (IsValidClient(client)) SetEntProp(client, Prop_Send, "m_iNextMeleeCrit", 0);
+// 		return Plugin_Stop;
+// 	}
+// 	float charge = g_chargetime;
+// 	if (charge <= 0)
+// 	{
+// 		SetEntProp(client, Prop_Send, "m_iNextMeleeCrit", 0);
+// 		return Plugin_Stop;
+// 	}
+// 	if (GetPlayerWeaponSlot(client, TFWeaponSlot_Melee) == 8) charge -= (0.1 / 2.0 * 100.0);
+// 	else charge -= (0.1 / 1.5 * 100.0);
+// 	if (charge <= 0) charge = 0.0;
+// 	if (charge <= 33) SetEntProp(client, Prop_Send, "m_iNextMeleeCrit", 2);	//Full crit
+// 	else if (charge <= 75) SetEntProp(client, Prop_Send, "m_iNextMeleeCrit", 1);	//Mini-crit
+// 	SetEntPropFloat(client, Prop_Send, "m_flChargeMeter", charge);
+// 	SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 750.0);
+// 	return Plugin_Continue;
+// }
 
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
 if (IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
 	{
-		if (IsSyringeGun(weapon))TF2_AddCondition(attacker, TFCond_RadiusHealOnDamage, 15.5);
+		if (IsSyringeGun(weapon))TF2_AddCondition(attacker, TFCond_RadiusHealOnDamage, 10.0);
 	}
 }
 
