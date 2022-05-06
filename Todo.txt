@@ -2,7 +2,7 @@ TODO:
   Todo:
   Priority:
   1. Add Back button to all menu levels.
-  2. Random robot selection is broken again
+  2. Random robot selection is broken again (this is caused by maps not covering spawn)
   3. Change spawn sounds. Should only trigger on first spawn, and when changing robot. Using Item preset command should not trigger it.
   4. Using Item loadout preset binds now counts as a death, resetting your paid robot to an unpaid robot.
   5. Add counter for Tank, Engineer and Sentry Buster
