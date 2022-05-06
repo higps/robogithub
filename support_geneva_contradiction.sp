@@ -112,9 +112,6 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "mult charge turn control", 300.0);
-
-	TF2Attrib_SetByName(client, "heal rate bonus", 500.5);	
 	
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.75);
@@ -129,18 +126,18 @@ MakeGiantMedic(client)
 	PrintHintText(client, "%s", ROBOT_DESCRIPTION);
 }
 
-public TF2_OnConditionAdded(client, TFCond:condition)
-{
-    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-    {
-       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
-	   //TF2_RemoveCondition(client, TFCond_Taunting);
-//	   TF2_AddCondition(client,TFCond_Charging, 2.5);
+// public TF2_OnConditionAdded(client, TFCond:condition)
+// {
+//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+//     {
+//        TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
+// 	   //TF2_RemoveCondition(client, TFCond_Taunting);
+// //	   TF2_AddCondition(client,TFCond_Charging, 2.5);
 
 	
-	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-    }
-}
+// 	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+//     }
+// }
 
 
  
@@ -185,7 +182,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
 			TF2Attrib_SetByName(Weapon1, "clip size bonus upgrade", 2.0);
-			TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.5);
+			TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.75);	
@@ -276,7 +273,11 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
 if (IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
 	{
-		if (IsSyringeGun(weapon))TF2_AddCondition(attacker, TFCond_RadiusHealOnDamage);
+		if (IsSyringeGun(weapon))
+		{
+			TF2_AddCondition(attacker, TFCond_RadiusHealOnDamage);
+			TF2_AddCondition(victim, TFCond_Milked, 15.0);
+		}
 	}
 }
 
