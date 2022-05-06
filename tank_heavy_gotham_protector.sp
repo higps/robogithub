@@ -280,7 +280,7 @@ MakePanCop(client)
 	PrintHintText(client, "You are a Tank!\nYou can't contest objectives\nOn Hit: Gain a 1.5 second buff depending on class");
 	
 
-	if(IsPlayerAlive(client)) EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
+	
 	// SetEntityRenderColor(client, 0, 0, 0, 0);
 
 }
@@ -440,7 +440,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
 		{	
 			int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-			if (tauntid == 463){
+			if (tauntid == 463 || tauntid == -1){
 			TF2_RemoveCondition(client, condition);
 			}
 		}

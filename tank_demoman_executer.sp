@@ -171,7 +171,7 @@ MakeDemoKnight(client)
 	
 	PrintHintText(client , "High Damage Axe\nIncreased melee range");
 
-	if(IsPlayerAlive(client)) EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
+	
 	// TF2_AddCondition(client, TFCond_MegaHeal);
 }
 

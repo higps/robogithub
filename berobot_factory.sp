@@ -131,6 +131,8 @@ public void ResetPreviousRobot(int client)
     _wasRobot[client] = "";
 }
 
+bool b_SpawnSoundClamp[MAXPLAYERS + 1] = false;
+
 public Action Timer_Locker(Handle timer, any client)
 {
     if (!IsValidClient(client))
@@ -147,15 +149,21 @@ public Action Timer_Locker(Handle timer, any client)
         return Plugin_Handled;
     }
 
-    if (IsPlayerAlive(client))
+    if (IsPlayerAlive(client) && !b_SpawnSoundClamp[client])
     { 
         EmitSoundToAll(item.sounds.spawn);
-        
+        b_SpawnSoundClamp[client] = true;
+        CreateTimer(15.0, Timer_SpawnSoundClamp, client);
     }
 
     CallCreate(client, item);
 
     return Plugin_Handled;
+}
+
+public Action Timer_SpawnSoundClamp(Handle timer, int client)
+{
+    b_SpawnSoundClamp[client] = false;
 }
 
 public void Event_Death(Handle event, const char[] name, bool dontBroadcast)

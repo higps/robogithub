@@ -16,6 +16,11 @@
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
 #define DEATH	"mvm/mvm_tank_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
+#define BLU_MODEL	"models/props_trainyard/bomb_cart.mdl"
+#define RED_MODEL "models/props_trainyard/bomb_cart_red.mdl"
+// #define PMODEL "models/props_td/atom_bomb.mdl"
+
+int g_iTeam;
 
 public Plugin:myinfo =
 {
@@ -67,7 +72,8 @@ public OnMapStart()
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
-
+	PrecacheModel(RED_MODEL);
+	PrecacheModel(BLU_MODEL);
 
 }
 
@@ -146,6 +152,9 @@ MakeSolar(client)
 	PrintToChat(client, "1. You are now Giant Nuker !");
 
 	//SetBossHealth(client);
+	g_iTeam = GetClientTeam(client);
+	//PrintToChatAll("iTeam was: %i", g_iTeam);
+
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -204,6 +213,8 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			TF2Attrib_SetByName(Weapon1, "grenade no spin", 1.0);
+			
 
 			
 		}
@@ -242,6 +253,26 @@ public void OnEntityCreated(int iEntity, const char[] sClassName)
 public void Hook_OnProjectileSpawn(iEntity) {
 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+	//	SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+		RequestFrame(SetProjectileModel, iEntity);
 	}
+}
+float g_fStockvecMin[3] = {-10.0, -10.0, -10.0};
+float g_fStockvecMax[3] = {10.0, 10.0, 10.0};
+
+void SetProjectileModel (int iEntity)
+{
+	if(g_iTeam == 2)
+	{
+		SetEntityModel(iEntity, RED_MODEL);
+		
+	}else
+	{
+		SetEntityModel(iEntity, BLU_MODEL);
+	}
+
+
+	SetEntPropVector(iEntity, Prop_Send, "m_vecMins", g_fStockvecMin);
+	SetEntPropVector(iEntity, Prop_Send, "m_vecMaxs", g_fStockvecMax);
+
 }

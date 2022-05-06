@@ -226,3 +226,36 @@ public void Hook_OnProjectileSpawn(iEntity) {
 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
 	}
 }
+
+
+
+public void TF2_OnConditionAdded(int client, TFCond condition)
+{
+	
+	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
+		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Charging)
+		{	
+			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 750.0);
+
+		}
+	
+}
+
+
+// public void TF2_OnConditionRemoved(int client, TFCond condition)
+// {
+// 	//PrintToChatAll("CONDITION REMOVED!");
+// 	if (IsRobot(client, ROBOT_NAME)){
+
+	
+//     if(condition == TFCond_RuneHaste){
+
+// 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+
+// 	}
+// 	// TF2_RemoveCondition(client, TFCond_Dazed);
+// 	// TF2_RemoveCondition(client, TFCond_KnockedIntoAir);
+// 	// PrintToChatAll("Condition was: %i", condition);
+//    }
+
+// }

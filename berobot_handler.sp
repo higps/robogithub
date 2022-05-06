@@ -112,6 +112,7 @@ int g_AprilEnable;
 //bool g_IsAprilRTD[MAXPLAYERS + 1] = false;
 
 int g_RoundCount;
+int g_TankCount;
 
 ArrayList g_Volunteers;
 
@@ -216,8 +217,8 @@ public void OnPluginStart()
     RegConsoleCmd("sm_cr", Command_ChangeRobot, "change your robot");
 
 
-    RegConsoleCmd("sm_mount", Command_MountRobot, "change your robot");
-    RegConsoleCmd("sm_mt", Command_MountRobot, "change your robot");
+    RegConsoleCmd("sm_mount", Command_MountRobot, "get a taunt mount for your robot");
+    RegConsoleCmd("sm_mt", Command_MountRobot, "get a taunt mount for your robot");
 //April Fools
     //RegConsoleCmd("sm_rtd", Command_RTDRobot, "become random robot");
 
@@ -243,6 +244,8 @@ public void OnPluginStart()
     
     HookEvent("player_death", Event_Death, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+
+    HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
 
@@ -339,6 +342,7 @@ public void OnMapStart()
 {
     g_WaitingForPlayers = true;
     g_RoundCount = 0;
+    g_TankCount = 0;
     ResetMode();
 
     PrecacheSound(RESISTANCE);
@@ -423,6 +427,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
             //PrintToChatAll("Player didn't die, setting health!");
            CreateTimer(0.5, Timer_SetHealth, client);
         } 
+
     }
 
     if (!IsAnyRobot(client)){ 
@@ -532,8 +537,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
            // EmitGameSoundToAll("Announcer.MVM_General_Destruction");
             // } 
 
-            // } 
-
+            // }
             
         }
 
@@ -599,26 +603,57 @@ public Action SetRandomRobot_Timer(Handle timer, any client)
 // 
 
 // 
+bool b_TankCheckClamp = false;
 
+public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
+{
 
-// public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
-// {
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+    if (IsTank(client) && !b_TankCheckClamp)
+    {
+        CreateTimer(3.0, Timer_TankCheck);
+        b_TankCheckClamp = true;
+    }
+}
 
-//     int client = GetClientOfUserId(GetEventInt(event, "userid"));
-//     if (IsAnyRobot(client) && g_BossMode)
-//     {
-//         if(g_cv_bDebugMode)PrintToChatAll("Creating the timer");
-//         CreateTimer(1.0, Timer_SetHealth, client);
-//     }
-// }
+public Action Timer_TankCheck(Handle timer)
+{
+    int TankCount = 0;
 
+    for(int i = 1; i <= MaxClients; i++)
+    {
+        if (IsTank(i))
+        {
+            if(g_cv_bDebugMode)PrintToChatAll("%N was a tank", i);
+            TankCount++;
+        }
+    }
 
+    if (TankCount == 1)
+    {
+        EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
+    }
+
+    if (TankCount == 2)
+    {
+        EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Another");
+    }
+
+    if (TankCount > 2)
+    {
+        EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Multiple");
+    }
+
+    if(g_cv_bDebugMode)PrintToChatAll("Tank count was %i", TankCount);
+    b_TankCheckClamp = false;
+}
 
 
 public Action Timer_Regen(Handle timer, any client)
 {
-TF2_RegeneratePlayer(client);
+    TF2_RegeneratePlayer(client);
 }
+
 public Action Timer_SetHealth(Handle timer, any client)
 {
     //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
@@ -1690,6 +1725,8 @@ any Native_SetRobot(Handle plugin, int numParams)
         if(!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
     {
         PrintCenterText(client, "You have to be in spawn or dead to select a robot");
+        //MC_PrintToChatEx(client, client, "{orange}!cr{teamcolor} or {orange}change class{teamcolor} in spawn to change robot!");
+        //MC_PrintToChatAllEx(client, "{orange} %N was not alive and in spawn");
         SetClientRepicking(client, false);
         return;
     }

@@ -264,7 +264,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -337,13 +337,13 @@ stock GiveGiantPyro(client)
 						
 \			
 		}
-		if(IsValidEntity(Weapon2))
-		{
-			TF2Attrib_RemoveAll(Weapon2);
-		//	TF2Attrib_SetByName(Weapon2, "increase buff duration", 1.65);
-			// TF2CustAttr_SetString(Weapon2, "custom buff type", "rocket-aiming-control");
-			// TF2CustAttr_SetString(Weapon2, "rocket control buff turn rate", "0.25");
-		}
+		// if(IsValidEntity(Weapon2))
+		// {
+		// 	TF2Attrib_RemoveAll(Weapon2);
+		// //	TF2Attrib_SetByName(Weapon2, "increase buff duration", 1.65);
+		// 	// TF2CustAttr_SetString(Weapon2, "custom buff type", "rocket-aiming-control");
+		// 	// TF2CustAttr_SetString(Weapon2, "rocket control buff turn rate", "0.25");
+		// }
 
 		
 		

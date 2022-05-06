@@ -11,8 +11,8 @@
 #define ROBOT_NAME	"Cloaker"
 #define ROBOT_ROLE "Support"
 #define ROBOT_DESCRIPTION "Cloaker"
-#define GSOLDIER             "models/bots/spy/bot_spy.mdl"
-//#define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
+//#define GSOLDIER             "models/bots/spy/bot_spy.mdl"
+#define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
@@ -60,9 +60,12 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
 
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
+		RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    restrictions.RobotCoins.Overall = 3;
+
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
 
 public void OnPluginEnd()
@@ -196,7 +199,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 5800;
+	int iHealth = 2000;
 		
 	int MaxHealth = 200;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -225,13 +228,13 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "increased air control", 2.0);
 	
-	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 
 	//TF2Attrib_SetByName(client, "blast_dmg_to_self", 0.1);
-	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
-	TF2Attrib_SetByName(client, "self dmg push force increased", 4.0);
-	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
-	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	TF2Attrib_SetByName(client, "increase buff duration", 2.5);
+	//TF2Attrib_SetByName(client, "self dmg push force increased", 4.0);
+	// TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
+	// TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	
 	//
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -242,7 +245,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Kill All Humans");
+	PrintHintText(client , "Use your cloak to hide your team");
 	
 }
 
@@ -259,8 +262,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define LordCockswain 439
-#define Pipe 440
+#define CrossComm 764
+
 // 
 
 stock GiveGiantPyro(client)
@@ -276,60 +279,34 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 3);
 		TF2_RemoveWeaponSlot(client, 4);
 
-		//CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_revolver", 18, 6, 1, 0, 0);
+		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
 		CreateRoboWeapon(client, "tf_weapon_buff_item", 226, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_shovel", 775, 6, 1, 2, 0);
+		// CreateRoboWeapon(client, "tf_weapon_shovel", 775, 6, 1, 2, 0);
 		
-		// CreateRoboHat(client, LordCockswain, 10, 6, 0.0, 1.0, -1.0);
-		// CreateRoboHat(client, Pipe, 10, 6, 0.0, 1.0, -1.0);
-
+		CreateRoboHat(client, CrossComm, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon1))
 		{
-
-			TF2Attrib_SetByName(Weapon1, "override projectile type", 2.0);
+			// TF2Attrib_SetByName(Weapon1, "override projectile type", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);				
-			
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);				
+			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-
-			//SetEntPropFloat(Weapon1, Prop_Send, "m_flModelScale", 1.75);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
+			
 		}
 		if(IsValidEntity(Weapon2))
 		{						
 			TF2CustAttr_SetString(Weapon2, "custom buff type", "mm-cloak");
+			TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
+			TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
 		}
-
-		if(IsValidEntity(Weapon3))
-		{
-			TF2Attrib_RemoveAll(Weapon3);
-
-
-			// TF2Attrib_SetByName(Weapon3, "mod shovel damage boost", 0.0);
-
-			//TF2Attrib_SetByDefIndex(Weapon3, 115, 2.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
-			TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", 1.5);
-			
-			// TF2Attrib_SetByName(Weapon3, "mod shovel speed boost", 2.0);
-			
-			TF2Attrib_SetByName(Weapon3, "self mark for death", 0.0);
-			TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);
-
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
-		}
-
-
-
-		
-
+		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 100.0);
 	}
 }
 
