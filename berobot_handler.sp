@@ -764,15 +764,18 @@ public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
     if(isMiniBoss(pThis) && IsPlayerAlive(pThis)){
         //PrintToChatAll("1");
     PrintCenterText(pThis,"Error: Incompatible locker technology");
+
     //sets the robot health when touch
 	// int maxhealth = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, pThis);
     //     SetEntityHealth(pThis, maxhealth);
-    // TF2_AddCondition(pThis, TFCond_HalloweenQuickHeal, 10.0);
+    //TF2_AddCondition(pThis, TFCond_HalloweenQuickHeal, 10.0);
+
     return MRES_Supercede; 
     }
 
     return MRES_Ignored;
 }
+
 
 public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
 {

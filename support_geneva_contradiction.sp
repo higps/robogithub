@@ -182,12 +182,14 @@ stock GiveGiantMedic(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 2.0);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
-			TF2Attrib_SetByName(Weapon1, "clip size bonus upgrade", 1.5);
+			TF2Attrib_SetByName(Weapon1, "clip size bonus upgrade", 2.0);
 			TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.5);
 			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
+			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.75);	
+			
 			
 			//TF2Attrib_SetByName(Weapon1, "heal on kill", 200.0);
 			//TF2Attrib_SetByName(Weapon1, "add uber charge on hit", 3.0);
@@ -270,13 +272,13 @@ stock GiveGiantMedic(client)
 // 	return Plugin_Continue;
 // }
 
-// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
-// {
-// if (IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
-// 	{
-// 		if (IsSyringeGun(weapon))TF2_AddCondition(attacker, TFCond_RadiusHealOnDamage, 10.0);
-// 	}
-// }
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+if (IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
+	{
+		if (IsSyringeGun(weapon))TF2_AddCondition(attacker, TFCond_RadiusHealOnDamage);
+	}
+}
 
 // bool IsBonesaw(int weapon)
 // {
@@ -293,20 +295,20 @@ stock GiveGiantMedic(client)
 // 	return false;
 // }
 
-// bool IsSyringeGun(int weapon)
-// {
-// 	if(weapon == -1 && weapon <= MaxClients) return false;
+bool IsSyringeGun(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
 	
-// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-// 	{
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
 		
-// 	case 17: //SyringeGun
-// 		{
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
+	case 17: //SyringeGun
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 
 // public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
