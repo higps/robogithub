@@ -244,6 +244,8 @@ public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
+bool g_spawnclamp[MAXPLAYERS + 1] = false;
+
 public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
@@ -265,14 +267,18 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	// if (team != EngieTeam)
 	// 	return Plugin_Continue;
-
+	
 	float angles[3], pos[3];
-	if (GetTeamporterTransform(team, angles, pos))
+	if (GetTeamporterTransform(team, angles, pos) && !g_spawnclamp[client])
 	{
 		MC_PrintToChatEx(client, client, "{orange}==[TEAMPORTER ACTIVE]==");
 		MC_PrintToChatEx(client, client, "{teamcolor}==[HOLD CROUCH TO CHARGE TELEPORT IN SPAWN!]==");
-		EmitSoundToAll(TELEPORTER_ACTIVATE, client, _,_,_,0.3);
+		//EmitSoundToAll(TELEPORTER_ACTIVATE, client, _,_,_,0.3);
+		EmitSoundToClient(client, TELEPORTER_ACTIVATE);
+		g_spawnclamp[client] = true;
+		CreateTimer(1.5, SpawnSound_Clamp, client);
 	}
+
 	return Plugin_Continue;
 }
 
@@ -362,6 +368,11 @@ bool GetTeamporterTransform(int team, float angles[3], float pos[3])
 public Action Teleport_Clamp(Handle timer, int client)
 {
 	g_Teleported[client] = false;
+}
+
+public Action SpawnSound_Clamp(Handle timer, int client)
+{
+	g_spawnclamp[client] = false;
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])

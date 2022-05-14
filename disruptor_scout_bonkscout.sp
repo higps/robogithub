@@ -59,7 +59,7 @@ public OnPluginStart()
 	
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 5; 
+    restrictions.RobotCoins.Overall = 3; 
 
 	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, restrictions, 2);
 }
@@ -248,6 +248,11 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "damage bonus", 1.33);
 			//TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 10.0);
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
+			
+					// new iOffset = GetEntProp(Weapon2, Prop_Send, "m_iPrimaryAmmoType", 1)*4;
+					// new iAmmoTable = FindSendPropInfo("CTFPlayer", "m_iAmmo");
+					// SetEntData(client, iAmmoTable+iOffset, 23, 0, true);
+						
 		}
 	}
 }

@@ -43,10 +43,12 @@ public void OnPluginStart()
     _enabledConVar.AddChangeHook(EnabledConVarChangeHook);
     _enabled = _enabledConVar.BoolValue;
 
-    _humansPerRobotConVar = CreateConVar("sm_berobot_dynamicRobotCount_humansPerRobot", "3.0", "ratio of humans-to-robot for dynamic robot count calculation");
+    _humansPerRobotConVar = CreateConVar("sm_berobot_dynamicRobotCount_humansPerRobot", "4.0", "ratio of humans-to-robot for dynamic robot count calculation");
     _humansPerRobotConVar.AddChangeHook(RoboCapTeamHumansPerRobotConVarChangeHook);
     _humansPerRobot = _humansPerRobotConVar.FloatValue;
     
+
+    HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
     //g_timer = false;
 }
 
@@ -97,22 +99,25 @@ void SetRoboCapTeam()
     if (!_enabled)
         return;
 
-    int count = GetClientCount();
+    //int count = GetClientCount();
+
     // int Spectate = GetTeamClientCount(1);
-    // int Red = GetTeamClientCount(2);
-    // int Blue = GetTeamClientCount(3);
+    int Red = GetTeamClientCount(2);
+    int Blue = GetTeamClientCount(3);
 
     // int count = Red+Blue+Spectate;
+    int count = Red+Blue;
     // PrintToChatAll("Red Team had: %i players", Red);
     // PrintToChatAll("Blue Team had: %i players", Blue);
+    // PrintToChatAll("Total player count was: %i", count);
     // PrintToChatAll("Spectate Team had: %i players", Spectate);
 
-    float ratio = _humansPerRobot +1.0;
-    int robotCount = RoundToCeil(count/ratio);
-
-    // if (robotCount == 0){
-    //     robotCount == 1;
-    // }
+    float ratio = _humansPerRobot;
+    int robotCount = RoundToFloor(count/ratio);
+    // PrintToChatAll("Robocount was: %i", robotCount);
+    if (robotCount == 0){
+        robotCount = 1;
+    }
 
 //    SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
     _roboCapTeamConVar.SetInt(robotCount);
@@ -125,3 +130,13 @@ void SetRoboCapTeam()
 
 // EnsureRobotCount();
 // }
+
+public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+{
+    RequestFrame(SetRoboCapFrame);
+}
+
+void SetRoboCapFrame()
+{
+    SetRoboCapTeam();
+}

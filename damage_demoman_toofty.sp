@@ -6,6 +6,7 @@
 #include <berobot>
 #include <tf_custom_attributes>
 #include <sdkhooks.inc>
+#include <tf_ontakedamage>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Toofty"
@@ -156,7 +157,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client, "Land on enemies to deal stomp damage\nYou have parachute");
+	PrintHintText(client, "Land on enemies to deal stomp damage");
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -195,7 +196,7 @@ stock GiveGiantToofty(client)
 		
 		CreateRoboHat(client, BEARDEDBOMBARDIER, 10, 6, 0.0, 0.75, -1.0); //Bearded Bombardier
 		CreateRoboHat(client, WELLROUNDEDRIFLEMAN, 10, 6, 0.0, 0.75, -1.0); //well rounded rifle man
-		CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
+		//CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
@@ -221,23 +222,23 @@ stock GiveGiantToofty(client)
 			TF2CustAttr_SetString(Weapon3, "reload full clip at once", "1.0");
 		}
 
-		int iEntity2 = -1;
-		while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_weapon_parachute")) != -1)
-		{
-			if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
-			{				
-				//PrintToChatAll("going through entity");
-				TF2Attrib_SetByName(iEntity2, "major increased jump height", 2.75);		
+		// int iEntity2 = -1;
+		// while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_weapon_parachute")) != -1)
+		// {
+		// 	if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
+		// 	{				
+		// 		//PrintToChatAll("going through entity");
+		// 		TF2Attrib_SetByName(iEntity2, "major increased jump height", 2.75);		
 				
-				break;
-			}
-		}
+		// 		break;
+		// 	}
+		// }
 	}
 }
 
 public void OnEntityCreated(int iEntity, const char[] sClassName) 
 {
-	if (StrContains(sClassName, "tf_projectile") == 0)
+	if (StrContains(sClassName, "tf_projectile_pipe") == 0)
 	{
 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
 	}
@@ -246,7 +247,74 @@ public void OnEntityCreated(int iEntity, const char[] sClassName)
 
 public void Hook_OnProjectileSpawn(iEntity) {
 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+
+
+
+
 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+		
 	}
 }
+
+// void CreateFireballs(int owner, float pos[3], int victim)
+// {
+// 	 //Get our angle difference based on the number of fireballs we have. This allows us to have an even angle distribution between each fireball.
+// 	float angles[3], velocity[3], spawnAngle[3];
+// 	GetClientEyeAngles(owner, angles);
+
+// 		int proj = CreateEntityByName("tf_projectile_pipe");
+// 		SetEntPropEnt(proj, Prop_Data, "m_hOwnerEntity", owner);
+// 		GetAngleVectors(spawnAngle, velocity, NULL_VECTOR, NULL_VECTOR);
+
+// 		//Spawn our projectiles slightly offset from the player's position
+// 		float spawnPos[3];
+// 		spawnPos = velocity;
+// 		ScaleVector(spawnPos, 0.0);
+// 		AddVectors(spawnPos, pos, spawnPos);
+
+// 		ScaleVector(velocity, 10.0);
+// 		SetEntPropVector(proj, Prop_Send, "m_vInitialVelocity", velocity);
+// 		int team = GetClientTeam(owner);
+// 		//teleport to proper position and then spawn
+// 		TeleportEntity(proj, spawnPos, spawnAngle, velocity);
+
+// 		SetVariantInt(team);
+// 		AcceptEntityInput(proj, "TeamNum", -1, -1, 0);
+
+// 		SetVariantInt(team);
+// 		AcceptEntityInput(proj, "SetTeam", -1, -1, 0);
+
+// 		DispatchSpawn(proj);
+// 		SetEntDataFloat(proj, FindSendPropInfo("CTFGrenadePipebombProjectile", "m_iDeflected") + 4, 25.0); //Sets damage for rocket projectiles
+
+// 		///
+// 		/// The first fireball will spawn directly down the attacker's line of sight. Every fireball after that will alternate left and right of the center.
+// 		/// To prevent the angle increasing more than it needs to for the each side, we only want to increase the angle once for each iteration.
+// 		/// This way, the fireball spawning on the left will have the same angle difference from the center as the fireball on the right
+// 		///
+
+// 		// right = !right;
+// 		// if (right)
+// 		// 	fireballs++;
+	
+// }
+
+// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+// {
+
+
+//     if(!IsValidClient(victim))
+//         return Plugin_Continue;    
+//     if(!IsValidClient(attacker))
+//         return Plugin_Continue;
+
+// 	if (IsRobot(attacker, ROBOT_NAME))
+// 	{
+// 	float pos[3];
+// 	pos[2] += 50.0; //Set the position to be about center of the player
+// 	GetClientAbsOrigin(victim, pos);
+// 	CreateFireballs(attacker, pos, victim);
+
+// 	}
+// }

@@ -26,6 +26,7 @@
 
 
 #define ExplodeSound	"ambient/explosions/explode_8.wav"
+#define SENTRYROCKETS "models/buildables/sentry3_rockets.mdl"
 
 bool PlayerHasMirv[MAXPLAYERS+1];
 bool RocketOverride[2049];
@@ -157,6 +158,7 @@ public OnMapStart()
 	ExplodeSprite = PrecacheModel("sprites/sprite_fire01.vmt");
 	glow = PrecacheModel("materials/sprites/laser.vmt");
 	PrecacheSound(ExplodeSound);
+	PrecacheModel(SENTRYROCKETS);
 }
 
 /* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
@@ -337,6 +339,8 @@ public Native_SetGiantPyro(Handle:plugin, args)
 #include <sdkhooks>
 #include <sdktools>
 
+
+
 public Plugin MyInfo =
 {
 	name = "MIRV Rockets",
@@ -433,8 +437,21 @@ public void OnRocketSpawned(int rocket)
 		RocketOverride[rocket] = true;
 		int ref = EntIndexToEntRef(rocket);
 		CreateTimer(GetConVarFloat(g_rocketDelay), RocketTimer, ref, TIMER_FLAG_NO_MAPCHANGE);
+		RequestFrame(SetProjectileModel, rocket);
+		
 	}
 }
+
+void SetProjectileModel (int iEntity)
+{
+		SetEntityModel(iEntity, SENTRYROCKETS);
+		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 2.0);
+}
+		
+
+
+
+
 
 public Action RocketTimer(Handle timer, any ref)
 {

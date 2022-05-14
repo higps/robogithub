@@ -258,8 +258,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define LordCockswain 439
-#define Pipe 440
+#define DoeBoy 1021
+#define FlakCatcher 30853
+#define VeteranAttire 30983
 // 
 
 stock GiveGiantPyro(client)
@@ -277,8 +278,9 @@ stock GiveGiantPyro(client)
 		CreateRoboWeapon(client, "tf_weapon_buff_item", 226, 6, 1, 2, 0);
 		CreateRoboWeapon(client, "tf_weapon_shovel", 775, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, LordCockswain, 10, 6, 0.0, 1.0, -1.0);
-		CreateRoboHat(client, Pipe, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, DoeBoy, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, FlakCatcher, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, VeteranAttire, 10, 6, 0.0, 1.0, -1.0);
 
 
 	//	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);

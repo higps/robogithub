@@ -827,7 +827,19 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     if(!IsValidClient(victim))
         return Plugin_Continue;    
     if(!IsValidClient(attacker))
+    {
+        if(IsAnyRobot(victim) && damagetype == DMG_FALL)
+        {
+        
+        // PrintToChatAll("%N Took fall damage, damage type was %i and amount was %f", victim, damagetype, damage);
+        //Robot Fall damage modifier
+        damage *= 0.25;
+        // PrintToChatAll("After change it was %f", damage);
+        return Plugin_Changed;
+        }
         return Plugin_Continue;
+    }
+        
 
 
     TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
@@ -869,7 +881,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 {
                     //damage *= 1.5;
                     if (IsTank(victim)){
-                        TF2_StunPlayer(victim, 0.5, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
+                        TF2_StunPlayer(victim, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
                     }
                     return Plugin_Changed;
                 }
@@ -914,8 +926,8 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 case TF_CUSTOM_PLASMA_CHARGED: 
                 {
                     damage *= 1.5;
-                    TF2_StunPlayer(victim, 1.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
-                    TF2_AddCondition(victim, TFCond_Sapped, 1.5, attacker);
+                    TF2_StunPlayer(victim, 2.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
+                    TF2_AddCondition(victim, TFCond_Sapped, 2.5, attacker);
                     critType = CritType_Crit;
                     return Plugin_Changed;
 
@@ -1154,7 +1166,7 @@ public Action Command_YT_Robot_Start(int client, int args)
         {
             g_cv_BlockTeamSwitch = true;
             g_SpectateSelection = false;
-            PrintCenterTextAll("Sarting Giant Robot Event mode");
+            PrintCenterTextAll("Starting Manned Machines mode!");
             
             ServerCommand("mp_forceautoteam 0");
             ServerCommand("mp_teams_unbalance_limit 0");

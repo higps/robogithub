@@ -152,12 +152,12 @@ MakeDemoKnight(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	//TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "hand scale", 2.0);
+	TF2Attrib_SetByName(client, "hand scale", 1.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	// TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
@@ -221,7 +221,8 @@ stock GiveGiantDemoKnight(client)
 			// TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
 			// TF2Attrib_SetByName(Weapon3, "mult charge turn control", 2.0);		
 			TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.6);		
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.35);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 			
 			
 		}

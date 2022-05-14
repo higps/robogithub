@@ -22,7 +22,7 @@
 #define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
 #define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
 #define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
-
+int modelIndex;
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Toofty",
@@ -101,7 +101,8 @@ public OnMapStart()
 	PrecacheSound(RIGHTFOOT);
 	PrecacheSound(RIGHTFOOT1);
 
-	PrecacheModel(STICKYLAUNCHER);
+	//PrecacheModel(STICKYLAUNCHER);
+	modelIndex = PrecacheModel(STICKYLAUNCHER);
 
 }
 
@@ -190,7 +191,7 @@ stock GiveGiantToofty(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		
-		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 15077, 8, 1, 0, 213);
+		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 19, 8, 1, 0, 213);
 		
 		CreateRoboHat(client, bombbeanie, 10, 6, 0.0, 0.75, -1.0); 
 
@@ -202,15 +203,34 @@ stock GiveGiantToofty(client)
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 4.5);
 			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.75);
+			TF2Attrib_SetByName(Weapon1, "sticky arm time penalty", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 
 			// TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
+			
 			//TF2CustAttr_SetString(Weapon1, "weaponmodel override", STICKYLAUNCHER);
 
+			//SetEntProp(m_nModelIndexOverrides
+			//SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", STICKYLAUNCHER);
+			 
+			SetEntProp(Weapon1, Prop_Send, "m_nModelIndex", modelIndex);
+			SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 0);
+			SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 1);
+			SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 2);
+			SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 3);
+			//SetEntityModel(Weapon1, "models/weapons/w_models/w_stickybomb_launcher.mdl");
+		//	SetModel(Weapon1, STICKYLAUNCHER);
+			//RequestFrame(SetCustomModel, Weapon1);
 		}
 
 	}
 }
+
+// void SetCustomModel (int Weapon1)
+// {
+// 	// TF2CustAttr_SetString(Weapon1, "weaponmodel override", "models/weapons/w_models/w_stickybomb_launcher.mdl");
+	
+// }
 
 public void OnEntityCreated(int iEntity, const char[] sClassName) 
 {

@@ -96,7 +96,7 @@ MakeGiantMedic(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GMEDIC);
    	
-	int iHealth = 2500;
+	int iHealth = 1500;
 	int MaxHealth = 150;
 	int iAdditiveHP = iHealth - MaxHealth;
    
@@ -186,6 +186,7 @@ stock GiveGiantMedic(client)
 			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.75);	
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);	
 			
 			
 			//TF2Attrib_SetByName(Weapon1, "heal on kill", 200.0);

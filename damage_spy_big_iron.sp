@@ -10,9 +10,9 @@
 //#include <tf2items_giveweapon>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Mystery Machine"
-#define ROBOT_ROLE "Anti-Sentry"
-#define ROBOT_DESCRIPTION "Shoot your gun"
+#define ROBOT_NAME	"Big Iron"
+#define ROBOT_ROLE "Damage"
+#define ROBOT_DESCRIPTION "Taunt & Shoot your gun"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -59,11 +59,11 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 
-	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 3; 
+	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+    // restrictions.RobotCoins.Overall = 3; 
 
-    AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
+    AddRobot(robot, MakeSpy, PLUGIN_VERSION, null);
 
 	PrecacheModel(MODEL);
 	PrecacheSound(SPAWN);
@@ -161,7 +161,7 @@ MakeSpy(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	//TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -174,7 +174,7 @@ MakeSpy(client)
 	
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	
-	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
+	// TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
 	
@@ -185,8 +185,8 @@ MakeSpy(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 	
-	PrintToChat(client, "1. You are now Giant Mystery Machine!");
-	PrintHintText(client, "Infinite Cloak\nNo Knife\nPowerful Enforcer that penetrates players\nThrowable sapper\nSapper Heals you when sapping\nWaveDash");
+
+	PrintHintText(client, "Infinite Cloak\nNo Knife\nPowerful Enforcer that penetrates players\nThrowable sapper\nSapper Heals you when sapping");
 
 	if (IsPlayerAlive(client)){
 	EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
@@ -198,7 +198,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -213,8 +213,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	// GiveBigRoboDane(client);
 // }
 
-#define HatToKillFor 30753
-#define LurkerLeathers 30631
+#define TheHamburg 30123
+#define TheRoguesBrogues 30125
+#define Bandana 30397
 
 
 
@@ -229,181 +230,66 @@ stock GiveBigRoboDane(client)
 	TF2_RemoveWeaponSlot(client, 0); //Revolver
 	TF2_RemoveWeaponSlot(client, 1); // Sapper
 	TF2_RemoveWeaponSlot(client, 2); // Knife
-	//TF2_RemoveWeaponSlot(client, 3);// Disguise kit
+	TF2_RemoveWeaponSlot(client, 3);// Disguise kit
 	TF2_RemoveWeaponSlot(client, 4);// inviswatch
 
-	
-	CreateRoboWeapon(client, "tf_weapon_revolver", 460, 6, 1, 0, 0);
-	CreateRoboWeapon(client, "tf_weapon_sapper", 810, 6, 1, 1, 0);
+	//big kill
+	CreateRoboWeapon(client, "tf_weapon_revolver", 161, 6, 1, 0, 0);
+	// CreateRoboWeapon(client, "tf_weapon_sapper", 810, 6, 1, 1, 0);
 	
 	
 	 //CreateWeapon(client, "tf_weapon_sapper", 933, 6); //Ap-Sap
 	//CreateRoboWeapon(client, "tf_weapon_knife", 356, 6, 1, 2, 0); //kunai
-	CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
+	 CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 		
 
-	CreateRoboHat(client, HatToKillFor, 10, 6, 0.0, 1.1, -1.0); 
-	CreateRoboHat(client, LurkerLeathers, 10, 6, 0.0, 1.0, 1.0);
+	CreateRoboHat(client, TheHamburg, 10, 6, 15185211.0, 1.1, -1.0); 
+	CreateRoboHat(client, TheRoguesBrogues, 10, 6, 15185211.0, 1.0, 1.0);
+	CreateRoboHat(client, Bandana, 10, 6, 10843461.0, 1.0, 1.0);
 	//CreateRoboHat(client, Spek, 10, 6, 0.0, 1.0, -1.0);
 	
 		
 	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
-	int Knife = GetPlayerWeaponSlot(client, 2); //Knife
+	// int Knife = GetPlayerWeaponSlot(client, 2); //Knife
 	int Cloak = GetPlayerWeaponSlot(client, 4); //Invis watch
-	int Sapper = GetPlayerWeaponSlot(client, 1); //Sapper
+	// int Sapper = GetPlayerWeaponSlot(client, 1); //Sapper
 
 	if(IsValidEntity(Revolver)) //Revovler
 		{
 			//TF2Attrib_RemoveAll(Revolver);
 			
-			TF2Attrib_SetByName(Revolver, "dmg penalty vs players", 1.15);
+			TF2Attrib_SetByName(Revolver, "dmg penalty vs players", 1.3);
 			TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Revolver, "fire rate penalty", 1.0);
-			TF2Attrib_SetByName(Revolver, "projectile penetration heavy", 1.0);
-			
+			// TF2Attrib_SetByName(Revolver, "fire rate penalty", 1.3);
+			TF2Attrib_SetByName(Revolver, "Reload time increased", 1.2);
+			TF2Attrib_SetByName(Revolver, "crit_dmg_falloff", 1.0);
 			
 			//TF2Attrib_SetByName(Revolver, "damage bonus while disguised", 1.0);
-			TF2Attrib_SetByName(Revolver, "weapon spread bonus", 0.75);
-			
-						
+			// TF2Attrib_SetByName(Revolver, "weapon spread bonus", 0.75);
+	
 		}
 
-	// if(IsValidEntity(Knife)) //
-	// 	{
-	// 		TF2Attrib_RemoveAll(Knife);
-			
-	// 		//TF2Attrib_SetByName(Knife, "fire rate bonus", 0.8);
-	// 		//TF2Attrib_SetByName(Knife, "damage bonus", 1.5);
-	// 		TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
-	// 		TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
-	// 		TF2Attrib_SetByName(Knife, "restore health on kill", 10.0);
-			
-						
-	// 	}
-	if(IsValidEntity(Cloak)) //
+	if(IsValidEntity(Cloak))
 		{
-			TF2Attrib_RemoveAll(Cloak);
+			TF2Attrib_SetByName(Cloak, "cloak consume rate increased", 1.5);
+			TF2Attrib_SetByName(Cloak, "cloak regen rate increased", 1.2);
+			TF2Attrib_SetByName(Cloak, "mult decloak rate", 1.2);
 			
-			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
-			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.4);
-
-			
-						
 		}
-	if(IsValidEntity(Sapper)) //
-		{
-			TF2Attrib_RemoveAll(Sapper);
-			
-			
-			TF2Attrib_SetByName(Sapper, "sapper damage penalty", 1.0);
-			TF2Attrib_SetByName(Sapper, "sapper degenerates buildings", 0.0);
-			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 50.0);
-			TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
-			TF2Attrib_SetByName(Sapper, "major increased jump height", 1.35);		
-			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
-		}	
 	}
 }
-bool g_PressedButton[MAXPLAYERS + 1] = false;
-public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+public void TF2_OnConditionAdded(int client, TFCond condition)
 {
-	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_RELOAD|IN_USE))
-	{
-		//0 = fireball
-		//PrintToChat(client, "Throwing spell!");
+    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+    {
+    int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
 
-	
+	//PrintToChatAll("Taunt ID %i", tauntid);
 
-		float flCloak = GetEntPropFloat(client, Prop_Send, "m_flCloakMeter");
-
-
-
-		if (!g_PressedButton[client] && flCloak >= 5.0)
+		if (tauntid == -1)
 		{
-
-		WaveDash(client);
-		CreateTimer(0.1, Timer_Button, client);
-
-		float flCloakDrain = 5.0;
-		flCloak -= flCloakDrain;
-
-		if (flCloak < 0.0) flCloak = 0.0;
-
-		SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", flCloak);
-
-		g_PressedButton[client] = true;
+	//	 TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
+		TF2_AddCondition(client, TFCond_CritCanteen, 12.0);
 		}
-		
-		
-
-
-
-		//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", tf_weapon_grapplinghook");
 	}
 }
-
-void WaveDash(int client)
-{
-	float vOrigin[3], vAngles[3], vForward[3], vVelocity[3];
-	GetClientEyePosition(client, vOrigin);
-	GetClientEyeAngles(client, vAngles);
-	
-	// Get the direction we want to go
-	GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
-	
-	// make it usable
-	float flDistance = -1000.0;
-
-	ScaleVector(vForward, flDistance);	
-	
-	// add it to the current velocity to avoid just being able to do full 180s
-	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVelocity);
-	AddVectors(vVelocity, vForward, vVelocity);
-	
-	float flDistanceVertical = -1500.0;
-		
-	vVelocity[2] += flDistanceVertical; // we always want to go a bit up
-	//vVelocity[1] += flDistanceVertical;
-	//vVelocity[0] += flDistanceVertical;
-	// And set it
-	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vVelocity);
-
-	//TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.20);
-
-
-
-}
-
-public Action Timer_Button(Handle timer, any client)
-{
-	g_PressedButton[client] = false;
-}
-
-
-// bool CreateWeapon(int client, char[] classname, int itemindex, int quality, int level = 0)
-// {
-//     int weapon = CreateEntityByName(classname);
-
-//     if (!IsValidEntity(weapon))
-//     {
-//         return false;
-//     }
-    
-//     char entclass[64];
-//     GetEntityNetClass(weapon, entclass, sizeof(entclass));
-//     SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", itemindex);     
-//     SetEntProp(weapon, Prop_Send, "m_bInitialized", 1);
-//     SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);        
-// 	SetEntProp(weapon, Prop_Send, "m_iEntityLevel", GetRandomInt(1,99));
-
-//             SetEntProp(weapon, Prop_Send, "m_iObjectType", 3);
-//             SetEntProp(weapon, Prop_Data, "m_iSubType", 3);
-//             SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 0, _, 0);
-//             SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 0, _, 1);
-//             SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 0, _, 2);
-//             SetEntProp(weapon, Prop_Send, "m_aBuildableObjectTypes", 1, _, 3);
-// 			DispatchSpawn(weapon);
-//         EquipPlayerWeapon(client, weapon); 
-    
-//     return true;
-// }
