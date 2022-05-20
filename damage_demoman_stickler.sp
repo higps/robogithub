@@ -200,10 +200,10 @@ stock GiveGiantToofty(client)
 		{
 			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
-			TF2Attrib_SetByName(Weapon1, "Reload time increased", 4.5);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
+			TF2Attrib_SetByName(Weapon1, "Reload time increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.75);
-			TF2Attrib_SetByName(Weapon1, "sticky arm time penalty", 1.0);
+			TF2Attrib_SetByName(Weapon1, "sticky arm time penalty", 0.65);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 
 			// TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");

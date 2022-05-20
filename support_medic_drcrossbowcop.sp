@@ -176,6 +176,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon1, "clip size bonus", 6.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time decreased", 2.00);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 

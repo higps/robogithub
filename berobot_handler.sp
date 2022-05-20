@@ -93,7 +93,7 @@ GlobalForward _enabledChangedForward;
 GlobalForward _clientReseting;
 GlobalForward _modeResetRequestedForward;
 
-float g_CV_flSpyBackStabModifier;
+// float g_CV_flSpyBackStabModifier;
 
 float g_Rtr_percent;
 
@@ -174,7 +174,7 @@ public void OnPluginStart()
     g_AprilEnable = GetConVarInt(g_cvCvarList[CV_g_AprilEnable]);
 
     g_cv_bDebugMode = GetConVarBool(g_cvCvarList[CV_bDebugMode]);
-    g_CV_flSpyBackStabModifier = GetConVarFloat(g_cvCvarList[CV_flSpyBackStabModifier]);
+    //g_CV_flSpyBackStabModifier = GetConVarFloat(g_cvCvarList[CV_flSpyBackStabModifier]);
     g_Rtr_percent = GetConVarFloat(g_cvCvarList[CV_g_Rtr_precent]);
     g_RoboCapTeam = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
     g_RoboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
@@ -244,6 +244,7 @@ public void OnPluginStart()
     
     HookEvent("player_death", Event_Death, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+    
 
     HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
 
@@ -781,8 +782,8 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 {
     if(convar == g_cvCvarList[CV_bDebugMode])
         g_cv_bDebugMode = view_as<bool>(StringToInt(sNewValue));
-    if(convar == g_cvCvarList[CV_flSpyBackStabModifier])
-        g_CV_flSpyBackStabModifier = StringToFloat(sNewValue);
+    // if(convar == g_cvCvarList[CV_flSpyBackStabModifier])
+    //     g_CV_flSpyBackStabModifier = StringToFloat(sNewValue);
     if(convar == g_cvCvarList[CV_flYoutuberMode])
         g_CV_flYoutuberMode = StringToFloat(sNewValue);
         
@@ -820,78 +821,83 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 }
 
 /* Plugin Exclusive Functions */
-public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
-{
-    // if (!g_Enable)
-    //     return Plugin_Continue;
-    if(!IsValidClient(victim))
-        return Plugin_Continue;    
-    if(!IsValidClient(attacker))
-    {
-        if(IsAnyRobot(victim) && damagetype == DMG_FALL)
-        {
+// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+// {
+//     // if (!g_Enable)
+//     //     return Plugin_Continue;
+//     if(!IsValidClient(victim))
+//         return Plugin_Continue;    
+//     if(!IsValidClient(attacker))
+//     {
+//         if(IsAnyRobot(victim) && damagetype == DMG_FALL)
+//         {
         
-        // PrintToChatAll("%N Took fall damage, damage type was %i and amount was %f", victim, damagetype, damage);
-        //Robot Fall damage modifier
-        damage *= 0.25;
-        // PrintToChatAll("After change it was %f", damage);
-        return Plugin_Changed;
-        }
-        return Plugin_Continue;
-    }
+//         // PrintToChatAll("%N Took fall damage, damage type was %i and amount was %f", victim, damagetype, damage);
+//         //Robot Fall damage modifier
+//         damage *= 0.25;
+//         // PrintToChatAll("After change it was %f", damage);
+//         return Plugin_Changed;
+//         }
+//         return Plugin_Continue;
+//     }
         
 
 
-    TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
+//     TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
 
 
 
-    if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
-    {
+//     if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
+//     {
 
        
 
 
 
-                if(damagecustom == TF_CUSTOM_BACKSTAB)
-                {
-                    if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-                    damage = g_CV_flSpyBackStabModifier;
-                    critType = CritType_Crit;
-                    if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                    return Plugin_Changed;
-                }
+//                 if(damagecustom == TF_CUSTOM_BACKSTAB)
+//                 {
+//                     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+//                     damage = g_CV_flSpyBackStabModifier;
+//                     critType = CritType_Crit;
+//                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+//                     return Plugin_Changed;
+//                 }
 
-                switch (damagecustom)
-                {
-                case TF_CUSTOM_TAUNT_HADOUKEN, TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, 
-                TF_CUSTOM_TAUNT_FENCING, TF_CUSTOM_TAUNT_ARROW_STAB, TF_CUSTOM_TELEFRAG,
-                 TF_CUSTOM_TAUNT_GRENADE, TF_CUSTOM_TAUNT_BARBARIAN_SWING, TF_CUSTOM_TAUNT_UBERSLICE, 
-                 TF_CUSTOM_TAUNT_ENGINEER_SMASH, TF_CUSTOM_TAUNT_ENGINEER_ARM, TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF,
-                 TF_CUSTOM_TAUNTATK_GASBLAST:
-                {
-                    damage *= 3.0;
-                    return Plugin_Changed;
-                }
-                }
+//                 switch (damagecustom)
+//                 {
+//                 case TF_CUSTOM_TAUNT_HADOUKEN, TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, 
+//                 TF_CUSTOM_TAUNT_FENCING, TF_CUSTOM_TAUNT_ARROW_STAB, TF_CUSTOM_TELEFRAG,
+//                  TF_CUSTOM_TAUNT_GRENADE, TF_CUSTOM_TAUNT_BARBARIAN_SWING, TF_CUSTOM_TAUNT_UBERSLICE, 
+//                  TF_CUSTOM_TAUNT_ENGINEER_SMASH, TF_CUSTOM_TAUNT_ENGINEER_ARM, TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF,
+//                  TF_CUSTOM_TAUNTATK_GASBLAST:
+//                 {
+//                     damage *= 3.0;
+//                     return Plugin_Changed;
+//                 }
+//                 }
 
-                switch (damagecustom)
-                {
-                case TF_CUSTOM_CHARGE_IMPACT, TF_CUSTOM_BOOTS_STOMP, TF_CUSTOM_BASEBALL:
-                {
-                    //damage *= 1.5;
-                    if (IsTank(victim)){
-                        TF2_StunPlayer(victim, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
-                    }
-                    return Plugin_Changed;
-                }
-                //TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
-                }
-    }
+//                 switch (damagecustom)
+//                 {
+//                 case TF_CUSTOM_CHARGE_IMPACT, TF_CUSTOM_BOOTS_STOMP:
+//                 {
+//                     //damage *= 1.5;
+//                     if (IsTank(victim)){
+//                         TF2_StunPlayer(victim, 0.8, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
+//                     }
+//                     return Plugin_Changed;
+//                 }
+//                 case TF_CUSTOM_BASEBALL:
+//                 {
+//                     TF2_StunPlayer(victim, 0.5, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
+//                     return Plugin_Changed;
+//                 }
+//                 //TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
+//                 }
+//     }
 
 
-    return Plugin_Continue;
-}
+//     return Plugin_Continue;
+// }
 
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
@@ -902,7 +908,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     if(!IsValidClient(attacker))
         return Plugin_Continue;
 
-    TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
+    // TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
 
     //if(g_cv_bDebugMode) PrintToChatAll("On damage happened");
 
@@ -919,71 +925,71 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
         
     }
     
-    if(IsAnyRobot(victim))
-    {
+    // if(IsAnyRobot(victim))
+    // {
 
-            switch(damagecustom){
-                case TF_CUSTOM_PLASMA_CHARGED: 
-                {
-                    damage *= 1.5;
-                    TF2_StunPlayer(victim, 2.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
-                    TF2_AddCondition(victim, TFCond_Sapped, 2.5, attacker);
-                    critType = CritType_Crit;
-                    return Plugin_Changed;
+    //         switch(damagecustom){
+    //             case TF_CUSTOM_PLASMA_CHARGED: 
+    //             {
+    //                 damage *= 1.5;
+    //                 TF2_StunPlayer(victim, 2.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
+    //                 TF2_AddCondition(victim, TFCond_Sapped, 2.5, attacker);
+    //                 critType = CritType_Crit;
+    //                 return Plugin_Changed;
 
-                }   
-            }
-            /*Damage code for Heavy*/
-            if (iClassAttacker == TFClass_Heavy)
-            {
-                int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
+    //             }   
+    //         }
+    //         /*Damage code for Heavy*/
+    //         if (iClassAttacker == TFClass_Heavy)
+    //         {
+    //             int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
                     
-                if (weapon == iWeapon)
-                {
-                    if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-                    damage *= 0.8;
-                    if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                    return Plugin_Changed;
+    //             if (weapon == iWeapon)
+    //             {
+    //                 if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+    //                 damage *= 0.8;
+    //                 if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+    //                 return Plugin_Changed;
                     
-                }
+    //             }
                     
                     
-            }
+    //         }
 
-            if (IsElectric(weapon) && IsAnyRobot(victim))
-            {
-                TF2_StunPlayer(victim, 0.5, 0.4, TF_STUNFLAG_SLOWDOWN, attacker);
-                TF2_AddCondition(victim, TFCond_Sapped, 0.5, attacker);
-            }
+    //         if (IsElectric(weapon) && IsAnyRobot(victim))
+    //         {
+    //             TF2_StunPlayer(victim, 0.5, 0.4, TF_STUNFLAG_SLOWDOWN, attacker);
+    //             TF2_AddCondition(victim, TFCond_Sapped, 0.5, attacker);
+    //         }
             
-            if (iClassAttacker == TFClass_DemoMan && !IsAnyRobot(attacker))
-            {
+    //         if (iClassAttacker == TFClass_DemoMan && !IsAnyRobot(attacker))
+    //         {
 
-                if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-                damage *= 1.25;
-                if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                return Plugin_Changed;
+    //             if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+    //             damage *= 1.25;
+    //             if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+    //             return Plugin_Changed;
                 
                     
-            }
-            if (iClassAttacker == TFClass_Soldier && TF2_IsPlayerInCondition(attacker, TFCond_BlastJumping))
-            {
-                //int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
+    //         }
+    //         if (iClassAttacker == TFClass_Soldier && TF2_IsPlayerInCondition(attacker, TFCond_BlastJumping))
+    //         {
+    //             //int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
 
                     
-                if (IsMarketGardner(weapon))
-                {
-                    if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-                    damage *= 1.5;
-                    if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                    return Plugin_Changed;
+    //             if (IsMarketGardner(weapon))
+    //             {
+    //                 if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+    //                 damage *= 1.5;
+    //                 if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+    //                 return Plugin_Changed;
                     
-                }
+    //             }
                     
                     
-            }
+    //         }
 
-    }
+    // }
     return Plugin_Continue;
 }
 
@@ -1045,35 +1051,35 @@ void Set_g_PlayerHealth(int victim)
     }
 }
 
-bool IsMarketGardner(int weapon)
-{
-	if(weapon == -1 && weapon <= MaxClients) return false;
+// bool IsMarketGardner(int weapon)
+// {
+// 	if(weapon == -1 && weapon <= MaxClients) return false;
 	
-	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-	{
-		//If Market gardner gets skins in future with different indices, add them here
-	case 416: //Market Gardner
-		{
-			return true;
-		}
-	}
-	return false;
-}
+// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+// 	{
+// 		//If Market gardner gets skins in future with different indices, add them here
+// 	case 416: //Market Gardner
+// 		{
+// 			return true;
+// 		}
+// 	}
+// 	return false;
+// }
 
-bool IsElectric(int weapon)
-{
-	if(weapon == -1 && weapon <= MaxClients) return false;
+// bool IsElectric(int weapon)
+// {
+// 	if(weapon == -1 && weapon <= MaxClients) return false;
 	
-	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-	{
-		//If Market gardner gets skins in future with different indices, add them here
-	case 528, 442, 588: //Reserve Shooter
-		{
-			return true;
-		}
-	}
-	return false;
-}
+// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+// 	{
+// 		//If Market gardner gets skins in future with different indices, add them here
+// 	case 528, 442, 588: //Reserve Shooter
+// 		{
+// 			return true;
+// 		}
+// 	}
+// 	return false;
+// }
 
 public void MM_OnRestrictionChanged(char name[NAMELENGTH])
 {

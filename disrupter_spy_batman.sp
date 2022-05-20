@@ -188,7 +188,6 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 	
-	PrintToChat(client, "1. You are now Giant Batmann robot!");
 	PrintHintText(client, "No Revolver\nSharp Dresser\nCan only backstab\nUse grappling hook with reload or specialattack!");
 
 	//EmitGameSoundToAll("Announcer.MVM_Spy_Alert");

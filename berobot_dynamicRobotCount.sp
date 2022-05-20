@@ -84,15 +84,15 @@ public void RoboCapTeamHumansPerRobotConVarChangeHook(ConVar convar, const char[
     _humansPerRobot = StringToFloat(sNewValue);
 }
 
-public void OnClientPutInServer(int client)
-{
-    SetRoboCapTeam();
-}
+// public void OnClientPutInServer(int client)
+// {
+//     SetRoboCapTeam();
+// }
 
-public void OnClientDisconnect_Post(int client)
-{
-    SetRoboCapTeam();
-}
+// public void OnClientDisconnect_Post(int client)
+// {
+//     SetRoboCapTeam();
+// }
 
 void SetRoboCapTeam()
 {

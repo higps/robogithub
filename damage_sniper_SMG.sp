@@ -96,7 +96,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1250;
+	int iHealth = 2250;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -105,7 +105,7 @@ MakeSniper(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -168,12 +168,12 @@ stock GiveBigRoboJbird(client)
 		{
 			TF2Attrib_RemoveAll(SMG);
 			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 1.75);
-			TF2Attrib_SetByName(SMG, "fire rate penalty", 1.2);
+			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 2.0);
+			// TF2Attrib_SetByName(SMG, "fire rate penalty", 1.2);
 			TF2Attrib_SetByName(SMG, "clip size bonus", 2.0);
 			TF2Attrib_SetByName(SMG, "hidden secondary max ammo penalty", 2.0);
 			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(SMG, "weapon spread bonus", 0.5);
+			TF2Attrib_SetByName(SMG, "weapon spread bonus", 0.35);
 			TF2Attrib_SetByName(SMG, "Reload time increased", 1.5);
 		}
 	}

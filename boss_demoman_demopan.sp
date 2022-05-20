@@ -100,7 +100,7 @@ MakeSolar(client)
 	SetModel(client, GDEKNIGHT);
 
 	float scale = 1.85;	
-	int iHealth = 10000;
+	int iHealth = 8500;
 	
 	
 	int MaxHealth = 175;
@@ -132,7 +132,8 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "hand scale", 1.15);
-	
+
+	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	
 	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
 	
@@ -142,8 +143,7 @@ MakeSolar(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	TF2_AddCondition(client, TFCond_CritCanteen);
 	
-	PrintHintText(client, "Hit Enemies with your Pan");
-	PrintToChat(client, "1. You are big pan man");
+	PrintHintText(client, "Hit Enemies with your Pan\nYou can't cap or block captures");
 
 	//SetBossHealth(client);
 }
