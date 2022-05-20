@@ -476,6 +476,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
     {
 
         
+        if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}All of your weapons {orange}+25% damage{teamcolor} against robots");
+        }
+
+        if (TF2_GetPlayerClass(client) == TFClass_Heavy)
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your miniguns all deal {orange}-20% damage{teamcolor} against robots");
+        }
+
         int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -483,7 +493,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsEyelander(Weapon3))
         {
             g_Eyelander_Counter[client] = 0;
-            MC_PrintToChatEx(client, client, "{teamcolor}Your eyelander {orange}gains a head every 3 hits");
+            MC_PrintToChatEx(client, client, "{teamcolor}Your eyelander {orange}gains a head every 3 hits{teamcolor} against robots");
         }
 
         if (IsSniperRifle(Weapon1))
@@ -518,15 +528,20 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             MC_PrintToChatEx(client, client, "{teamcolor}Your bow has {orange}projectile penetration {teamcolor}bonus");
         }
 
-        if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
-        {
-            MC_PrintToChatEx(client, client, "{teamcolor}You deal {orange}+25% damage{teamcolor} to robots with all weapons");
-        }
-
         if (IsCandyCane(Weapon3))
         {
             TF2Attrib_SetByName(Weapon3, "health from packs increased", 1.33);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your candy cane givesl {orange}+33% more heal{teamcolor} from healthpacks");
+            MC_PrintToChatEx(client, client, "{teamcolor}Your candy cane gives {orange}+33% more heal{teamcolor} from healthpacks");
+        }
+
+        if (IsMarketGardner(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Market Gardner {orange}+50% more damage{teamcolor}");
+        }
+
+        if (IsElectric(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your electric weapons slow robots for {orange}-60% move speed{teamcolor} for 0.5 seconds on hit");
         }
     }
 
