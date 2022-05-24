@@ -134,7 +134,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 ShowHealthGain(attacker, 50, attacker);
                 }
 
-                		if(IsHoliday_Punch(weapon))
+                		if(IsKGB(weapon))
 		{
 
 		if(g_cv_bDebugMode) PrintToChatAll("Hit # %i", Punch_Count[attacker]);
@@ -472,22 +472,32 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 {
 
     int client = GetClientOfUserId(GetEventInt(event, "userid"));
-    if (!IsAnyRobot(client))
+    //CreateTimer(0.8, AddAttributes, client);
+
+
+
+// public Action AddAttributes(Handle timer, int client)
+// {
+
+    // if (IsValidClient(client)){    
+    // if (IsPlayerAlive(client))
+    // {
+    if (!IsAnyRobot(client) && IsValidClient(client) && IsPlayerAlive(client))
     {
 
         
         if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
         {
-            MC_PrintToChatEx(client, client, "{teamcolor}All of your weapons {orange}+25% damage{teamcolor} against robots");
+            MC_PrintToChatEx(client, client, "{teamcolor}All of your weapons {orange}+25%%% damage{teamcolor} against robots");
         }
 
         if (TF2_GetPlayerClass(client) == TFClass_Heavy)
         {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your miniguns all deal {orange}-20% damage{teamcolor} against robots");
+            MC_PrintToChatEx(client, client, "{teamcolor}Your miniguns all deal {orange}-20%%% damage{teamcolor} against robots");
         }
 
         int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-
+        int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
         
         if (IsEyelander(Weapon3))
@@ -531,22 +541,39 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsCandyCane(Weapon3))
         {
             TF2Attrib_SetByName(Weapon3, "health from packs increased", 1.33);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your candy cane gives {orange}+33% more heal{teamcolor} from healthpacks");
+            MC_PrintToChatEx(client, client, "{teamcolor}Your candy cane gives {orange}+33%%% more heal{teamcolor} from healthpacks");
         }
 
         if (IsMarketGardner(Weapon3))
         {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Market Gardner {orange}+50% more damage{teamcolor}");
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Market Gardner {orange}+50%%% more damage{teamcolor}");
         }
 
-        if (IsElectric(Weapon3))
+        if (IsElectric(Weapon1) || IsElectric(Weapon2))
         {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your electric weapons slow robots for {orange}-60% move speed{teamcolor} for 0.5 seconds on hit");
+            MC_PrintToChatEx(client, client, "{teamcolor}Your electric weapons slow robots for {orange}-60%%% move speed{teamcolor} for 0.5 seconds on hit");
         }
+
+        if (IsWarriorSpirit(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your warrior spirits gives {orange}+50 HP{teamcolor} on hit against robots");
+        }
+
+        if (IsKGB(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your KGB grants you {orange}+7 seconds of critical hits{teamcolor} when landing a quick 3 hit combo");
+        }
+
     }
 
+    
 
 }
+    
+    
+
+
+
 
 bool IsSniperRifle(int weapon)
 {
@@ -731,7 +758,7 @@ bool IsWarriorSpirit(int weapon)
 }
 
 
-bool IsHoliday_Punch(int weapon)
+bool IsKGB(int weapon)
 {
 	if(weapon == -1 && weapon <= MaxClients) return false;
 	
@@ -795,14 +822,14 @@ void IncrementHeadCount(int iClient)
 {
 
     g_Eyelander_Counter[iClient]++;
-    if (g_Eyelander_Counter[iClient] == 3)
-    {
+    // if (g_Eyelander_Counter[iClient] == 3)
+    // {
     TF2_AddCondition(iClient, TFCond_DemoBuff);
     SetEntProp(iClient, Prop_Send, "m_iDecapitations", GetEntProp(iClient, Prop_Send, "m_iDecapitations") + 1);
    // AddPlayerHealth(iClient, 15, 300, true);             //  The old version of this allowed infinite health gain... so ;v
     TF2_AddCondition(iClient, TFCond_SpeedBuffAlly, 0.01);  //  Recalculate their speed
-    g_Eyelander_Counter[iClient] = 0;
-    }
+    // g_Eyelander_Counter[iClient] = 0;
+    // }
 }
 
 void AddPlayerHealth(int iClient, int iAdd, int iOverheal = 0, bool bStaticMax = false)

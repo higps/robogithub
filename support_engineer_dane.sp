@@ -16,7 +16,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
-#define ROBOT_ROLE "Support"
+#define ROBOT_ROLE "Pros + Youtubers"
 #define ROBOT_DESCRIPTION " Widowmaker, Jag"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
@@ -276,10 +276,19 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
 		{
 			//PrintToChatAll("Playing Music");
+
+			int random = GetRandomInt(0,3);
+
+			if (random == 0)
+			{
 			EmitSoundToAll(MUSIC, iObj);
 			EmitSoundToAll(MUSIC, iObj);
 			EmitSoundToAll(MUSIC, iObj);
-			EmitSoundToAll(MUSIC, iObj);
+			}
+
+			
+			
+			// EmitSoundToAll(MUSIC, iObj);
 		}
 
 		// SetVariantInt(2);

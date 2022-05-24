@@ -168,12 +168,12 @@ stock GiveBigRoboJbird(client)
 		{
 			TF2Attrib_RemoveAll(SMG);
 			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 2.0);
+			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 2.5);
 			// TF2Attrib_SetByName(SMG, "fire rate penalty", 1.2);
 			TF2Attrib_SetByName(SMG, "clip size bonus", 2.0);
 			TF2Attrib_SetByName(SMG, "hidden secondary max ammo penalty", 2.0);
 			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(SMG, "weapon spread bonus", 0.35);
+			TF2Attrib_SetByName(SMG, "weapon spread bonus", 0.25);
 			TF2Attrib_SetByName(SMG, "Reload time increased", 1.5);
 		}
 	}

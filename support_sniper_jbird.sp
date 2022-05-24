@@ -190,7 +190,9 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 10.0);
 			
 			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer", 1.0);
-			TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 1.0);
+			TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 2.5);
+			TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
+			
 			
 			
 		}
