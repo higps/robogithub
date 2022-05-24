@@ -209,6 +209,7 @@ public void OnPluginStart()
     RegAdminCmd("sm_selection_mode", Command_Robot_Selection, ADMFLAG_SLAY, "Forces selection mode");
     
     RegAdminCmd("sm_me_boss", Command_Me_Boss, ADMFLAG_SLAY, "Checks if you are a boss");
+    RegAdminCmd("sm_random_robot", Command_SetRandomRobot, ADMFLAG_SLAY, "Checks if you are a boss");
 
     RegConsoleCmd("sm_rtr", Command_RoboVote, "Votes to begin a mode");
     RegConsoleCmd("sm_rocktherobot", Command_RoboVote, "Votes to begin a mode");
@@ -422,6 +423,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         //     MC_PrintToChatEx(client, client, "{teamcolor}You're a robot on the robot team!");
         // }
         MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} or {orange}change class{teamcolor} in spawn to change robot!");
+        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!mt{teamcolor} get a mount to move around faster");
         if(g_cv_bDebugMode)PrintToChatAll("%N spawned, with %i health from previous life", client, g_PlayerHealth[client]);
         //FakeClientCommand(client, "tf_respawn_on_loadoutchanges 0");
         if (g_PlayerHealth[client] > 0){
@@ -715,17 +717,6 @@ public Action MakeRobotsApril(Handle timer)
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
 
-    // if(g_Enable && g_RoundCount == 1 && !g_BossMode && g_AprilEnable){
-
-    //     PrintToChatAll("Creating the timer");
- 
-        
-    // }
-
-    // if (g_AprilEnable)
-    // {
-        
-    // }
 
     if (g_Enable && !g_AprilEnable){
 
@@ -820,84 +811,6 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
     }
 }
 
-/* Plugin Exclusive Functions */
-// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
-// {
-//     // if (!g_Enable)
-//     //     return Plugin_Continue;
-//     if(!IsValidClient(victim))
-//         return Plugin_Continue;    
-//     if(!IsValidClient(attacker))
-//     {
-//         if(IsAnyRobot(victim) && damagetype == DMG_FALL)
-//         {
-        
-//         // PrintToChatAll("%N Took fall damage, damage type was %i and amount was %f", victim, damagetype, damage);
-//         //Robot Fall damage modifier
-//         damage *= 0.25;
-//         // PrintToChatAll("After change it was %f", damage);
-//         return Plugin_Changed;
-//         }
-//         return Plugin_Continue;
-//     }
-        
-
-
-//     TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
-
-
-
-//     if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
-//     {
-
-       
-
-
-
-//                 if(damagecustom == TF_CUSTOM_BACKSTAB)
-//                 {
-//                     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-//                     damage = g_CV_flSpyBackStabModifier;
-//                     critType = CritType_Crit;
-//                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-//                     return Plugin_Changed;
-//                 }
-
-//                 switch (damagecustom)
-//                 {
-//                 case TF_CUSTOM_TAUNT_HADOUKEN, TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, 
-//                 TF_CUSTOM_TAUNT_FENCING, TF_CUSTOM_TAUNT_ARROW_STAB, TF_CUSTOM_TELEFRAG,
-//                  TF_CUSTOM_TAUNT_GRENADE, TF_CUSTOM_TAUNT_BARBARIAN_SWING, TF_CUSTOM_TAUNT_UBERSLICE, 
-//                  TF_CUSTOM_TAUNT_ENGINEER_SMASH, TF_CUSTOM_TAUNT_ENGINEER_ARM, TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF,
-//                  TF_CUSTOM_TAUNTATK_GASBLAST:
-//                 {
-//                     damage *= 3.0;
-//                     return Plugin_Changed;
-//                 }
-//                 }
-
-//                 switch (damagecustom)
-//                 {
-//                 case TF_CUSTOM_CHARGE_IMPACT, TF_CUSTOM_BOOTS_STOMP:
-//                 {
-//                     //damage *= 1.5;
-//                     if (IsTank(victim)){
-//                         TF2_StunPlayer(victim, 0.8, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
-//                     }
-//                     return Plugin_Changed;
-//                 }
-//                 case TF_CUSTOM_BASEBALL:
-//                 {
-//                     TF2_StunPlayer(victim, 0.5, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
-//                     return Plugin_Changed;
-//                 }
-//                 //TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
-//                 }
-//     }
-
-
-//     return Plugin_Continue;
-// }
 
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
@@ -1051,35 +964,6 @@ void Set_g_PlayerHealth(int victim)
     }
 }
 
-// bool IsMarketGardner(int weapon)
-// {
-// 	if(weapon == -1 && weapon <= MaxClients) return false;
-	
-// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-// 	{
-// 		//If Market gardner gets skins in future with different indices, add them here
-// 	case 416: //Market Gardner
-// 		{
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
-
-// bool IsElectric(int weapon)
-// {
-// 	if(weapon == -1 && weapon <= MaxClients) return false;
-	
-// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-// 	{
-// 		//If Market gardner gets skins in future with different indices, add them here
-// 	case 528, 442, 588: //Reserve Shooter
-// 		{
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
 
 public void MM_OnRestrictionChanged(char name[NAMELENGTH])
 {
@@ -1111,6 +995,13 @@ public Action Command_BeRobot(int client, int numParams)
     
     return Plugin_Handled;
 }
+
+public Action Command_SetRandomRobot(int client, int args)
+{
+    SetRandomRobot(client);
+    
+}
+
 
 public Action Command_Me_Boss(int client, int args)
 {
@@ -1257,7 +1148,9 @@ public Action Command_YT_Robot_Start(int client, int args)
                                 // ServerCommand("sm_begps #%i", playerID);
                                 //ServerCommand("sm_ct #%i %i", playerID, g_RoboTeam);
                             //    TF2_RespawnPlayer(i);
+                            
                                 MoveToRobots(i);
+                                
                             }
                             else
                             {
@@ -1608,6 +1501,7 @@ void MoveToRobots(int client)
 {    
     TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
     RequestFrame(SetRandomRobot,client);
+    // CreateTimer(0.5, SetRandomRobot_Timer, client);
     // SetClientRepicking(client, false);
     // ChooseRobot(client);
 }
@@ -1743,7 +1637,7 @@ any Native_SetRobot(Handle plugin, int numParams)
     GetNativeString(1, robotname, sizeof(robotname));
     int client = GetNativeCell(2);
 
-        if(!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
+    if(!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
     {
         PrintCenterText(client, "You have to be in spawn or dead to select a robot");
         //MC_PrintToChatEx(client, client, "{orange}!cr{teamcolor} or {orange}change class{teamcolor} in spawn to change robot!");
