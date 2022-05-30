@@ -8,7 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"B4nny"
-#define ROBOT_ROLE "Pros + Youtubers"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Scatter Scout"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"

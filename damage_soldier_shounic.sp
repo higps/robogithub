@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Shounic"
-#define ROBOT_ROLE "Pros + Youtubers"
+#define ROBOT_ROLE "Prototye"
 #define ROBOT_DESCRIPTION "High Damage Rocket Launcher Specialist"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -239,7 +239,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "You have the rocket specialist perk!\n+100 %%% dmg vs players\n-20%%% slower rockets\nReduced dmg to buildings");
+	PrintHintText(client , "You have the rocket specialist perk!\n+100 percent dmg vs players\n-20 percent slower rockets");
 	
 }
 
@@ -289,17 +289,17 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.85);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.8);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.25);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.1);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.15);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.8);
+			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.65);
 			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 
@@ -332,6 +332,6 @@ public void OnEntityCreated(int iEntity, const char[] sClassName)
 public void Hook_OnProjectileSpawn(iEntity) {
 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.65);
+		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.35);
 	}
 }

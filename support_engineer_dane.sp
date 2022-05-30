@@ -16,7 +16,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
-#define ROBOT_ROLE "Pros + Youtubers"
+#define ROBOT_ROLE "Prototye"
 #define ROBOT_DESCRIPTION " Widowmaker, Jag"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
@@ -277,13 +277,13 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 		{
 			//PrintToChatAll("Playing Music");
 
-			int random = GetRandomInt(0,3);
+			int random = GetRandomInt(0,2);
 
-			if (random == 0)
+			if (random == 1)
 			{
 			EmitSoundToAll(MUSIC, iObj);
 			EmitSoundToAll(MUSIC, iObj);
-			EmitSoundToAll(MUSIC, iObj);
+			// EmitSoundToAll(MUSIC, iObj);
 			}
 
 			

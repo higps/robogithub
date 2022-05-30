@@ -422,7 +422,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 if (IsHeatmaker(weapon))
                 {
                     float chargelevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargedDamage");
-                    float add = 10 + (chargelevel / 10);
+                    float add = 35 + (chargelevel / 10);
                     if (TF2_IsPlayerInCondition(attacker, TFCond_FocusBuff)) add /= 3;
                     float rage = GetEntPropFloat(attacker, Prop_Send, "m_flRageMeter");
                     SetEntPropFloat(attacker, Prop_Send, "m_flRageMeter", (rage + add > 100) ? 100.0 : rage + add);
@@ -503,7 +503,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsEyelander(Weapon3))
         {
             g_Eyelander_Counter[client] = 0;
-            MC_PrintToChatEx(client, client, "{teamcolor}Your eyelander {orange}gains a head every 3 hits{teamcolor} against robots");
+            MC_PrintToChatEx(client, client, "{teamcolor}Your eyelander {orange}gains a head every hit{teamcolor} against robots");
         }
 
         if (IsSniperRifle(Weapon1))

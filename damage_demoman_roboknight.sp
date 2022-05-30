@@ -10,7 +10,7 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Eyelander, Chargin' Targe"
 
-#define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
+#define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
@@ -125,7 +125,7 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 3300;
+	int iHealth = 2500;
 	
 	
 	int MaxHealth = 175;
@@ -152,12 +152,13 @@ MakeDemoKnight(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	TF2Attrib_SetByName(client, "head scale", 0.75);
 
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -199,7 +200,7 @@ stock GiveGiantDemoKnight(client)
 		CreateRoboWeapon(client, "tf_wearable_demoshield", 131, 6, 1, 2, 0);
 		CreateRoboWeapon(client, "tf_weapon_sword", 132, 6, 1, 2, 0);
 
-		CreateRoboHat(client, KingTavish, 10, 6, 0.0, 0.75, 1.0); 
+		CreateRoboHat(client, KingTavish, 10, 6, 0.0, 1.0, 1.0); 
 		CreateRoboHat(client, KingOfScotland, 10, 6, 0.0, 1.0, 1.0); 
 		CreateRoboHat(client, CoolBreeze, 10, 6, 0.0, 1.0, 1.0); 
 
