@@ -11,8 +11,8 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Lazy Purple"
-#define ROBOT_ROLE "Pros + Youtubers"
-#define ROBOT_DESCRIPTION "No downside direct hit"
+#define ROBOT_ROLE "Prototye"
+#define ROBOT_DESCRIPTION "Rapid Direct hit"
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -144,7 +144,7 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 		}
 		else if (StrContains(sample, "4.wav", false) != -1)
 		{
-			Format(sample, sizeof(sample), RIGHTFOOT1);
+				Format(sample, sizeof(sample), RIGHTFOOT1);
 			EmitSoundToAll(sample, entity);
 		}
 		return Plugin_Changed;
@@ -309,12 +309,12 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon1, "damage penalty", 0.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 1.25);
+			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 1.25);
 						
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.35);
-			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);			
+			
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.3);			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.7);	
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.75);	
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.2);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 		// if(IsValidEntity(Weapon2))

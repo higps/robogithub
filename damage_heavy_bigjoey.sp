@@ -8,7 +8,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Big Joey"
-#define ROBOT_ROLE "Pros + Youtubers"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Tomislav"
 
 

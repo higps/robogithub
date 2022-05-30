@@ -13,6 +13,7 @@
 #define ROBOT_ROLE "Anti-Sentry"
 #define ROBOT_DESCRIPTION "Anti-Wrangler"
 #define ROBOT_COST 5
+#define ROBOT_STATS "Burst fire 3 rockets\nIgnores damage resistance buffs\n-25%%%% damage to players\n-40%%%% damage to buildings"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -30,7 +31,7 @@
 // #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 
 
-#define MAX_ENTITY_LIMIT 2048
+// #define MAX_ENTITY_LIMIT 2048
 
 // bool g_bHomingEnabled[MAX_ENTITY_LIMIT + 1];
 // float g_flHomingAccuracy[MAX_ENTITY_LIMIT + 1];
@@ -256,7 +257,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Burst fire 3 rockets\nRockets deal increased damage wrangled sentries\nRockets ignore damage resistance");
+	PrintHintText(client , ROBOT_STATS);
 	
 }
 
@@ -300,7 +301,7 @@ stock GiveGiantPyro(client)
 		//CreateHat(client, 343, 10, 6, true);//Professor speks
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		
 		if(IsValidEntity(Weapon1))
 		{
@@ -309,22 +310,18 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", -1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.2);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.15);
 			//TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.6);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip penalty", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.35);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.45);
+			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.5);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
 			TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
-			
-			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.65);
-			
-			
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 0.5);
-			
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.75);
+
 			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.25);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+
 
 			
 			
@@ -335,7 +332,7 @@ stock GiveGiantPyro(client)
 			
 		//	TF2Attrib_SetByName(Weapon1, "disable fancy class select anim", 1.0);
 						
-\			
+			
 		}
 		// if(IsValidEntity(Weapon2))
 		// {
@@ -355,272 +352,4 @@ stock GiveGiantPyro(client)
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 
-	
 
-// 
-// {
-// 	if (slot >= 0 && slot <= 5 && IsClientInGame(client) && IsPlayerAlive(client))
-// 	{
-// 		char wepclassname[64];
-// 		int wep = GetPlayerWeaponSlot(client, slot);
-// 		if (wep > MaxClients && IsValidEdict(wep) && GetEdictClassname(wep, wepclassname, sizeof(wepclassname)))
-// 		{
-// 			FakeClientCommandEx(client, "use %s", wepclassname);
-// 			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", wep);
-// 		}
-// 	}
-// }
-
-
-// public OnGameFrame()
-// {
-// 	for(new i = 1; i <= MaxClients; i++)
-// 	{
-// 		if(IsRobot(i, ROBOT_NAME))
-// 		{
-// 		//	SetHomingProjectile(i, "tf_projectile_arrow");
-// 		//	SetHomingProjectile(i, "tf_projectile_energy_ball");
-// 		//	SetHomingProjectile(i, "tf_projectile_flare");
-// 		//	SetHomingProjectile(i, "tf_projectile_healing_bolt");
-// 			SetHomingProjectile(i, "tf_projectile_rocket");
-// 		//	SetHomingProjectile(i, "tf_projectile_sentryrocket");
-// 		//	SetHomingProjectile(i, "tf_projectile_syringe");
-// 		}
-// 	}
-// }
-
-// SetHomingProjectile(client, const String:classname[])
-// {
-// 	new entity = -1; 
-// 	while((entity = FindEntityByClassname(entity, classname))!=INVALID_ENT_REFERENCE)
-// 	{
-// 		new owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-// 		if(!IsValidEntity(owner)) continue;
-// 		if(StrEqual(classname, "tf_projectile_sentryrocket", false)) owner = GetEntPropEnt(owner, Prop_Send, "m_hBuilder");		
-// 		new Target = GetClosestTarget(entity, owner);
-// 		if(!Target) continue;
-// 		if(owner == client)
-// 		{
-// 			new Float:ProjLocation[3], Float:ProjVector[3], Float:ProjSpeed, Float:ProjAngle[3], Float:TargetLocation[3], Float:AimVector[3];			
-// 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLocation);
-// 			GetClientAbsOrigin(Target, TargetLocation);
-// 			TargetLocation[2] += 40.0;
-// 			MakeVectorFromPoints(ProjLocation, TargetLocation , AimVector);
-// 			GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", ProjVector);					
-// 			ProjSpeed = GetVectorLength(ProjVector);					
-// 			AddVectors(ProjVector, AimVector, ProjVector);	
-// 			NormalizeVector(ProjVector, ProjVector);
-// 			GetEntPropVector(entity, Prop_Data, "m_angRotation", ProjAngle);
-// 			GetVectorAngles(ProjVector, ProjAngle);
-// 			SetEntPropVector(entity, Prop_Data, "m_angRotation", ProjAngle);					
-// 			ScaleVector(ProjVector, ProjSpeed);
-// 			SetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", ProjVector);
-// 		}
-// 	}	
-// }
-
-// GetClosestTarget(entity, owner)
-// {
-// 	new Float:TargetDistance = 0.0;
-// 	new ClosestTarget = 0;
-// 	for(new i = 1; i <= MaxClients; i++) 
-// 	{
-// 		if(!IsClientConnected(i) || !IsPlayerAlive(i) || i == owner || (GetClientTeam(owner) == GetClientTeam(i))) continue;
-// 		new Float:EntityLocation[3], Float:TargetLocation[3];
-// 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", EntityLocation);
-// 		GetClientAbsOrigin(i, TargetLocation);
-		
-// 		new Float:distance = GetVectorDistance(EntityLocation, TargetLocation);
-// 		if(TargetDistance)
-// 		{
-// 			if(distance < TargetDistance) 
-// 			{
-// 				ClosestTarget = i;
-// 				TargetDistance = distance;			
-// 			}
-// 		}
-// 		else
-// 		{
-// 			ClosestTarget = i;
-// 			TargetDistance = distance;
-// 		}
-// 	}
-// 	return ClosestTarget;
-// }
-
-
-// public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3])
-// {
-// 	static bool bPressed[MAXPLAYERS + 1] =  { false, ... };
-// 	if (IsClientInGame(client) && IsPlayerAlive(client))
-// 	{
-// 		int weapon = GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon");
-// 		if (IsRobot(client, ROBOT_NAME))
-// 		{
-// 			if(buttons & IN_ATTACK2)
-// 			{
-// 				if(!bPressed[client])
-// 				{
-// 					if(IsValidEntity(g_iLatestProjectile[weapon]))
-// 					{
-// 						g_bHomingEnabled[g_iLatestProjectile[weapon]] = true;
-// 						GetPlayerEyePosition(client, g_flHomingPoint[g_iLatestProjectile[weapon]]);
-// 					}else{
-// 						ClientCommand(client, "playgamesound common/wpn_denyselect.wav");
-// 					}
-// 					bPressed[client] = true;
-// 				}
-// 			}else bPressed[client] = false;
-
-// 			if (!TF2_IsPlayerInCondition(client, TFCond_Taunting) && !TF2_IsPlayerInCondition(client, TFCond_Taunting))
-// 			{
-// 				float flTargetPos[3];
-// 				GetPlayerEyePosition(client, flTargetPos);
-
-// 				if (GetClientTeam(client) == 2) TE_SetupGlowSprite( flTargetPos, g_iRedGlowModelID, 0.1, 0.17, 75 );
-// 				else TE_SetupGlowSprite( flTargetPos, g_iBlueGlowModelID, 0.1, 0.17, 25 );
-
-// 				TE_SendToClient(client);
-// 			}
-// 		}
-// 	}
-// }
-
-// bool GetPlayerEyePosition(int client, float pos[3])
-// {
-// 	float vAngles[3], vOrigin[3];
-// 	GetClientEyePosition(client, vOrigin);
-// 	GetClientEyeAngles(client, vAngles);
-
-// 	Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, TraceEntityFilterPlayer, client);
-
-// 	if (TR_DidHit(trace))
-// 	{
-// 		TR_GetEndPosition(pos, trace);
-// 		delete trace;
-// 		return true;
-// 	}
-// 	delete trace;
-// 	return false;
-// }
-
-// public bool TraceEntityFilterPlayer(int entity, int contentsMask, any data)
-// {
-// 	if (entity <= 0) return true;
-// 	if (entity == data) return false;
-
-// 	char sClassname[128];
-// 	GetEdictClassname(entity, sClassname, sizeof(sClassname));
-// 	if (StrEqual(sClassname, "func_respawnroomvisualizer", false)) return false;
-// 	else return true;
-// }
-
-// public void OnGameFrame()
-// {
-// 	int entity;
-// 	while ((entity = FindEntityByClassname(entity, "tf_projectile_*")) != INVALID_ENT_REFERENCE)
-// 	{
-// 		if(IsValidEntity(g_iLauncher[entity]))
-// 		{
-// 			if(g_bHomingEnabled[entity])
-// 			{
-// 				int iOwner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-// 				if (iOwner == -1)continue;
-// 				int iActiveWeapon = GetEntPropEnt(iOwner, Prop_Data, "m_hActiveWeapon");
-
-// 				if (iActiveWeapon != g_iLauncher[entity])continue;
-// 				if(
-// 					!IsClientInGame(iOwner) ||
-// 					!IsPlayerAlive(iOwner) ||
-// 					(
-// 						HasEntProp(entity, Prop_Send, "m_iDeflected") &&
-// 						GetEntProp(entity, Prop_Send, "m_iDeflected") == 1
-// 					)
-// 				)
-// 				{
-// 					g_bHomingEnabled[entity] = false;
-// 					continue;
-// 				}
-
-// 				float flRocketAng[3];
-// 				float flRocketVec[3];
-// 				float flRocketPos[3];
-
-// 				float flTargetPos[3];
-// 				float flTargetVec[3];
-
-// 				for (int i = 0; i < 3; i++)flTargetPos[i] = g_flHomingPoint[entity][i];
-
-// 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flRocketPos);
-// 				GetEntPropVector(entity, Prop_Data, "m_angRotation", flRocketAng);
-// 				GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", flRocketVec);
-// 				float flRocketSpeed = GetVectorLength( flRocketVec );
-
-// 				SubtractVectors(flTargetPos, flRocketPos, flTargetVec);
-// 				ScaleVector(flTargetVec, g_flHomingAccuracy[entity]);
-// 				AddVectors(flTargetVec, flRocketVec, flRocketVec);
-// 				NormalizeVector(flRocketVec, flRocketVec);
-// 				GetVectorAngles(flRocketVec, flRocketAng);
-// 				ScaleVector(flRocketVec, flRocketSpeed);
-
-// 				SetEntPropVector(entity, Prop_Data, "m_angRotation", flRocketAng);
-
-// 				SetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", flRocketVec);
-// 			}
-// 		}
-// 	}
-// }
-// public void OnEntityCreated(int entity, const char[] classname)
-// {
-// 	if (entity < 1) return;
-
-// 	g_iLauncher[entity] = 0;
-// 	g_bHomingEnabled[entity] = false;
-// 	g_flHomingAccuracy[entity] = 0.0;
-// 	g_iLatestProjectile[entity] = INVALID_ENT_REFERENCE;
-
-// 	if (StrContains(classname, "tf_projectile_") != -1)
-// 	{
-// 		CreateTimer(0.001, Timer_OnSpawn, entity);
-// 	}
-// }
-// public Action Timer_OnSpawn(Handle timer, any entity)
-// {
-// 	if (!IsValidEdict(entity))return;
-// 	int iOwner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-// 	if (iOwner > 0 && iOwner <= MaxClients)
-// 	{
-// 		int weapon = GetEntPropEnt(iOwner, Prop_Data, "m_hActiveWeapon");
-// 		if(IsValidEdict(weapon))
-// 		{
-// 			float flPower = 15.0;
-// 			if(flPower > 0.0)
-// 			{
-// 				g_iLauncher[entity] = weapon;
-// 				g_bHomingEnabled[entity] = false;
-// 				g_flHomingAccuracy[entity] = flPower;
-// 				g_iLatestProjectile[weapon] = entity;
-// 			}
-// 			float flLifetime = 15.0;
-// 			if(flLifetime > 0.0)
-// 			{
-// 				g_KillTimer[entity] = CreateTimer(flLifetime, Timer_ExplodeProjectile, entity);
-// 			}
-// 		}
-	
-// 	}
-// }
-// public Action Timer_ExplodeProjectile(Handle timer, any rocket)
-// {
-// 	g_KillTimer[rocket] = INVALID_HANDLE;
-// 	if(IsValidEdict(rocket))
-// 	{
-// 		char classname[256];
-// 		GetEdictClassname(rocket, classname, sizeof(classname));
-
-// 		if(StrContains(classname, "tf_projectile_") != -1)
-// 		{
-// 			AcceptEntityInput(rocket, "Kill");
-// 		}
-// 	}
-// }

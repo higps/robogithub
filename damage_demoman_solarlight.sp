@@ -8,7 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Solar Light"
-#define ROBOT_ROLE "Pros + Youtubers"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Hybrid Knight"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
