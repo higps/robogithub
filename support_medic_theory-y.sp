@@ -8,7 +8,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Theory-Y"
-#define ROBOT_ROLE "Pros + Youtubers"
+#define ROBOT_ROLE "Prototye"
 #define ROBOT_DESCRIPTION "Vac-eliminator"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"

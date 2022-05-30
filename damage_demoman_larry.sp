@@ -10,7 +10,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Loch'n Larry"
 #define ROBOT_ROLE "Anti-Sentry"
-#define ROBOT_DESCRIPTION "Rapid Loch-n-Load"
+#define ROBOT_DESCRIPTION "Rapid Anti-Sentry Loch-n-Load"
+#define ROBOT_STATS "-75%%%% damage to players\nAttacks pierce damage resistances\n+75%%%% faster firing speed"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -179,7 +180,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Fire and reload the entire clip at once!");
+	PrintHintText(client , ROBOT_STATS);
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -225,17 +226,21 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.4);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.8);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.8);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.25);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.5);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			//TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.9);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 1.0);
+			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 2.5);
+			
 			// TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 0.5);
-			TF2Attrib_SetByName(Weapon1, "fuse bonus", 2.4);
+			// TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 0.5);
+			TF2Attrib_SetByName(Weapon1, "fuse bonus", 50.0);
+			TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
+			
 			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
 			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
 			// TF2Attrib_SetByName(Weapon1, "grenade no spin", 0.0);
@@ -243,19 +248,19 @@ stock GiveGiantDemoKnight(client)
 	}
 }
 
-// public void OnEntityCreated(int iEntity, const char[] sClassName) 
-// {
-// 	if (StrContains(sClassName, "tf_projectile") == 0)
-// 	{
-// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-// 	}
+public void OnEntityCreated(int iEntity, const char[] sClassName) 
+{
+	if (StrContains(sClassName, "tf_projectile") == 0)
+	{
+		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+	}
 	
-// }
+}
 
-// public void Hook_OnProjectileSpawn(iEntity) {
-// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
-// 	}
-// }
+public void Hook_OnProjectileSpawn(iEntity) {
+	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.4);
+	}
+}
 

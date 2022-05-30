@@ -7,9 +7,9 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Fatmagic"
-#define ROBOT_ROLE "Pros + Youtubers"
-#define ROBOT_DESCRIPTION "Rapid Fire Grenade Launcher"
+#define ROBOT_NAME	"Habib"
+#define ROBOT_ROLE "Prototye"
+#define ROBOT_DESCRIPTION "Demoman with AK47"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -169,7 +169,7 @@ MakeDemoKnight(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Rapid Fire Grenade Launcher\nReduced damage vs buildings");
+	PrintHintText(client , "AK47");
 
 	
 }
@@ -188,8 +188,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 #define KingTavish 342
-#define Dangeresque 295
-#define DynamiteAbs 31037
+#define Bandana 30397
+// #define Locker 771
 
 stock GiveGiantDemoKnight(client)
 {
@@ -205,8 +205,8 @@ stock GiveGiantDemoKnight(client)
 		// CreateRoboWeapon(client, "tf_weapon_sword", 132, 6, 1, 2, 0);
 
 		CreateRoboHat(client, KingTavish, 10, 6, 0.0, 0.75, 1.0); 
-		CreateRoboHat(client, Dangeresque, 10, 6, 15185211.0, 0.85, 1.0); 
-		CreateRoboHat(client, DynamiteAbs, 10, 6, 0.0, 1.0, 1.0); 
+		CreateRoboHat(client, Bandana, 10, 6, 15132390.0, 0.5, 1.0); 
+		// CreateRoboHat(client, Locker, 10, 6, 0.0, 1.0, 4.0); 
 
 		
 		// int iEntity2 = -1;
@@ -238,35 +238,28 @@ stock GiveGiantDemoKnight(client)
 		// 	TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
 		// }
 
-				CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 19, 6, 1, 2, 0);
+				CreateRoboWeapon(client, "tf_weapon_smg", 16, 6, 1, 2, 0);
 		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
 
 		//CreateRoboHat(client, ScotchBonnet, 10, 6, 0.0, 0.75, -1.0); 
 		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
 		//CreateHat(client, 30945, 10, 6, false);//blast locker
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		//int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		if(IsValidEntity(Weapon1))
+
+	if(IsValidEntity(SMG))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
-			
-			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 5.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.0);
-			// TF2Attrib_SetByName(Weapon1, "projectile speed increased", 0.75);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.6);
-			//TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
-			//TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 3.0);
-			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.15);
-			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.2);
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
-			// TF2Attrib_SetByName(Weapon1, "grenade no spin", 0.0);
+			TF2Attrib_RemoveAll(SMG);
+			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 2.0);
+			// TF2Attrib_SetByName(SMG, "fire rate penalty", 1.2);
+			TF2Attrib_SetByName(SMG, "clip size bonus", 1.22);
+			TF2Attrib_SetByName(SMG, "hidden secondary max ammo penalty", 5.0);
+			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(SMG, "weapon spread bonus", 0.25);
+			TF2Attrib_SetByName(SMG, "Reload time increased", 1.5);
 		}
 	}
+	
 }

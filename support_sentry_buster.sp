@@ -146,13 +146,14 @@ public Action OnTouch(int client, int ent)
 
         	if (StrEqual(entname, "obj_sentrygun"))
         	{
-				SetEntPropEnt(ent, Prop_Send, "m_bGlowEnabled", 1);
-	            int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+				
+	            //int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
 				int iBuildingTeam = GetEntPropEnt(ent, Prop_Send, "m_iTeamNum");
 				int iClientTeam = GetClientTeam(client);
 
 				if(iClientTeam != iBuildingTeam && !g_Taunt_clamp)
 				{
+					SetEntPropEnt(ent, Prop_Send, "m_bGlowEnabled", 1);
 					//PrintToChatAll("not the same team");
 					GetReadyToExplode(client);
 					FakeClientCommand(client, "taunt");
@@ -299,6 +300,9 @@ public Action Bewm(Handle timer, any userid)
 	if (!IsPlayerAlive(client)) return Plugin_Handled;
 	//if (!TF2_IsPlayerInCondition(client, TFCond_Taunting)) return Plugin_Handled;
 	AboutToExplode[client] = false;
+
+	// int iClientTeam = GetEntProp(client, Prop_Send, "m_iTeamNum");
+	// PrintToChatAll("Team was %i", iClientTeam);
 	int explosion = CreateEntityByName("env_explosion");
 	float clientPos[3];
 	GetClientAbsOrigin(client, clientPos);
@@ -316,7 +320,7 @@ public Action Bewm(Handle timer, any userid)
 		if (!IsPlayerAlive(i)) continue;
 		if (GetClientTeam(i) == GetClientTeam(client) && !FF) continue;
 		float zPos[3];
-		GetClientAbsOrigin(i, zPos);
+		GetClientEyePosition(i, zPos);
 		float Dist = GetVectorDistance(clientPos, zPos);
 		if (Dist > 300.0) continue;
 
@@ -333,15 +337,27 @@ public Action Bewm(Handle timer, any userid)
 		!StrEqual(cls, "obj_dispenser", false) &&
 		!StrEqual(cls, "obj_teleporter", false)) continue;
 
+		
+		
+
+
+
 		float zPos[3];
 		GetEntPropVector(i, Prop_Send, "m_vecOrigin", zPos);
 		float Dist = GetVectorDistance(clientPos, zPos);
 		if (Dist > 300.0) continue;
 
+		
 		if (CanSeeTarget(clientPos, zPos, i, client))
 		{
+			int iTeam = GetEntPropEnt(i, Prop_Send, "m_iTeamNum");
+		//	PrintToChatAll("iTeam %i, iClient Team %i", iTeam, iClientTeam);
+		// if (iTeam != iClientTeam)
+		// {
+				
 			SetVariantInt(2500);
 			AcceptEntityInput(i, "RemoveHealth");
+		// }
 		}
 	}
 	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_explode.wav", client);
@@ -356,7 +372,7 @@ public Action Bewm(Handle timer, any userid)
 bool CanSeeTarget(float start[3], float end[3], int target, int source)
 {
 	bool result = false;
-	end[2] += 50.0; //Raise the position to be roughly the center of the target player
+	//end[2] += 50.0; //Raise the position to be roughly the center of the target player
 	TracedTarget = target;
 	Handle trace = TR_TraceRayFilterEx(start, end, MASK_SHOT, RayType_EndPoint, CheckTrace, source);
 	if (TR_DidHit(trace))

@@ -38,11 +38,6 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-new bool:Locked1[MAXPLAYERS+1];
-new bool:Locked2[MAXPLAYERS+1];
-new bool:Locked3[MAXPLAYERS+1];
-new bool:CanWindDown[MAXPLAYERS+1];
-
 public OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
@@ -142,7 +137,7 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
-	TF2Attrib_SetByName(client, "deploy time decreased", 0.25);
+	TF2Attrib_SetByName(client, "deploy time decreased", 0.05);
 	
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -217,35 +212,18 @@ stock GiveGiantPyro(client)
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
-		// if(IsValidEntity(Weapon1))
-		// {
-		// 	TF2Attrib_RemoveAll(Weapon1);
-		// 	TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
-		// 	TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-		// 	TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-		// 	TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 0.6);		
-		// 	TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.8);			
-		// 	TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
-		// 	TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
-		// 	TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
-		// 	TF2Attrib_SetByName(Weapon1, "single wep deploy time decreased", 0.4);
-		// 	TF2Attrib_SetByName(Weapon1, "switch from wep deploy time decreased", 0.7);
-		// 	TF2Attrib_SetByName(Weapon1, "weapon burn dmg reduced", 1.0);
-
-		// }
 		
 		if(IsValidEntity(Weapon2))
 		{
 			//TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.75);
-			// TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.6);
-			// TF2Attrib_SetByName(Weapon2, "damage causes airblast", 1.0);
-			// TF2Attrib_SetByName(Weapon2, "mod projectile heat seek power", 3600.0);
-			//TF2Attrib_SetByName(Weapon2, "apply look velocity on damage", 1500.0);
+
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "self dmg push force increased", 10.0);
 			TF2Attrib_SetByName(Weapon2, "Blast radius increased", 1.75);
-			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.7);
+			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.15);
+			//TF2Attrib_SetByName(Weapon2, "Reload time decreased", 5.05);
+			
 			
 			
 			

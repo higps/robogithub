@@ -7,7 +7,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Samwiz"
-#define ROBOT_ROLE "Pros + Youtubers"
+#define ROBOT_ROLE "Prototye"
 #define ROBOT_DESCRIPTION "Brass Beast"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
@@ -260,7 +260,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
-			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 0.5);
+			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 0.4);
 			TF2Attrib_SetByName(Weapon1, "aiming movespeed decreased", 0.01);
 			TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 0.5);
 			
