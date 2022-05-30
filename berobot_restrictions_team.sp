@@ -271,7 +271,7 @@ int GetSpentRobotCoins(int clientId, TFTeam team, char steamId[64])
     if (!_robotCoinsSpent[team].GetValue(steamId, spentCoins))
     {
         SMLogTag(SML_VERBOSE, "could not read spent robot coins for %L. using %i as spent RobotCoins", clientId, _robotCoinsAvailable[team]);
-        return _robotCoinsAvailable[team];
+        return 0;
     }
 
     SMLogTag(SML_VERBOSE, "%L (%s) currently spent %i robot-coins on team %i", clientId, steamId, spentCoins, team);
