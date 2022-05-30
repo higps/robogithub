@@ -113,4 +113,8 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
     int rewardedRobotCoins = robot.robotCoinsOnDeath;
     SMLogTag(SML_VERBOSE, "adding %i RobotCoins, because robot %L died", rewardedRobotCoins, victimClientId);
     AddRobotCoinsFor(victimClientId, rewardedRobotCoins);
+
+    int rewardedTeamCoins = robot.teamCoinsOnDeath;
+    SMLogTag(SML_VERBOSE, "adding %i TeamCoins, because robot %L died", rewardedTeamCoins, victimClientId);
+    AddTeamCoinsFor(victimClientId, rewardedTeamCoins);
 }

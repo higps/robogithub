@@ -20,8 +20,10 @@ enum(<<= 1)
 #pragma newdecls required
 #pragma semicolon 1
 
-ArrayList _restrictions[TEAMCOUNT];
-int _robotCoins[TEAMCOUNT];
+ArrayList _teamCoinRestrictions[TEAMCOUNT];
+int _robotCoinsAvailable[TEAMCOUNT];
+StringMap _robotCoinsSpent[TEAMCOUNT];
+int _teamCoins[TEAMCOUNT];
 char _lastUnrestrictedRobot[MAXPLAYERS + 1][NAMELENGTH];
 
 public Plugin myinfo =
@@ -47,6 +49,11 @@ public void OnPluginStart()
     TeamRoundTimer teamRoundTimer = new TeamRoundTimer();
     teamRoundTimer.HookOnFinished(OnRoundFinished);
 
+    for(TFTeam i = TFTeam_Unassigned; i <= TFTeam_Blue; i++)
+    {
+        _robotCoinsSpent[i] = new StringMap();
+    }
+
     if (IsEnabled())
         Start();
 }
@@ -55,8 +62,10 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
     CreateNative("AddRobotCoins", Native_AddRobotCoins);
     CreateNative("AddRobotCoinsFor", Native_AddRobotCoinsFor);
-    CreateNative("GetRobotCoins", Native_GetRobotCoins);
+    CreateNative("AddTeamCoins", Native_AddTeamCoins);
+    CreateNative("AddTeamCoinsFor", Native_AddTeamCoinsFor);
     CreateNative("GetRobotCoinsFor", Native_GetRobotCoinsFor);
+    CreateNative("GetTeamCoinsFor", Native_GetTeamCoinsFor);
     CreateNative("PayRobotCoin", Native_PayRobotCoin);
     return APLRes_Success;
 }
@@ -75,23 +84,49 @@ public any Native_AddRobotCoins(Handle plugin, int numParams)
     TFTeam team = view_as<TFTeam>(GetNativeCell(1));
     int amount = GetNativeCell(2);
     
-    _robotCoins[team] = _robotCoins[team] + amount;
+    _robotCoinsAvailable[team] = _robotCoinsAvailable[team] + amount;
     UpdateRestrictions();
+}
+
+public any Native_AddTeamCoinsFor(Handle plugin, int numParams)
+{
+    int clientId = GetNativeCell(1);
+    int amount = GetNativeCell(2);
+    
+    TFTeam team = view_as<TFTeam>(GetClientTeam(clientId));
+    AddTeamCoins(team, amount);
+}
+
+public any Native_AddTeamCoins(Handle plugin, int numParams)
+{
+    TFTeam team = view_as<TFTeam>(GetNativeCell(1));
+    int amount = GetNativeCell(2);
+    
+    _teamCoins[team] = _teamCoins[team] + amount;
+    UpdateRestrictions();
+}
+
+public any Native_GetTeamCoinsFor(Handle plugin, int numParams)
+{
+    int clientId = GetNativeCell(1);
+    TFTeam team = view_as<TFTeam>(GetClientTeam(clientId));
+    
+    return _teamCoins[team];
 }
 
 public any Native_GetRobotCoinsFor(Handle plugin, int numParams)
 {
-    int clientId = GetNativeCell(1);    
-    TFTeam team = view_as<TFTeam>(GetClientTeam(clientId));
+    int clientId = GetNativeCell(1);
     
-    return GetRobotCoins(team);
-}
+    if (IsFakeClient(clientId))
+        return 0;
+    if (!IsValidClient(clientId))
+        return 0;
 
-public any Native_GetRobotCoins(Handle plugin, int numParams)
-{
-    TFTeam team = view_as<TFTeam>(GetNativeCell(1));
-    
-    return _robotCoins[team];
+    char steamId[64];
+    TFTeam team = view_as<TFTeam>(GetClientTeam(clientId));
+    int spentCoins = GetSpentRobotCoins(clientId, team, steamId);
+    return _robotCoinsAvailable[team] - spentCoins;
 }
 
 public any Native_PayRobotCoin(Handle plugin, int numParams)
@@ -109,15 +144,15 @@ public any Native_PayRobotCoin(Handle plugin, int numParams)
         SMLogTag(SML_VERBOSE, "%L paying nothing for %s, because it's free", clientId, robotName);
         return true;
     }
-    if (!robotCoins.Enabled)
-    {
-        SMLogTag(SML_ERROR, "%L could not pay for %s, because it's not enabled yet", clientId, robotName);
-        return false;
-    }
     
-    int team = GetClientTeam(clientId);
+    TFTeam team = view_as<TFTeam>(GetClientTeam(clientId));
+
+    char steamId[64];
+    int spentCoins = GetSpentRobotCoins(clientId, team, steamId);
+
+    int available = _robotCoinsAvailable[team] - spentCoins;
+
     int price = robotCoins.GetPrice();
-    int available = _robotCoins[team];
     if (price > available)
     {
         SMLogTag(SML_ERROR, "%L could not pay for %s, because price %i is too high (robot-coins: %i)", clientId, robotName, price, available);
@@ -127,7 +162,8 @@ public any Native_PayRobotCoin(Handle plugin, int numParams)
     SaveLastUnrestrictedRobot(clientId);
 
     SMLogTag(SML_VERBOSE, "%L paying %i from team %i's robot-coins %i for %s", clientId, price, team, available, robotName);
-    _robotCoins[team] = available - price;
+    _robotCoinsSpent[team].SetValue(steamId, spentCoins + price);
+
     UpdateRestrictions();
     return true;
 }
@@ -159,7 +195,7 @@ public void OnMapStart()
 {
     SMLogTag(SML_VERBOSE, "OnMapStart called at %i", GetTime());
     GetRestrictions();
-    ResetRobotCoins();
+    ResetCoins();
 
     for(int i = 0; i <= MaxClients; i++)
     {
@@ -191,6 +227,8 @@ void Start()
 
     GetRestrictions();
     HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy);
+
+    ResetCoins();
 }
 
 public void OnClientConnected(int client)
@@ -217,14 +255,36 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 
 void OnRoundFinished(const char[] output, int caller, int activator, float delay)
 {
-    ResetRobotCoins();
+    ResetCoins();
 }
 
-void ResetRobotCoins()
+int GetSpentRobotCoins(int clientId, TFTeam team, char steamId[64])
+{
+    if (!GetClientAuthId(clientId, AuthId_Steam2, steamId, sizeof(steamId)))
+    {
+        SMLogTag(SML_ERROR, "could not read steamid for %L. using %i as spent RobotCoins", clientId, _robotCoinsAvailable[team]);
+        return _robotCoinsAvailable[team];
+    }
+    SMLogTag(SML_VERBOSE, "%L has steamId %s", clientId, steamId);
+
+    int spentCoins;
+    if (!_robotCoinsSpent[team].GetValue(steamId, spentCoins))
+    {
+        SMLogTag(SML_VERBOSE, "could not read spent robot coins for %L. using %i as spent RobotCoins", clientId, _robotCoinsAvailable[team]);
+        return _robotCoinsAvailable[team];
+    }
+
+    SMLogTag(SML_VERBOSE, "%L (%s) currently spent %i robot-coins on team %i", clientId, steamId, spentCoins, team);
+    return spentCoins;
+}
+
+void ResetCoins()
 {
     for(TFTeam i = TFTeam_Unassigned; i <= TFTeam_Blue; i++)
     {
-        _robotCoins[i] = 0;
+        _teamCoins[i] = 0;
+        _robotCoinsAvailable[i] = 0;
+        _robotCoinsSpent[i].Clear();
     }
 }
 
@@ -268,18 +328,18 @@ void UpdateRestrictions()
 
 void UpdateRestrictionsFor(TFTeam team)
 {
-    for(int i = 0; i < _restrictions[team].Length; i++)
+    for(int i = 0; i < _teamCoinRestrictions[team].Length; i++)
     {
-        RobotCoins restriction = _restrictions[team].Get(i);
+        RobotCoins restriction = _teamCoinRestrictions[team].Get(i);
         char robotName[NAMELENGTH];
         restriction.GetRobotName(robotName);
 
         int price = restriction.GetPrice();
-        if (price > _robotCoins[team])
+        if (price > _robotCoinsAvailable[team])
         {
             if (!restriction.Enabled)
             {
-                SMLogTag(SML_VERBOSE, "team %i robot %s: price %i not met (%i robot-coins), but was disabled already", team, robotName, price, _robotCoins[team]);
+                SMLogTag(SML_VERBOSE, "team %i robot %s: price %i not met (%i robot-coins), but was disabled already", team, robotName, price, _robotCoinsAvailable[team]);
                 continue;
             }
 
@@ -288,7 +348,7 @@ void UpdateRestrictionsFor(TFTeam team)
         }
         if (restriction.Enabled)
         {
-            SMLogTag(SML_VERBOSE, "team %i robot %s: price %i is met (%i robot-coins), but was enabled already", team, robotName, price, _robotCoins[team]);
+            SMLogTag(SML_VERBOSE, "team %i robot %s: price %i is met (%i robot-coins), but was enabled already", team, robotName, price, _robotCoinsAvailable[team]);
             continue;
         }
 
@@ -326,30 +386,30 @@ void GetRestrictions()
 
 void GetRestriction(TFTeam team, ArrayList restrictions)
 {
-    _restrictions[team] = new ArrayList();
+    _teamCoinRestrictions[team] = new ArrayList();
     
     for(int i = 0; i < restrictions.Length; i++)
     {
         Restrictions item = restrictions.Get(i);
 
-        RobotCoins restriction = item.GetRobotCoins(team);
+        RobotCoins restriction = item.GetTeamCoins(team);
         if (restriction == null)
         {
-            SMLogTag(SML_ERROR, "could not find RobotCoins for team %i", team);
+            SMLogTag(SML_ERROR, "could not find TeamCoins for team %i", team);
             return;
         }
 
         if (restriction.Active)
-            _restrictions[team].Push(restriction);        
+            _teamCoinRestrictions[team].Push(restriction);        
     }
 
-    _restrictions[team].SortCustom(RobotCoinsComparision);
+    _teamCoinRestrictions[team].SortCustom(RobotCoinsComparision);
     
-    SMLogTag(SML_VERBOSE, "%i robot-coins for team %i set", _restrictions[team].Length, team);
-    for(int i = 0; i < _restrictions[team].Length; i++)
+    SMLogTag(SML_VERBOSE, "%i TeamCoins for team %i set", _teamCoinRestrictions[team].Length, team);
+    for(int i = 0; i < _teamCoinRestrictions[team].Length; i++)
     {
-        RobotCoins restriction = _restrictions[team].Get(i);
-        SMLogTag(SML_VERBOSE, "RobotCoins set for team %i %i: %i PerRobot; %i Overall", team, i, restriction.PerRobot, restriction.Overall);
+        RobotCoins restriction = _teamCoinRestrictions[team].Get(i);
+        SMLogTag(SML_VERBOSE, "TeamCoins set for team %i %i: %i PerRobot; %i Overall", team, i, restriction.PerRobot, restriction.Overall);
     }
 }
 

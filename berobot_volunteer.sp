@@ -456,7 +456,7 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         }
 
         char steamId[64];
-        GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId));        
+        GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId));
         if (_vipSteamIds.GetValue(steamId, value))
         {
             SMLogTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they are a vip", i);

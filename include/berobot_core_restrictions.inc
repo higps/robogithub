@@ -46,12 +46,30 @@ native void AddRobotCoins(TFTeam team, int amount);
 native void AddRobotCoinsFor(int clientId, int amount);
 
 /**
- * returns available robot-coins
+ * add a specified amount to the robot-coins
  * 
- * @param team      robot-coins will be returned for this team
- * @return          amount of robot-coins available to the clients team
+ * @param team      robot-coin will be added to this team
+ * @param amount    amount of robot-coin to add
+ * @noreturn
  */
-native int GetRobotCoins(TFTeam team);
+native void AddTeamCoins(TFTeam team, int amount);
+
+/**
+ * add a specified amount to the robot-coins
+ * 
+ * @param clientId  robot-coin will be added to this clients team
+ * @param amount    amount of robot-coin to add
+ * @noreturn
+ */
+native void AddTeamCoinsFor(int clientId, int amount);
+
+/**
+ * returns available team-coins
+ * 
+ * @param clientId  team-coins will be returned for this clients team
+ * @return          amount of team-coins available to the clients team
+ */
+native int GetTeamCoinsFor(int clientId);
 
 /**
  * returns available robot-coins

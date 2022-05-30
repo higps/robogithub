@@ -82,7 +82,6 @@ Action DrawHud(Handle timer)
 
 void DrawTeamHud(TFTeam team, int r, int g, int b, int a)
 {
-    int robotCoins = GetRobotCoins(team);
     SetHudTextParams(-1.0, 0.05, 4.0, r, g, b, a, 0, 0.0, 0.0, 0.0);
     for(int i = 1; i <= MaxClients; i++)
     {
@@ -96,6 +95,7 @@ void DrawTeamHud(TFTeam team, int r, int g, int b, int a)
         if (actualTeam != team)
             continue;
 
+        int robotCoins = GetRobotCoinsFor(i);
         ShowSyncHudText(i, _hudSynchronizer, "Robot-₡oins: %i", robotCoins);
     }
 }

@@ -14,6 +14,7 @@ enum (<<= 1)
 }
 #include <berobot>
 #include <berobot_core>
+#include <berobot_core_restrictions>
 #pragma newdecls required
 #pragma semicolon 1
 
@@ -621,26 +622,43 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
         return;
     }
 
-    RobotCoins robotCoins = item.restrictions.GetRobotCoinsFor(client);
-
-
-    if (!robotCoins.Enabled)
+    RobotCoins teamCoins = item.restrictions.GetTeamCoinsFor(client);
+    int availableTeamCoins = GetTeamCoinsFor(client);
+    int teamCost = teamCoins.GetPrice();
+    SMLogTag(SML_VERBOSE, "client %i robot %s teamCost %i", client, item.name, teamCost);
+    SMLogTag(SML_VERBOSE, "client %i robot %s availableTeamCoins %i", client, item.name, availableTeamCoins);
+    if (!teamCoins.Enabled)
     {
-        Format(notes, sizeof(notes), "R₡: %i", robotCoins.GetPrice());
+        Format(notes, sizeof(notes), "T₡: %i", teamCost);
         draw = ITEMDRAW_DISABLED;
         return;
     }
-    int RobotCost = robotCoins.GetPrice();
-   // PrintToChatAll("RoboCost %i", RobotCost);
-    if (RobotCost > 0)
+
+    if (teamCost > 0)
     {
-        Format(notes, sizeof(notes), "R₡: %i", robotCoins.GetPrice());
+        Format(notes, sizeof(notes), "T₡: %i", teamCost);
         draw = ITEMDRAW_DEFAULT;
         return;
     }
 
+    RobotCoins robotCoins = item.restrictions.GetRobotCoinsFor(client);
+    int availableRobotCoins = GetRobotCoinsFor(client);
+    int robotCost = robotCoins.GetPrice();
+    SMLogTag(SML_VERBOSE, "client %i robot %s robotCost %i", client, item.name, robotCost);
+    SMLogTag(SML_VERBOSE, "client %i robot %s availableRobotCoins %i", client, item.name, availableRobotCoins);
+    if (availableRobotCoins < robotCost)
+    {
+        Format(notes, sizeof(notes), "R₡: %i", robotCost);
+        draw = ITEMDRAW_DISABLED;
+        return;
+    }
 
-
+    if (robotCost > 0)
+    {
+        Format(notes, sizeof(notes), "R₡: %i", robotCost);
+        draw = ITEMDRAW_DEFAULT;
+        return;
+    }
 
     Format(notes, sizeof(notes), "%i / %i", count, roboCap);
     draw = ITEMDRAW_DEFAULT;

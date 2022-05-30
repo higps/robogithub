@@ -492,6 +492,26 @@ methodmap Restrictions < StringMap {
             this.SetValue("RobotCoinsBlu", value);
         }
     }
+    property RobotCoins TeamCoinsRed {
+        public get(){ 
+            RobotCoins value;
+            this.GetValue("TeamCoinsRed", value);
+            return value;
+        }
+        public set(RobotCoins value){
+            this.SetValue("TeamCoinsRed", value);
+        }
+    }
+    property RobotCoins TeamCoinsBlu {
+        public get(){ 
+            RobotCoins value;
+            this.GetValue("TeamCoinsBlu", value);
+            return value;
+        }
+        public set(RobotCoins value){
+            this.SetValue("TeamCoinsBlu", value);
+        }
+    }
 
     public Restrictions() {
         return view_as<Restrictions>(new StringMap());
@@ -499,12 +519,31 @@ methodmap Restrictions < StringMap {
 
     public bool IsActive()
     {
-        return this.TimeLeft.Active || this.RobotCoinsRed.Active || this.RobotCoinsBlu.Active;
+        return this.TimeLeft.Active || this.RobotCoinsRed.Active || this.RobotCoinsBlu.Active || this.TeamCoinsRed.Active || this.TeamCoinsBlu.Active;
     }
 
     public bool IsEnabled()
     {
-        return this.TimeLeft.Enabled || this.RobotCoinsRed.Enabled || this.RobotCoinsBlu.Enabled;
+        return this.TimeLeft.Enabled || this.RobotCoinsRed.Enabled || this.RobotCoinsBlu.Enabled || this.TeamCoinsRed.Enabled || this.TeamCoinsBlu.Enabled;
+    }
+
+    public RobotCoins GetTeamCoins(TFTeam team)
+    {
+        switch (team)
+        {
+            case TFTeam_Blue:
+                return this.TeamCoinsBlu;
+            case TFTeam_Red:
+                return this.TeamCoinsRed;
+            default:
+                return null;
+        }
+    }
+    
+    public RobotCoins GetTeamCoinsFor(int clientId)
+    {        
+        TFTeam team = view_as<TFTeam>(GetClientTeam(clientId));
+        return this.GetTeamCoins(team);
     }
 
     public RobotCoins GetRobotCoins(TFTeam team)
@@ -535,10 +574,16 @@ methodmap Restrictions < StringMap {
         }
         TimeLeftRestriction timeLeft = new TimeLeftRestriction();        
         this.TimeLeft = timeLeft.From(definition.TimeLeft, robotName);
+        
         RobotCoins robotCoinsRed = new RobotCoins(robotName);        
         this.RobotCoinsRed = robotCoinsRed.From(definition.RobotCoins);
         RobotCoins robotCoinsBlu = new RobotCoins(robotName);        
         this.RobotCoinsBlu = robotCoinsBlu.From(definition.RobotCoins);
+
+        RobotCoins teamCoinsRed = new RobotCoins(robotName);        
+        this.TeamCoinsRed = teamCoinsRed.From(definition.TeamCoins);
+        RobotCoins teamCoinsBlu = new RobotCoins(robotName);        
+        this.TeamCoinsBlu = teamCoinsBlu.From(definition.TeamCoins);
     }
 }
 enum struct Robot {
@@ -550,4 +595,5 @@ enum struct Robot {
   RobotSounds sounds;
   Restrictions restrictions;
   int robotCoinsOnDeath;
+  int teamCoinsOnDeath;
 }
