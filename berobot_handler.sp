@@ -242,12 +242,14 @@ public void OnPluginStart()
     /* Hooks */
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
     HookEvent("teamplay_round_start", Event_Waiting_Abouttoend, EventHookMode_Post);
+
+    HookEvent("teamplay_point_captured", Event_Teamplay_Point_Captured, EventHookMode_Post);
     
     HookEvent("player_death", Event_Death, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
     
 
-    HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
+    // HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
 
@@ -344,7 +346,6 @@ public void OnMapStart()
 {
     g_WaitingForPlayers = true;
     g_RoundCount = 0;
-    g_TankCount = 0;
     ResetMode();
 
     PrecacheSound(RESISTANCE);
@@ -606,50 +607,51 @@ public Action SetRandomRobot_Timer(Handle timer, any client)
 // 
 
 // 
-bool b_TankCheckClamp = false;
+// bool b_TankCheckClamp = false;
 
-public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
-{
+// public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
+// {
 
-    int client = GetClientOfUserId(GetEventInt(event, "userid"));
-    if (IsTank(client) && !b_TankCheckClamp)
-    {
-        CreateTimer(3.0, Timer_TankCheck);
-        b_TankCheckClamp = true;
-    }
-}
+//     int client = GetClientOfUserId(GetEventInt(event, "userid"));
+//     if (IsTank(client) && !b_TankCheckClamp)
+//     {
+//         CreateTimer(3.0, Timer_TankCheck);
+//         b_TankCheckClamp = true;
+//     }
+// }
 
-public Action Timer_TankCheck(Handle timer)
-{
-    int TankCount = 0;
+// public Action Timer_TankCheck(Handle timer)
+// {
+//     int TankCount = 0;
 
-    for(int i = 1; i <= MaxClients; i++)
-    {
-        if (IsTank(i))
-        {
-            if(g_cv_bDebugMode)PrintToChatAll("%N was a tank", i);
-            TankCount++;
-        }
-    }
+//     for(int i = 1; i <= MaxClients; i++)
+//     {
+//         if (IsTank(i))
+//         {
+//             if(g_cv_bDebugMode)PrintToChatAll("%N was a tank", i);
+//             TankCount++;
+//         }
+//     }
 
-    if (TankCount == 1)
-    {
-        EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
-    }
+//     if (TankCount == 1)
+//     {
+//         EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
+//     }
 
-    if (TankCount == 2)
-    {
-        EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Another");
-    }
+//     if (TankCount == 2)
+//     {
+//         EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Another");
+//     }
 
-    if (TankCount > 2)
-    {
-        EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Multiple");
-    }
+//     if (TankCount > 2)
+//     {
+//         EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Multiple");
+//     }
+    
 
-    if(g_cv_bDebugMode)PrintToChatAll("Tank count was %i", TankCount);
-    b_TankCheckClamp = false;
-}
+//     if(g_cv_bDebugMode)PrintToChatAll("Tank count was %i", TankCount);
+//     b_TankCheckClamp = false;
+// }
 
 
 public Action Timer_Regen(Handle timer, any client)
@@ -712,6 +714,19 @@ public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dont
 public Action MakeRobotsApril(Handle timer)
 {
     Command_YT_Robot_Start(1, true);
+}
+
+public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontBroadcast)
+{
+    //int team = GetEventInt(event, "team");
+    //PrintToChatAll("Team wws %i", team);
+
+    if (g_Enable && g_BossMode)
+    {
+        AddTeamCoins(TFTeam_Blue, 1);
+        AddTeamCoins(TFTeam_Red, 1);
+    }
+
 }
 
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)

@@ -59,7 +59,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 6; 
+    restrictions.RobotCoins.PerRobot = 3; 
 
     AddRobot(robot, MakeGRageH, PLUGIN_VERSION, restrictions);
 }

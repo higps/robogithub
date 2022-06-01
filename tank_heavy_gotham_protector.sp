@@ -14,9 +14,9 @@
 #define ROBOT_INFO "Immune to tickles\nGains uber from uberchains"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
-#define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define SPAWN	"mvm/mvm_tank_horn.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
-#define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
+#define LOOP	"mvm/mvm_tank_loop.wav"
 
 
 #define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"

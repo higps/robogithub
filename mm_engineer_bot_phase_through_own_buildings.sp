@@ -55,12 +55,19 @@ public OnPluginStart()
 
 		//PrintToChatAll("Hooking %N", client);
 		SDKHook(client, SDKHook_Touch, OnTouch);
+		// SDKHook(client, SDKHook_ShouldCollide, ShouldCollide );
         //SDKHook(client, SDKHook_EndTouchPost, OnTouch);
 		//SDKHook(client,SDKHook_EndTouch, OnTouchPost);
         }
     }
 
 }
+
+// public bool:ShouldCollide( entity, collisiongroup, contentsmask, bool:result )
+// {
+// 	PrintToChatAll("Should not collide");
+//     return false;
+// } 
 
 public Action OnTouch(int client, int ent)
 {

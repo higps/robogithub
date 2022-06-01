@@ -11,7 +11,7 @@
 #define ROBOT_NAME	"ICBM"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Rapid Long Range Artillery"
-#define ROBOT_COST 5
+#define ROBOT_COST 2
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -90,7 +90,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = ROBOT_COST; 
+    restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 	//Artillery Code

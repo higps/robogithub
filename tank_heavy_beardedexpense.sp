@@ -15,9 +15,9 @@
 #define ROBOT_DESCRIPTION "Taunt: Leap Ability"
  
 #define SHWC             "models/bots/heavy_boss/bot_heavy_boss.mdl"
-#define SPAWN       "#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define SPAWN	"mvm/mvm_tank_horn.wav"
 #define DEATH       "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
-#define LOOP        "mvm/giant_heavy/giant_heavy_loop.wav"
+#define LOOP	"mvm/mvm_tank_loop.wav"
 #define SOUND_LEAP  "TFPlayer.AirBlastImpact"
 
 
@@ -384,10 +384,12 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 			TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);
+			
 
 			TF2Attrib_SetByName(Weapon3, "move speed penalty", 0.5163);
 			TF2Attrib_SetByName(Weapon3, "mod_maxhealth_drain_rate", 0.0);
-			SetEntPropFloat(Weapon3, Prop_Send, "m_flModelScale", 2.75);
+			//SetEntPropFloat(Weapon3, Prop_Send, "m_flModelScale", 2.75);
 
 			TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");

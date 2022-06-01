@@ -5,6 +5,7 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Funke"
@@ -230,8 +231,10 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);
 			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 0.05);
+			TF2Attrib_SetByName(Weapon1, "bleeding duration", -1.0);
 			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
 			TF2Attrib_SetByName(Weapon1, "mark for death", 10.0);
+			
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 		}
 
@@ -240,6 +243,8 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+			
+			
 			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
 			
@@ -254,3 +259,18 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 
 
+public void OnEntityCreated(int iEntity, const char[] sClassName) 
+{
+	if (StrContains(sClassName, "tf_projectile") == 0)
+	{
+		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+	}
+	
+}
+
+public void Hook_OnProjectileSpawn(iEntity) {
+	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+	}
+}

@@ -96,6 +96,8 @@ void DrawTeamHud(TFTeam team, int r, int g, int b, int a)
             continue;
 
         int robotCoins = GetRobotCoinsFor(i);
-        ShowSyncHudText(i, _hudSynchronizer, "Robot-₡oins: %i", robotCoins);
+        int bossTokens = GetTeamCoinsFor(i);
+
+        ShowSyncHudText(i, _hudSynchronizer, "Robot-₡oins: %i\nBoss-₡oins: %i", robotCoins, bossTokens);
     }
 }

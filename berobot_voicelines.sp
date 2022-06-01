@@ -43,12 +43,38 @@ public void OnPluginStart()
     HookEvent("player_escort_score", Event_player_escort_score, EventHookMode_Post);
     HookEvent("teamplay_setup_finished", Event_teamplay_setup_finished, EventHookMode_Post);
     HookEvent("teamplay_round_win", Event_teamplay_round_win, EventHookMode_Post);
+    HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
 }
+
+//Easier to have all the sounds we want in a single variable array for better access
+static const char WaveStartSounds[][256] =
+{
+    "vo/mvm_wave_start01.mp3",
+    "vo/mvm_wave_start02.mp3",
+    "vo/mvm_wave_start03.mp3",
+    "vo/mvm_wave_start04.mp3",
+    "vo/mvm_wave_start05.mp3",
+    "vo/mvm_wave_start06.mp3",
+    "vo/mvm_wave_start07.mp3",
+    "vo/mvm_wave_start08.mp3",
+    "vo/mvm_wave_start09.mp3",
+    "vo/mvm_wave_start10.mp3",
+    "vo/mvm_wave_start11.mp3",
+    "vo/mvm_wave_start12.mp3"
+};
+
 
 public void OnMapStart()
 {
-    PrecacheScriptSound("Announcer.MVM_Wave_Start");
+    
+    	//sound and model precaching should always be done in OnMapStart
+	int size = sizeof WaveStartSounds;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(WaveStartSounds[i], true);
+
     PrecacheSound("#*music/mvm_start_wave.wav");
+    PrecacheSound("#*music/mvm_end_tank_wave.wav");
+    
 }
 
 public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLATFORM_MAX_PATH], int& entity, int& channel, float& volume, int& level, int& pitch, int& flags)
@@ -214,8 +240,12 @@ public Action team_play_win_timer (Handle timer, int winteam)
 public Action Event_teamplay_setup_finished(Event event, const char[] name, bool dontBroadcast)
 {
     
-    EmitGameSoundToAll("Announcer.MVM_Wave_Start");
-    EmitSoundToAll(WAVESTART);
+    
+    		int size = sizeof WaveStartSounds;
+			int soundswitch = GetRandomInt(0, size - 1);
+			EmitSoundToAll(WaveStartSounds[soundswitch]);
+
+    EmitSoundToAll(WAVESTART, _, SNDCHAN_STATIC);
     CreateTimer(5.0, Event_teamplay_setup_finished_timer);
     
         
@@ -786,3 +816,64 @@ public Action calltimer_reset (Handle timer, int client)
 	g_VoiceCalloutClamp[client] = false;
 }
 
+
+bool b_TankCheckClamp = false;
+
+public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
+{
+
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+    if (IsTank(client) && !b_TankCheckClamp)
+    {
+        CreateTimer(3.0, Timer_TankCheck);
+        b_TankCheckClamp = true;
+    }
+}
+
+public Action Timer_TankCheck(Handle timer)
+{
+    int TankCount = 0;
+    int robotcount = 0;
+
+    for(int i = 1; i <= MaxClients; i++)
+    {
+        if (IsTank(i))
+        {
+            // if(g_cv_bDebugMode)PrintToChatAll("%N was a tank", i);
+            TankCount++;
+        }
+        if (IsAnyRobot(i))
+        {
+            robotcount++;
+        }
+    }
+
+    //PrintToChatAll("Tank count was %i\nRobot count was %i", TankCount, robotcount);
+
+
+        if (TankCount == 1)
+        {
+            EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Spawn");
+        }
+
+        if (TankCount == 2)
+        {
+            EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Another");
+        }
+
+        if (TankCount > 2)
+        {
+            EmitGameSoundToAll("Announcer.MVM_Tank_Alert_Multiple");
+        }
+
+  
+     if (TankCount == robotcount)
+    {
+        EmitSoundToAll("#*music/mvm_end_tank_wave.wav");
+    }
+    
+    
+
+    // if(g_cv_bDebugMode)PrintToChatAll("Tank count was %i", TankCount);
+    b_TankCheckClamp = false;
+}

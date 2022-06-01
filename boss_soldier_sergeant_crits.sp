@@ -11,7 +11,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Sergeant Crits"
 #define ROBOT_ROLE "ZBOSS"
-#define ROBOT_DESCRIPTION "Critical Rockets"
+#define ROBOT_DESCRIPTION "Rapid Critical Rockets"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
@@ -69,8 +69,8 @@ public OnPluginStart()
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 4;
+    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+    restrictions.TeamCoins.Overall = 1;
 
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }

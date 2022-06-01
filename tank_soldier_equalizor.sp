@@ -13,9 +13,10 @@
 #define ROBOT_DESCRIPTION "Equalizor"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
-#define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define SPAWN	"mvm/mvm_tank_horn.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
-#define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
+#define LOOP	"mvm/mvm_tank_loop.wav"
+
 
 #define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
@@ -317,7 +318,7 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon3, "mod shovel speed boost", 2.0);
 			
 			TF2Attrib_SetByName(Weapon3, "self mark for death", 0.0);
-			TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);
+			//TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);
 
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
 		}

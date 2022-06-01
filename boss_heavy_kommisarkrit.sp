@@ -76,8 +76,8 @@ public OnPluginStart()
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 4;
+    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+    restrictions.TeamCoins.Overall = 1;
 
     AddRobot(robot, MakeBigBigJoey, PLUGIN_VERSION, restrictions);
 	

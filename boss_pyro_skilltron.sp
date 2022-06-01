@@ -64,11 +64,11 @@ public OnPluginStart()
     robot.sounds.windup = SOUND_WINDUP;
     robot.sounds.death = DEATH;
 
-		RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 4;
+    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+    restrictions.TeamCoins.Overall = 1;
 
     AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions);
 }

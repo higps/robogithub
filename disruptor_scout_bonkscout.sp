@@ -59,7 +59,7 @@ public OnPluginStart()
 	
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 3; 
+    restrictions.RobotCoins.PerRobot = 1; 
 
 	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, restrictions, 2);
 }

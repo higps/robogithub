@@ -629,14 +629,14 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
     SMLogTag(SML_VERBOSE, "client %i robot %s availableTeamCoins %i", client, item.name, availableTeamCoins);
     if (!teamCoins.Enabled)
     {
-        Format(notes, sizeof(notes), "T₡: %i", teamCost);
+        Format(notes, sizeof(notes), "B₡: %i", teamCost);
         draw = ITEMDRAW_DISABLED;
         return;
     }
 
     if (teamCost > 0)
     {
-        Format(notes, sizeof(notes), "T₡: %i", teamCost);
+        Format(notes, sizeof(notes), "B₡: %i", teamCost);
         draw = ITEMDRAW_DEFAULT;
         return;
     }

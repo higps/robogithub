@@ -11,9 +11,9 @@
 #define ROBOT_DESCRIPTION "SkullCutter"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
-#define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define SPAWN	"mvm/mvm_tank_horn.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
-#define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
+#define LOOP	"mvm/mvm_tank_loop.wav"
 
 #define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
 #define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
@@ -94,6 +94,12 @@ public OnMapStart()
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
+
+	PrecacheSound (LEFTFOOT);
+	PrecacheSound (LEFTFOOT1);
+	PrecacheSound (RIGHTFOOT);
+	PrecacheSound (RIGHTFOOT1);
+
 
 }
 

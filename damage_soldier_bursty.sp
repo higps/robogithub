@@ -12,7 +12,7 @@
 #define ROBOT_NAME	"Bursty"
 #define ROBOT_ROLE "Anti-Sentry"
 #define ROBOT_DESCRIPTION "Anti-Wrangler"
-#define ROBOT_COST 5
+#define ROBOT_COST 2
 #define ROBOT_STATS "Burst fire 3 rockets\nIgnores damage resistance buffs\n-25%%%% damage to players\n-40%%%% damage to buildings"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -88,7 +88,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = ROBOT_COST; 
+    restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
