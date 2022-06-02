@@ -627,41 +627,44 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
     int teamCost = teamCoins.GetPrice();
     SMLogTag(SML_VERBOSE, "client %i robot %s teamCost %i", client, item.name, teamCost);
     SMLogTag(SML_VERBOSE, "client %i robot %s availableTeamCoins %i", client, item.name, availableTeamCoins);
-    if (!teamCoins.Enabled)
-    {
-        Format(notes, sizeof(notes), "B₡: %i", teamCost);
-        draw = ITEMDRAW_DISABLED;
-        return;
-    }
-
-    if (teamCost > 0)
-    {
-        Format(notes, sizeof(notes), "B₡: %i", teamCost);
-        draw = ITEMDRAW_DEFAULT;
-        return;
-    }
 
     RobotCoins robotCoins = item.restrictions.GetRobotCoinsFor(client);
     int availableRobotCoins = GetRobotCoinsFor(client);
     int robotCost = robotCoins.GetPrice();
     SMLogTag(SML_VERBOSE, "client %i robot %s robotCost %i", client, item.name, robotCost);
     SMLogTag(SML_VERBOSE, "client %i robot %s availableRobotCoins %i", client, item.name, availableRobotCoins);
-    if (availableRobotCoins < robotCost)
+
+    if (!teamCoins.Enabled)
     {
-        Format(notes, sizeof(notes), "R₡: %i", robotCost);
+        GenerateCoinNotes(notes, teamCost, robotCost);
         draw = ITEMDRAW_DISABLED;
         return;
     }
-
-    if (robotCost > 0)
+    if (availableRobotCoins < robotCost)
     {
-        Format(notes, sizeof(notes), "R₡: %i", robotCost);
-        draw = ITEMDRAW_DEFAULT;
+        GenerateCoinNotes(notes, teamCost, robotCost);
+        draw = ITEMDRAW_DISABLED;
         return;
     }
 
     Format(notes, sizeof(notes), "%i / %i", count, roboCap);
     draw = ITEMDRAW_DEFAULT;
+}
+
+void GenerateCoinNotes(char notes[15], int teamCost, int robotCost)
+{
+    if (teamCost > 0 && robotCost > 0)
+    {
+        Format(notes, sizeof(notes), "%i B₡ %i R₡", teamCost, robotCost);
+        return;
+    }
+    if (teamCost > 0)
+    {
+        Format(notes, sizeof(notes), "%i B₡", teamCost);
+        return;
+    }
+    
+    Format(notes, sizeof(notes), "%i R₡", robotCost);
 }
 
 public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
