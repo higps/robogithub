@@ -12,7 +12,7 @@
 #define ROBOT_NAME	"Bursty"
 #define ROBOT_ROLE "Anti-Sentry"
 #define ROBOT_DESCRIPTION "Anti-Wrangler"
-#define ROBOT_COST 2
+#define ROBOT_COST 1
 #define ROBOT_STATS "Burst fire 3 rockets\nIgnores damage resistance buffs\n-25%%%% damage to players\n-40%%%% damage to buildings"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -310,15 +310,15 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", -1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.15);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.10);
 			//TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.6);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip penalty", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.5);
+			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.25);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
 			TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.75);
 
-			
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.25);
 

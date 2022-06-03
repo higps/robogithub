@@ -228,8 +228,8 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_RemoveAll(SMG);
 			
 		TF2Attrib_SetByName(SMG, "provide on active", 1.0);
-		TF2Attrib_SetByName(SMG, "move speed penalty", 0.001);
-		TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.4);
+		TF2Attrib_SetByName(SMG, "move speed penalty", 0.5);
+		TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.25);
 		
 			
 

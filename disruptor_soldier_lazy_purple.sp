@@ -11,7 +11,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Lazy Purple"
-#define ROBOT_ROLE "Prototye"
+#define ROBOT_ROLE "Prototype"
 #define ROBOT_DESCRIPTION "Rapid Direct hit"
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
@@ -312,9 +312,11 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 1.25);
 						
 			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.3);			
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.7);	
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.2);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
+			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 		// if(IsValidEntity(Weapon2))
@@ -340,26 +342,26 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 	
 
-	public void OnEntityCreated(int iEntity, const char[] sClassName) 
-{
-	if (StrContains(sClassName, "tf_projectile") == 0)
-	{
-		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-	}
+// 	public void OnEntityCreated(int iEntity, const char[] sClassName) 
+// {
+// 	if (StrContains(sClassName, "tf_projectile") == 0)
+// 	{
+// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+// 	}
 	
-}
+// }
 
-public void Hook_OnProjectileSpawn(iEntity) {
-	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-
-
+// public void Hook_OnProjectileSpawn(iEntity) {
+// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
 
 
-	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+
+
+// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
 		
-	}
-}
+// 	}
+// }
 // public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 // {
 

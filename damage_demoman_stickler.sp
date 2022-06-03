@@ -244,7 +244,12 @@ public void OnEntityCreated(int iEntity, const char[] sClassName)
 public void Hook_OnProjectileSpawn(iEntity) {
 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+		RequestFrame(SetScale, iEntity);
 	}
+}
+
+void SetScale(int iEntity)
+{
+	SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
 }
 

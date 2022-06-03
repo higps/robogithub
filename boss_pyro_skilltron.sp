@@ -68,7 +68,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-    restrictions.TeamCoins.Overall = 1;
+    restrictions.TeamCoins.Overall = 2;
 
     AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions);
 }

@@ -725,6 +725,7 @@ public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontB
     {
         AddTeamCoins(TFTeam_Blue, 1);
         AddTeamCoins(TFTeam_Red, 1);
+        
     }
 
 }
@@ -836,113 +837,15 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     if(!IsValidClient(attacker))
         return Plugin_Continue;
 
-    // TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
 
-    //if(g_cv_bDebugMode) PrintToChatAll("On damage happened");
-
-            //Code to handle remembering damage to prevent spawn shenanigans for robots
     if (IsAnyRobot(victim))
-    {
-         //Code to track each robot health to prevent abuse with loadout rsupply
-        
-        //int intdamage = RoundToCeil(damage);
-
-        
-        
+    {      
         RequestFrame(Set_g_PlayerHealth, victim);        
         
     }
-    
-    // if(IsAnyRobot(victim))
-    // {
-
-    //         switch(damagecustom){
-    //             case TF_CUSTOM_PLASMA_CHARGED: 
-    //             {
-    //                 damage *= 1.5;
-    //                 TF2_StunPlayer(victim, 2.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
-    //                 TF2_AddCondition(victim, TFCond_Sapped, 2.5, attacker);
-    //                 critType = CritType_Crit;
-    //                 return Plugin_Changed;
-
-    //             }   
-    //         }
-    //         /*Damage code for Heavy*/
-    //         if (iClassAttacker == TFClass_Heavy)
-    //         {
-    //             int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
-                    
-    //             if (weapon == iWeapon)
-    //             {
-    //                 if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-    //                 damage *= 0.8;
-    //                 if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-    //                 return Plugin_Changed;
-                    
-    //             }
-                    
-                    
-    //         }
-
-    //         if (IsElectric(weapon) && IsAnyRobot(victim))
-    //         {
-    //             TF2_StunPlayer(victim, 0.5, 0.4, TF_STUNFLAG_SLOWDOWN, attacker);
-    //             TF2_AddCondition(victim, TFCond_Sapped, 0.5, attacker);
-    //         }
-            
-    //         if (iClassAttacker == TFClass_DemoMan && !IsAnyRobot(attacker))
-    //         {
-
-    //             if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-    //             damage *= 1.25;
-    //             if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-    //             return Plugin_Changed;
-                
-                    
-    //         }
-    //         if (iClassAttacker == TFClass_Soldier && TF2_IsPlayerInCondition(attacker, TFCond_BlastJumping))
-    //         {
-    //             //int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
-
-                    
-    //             if (IsMarketGardner(weapon))
-    //             {
-    //                 if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-    //                 damage *= 1.5;
-    //                 if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-    //                 return Plugin_Changed;
-                    
-    //             }
-                    
-                    
-    //         }
-
-    // }
     return Plugin_Continue;
 }
 
-// public Action TF2_OnTakeDamageModifyRulesEx(int victim, int &attacker, int &inflictor, float &damage, float &maxdamage, float &basedamage, float &damagebonus, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float &damageforforce, CritType &critType){
-
-//     if(IsAnyRobot(victim) && IsAnyRobot(attacker) && g_AprilEnable)
-//     {
-//         float randomdmg = GetRandomFloat(1.0,5.0);
-
-//         damage *= randomdmg;
-//         switch (critType){
-//             case CritType_MiniCrit:
-//             {
-//                 critType = CritType_MiniCrit;
-//             }
-//             case CritType_Crit:
-//             {
-//                 critType = CritType_Crit;
-//             }
-//         }
-//         return Plugin_Changed;
-
-//         //view_as<bool>FloatToInt(sNewValue));
-//     }
-// }
 
 void RobotTeamCheck(int client)
 {
@@ -956,10 +859,6 @@ void RobotTeamCheck(int client)
             TrashRobot(client);
             CreateTimer(0.5, Timer_Regen, client);       
         }
-        // else if (iTeam == g_RoboTeam)
-        // {
-        //     SetRandomRobot(client);
-        // }
     }
 }
 
@@ -1375,30 +1274,6 @@ public Action Command_MountRobot(int client, int args)
 
     return Plugin_Handled;
 }
-
-// public Action Command_RTDRobot(int client, int args)
-// {
-
-//     if (!g_AprilEnable)
-//     {        
-//         return;
-//     }
-        
-//     if (IsAnyRobot(client)){
-//         PrintCenterText(client, "You can't reroll you fool! Go out and die / fight!");
-//         return;
-//     } 
-
-//     if (!g_IsAprilRTD[client])
-//     {
-//         RequestFrame(SetRandomRobotRTD,client);
-//         g_IsAprilRTD[client] = true;
-//     }else
-//     {
-//         PrintCenterText(client, "You need to be killed by an enemy to use RTD you fool!");
-//     }
-// }
-
 
 
 public Action MakeRobotTargets(int client, char target[32], bool volunteering)
@@ -2120,6 +1995,11 @@ stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
         case TFClass_Spy:
         {
            model = "models/player/spy.mdl";
+        }
+        case TFClass_Unknown:
+        {
+            //PrintToChatAll("UNKNOWN CLASS!");
+            TF2_SetPlayerClass(client, TFClass_Heavy);
         }
 
     }

@@ -312,10 +312,10 @@ stock GiveGiantDemoKnight(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.5);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
 			//TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.8);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.8);
 			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
@@ -323,7 +323,7 @@ stock GiveGiantDemoKnight(client)
 			// TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.15);
 			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
 			
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			// TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
 			// TF2Attrib_SetByName(Weapon1, "grenade no spin", 0.0);
 		}

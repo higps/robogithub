@@ -68,8 +68,9 @@ char g_szOffsetStartProp[64];
 int g_iOffsetMatchingTeleporter = -1;
 
 int g_Recharge[MAXPLAYERS + 1] = 0;
-int g_RechargeCap = 2000;
+int g_RechargeCap = 1250;
 
+bool g_TouchHooked[MAXPLAYERS + 1] = false;
 enum //Teleporter states
 {
 	TELEPORTER_STATE_BUILDING = 0,				// Building, not active yet
@@ -121,7 +122,7 @@ public void OnPluginStart()
 
 	AddCommandListener(CommandListener_Build, "build");
 	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
-
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	
 }
 
@@ -142,6 +143,28 @@ public void OnMapStart()
 	PrecacheSound(TELEPORTER_SPAWN, true);
 	PrecacheSound(TELEPORTER_ACTIVATE, true);
 
+}
+
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	//int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	if (IsValidClient(victim))
+	{
+		g_TouchHooked[victim] = false;
+		SDKUnhook(victim, SDKHook_Touch, OnTouch);
+	}
+}
+
+public void OnClientDisconnect_Post(int client)
+{
+	if (IsValidClient(client))
+	{
+		g_TouchHooked[client] = false;
+		SDKUnhook(client, SDKHook_Touch, OnTouch);
+		
+	} 
 }
 
 public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
@@ -281,8 +304,12 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		return Plugin_Changed;
 	}
 	
+	if (IsAnyRobot(client) && !g_TouchHooked[client]){
 	SDKHook(client, SDKHook_Touch, OnTouch);
 	g_Recharge[client] = 0;
+	g_TouchHooked[client] = true;
+	}
+	
 	// int team = GetClientTeam(client);
 
 	// // if (team != EngieTeam)
@@ -304,8 +331,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 public Action OnTouch(int client, int ent)
 {
-	if (IsAnyRobot(client))
-	{
+
 		char entname[MAX_NAME_LENGTH];
 		GetEntityClassname(ent, entname, sizeof(entname));
 		
@@ -317,7 +343,7 @@ public Action OnTouch(int client, int ent)
 				DrawHUD(client);
 			}	
 		}
-	}
+	
 }
 
 public Action Teleport_Player(int client)
@@ -453,12 +479,17 @@ void UpdateCharge(int client)
 	// if we are already at max charge, no need to check anything
 	if(IsAnyRobot(client))
 	{
-		
+		if(IsFakeClient(client))
+		{
+			Teleport_Player(client);
+		}
 		
 		if(g_Recharge[client] >= g_RechargeCap)
 		{
 		g_Recharge[client] = g_RechargeCap;
-		TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
+
+
+		
 		}else
 		{
 			g_Recharge[client]++;
@@ -524,6 +555,7 @@ public Action Timer_DrawHud(Handle timer, int client)
 		if (GetTeamporterTransform(team, angles, pos))
 		{
 			Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nCrouch to Teleport!");
+			TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
 			SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
 
 			if (!g_spawnclamp[client])

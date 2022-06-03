@@ -563,6 +563,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             MC_PrintToChatEx(client, client, "{teamcolor}Your KGB grants you {orange}+7 seconds of critical hits{teamcolor} when landing a quick 3 hit combo");
         }
+        if (IsJetpack(Weapon2))
+        {
+            TF2Attrib_SetByName(Weapon2, "falling_impact_radius_pushback", 0.0);
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Jetpack {orange}deals no knockback{teamcolor} when landing");
+        }
 
     }
 
@@ -811,6 +816,21 @@ bool IsCandyCane(int weapon)
 	{
 		//Candy Cane
 	case 317: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsJetpack(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Candy Cane
+	case 1179: 
 		{
 			return true;
 		}
