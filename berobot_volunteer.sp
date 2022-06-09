@@ -484,6 +484,7 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         pickedVolunteers.Erase(i);
     }
 
+    delete ignoredClientIdLookup;
     delete adminVolunteers;
     delete volunteers;
     delete nonVolunteers;
