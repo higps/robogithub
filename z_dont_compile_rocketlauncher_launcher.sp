@@ -213,7 +213,7 @@ void SimulateLauncher(Reference rocket, Rocket launcher, bool auto)
 			OtherRocket[proj] = true;
 
 			PrecacheSound("weapons/rocket_shoot.wav");
-			EmitSoundToAll("weapons/rocket_shoot.wav", proj, SNDCHAN_AUTO, SNDLEVEL_GUNFIRE);
+			EmitSoundToAll("weapons/rocket_shoot.wav", proj, SNDCHAN_AUTO, 90);
 
 			SetEntPropEnt(proj, Prop_Data, "m_hOwnerEntity", owner);
 			int team = GetClientTeam(owner);

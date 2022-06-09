@@ -60,10 +60,15 @@ enum struct Reference
 	}
 }
 
+
 enum struct Rocket
 {
 	float fire_delay;
 	float attack_time;
+	bool critical;
+
+	Reference particle;
+	Reference particle_crit;
 }
 Rocket Launcher[2049]; // :)
 
@@ -71,8 +76,12 @@ bool Enabled[MAXPLAYERS+1];
 bool RemoteRocket[2049];
 bool OtherRocket[2049];
 
+int RocketModel;
+
 ConVar AutoAim;
 ConVar AttackTime;
+
+
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
 enum(<<= 1)
@@ -134,6 +143,10 @@ public OnMapStart()
 	PrecacheSound(RIGHTFOOT);
 	PrecacheSound(RIGHTFOOT1);
 	
+
+
+	RocketModel = PrecacheModel(ROCKETMODEL);
+
 	//PrecacheSound(SOUND_GUNFIRE);
 	//PrecacheSound(SOUND_WINDUP);
 	
@@ -361,45 +374,34 @@ stock GiveGiantPyro(client)
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 	
-// public void OnEntityCreated(int iEntity, const char[] sClassName) 
-// {
-// 	if (StrContains(sClassName, "tf_projectile") == 0)
-// 	{
-// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-// 	}
-	
-// }
-
-// public void Hook_OnProjectileSpawn(iEntity) {
-// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.35);
-// 	}
-// }
-
-Action CmdRockets(int client, int args)
-{
-	Enabled[client] = !Enabled[client];
-	PrintToChat(client, "[SM] Rocket Launcher Launcher %s!", Enabled[client] ? "Enabled" : "Disabled");
-	return Plugin_Continue;
-}
+///ROCKET CODE
 
 public void OnEntityDestroyed(int entity)
 {
-	if (IsValidEntity(entity))OtherRocket[entity] = false;
+	if (entity > 1 && entity < 2049)
+	{
+		OtherRocket[entity] = false;
+		if (Launcher[entity].particle.valid())
+		{
+			int particle = Launcher[entity].particle.get();
+			RemoveEntity(particle);
+		}
+		if (Launcher[entity].particle_crit.valid())
+		{
+			int particle = Launcher[entity].particle_crit.get();
+			RemoveEntity(particle);
+		}
+	}
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if (IsValidEntity(entity))//exclude world and entity references
-		return;
-
-	
-	RemoteRocket[entity] = false;
-
-	if (StrContains(classname, "tf_projectile_rocket") != -1)
-		SDKHook(entity, SDKHook_SpawnPost, OnRocketSpawned);
-	
+	if (entity > 1 && entity < 2049) //exclude entity references...
+	{
+		RemoteRocket[entity] = false;
+		if (StrContains(classname, "tf_projectile_rocket") != -1)
+			SDKHook(entity, SDKHook_SpawnPost, OnRocketSpawned);
+	}
 }
 
 void OnRocketSpawned(int entity)
@@ -408,14 +410,41 @@ void OnRocketSpawned(int entity)
 		return;
 
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-	if (IsValidClient(owner) && IsRobot(owner, ROBOT_NAME))
+	if (IsRobot(owner, ROBOT_NAME))
 	{
-		//SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.65);
-		SetEntityModel(entity, ROCKETMODEL); //Might need a request frame..
+		SetModelOverride(entity, RocketModel); //Set model without altering collision bounds
+		int particle = CreateParticle(entity, "rockettrail"); //critical_rocket_red/blue
+		Launcher[entity].particle.set(particle);
+
 		RemoteRocket[entity] = true;
 		Launcher[entity].fire_delay = AttackTime.FloatValue;
 		Launcher[entity].attack_time = GetGameTime() + AttackTime.FloatValue;
+		RequestFrame(OnRocketSpawnedPost, entity);
 	}
+}
+
+void OnRocketSpawnedPost(int entity)
+{
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	Launcher[entity].critical = view_as<bool>(GetEntProp(entity, Prop_Send, "m_bCritical"));
+	if(Launcher[entity].critical)
+	{
+		int team = GetClientTeam(owner);
+		int crit_particle;
+		switch (team)
+		{
+			case 2: crit_particle = CreateParticle(entity, "critical_rocket_red");
+			case 3: crit_particle = CreateParticle(entity, "critical_rocket_blue");
+			default: crit_particle = CreateParticle(entity, "critical_rocket_blue");
+		}
+		Launcher[entity].particle_crit.set(crit_particle);
+	}
+}
+
+void SetModelOverride(int rocket, int model)
+{
+	for (int i = 0; i < 4; i++)
+		SetEntProp(rocket, Prop_Send, "m_nModelIndexOverrides", model, _, i);
 }
 
 public void OnGameFrame()
@@ -469,8 +498,12 @@ void SimulateLauncher(Reference rocket, Rocket launcher, bool auto)
 		if (launcher.attack_time <= GetGameTime())
 		{
 			launcher.attack_time = GetGameTime() + launcher.fire_delay;
+			int weapon = GetEntPropEnt(rocket.get(), Prop_Send, "m_hOriginalLauncher");
 			int proj = CreateEntityByName("tf_projectile_rocket");
 			OtherRocket[proj] = true;
+
+			PrecacheSound("weapons/rocket_shoot.wav");
+			EmitSoundToAll("weapons/rocket_shoot.wav", proj, SNDCHAN_AUTO, 90);
 
 			SetEntPropEnt(proj, Prop_Data, "m_hOwnerEntity", owner);
 			int team = GetClientTeam(owner);
@@ -481,9 +514,12 @@ void SimulateLauncher(Reference rocket, Rocket launcher, bool auto)
 			SetVariantInt(team);
 			AcceptEntityInput(proj, "SetTeam");
 
+			SetEntProp(proj, Prop_Send, "m_bCritical", view_as<int>(launcher.critical));
+			SetEntPropEnt(proj, Prop_Send, "m_hOriginalLauncher", weapon); //proper damage rampup and falloff values
+
 			//Get forward position from launcher and offset by a few units to prevent collisions
 			NormalizeVector(aim_vector, aim_vector);
-			ScaleVector(aim_vector, 50.0);
+			ScaleVector(aim_vector, 20.0);
 			AddVectors(rocket_pos, aim_vector, rocket_pos);
 
 			//Set velocity of rocket
@@ -516,6 +552,11 @@ void GetAimPosition(int client, float pos[3], float angles[3], float buffer[3])
 bool FilterSelf(int entity, int mask, int exclude)
 {
 	if (entity == exclude)
+		return false;
+
+	char classname[64];
+	GetEntityClassname(entity, classname, sizeof classname);
+	if (StrContains(classname, "tf_projectile_") != -1)
 		return false;
 
 	return true;
@@ -577,13 +618,6 @@ int FindBestTarget(int rocket, int owner, int team)
 	return best;
 }
 
-// bool IsValidClient(int client)
-// {
-//     if ( !( 1 <= client <= MaxClients ) || !IsClientInGame(client) )
-//         return false;
-
-//     return true;
-// }
 
 stock int FindEntityByClassname2(int startEnt, const char[] classname)
 {
@@ -591,4 +625,25 @@ stock int FindEntityByClassname2(int startEnt, const char[] classname)
 	while (startEnt > -1 && !IsValidEntity(startEnt))
 	startEnt--;
 	return FindEntityByClassname(startEnt, classname);
+}
+
+int CreateParticle(int entity, char[] name)
+{
+	int particle = CreateEntityByName("info_particle_system");
+	if (IsValidEntity(particle))
+	{
+		float pos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+		pos[2] += 5.0;
+
+		TeleportEntity(particle, pos, NULL_VECTOR, NULL_VECTOR);
+		DispatchKeyValue(particle, "effect_name", name);
+		SetVariantString("!activator");
+		AcceptEntityInput(particle, "SetParent", entity, particle, 0);
+
+		DispatchSpawn(particle);
+		ActivateEntity(particle);
+		AcceptEntityInput(particle, "Start");
+	}
+	return particle;
 }
