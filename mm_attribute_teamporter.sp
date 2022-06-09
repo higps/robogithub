@@ -535,6 +535,8 @@ void DrawHUD(int client)
 
 public Action Timer_DrawHud(Handle timer, int client)
 {
+
+	if (IsClientInGame(client) && IsValidClient(client)){
 	char sHUDText[128];
 	char sProgress[32];
 	int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCap) * 100.0);
@@ -575,6 +577,7 @@ public Action Timer_DrawHud(Handle timer, int client)
 	}
 	ShowHudText(client, -2, sHUDText);
 	b_hud_clamp[client] = false;
+	}
 }
 
 stock void TE_Particle(char[] Name, float origin[3] = NULL_VECTOR, float start[3] = NULL_VECTOR, float angles[3] = NULL_VECTOR, entindex=-1, attachtype=-1, attachpoint=-1, bool resetParticles=true, customcolors = 0, float color1[3] = NULL_VECTOR, float color2[3] = NULL_VECTOR, controlpoint = -1, controlpointattachment = -1, float controlpointoffset[3] = NULL_VECTOR)
