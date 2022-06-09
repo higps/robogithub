@@ -68,7 +68,7 @@ char g_szOffsetStartProp[64];
 int g_iOffsetMatchingTeleporter = -1;
 
 int g_Recharge[MAXPLAYERS + 1] = 0;
-int g_RechargeCap = 1250;
+int g_RechargeCap = 500;
 
 bool g_TouchHooked[MAXPLAYERS + 1] = false;
 enum //Teleporter states
@@ -337,7 +337,7 @@ public Action OnTouch(int client, int ent)
 		
 		if (!StrContains(entname, "func_respawnroom")){
 
-			if (TF2Spawn_IsClientInSpawn(client))
+			if (TF2Spawn_IsClientInSpawn(client) )
 			{
 				UpdateCharge(client);
 				DrawHUD(client);

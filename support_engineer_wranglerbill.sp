@@ -52,7 +52,7 @@ ConVar sm_dispenser_limit;
 ConVar sm_sentry_limit;
 //ConVar sm_instant_upgrade;
 
-float vecSpawns[2][3];
+// float vecSpawns[2][3];
 
 static int g_iPadType[2048];
 //static int g_iObjectParticle[2048];
@@ -60,7 +60,7 @@ static int g_iPadType[2048];
 static char g_szOffsetStartProp[64];
 static int g_iOffsetMatchingTeleporter = -1;
 
-bool g_Announcerquiet = false;
+// bool g_Announcerquiet = false;
 
 enum //Teleporter states
 {
@@ -209,14 +209,14 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 
-	PrecacheSound(ENGIE_SPAWN_SOUND, true);
-	PrecacheSound(ENGIE_SPAWN_SOUND2, true);
-	PrecacheSound(TELEPORTER_ACTIVATE1, true);
-	PrecacheSound(TELEPORTER_ACTIVATE2, true);
-	PrecacheSound(TELEPORTER_ACTIVATE3, true);
-	PrecacheSound(TELEPORTER_ACTIVATE4, true);
-	PrecacheSound(TELEPORTER_ACTIVATE5, true);
-	PrecacheSound(TELEPORTER_SPAWN, true);
+	// PrecacheSound(ENGIE_SPAWN_SOUND, true);
+	// PrecacheSound(ENGIE_SPAWN_SOUND2, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE1, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE2, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE3, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE4, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE5, true);
+	// PrecacheSound(TELEPORTER_SPAWN, true);
 
 	//Multi Sentry Code
 
@@ -492,34 +492,34 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client , "Use build menu to build up to 3 sentries!\nRemove all sappers at once");
-	if (IsPlayerAlive(client) && !g_Announcerquiet)
-	{
-		// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND);
-		// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND2);
-		int soundswitch = GetRandomInt(1, 2);
-		switch(soundswitch)
-		{
-			case 1:
-			{
-				EmitSoundToAll(ENGIE_SPAWN_SOUND);
-			}
-			case 2:
-			{
-				EmitSoundToAll(ENGIE_SPAWN_SOUND2);
-			}
-		}
-		g_Announcerquiet = true;
-		CreateTimer(10.0, Spawn_Clamp, client);
-	}
+	// if (IsPlayerAlive(client) && !g_Announcerquiet)
+	// {
+	// 	// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND);
+	// 	// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND2);
+	// 	int soundswitch = GetRandomInt(1, 2);
+	// 	switch(soundswitch)
+	// 	{
+	// 		case 1:
+	// 		{
+	// 			EmitSoundToAll(ENGIE_SPAWN_SOUND);
+	// 		}
+	// 		case 2:
+	// 		{
+	// 			EmitSoundToAll(ENGIE_SPAWN_SOUND2);
+	// 		}
+	// 	}
+	// 	g_Announcerquiet = true;
+	// 	CreateTimer(10.0, Spawn_Clamp, client);
+	// }
 
 
 	
 }
 
-public Action Spawn_Clamp(Handle timer, any client)
-{
-	g_Announcerquiet = false;
-}
+// public Action Spawn_Clamp(Handle timer, any client)
+// {
+// 	g_Announcerquiet = false;
+// }
 	
 
 

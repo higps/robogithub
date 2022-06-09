@@ -299,7 +299,16 @@ stock GiveGiantDemoKnight(client)
 		// 	TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
 		// }
 
-				CreateRoboWeapon(client, "tf_weapon_cannon", 996, 6, 1, 2, 0);
+		            //         "Paintkit 226"               "10"
+                    // "Paintkit 234"               "10"
+                    // "Paintkit 224"               "10"
+                    // "Paintkit 232"               "10"
+                    // "Paintkit 220"               "10"
+                    // "Paintkit 221"               "10"
+                    // "Paintkit 217"               "10"
+                    // "Paintkit 215"               "10"
+
+		CreateRoboWeapon(client, "tf_weapon_cannon", 996, 6, 1, 2, 226);
 		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
 
 		//CreateRoboHat(client, ScotchBonnet, 10, 6, 0.0, 0.75, -1.0); 

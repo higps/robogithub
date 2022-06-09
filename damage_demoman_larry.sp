@@ -169,6 +169,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.3);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
+	TF2Attrib_SetByName(client, "SET BONUS: dmg from sentry reduced", 0.6);
 	
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
@@ -226,7 +227,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.25);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.75);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);

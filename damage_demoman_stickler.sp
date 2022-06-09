@@ -16,13 +16,13 @@
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
-#define STICKYLAUNCHER "models/weapons/w_models/w_stickybomb_launcher.mdl"
+// #define STICKYLAUNCHER "models/weapons/w_models/w_stickybomb_launcher.mdl"
 
 #define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
 #define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
 #define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
 #define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
-int modelIndex;
+// int modelIndex;
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Toofty",
@@ -102,7 +102,7 @@ public OnMapStart()
 	PrecacheSound(RIGHTFOOT1);
 
 	//PrecacheModel(STICKYLAUNCHER);
-	modelIndex = PrecacheModel(STICKYLAUNCHER);
+	// modelIndex = PrecacheModel(STICKYLAUNCHER);
 
 }
 
@@ -191,7 +191,7 @@ stock GiveGiantToofty(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		
-		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 19, 8, 1, 0, 213);
+		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 20, 8, 1, 0, 213);
 		
 		CreateRoboHat(client, bombbeanie, 10, 6, 0.0, 0.75, -1.0); 
 
@@ -213,11 +213,13 @@ stock GiveGiantToofty(client)
 			//SetEntProp(m_nModelIndexOverrides
 			//SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", STICKYLAUNCHER);
 			 
-			SetEntProp(Weapon1, Prop_Send, "m_nModelIndex", modelIndex);
-			SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 0);
-			SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 1);
-			SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 2);
-			SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 3);
+
+			// SetEntProp(Weapon1, Prop_Send, "m_nModelIndex", modelIndex);
+			// SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 0);
+			// SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 1);
+			// SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 2);
+			// SetEntProp(Weapon1, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, 3);
+
 			//SetEntityModel(Weapon1, "models/weapons/w_models/w_stickybomb_launcher.mdl");
 		//	SetModel(Weapon1, STICKYLAUNCHER);
 			//RequestFrame(SetCustomModel, Weapon1);

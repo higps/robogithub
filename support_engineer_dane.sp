@@ -16,7 +16,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
-#define ROBOT_ROLE "Prototye"
+#define ROBOT_ROLE "Support"
 #define ROBOT_DESCRIPTION " Widowmaker, Jag"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
@@ -27,16 +27,16 @@
 #define MUSIC "uncle_dane_dispenser.wav"
 
 
-#define ENGIE_SPAWN_SOUND		"vo/announcer_mvm_engbot_arrive02.mp3"
-#define ENGIE_SPAWN_SOUND2		"vo/announcer_mvm_engbot_arrive03.mp3"
+// #define ENGIE_SPAWN_SOUND		"vo/announcer_mvm_engbot_arrive02.mp3"
+// #define ENGIE_SPAWN_SOUND2		"vo/announcer_mvm_engbot_arrive03.mp3"
 
-#define TELEPORTER_ACTIVATE1	"vo/announcer_mvm_eng_tele_activated01.mp3"
-#define TELEPORTER_ACTIVATE2	"vo/announcer_mvm_eng_tele_activated02.mp3"
-#define TELEPORTER_ACTIVATE3	"vo/announcer_mvm_eng_tele_activated03.mp3"
-#define TELEPORTER_ACTIVATE4	"vo/announcer_mvm_eng_tele_activated04.mp3"
-#define TELEPORTER_ACTIVATE5	"vo/announcer_mvm_eng_tele_activated05.mp3"
+// #define TELEPORTER_ACTIVATE1	"vo/announcer_mvm_eng_tele_activated01.mp3"
+// #define TELEPORTER_ACTIVATE2	"vo/announcer_mvm_eng_tele_activated02.mp3"
+// #define TELEPORTER_ACTIVATE3	"vo/announcer_mvm_eng_tele_activated03.mp3"
+// #define TELEPORTER_ACTIVATE4	"vo/announcer_mvm_eng_tele_activated04.mp3"
+// #define TELEPORTER_ACTIVATE5	"vo/announcer_mvm_eng_tele_activated05.mp3"
 
-#define TELEPORTER_SPAWN		"mvm/mvm_tele_deliver.wav"
+// #define TELEPORTER_SPAWN		"mvm/mvm_tele_deliver.wav"
 
 #define TF_OBJECT_TELEPORTER	1
 #define TF_TELEPORTER_ENTR	0
@@ -138,14 +138,14 @@ public OnPluginStart()
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeUncleDane, PLUGIN_VERSION);
 	
-	PrecacheSound(ENGIE_SPAWN_SOUND, true);
-	PrecacheSound(ENGIE_SPAWN_SOUND2, true);
-	PrecacheSound(TELEPORTER_ACTIVATE1, true);
-	PrecacheSound(TELEPORTER_ACTIVATE2, true);
-	PrecacheSound(TELEPORTER_ACTIVATE3, true);
-	PrecacheSound(TELEPORTER_ACTIVATE4, true);
-	PrecacheSound(TELEPORTER_ACTIVATE5, true);
-	PrecacheSound(TELEPORTER_SPAWN, true);
+	// PrecacheSound(ENGIE_SPAWN_SOUND, true);
+	// PrecacheSound(ENGIE_SPAWN_SOUND2, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE1, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE2, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE3, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE4, true);
+	// PrecacheSound(TELEPORTER_ACTIVATE5, true);
+	// PrecacheSound(TELEPORTER_SPAWN, true);
 
 
 
@@ -451,34 +451,34 @@ MakeUncleDane(client)
 	///EmitGameSoundToAll("Announcer.MVM_First_Engineer_Teleport_Spawned");
 
 	
-	if (IsPlayerAlive(client) && !g_Announcerquiet)
-	{
-		// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND);
-		// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND2);
-		int soundswitch = GetRandomInt(1, 2);
-		switch(soundswitch)
-		{
-			case 1:
-			{
-				EmitSoundToAll(ENGIE_SPAWN_SOUND);
-			}
-			case 2:
-			{
-				EmitSoundToAll(ENGIE_SPAWN_SOUND2);
-			}
-		}
-		g_Announcerquiet = true;
-		CreateTimer(10.0, Spawn_Clamp, client);
-	}
+	// if (IsPlayerAlive(client) && !g_Announcerquiet)
+	// {
+	// 	// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND);
+	// 	// StopSound(client, SNDCHAN_AUTO, ENGIE_SPAWN_SOUND2);
+	// 	int soundswitch = GetRandomInt(1, 2);
+	// 	switch(soundswitch)
+	// 	{
+	// 		case 1:
+	// 		{
+	// 			EmitSoundToAll(ENGIE_SPAWN_SOUND);
+	// 		}
+	// 		case 2:
+	// 		{
+	// 			EmitSoundToAll(ENGIE_SPAWN_SOUND2);
+	// 		}
+	// 	}
+	// 	g_Announcerquiet = true;
+	// 	CreateTimer(10.0, Spawn_Clamp, client);
+	// }
 
 
 	
 }
 
-public Action Spawn_Clamp(Handle timer, any client)
-{
-	g_Announcerquiet = false;
-}
+// public Action Spawn_Clamp(Handle timer, any client)
+// {
+// 	g_Announcerquiet = false;
+// }
 
 stock TF2_SetHealth(client, NewHealth)
 {

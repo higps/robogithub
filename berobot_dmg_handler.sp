@@ -54,6 +54,8 @@ bool g_Timer[MAXPLAYERS + 1] = false;
 
 int g_Eyelander_Counter[MAXPLAYERS + 1] = 0;
 
+bool g_Enabled;
+
 public Plugin myinfo =
 {
 	name = "berobot_dmg_handler",
@@ -89,6 +91,11 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
         g_cv_bDebugMode = view_as<bool>(StringToInt(sNewValue));
     if(convar == g_cvCvarList[CV_flSpyBackStabModifier])
         g_CV_flSpyBackStabModifier = StringToFloat(sNewValue);
+}
+
+public void MM_OnEnabledChanged(int enabled)
+{
+    PrintToChatAll("Enabled was %i", enabled);
 }
 
 /* Plugin Exclusive Functions */

@@ -44,14 +44,16 @@ public void OnPluginStart()
     HookEvent("teamplay_setup_finished", Event_teamplay_setup_finished, EventHookMode_Post);
     HookEvent("teamplay_round_win", Event_teamplay_round_win, EventHookMode_Post);
     HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
-    HookEvent("player_death", OnPlayerDeath, EventHookMode_Post);
+    
     // HookEvent("teamplay_round_win", Event_Teamplay_Round_Win, EventHookMode_Post);
 }
 
 #define MVMSTART "vo/mvm_wave_start01.mp3"
 #define ANNOUNCERWAVESTART "Announcer.MVM_Wave_Start"
 #define ANNOUNCER_ALL_DEAD "Announcer.MVM_All_Dead"
-//Easier to have all the sounds we want in a single variable array for better access
+#define ANNOUNCER_ENGINEER_BOT_SPAWN "Announcer.MVM_First_Engineer_Teleport_Spawned"
+
+// Easier to have all the sounds we want in a single variable array for better access
 // static const char WaveVoiceLineStartSounds[][256] =
 // {
 //     "vo/mvm_wave_start01.mp3",
@@ -68,6 +70,37 @@ public void OnPluginStart()
 //     "vo/mvm_wave_start12.mp3"
 // };
 
+static const char One_Engineer_Spawn[][256] =
+{
+    "vo/announcer_mvm_engbot_arrive01.mp3",
+    "vo/announcer_mvm_engbot_arrive02.mp3",
+    "vo/announcer_mvm_engbot_arrive03.mp3"
+};
+
+static const char Two_Engineer_Spawn[][256] =
+{
+	"vo/announcer_mvm_engbot_another01.mp3",
+	"vo/announcer_mvm_engbot_another02.mp3"
+};
+
+static const char Three_Pluss_Engineer_Spawn[][256] =
+{
+	"vo/announcer_mvm_engbots_arrive01.mp3",
+	"vo/announcer_mvm_engbots_arrive02.mp3"
+};
+
+
+static const char EngBotDead_NoTele[][256] =
+{
+    "vo/announcer_mvm_engbot_dead_notele01.mp3",
+	"vo/announcer_mvm_engbot_dead_notele02.mp3",
+	"vo/announcer_mvm_engbot_dead_notele03.mp3"
+};
+static const char EngBotDead_Tele[][256] =
+{
+		"vo/announcer_mvm_engbot_dead_tele01.mp3",
+		"vo/announcer_mvm_engbot_dead_tele02.mp3"
+};
 
 public void OnMapStart()
 {
@@ -77,14 +110,40 @@ public void OnMapStart()
 	// for (int i = 0; i < size; i++)
 	// 	PrecacheSound(WaveVoiceLineStartSounds[i], true);
    
+   	int size = sizeof One_Engineer_Spawn;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(One_Engineer_Spawn[i], true);
+
+    size = sizeof Two_Engineer_Spawn;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(Two_Engineer_Spawn[i], true);
+
+    size = sizeof Three_Pluss_Engineer_Spawn;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(Three_Pluss_Engineer_Spawn[i], true);
+
+    size = sizeof EngBotDead_NoTele;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(EngBotDead_NoTele[i], true);
+
+    size = sizeof EngBotDead_Tele;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(EngBotDead_Tele[i], true);
+
+
+
+
+
     PrecacheScriptSound(ANNOUNCERWAVESTART);
     PrecacheScriptSound(ANNOUNCER_ALL_DEAD);
+    PrecacheScriptSound(ANNOUNCER_ENGINEER_BOT_SPAWN);
     
     
     PrecacheSound(MVMSTART);
 
     PrecacheSound("#*music/mvm_start_wave.wav");
     PrecacheSound("#*music/mvm_end_tank_wave.wav");
+    PrecacheSound(ANNOUNCER_ENGINEER_BOT_SPAWN);
     
 }
 
@@ -341,7 +400,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     SMLogTag(SML_VERBOSE, "Event_Death triggerd with attacker %L, assister %L and victim %L", attacker, assister, victim);
 
     //Robot died
-    if (IsAnyRobot(victim))
+    if (IsAnyRobot(victim) && attacker != victim)
     {
         PlayRobotDeathVoiceOver(attacker, victim);
         PlayRobotDeathVoiceOver(assister, victim);
@@ -360,15 +419,62 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	{
 	    EmitGameSoundToAll("Announcer.mvm_spybot_death");
 	}
-	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) != TFClass_Spy)
+
+    //teamwipe logic
+	// if (!g_bDoTeamWipe) return;
+	
+	if (GetClientCount() >= 10) // let's only play this sound if there's at least 10 people in the game
 	{
-        int irandom = GetRandomInt(1,4);
+        int deadplayers;
+        int totalplayers;
+        int team = GetClientTeam(victim);
+
+            deadplayers = GetTeamMateDeadCount(team);
+            totalplayers = GetTeamClientCount(team);
+			// g_bDoTeamWipe = false;
+            //EmitGameSoundToAll(ANNOUNCER_ALL_DEAD);
+            //PrintToChatAll("Dead players %i. Total players %i", deadplayers, totalplayers);
+           if (deadplayers == totalplayers) 
+           {
+               EmitGameSoundToAll(ANNOUNCER_ALL_DEAD);
+           }
+            // PrintToChatAll("HOw could you all die 2?");
+
+
+		// if (!g_bDoTeamWipe) CreateTimer(5.0, Timer_TeamWipeCooldown, _, TIMER_FLAG_NO_MAPCHANGE); // put a cooldown on this just in case it somehow gets spammed
+	}
+
+    if (IsRobotEngineer(victim))
+    {
+        //PrintToChatAll("ROBOT ENGI DEAD!");
+        if(HasTeleporter(victim))
+        {
+            //PrintToChatAll("Teleporter found! %N", client);
             
+            int soundswitch = GetRandomInt(0, 1);
+            EmitSoundToAll(EngBotDead_Tele[soundswitch]);
+
+
+        }else
+        {
+            //PrintToChatAll("No teleporters found! for %N", client);
+            int size = sizeof EngBotDead_NoTele;
+            int soundswitch = GetRandomInt(0, size - 1);
+            EmitSoundToAll(EngBotDead_NoTele[soundswitch]);
+        }
+    }
+
+
+
+	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) != TFClass_Spy && !IsRobotEngineer(victim))
+	{
+        //int irandom = GetRandomInt(1,4);
+        int irandom = 1;    
         if (irandom == 1)
         {
             if (TF2_GetPlayerClass(victim) != TFClass_Spy){
 
-            CreateTimer(2.5, SayDeathVoiceline);
+            CreateTimer(3.0, SayDeathVoiceline);
             }
         }
     }
@@ -852,6 +958,7 @@ public Action calltimer_reset (Handle timer, int client)
 
 
 bool b_TankCheckClamp = false;
+bool b_EngineerCheckClamp = false;
 
 public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
 {
@@ -859,9 +966,61 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
     int client = GetClientOfUserId(GetEventInt(event, "userid"));
     if (IsTank(client) && !b_TankCheckClamp)
     {
-        CreateTimer(3.0, Timer_TankCheck);
+        CreateTimer(5.0, Timer_TankCheck);
         b_TankCheckClamp = true;
     }
+
+    if(IsRobotEngineer(client) && !b_EngineerCheckClamp)
+    {
+        CreateTimer(4.0, Timer_EngiCheck, GetRobotEngineerCount());
+        b_EngineerCheckClamp = true;
+    }
+}
+
+int GetRobotEngineerCount()
+{
+    int engineercount = 0;
+
+    for(int i = 1; i <= MaxClients; i++)
+    {
+        if (IsAnyRobot(i))
+        {                        
+            if (TF2_GetPlayerClass(i) == TFClass_Engineer)
+            {
+                engineercount++;
+               
+            }
+        }
+    }
+    return engineercount;
+}
+
+public Action Timer_EngiCheck(Handle timer, int engineercount)
+{
+    if (engineercount == 1)
+    {
+        int size = sizeof One_Engineer_Spawn;
+        int soundswitch = GetRandomInt(0, size - 1);
+	    EmitSoundToAll(One_Engineer_Spawn[soundswitch]);
+        // EmitGameSoundToAll(ANNOUNCER_ENGINEER_BOT_SPAWN);
+        // EmitSoundToAll(ANNOUNCER_ENGINEER_BOT_SPAWN);
+    }
+    if (engineercount == 2)
+    {
+        int size = sizeof Two_Engineer_Spawn;
+        int soundswitch = GetRandomInt(0, size - 1);
+	    EmitSoundToAll(Two_Engineer_Spawn[soundswitch]);
+    }
+
+    if (engineercount >= 3)
+    {
+        int size = sizeof Three_Pluss_Engineer_Spawn;
+        int soundswitch = GetRandomInt(0, size - 1);
+	    EmitSoundToAll(Three_Pluss_Engineer_Spawn[soundswitch]);
+    }
+
+     //PrintToChatAll("Engineer count was: %i", engineercount);
+    b_EngineerCheckClamp = false;
 }
 
 public Action Timer_TankCheck(Handle timer)
@@ -879,6 +1038,7 @@ public Action Timer_TankCheck(Handle timer)
         if (IsAnyRobot(i))
         {
             robotcount++;
+
         }
     }
 
@@ -905,8 +1065,6 @@ public Action Timer_TankCheck(Handle timer)
     {
         EmitSoundToAll("#*music/mvm_end_tank_wave.wav");
     }
-    
-    
 
     // if(g_cv_bDebugMode)PrintToChatAll("Tank count was %i", TankCount);
     b_TankCheckClamp = false;
@@ -916,30 +1074,44 @@ public Action Timer_TankCheck(Handle timer)
 
 public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
-	//teamwipe logic
-	// if (!g_bDoTeamWipe) return;
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	if (GetClientCount() >= 10) // let's only play this sound if there's at least 10 people in the game
-	{
-        int deadplayers;
-        int totalplayers;
-        int team = GetClientTeam(client);
-
-            deadplayers = GetTeamMateDeadCount(team);
-            totalplayers = GetTeamClientCount(team);
-			// g_bDoTeamWipe = false;
-            //EmitGameSoundToAll(ANNOUNCER_ALL_DEAD);
-            //PrintToChatAll("Dead players %i. Total players %i", deadplayers, totalplayers);
-           if (deadplayers == totalplayers) 
-           {
-               EmitGameSoundToAll(ANNOUNCER_ALL_DEAD);
-           }
-            // PrintToChatAll("HOw could you all die 2?");
-
-
-		// if (!g_bDoTeamWipe) CreateTimer(5.0, Timer_TeamWipeCooldown, _, TIMER_FLAG_NO_MAPCHANGE); // put a cooldown on this just in case it somehow gets spammed
-	}
+	
 }
+
+bool IsRobotEngineer(int client)
+{
+    if (TF2_GetPlayerClass(client) == TFClass_Engineer && IsAnyRobot(client))
+    {
+        return true;
+    }
+    return false;
+}
+
+bool HasTeleporter(int client)
+{
+        int team = TF2_GetClientTeam(client);
+        int ent = -1;
+        int tele;
+
+	while ((ent = FindEntityByClassname(ent, "obj_teleporter")) != -1)
+	{
+		if (GetEntProp(ent, Prop_Send, "m_iTeamNum") != team)
+			continue;
+		if (GetEntProp(ent, Prop_Send, "m_bCarried"))	// If being carried
+			continue;
+		if (GetEntProp(ent, Prop_Send, "m_iObjectMode") != 1)	// If not exit
+			continue;
+
+			tele = ent;
+	}
+	// If no teleporters found
+	//if (GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]) >= 70000)
+	if (!tele)
+	{
+		return false;
+	}
+	return true;
+}
+
 
 // public Action Timer_TeamWipeCooldown(Handle hTimer)
 // {
