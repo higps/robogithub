@@ -10,8 +10,9 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Saxtron"
-#define ROBOT_ROLE "ABOSS"
+#define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "SAXTRON HALE!"
+#define ROBOT_TIPS "Crouch and look up to super jump\nCrouch and look down while jumping to weight drop"
 
 #define GSOLDIER		"models/bots/saxtron/bot_saxtron_v2.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
@@ -59,12 +60,14 @@
 #define HaleKillLast132		"saxtron_h413/saxtron_h413_132_last.wav"
 #define HaleStubbed132		"saxtron_h413/saxtron_h413_132_stub_"  /// 1-4
 
+
 #define HALESPEED		340.0
 
 #define HALE_JUMPCHARGE		(25*1.0)
 #define HALERAGEDIST		800.0
 #define HALE_WEIGHDOWN_TIME	3.0
 
+bool b_SaxtonSaid[MAXPLAYERS + 1] = false;
 public Plugin:myinfo = 
 {
 	name = "[TF2] Be the Giant Saxtron",
@@ -104,6 +107,47 @@ public OnPluginStart()
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("object_destroyed",           ObjectDestroyed, EventHookMode_Pre);
+	HookEvent("teamplay_round_win", Event_teamplay_round_win, EventHookMode_Post);
+}
+
+public Action Event_teamplay_round_win(Event event, const char[] name, bool dontBroadcast)
+{
+
+    int winteam = GetEventInt(event, "team");
+
+  //  PrintToChatAll("Winning team was %i", winteam);
+    CreateTimer(3.0, team_play_win_timer, winteam);
+  
+        
+        //EmitGameSoundToAll("Announcer.mvm_spybot_death");
+
+}
+
+public Action team_play_win_timer (Handle timer, int winteam)
+{
+
+	// // HaleWin1-2 HaleFail1-3
+	// int client;
+	char szVO[PLATFORM_MAX_PATH];
+	    for(int i = 1; i <= MaxClients; i++)
+    {	
+		if (IsRobot(i,ROBOT_NAME) && IsPlayerAlive(i) && winteam == TF2_GetClientTeam(i))
+		{
+			
+  		Format(szVO, sizeof(szVO),"%s%i.wav",HaleWin, GetRandomInt(1,2));
+		SaxtronSay(i, szVO);
+
+		}else if (IsRobot(i,ROBOT_NAME) && IsPlayerAlive(i) && winteam != TF2_GetClientTeam(i))
+		{
+		
+  		Format(szVO, sizeof(szVO),"%s%i.wav", HaleFail, GetRandomInt(1,3));
+		SaxtronSay(i, szVO);
+		}
+
+	}
+
+        
+    
 }
 
 public void OnPluginEnd()
@@ -251,6 +295,10 @@ public OnMapStart()
 		g_bIsGSoldier[client] = false;
 	}
 } */
+int g_SuperJumpCharge = 0;
+int g_SuperJumpChargeLimit = 75;
+float g_rage[MAXPLAYERS + 1] = 0;
+float g_ragelimit = 2000.0;
 
 public Action:SetModel(client, const String:model[])
 {
@@ -292,40 +340,6 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 		}
 		return Plugin_Changed;
 	}
-
-	
-	// if (strncmp(sample, ")weapons/", 9, false) == 0)
-	// {
-	// 	if (StrContains(sample, "rocket_shoot.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE);
-	// 		EmitSoundToAll(sample, entity);
-			
-	// 	}
-	// 	else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_CRIT);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
-		
-	// 	//Explosion doesnæt quite work
-	// 	/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
-	// 	else if (StrContains(sample, "explode2.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
-	// 	else if (StrContains(sample, "explode3.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	} */
-	// 	return Plugin_Changed;
-	// }
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 }
 
@@ -369,8 +383,7 @@ MakeGiantSoldier(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 2.25);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
@@ -379,7 +392,8 @@ MakeGiantSoldier(client)
 	
 	TF2Attrib_SetByName(client, "self dmg push force increased", 6.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
-	
+	TF2Attrib_SetByName(client, "increased air control", 4.0);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
 	//
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "head scale", 0.5);
@@ -388,7 +402,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Kill all hippies");
+	PrintHintText(client , ROBOT_TIPS);
 	//SetBossHealth(client);
 	PlaySpawnClip(client);
 }
@@ -397,7 +411,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -449,7 +463,7 @@ stock GiveGiantPyro(client)
 		// }
 		if(IsValidEntity(Weapon3))
 		{
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
 		}
@@ -469,8 +483,42 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
                 if(damagecustom == TF_CUSTOM_BACKSTAB)
                 {
-					Stabbed(victim);
+					char stab_snd[PLATFORM_MAX_PATH];
+					Format(stab_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleStubbed132, GetRandomInt(1, 4));
+					SaxtronSay(victim, stab_snd);
 				}
+
+				//PrintToChatAll("Damage was %f, g_rage before %f, g_rage limit was", damage, g_rage, g_ragelimit);
+
+				if(g_rage[victim] < g_ragelimit)
+				{
+					// PrintToChatAll("Damage was %f, g_rage before %f", damage, g_rage[victim]);
+					g_rage[victim] += damage;
+					// PrintToChatAll("g_rage after %f", g_rage[victim]);
+				}
+
+			//	DrawRageHUD(victim);
+	}
+
+		if(IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
+	{
+				//PrintToChatAll("Damage was %f, g_rage before %f, g_rage limit was", damage, g_rage, g_ragelimit);
+
+				if(g_rage[attacker] < g_ragelimit)
+				{
+					// PrintToChatAll("Damage was %f, g_rage before %f", damage, g_rage[attacker]);
+
+					g_rage[attacker] += damage;
+					if(damage > 250.0)
+					{
+						g_rage[attacker] -= damage;
+						g_rage[attacker] += 250.0;
+					}
+					
+					// PrintToChatAll("g_rage after %f", g_rage[attacker]);
+				}
+
+			//	DrawRageHUD(attacker);
 	}
 
 }
@@ -484,6 +532,14 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 	if (IsRobot(attacker, ROBOT_NAME) && IsValidClient(victim)){
 		KilledPlayer(attacker, victim);
+		
+	}
+
+	if (IsRobot(victim, ROBOT_NAME)){
+		PrintToChatAll("DEAD AS SAXTRON");
+		char szVO[PLATFORM_MAX_PATH];
+  		Format(szVO, sizeof(szVO),"%s%i.wav", HaleFail, GetRandomInt(1,3));
+		SaxtronSay(victim, szVO);
 		
 	}
 	// if (IsRobot(victim, ROBOT_NAME)){
@@ -525,9 +581,25 @@ public void KilledPlayer(int attacker, int victim)
 				else Format(kill_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleKillEngie132, GetRandomInt(1, 2));
 			}
 		}
-		if( kill_snd[0] != '\0' )
-			EmitSoundToAll(kill_snd, attacker);
-			EmitSoundToAll(kill_snd, attacker);
+
+		if( kill_snd[0] != '\0' ){
+		
+		int see = GetRandomInt(0, 5);
+			
+		if (see == 0){
+			strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKSpreeNew);
+			Format(kill_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleKSpreeNew, GetRandomInt(1, 5));
+		}else if (see == 1)
+		{
+			strcopy(kill_snd, PLATFORM_MAX_PATH, HaleKillKSpree132);
+			Format(kill_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleKillKSpree132, GetRandomInt(1, 2));
+		}
+		SaxtronSay(attacker, kill_snd);
+		}
+			// SaxtronSay(attacker, kill_snd);
+			// SaxtronSay(attacker, kill_snd);
+			// SaxtronSay(attacker, kill_snd);
+			// SaxtronSay(attacker, kill_snd);
 			// EmitSoundToAll(kill_snd, attacker);
 			// EmitSoundToAll(kill_snd, attacker);
 	// }
@@ -553,14 +625,13 @@ public void KilledPlayer(int attacker, int victim)
 	// else flKillSpree = curtime+5;
 }
 	
-public void Stabbed(int victim) {
-	char stab_snd[PLATFORM_MAX_PATH];
-	Format(stab_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleStubbed132, GetRandomInt(1, 4));
-	EmitSoundToAll(stab_snd, victim);
-	EmitSoundToAll(stab_snd, victim);
-	EmitSoundToAll(stab_snd, victim);
+// public void Stabbed(int victim) {
+
+// 	EmitSoundToAll(stab_snd, victim);
+// 	EmitSoundToAll(stab_snd, victim);
+// 	EmitSoundToAll(stab_snd, victim);
 	
-}
+// }
 
 public void PlaySpawnClip(int client) {
 	char start_snd[PLATFORM_MAX_PATH];
@@ -568,10 +639,7 @@ public void PlaySpawnClip(int client) {
 	Format(start_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleRoundStart, GetRandomInt(1, 5));
 	// else 
 	//Format(start_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleStart132, GetRandomInt(1, 5));
-	
-	EmitSoundToAll(start_snd);
-	EmitSoundToAll(start_snd);
-	
+	SaxtronSay(client , start_snd);	
 }
 
 public Action ObjectDestroyed(Event event, const char[] name, bool dontBroadcast)
@@ -582,9 +650,319 @@ public Action ObjectDestroyed(Event event, const char[] name, bool dontBroadcast
 	
 	if (IsRobot(attacker, ROBOT_NAME))
 	{
-		EmitSoundToAll(HaleSappinMahSentry132, attacker);
-		EmitSoundToAll(HaleSappinMahSentry132, attacker);
-		// EmitSoundToAll(HaleSappinMahSentry132, attacker);
+		SaxtronSay(attacker, HaleSappinMahSentry132);
+
 	}
+	
+}
+
+
+//////////SAXTON HALE CODE FROM CHDATA
+
+public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon)
+{
+    if (IsRobot(client, ROBOT_NAME))
+    {
+
+		
+
+        int IsJumping = GetEntProp(client, Prop_Send, "m_bJumping");
+		
+        float ang[3];
+        GetClientEyeAngles(client, ang);
+		DrawRageHUD(client);
+		if (buttons & IN_DUCK)
+		{
+
+			DrawJumpHUD(client);
+
+			if (IsJumping == 0 && ang[0] < -33.0)
+			{
+					if 
+					(g_SuperJumpCharge+1 >= g_SuperJumpChargeLimit)
+					{
+						g_SuperJumpCharge = g_SuperJumpChargeLimit;	
+					}
+					else
+					{
+						g_SuperJumpCharge++;
+					}
+
+					//PrintToChatAll("Super Jump was: %i", g_SuperJumpCharge);
+			}
+
+			if (IN_JUMP && IsJumping == 0 && g_SuperJumpCharge == g_SuperJumpChargeLimit && ang[0] < -33.0)
+			{
+				SuperJump(client, 100.0, true);
+				g_SuperJumpCharge = 0;
+			}
+
+			if(IsJumping == 1)
+			{
+				// SetEntityGravity(client, 1.0);
+				if ((ang[0] > 70.0))
+				{
+					WeighDown(client, -2000.0, true);
+					return Plugin_Changed;
+				}
+				
+			}
+		}else
+		{
+			g_SuperJumpCharge = 0;
+		}
+
+		if (buttons & IN_ATTACK2 && !IsJumping && g_rage[client] >= g_ragelimit)
+		{
+			PerformStun(client);
+			g_rage[client] = 0.0;
+		}
+        
+
+    }
+
+
+    return Plugin_Continue;
+}
+
+public void SuperJump(int client, float power, float reset) 
+{
+		
+		float vel[3]; GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
+		vel[2] = 750 + power * 13.0;
+		// if( g_bSuperCharge ) {
+		// 	vel[2] += 2000.0;
+		// 	g_bSuperCharge = false;
+		// }
+		SetEntProp(client, Prop_Send, "m_bJumping", 1);
+		vel[0] *= (1+Sine(power * FLOAT_PI / 50));
+		vel[1] *= (1+Sine(power * FLOAT_PI / 50));
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vel);
+
+		int random = GetRandomInt(0,1);
+		
+		char kill_snd[PLATFORM_MAX_PATH];
+		strcopy(kill_snd, PLATFORM_MAX_PATH, HaleJump132);
+		Format(kill_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleJump132, GetRandomInt(1, 2));
+		SaxtronSay(client,kill_snd);
+			
+
+}
+	
+public void WeighDown(int client, float power, float reset) 
+{
+		// SetEntityGravity(client, 1.0);
+		float fVelocity[3]; GetEntPropVector(client, Prop_Data, "m_vecVelocity", fVelocity);
+		fVelocity[2] = power;
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fVelocity);
+		// SetEntityGravity(client, 6.0);		
+}
+//////////////////// END SAXTON HALE CODE CHDATA
+
+public void PerformStun(int client)
+{
+	//Get our hero variables
+	float duration = 8.0;
+	bool fullStun = false;
+	float radius = 600.0;
+	int iTeam = GetClientTeam(client);
+	
+	ApplyRadialStun(client, GetOpposingTeam(iTeam), duration, radius, fullStun);
+	FakeClientCommandEx(client, "taunt");
+	TF2_AddCondition(client, TFCond_DefenseBuffed, 15.0);
+	int random = GetRandomInt(1,4);
+
+
+//HaleRageSound		"saxtron_h413/saxtron_h413_responce_rage"	
+	char szVO[PLATFORM_MAX_PATH];
+    Format(szVO, sizeof(szVO),"%s%i.wav",HaleRageSound, random);
+	// PrintToChatAll("%s",szVO);
+	b_SaxtonSaid[client] = false;
+	SaxtronSay(client, szVO);
+}
+
+public void ApplyRadialStun(int hero, int team, float flDuration, float flRadius, bool full)
+{
+	//positions
+	float heroPos[3];
+	float playerPos[3];
+	
+	//Get our hero's position
+	GetClientAbsOrigin(hero, heroPos);
+	int stunflag = TF_STUNFLAGS_SMALLBONK;
+	if (full)
+		stunflag = TF_STUNFLAGS_BIGBONK;
+	
+	//loop through players
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (IsValidClient(client) && IsPlayerAlive(client))
+		{
+			int cteam = GetClientTeam(client);
+			if (cteam != team) continue;
+			
+			GetClientAbsOrigin(client, playerPos);
+			if (GetVectorDistance(playerPos, heroPos) <= flRadius)
+			{
+				if (full)
+					TF2_StunPlayer(client, flDuration, 0.0, stunflag);
+				else
+					TF2_StunPlayer(client, flDuration, 0.0, stunflag);
+			}
+		}
+	}
+}
+
+public int GetOpposingTeam(int team)
+{
+	switch (team)
+	{
+		case 2: return 3;
+		case 3: return 2;
+	}
+	return -1;
+}
+
+
+public void SaxtronSay(int client, const char[] voiceline)
+{
+	if (!b_SaxtonSaid[client]){
+	EmitSoundToAll(voiceline, client);
+	EmitSoundToAll(voiceline, client);
+	EmitSoundToAll(voiceline, client);
+	// EmitSoundToAll(voiceline, client);
+	b_SaxtonSaid[client] = true;
+	CreateTimer(2.5, Timer_SaxtonSaid, client);
+	}
+}
+
+public Action Timer_SaxtonSaid(Handle timer, int client)
+{
+	b_SaxtonSaid[client] = false;
+}
+
+#define CHAR_FULL "■"
+#define CHAR_EMPTY "□"
+bool b_hud_clamp[MAXPLAYERS + 1] = false;
+
+
+
+// void DrawRageHUD(int client)
+// {
+// 	char sHUDText[128];
+// 	char sProgress[32];
+// 	int iPercents = RoundToCeil(float(g_rage[client]) / float(g_ragelimit) * 100.0);
+
+// 	for (int j = 1; j <= 10; j++)
+// 	{
+// 		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
+// 		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
+// 	}
+
+// 	int team = GetClientTeam(client);
+
+// 	float angles[3], pos[3];
+// 	Format(sHUDText, sizeof(sHUDText), "Rage: %d%%%%   \n%s   ", iPercents, sProgress);
+
+// 	if(iPercents >= 100)
+// 	{
+
+// 			Format(sHUDText, sizeof(sHUDText), "Rage Ready!\nM2 to activate!");
+// 			SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+// 	}else {
+
+// 		SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
+// 	}
+// 	ShowHudText(client, -2, sHUDText);
+// 	// b_hud_clamp[client] = false;
+// }
+
+void DrawRageHUD(int client)
+{
+
+        if (!b_hud_clamp[client])
+		{
+			CreateTimer(0.08, Timer_DrawRageHUD, client);
+			b_hud_clamp[client] = true;
+		}
+
+}
+
+void DrawJumpHUD(int client)
+
+{
+		char sHUDText[128];
+	char sProgress[32];
+	int iPercents = RoundToCeil(float(g_SuperJumpCharge) / float(g_SuperJumpChargeLimit)* 100.0);
+
+	for (int j = 1; j <= 10; j++)
+	{
+		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
+		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
+	}
+
+	int team = GetClientTeam(client);
+
+	float angles[3], pos[3];
+	Format(sHUDText, sizeof(sHUDText), "SuperJump: %d%%%%   \n%s   ", iPercents, sProgress);
+
+	if(iPercents >= 100)
+	{
+
+			Format(sHUDText, sizeof(sHUDText), "SuperJumping!");
+			SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+	}else {
+
+		SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
+	}
+	ShowHudText(client, -2, sHUDText);
+	b_hud_clamp[client] = false;
+}
+
+public Action Timer_DrawRageHUD(Handle timer, int client)
+{
+	char sHUDText[128];
+	char sProgress[32];
+	int iPercents = RoundToCeil(g_rage[client] / g_ragelimit * 100.0);
+
+	for (int j = 1; j <= 10; j++)
+	{
+		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
+		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
+	}
+
+	int team = GetClientTeam(client);
+
+	float angles[3], pos[3];
+	Format(sHUDText, sizeof(sHUDText), "Rage: %d%%%%   \n%s   ", iPercents, sProgress);
+
+	if(iPercents >= 100)
+	{
+
+			Format(sHUDText, sizeof(sHUDText), "Rage Ready!\nM2 to activate!");
+			SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+	}else {
+
+		SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
+	}
+	ShowHudText(client, -2, sHUDText);
+	b_hud_clamp[client] = false;
+}
+
+public void TF2_OnConditionAdded(int client, TFCond condition)
+{
+	
+	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
+   
+
+		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+		{	
+			int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+			
+			if (tauntid == 463){
+			SaxtronSay(client,"saxtron_h413/saxtron_h413_responce_spree1.wav");
+			//TF2_RemoveCondition(client, condition);
+			}
+		}
 	
 }
