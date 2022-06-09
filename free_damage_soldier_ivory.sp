@@ -25,7 +25,7 @@
 #define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
 
 
-#define ExplodeSound	"ambient/explosions/explode_8.wav"
+#define ExplodeSound	"weapons/rocket_blackbox_explode2.wav"
 #define SENTRYROCKETS "models/buildables/sentry3_rockets.mdl"
 
 bool PlayerHasMirv[MAXPLAYERS+1];
@@ -48,8 +48,8 @@ ConVar g_showDebug;
 ConVar g_rocketAngle;
 ConVar g_rocketDiverge;
 
-// #define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
-// #define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
+#define GUNFIRE	"weapons/sentry_rocket.wav"
+#define GUNFIRE_CRIT	"weapons/sentry_rocket.wav"
 // #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 
 public Plugin:myinfo = 
@@ -91,13 +91,13 @@ public OnPluginStart()
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
 
-	g_rocketDelay = CreateConVar("mirv_rocket_delay", "0.6", "Delay before a mirv rocket splits into other rockets");
-	g_rocketCount = CreateConVar("mirv_rocket_count", "5", "How many rockets a mirv rocket splits into", _, true, 2.0, true, 6.0);
+	g_rocketDelay = CreateConVar("ivory_mirv_rocket_delay", "0.8", "Delay before a mirv rocket splits into other rockets");
+	g_rocketCount = CreateConVar("ivory_mirv_rocket_count", "5", "How many rockets a mirv rocket splits into", _, true, 2.0, true, 6.0);
 	g_rocketCurve = 1;
 	//g_rocketCurve = CreateConVar("mirv_converge_rockets", "0", "Do rockets converge on a single point after splitting", _, true, 0.0, true, 1.0);
-	g_showDebug = CreateConVar("mirv_converge_debug", "0", "Show debug angles and trajectory for converging rockets", _, true, 0.0, true, 1.0);
-	g_rocketAngle = CreateConVar("mirv_split_angle", "60.0", "Positive angle from the down vector at which mirv rockets will split at (0.0 = directly down, 90.0 = no deviation)");
-	g_rocketDiverge = CreateConVar("mirv_split_variance", "10.0", "Random angle variance added onto mirv rockets");
+	g_showDebug = CreateConVar("ivory_mirv_converge_debug", "0", "Show debug angles and trajectory for converging rockets", _, true, 0.0, true, 1.0);
+	g_rocketAngle = CreateConVar("ivory_mirv_split_angle", "60.0", "Positive angle from the down vector at which mirv rockets will split at (0.0 = directly down, 90.0 = no deviation)");
+	g_rocketDiverge = CreateConVar("ivory_mirv_split_variance", "10.0", "Random angle variance added onto mirv rockets");
 	//HookConVarChange(g_rocketCurve, OnMirvSettingsChanged);
 
 	ShouldMirvConverge =  view_as<bool>(g_rocketCurve);
@@ -142,8 +142,8 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 
-	// PrecacheSound(GUNFIRE);
-	// PrecacheSound(GUNFIRE_CRIT);
+	PrecacheSound(GUNFIRE);
+	PrecacheSound(GUNFIRE_CRIT);
 	// PrecacheSound(GUNFIRE_EXPLOSION);
 	
 
@@ -211,6 +211,24 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 		}
 		return Plugin_Changed;
 	}
+
+	if (strncmp(sample, ")weapons/", 9, false) == 0)
+	{
+		if (StrContains(sample, "rocket_shoot.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE);
+			EmitSoundToAll(sample, entity);
+			
+		}
+		else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_CRIT);
+			EmitSoundToAll(sample, entity);
+		}
+		
+		return Plugin_Changed;
+	}
+
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 }
 
@@ -272,7 +290,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Your rockets explodes in to more rockets!\nUse M2, reload or special attack to change modes!");
+	PrintHintText(client , "Your rockets explodes in to more rockets!\nUse M2 or special attack to change modes!");
 	
 }
 
@@ -306,7 +324,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 205, 6, 1, 2, 226);
 
 		CreateRoboHat(client, WhirlyWarrior, 10, 6, 2960676.0, 1.0, -1.0);
 		CreateRoboHat(client, GourdGrin, 10, 6, 2960676.0, 1.0, -1.0);

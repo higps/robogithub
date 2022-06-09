@@ -42,7 +42,10 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-    restrictions.TeamCoins.Overall = 2;
+    restrictions.TeamCoins.Overall = 1;
+
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = 1;
 
 
     AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);

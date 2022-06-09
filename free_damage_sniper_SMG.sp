@@ -21,9 +21,9 @@
 
 public Plugin:myinfo =
 {
-	name = "[TF2] Be Big Robot Jbird",
+	name = "[TF2] Be Big Robot SMG",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Jbird",
+	description = "Play as the Giant SMG",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -168,7 +168,7 @@ stock GiveBigRoboJbird(client)
 		{
 			TF2Attrib_RemoveAll(SMG);
 			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 2.5);
+			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 2.75);
 			// TF2Attrib_SetByName(SMG, "fire rate penalty", 1.2);
 			TF2Attrib_SetByName(SMG, "clip size bonus", 2.0);
 			TF2Attrib_SetByName(SMG, "hidden secondary max ammo penalty", 2.0);

@@ -7,6 +7,7 @@
 #include <berobot>
 #include <tf_custom_attributes>
 #include <tf_ontakedamage>
+#include <tf2_isPlayerInSpawn>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Saxtron"
@@ -103,7 +104,15 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 
-    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
+		RestrictionsDefinition restrictions = new RestrictionsDefinition();
+    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+    restrictions.TeamCoins.Overall = 2;
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = 2;
+
+    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions, 2);
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("object_destroyed",           ObjectDestroyed, EventHookMode_Pre);
@@ -661,7 +670,7 @@ public Action ObjectDestroyed(Event event, const char[] name, bool dontBroadcast
 
 public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon)
 {
-    if (IsRobot(client, ROBOT_NAME))
+    if (IsRobot(client, ROBOT_NAME) && (client))
     {
 
 		
@@ -670,7 +679,9 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 		
         float ang[3];
         GetClientEyeAngles(client, ang);
-		DrawRageHUD(client);
+		if (!TF2Spawn_IsClientInSpawn(client)){
+			DrawRageHUD(client);
+		}
 		if (buttons & IN_DUCK)
 		{
 
@@ -740,10 +751,20 @@ public void SuperJump(int client, float power, float reset)
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vel);
 
 		int random = GetRandomInt(0,1);
-		
 		char kill_snd[PLATFORM_MAX_PATH];
+		if(random == 0){
+
+		
 		strcopy(kill_snd, PLATFORM_MAX_PATH, HaleJump132);
 		Format(kill_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleJump132, GetRandomInt(1, 2));
+		}else
+		{
+
+		strcopy(kill_snd, PLATFORM_MAX_PATH, HaleJump);
+		Format(kill_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleJump, GetRandomInt(1, 2));		
+		}
+
+
 		SaxtronSay(client,kill_snd);
 			
 

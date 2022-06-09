@@ -90,8 +90,8 @@ public OnPluginStart()
 	PipeCount = CreateConVar("tf_clusterbomb_count", "4", "Number of child grenades to spawn from a clusterbomb");
 	PipeDamage = CreateConVar("tf_clusterbomb_damage", "350", "Percentage of parent grenade's damage that child grenades should deal");
 	PipeScale = CreateConVar("tf_clusterbomb_scale", "1.25", "Model scale for child grenades");
-	PipeModel = CreateConVar("tf_clusterbomb_iron_bomber", "0", "Should child grenades use the iron bomber projectile or derive the model from the parent");
-	PipeSpeed = CreateConVar("tf_clusterbomb_speed", "500", "Max speed child grenades can be launched at");
+	PipeModel = CreateConVar("tf_clusterbomb_iron_bomber", "1", "Should child grenades use the iron bomber projectile or derive the model from the parent");
+	PipeSpeed = CreateConVar("tf_clusterbomb_speed", "150", "Max speed child grenades can be launched at");
 
 
 	AddNormalSoundHook(BossMortar);
@@ -156,6 +156,11 @@ public OnMapStart()
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
+
+	PrecacheSound(LEFTFOOT);
+	PrecacheSound(LEFTFOOT1);
+	PrecacheSound(RIGHTFOOT);
+	PrecacheSound(RIGHTFOOT1);
 
 }
 
@@ -248,9 +253,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	GiveGiantDemoKnight(client);
 }
 
-#define KingTavish 342
-#define Dangeresque 295
-#define DynamiteAbs 31037
+#define HurtLocher 30179
+#define PolarPullover 30329
+#define HighLandHighHeels 30333
 
 stock GiveGiantDemoKnight(client)
 {
@@ -265,9 +270,9 @@ stock GiveGiantDemoKnight(client)
 		// CreateRoboWeapon(client, "tf_wearable_demoshield", 131, 6, 1, 2, 0);
 		// CreateRoboWeapon(client, "tf_weapon_sword", 132, 6, 1, 2, 0);
 
-		CreateRoboHat(client, KingTavish, 10, 6, 0.0, 0.75, 1.0); 
-		CreateRoboHat(client, Dangeresque, 10, 6, 15185211.0, 0.85, 1.0); 
-		CreateRoboHat(client, DynamiteAbs, 10, 6, 0.0, 1.0, 1.0); 
+		CreateRoboHat(client, HurtLocher, 10, 6, 15185211.0, 1.0, 1.0); 
+		CreateRoboHat(client, PolarPullover, 10, 6, 15185211.0, 1.0, 1.0); 
+		CreateRoboHat(client, HighLandHighHeels, 10, 6, 15185211.0, 1.0, 1.0); 
 
 		
 		// int iEntity2 = -1;
@@ -319,17 +324,17 @@ stock GiveGiantDemoKnight(client)
 		//int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
+			//TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.65);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
-			//TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.8);
+			TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.5);
 			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.6);
-			// TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.15);
+			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.15);
 			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
 			
 			// TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
