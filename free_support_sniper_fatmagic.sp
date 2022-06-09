@@ -191,38 +191,24 @@ stock GiveBigRoboHuntsbot(client)
 
 	CreateRoboWeapon(client, "tf_weapon_club", 232, 6, 1, 2, 0); //shahansah
 		
-	//CreateWeapon(client, "tf_wearable", 642, 6, 1, 3, 0); 
-
-	// CreateRoboHat(client, ArcherSterling, 10, 6, 0.0, 0.75, -1.0); 
-	// CreateRoboHat(client, GuiltenGuardian, 10, 6, 0.0, 1.0, -1.0); 
-
-	//CreateHat(client, 30874, 10, 6, 0.0, true); // Archer sterling
-//	CreateHat(client, 30857, 10, 6, 0.0, false); //Guilten Guardian
-	//CreateHat(client, 393, 10, 6, 0.0); //veil
-	//CreateHat(client, 642, 10, 6, 0.0); //cozy camper
-
-		CreateRoboHat(client, KingTavish, 10, 6, 0.0, 1.25, 1.0); 
-		CreateRoboHat(client, 31037, 10, 6, 0.0, 1.25, 1.0); 
+	CreateRoboHat(client, KingTavish, 10, 6, 0.0, 1.25, 1.0); 
+	CreateRoboHat(client, 31037, 10, 6, 0.0, 1.25, 1.0); 
 		
-	// int Huntsman = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //Huntsman
+
 	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
 	int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
-
-
-	// if(IsValidEntity(Huntsman))
+    // int iEnt = -1;
+    // while ((iEnt = FindEntityByClassname(iEnt, "tf_wearable")) != -1)
+	//  {
+    //     if (GetEntPropEnt(iEnt, Prop_Send, "m_hOwnerEntity") == client && GetEntProp(iEnt, Prop_Send, "m_iItemDefinitionIndex") == 31037) 
 	// 	{
-	// 		TF2Attrib_RemoveAll(Huntsman);
+    //         // PrintToChatAll("ENT %i", iEnt);
+	// 		// SetEntityRenderFx(iEnt, 0);
+	// 		SetEntityRenderColor(iEnt, 128, 128, 128, 0);
 			
-	// 		TF2Attrib_SetByName(Huntsman, "killstreak tier", 1.0);
-	// 		TF2Attrib_SetByName(Huntsman, "dmg penalty vs buildings", 0.75);
-	// 		TF2Attrib_SetByName(Huntsman, "sniper aiming movespeed decreased", 1.0);
-	// 		TF2Attrib_SetByName(Huntsman, "projectile penetration", 1.0);
-	// 		TF2Attrib_SetByName(Huntsman, "damage bonus", 1.5);
-	// 		TF2Attrib_SetByName(Huntsman, "fire rate bonus", 0.7);
-
-	// 	}
-
+    //     }
+   	//  }
 		if(IsValidEntity(SMG))
 		{
 			TF2Attrib_RemoveAll(SMG);
