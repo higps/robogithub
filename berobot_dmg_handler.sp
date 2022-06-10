@@ -620,8 +620,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (isBeggarsBazooka(Weapon1))
         {
-            TF2Attrib_SetByName(Weapon1, "mult_player_movespeed_active", 1.25);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Beggars Bazooka provides {orange}+25%% faster move speed while active");
+            TF2Attrib_SetByName(Weapon1, "mult_player_movespeed_active", 1.15);
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Beggars Bazooka provides {orange}+15%% faster move speed while active");
         }
 
         if (isLibertyLauncher(Weapon1))
