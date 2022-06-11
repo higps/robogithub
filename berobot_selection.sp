@@ -17,6 +17,8 @@ enum (<<= 1)
 #pragma newdecls required
 #pragma semicolon 1
 
+#define MAX_SELECTIONS 2
+
 public Plugin myinfo =
 {
 	name = "berobot_selection",
@@ -224,25 +226,13 @@ methodmap RobotSelectionMenu < StringMap {
     public void AddMenuItemForCategory(Menu menu, bool isFree, char[] name, char[] value)
     {
         RobotCategory category = this.Get(isFree);
-        int count = 0;
-        int max = 0;
-        StringMapSnapshot snapshot = category.Roles.Snapshot();
-        for(int i = 0; i < snapshot.Length; i++)
-        {
-            char key[NAMELENGTH];
-            snapshot.GetKey(i, key, sizeof(key));
-            RobotRole robotRole = category.Get(key);
-
-            count += robotRole.Count;
-            max += robotRole.Robots.Length;
-        }
 
         int draw = ITEMDRAW_DEFAULT;
-        if (count >= max)
+        if (category.Count >= category.Max)
             draw = ITEMDRAW_DISABLED;
 
         char display[128];
-        Format(display, sizeof(display), "%s: (%i / %i)", name, count, max);
+        Format(display, sizeof(display), "%s: (%i / %i)", name, category.Count, category.Max);
 
         menu.AddItem(value, display, draw);
     }
@@ -258,7 +248,7 @@ methodmap RobotSelectionMenu < StringMap {
 bool g_ClientIsRepicking[MAXPLAYERS + 1];
 Menu g_chooseRobotMenus[MAXPLAYERS + 1];
 RobotSelectionMenu g_menu;
-char g_selections[MAXPLAYERS + 1][3][NAMELENGTH];
+char g_selections[MAXPLAYERS + 1][MAX_SELECTIONS + 1][NAMELENGTH];
 
 public void OnPluginStart()
 {
@@ -439,10 +429,14 @@ public int Menu_TopLevel_Handler(Menu menu, MenuAction action, int param1, int p
     else if(action == MenuAction_Cancel)
     {
         g_chooseRobotMenus[param1] = null;
+        ResetSelection(param1);
 
-        if (param2 == MenuCancel_Exit)
+        switch (param2)
         {
-            g_ClientIsRepicking[param1] = false;
+            case MenuCancel_Exit:
+                g_ClientIsRepicking[param1] = false;
+            case MenuCancel_ExitBack:
+                Menu_TopLevel(param1);
         }
         // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
     }
@@ -493,7 +487,7 @@ void Menu_RobotCategory(int clientId, RobotCategory category)
     Menu menu = new Menu(Menu_RobotCategory_Handler);
 
     menu.SetTitle("Select Your Robot Type");
-    menu.ExitButton = true;
+    menu.ExitBackButton = true;
 
     category.AddMenuItem(menu);
     
@@ -528,10 +522,14 @@ public int Menu_RobotCategory_Handler(Menu menu, MenuAction action, int param1, 
     else if(action == MenuAction_Cancel)
     {
         g_chooseRobotMenus[param1] = null;
+        ResetSelection(param1);
 
-        if (param2 == MenuCancel_Exit)
+        switch (param2)
         {
-            g_ClientIsRepicking[param1] = false;
+            case MenuCancel_Exit:
+                g_ClientIsRepicking[param1] = false;
+            case MenuCancel_ExitBack:
+                Menu_TopLevel(param1);
         }
         // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
     }
@@ -573,7 +571,7 @@ void Menu_RobotsPerRole(int client, RobotRole robotRole)
     Menu menu = new Menu(MenuHandler);
 
     menu.SetTitle("Select Your Robot Type");
-    menu.ExitButton = true;
+    menu.ExitBackButton = true;
 
     for(int i = 0; i < robotRole.Robots.Length; i++)
     {
@@ -665,10 +663,14 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     else if(action == MenuAction_Cancel)
     {
         g_chooseRobotMenus[param1] = null;
+        ResetSelection(param1);
 
-        if (param2 == MenuCancel_Exit)
+        switch (param2)
         {
-            g_ClientIsRepicking[param1] = false;
+            case MenuCancel_Exit:
+                g_ClientIsRepicking[param1] = false;
+            case MenuCancel_ExitBack:
+                Menu_TopLevel(param1);
         }
         // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
     }
@@ -682,6 +684,18 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
                 g_chooseRobotMenus[i] = null;
         }
         delete menu;
+    }
+}
+
+void ResetSelection(int clientId)
+{
+    for(int i = MAX_SELECTIONS; i >= 0; --i)
+    {
+        if (g_selections[clientId][i][0] != '\0')
+        {
+            g_selections[clientId][i] = "";
+            return;
+        }
     }
 }
 
