@@ -100,10 +100,12 @@ public OnPluginStart()
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Demoman";
+	robot.subclass = "Grenades";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
+
     AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 1);
 }
 
