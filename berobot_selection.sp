@@ -647,6 +647,9 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
         return;
     }
 
+
+
+
     Format(notes, sizeof(notes), "%i / %i", count, roboCap);
     draw = ITEMDRAW_DEFAULT;
 }

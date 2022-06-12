@@ -11,6 +11,7 @@
 #define ROBOT_NAME	"SkillTron"
 #define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "Rapid Fire Airblast"
+#define ROBOT_TIPS "Use rapid airblast to shut down the enemy"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"

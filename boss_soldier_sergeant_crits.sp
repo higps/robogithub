@@ -12,6 +12,7 @@
 #define ROBOT_NAME	"Sergeant Crits"
 #define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "Rapid Critical Rockets"
+#define ROBOT_TIPS "Firing speed increases as health decreases"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
@@ -233,7 +234,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Boss Boss\nCritical Rockets\nCan't be healed.");
+	PrintHintText(client , ROBOT_TIPS);
 	//SetBossHealth(client);
 }
 

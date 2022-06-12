@@ -11,7 +11,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Toofty"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Sticky jumper"
+#define ROBOT_DESCRIPTION "Iron Bomber, Sticky jumper"
+#define ROBOT_TIPS "Land on enemies to deal stomp damage"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -157,7 +158,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client, "Land on enemies to deal stomp damage");
+	PrintHintText(client, ROBOT_TIPS);
 }
 
 stock TF2_SetHealth(client, NewHealth)

@@ -10,6 +10,7 @@
 #define ROBOT_NAME	"Solar Light"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Hybrid Knight"
+#define ROBOT_TIPS "Rapid Iron Bomber\nChainable melee swings"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -169,7 +170,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Long range charge. Rapid fire Iron Bomber");
+	PrintHintText(client , ROBOT_TIPS);
 
 }
 

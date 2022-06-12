@@ -10,6 +10,7 @@
 #define ROBOT_NAME	"Big Joey"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Tomislav"
+#define ROBOT_TIPS "+15%% damage to players\nLess damage dibe to buildings"
 
 
 //#define MODEL "models/weapons/shells/shell_minigun.mdl"
@@ -214,7 +215,7 @@ MakeGDeflectorH(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintCenterText(client, "IT'S BIG JOEY!");
+	PrintCenterText(client, ROBOT_TIPS);
 	//EmitSoundToAll(SPAWN, client);
 	//g_IsGPS[client] = true;
 	

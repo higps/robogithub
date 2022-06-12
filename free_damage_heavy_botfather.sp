@@ -9,6 +9,7 @@
 #define ROBOT_NAME	"Bot Father"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Family Business, Eviction Notice"
+#define ROBOT_TIPS ROBOT_DESCRIPTION
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -181,7 +182,7 @@ TF2Attrib_SetByName(client, "deploy time decreased", 0.6);
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client , "You are %s\n %s,", ROBOT_NAME, ROBOT_DESCRIPTION);
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
  

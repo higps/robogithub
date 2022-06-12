@@ -11,6 +11,7 @@
 #define ROBOT_NAME	"Nuker"
 #define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "Nuke Shot"
+#define ROBOT_TIPS "You shoot payload bombs\nLarge explosion radius\nYou have crit melee weapon"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
@@ -148,8 +149,7 @@ MakeSolar(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	TF2_AddCondition(client, TFCond_CritCanteen);
 	
-	PrintHintText(client, "Shoot big bombs that go boom");
-	PrintToChat(client, "1. You are now Giant Nuker !");
+	PrintHintText(client, ROBOT_TIPS);
 
 	//SetBossHealth(client);
 	g_iTeam = GetClientTeam(client);

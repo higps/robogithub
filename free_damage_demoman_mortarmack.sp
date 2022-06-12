@@ -10,6 +10,7 @@
 #define ROBOT_NAME	"Mortar Mack"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Scatter Shot"
+#define ROBOT_TIPS "Fire and reload the entire clip at once!"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -176,7 +177,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Fire and reload the entire clip at once!");
+	PrintHintText(client , ROBOT_TIPS);
 }
 
 stock TF2_SetHealth(client, NewHealth)

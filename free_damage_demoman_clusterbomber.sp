@@ -14,6 +14,7 @@
 #define ROBOT_NAME	"Cluster Bomber"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Cluster Bomb Grenade Launcher"
+#define ROBOT_TIPS "Bombs explodes in to smaller bombs\nReduced damage vs buildings"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -87,11 +88,11 @@ public OnPluginStart()
 
 	RegAdminCmd("sm_clusterbombs", CmdMirv, ADMFLAG_BAN);
 
-	PipeCount = CreateConVar("tf_clusterbomb_count", "4", "Number of child grenades to spawn from a clusterbomb");
-	PipeDamage = CreateConVar("tf_clusterbomb_damage", "350", "Percentage of parent grenade's damage that child grenades should deal");
-	PipeScale = CreateConVar("tf_clusterbomb_scale", "1.25", "Model scale for child grenades");
-	PipeModel = CreateConVar("tf_clusterbomb_iron_bomber", "1", "Should child grenades use the iron bomber projectile or derive the model from the parent");
-	PipeSpeed = CreateConVar("tf_clusterbomb_speed", "150", "Max speed child grenades can be launched at");
+	PipeCount = CreateConVar("boss_clusterbomb_count", "4", "Number of child grenades to spawn from a clusterbomb");
+	PipeDamage = CreateConVar("boss_clusterbomb_damage", "350", "Percentage of parent grenade's damage that child grenades should deal");
+	PipeScale = CreateConVar("boss_clusterbomb_scale", "1.25", "Model scale for child grenades");
+	PipeModel = CreateConVar("boss_clusterbomb_iron_bomber", "1", "Should child grenades use the iron bomber projectile or derive the model from the parent");
+	PipeSpeed = CreateConVar("boss_clusterbomb_speed", "150", "Max speed child grenades can be launched at");
 
 
 	AddNormalSoundHook(BossMortar);
@@ -235,7 +236,7 @@ MakeDemoKnight(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Rapid Fire Grenade Launcher\nReduced damage vs buildings");
+	PrintHintText(client , ROBOT_TIPS);
 
 	
 }

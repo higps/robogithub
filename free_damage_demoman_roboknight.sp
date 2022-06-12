@@ -9,6 +9,7 @@
 #define ROBOT_NAME	"Robo-Knight"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_DESCRIPTION "Eyelander, Chargin' Targe"
+#define ROBOT_TIPS "Very Long Charge\n25% charge refill on kill\n3 second crit boost on kill\nHigh Jumps"
 
 #define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -165,7 +166,7 @@ MakeDemoKnight(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Very Long Charge\n25% charge refill on kill\n3 second crit boost on kill\nHigh Jumps");
+	PrintHintText(client , ROBOT_TIPS);
 
 	
 }
