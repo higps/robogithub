@@ -252,56 +252,56 @@ public void Reset(int client)
 
 public any Native_CreateRobot(Handle plugin, int numParams)
 {
-	Init();
-	
-	char name[NAMELENGTH];
-	GetNativeString(1, name, NAMELENGTH);
-	int client = GetNativeCell(2);
-	char target[32];
-	GetNativeString(3, target, 32);
+    Init();
+
+    char name[NAMELENGTH];
+    GetNativeString(1, name, NAMELENGTH);
+    int client = GetNativeCell(2);
+    char target[32];
+    GetNativeString(3, target, 32);
 
 
 
-    
-	int targetFilter = 0;
-	if (target[0] == '\0')
-	{
-		target = "@me";
-		targetFilter = COMMAND_FILTER_NO_IMMUNITY;
-	}
 
-	char target_name[MAX_TARGET_LENGTH];
-	int target_list[MAXPLAYERS];
-	int target_count;
-	bool tn_is_ml;
- 
-	if ((target_count = ProcessTargetString(
-			target,
-			client,
-			target_list,
-			MAXPLAYERS,
-			targetFilter,
-			target_name,
-			sizeof(target_name),
-			tn_is_ml)) <= 0)
-	{
-		ReplyToTargetError(client, target_count);
-		return 2;
-	}
+    int targetFilter = 0;
+    if (target[0] == '\0')
+    {
+        target = "@me";
+        targetFilter = COMMAND_FILTER_NO_IMMUNITY;
+    }
 
+    char target_name[MAX_TARGET_LENGTH];
+    int target_list[MAXPLAYERS];
+    int target_count;
+    bool tn_is_ml;
 
-	Robot item;
-	if (GetRobotDefinition(name, item) != 0)
-	{
-		SMLogTag(SML_ERROR, "could not create robot. no robot with name '%s' found", name);
-		return 1;
-	}
+    if ((target_count = ProcessTargetString(
+            target,
+            client,
+            target_list,
+            MAXPLAYERS,
+            targetFilter,
+            target_name,
+            sizeof(target_name),
+            tn_is_ml)) <= 0)
+    {
+        ReplyToTargetError(client, target_count);
+        return 2;
+    }
 
 
+    Robot item;
+    if (GetRobotDefinition(name, item) != 0)
+    {
+        SMLogTag(SML_ERROR, "could not create robot. no robot with name '%s' found", name);
+        return 1;
+    }
 
-	bool robotWasCreated = false;
-	for (int i = 0; i < target_count; i++)
-	{
+
+
+    bool robotWasCreated = false;
+    for (int i = 0; i < target_count; i++)
+    {
         int targetClientId = target_list[i];
         SMLogTag(SML_VERBOSE, "%i. target: %i", i, targetClientId);
 
@@ -331,9 +331,9 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 
         robotWasCreated = true;
     }
-	if (robotWasCreated)
-	{
-		SMLogTag(SML_VERBOSE, "playing robot spawn sound %s to all for call by client %i for target %s", item.sounds.spawn, client, target);
+    if (robotWasCreated)
+    {
+        SMLogTag(SML_VERBOSE, "playing robot spawn sound %s to all for call by client %i for target %s", item.sounds.spawn, client, target);
 
         if (IsPlayerAlive(client))
         { 
@@ -342,9 +342,9 @@ public any Native_CreateRobot(Handle plugin, int numParams)
             
         }
 
-	}
+    }
 
-	return 0;
+    return 0;
 }
 
 public Action Command_TrashRobot(int client, int numParams)
@@ -454,7 +454,7 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
         if (!IsValidClient(otherRobotClientIndex))
             continue;
         char otherRobotName[NAMELENGTH];
-        GetRobot(clientId, otherRobotName, NAMELENGTH);
+        GetRobot(otherRobotClientIndex, otherRobotName, NAMELENGTH);
         if (otherRobotName[0] == '\0')
             continue;
         
