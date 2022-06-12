@@ -28,6 +28,64 @@ public Plugin myinfo =
 	url = "https://github.com/higps/robogithub"
 };
 
+methodmap RobotSubclass < StringMap {
+    property int Count {
+        public get(){ 
+            int value;
+            this.GetValue("Count", value);
+            return value;
+        }
+        public set(int value){
+            this.SetValue("Count", value);
+        }
+    }
+    property ArrayList Robots {
+        public get(){ 
+            ArrayList value;
+            this.GetValue("Robots", value);
+            return value;
+        }
+        public set(ArrayList value){
+            this.SetValue("Robots", value);
+        }
+    }
+
+    public RobotSubclass() {
+        RobotSubclass category = view_as<RobotSubclass>(new StringMap());
+        Robot robot;
+        category.Robots = new ArrayList(sizeof(robot));
+        category.Count = 0;
+        return category;
+    }
+
+    public void Hydrate()
+    {
+        int count = 0;
+        for(int i = 0; i < this.Robots.Length; i++)
+        {
+            Robot robot;
+            this.Robots.GetArray(i, robot);
+            count += GetRobotCount(robot.name);
+        }
+        this.Count = count;        
+    }
+
+    public void AddMenuItem(Menu menu, char name[NAMELENGTH], char key[NAMELENGTH])
+    {
+        int count = this.Count;
+        int max = this.Robots.Length;
+
+        int draw = ITEMDRAW_DEFAULT;
+        if (count >= max)
+            draw = ITEMDRAW_DISABLED;
+
+        char display[128];
+        Format(display, sizeof(display), "%s: (%i / %i)", name, count, max);
+
+        menu.AddItem(key, display, draw);
+    }
+}
+
 methodmap RobotRole < StringMap {
     property int Count {
         public get(){ 
@@ -105,64 +163,6 @@ methodmap RobotRole < StringMap {
             RobotSubclass robotSubclass = this.Get(key);
             robotSubclass.AddMenuItem(menu, key, key);
         }
-    }
-}
-
-methodmap RobotSubclass < StringMap {
-    property int Count {
-        public get(){ 
-            int value;
-            this.GetValue("Count", value);
-            return value;
-        }
-        public set(int value){
-            this.SetValue("Count", value);
-        }
-    }
-    property ArrayList Robots {
-        public get(){ 
-            ArrayList value;
-            this.GetValue("Robots", value);
-            return value;
-        }
-        public set(ArrayList value){
-            this.SetValue("Robots", value);
-        }
-    }
-
-    public RobotSubclass() {
-        RobotSubclass category = view_as<RobotSubclass>(new StringMap());
-        Robot robot;
-        category.Robots = new ArrayList(sizeof(robot));
-        category.Count = 0;
-        return category;
-    }
-
-    public void Hydrate()
-    {
-        int count = 0;
-        for(int i = 0; i < this.Robots.Length; i++)
-        {
-            Robot robot;
-            this.Robots.GetArray(i, robot);
-            count += GetRobotCount(robot.name);
-        }
-        this.Count = count;        
-    }
-
-    public void AddMenuItem(Menu menu, char name[NAMELENGTH], char key[NAMELENGTH])
-    {
-        int count = this.Count;
-        int max = this.Robots.Length;
-
-        int draw = ITEMDRAW_DEFAULT;
-        if (count >= max)
-            draw = ITEMDRAW_DISABLED;
-
-        char display[128];
-        Format(display, sizeof(display), "%s: (%i / %i)", name, count, max);
-
-        menu.AddItem(key, display, draw);
     }
 }
 
