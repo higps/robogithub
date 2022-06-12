@@ -91,7 +91,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
-	if (IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Engineer)
+	if (IsAnyRobot(client))
 	{
 		SDKHook(client, SDKHook_Touch, OnTouch);
 	}
@@ -104,12 +104,12 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 public Action OnTouch(int client, int ent)
 {
-	char entname[MAX_NAME_LENGTH];
-	GetEntityClassname(ent, entname, sizeof(entname));
+
 
 	if (IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Engineer)
 	{
-
+		char entname[MAX_NAME_LENGTH];
+		GetEntityClassname(ent, entname, sizeof(entname));
 
 		if (!StrContains(entname, "obj_dispenser") || !StrContains(entname, "obj_sentrygun")){
 
