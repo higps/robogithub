@@ -85,6 +85,7 @@ enum struct RobotDefinition {
   char name[NAMELENGTH];
   char role[NAMELENGTH];
   char class[9];
+  char subclass[32];
   char shortDescription[NAMELENGTH];
   RobotSounds sounds;
   char deatheffect[64];

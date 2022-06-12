@@ -123,6 +123,7 @@ public any Native_AddRobot(Handle plugin, int numParams)
     robot.name = robotDefinition.name;
     robot.role = robotDefinition.role;
     robot.class = robotDefinition.class;
+    robot.subclass = robotDefinition.subclass;
     robot.shortDescription = robotDefinition.shortDescription;
     robot.sounds = robotDefinition.sounds;
 

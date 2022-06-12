@@ -545,6 +545,7 @@ enum struct Robot {
   char name[NAMELENGTH];
   char role[NAMELENGTH];
   char class[9];
+  char subclass[32];
   char shortDescription[NAMELENGTH];
   PrivateForward callback;
   RobotSounds sounds;
