@@ -1,27 +1,11 @@
 TODO:
   Todo:
   Priority:
-  1. Add Back button to all menu levels.
-  2. Random robot selection is broken again (this is caused by maps not covering spawn)
-  3. Change spawn sounds. Should only trigger on first spawn, and when changing robot. Using Item preset command should not trigger it.
-  4. Using Item loadout preset binds now counts as a death, resetting your paid robot to an unpaid robot.
-  5. Add counter for Tank, Engineer and Sentry Buster
-  
-
-1. Need time passed resource added (opposite of time remaining)
- Type A- Resource for X amount of time passed, is available after X amount of time has passed
- Type B - Resource for Y amount of time passed in a loop. Becomes unavailable when picked, and only available once Y amount of time has passed again
-Example A: Pan Cop becomes available after 180 seconds of gametime has passed, can be picked again
-Example B: Gotham Protector becomes available after 60 seconds of gametime, but can't be picked until another 60 seconds has passed after his death or switching of robot.
-
-Every 4 player is one robot, rounding to floor. (better scaling sometimes?)
+  1. Fix so spawn sounds don't trigger unless the player is alove, as now they play when selected when dead
+  2. Using Item loadout preset binds now counts as a death, resetting your paid robot to an unpaid robot.
 
 Bugs:
-Become Human Robot:
-1. Volunteer and get selected as robot
-2. Retry in console
-3. Volunteer - You now become robot on human team.
-4. Volunteer again, you now get moved to the correct team.
+Paid menu sometimes lets you reslect robot
 
 Become a HUuman Robot:
 1. Use a paid robot

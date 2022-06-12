@@ -11,6 +11,7 @@
 #define ROBOT_NAME	"SkillTron"
 #define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "Rapid Fire Airblast"
+#define ROBOT_TIPS "Use rapid airblast to shut down the enemy"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
@@ -64,11 +65,14 @@ public OnPluginStart()
     robot.sounds.windup = SOUND_WINDUP;
     robot.sounds.death = DEATH;
 
-		RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 4;
+    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+    restrictions.TeamCoins.Overall = 1;
+
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = 1;
 
     AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions);
 }
