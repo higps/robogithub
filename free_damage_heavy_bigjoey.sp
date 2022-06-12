@@ -69,6 +69,7 @@ public OnPluginStart()
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = "Heavy";
+	robot.subclass = "Hitscan";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
