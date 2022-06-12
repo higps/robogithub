@@ -48,19 +48,59 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    for(int client = 1 ; client <= MaxClients ; client++)
-    {
-        if(IsClientInGame(client))
-        {
 
-		//PrintToChatAll("Hooking %N", client);
-		SDKHook(client, SDKHook_Touch, OnTouch);
-        //SDKHook(client, SDKHook_EndTouchPost, OnTouch);
-		//SDKHook(client,SDKHook_EndTouch, OnTouchPost);
-        }
-    }
+	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
+    // for(int client = 1 ; client <= MaxClients ; client++)
+    // {
+    //     if(IsClientInGame(client))
+    //     {
+
+	// 	//PrintToChatAll("Hooking %N", client);
+	// 	SDKHook(client, SDKHook_Touch, OnTouch);
+	// 	// SDKHook(client, SDKHook_ShouldCollide, ShouldCollide );
+    //     //SDKHook(client, SDKHook_EndTouchPost, OnTouch);
+	// 	//SDKHook(client,SDKHook_EndTouch, OnTouchPost);
+		
+    //     }
+    // }
 
 }
+
+public void OnClientDisconnect_Post(int client)
+{
+	if (IsValidClient(client))
+	{
+		SDKUnhook(client, SDKHook_Touch, OnTouch);	
+	} 
+}
+
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	//int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Engineer)
+	{
+		SDKUnhook(victim, SDKHook_Touch, OnTouch);
+	}
+}
+
+
+public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(event.GetInt("userid"));
+
+	if (IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Engineer)
+	{
+		SDKHook(client, SDKHook_Touch, OnTouch);
+	}
+}
+// public bool:ShouldCollide( entity, collisiongroup, contentsmask, bool:result )
+// {
+// 	PrintToChatAll("Should not collide");
+//     return false;
+// } 
 
 public Action OnTouch(int client, int ent)
 {
@@ -79,32 +119,73 @@ public Action OnTouch(int client, int ent)
 		if (iBuilder == client)
 		{
 				//Sets the owner to nobody
-				//SetEntPropEnt(ent, Prop_Send, "m_hBuilder", -1);
-				PrintToChatAll("Touching your own building!");
-				SetEntitySolid(ent, false);
+				SetEntPropEnt(ent, Prop_Send, "m_hBuilder", -1);
+				//PrintToChatAll("Touching your own building!");
+				//SetEntitySolid(ent, false);
+				// SDKHook(ent, SDKHook_ShouldCollide, ShouldCollide);
 				DataPack a = new DataPack();
 				a.WriteCell(client);
 				a.WriteCell(ent);
 				a.Reset();
-				CreateTimer(2.0, Reset_Timer, a);
+				CreateTimer(1.2, Reset_Timer, a);
 
 			}
 		}
 	}
 }
 
+// public Action OnTouchPost(int client, int ent)
+// {
+// 	char entname[MAX_NAME_LENGTH];
+// 	GetEntityClassname(ent, entname, sizeof(entname));
+
+// 	if (IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Engineer)
+// 	{
+
+
+// 		if (!StrContains(entname, "obj_dispenser") || !StrContains(entname, "obj_sentrygun")){
+
+// 			//	PrintToChatAll("Ent: %s", entname);
+
+// 		PrintToChatAll("Touching something! Post");
+
+// 		int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+
+// 		if (iBuilder == client)
+// 		{
+// 				//Sets the owner to nobody
+// 				SetEntPropEnt(ent, Prop_Send, "m_hBuilder", client);
+				
+// 				//SetEntitySolid(ent, false);
+// 				// SDKHook(ent, SDKHook_ShouldCollide, ShouldCollide);
+// 				DataPack a = new DataPack();
+// 				a.WriteCell(client);
+// 				a.WriteCell(ent);
+// 				a.Reset();
+// 				CreateTimer(2.0, Reset_Timer, a);
+
+// 			}
+// 		}
+// 	}
+// }
+
 
 public Action Reset_Timer(Handle timer, DataPack data)
 {
 	int client = data.ReadCell();
 	int entity = data.ReadCell();
-	if (IsClientInGame(client))
+	if (IsClientInGame(client) && IsValidClient(client))
 	{ 
 
 	// if( GetEntProp(entity, Prop_Send, "m_nSolidType", 1) == SOLID_NONE )
 	// {
 		//ReplyToCommand(client, "[SM] sm_collision: Set target %d solid.", entity);
-		SetEntitySolid(entity, true);
+		//SetEntitySolid(entity, true);
+
+		if (IsValidEntity(entity))
+		{
+			SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);
+		}
 	// }
 	// else
 	// {
@@ -115,6 +196,11 @@ public Action Reset_Timer(Handle timer, DataPack data)
 	}
 	delete data;
 }
+// public bool:ShouldCollide( entity, collisiongroup, contentsmask, bool:result )
+// {
+// 	PrintToChatAll("Should collide");
+//     return true;
+// } 
 
 public Action CmdColli(int client, int args)
 {

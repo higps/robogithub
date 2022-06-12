@@ -11,6 +11,7 @@
 #define ROBOT_NAME	"Demopan"
 #define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "Crit Pan"
+#define ROBOT_TIPS "Hit Enemies with your Pan\nYou can't cap or block captures"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
@@ -41,8 +42,11 @@ public OnPluginStart()
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 4;
+    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+    restrictions.TeamCoins.Overall = 1;
+
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = 1;
 
 
     AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
@@ -143,7 +147,7 @@ MakeSolar(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	TF2_AddCondition(client, TFCond_CritCanteen);
 	
-	PrintHintText(client, "Hit Enemies with your Pan\nYou can't cap or block captures");
+	PrintHintText(client, ROBOT_TIPS);
 
 	//SetBossHealth(client);
 }
