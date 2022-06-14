@@ -9,6 +9,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Kommisar Krit"
 #define ROBOT_ROLE "ZBOSS"
+#define ROBOT_CLASS "Heavy"
+#define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Slow Crit Minigun"
 #define ROBOT_TIPS "Crit Minign"
 

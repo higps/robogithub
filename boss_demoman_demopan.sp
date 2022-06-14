@@ -11,6 +11,8 @@
 #define ROBOT_NAME	"Demopan"
 #define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "Crit Pan"
+#define ROBOT_CLASS "Demoman"
+#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_TIPS "Hit Enemies with your Pan\nYou can't cap or block captures"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"

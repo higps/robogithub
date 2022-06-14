@@ -9,6 +9,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Rager"
 #define ROBOT_ROLE "Damage"
+#define ROBOT_CLASS "Heavy"
+#define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Pushback rage"
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
@@ -51,7 +53,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Heavy";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

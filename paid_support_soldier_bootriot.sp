@@ -10,6 +10,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Boot Riot"
 #define ROBOT_ROLE "Support"
+#define ROBOT_CLASS "Soldier"
+#define ROBOT_SUBCLASS "Banner"
 #define ROBOT_DESCRIPTION "Buff-Banner"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -52,7 +54,8 @@ public OnPluginStart()
 	RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Soldier";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
@@ -61,7 +64,7 @@ public OnPluginStart()
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
     restrictions.RobotCoins.PerRobot = 1;
-
+	
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
 

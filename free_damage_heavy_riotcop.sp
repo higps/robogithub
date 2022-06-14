@@ -9,7 +9,10 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Riotcop"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_DESCRIPTION "Power Shotgun. Taunt: Surpress Riot"
+#define ROBOT_CLASS "Heavy"
+#define ROBOT_SUBCLASS "Hitscan"
+#define ROBOT_DESCRIPTION "Panic Attack Power Shotgun"
+#define ROBOT_TIPS "Taunt: Surpress Riot mini-crit ability"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -42,7 +45,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Heavy";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

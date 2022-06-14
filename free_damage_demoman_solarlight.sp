@@ -9,8 +9,10 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Solar Light"
 #define ROBOT_ROLE "Damage"
+#define ROBOT_CLASS "Demoman"
+#define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Hybrid Knight"
-#define ROBOT_TIPS "Rapid Iron Bomber\nChainable melee swings"
+#define ROBOT_TIPS "Rapid Iron Bomber\nRapid on Hit charge refill"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -38,7 +40,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Demoman";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

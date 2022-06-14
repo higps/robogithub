@@ -7,8 +7,11 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Samwiz"
-#define ROBOT_ROLE "Prototye"
+#define ROBOT_ROLE "Damage"
+#define ROBOT_CLASS "Heavy"
+#define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Brass Beast"
+#define ROBOT_TIPS "Can't move while spun up\nFast spin up time"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -50,7 +53,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Heavy";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

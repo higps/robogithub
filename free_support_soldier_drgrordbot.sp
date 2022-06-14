@@ -11,8 +11,10 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Dr GrordBot"
 #define ROBOT_ROLE "Support"
+#define ROBOT_CLASS "Soldier"
+#define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Cowmangler"
-#define ROBOT_SPAWNTIP "You have rapid reload cow mangler\n Only one clip"
+#define ROBOT_TIPS "You have rapid reload Cow Mangler & Bison"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -53,7 +55,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Soldier";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
@@ -198,7 +201,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , ROBOT_SPAWNTIP);
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 

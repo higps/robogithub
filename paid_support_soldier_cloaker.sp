@@ -10,6 +10,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Cloaker"
 #define ROBOT_ROLE "Support"
+#define ROBOT_CLASS "Soldier"
+#define ROBOT_SUBCLASS "Banner"
 #define ROBOT_DESCRIPTION "Cloaker"
 //#define GSOLDIER             "models/bots/spy/bot_spy.mdl"
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
@@ -55,7 +57,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Spy";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

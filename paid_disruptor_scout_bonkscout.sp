@@ -9,6 +9,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bonk Scout"
 #define ROBOT_ROLE "Disruptor"
+#define ROBOT_CLASS "Scout"
+#define ROBOT_SUBCLASS "Projectiles"
 #define ROBOT_DESCRIPTION "Bonk+Rapid Sandman"
 #define ROBOT_DETAILS "Use bonk to take sentry fire\nShoot a ball to begin generating more"
 
@@ -51,7 +53,8 @@ public OnPluginStart()
 	RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Scout";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

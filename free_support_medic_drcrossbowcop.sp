@@ -9,6 +9,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Dr. Crossbow Cop"
 #define ROBOT_ROLE "Healer"
+#define ROBOT_CLASS "Medic"
+#define ROBOT_SUBCLASS "Projectile"
 #define ROBOT_DESCRIPTION "Rapid fire Crossbow"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
@@ -32,7 +34,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Medic";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
