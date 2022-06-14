@@ -11,8 +11,6 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Jbird"
 #define ROBOT_ROLE "Support"
-#define ROBOT_CLASS "Sniper"
-#define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Explosive headshot"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
@@ -39,8 +37,7 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+    robot.class = "Sniper";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

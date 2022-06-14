@@ -10,8 +10,6 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"SkillTron"
 #define ROBOT_ROLE "ZBOSS"
-#define ROBOT_CLASS "Pyro"
-#define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Rapid Fire Airblast"
 #define ROBOT_TIPS "Use rapid airblast to shut down the enemy"
 

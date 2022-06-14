@@ -11,8 +11,6 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Sergeant Crits"
 #define ROBOT_ROLE "ZBOSS"
-#define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Rapid Critical Rockets"
 #define ROBOT_TIPS "Firing speed increases as health decreases"
 

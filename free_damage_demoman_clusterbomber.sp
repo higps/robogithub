@@ -13,9 +13,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Cluster Bomber"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_CLASS "Demoman"
-#define ROBOT_SUBCLASS "Grenades"
-#define ROBOT_DESCRIPTION "Cluster Bomb Grenade Loose Cannon"
+#define ROBOT_DESCRIPTION "Cluster Bomb Grenade Launcher"
 #define ROBOT_TIPS "Bombs explodes in to smaller bombs\nReduced damage vs buildings"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
@@ -102,13 +100,11 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+    robot.class = "Demoman";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-
     AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 1);
 }
 

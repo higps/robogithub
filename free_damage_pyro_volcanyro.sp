@@ -9,10 +9,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Volcanyro"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_CLASS "Pyro"
-#define ROBOT_SUBCLASS "Projectile"
 #define ROBOT_DESCRIPTION "Gas Passer, Sharpened Volcano Fragment"
-#define ROBOT_TIPS "Hit enemies with gas, throw gas at them"
 
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -53,8 +50,7 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+    robot.class = "Pyro";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

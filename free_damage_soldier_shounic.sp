@@ -11,9 +11,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Shounic"
-#define ROBOT_ROLE "Damage"
-#define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Rockets"
+#define ROBOT_ROLE "Prototye"
 #define ROBOT_DESCRIPTION "High Damage Rocket Launcher Specialist"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -105,8 +103,7 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+    robot.class = "Soldier";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

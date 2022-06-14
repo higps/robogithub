@@ -8,8 +8,6 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"EXEcutioner"
 #define ROBOT_ROLE "Tank"
-#define ROBOT_CLASS "Demoman"
-#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "SkullCutter"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
@@ -41,8 +39,7 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+    robot.class = "Demoman";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

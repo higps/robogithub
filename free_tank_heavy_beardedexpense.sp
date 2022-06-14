@@ -12,8 +12,6 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bearded Expense"
 #define ROBOT_ROLE "Tank"
-#define ROBOT_CLASS "Heavy"
-#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Taunt: Leap Ability"
  
 #define SHWC             "models/bots/heavy_boss/bot_heavy_boss.mdl"
@@ -77,8 +75,7 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+    robot.class = "Heavy";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

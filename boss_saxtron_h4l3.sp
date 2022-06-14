@@ -12,8 +12,6 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Saxtron"
 #define ROBOT_ROLE "ZBOSS"
-#define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "SAXTRON HALE!"
 #define ROBOT_TIPS "Crouch and look up to super jump\nCrouch and look down while jumping to weight drop"
 

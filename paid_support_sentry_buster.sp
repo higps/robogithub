@@ -8,8 +8,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Sentry Buster"
-#define ROBOT_CLASS "Buster"
+#define ROBOT_NAME	"Buster"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_DESCRIPTION ""
 
@@ -39,7 +38,7 @@ public void OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+    robot.class = "Sentry";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
@@ -351,7 +350,7 @@ public Action Bewm(Handle timer, any userid)
 		
 		if (CanSeeTarget(clientPos, zPos, i, client))
 		{
-			//int iTeam = GetEntPropEnt(i, Prop_Send, "m_iTeamNum");
+			int iTeam = GetEntPropEnt(i, Prop_Send, "m_iTeamNum");
 		//	PrintToChatAll("iTeam %i, iClient Team %i", iTeam, iClientTeam);
 		// if (iTeam != iClientTeam)
 		// {

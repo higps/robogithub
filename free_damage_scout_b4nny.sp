@@ -9,8 +9,6 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"B4nny"
 #define ROBOT_ROLE "Damage"
-#define ROBOT_CLASS "Scout"
-#define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Scatter Scout"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
@@ -56,8 +54,7 @@ public OnPluginStart()
 	RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+    robot.class = "Scout";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

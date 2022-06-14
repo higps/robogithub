@@ -10,8 +10,6 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Equalizor"
 #define ROBOT_ROLE "Tank"
-#define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Banner"
 #define ROBOT_DESCRIPTION "Equalizor"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -58,8 +56,7 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+    robot.class = "Soldier";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

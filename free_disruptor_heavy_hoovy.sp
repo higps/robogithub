@@ -12,10 +12,7 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Hoovy"
 #define ROBOT_ROLE "Disruptor"
-#define ROBOT_CLASS "Heavy"
-#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Robot Hoovy"
-#define ROBOT_TIPS "Tickle enemies\nTaunt kill to make them laugh so hard they explode"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -59,8 +56,7 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+    robot.class = "Heavy";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

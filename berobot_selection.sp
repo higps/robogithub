@@ -18,7 +18,7 @@ enum (<<= 1)
 #pragma newdecls required
 #pragma semicolon 1
 
-#define MAX_SELECTIONS 3
+#define MAX_SELECTIONS 2
 
 public Plugin myinfo =
 {
@@ -29,7 +29,7 @@ public Plugin myinfo =
 	url = "https://github.com/higps/robogithub"
 };
 
-methodmap RobotSubclass < StringMap {
+methodmap RobotRole < StringMap {
     property int Count {
         public get(){ 
             int value;
@@ -51,8 +51,8 @@ methodmap RobotSubclass < StringMap {
         }
     }
 
-    public RobotSubclass() {
-        RobotSubclass category = view_as<RobotSubclass>(new StringMap());
+    public RobotRole() {
+        RobotRole category = view_as<RobotRole>(new StringMap());
         Robot robot;
         category.Robots = new ArrayList(sizeof(robot));
         category.Count = 0;
@@ -84,86 +84,6 @@ methodmap RobotSubclass < StringMap {
         Format(display, sizeof(display), "%s: (%i / %i)", name, count, max);
 
         menu.AddItem(key, display, draw);
-    }
-}
-
-methodmap RobotRole < StringMap {
-    property int Count {
-        public get(){ 
-            int value;
-            this.GetValue("Count", value);
-            return value;
-        }
-        public set(int value){
-            this.SetValue("Count", value);
-        }
-    }
-    property int Max {
-        public get(){ 
-            int value;
-            this.GetValue("Max", value);
-            return value;
-        }
-        public set(int value){
-            this.SetValue("Max", value);
-        }
-    }
-    property StringMap Subclasses {
-        public get(){ 
-            StringMap value;
-            this.GetValue("Subclasses", value);
-            return value;
-        }
-        public set(StringMap value){
-            this.SetValue("Subclasses", value);
-        }
-    }
-
-    public RobotRole() {
-        RobotRole category = view_as<RobotRole>(new StringMap());
-        category.Subclasses = new StringMap();
-        return category;
-    }
-
-    public RobotSubclass Get(char key[NAMELENGTH])
-    {
-        RobotSubclass robotSubclass;
-        this.Subclasses.GetValue(key, robotSubclass);
-        return robotSubclass;
-    }
-
-    public void Hydrate()
-    {
-        int count = 0;
-        int max = 0;
-        SMLogTag(SML_VERBOSE, "hydrating %i Subclasses in RobotRole", this.Subclasses.Size);
-        StringMapSnapshot snapshot = this.Subclasses.Snapshot();
-        for(int i = 0; i < snapshot.Length; i++)
-        {
-            char key[NAMELENGTH];
-            snapshot.GetKey(i, key, sizeof(key));
-            RobotSubclass robotSubclass = this.Get(key);
-            robotSubclass.Hydrate();
-
-            count += robotSubclass.Count;
-            max += robotSubclass.Robots.Length;
-        }
-        this.Count = count;
-        this.Max = max;
-        
-        SMLogTag(SML_VERBOSE, "hydrated RobotRole %i / %i", this.Count, this.Max);
-    }
-
-    public void AddMenuItem(Menu menu)
-    {
-        StringMapSnapshot snapshot = this.Subclasses.Snapshot();
-        for(int i = 0; i < snapshot.Length; i++)
-        {
-            char key[NAMELENGTH];
-            snapshot.GetKey(i, key, sizeof(key));
-            RobotSubclass robotSubclass = this.Get(key);
-            robotSubclass.AddMenuItem(menu, key, key);
-        }
     }
 }
 
@@ -216,7 +136,7 @@ methodmap RobotCategory < StringMap {
     {
         int count = 0;
         int max = 0;
-        SMLogTag(SML_VERBOSE, "hydrating %i Roles in RobotCategory", this.Roles.Size);
+        SMLogTag(SML_VERBOSE, "hydrating %i Categories in RobotCategory", this.Roles.Size);
         StringMapSnapshot snapshot = this.Roles.Snapshot();
         for(int i = 0; i < snapshot.Length; i++)
         {
@@ -226,7 +146,7 @@ methodmap RobotCategory < StringMap {
             robotRole.Hydrate();
 
             count += robotRole.Count;
-            max += robotRole.Max;
+            max += robotRole.Robots.Length;
         }
         this.Count = count;
         this.Max = max;
@@ -242,15 +162,7 @@ methodmap RobotCategory < StringMap {
             char key[NAMELENGTH];
             snapshot.GetKey(i, key, sizeof(key));
             RobotRole robotRole = this.Get(key);
-
-            int draw = ITEMDRAW_DEFAULT;
-            if (robotRole.Count >= robotRole.Max)
-                draw = ITEMDRAW_DISABLED;
-
-            char display[128];
-            Format(display, sizeof(display), "%s: (%i / %i)", key, robotRole.Count, robotRole.Max);
-
-            menu.AddItem(key, display, draw);
+            robotRole.AddMenuItem(menu, key, key);
         }
     }
 }
@@ -260,17 +172,17 @@ methodmap RobotSelectionMenu < StringMap {
         return view_as<RobotSelectionMenu>(new StringMap());
     }
 
-    public RobotSubclass GetBosses()
+    public RobotRole GetBosses()
     {
-        RobotSubclass subclass;
-        this.GetValue("ZBOSS", subclass);
+        RobotRole robotRole;
+        this.GetValue("ZBOSS", robotRole);
 
-        return subclass;
+        return robotRole;
     }
 
-    public void SetBosses(RobotSubclass robotSubclass)
+    public void SetBosses(RobotRole robotRole)
     {
-        this.SetValue("ZBOSS", robotSubclass);
+        this.SetValue("ZBOSS", robotRole);
     }
 
     public void GetKey(bool isFree, char key[5])
@@ -307,7 +219,7 @@ methodmap RobotSelectionMenu < StringMap {
         if (paid)
             paid.Hydrate();
             
-        RobotSubclass boss = this.GetBosses();
+        RobotRole boss = this.GetBosses();
         if (boss)
             boss.Hydrate();
     }
@@ -360,7 +272,6 @@ public void MM_OnClientReseting(int clientId)
     g_ClientIsRepicking[clientId] = false;
     g_selections[clientId][0] = "";
     g_selections[clientId][1] = "";
-    g_selections[clientId][2] = "";
     if (g_chooseRobotMenus[clientId] == null)
         return;
     
@@ -406,10 +317,10 @@ public void LoadMenuTree()
 
         if (isBoss)
         {
-            RobotSubclass bossRobotRole = menu.GetBosses();
+            RobotRole bossRobotRole = menu.GetBosses();
             if (!bossRobotRole)
             {
-                bossRobotRole = new RobotSubclass();
+                bossRobotRole = new RobotRole();
                 menu.SetBosses(bossRobotRole);
             }
             bossRobotRole.Robots.PushArray(robot);
@@ -424,28 +335,13 @@ public void LoadMenuTree()
                 menu.Set(isFree, category);
             }
 
-            char subclass[32];
-            if (robot.subclass[0] == '\0')
-                subclass = "Other";
-            else
-                strcopy(subclass, sizeof(subclass), robot.subclass);
-            
-
             RobotRole robotRole;
             if (!category.Roles.GetValue(robot.role, robotRole))
             {
                 robotRole = new RobotRole();
                 category.Roles.SetValue(robot.role, robotRole);
             }
-
-            RobotSubclass robotSubclass;
-            if (!robotRole.Subclasses.GetValue(subclass, robotSubclass))
-            {
-                robotSubclass = new RobotSubclass();
-                robotRole.Subclasses.SetValue(subclass, robotSubclass);
-            }
-
-            robotSubclass.Robots.PushArray(robot);
+            robotRole.Robots.PushArray(robot);
             SMLogTag(SML_VERBOSE, "adding nonBoss-Robot %s (free: %i)", robot.name, isFree);
         }
     }
@@ -483,7 +379,6 @@ any Native_Menu_RobotSelection(Handle plugin, int numParams)
     {
         g_selections[clientId][0] = "";
         g_selections[clientId][1] = "";
-        g_selections[clientId][2] = "";
     }
 
     Menu_TopLevel(clientId);
@@ -576,8 +471,8 @@ void Menu_SecondLevel(int clientId, char key[NAMELENGTH])
         }
         case 'Z':   //ZBOSS
         {
-            RobotSubclass robotRole = g_menu.GetBosses();
-            Menu_RobotSubclass(clientId, robotRole);
+            RobotRole robotRole = g_menu.GetBosses();
+            Menu_RobotsPerRole(clientId, robotRole);
         }
     }
 }
@@ -667,130 +562,29 @@ void Menu_ThirdLevel(int clientId, char key[NAMELENGTH])
         }
     }
     RobotRole robotRole = category.Get(key);
-    Menu_RobotRole(clientId, robotRole);
+    Menu_RobotsPerRole(clientId, robotRole);
 }
 
-void Menu_RobotRole(int client, RobotRole robotRole)
+void Menu_RobotsPerRole(int client, RobotRole robotRole)
 {
-    if (robotRole.Subclasses.Size == 0)
-    {
-        SMLogTag(SML_ERROR, "aborting subclasses-menu for %L since none where defined", client);
-        return;
-    }
+    SMLogTag(SML_VERBOSE, "showing %i robots per role for %L", robotRole.Robots.Length, client);
 
-    if (robotRole.Subclasses.Size == 1)
-    {
-        char key[NAMELENGTH];
-        robotRole.Subclasses.Snapshot().GetKey(0, key, sizeof(key));
-
-        SMLogTag(SML_ERROR, "skipping subclasses-menu for %L since only one was defined. selecting %s automatically", client, key);
-        Menu_ForthLevel(client, key);
-        return;
-    }
-
-    SMLogTag(SML_VERBOSE, "showing %i subclasses for %L", robotRole.Subclasses.Size, client);
-
-    Menu menu = new Menu(Menu_RobotRole_Handler);
+    Menu menu = new Menu(MenuHandler);
 
     menu.SetTitle("Select Your Robot Type");
     menu.ExitBackButton = true;
 
-    robotRole.AddMenuItem(menu);
-    
-    if (g_chooseRobotMenus[client] != null)
-        g_chooseRobotMenus[client].Cancel();
-    g_chooseRobotMenus[client] = menu;
-
-    int timeout = MENU_TIME_FOREVER;
-    menu.Display(client, timeout);
-    SMLogTag(SML_VERBOSE, "menu displayed to %L for %i seconds", client, timeout);
-}
-
-public int Menu_RobotRole_Handler(Menu menu, MenuAction action, int param1, int param2)
-{
-    /* If an option was selected, tell the client about the item. */
-    if(action == MenuAction_Select)
-    {
-        if (g_chooseRobotMenus[param1] == null)
-            return;
-        g_chooseRobotMenus[param1] = null;
-
-        char info[NAMELENGTH];
-        bool found = menu.GetItem(param2, info, sizeof(info));
-        PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
-
-        g_selections[param1][2] = info;
-
-        Menu_ForthLevel(param1, info);
-    }
-    /* If the menu was cancelled, print a message to the server about it. */
-    else if(action == MenuAction_Cancel)
-    {
-        g_chooseRobotMenus[param1] = null;
-        ResetSelection(param1);
-
-        switch (param2)
-        {
-            case MenuCancel_Exit:
-                g_ClientIsRepicking[param1] = false;
-            case MenuCancel_ExitBack:
-                Menu_TopLevel(param1);
-        }
-        // PrintToChatAll("Client %d's menu was cancelled.  Reason: %d", param1, param2);
-    }
-
-    /* If the menu has ended, destroy it */
-    else if(action == MenuAction_End)
-    {
-        for(int i = 0; i <= MaxClients; i++)
-        {
-            if (g_chooseRobotMenus[i] == menu)
-                g_chooseRobotMenus[i] = null;
-        }
-        delete menu;
-    }
-}
-
-void Menu_ForthLevel(int clientId, char key[NAMELENGTH])
-{
-    RobotCategory category;
-    switch(g_selections[clientId][0][0])
-    {
-        case 'F':   //Free
-        {
-            category = g_menu.Get(true);
-        }
-        case 'P':   //Paid
-        {
-            category = g_menu.Get(false);
-        }
-    }
-    RobotRole robotRole = category.Get(g_selections[clientId][1]);
-    RobotSubclass robotSubclass = robotRole.Get(key);
-    Menu_RobotSubclass(clientId, robotSubclass);
-}
-
-void Menu_RobotSubclass(int client, RobotSubclass robotSubclass)
-{
-    SMLogTag(SML_VERBOSE, "showing %i robots per subclass for %L", robotSubclass.Robots.Length, client);
-
-    Menu menu = new Menu(Menu_RobotSubclass_Handler);
-
-    menu.SetTitle("Select Your Robot Type");
-    menu.ExitBackButton = true;
-
-    for(int i = 0; i < robotSubclass.Robots.Length; i++)
+    for(int i = 0; i < robotRole.Robots.Length; i++)
     {
         Robot item;
-        robotSubclass.Robots.GetArray(i, item);
+        robotRole.Robots.GetArray(i, item);
 
         char notes[15];
         int draw;
         GenerateNotes(item, client, notes, draw);
 
         char display[128];
-        //Format(display, sizeof(display), "%s: %s - %s - %s (%s)", item.role, item.class, item.name, item.shortDescription, notes);
-        Format(display, sizeof(display), "%s: %s - %s (%s)", item.class, item.name, item.shortDescription, notes);
+        Format(display, sizeof(display), "%s: %s - %s - %s (%s)", item.role, item.class, item.name, item.shortDescription, notes);
 
         menu.AddItem(item.name, display, draw);
 
@@ -806,7 +600,75 @@ void Menu_RobotSubclass(int client, RobotSubclass robotSubclass)
     SMLogTag(SML_VERBOSE, "menu displayed to %L for %i seconds", client, timeout);
 }
 
-public int Menu_RobotSubclass_Handler(Menu menu, MenuAction action, int param1, int param2)
+void GenerateNotes(Robot item, int client, char notes[15], int& draw)
+{
+    int count = GetRobotCount(item.name);
+    int roboCap = GetRobotCap(item.name);
+    if (count >= roboCap)
+    {
+        Format(notes, sizeof(notes), "%i / %i", count, roboCap);
+        draw = ITEMDRAW_DISABLED;
+        return;
+    }
+
+    SMLogTag(SML_VERBOSE, "Restrictions handle %b for robot %s", item.restrictions, item.name);
+    SMLogTag(SML_VERBOSE, "TimeLeft handle %b for robot %s", item.restrictions.TimeLeft, item.name);
+    if (!item.restrictions.TimeLeft.Enabled)
+    {
+        Format(notes, sizeof(notes), "timeleft: %is", item.restrictions.TimeLeft.SecondsBeforeEndOfRound);
+        draw = ITEMDRAW_DISABLED;
+        return;
+    }
+
+    RobotCoins teamCoins = item.restrictions.GetTeamCoinsFor(client);
+    int availableTeamCoins = GetTeamCoinsFor(client);
+    int teamCost = teamCoins.GetPrice();
+    SMLogTag(SML_VERBOSE, "client %i robot %s teamCost %i", client, item.name, teamCost);
+    SMLogTag(SML_VERBOSE, "client %i robot %s availableTeamCoins %i", client, item.name, availableTeamCoins);
+
+    RobotCoins robotCoins = item.restrictions.GetRobotCoinsFor(client);
+    int availableRobotCoins = GetRobotCoinsFor(client);
+    int robotCost = robotCoins.GetPrice();
+    SMLogTag(SML_VERBOSE, "client %i robot %s robotCost %i", client, item.name, robotCost);
+    SMLogTag(SML_VERBOSE, "client %i robot %s availableRobotCoins %i", client, item.name, availableRobotCoins);
+
+    if (!teamCoins.Enabled)
+    {
+        GenerateCoinNotes(notes, teamCost, robotCost);
+        draw = ITEMDRAW_DISABLED;
+        return;
+    }
+    if (availableRobotCoins < robotCost)
+    {
+        GenerateCoinNotes(notes, teamCost, robotCost);
+        draw = ITEMDRAW_DISABLED;
+        return;
+    }
+
+
+
+
+    Format(notes, sizeof(notes), "%i / %i", count, roboCap);
+    draw = ITEMDRAW_DEFAULT;
+}
+
+void GenerateCoinNotes(char notes[15], int teamCost, int robotCost)
+{
+    if (teamCost > 0 && robotCost > 0)
+    {
+        Format(notes, sizeof(notes), "%i B₡ %i R₡", teamCost, robotCost);
+        return;
+    }
+    if (teamCost > 0)
+    {
+        Format(notes, sizeof(notes), "%i B₡", teamCost);
+        return;
+    }
+    
+    Format(notes, sizeof(notes), "%i R₡", robotCost);
+}
+
+public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
 {
     /* If an option was selected, tell the client about the item. */
     if(action == MenuAction_Select)
@@ -847,47 +709,6 @@ public int Menu_RobotSubclass_Handler(Menu menu, MenuAction action, int param1, 
         }
         delete menu;
     }
-}
-
-void GenerateNotes(Robot item, int client, char notes[15], int& draw)
-{
-    int count = GetRobotCount(item.name);
-    int roboCap = GetRobotCap(item.name);
-    if (count >= roboCap)
-    {
-        Format(notes, sizeof(notes), "%i / %i", count, roboCap);
-        draw = ITEMDRAW_DISABLED;
-        return;
-    }
-
-    SMLogTag(SML_VERBOSE, "Restrictions handle %b for robot %s", item.restrictions, item.name);
-    SMLogTag(SML_VERBOSE, "TimeLeft handle %b for robot %s", item.restrictions.TimeLeft, item.name);
-    if (!item.restrictions.TimeLeft.Enabled)
-    {
-        Format(notes, sizeof(notes), "timeleft: %is", item.restrictions.TimeLeft.SecondsBeforeEndOfRound);
-        draw = ITEMDRAW_DISABLED;
-        return;
-    }
-
-    RobotCoins robotCoins = item.restrictions.GetRobotCoinsFor(client);
-
-    if (!robotCoins.Enabled)
-    {
-        Format(notes, sizeof(notes), "R₡: %i", robotCoins.GetPrice());
-        draw = ITEMDRAW_DISABLED;
-        return;
-    }
-    int RobotCost = robotCoins.GetPrice();
-   // PrintToChatAll("RoboCost %i", RobotCost);
-    if (RobotCost > 0)
-    {
-        Format(notes, sizeof(notes), "R₡: %i", robotCoins.GetPrice());
-        draw = ITEMDRAW_DEFAULT;
-        return;
-    }
-
-    Format(notes, sizeof(notes), "%i / %i", count, roboCap);
-    draw = ITEMDRAW_DEFAULT;
 }
 
 void ResetSelection(int clientId)

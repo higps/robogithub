@@ -13,8 +13,6 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"BatBot"
 #define ROBOT_ROLE "Disruptor"
-#define ROBOT_CLASS "Spy"
-#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "You have grappling hook"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
@@ -56,8 +54,7 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+    robot.class = "Spy";
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
