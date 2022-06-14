@@ -76,6 +76,16 @@ methodmap RestrictionsDefinition < StringMap {
             this.SetValue("RobotCoins", value);
         }
     }
+    property RobotCoinRestrictionDefinition TeamCoins {
+        public get(){ 
+            RobotCoinRestrictionDefinition value;
+            this.GetValue("TeamCoins", value);
+            return value;
+        }
+        public set(RobotCoinRestrictionDefinition value){
+            this.SetValue("TeamCoins", value);
+        }
+    }
 
     public RestrictionsDefinition() {
         return view_as<RestrictionsDefinition>(new StringMap());
@@ -98,10 +108,12 @@ typedef RobotCallback = function void (int client);
  * @param callback          function creating this robot
  * @param version           plugin version of this individual robot-plugin
  * @param restrictions      restrictions on spawning this robot (null means no restricitons)
+ * @param robotCoinsOnDeath how much RobotCoins are "earned" when robot is destroyed
+ * @param teamCoinsOnDeath how much TeamCoins are "earned" when robot is destroyed
  * 
  * @noreturn
  */
-native void AddRobot(const any[] robot, RobotCallback callback, char[] version, RestrictionsDefinition restrictions = null, int robotCoinsOnDeath = 1);
+native void AddRobot(const any[] robot, RobotCallback callback, char[] version, RestrictionsDefinition restrictions = null, int robotCoinsOnDeath = 1, int teamCoinsOnDeath = 0);
 
 /**
  * Removes a robot to the storage. So it can't be used by other plugins anymore. (usually called during OnPluginEnd)

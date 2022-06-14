@@ -11,7 +11,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Sergeant Crits"
 #define ROBOT_ROLE "ZBOSS"
-#define ROBOT_DESCRIPTION "Critical Rockets"
+#define ROBOT_DESCRIPTION "Rapid Critical Rockets"
+#define ROBOT_TIPS "Firing speed increases as health decreases"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
@@ -69,8 +70,11 @@ public OnPluginStart()
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 4;
+    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+    restrictions.TeamCoins.Overall = 2;
+
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = 1;
 
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
@@ -230,7 +234,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Boss Boss\nCritical Rockets\nCan't be healed.");
+	PrintHintText(client , ROBOT_TIPS);
 	//SetBossHealth(client);
 }
 
@@ -271,10 +275,10 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 7.0);
 			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.5);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.9);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 1.1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.75);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.25);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.2);
 			//TF2Attrib_SetByName(Weapon1, "mini rockets", 5.0);
 			//TF2Attrib_SetByName(Weapon1, "auto fires when full", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "auto fires full clip", 1.0);
@@ -305,6 +309,6 @@ public void OnEntityCreated(int iEntity, const char[] sClassName)
 public void Hook_OnProjectileSpawn(iEntity) {
 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 2.00);
+		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.25);
 	}
 }

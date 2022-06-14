@@ -35,6 +35,8 @@ static const char TeleActivateSounds[][256] =
 	"vo/announcer_mvm_eng_tele_activated05.mp3"
 };
 
+
+
 #define TELEPORTER_SPAWN		"mvm/mvm_tele_deliver.wav"
 #define TELEPORTER_ACTIVATE		"mvm/mvm_tele_activate.wav"
 
@@ -66,8 +68,9 @@ char g_szOffsetStartProp[64];
 int g_iOffsetMatchingTeleporter = -1;
 
 int g_Recharge[MAXPLAYERS + 1] = 0;
-int g_RechargeCap = 100;
+int g_RechargeCap = 500;
 
+bool g_TouchHooked[MAXPLAYERS + 1] = false;
 enum //Teleporter states
 {
 	TELEPORTER_STATE_BUILDING = 0,				// Building, not active yet
@@ -119,6 +122,8 @@ public void OnPluginStart()
 
 	AddCommandListener(CommandListener_Build, "build");
 	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
+	
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -137,6 +142,29 @@ public void OnMapStart()
 
 	PrecacheSound(TELEPORTER_SPAWN, true);
 	PrecacheSound(TELEPORTER_ACTIVATE, true);
+
+}
+
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	//int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	if (IsValidClient(victim))
+	{
+		g_TouchHooked[victim] = false;
+		SDKUnhook(victim, SDKHook_Touch, OnTouch);
+	}
+}
+
+public void OnClientDisconnect_Post(int client)
+{
+	if (IsValidClient(client))
+	{
+		g_TouchHooked[client] = false;
+		SDKUnhook(client, SDKHook_Touch, OnTouch);
+		
+	} 
 }
 
 public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
@@ -179,8 +207,18 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 			GetEntPropVector(iObj, Prop_Data, "m_vecOrigin", position);
 			int attach = CreateEntityByName("trigger_push");
 			TeleportEntity(attach, position, NULL_VECTOR, NULL_VECTOR);
-			TE_Particle("teleported_mvm_bot", position, _, _, attach, 1,0);
+
+			if (GetClientTeam(iBuilder) == TFTeam_Blue)
+			{
+				TE_Particle("teleported_mvm_bot", position, _, _, attach, 1,0);
+			}else
+			{
+				TE_Particle("teleported_mvm_bot_dust", position, _, _, attach, 1,0);	
+			}
+			
 			//TE_Particle("teleporter_mvm_bot_persist", position, _, _, attach, 1,0);
+			//TE_Particle("particles/teleported_mvm_bot_red", position, _, _, attach, 1,0);
+			
 
 			g_iPadType[iObj] = PadType_Boss;
 			#if defined DEBUG
@@ -192,6 +230,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 			int size = sizeof TeleActivateSounds;
 			int soundswitch = GetRandomInt(0, size - 1);
 			EmitSoundToAll(TeleActivateSounds[soundswitch]);
+
 			/*switch(soundswitch)
 			{
 				case 1: EmitSoundToAll(TELEPORTER_ACTIVATE1);
@@ -213,6 +252,8 @@ stock void TF2_SetMatchingTeleporter(int iTele, int iMatch)	//Set the matching t
 		//PrintToChatAll("Matching telepoters");
 		int iOffs = FindSendPropInfo("CObjectTeleporter", g_szOffsetStartProp) + g_iOffsetMatchingTeleporter;
 		SetEntDataEnt2(iTele, iOffs, iMatch, true);
+
+
 	}
 
 }
@@ -262,24 +303,47 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		#endif
 		return Plugin_Changed;
 	}
-
-	int team = GetClientTeam(client);
-
-	// if (team != EngieTeam)
-	// 	return Plugin_Continue;
 	
-	float angles[3], pos[3];
-	if (GetTeamporterTransform(team, angles, pos) && !g_spawnclamp[client])
-	{
-		MC_PrintToChatEx(client, client, "{orange}==[TEAMPORTER ACTIVE]==");
-		MC_PrintToChatEx(client, client, "{teamcolor}==[HOLD CROUCH TO CHARGE TELEPORT IN SPAWN!]==");
-		//EmitSoundToAll(TELEPORTER_ACTIVATE, client, _,_,_,0.3);
-		EmitSoundToClient(client, TELEPORTER_ACTIVATE);
-		g_spawnclamp[client] = true;
-		CreateTimer(1.5, SpawnSound_Clamp, client);
+	if (IsAnyRobot(client) && !g_TouchHooked[client]){
+	SDKHook(client, SDKHook_Touch, OnTouch);
+	g_Recharge[client] = 0;
+	g_TouchHooked[client] = true;
 	}
+	
+	// int team = GetClientTeam(client);
+
+	// // if (team != EngieTeam)
+	// // 	return Plugin_Continue;
+	
+	// float angles[3], pos[3];
+	// if (GetTeamporterTransform(team, angles, pos) && !g_spawnclamp[client])
+	// {
+	// 	MC_PrintToChatEx(client, client, "{orange}==[TEAMPORTER ACTIVE]==");
+	// 	MC_PrintToChatEx(client, client, "{teamcolor}==[HOLD CROUCH TO CHARGE TELEPORT IN SPAWN!]==");
+	// 	//EmitSoundToAll(TELEPORTER_ACTIVATE, client, _,_,_,0.3);
+	// 	EmitSoundToClient(client, TELEPORTER_ACTIVATE);
+	// 	g_spawnclamp[client] = true;
+	// 	CreateTimer(1.5, SpawnSound_Clamp, client);
+	// }
 
 	return Plugin_Continue;
+}
+
+public Action OnTouch(int client, int ent)
+{
+
+		char entname[MAX_NAME_LENGTH];
+		GetEntityClassname(ent, entname, sizeof(entname));
+		
+		if (!StrContains(entname, "func_respawnroom")){
+
+			if (TF2Spawn_IsClientInSpawn(client) )
+			{
+				UpdateCharge(client);
+				DrawHUD(client);
+			}	
+		}
+	
 }
 
 public Action Teleport_Player(int client)
@@ -312,6 +376,8 @@ public Action Teleport_Player(int client)
 		float oober = 3.0;
 		TF2_AddCondition(client, TFCond_Ubercharged, oober);
 		TF2_AddCondition(client, TFCond_TeleportedGlow, 5.0);
+		g_spawnclamp[client] = false;
+		
 	}
 	return Plugin_Continue;
 }
@@ -330,17 +396,23 @@ bool GetTeamporterTransform(int team, float angles[3], float pos[3])
 	{
 		if (GetEntProp(ent, Prop_Send, "m_iTeamNum") != team)
 			continue;
-		if (GetEntProp(ent, Prop_Send, "m_bBuilding"))	// If being built
-			continue;
+		if (GetEntProp(ent, Prop_Send, "m_bBuilding"))
+			continue;	
 		if (GetEntProp(ent, Prop_Send, "m_bCarried"))	// If being carried
 			continue;
 		if (GetEntProp(ent, Prop_Send, "m_iObjectMode") != 1)	// If not exit
 			continue;
 		if (GetEntProp(ent, Prop_Send, "m_bHasSapper"))//has sapper
 			continue;
-
 		if (g_iPadType[ent] != PadType_Boss)
 			continue;
+		if (TF2_GetBuildingState(ent) != TELEPORTER_STATE_READY)
+			continue;
+		// if (TF2_GetBuildingState(ent) == TELEPORTER_STATE_READY)
+		// 	continue;
+
+		// int state = TF2_GetBuildingState(ent);
+		// PrintToChatAll("%i state", state);
 
 		GetEntPropVector(ent, Prop_Send, "m_vecOrigin", vecSpawn);
 		dist = GetVectorDistance(vecSpawn, vecSpawns[i]);
@@ -379,15 +451,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if (IsAnyRobot(client) && buttons & (IN_DUCK))
 	{
-		if(TF2Spawn_IsClientInSpawn(client))
+		if(TF2Spawn_IsClientInSpawn(client) && g_Recharge[client] == g_RechargeCap)
 		{
-			//PrintToChat(client, "Recharge %i", g_Recharge[client]);
-			UpdateCharge(client);
-			DrawHUD(client);
+
+			Teleport_Player(client);
+			
 		}
 		else
 		{
-			g_Recharge[client] = 0;
+			
 		}
 		// if (g_Recharge[client] >= g_RechargeCap)
 		// {
@@ -407,23 +479,24 @@ void UpdateCharge(int client)
 	// if we are already at max charge, no need to check anything
 	if(IsAnyRobot(client))
 	{
-		g_Recharge[client] += 1;
-		TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
-	}
-
-	if(g_Recharge[client] >= g_RechargeCap)
-	{
+		if(IsFakeClient(client))
+		{
+			Teleport_Player(client);
+		}
+		
+		if(g_Recharge[client] >= g_RechargeCap)
+		{
 		g_Recharge[client] = g_RechargeCap;
-		TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
-	}
-	if(g_Recharge[client] >= g_RechargeCap)
-	{
-		//g_Recharge[client] = g_RechargeCap;
-		Teleport_Player(client);
 
-		//TELEPORT TO TELE
-		//EmitSoundToAll(SOUND_HEAL_READY_VO, client);
+
+		
+		}else
+		{
+			g_Recharge[client]++;
+		}
+		
 	}
+
 	//UpdatePoseParameter(client, GetWeaponWithAttribute(client));
 }
 
@@ -447,8 +520,23 @@ void UpdateCharge(int client)
 #define CHAR_FULL "■"
 #define CHAR_EMPTY "□"
 
+bool b_hud_clamp[MAXPLAYERS + 1] = false;
+
 void DrawHUD(int client)
 {
+
+        if (!b_hud_clamp[client])
+		{
+			CreateTimer(0.05, Timer_DrawHud, client);
+			b_hud_clamp[client] = true;
+		}
+
+}
+
+public Action Timer_DrawHud(Handle timer, int client)
+{
+
+	if (IsClientInGame(client) && IsValidClient(client)){
 	char sHUDText[128];
 	char sProgress[32];
 	int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCap) * 100.0);
@@ -459,19 +547,38 @@ void DrawHUD(int client)
 		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
 	}
 
-	Format(sHUDText, sizeof(sHUDText), "Teleport: %d%%%%   \n%s   ", iPercents, sProgress);
+	int team = GetClientTeam(client);
+
+	float angles[3], pos[3];
+	Format(sHUDText, sizeof(sHUDText), "Charging Teamporter: %d%%%%   \n%s   ", iPercents, sProgress);
 
 	if(iPercents >= 100)
 	{
-		Format(sHUDText, sizeof(sHUDText), "Teleport inactive: %d%%%%   \n%s   ", iPercents, sProgress);
-		SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
+		if (GetTeamporterTransform(team, angles, pos))
+		{
+			Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nCrouch to Teleport!");
+			TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
+			SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
+
+			if (!g_spawnclamp[client])
+			{
+				EmitSoundToClient(client, TELEPORTER_ACTIVATE, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.35);
+				g_spawnclamp[client] = true;
+			}
+		}else if (!GetTeamporterTransform(team, angles, pos))
+		{
+			Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nNo active Teleporter");
+			SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+		}
+		
 	} else {
 
 		SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
 	}
 	ShowHudText(client, -2, sHUDText);
+	b_hud_clamp[client] = false;
+	}
 }
-
 
 stock void TE_Particle(char[] Name, float origin[3] = NULL_VECTOR, float start[3] = NULL_VECTOR, float angles[3] = NULL_VECTOR, entindex=-1, attachtype=-1, attachpoint=-1, bool resetParticles=true, customcolors = 0, float color1[3] = NULL_VECTOR, float color2[3] = NULL_VECTOR, controlpoint = -1, controlpointattachment = -1, float controlpointoffset[3] = NULL_VECTOR)
 {
@@ -581,6 +688,9 @@ stock void ResetSkin(int iEnt)
 	{
 		int iTeam = GetEntProp(iEnt, Prop_Data, "m_iTeamNum");
 		SetEntProp(iEnt, Prop_Send, "m_nSkin", iTeam - 2);
+
+
+
 	}
 }
 
@@ -616,17 +726,19 @@ void OnPadThink(int iPad)
 
 	if (bCarried || bPlacing || bDisabled)
 	{
-	if (bBuilding && flConstructed < 1.0)
-	{
-		if (TF2_GetBuildingState(iPad) != TELEPORTER_STATE_BUILDING)
-			TF2_SetBuildingState(iPad, TELEPORTER_STATE_BUILDING);
-		if (GetEntProp(iPad, Prop_Send, "m_iUpgradeLevel") != 3 && !bSapped)
+		if (bBuilding && flConstructed < 1.0)
 		{
-			SetEntProp(iPad, Prop_Send, "m_iHighestUpgradeLevel", 3);
-			SetEntProp(iPad, Prop_Send, "m_iUpgradeLevel", 3);
+			if (TF2_GetBuildingState(iPad) != TELEPORTER_STATE_BUILDING)
+				TF2_SetBuildingState(iPad, TELEPORTER_STATE_BUILDING);
+			if (GetEntProp(iPad, Prop_Send, "m_iUpgradeLevel") != 3 && !bSapped)
+			{
+				SetEntProp(iPad, Prop_Send, "m_iHighestUpgradeLevel", 3);
+				SetEntProp(iPad, Prop_Send, "m_iUpgradeLevel", 3);
+			}
+
+
+			return;
 		}
-		return;
-	}
 	}
 	//int iObjParti = EntRefToEntIndex(g_iObjectParticle[iPad]);
 
@@ -668,6 +780,7 @@ void OnPadThink(int iPad)
 	if (GetEntPropFloat(iPad, Prop_Send, "m_flYawToExit") > 360.0){
 		SetEntPropFloat(iPad, Prop_Send, "m_flYawToExit", 0.0);
 	}
+
 
 
 }

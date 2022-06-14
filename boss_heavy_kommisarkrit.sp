@@ -10,6 +10,7 @@
 #define ROBOT_NAME	"Kommisar Krit"
 #define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "Slow Crit Minigun"
+#define ROBOT_TIPS "Crit Minign"
 
 
 //#define MODEL "models/weapons/shells/shell_minigun.mdl"
@@ -76,8 +77,11 @@ public OnPluginStart()
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 4;
+    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+    restrictions.TeamCoins.Overall = 2;
+
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = 1;
 
     AddRobot(robot, MakeBigBigJoey, PLUGIN_VERSION, restrictions);
 	
@@ -261,7 +265,7 @@ MakeBigBigJoey(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.7);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
 
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
@@ -283,7 +287,7 @@ MakeBigBigJoey(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	TF2_AddCondition(client, TFCond_CritCanteen);
 	
-	PrintHintText(client, "100% critical chance\nCan't get healed");
+	PrintHintText(client, ROBOT_TIPS);
 
 	//int clientId = GetClientUserId(client);
 	//SetBossHealth(client);

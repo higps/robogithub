@@ -54,6 +54,11 @@ bool g_Timer[MAXPLAYERS + 1] = false;
 
 int g_Eyelander_Counter[MAXPLAYERS + 1] = 0;
 
+float g_AirStrikeDamage[MAXPLAYERS +1] = 0.0;
+float g_AirStrikeDMGRequirement = 600.0;
+float g_ElectricStunDuration = 0.6;
+bool g_Enabled;
+
 public Plugin myinfo =
 {
 	name = "berobot_dmg_handler",
@@ -81,6 +86,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_bDebugMode].AddChangeHook(CvarChangeHook);
 
     HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
+    HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 }
 
 public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
@@ -89,6 +95,25 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
         g_cv_bDebugMode = view_as<bool>(StringToInt(sNewValue));
     if(convar == g_cvCvarList[CV_flSpyBackStabModifier])
         g_CV_flSpyBackStabModifier = StringToFloat(sNewValue);
+}
+
+public void MM_OnEnabledChanged(int enabled)
+{
+    PrintToChatAll("Enabled was %i", enabled);
+}
+
+public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+{
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+    
+    if (!IsAnyRobot(client))
+    {
+        if (HasAirStrike(client))
+        {
+            g_AirStrikeDamage[client] = 0.0;
+        }
+    }
+   // Requ
 }
 
 /* Plugin Exclusive Functions */
@@ -126,33 +151,33 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
             }
 
-                        if (iClassAttacker == TFClass_Heavy)
+             if (iClassAttacker == TFClass_Heavy)
             {
                 if(IsWarriorSpirit(weapon))
                 {           
-                AddPlayerHealth(attacker, 50, 450, true);
-                ShowHealthGain(attacker, 50, attacker);
+                    AddPlayerHealth(attacker, 50, 450, true);
+                    ShowHealthGain(attacker, 50, attacker);
                 }
 
-                		if(IsKGB(weapon))
-		{
+                if(IsKGB(weapon))
+	        	{
 
-		if(g_cv_bDebugMode) PrintToChatAll("Hit # %i", Punch_Count[attacker]);
+                if(g_cv_bDebugMode) PrintToChatAll("Hit # %i", Punch_Count[attacker]);
 
-		//Get the name of the player to use with the tauntem plugin
-		int playerID = GetClientUserId(victim);
-		
-		if(g_cv_bDebugMode) PrintToChatAll("Victim name %s", playerID);
-			
-			
-			//Count the punches
-			Punch_Count[attacker]++;
+                //Get the name of the player to use with the tauntem plugin
+                int playerID = GetClientUserId(victim);
+                
+                if(g_cv_bDebugMode) PrintToChatAll("Victim name %s", playerID);
+                    
+                    
+                    //Count the punches
+                    Punch_Count[attacker]++;
 
-            if(TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen))
-            {
-                Punch_Count[attacker] = 0;
-            }
-			//PrintToChatAll("Punch count %i", Punch_Count[attacker]);
+                if(TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen))
+                {
+                    Punch_Count[attacker] = 0;
+                }
+                //PrintToChatAll("Punch count %i", Punch_Count[attacker]);
 			
 			// PrintToChatAll("========================");
 	// PrintToChatAll("Before timer Punch_Count %i:", Punch_Count[attacker]);
@@ -185,6 +210,22 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
             }
 
+
+            if (iClassAttacker == TFClass_Soldier)
+            {
+                if (IsAirStrike(weapon))
+                {
+                    if (g_AirStrikeDamage[attacker] >= g_AirStrikeDMGRequirement)
+                    {
+                        IncrementHeadCount(attacker);
+                        g_AirStrikeDamage[attacker] = 0.0;
+                    }else
+                    {
+                        g_AirStrikeDamage[attacker] += damage;
+                    }
+                    
+                }
+            }
 
                 if(damagecustom == TF_CUSTOM_BACKSTAB)
                 {
@@ -337,9 +378,8 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 case TF_CUSTOM_PLASMA_CHARGED: 
                 {
                     damage *= 1.5;
-                    TF2_StunPlayer(victim, 2.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
-                    TF2_AddCondition(victim, TFCond_Sapped, 2.5, attacker);
-                    critType = CritType_Crit;
+                    TF2_StunPlayer(victim, g_ElectricStunDuration*2, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
+                    TF2_AddCondition(victim, TFCond_Sapped, g_ElectricStunDuration*2, attacker);
                     return Plugin_Changed;
 
                 }   
@@ -363,8 +403,8 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
             if (IsElectric(weapon) && IsAnyRobot(victim))
             {
-                TF2_StunPlayer(victim, 0.5, 0.4, TF_STUNFLAG_SLOWDOWN, attacker);
-                TF2_AddCondition(victim, TFCond_Sapped, 0.5, attacker);
+                TF2_StunPlayer(victim, g_ElectricStunDuration, 0.75, TF_STUNFLAG_SLOWDOWN, attacker);
+                TF2_AddCondition(victim, TFCond_Sapped, g_ElectricStunDuration, attacker);
             }
             
             if (iClassAttacker == TFClass_DemoMan && !IsAnyRobot(attacker))
@@ -394,7 +434,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                     
                 }
                     
-                TF2_AddCondition(victim, TFCond_Sapped, 0.5, attacker);
+                //TF2_AddCondition(victim, TFCond_Sapped, 0.5, attacker);
             }
             if (iClassAttacker == TFClass_Sniper)
             {
@@ -411,7 +451,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                             SetEntProp(attacker, Prop_Send, "m_iDecapitations", 0);    
                         }else
                         {
-                            SetEntProp(attacker, Prop_Send, "m_iDecapitations", decapitations - 1);    
+                            SetEntProp(attacker, Prop_Send, "m_iDecapitations", 0);    
                         }
                         
                     }
@@ -458,7 +498,7 @@ bool IsElectric(int weapon)
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 		//If other electric weapons are added, add here
-	case 528, 442, 588: //Short Circuit, The Righteous Bison, Cow Mangler
+	case 528, 442, 588, 441: //Short Circuit, The Righteous Bison, Cow Mangler
 		{
 			return true;
 		}
@@ -516,7 +556,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsBazaar(Weapon1))
         {
 
-            MC_PrintToChatEx(client, client, "{teamcolor}Your rifle {orange}gains head{teamcolor} on headshot, but {orange}loses a head{teamcolor} on bodyshots");
+            MC_PrintToChatEx(client, client, "{teamcolor}Your rifle {orange}gains head{teamcolor} on headshot, but {orange}loses all heads{teamcolor} on bodyshot");
            
         }
 
@@ -551,7 +591,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsElectric(Weapon1) || IsElectric(Weapon2))
         {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your electric weapons slow robots for {orange}-60%%% move speed{teamcolor} for 0.5 seconds on hit");
+            MC_PrintToChatEx(client, client, "{teamcolor}Your electric weapons slow robots for {orange}-60%%% move speed{teamcolor} for %0.1f seconds on hit", g_ElectricStunDuration);
         }
 
         if (IsWarriorSpirit(Weapon3))
@@ -562,6 +602,44 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsKGB(Weapon3))
         {
             MC_PrintToChatEx(client, client, "{teamcolor}Your KGB grants you {orange}+7 seconds of critical hits{teamcolor} when landing a quick 3 hit combo");
+        }
+        if (IsJetpack(Weapon2))
+        {
+            TF2Attrib_SetByName(Weapon2, "falling_impact_radius_pushback", 0.0);
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Jetpack {orange}deals no knockback{teamcolor} when landing");
+        }
+        if (IsAirStrike(Weapon1))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your AirStrike {orange}gains additional clip{teamcolor} by doing %i damage to robots", RoundToNearest(g_AirStrikeDMGRequirement));
+        }
+        if (IsBlackBox(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.25);
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Blackbox has {orange}+25%% larger explosion radius");
+        }
+
+        if (isBeggarsBazooka(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "mult_player_movespeed_active", 1.15);
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Beggars Bazooka provides {orange}+15%% faster move speed while active");
+        }
+
+        if (isLibertyLauncher(Weapon1))
+        {
+            if (IsAnyBanner(Weapon2))
+            {
+                TF2Attrib_SetByName(Weapon2, "increase buff duration", 1.25);
+                MC_PrintToChatEx(client, client, "{teamcolor}Your Liberty Launcher provides your banners {orange}+25%% longer buff duration{teamcolor}");
+            }else
+            {
+                MC_PrintToChatEx(client, client, "{teamcolor}Your Liberty Launcher provides your banners {orange}equip a banner to get the buff!");
+            }
+        }
+
+        if (IsRocketLauncher(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "deploy time decreased", 0.75);
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Rocket Launcher provides you {orange}+25%% faster weapon switch speed{teamcolor}");
         }
 
     }
@@ -675,6 +753,23 @@ bool HasDiamondback(int client)
 	{
 		//If other kunais are added, add here
 	case 525: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool HasAirStrike(int client)
+{
+
+    int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other airstrikes are added, add here
+	case 1104: 
 		{
 			return true;
 		}
@@ -817,6 +912,116 @@ bool IsCandyCane(int weapon)
 	}
 	return false;
 }
+
+bool IsJetpack(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Candy Cane
+	case 1179: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsAirStrike(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other airstrikes are added, add here
+	case 1104: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsBlackBox(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other blackbox are added, add here
+	case 1085, 228: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isBeggarsBazooka(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other Beggarbazooka are added, add here
+	case 730: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+bool isLibertyLauncher(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other Beggarbazooka are added, add here
+	case 414: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsAnyBanner(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other Beggarbazooka are added, add here
+	case 1001, 226, 129, 354: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsRocketLauncher(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other Beggarbazooka are added, add here
+	case 18,205,237,513,658,800,809,889,898,907,916,965,974,108,110,1500,1501,1502,1504,1505,1508,1510,1512,1513,1515: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+// 
+
+
 
 void IncrementHeadCount(int iClient)
 {
