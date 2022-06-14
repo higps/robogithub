@@ -17,7 +17,10 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Uncle Dane"
 #define ROBOT_ROLE "Support"
+#define ROBOT_CLASS "Engineer"
+#define ROBOT_SUBCLASS "Builder"
 #define ROBOT_DESCRIPTION " Widowmaker, Jag"
+#define ROBOT_TIPS "Buildings build instantly when hit by a wrench\nBuild teamporters to easily teleport your team to the front lines\nPhase through buildings"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -131,7 +134,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Engineer";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

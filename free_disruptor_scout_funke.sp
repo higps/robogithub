@@ -10,6 +10,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Funke"
 #define ROBOT_ROLE "Disruptor"
+#define ROBOT_CLASS "Scout"
+#define ROBOT_SUBCLASS "Projectile"
 #define ROBOT_DESCRIPTION "Rapid Cleaver"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
@@ -51,7 +53,8 @@ public OnPluginStart()
 	RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Scout";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

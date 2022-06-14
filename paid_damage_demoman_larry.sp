@@ -10,6 +10,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Loch'n Larry"
 #define ROBOT_ROLE "Anti-Sentry"
+#define ROBOT_CLASS "Demoman"
+#define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Rapid Anti-Sentry Loch-n-Load"
 #define ROBOT_STATS "-75%%%% damage to players\nAttacks pierce damage resistances\n+75%%%% faster firing speed"
 
@@ -43,7 +45,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Demoman";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

@@ -9,7 +9,10 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Agro"
 #define ROBOT_ROLE "Damage"
+#define ROBOT_CLASS "Pyro"
+#define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Degreaser, Scorch shot, Maul"
+#define ROBOT_TIPS "You have 3 weapons\nScorch shot homes in on burning players"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -55,7 +58,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Pyro";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

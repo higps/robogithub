@@ -789,7 +789,8 @@ void Menu_RobotSubclass(int client, RobotSubclass robotSubclass)
         GenerateNotes(item, client, notes, draw);
 
         char display[128];
-        Format(display, sizeof(display), "%s: %s - %s - %s (%s)", item.role, item.class, item.name, item.shortDescription, notes);
+        //Format(display, sizeof(display), "%s: %s - %s - %s (%s)", item.role, item.class, item.name, item.shortDescription, notes);
+        Format(display, sizeof(display), "%s: %s - %s (%s)", item.class, item.name, item.shortDescription, notes);
 
         menu.AddItem(item.name, display, draw);
 

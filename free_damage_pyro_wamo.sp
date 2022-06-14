@@ -9,6 +9,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Wamo"
 #define ROBOT_ROLE "Damage"
+#define ROBOT_CLASS "Pyro"
+#define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Plhogistinator, Flaregun"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
@@ -50,7 +52,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Pyro";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

@@ -11,6 +11,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bursty"
 #define ROBOT_ROLE "Anti-Sentry"
+#define ROBOT_CLASS "Soldier"
+#define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Anti-Wrangler"
 #define ROBOT_COST 1
 #define ROBOT_STATS "Burst fire 3 rockets\nIgnores damage resistance buffs\n-25%%%% damage to players\n-40%%%% damage to buildings"
@@ -74,7 +76,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Soldier";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

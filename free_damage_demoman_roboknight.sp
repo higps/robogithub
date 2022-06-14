@@ -8,6 +8,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Robo-Knight"
 #define ROBOT_ROLE "Damage"
+#define ROBOT_CLASS "Demoman"
+#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Eyelander, Chargin' Targe"
 #define ROBOT_TIPS "Very Long Charge\n25% charge refill on kill\n3 second crit boost on kill\nHigh Jumps"
 
@@ -40,7 +42,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Demoman";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

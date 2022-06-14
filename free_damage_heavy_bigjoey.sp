@@ -9,8 +9,10 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Big Joey"
 #define ROBOT_ROLE "Damage"
+#define ROBOT_CLASS "Heavy"
+#define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Tomislav"
-#define ROBOT_TIPS "+15%% damage to players\nLess damage dibe to buildings"
+#define ROBOT_TIPS "+15%% damage to players\nLess damage done to buildings"
 
 
 //#define MODEL "models/weapons/shells/shell_minigun.mdl"
@@ -68,8 +70,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Heavy";
-	robot.subclass = "Hitscan";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

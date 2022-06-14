@@ -10,8 +10,11 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Fat Magic"
-#define ROBOT_ROLE "Prototype"
+#define ROBOT_ROLE "Damage"
+#define ROBOT_CLASS "Sniper"
+#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Bushwacka Piss Bot"
+
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -37,7 +40,8 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Sniper";
+    robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

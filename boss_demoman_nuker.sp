@@ -10,6 +10,8 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Nuker"
 #define ROBOT_ROLE "ZBOSS"
+#define ROBOT_CLASS "Demoman"
+#define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Nuke Shot"
 #define ROBOT_TIPS "You shoot payload bombs\nLarge explosion radius\nYou have crit melee weapon"
 
