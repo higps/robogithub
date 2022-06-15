@@ -881,40 +881,53 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
     SMLogTag(SML_VERBOSE, "client %i robot %s robotCost %i", client, item.name, robotCost);
     SMLogTag(SML_VERBOSE, "client %i robot %s availableRobotCoins %i", client, item.name, availableRobotCoins);
 
+    
+    GenerateCoinNotes(notes, teamCost, robotCost, count, roboCap);
+
     if (!teamCoins.Enabled)
     {
-        GenerateCoinNotes(notes, teamCost, robotCost);
+      //  GenerateCoinNotes(notes, teamCost, robotCost, count, roboCap);
         draw = ITEMDRAW_DISABLED;
         return;
     }
+
     if (availableRobotCoins < robotCost)
     {
-        GenerateCoinNotes(notes, teamCost, robotCost);
+      //  GenerateCoinNotes(notes, teamCost, robotCost, count, roboCap);
         draw = ITEMDRAW_DISABLED;
         return;
     }
 
 
-
-
-    Format(notes, sizeof(notes), "%i / %i", count, roboCap);
+    
+    //Format(notes, sizeof(notes), "%s)(%i/%i", notes, count, roboCap);  
     draw = ITEMDRAW_DEFAULT;
 }
 
-void GenerateCoinNotes(char notes[15], int teamCost, int robotCost)
+void GenerateCoinNotes(char notes[15], int teamCost, int robotCost, int count, int roboCap)
 {
+    //Robot costs boss and robot coints
     if (teamCost > 0 && robotCost > 0)
     {
-        Format(notes, sizeof(notes), "%i B₡ %i R₡", teamCost, robotCost);
+        Format(notes, sizeof(notes), "%iB₡,%iR₡", teamCost, robotCost);
         return;
     }
+    // Robot costs more than 0
     if (teamCost > 0)
     {
-        Format(notes, sizeof(notes), "%i B₡", teamCost);
+        Format(notes, sizeof(notes), "%iB₡", teamCost);
+        return;
+    }
+
+    if (robotCost == 0)
+    {
+        Format(notes, sizeof(notes), "%i/%i", count, roboCap);  
         return;
     }
     
-    Format(notes, sizeof(notes), "%i R₡", robotCost);
+    //Format(notes, sizeof(notes), "", robotCost);
+
+    Format(notes, sizeof(notes), "%iR₡)(%i/%i", robotCost, count, roboCap);  
 }
 
 void ResetSelection(int clientId)
