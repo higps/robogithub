@@ -10,12 +10,12 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bursty"
-#define ROBOT_ROLE "Anti-Sentry"
+#define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Anti-Wrangler"
 #define ROBOT_COST 1
-#define ROBOT_STATS "Burst fire 3 rockets\nIgnores damage resistance buffs\n-25%%%% damage to players\n-40%%%% damage to buildings"
+#define ROBOT_STATS "Burst fire 3 rockets\nIgnores damage resistance buffs\n-25%%%% damage to players\n-40%%%% damage to buildings\nRocket Specialist"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -28,8 +28,8 @@
 #define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
 
 
-// #define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
-// #define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
+#define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
+#define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
 // #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 
 
@@ -77,7 +77,7 @@ public OnPluginStart()
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+//	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
@@ -115,8 +115,8 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 
-	// PrecacheSound(GUNFIRE);
-	// PrecacheSound(GUNFIRE_CRIT);
+	PrecacheSound(GUNFIRE);
+	PrecacheSound(GUNFIRE_CRIT);
 	// PrecacheSound(GUNFIRE_EXPLOSION);
 	
 
@@ -173,38 +173,38 @@ public Action:BossHomer(clients[64], &numClients, String:sample[PLATFORM_MAX_PAT
 	}
 
 	
-	// if (strncmp(sample, ")weapons/", 9, false) == 0)
-	// {
-	// 	if (StrContains(sample, "rocket_shoot.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE);
-	// 		EmitSoundToAll(sample, entity);
+	if (strncmp(sample, ")weapons/", 9, false) == 0)
+	{
+		if (StrContains(sample, "rocket_directhit_shoot.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE);
+			EmitSoundToAll(sample, entity);
 			
-	// 	}
-	// 	else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_CRIT);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
+		}
+		else if (StrContains(sample, "rocket_directhit_shoot_crit.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_CRIT);
+			EmitSoundToAll(sample, entity);
+		}
 		
-	// 	//Explosion doesnæt quite work
-	// 	/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
-	// 	else if (StrContains(sample, "explode2.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	}
-	// 	else if (StrContains(sample, "explode3.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-	// 		EmitSoundToAll(sample, entity);
-	// 	} */
-	// 	return Plugin_Changed;
-	// }
+		//Explosion doesnæt quite work
+		/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "explode2.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "explode3.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+			EmitSoundToAll(sample, entity);
+		} */
+		return Plugin_Changed;
+	}
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 }
 
@@ -322,6 +322,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
 
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
+			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.25);
 

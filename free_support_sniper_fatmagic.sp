@@ -130,7 +130,7 @@ MakeSniper(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	// TF2Attrib_SetByName(client, "move speed penalty", 0.85);
+	// TF2Attrib_SetByName(client, "move speed penalty", 1.1);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -138,6 +138,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
+	TF2Attrib_SetByName(client, "deploy time decreased", 0.05);
 	
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -218,7 +219,7 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_RemoveAll(SMG);
 			
 		TF2Attrib_SetByName(SMG, "provide on active", 1.0);
-		TF2Attrib_SetByName(SMG, "move speed penalty", 0.5);
+		// TF2Attrib_SetByName(SMG, "move speed penalty", 0.5);
 		TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.25);
 		
 			
@@ -234,7 +235,8 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_SetByName(Kukri, "fire rate bonus", 0.8);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.25);
-			TF2Attrib_SetByName(Kukri, "speed boost when active", 0.8);
+			TF2Attrib_SetByName(Kukri, "speed_boost_on_kill", 2.0);
+			// TF2Attrib_SetByName(Kukri, "speed boost when active", 0.8);
 			TF2Attrib_SetByName(Kukri, "heal on kill", 125.0);
 			
 			
@@ -245,6 +247,17 @@ stock GiveBigRoboHuntsbot(client)
 
 }
 		
+public void TF2_OnConditionAdded(int client, TFCond condition)
+{
+	
+	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Jarated)
+	{	
+		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
+		// TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
+		
+	}
+	
+}
 
 
 // public void OnEntityCreated(int iEntity, const char[] sClassName) 

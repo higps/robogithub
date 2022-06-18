@@ -316,7 +316,7 @@ stock GiveGiantPyro(client)
 						
 			
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.7);	
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);	
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.2);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
 			

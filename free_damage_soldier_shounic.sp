@@ -114,7 +114,7 @@ public OnPluginStart()
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
 	AutoAim = CreateConVar("shounic_rocket_launcher_auto_aim", "0", "Should a fired rocket launcher automatically target players", _, true, 0.0, true, 1.0);
-	AttackTime = CreateConVar("shounic_rocket_launcher_fire_delay", "0.8", "Attack delay for fired rocket launchers");
+	AttackTime = CreateConVar("shounic_rocket_launcher_fire_delay", "1.2", "Attack delay for fired rocket launchers");
 }
 
 public void OnPluginEnd()
@@ -331,7 +331,7 @@ stock GiveGiantPyro(client)
 		
 //		CreateWeapon(client, "tf_weapon_shovel", 447, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, TyrantHelm, 10, 6, 0.0, 0.75, -1.0);
+		CreateRoboHat(client, TyrantHelm, 10, 6, 0.0, 0.95, -1.0);
 		CreateRoboHat(client, ColdSnapCoat, 10, 6, 0.0, 1.0, -1.0);
 		CreateRoboHat(client, LordCockswainsNoveltyMuttonChopsandPipe, 10, 6, 0.0, 0.75, 1.0);
 		
@@ -346,17 +346,17 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
 			//TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.25);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.15);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			//TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.35);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.25);
 			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 

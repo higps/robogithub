@@ -17,9 +17,9 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Wrangler Bill"
-#define ROBOT_ROLE "Support"
+#define ROBOT_ROLE "Builder"
 #define ROBOT_CLASS "Engineer"
-#define ROBOT_SUBCLASS "Builder"
+#define ROBOT_SUBCLASS ""
 #define ROBOT_DESCRIPTION " Wrangler, 3 Minisentries, Teamporter"
 #define ROBOT_TIPS "Buildings build instantly when hit by a wrench\nBuild teamporters to easily teleport your team to the front lines\nPhase through buildings"
 
@@ -265,13 +265,13 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 		// SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
 		
 		SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.25);
-		SetEntPropFloat(iObj, Prop_Send, "m_flPercentageConstructed", 1.0);
+		// SetEntPropFloat(iObj, Prop_Send, "m_flPercentageConstructed", 1.0);
 				
-		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
-		{
-			////PrintToChatAll("Buildt dispenser");
-			DispatchKeyValue(iObj, "defaultupgrade", "2"); 
-		}
+		// if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
+		// {
+		// 	////PrintToChatAll("Buildt dispenser");
+		// 	DispatchKeyValue(iObj, "defaultupgrade", "2"); 
+		// }
 
 		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Sentry)
 		{
@@ -479,7 +479,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
-	TF2Attrib_SetByName(client, "metal regen", 150.0);
+	TF2Attrib_SetByName(client, "metal regen", 200.0);
 	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
 	TF2Attrib_SetByName(client, "mod teleporter cost", 4.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
@@ -579,8 +579,11 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
+
+
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 6.0);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
+			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 8.0);
 			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.8);
 			
 			

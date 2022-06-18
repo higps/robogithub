@@ -99,7 +99,7 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 
 public void MM_OnEnabledChanged(int enabled)
 {
-    PrintToChatAll("Enabled was %i", enabled);
+    //PrintToChatAll("Enabled was %i", enabled);
 }
 
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
@@ -539,6 +539,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
         int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
+        if (TF2_GetPlayerClass(client) == TFClass_Scout)
+        {
+            if (IsAllClassWeapon(Weapon3) || IsBat(Weapon3) && Weapon1 != -1 &&  Weapon2 != -1)
+            {
+                TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 1.5);
+                TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 1.5);
+                MC_PrintToChatEx(client, client, "{teamcolor}Your bat provides your other weapons with {orange}+50%% maxammo");
+            }
+        }
         
         if (IsEyelander(Weapon3))
         {
@@ -1012,6 +1022,34 @@ bool IsRocketLauncher(int weapon)
 	{
 		//If other Beggarbazooka are added, add here
 	case 18,205,237,513,658,800,809,889,898,907,916,965,974,108,110,1500,1501,1502,1504,1505,1508,1510,1512,1513,1515: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsAllClassWeapon(int weapon){
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other allclass are added, add here
+	case 264,423,474,880,939,954,1013,1071,1123,1127,30758: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsBat(int weapon){
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other allclass are added, add here
+	case 0, 190, 660, 30667: 
 		{
 			return true;
 		}

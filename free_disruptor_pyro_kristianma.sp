@@ -58,7 +58,7 @@ public OnPluginStart()
     robot.sounds.windup = SOUND_WINDUP;
     robot.sounds.death = DEATH;
 
-    AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
+    AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null, 2);
 }
 
 public void OnPluginEnd()

@@ -5,16 +5,18 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
+
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Volcanyro"
+#define ROBOT_NAME	"Lister"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
-#define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Gas Passer, Sharpened Volcano Fragment"
-#define ROBOT_TIPS "\nThrow gas at them\nHit enemies with gas\nHit enemies in general"
+#define ROBOT_SUBCLASS "Flames"
+#define ROBOT_DESCRIPTION "Dragon's Fury, Powerjack"
+#define ROBOT_TIPS "Giant Dragon's Fury, Powerjack"
 
-#define GPYRO		"models/bots/pyro/bot_pyro.mdl"
+#define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_pyro/giant_pyro_loop.wav"
@@ -22,11 +24,16 @@
 #define SOUND_GUNFIRE	")mvm/giant_pyro/giant_pyro_flamethrower_loop.wav"
 #define SOUND_WINDUP	")mvm/giant_pyro/giant_pyro_flamethrower_start.wav"
 
+// #define LOFILONGWAVE 470
+// #define HANDSOMEDEVIL 31135
+// #define PHOBOS 30652
+
+
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Mighty Volcanyro!",
+	name = "[TF2] Be the Giant Agro Pyro",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Might Volcanyro!",
+	description = "Play as the Giant Agro Pyro from Kritzkast",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -39,10 +46,10 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-// new bool:Locked1[MAXPLAYERS+1];
-// new bool:Locked2[MAXPLAYERS+1];
-// new bool:Locked3[MAXPLAYERS+1];
-// new bool:CanWindDown[MAXPLAYERS+1];
+new bool:Locked1[MAXPLAYERS+1];
+new bool:Locked2[MAXPLAYERS+1];
+new bool:Locked3[MAXPLAYERS+1];
+new bool:CanWindDown[MAXPLAYERS+1];
 
 public OnPluginStart()
 {
@@ -61,7 +68,8 @@ public OnPluginStart()
     robot.sounds.gunfire = SOUND_GUNFIRE;
     robot.sounds.windup = SOUND_WINDUP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
+
+    AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null, 2);
 }
 
 public void OnPluginEnd()
@@ -83,15 +91,6 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 	
-	PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_04.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_05.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
-	PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
-	
 	PrecacheSound(SOUND_GUNFIRE);
 	PrecacheSound(SOUND_WINDUP);
 	
@@ -110,7 +109,7 @@ public Action:SetModel(client, const String:model[])
 
 MakeGiantPyro(client)
 {
-	SMLogTag(SML_VERBOSE, "Creating Volcanyro");
+	SMLogTag(SML_VERBOSE, "Createing Agro");
 	TF2_SetPlayerClass(client, TFClass_Pyro);
 	//TF2_RespawnPlayer(client);
 	TF2_RegeneratePlayer(client);
@@ -127,7 +126,7 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	int iHealth = 2750;
+	int iHealth = 3000;
 		
 	int MaxHealth = 175;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -143,26 +142,29 @@ MakeGiantPyro(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.85);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
+	//
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
-	TF2Attrib_SetByName(client, "deploy time decreased", 0.05);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "head scale", 0.8);
+	//TF2Attrib_SetByName(client, "head scale", 0.75);
+
+	
 	
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Throw gas at enemies and hit them with your melee to go boom");
+	
+	PrintHintText(client , ROBOT_TIPS);
+	
 	
 }
 
@@ -179,53 +181,45 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define FeatheredFiend 30903
-#define DeitysDress 30902
-#define PyromancersMask 316
+#define DeadCone 435
 
 stock GiveGiantPyro(client)
 {
 	if (IsValidClient(client))
 	{		
 		RoboRemoveAllWearables(client);
-
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
+		
+		CreateRoboWeapon(client, "tf_weapon_rocketlauncher_fireball", 1178, 6, 1, 0, 390);	
+		CreateRoboWeapon(client, "tf_weapon_fireaxe", 214, 6, 1, 2, 0);	
 
-		CreateRoboWeapon(client, "tf_weapon_jar_gas", 1180, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_fireaxe", 348, 6, 1, 2, 0);
+		CreateRoboHat(client, DeadCone, 10, 6, 0.0, 0.75, 1.0); 
 
-		CreateRoboHat(client, FeatheredFiend, 10, 6, 1315860.0, 1.0, -1.0); 
-		CreateRoboHat(client, DeitysDress, 10, 6, 1315860.0, 1.0, -1.0); 
-		CreateRoboHat(client, PyromancersMask, 10, 6, 1315860.0, 1.15, -1.0); 
-
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
-		
-		if(IsValidEntity(Weapon2))
+		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "explode_on_ignite", 1.0); //Damage should be changed match BMod Gas Passer
-			TF2Attrib_SetByName(Weapon2, "mult_item_meter_charge_rate", 0.25);
-			TF2Attrib_SetByName(Weapon2, "weapon burn time increased", 1.67); //This should factor in BMod's duration nerf, so 5 seconds total
-
+		//	TF2Attrib_RemoveAll(Weapon1);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
+			TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 0.6);			
 		}
 
 		if(IsValidEntity(Weapon3))
 		{
-			TF2Attrib_RemoveAll(Weapon3);
-			TF2Attrib_SetByName(Weapon3, "crit vs burning players", 1.0); //Should have explosion effect from BMod SVF
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
-			TF2Attrib_SetByName(Weapon3, "fire rate penalty", 0.85);
-			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 2.0);
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
-			TF2Attrib_SetByName(Weapon3, "damage bonus vs burning", 1.35);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", 1.25); //65 damage per hit, allowing him to 4 shot unhealed Level 3 buildings instead of 5
-			TF2Attrib_SetByName(Weapon3, "weapon burn dmg reduced", 0.5); //Since it crits, this should do about 7.5 per tick instead of 13 per tick
+		//	TF2Attrib_RemoveAll(Weapon1);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);					
+			TF2Attrib_SetByName(Weapon3, "move speed bonus", 1.5);				
+			TF2Attrib_SetByName(Weapon3, "dmg taken increased", 1.6);				
+			
+			//TF2Attrib_SetByName(Weapon3, "provide on active", 1.0);					
+			
+			
+		}
 	}
 }
-}
-
