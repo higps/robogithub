@@ -387,6 +387,8 @@ public Action:SaxtronSoundHook(clients[64], &numClients, String:sample[PLATFORM_
 		return Plugin_Changed;
 	}
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
+	
+	return Plugin_Continue;
 }
 void SayVoiceLine(int client)
 {
@@ -1037,7 +1039,7 @@ void DrawJumpHUD(int client)
 		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
 	}
 
-	int team = GetClientTeam(client);
+	// int team = GetClientTeam(client);
 
 	// float angles[3], pos[3];
 	Format(sHUDText, sizeof(sHUDText), "SuperJump: %d%%%%   \n%s   ", iPercents, sProgress);
