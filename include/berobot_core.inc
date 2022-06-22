@@ -406,7 +406,7 @@ methodmap TimeLeftRestriction < TimeLeftRestrictionDefinition {
 methodmap RobotCoins < RobotCoinRestrictionDefinition {
     property bool Active {
         public get(){
-            return this.Overall > 0 || this.PerRobot > 0;
+            return this.Overall > 0 || this.PerRobot > 0.0;
         }
     }
     property bool Enabled {
@@ -426,7 +426,7 @@ methodmap RobotCoins < RobotCoinRestrictionDefinition {
     public RobotCoins(char robotName[NAMELENGTH]) {
         RobotCoins robotCoins = view_as<RobotCoins>(new StringMap());
         robotCoins.SetString("RobotName", robotName);
-        robotCoins.PerRobot = 0;
+        robotCoins.PerRobot = 0.0;
         robotCoins.Overall = 0;
         return robotCoins;
     }
@@ -442,7 +442,11 @@ methodmap RobotCoins < RobotCoinRestrictionDefinition {
             return this.Overall;
 
         int robotCount = GetRobotCountPerTeam();
-        return robotCount * this.PerRobot;
+        int price = robotCount * this.PerRobot;
+        int roundedPrice = RoundToNearest(robotCount * this.PerRobot);
+        
+        SMLogTag(SML_VERBOSE, "GetPrice(): robotCount: %i, PerRobot %f => %f rounded to %i", robotCount, this.PerRobot, price, roundedPrice);
+        return roundedPrice;
     }
 
     public RobotCoins From(RobotCoinRestrictionDefinition definition)
@@ -452,7 +456,7 @@ methodmap RobotCoins < RobotCoinRestrictionDefinition {
             // SMLogTag(SML_VERBOSE, "RobotCoinRestrictionDefinition does not exist");
             return this;
         }
-        // SMLogTag(SML_VERBOSE, "assigning PerRobot to %i", definition.PerRobot);
+        // SMLogTag(SML_VERBOSE, "assigning PerRobot to %f", definition.PerRobot);
         this.PerRobot = definition.PerRobot;
         // SMLogTag(SML_VERBOSE, "assigning Overall to %i", definition.Overall);
         this.Overall = definition.Overall;

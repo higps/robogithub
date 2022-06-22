@@ -42,7 +42,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 3;
+    restrictions.RobotCoins.PerRobot = 3.0;
 
     AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION, restrictions);
 }

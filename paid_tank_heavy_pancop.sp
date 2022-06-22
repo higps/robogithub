@@ -55,7 +55,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 1;
+    restrictions.RobotCoins.PerRobot = 1.0;
 
 
     AddRobot(robot, MakePanCop, PLUGIN_VERSION, restrictions);
