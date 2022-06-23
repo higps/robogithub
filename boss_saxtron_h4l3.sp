@@ -71,6 +71,7 @@
 #define HALE_WEIGHDOWN_TIME	3.0
 
 bool b_SaxtonSaid[MAXPLAYERS + 1] = false;
+float g_JumpTime = 0.0;
 public Plugin:myinfo = 
 {
 	name = "[TF2] Be the Giant Saxtron",
@@ -307,9 +308,9 @@ public OnMapStart()
 	}
 } */
 int g_SuperJumpCharge = 0;
-int g_SuperJumpChargeLimit = 75;
+int g_SuperJumpChargeLimit = 125;
 float g_rage[MAXPLAYERS + 1] = 0;
-float g_ragelimit = 200.0;
+float g_ragelimit = 2000.0;
 
 public Action:SetModel(client, const String:model[])
 {
@@ -464,10 +465,10 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 1.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	//float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	
+	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
 	
 	TF2Attrib_SetByName(client, "self dmg push force increased", 6.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
@@ -749,6 +750,9 @@ public Action ObjectDestroyed(Event event, const char[] name, bool dontBroadcast
 	
 }
 
+bool g_JumpCoolDown = false;
+int g_AirTime = 0;
+bool g_CanWeighDown = false;
 
 //////////SAXTON HALE CODE FROM CHDATA
 
@@ -757,18 +761,50 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
     if (IsRobot(client, ROBOT_NAME) && (client))
     {
         int IsJumping = GetEntProp(client, Prop_Send, "m_bJumping");
+
+
+		if (IsJumping == 1)
+		{
+			g_AirTime++;
+
+		}else
+		{
+			g_AirTime = 0;
+		}
+
+
+		if(g_AirTime >= 85)
+		{
+			g_CanWeighDown = true;
+		}else
+		{
+			g_CanWeighDown = false;
+		}
 		
+
+
+		float currenttime = GetEngineTime();
+		//PrintToChatAll("%f", currenttime);
+		if (g_JumpTime <= currenttime && g_JumpCoolDown)
+		{
+			g_JumpCoolDown = false;
+		}
+
+
+
+
         float ang[3];
         GetClientEyeAngles(client, ang);
 		if (!TF2Spawn_IsClientInSpawn(client)){
-			DrawRageHUD(client);
+			DrawHaleHUD(client);
 		}
+		
 		if (buttons & IN_ATTACK2)
 		{
 
-			DrawJumpHUD(client);
 
-			if (IsJumping == 0 && ang[0] < -33.0)
+
+			if (IsJumping == 0)
 			{
 					if 
 					(g_SuperJumpCharge+1 >= g_SuperJumpChargeLimit)
@@ -777,39 +813,18 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 					}
 					else
 					{
-						g_SuperJumpCharge++;
+						if(!g_JumpCoolDown) g_SuperJumpCharge++;
 					}
-
-					//PrintToChatAll("Super Jump was: %i", g_SuperJumpCharge);
-			}//else
-			// {
-			// 	g_SuperJumpCharge = 0;
-			// }
-
-			if (IN_JUMP && IsJumping == 0 && g_SuperJumpCharge == g_SuperJumpChargeLimit && ang[0] < -33.0)
-			{
-				SuperJump(client, float(g_SuperJumpCharge), true);
-				g_SuperJumpCharge = 0;
 			}
 
-			// if(IsJumping == 1)
-			// {
-			// 	// SetEntityGravity(client, 1.0);
-			// 	if ((ang[0] > 70.0))
-			// 	{
-			// 		WeighDown(client, -2000.0, true);
-			// 		return Plugin_Changed;
-			// 	}
-				
-			// }
 		}
 
-		if (buttons & IN_ATTACK2)
+		if (buttons & IN_DUCK)
 		{
 			if(IsJumping == 1)
 			{
 				// SetEntityGravity(client, 1.0);
-				if ((ang[0] > 70.0))
+				if (g_CanWeighDown && (ang[0] > 60.0))
 				{
 					WeighDown(client, -2000.0, true);
 					return Plugin_Changed;
@@ -825,24 +840,30 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 		// {
 		// 	PerformStun(client);
 		// 	g_rage[client] = 0.0;
-		// }
+		// }(
+
 		
-		if((GetEntProp( client, Prop_Data, "m_afButtonReleased" ) & IN_ATTACK2) && g_SuperJumpCharge >= 10) 
+		if(IsJumping == 0 && ang[0] < -33.0 && !g_JumpCoolDown && (GetEntProp( client, Prop_Data, "m_afButtonReleased" ) & IN_ATTACK2)) 
 		{
 			// PrintToChatAll("Button released g_Sumperjumpcharge was %i", g_SuperJumpCharge);
 				SuperJump(client, float(g_SuperJumpCharge), true);
-				g_SuperJumpCharge = 0;
+				
+		}
+
+		
+		if ((GetEntProp( client, Prop_Data, "m_afButtonReleased" ) & IN_ATTACK2) && ang[0] > -40.0)
+		{
+			g_SuperJumpCharge = 0;
 		}
     }
-
-
-
 
     return Plugin_Continue;
 }
 
 public void SuperJump(int client, float power, float reset) 
 {
+
+		g_SuperJumpCharge = 0;
 		
 		float vel[3]; GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
 		vel[2] = 750 + power * 13.0;
@@ -871,10 +892,19 @@ public void SuperJump(int client, float power, float reset)
 
 
 		SaxtronSay(client,kill_snd);
-			
+		
+		// CreateTimer(7.0, JumpCoolDown);
+		g_JumpTime = GetEngineTime() + 7.0;
+		g_JumpCoolDown = true;
+		//PrintToChatAll("%f", g_JumpTime);
 
 }
-	
+
+// public Action JumpCoolDown(Handle timer)
+// {
+// 	g_JumpCoolDown = false;
+// }
+
 public void WeighDown(int client, float power, float reset) 
 {
 		// SetEntityGravity(client, 1.0);
@@ -970,7 +1000,7 @@ public void SaxtronSay(int client, const char[] voiceline)
 	EmitSoundToAll(voiceline, client);
 	EmitSoundToAll(voiceline, client);
 	b_SaxtonSaid[client] = true;
-	CreateTimer(0.5, Timer_SaxtonSaid, client);
+	CreateTimer(3.5, Timer_SaxtonSaid, client);
 	}
 }
 
@@ -981,49 +1011,14 @@ public Action Timer_SaxtonSaid(Handle timer, int client)
 
 #define CHAR_FULL "■"
 #define CHAR_EMPTY "□"
-bool b_hud_clamp[MAXPLAYERS + 1] = false;
+// bool b_hud_clamp[MAXPLAYERS + 1] = false;
 
 
 
-// void DrawRageHUD(int client)
-// {
-// 	char sHUDText[128];
-// 	char sProgress[32];
-// 	int iPercents = RoundToCeil(float(g_rage[client]) / float(g_ragelimit) * 100.0);
-
-// 	for (int j = 1; j <= 10; j++)
-// 	{
-// 		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
-// 		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
-// 	}
-
-// 	int team = GetClientTeam(client);
-
-// 	float angles[3], pos[3];
-// 	Format(sHUDText, sizeof(sHUDText), "Rage: %d%%%%   \n%s   ", iPercents, sProgress);
-
-// 	if(iPercents >= 100)
-// 	{
-
-// 			Format(sHUDText, sizeof(sHUDText), "Rage Ready!\nM2 to activate!");
-// 			SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
-// 	}else {
-
-// 		SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
-// 	}
-// 	ShowHudText(client, -2, sHUDText);
-// 	// b_hud_clamp[client] = false;
-// }
-
-void DrawRageHUD(int client)
+void DrawHaleHUD(int client)
 {
-
-        if (!b_hud_clamp[client])
-		{
-			CreateTimer(0.08, Timer_DrawRageHUD, client);
-			b_hud_clamp[client] = true;
-		}
-
+	DrawRageHUD(client);
+	DrawJumpHUD(client);
 }
 
 void DrawJumpHUD(int client)
@@ -1042,22 +1037,32 @@ void DrawJumpHUD(int client)
 	// int team = GetClientTeam(client);
 
 	// float angles[3], pos[3];
-	Format(sHUDText, sizeof(sHUDText), "SuperJump: %d%%%%   \n%s   ", iPercents, sProgress);
+	if (g_JumpCoolDown){
 
-	if(iPercents >= 100)
+		Format(sHUDText, sizeof(sHUDText), "Jump %i(cooldown) : %d%%%%   \n%s   ", RoundToNearest((g_JumpTime+1.0) - GetEngineTime()), iPercents, sProgress);
+		SetHudTextParams(0.85, -0.4, 0.1, 255, 0, 0, 255);
+	}else
 	{
 
-			Format(sHUDText, sizeof(sHUDText), "SuperJumping!");
-			SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
-	}else {
+		Format(sHUDText, sizeof(sHUDText), "Jump: %d%%%%   \n%s   ", iPercents, sProgress);
 
-		SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
+		if(iPercents >= 100)
+		{
+
+				
+				SetHudTextParams(0.85, -0.4, 0.1, 0, 255, 0, 255);
+		}else {
+
+			SetHudTextParams(0.85, -0.4, 0.1, 255, 255, 255, 255);
+		}
 	}
+	//SetHudTextParams(0.85, -0.4, 0.1, 255, 255, 255, 255);
+	
 	ShowHudText(client, -2, sHUDText);
-	b_hud_clamp[client] = false;
+	// b_hud_clamp[client] = false;
 }
 
-public Action Timer_DrawRageHUD(Handle timer, int client)
+void DrawRageHUD(int client)
 {
 	char sHUDText[128];
 	char sProgress[32];
@@ -1078,13 +1083,13 @@ public Action Timer_DrawRageHUD(Handle timer, int client)
 	{
 
 			Format(sHUDText, sizeof(sHUDText), "Rage Ready!\nTaunt to activate!");
-			SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+			SetHudTextParams(0.85, 0.6, 0.1, 0, 255, 0, 255);
 	}else {
 
-		SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
+		SetHudTextParams(0.85, 0.6, 0.1, 255, 255, 255, 255);
 	}
-	ShowHudText(client, -2, sHUDText);
-	b_hud_clamp[client] = false;
+	ShowHudText(client, -3, sHUDText);
+	// b_hud_clamp[client] = false;
 }
 
 public void TF2_OnConditionAdded(int client, TFCond condition)

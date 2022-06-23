@@ -122,7 +122,15 @@ public void OnPluginStart()
 
 	AddCommandListener(CommandListener_Build, "build");
 	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
+
+	for(int i = 1; i <= MaxClients+1; i++)
+	{
+		if (IsValidClient(i))
+		{
+			SDKHook(i, SDKHook_Touch, OnTouch);
+		}
+	}
+	// HookEvent("player_death", Event_Death, EventHookMode_Post);
 	
 }
 
@@ -133,7 +141,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnMapStart()
 {
-	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
+	// HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
 
 	//sound and model precaching should always be done in OnMapStart
 	int size = sizeof TeleActivateSounds;
@@ -145,27 +153,27 @@ public void OnMapStart()
 
 }
 
-public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	//int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+// public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+// {
+// 	//int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+// 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 
-	if (IsValidClient(victim))
-	{
-		g_TouchHooked[victim] = false;
-		SDKUnhook(victim, SDKHook_Touch, OnTouch);
-	}
-}
+// 	if (IsValidClient(victim))
+// 	{
+// 		g_TouchHooked[victim] = false;
+// 		SDKUnhook(victim, SDKHook_Touch, OnTouch);
+// 	}
+// }
 
-public void OnClientDisconnect_Post(int client)
-{
-	if (IsValidClient(client))
-	{
-		g_TouchHooked[client] = false;
-		SDKUnhook(client, SDKHook_Touch, OnTouch);
+// public void OnClientDisconnect_Post(int client)
+// {
+// 	if (IsValidClient(client))
+// 	{
+// 		g_TouchHooked[client] = false;
+// 		SDKUnhook(client, SDKHook_Touch, OnTouch);
 		
-	} 
-}
+// 	} 
+// }
 
 public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 {
@@ -258,6 +266,16 @@ stock void TF2_SetMatchingTeleporter(int iTele, int iMatch)	//Set the matching t
 
 }
 
+public void OnClientPutInServer(int client)
+{
+	SDKHook(client, SDKHook_Touch, OnTouch);
+}
+
+public void OnClientDisconnected(int client)
+{
+	SDKUnhook(client, SDKHook_Touch, OnTouch);
+}
+
 public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 {
 	// if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)
@@ -304,8 +322,8 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		return Plugin_Changed;
 	}
 	
-	if (IsAnyRobot(client) && !g_TouchHooked[client]){
-	SDKHook(client, SDKHook_Touch, OnTouch);
+	if (IsAnyRobot(client)){
+
 	g_Recharge[client] = 0;
 	g_TouchHooked[client] = true;
 	}
@@ -334,10 +352,10 @@ public Action OnTouch(int client, int ent)
 
 		char entname[MAX_NAME_LENGTH];
 		GetEntityClassname(ent, entname, sizeof(entname));
-		
-		if (!StrContains(entname, "func_respawnroom")){
 
-			if (TF2Spawn_IsClientInSpawn(client) )
+		if (!StrContains(entname, "func_respawnroom")){
+			// PrintToChatAll("%N is touching %s", client, entname);
+			if (IsAnyRobot(client) && TF2Spawn_IsClientInSpawn(client) && TeamHasRoboEngineer(client))
 			{
 				UpdateCharge(client);
 				DrawHUD(client);
@@ -810,4 +828,22 @@ stock void TF2_SetBuildingState(int iBuilding, int iState = 0)
 	SetEntProp(iBuilding, Prop_Send, "m_iState", iState);
 	//	PrintToChatAll("Setting state to %i", iState);
 	}
+}
+
+bool TeamHasRoboEngineer(int client)
+{
+	int Team = TF2_GetClientTeam(client);
+	for(int i = 1; i <= MaxClients+1; i++)
+	{
+		TFTeam iTeam = TF2_GetClientTeam(i);
+		if(iTeam == Team)
+		{
+			TFClassType iClass = TF2_GetPlayerClass(i);
+			if (iClass == TFClass_Engineer && IsAnyRobot(i))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
