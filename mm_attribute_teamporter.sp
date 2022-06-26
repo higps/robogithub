@@ -837,6 +837,8 @@ bool TeamHasRoboEngineer(int client)
 	int Team = TF2_GetClientTeam(client);
 	for(int i = 1; i <= MaxClients+1; i++)
 	{
+		if (IsValidClient(i) && IsClientInGame(i))
+		{
 		TFTeam iTeam = TF2_GetClientTeam(i);
 		if(iTeam == Team)
 		{
@@ -845,6 +847,7 @@ bool TeamHasRoboEngineer(int client)
 			{
 				return true;
 			}
+		}
 		}
 	}
 	return false;
