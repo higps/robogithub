@@ -350,6 +350,8 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 public Action OnTouch(int client, int ent)
 {
 
+	if (IsValidClient(client) && IsClientInGame(client))
+	{
 		char entname[MAX_NAME_LENGTH];
 		GetEntityClassname(ent, entname, sizeof(entname));
 
@@ -361,7 +363,7 @@ public Action OnTouch(int client, int ent)
 				DrawHUD(client);
 			}	
 		}
-	
+	}
 }
 
 public Action Teleport_Player(int client)
