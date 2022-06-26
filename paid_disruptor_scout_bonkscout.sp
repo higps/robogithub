@@ -5,7 +5,6 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
-#include <stocksoup/tf/weapon>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bonk Scout"
@@ -269,3 +268,11 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 
 
+stock void TF2_SetWeaponAmmo(int weapon, int amount) {
+	int ammoType = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
+	
+	if (client > 0 && client <= MaxClients && ammoType != -1) {
+		SetEntProp(client, Prop_Send, "m_iAmmo", amount, 4, ammoType);
+	}
+}
