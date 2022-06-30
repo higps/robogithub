@@ -886,21 +886,20 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
 
     if (!teamCoins.Enabled)
     {
-      //  GenerateCoinNotes(notes, teamCost, robotCost, count, roboCap);
         draw = ITEMDRAW_DISABLED;
         return;
     }
 
     if (availableRobotCoins < robotCost)
     {
-      //  GenerateCoinNotes(notes, teamCost, robotCost, count, roboCap);
+
         draw = ITEMDRAW_DISABLED;
         return;
     }
 
 
     
-    //Format(notes, sizeof(notes), "%s)(%i/%i", notes, count, roboCap);  
+
     draw = ITEMDRAW_DEFAULT;
 }
 
