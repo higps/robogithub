@@ -1,0 +1,88 @@
+{
+  "includeLocks": [
+    {
+      "id": "GitHubTagFile:nosoop/tf2attributes:tf2attributes.inc",
+      "version": {
+        "version": "1.7.1.1",
+        "tag": "1.7.1.1"
+      }
+    },
+    {
+      "id": "GitHubTagZip:nosoop/SM-TFCustAttr:package.zip:scripting/include/tf_custom_attributes.inc",
+      "version": {
+        "version": "8.0",
+        "tag": "workflow-build8"
+      }
+    },
+    {
+      "id": "GitHubTagFile:nosoop/SM-TFOnTakeDamage:tf_ontakedamage.inc",
+      "version": {
+        "version": "1.2.0",
+        "tag": "1.2.0"
+      }
+    },
+    {
+      "id": "StaticUrl:https://raw.githubusercontent.com/JoinedSenses/SourceMod-IncludeLibrary/master/include/morecolors.inc",
+      "version": {
+        "version": "1.0",
+        "tag": ""
+      }
+    },
+    {
+      "id": "GitHubTagZip:peace-maker/DHooks2:dhooks-2.2.0-detours17-sm110.zip:addons/sourcemod/scripting/include/dhooks.inc",
+      "version": {
+        "version": "17.0",
+        "tag": "v2.2.0-detours17"
+      }
+    },
+    {
+      "id": "StaticUrl:https://raw.githubusercontent.com/GIider/Upgrademod/master/third_party/sourcemod/scripting/include/particle.inc",
+      "version": {
+        "version": "1.0",
+        "tag": ""
+      }
+    },
+    {
+      "id": "StaticUrl:https://raw.githubusercontent.com/raziEiL/SM-Logger/master/scripting/include/sm_logger.inc",
+      "version": {
+        "version": "1.0",
+        "tag": ""
+      }
+    },
+    {
+      "id": "StaticUrl:http://ddhoward.com/sourcemod/updater/scripting/include/tf2_isPlayerInSpawn.inc",
+      "version": {
+        "version": "1.0",
+        "tag": ""
+      }
+    },
+    {
+      "id": "StaticUrl:https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/teams.inc",
+      "version": {
+        "version": "1.0",
+        "tag": ""
+      }
+    },
+    {
+      "id": "StaticUrl:https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/entity_prop_stocks.inc",
+      "version": {
+        "version": "1.0",
+        "tag": ""
+      }
+    },
+    {
+      "id": "StaticUrl:https://raw.githubusercontent.com/nosoop/SM-TFCustomAttributeStarterPack/master/scripting/include/tf_cattr_buff_override.inc",
+      "version": {
+        "version": "1.0",
+        "tag": ""
+      }
+    },
+    {
+      "id": "GitHubTagFile:nosoop/SM-TFUtils:tf2utils.inc",
+      "version": {
+        "version": "0.19.0.2",
+        "tag": "0.19.0.2"
+      }
+    }
+  ]
+}

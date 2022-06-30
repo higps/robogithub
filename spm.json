@@ -1,0 +1,92 @@
+{
+  "dependencies": [
+    {
+      "type": "GitHubTagFile",
+      "versionRange": "[1.*, )",
+      "versionRegEx": "(\\d\u002B(?:\\.\\d\u002B)?(?:\\.\\d\u002B)?(?:\\.\\d\u002B)?)[-\u002B]?(\\S*)?",
+      "owner": "nosoop",
+      "repository": "tf2attributes",
+      "assetName": "tf2attributes.inc",
+      "downloadPath": "lib-include/tf2attributes.inc"
+    },
+    {
+      "type": "GitHubTagZip",
+      "versionRange": "[8.*, )",
+      "owner": "nosoop",
+      "repository": "SM-TFCustAttr",
+      "assetName": "package.zip",
+      "fileInZip": "scripting/include/tf_custom_attributes.inc",
+      "downloadPath": "lib-include/tf_custom_attributes.inc"
+    },
+    {
+      "type": "GitHubTagFile",
+      "versionRange": "[1.*, )",
+      "versionRegEx": "(\\d\u002B(?:\\.\\d\u002B)?(?:\\.\\d\u002B)?(?:\\.\\d\u002B)?)[-\u002B]?(\\S*)?",
+      "owner": "nosoop",
+      "repository": "SM-TFOnTakeDamage",
+      "assetName": "tf_ontakedamage.inc",
+      "downloadPath": "lib-include/tf_ontakedamage.inc"
+    },
+    {
+      "type": "StaticUrl",
+      "versionRange": "(, )",
+      "url": "https://raw.githubusercontent.com/JoinedSenses/SourceMod-IncludeLibrary/master/include/morecolors.inc",
+      "downloadPath": "lib-include/morecolors_newsyntax.inc"
+    },
+    {
+      "type": "GitHubTagZip",
+      "versionRange": "[17.*, )",
+      "versionRegEx": "v2.2.0-detours(\\d\u002B)()()",
+      "owner": "peace-maker",
+      "repository": "DHooks2",
+      "assetName": "dhooks-2.2.0-detours17-sm110.zip",
+      "fileInZip": "addons/sourcemod/scripting/include/dhooks.inc",
+      "downloadPath": "lib-include/dhooks.inc"
+    },
+    {
+      "type": "StaticUrl",
+      "versionRange": "(, )",
+      "url": "https://raw.githubusercontent.com/GIider/Upgrademod/master/third_party/sourcemod/scripting/include/particle.inc",
+      "downloadPath": "lib-include/particle.inc"
+    },
+    {
+      "type": "StaticUrl",
+      "versionRange": "(, )",
+      "url": "https://raw.githubusercontent.com/raziEiL/SM-Logger/master/scripting/include/sm_logger.inc",
+      "downloadPath": "lib-include/sm_logger.inc"
+    },
+    {
+      "type": "StaticUrl",
+      "versionRange": "(, )",
+      "url": "http://ddhoward.com/sourcemod/updater/scripting/include/tf2_isPlayerInSpawn.inc",
+      "downloadPath": "lib-include/tf2_isPlayerInSpawn.inc"
+    },
+    {
+      "type": "StaticUrl",
+      "versionRange": "(, )",
+      "url": "https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/teams.inc",
+      "downloadPath": "lib-include/stocksoup/tf/teams.inc"
+    },
+    {
+      "type": "StaticUrl",
+      "versionRange": "(, )",
+      "url": "https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/entity_prop_stocks.inc",
+      "downloadPath": "lib-include/stocksoup/tf/entity_prop_stocks.inc"
+    },
+    {
+      "type": "StaticUrl",
+      "versionRange": "(, )",
+      "url": "https://raw.githubusercontent.com/nosoop/SM-TFCustomAttributeStarterPack/master/scripting/include/tf_cattr_buff_override.inc",
+      "downloadPath": "lib-include/tf_cattr_buff_override.inc"
+    },
+    {
+      "type": "GitHubTagFile",
+      "versionRange": "[0.19.*, )",
+      "versionRegEx": "(\\d\u002B(?:\\.\\d\u002B)?(?:\\.\\d\u002B)?(?:\\.\\d\u002B)?)[-\u002B]?(\\S*)?",
+      "owner": "nosoop",
+      "repository": "SM-TFUtils",
+      "assetName": "tf2utils.inc",
+      "downloadPath": "lib-include/tf2utils.inc"
+    }
+  ]
+}

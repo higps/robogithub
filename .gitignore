@@ -1,3 +1,5 @@
 .vscode/*
 compiled/*
 deploy.ps1
+lib-include/*
+spm.local.json
