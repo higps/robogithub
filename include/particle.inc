@@ -35,7 +35,7 @@ stock CreateParticle(const String:particleType[], Float:time=5.0, entity=-1,
                      const String:attachToBone[]="head",
                      const Float:offsetPos[3]=NULL_VECTOR,
                      const Float:offsetAng[3]=NULL_VECTOR,
-                     Timer:deleteFunc=Timer:0,
+                     Timer:deleteFunc=INVALID_FUNCTION,
                      &Handle:timerHandle=INVALID_HANDLE,
                      target=-1, const String:targetBone[]="flag",
                      &target_particle=0)
@@ -137,7 +137,7 @@ stock CreateParticle(const String:particleType[], Float:time=5.0, entity=-1,
 
         if (time > 0.0)
         {
-            timerHandle = CreateTimer(time, deleteFunc ? deleteFunc : DeleteParticles,
+            timerHandle = CreateTimer(time, deleteFunc != INVALID_FUNCTION ? deleteFunc : DeleteParticles,
                                       EntIndexToEntRef(particle));
         }
     }
