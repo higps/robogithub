@@ -11,7 +11,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Shounic"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Prototype"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "High Damage Rocket Launcher Specialist"

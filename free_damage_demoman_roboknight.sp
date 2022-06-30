@@ -7,7 +7,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Robo-Knight"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Prototype"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Eyelander, Chargin' Targe"

@@ -8,7 +8,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Volcanyro"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Prototype"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Gas Passer, Sharpened Volcano Fragment"

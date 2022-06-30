@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Fat Magic"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Prototype"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Bushwacka Piss Bot"
