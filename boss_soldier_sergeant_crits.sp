@@ -36,9 +36,9 @@ float scale = 1.95;
 
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant Homer Soldier",
+	name = "[TF2] Be the Segreant Kritz",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Homer",
+	description = "Play as the Sergeant kritz",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }

@@ -413,8 +413,17 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
                 case TF_CUSTOM_BASEBALL:
                 {
-                    TF2_StunPlayer(victim, 2.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
-                    TF2_AddCondition(victim, TFCond_Sapped, 2.5, attacker);
+                    if(IsSandman(weapon))
+                    {
+                    TF2_StunPlayer(victim, 2.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
+                    TF2_AddCondition(victim, TFCond_Sapped, 2.0, attacker);
+                    }
+
+                    if(IsWrap(weapon)){
+                    TF2_StunPlayer(victim, 1.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
+                    TF2_AddCondition(victim, TFCond_Sapped, 1.5, attacker);    
+                    }
+                    
                     return Plugin_Changed;
                 }
                 //TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
@@ -768,6 +777,24 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             MC_PrintToChatEx(client, client, "{teamcolor}Your Frontier Justice {orange}gains revenge crits{teamcolor} based on damage it deals. %i damage pr crit. Awarded upon sentry desctruction", RoundToNearest(g_FrontierJusticeDMGRequirement));
         }
 
+        if (IsShotGun(Weapon1))
+        {
+            SetShotGunStats(Weapon1, client);
+        }
+        if (IsShotGun(Weapon2))
+        {
+            SetShotGunStats(Weapon2, client);
+        }
+
+        if(IsSandman(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Baseball {orange}reduces robots move speed by 85% for 2 seconds on hit");
+        }
+        if(IsWrap(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Ornament {orange}reduces robots move speed by 70% for 1.5 seconds on hit");
+        }
+
     }
 
     
@@ -776,7 +803,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
     
     
 
-
+void SetShotGunStats(int weapon, int client)
+{
+    TF2Attrib_SetByName(weapon, "projectile penetration", 1.0);
+    MC_PrintToChatEx(client, client, "{teamcolor}Your Shotgun {orange}penetrates through enemies{teamcolor}");
+}
 
 
 bool IsSniperRifle(int weapon)
@@ -1198,6 +1229,50 @@ bool IsBat(int weapon){
 	{
 		//If other allclass are added, add here
 	case 0, 190, 660, 30667: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsShotGun(int weapon){
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other shotguns are added, add here
+	case 9,10,11,12,199,415,425,1141,1153,15003,15016,15044,15047,15085,15109,15132,15133,15152: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsSandman(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other sandman are added, add here
+	case 44: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsWrap(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other wrap are added, add here
+	case 648: 
 		{
 			return true;
 		}

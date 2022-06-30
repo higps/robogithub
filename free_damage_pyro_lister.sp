@@ -230,4 +230,6 @@ stock GiveGiantPyro(client)
 	}
 
 
-//}m_nShouldReflect
+}
+
+//m_nShouldReflect
