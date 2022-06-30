@@ -319,7 +319,6 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);	
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.2);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
-			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 		// if(IsValidEntity(Weapon2))

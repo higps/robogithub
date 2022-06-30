@@ -153,7 +153,9 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	TF2Attrib_SetByName(client, "deploy time decreased", 0.05);
 	//TF2Attrib_SetByName(client, "head scale", 0.75);
+	
 
 	
 	
@@ -203,10 +205,12 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon1))
 		{
 		//	TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
+			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 175);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+			
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 0.6);			
+			TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.5);			
 		}
 
 		if(IsValidEntity(Weapon3))
@@ -215,11 +219,15 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);					
 			TF2Attrib_SetByName(Weapon3, "move speed bonus", 1.5);				
-			TF2Attrib_SetByName(Weapon3, "dmg taken increased", 1.6);				
+			TF2Attrib_SetByName(Weapon3, "dmg taken increased", 1.6);	
+			TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
+			
 			
 			//TF2Attrib_SetByName(Weapon3, "provide on active", 1.0);					
 			
 			
 		}
 	}
-}
+
+
+//}m_nShouldReflect
