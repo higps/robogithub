@@ -46,11 +46,6 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-new bool:Locked1[MAXPLAYERS+1];
-new bool:Locked2[MAXPLAYERS+1];
-new bool:Locked3[MAXPLAYERS+1];
-new bool:CanWindDown[MAXPLAYERS+1];
-
 public OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
@@ -206,7 +201,7 @@ stock GiveGiantPyro(client)
 		{
 		//	TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
-			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 175);
+			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 175.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
