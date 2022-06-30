@@ -137,7 +137,7 @@ stock CreateParticle(const String:particleType[], Float:time=5.0, entity=-1,
 
         if (time > 0.0)
         {
-            timerHandle = CreateTimer(time, deleteFunc != INVALID_FUNCTION ? deleteFunc : DeleteParticles,
+            timerHandle = CreateTimer(time, deleteFunc && deleteFunc != INVALID_FUNCTION ? deleteFunc : DeleteParticles,
                                       EntIndexToEntRef(particle));
         }
     }
