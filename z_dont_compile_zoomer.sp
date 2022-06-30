@@ -7,7 +7,7 @@
 #include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Speed Pancop"
+#define ROBOT_NAME	"Zoomer"
 #define ROBOT_ROLE "Zoomer"
 #define ROBOT_DESCRIPTION "Map testing."
  

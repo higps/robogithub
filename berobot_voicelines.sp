@@ -162,6 +162,13 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because %L is not a robot", entity);
 		return Plugin_Continue;
 	}
+
+	if (IsRobot(entity, "Saxtron")) //skip if no robot is picked
+	{
+		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because %L is not a robot", entity);
+		return Plugin_Continue;
+	}
+    
 	
 	if (volume == 0.0 || volume == 0.9997)
 	{

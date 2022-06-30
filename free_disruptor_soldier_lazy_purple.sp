@@ -11,7 +11,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Lazy Purple"
-#define ROBOT_ROLE "Disruptor"
+#define ROBOT_ROLE "Prototype"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Rapid Direct hit"
@@ -316,10 +316,9 @@ stock GiveGiantPyro(client)
 						
 			
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.7);	
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);	
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.2);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
-			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 		// if(IsValidEntity(Weapon2))

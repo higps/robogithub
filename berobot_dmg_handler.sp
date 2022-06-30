@@ -57,14 +57,19 @@ int g_Eyelander_Counter[MAXPLAYERS + 1] = 0;
 float g_AirStrikeDamage[MAXPLAYERS +1] = 0.0;
 float g_AirStrikeDMGRequirement = 600.0;
 float g_ElectricStunDuration = 0.6;
-bool g_Enabled;
+
+float g_FrontierJusticeDamage[MAXPLAYERS + 1] = 0.0;
+float g_FrontierJusticeDMGRequirement = 600.0;
+int g_EngineerRevengeCrits[MAXPLAYERS + 1] = 0;
+
+//bool g_Enabled;
 
 public Plugin myinfo =
 {
 	name = "berobot_dmg_handler",
 	author = "HeavyIsGPS",
-	description = "Handles the damage for against Giant Robots",
-	version = "0.1",
+	description = "Handles the damage vs robots, attributes and onkill weapon stats",
+	version = "1.0",
 	url = "https://github.com/higps/robogithub"
 };
 
@@ -87,6 +92,8 @@ public void OnPluginStart()
 
     HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+//     HookEvent("object_destroyed", Event_Object_Destroyed, EventHookMode_Post);
+//     HookEvent("object_detonated", Event_Object_Detonated, EventHookMode_Post);
 }
 
 public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
@@ -99,8 +106,57 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 
 public void MM_OnEnabledChanged(int enabled)
 {
-    PrintToChatAll("Enabled was %i", enabled);
+    //PrintToChatAll("Enabled was %i", enabled);
 }
+
+// public Action Event_Object_Destroyed(Event event, const char[] name, bool dontBroadcast)
+// {
+//     int client = GetClientOfUserId(GetEventInt(event, "userid"));
+//     //char objectype[256];
+//     int building = GetEventInt(event, "index");
+//     // PrintToChatAll("OBJECT DESTROYED FOR %N", client);
+//     int objecttype = TF2_GetObjectType(building);
+//     if (objecttype == TFObject_Sentry) {
+//         // AwardFrontierCrits(client);
+//     }
+// }
+
+// void AwardFrontierCrits(int client)
+// {
+//     if(HasFrontierJustice(client))
+//     {
+//             int iCrits = GetEntProp(client, Prop_Send, "m_iRevengeCrits");
+//             // int Offset = FindSendPropInfo("CTFPlayer", "m_iRevengeCrits");
+//             // SetEntData(client, Offset, iCrits+g_EngineerRevengeCrits[client]);
+//             // SetEntProp(client, Prop_Send, "m_iRevengeCrits", iCrits+g_EngineerRevengeCrits[client]);
+//             SetEntProp(client, Prop_Send, "m_iRevengeCrits", iCrits+g_EngineerRevengeCrits[client]);
+            
+//             // SDKCall("SetRevengeCrits", client, iCrits+g_EngineerRevengeCrits[client]);
+//             int iActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+//             if (IsFrontierJustice(iActiveWeapon))
+//             {
+//                 TF2_AddCondition(client, TFCond_Kritzkrieged);
+//             }
+
+
+//             g_EngineerRevengeCrits[client] = 0;
+
+
+//     }
+// }
+
+// public Action Event_Object_Detonated(Event event, const char[] name, bool dontBroadcast)
+// {
+//     int client = GetClientOfUserId(GetEventInt(event, "userid"));
+//     // char objectype[64]
+//     // objectype = GetEventString(event, "objecttype");
+//     // PrintToChatAll("OBJECT Detonated FOR %N", client);
+//     int building = GetEventInt(event, "index");
+//     int objecttype = TF2_GetObjectType(building);
+//     if (objecttype == TFObject_Sentry) {
+//         AwardFrontierCrits(client);
+//     }
+// }
 
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
@@ -110,8 +166,16 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     {
         if (HasAirStrike(client))
         {
-            g_AirStrikeDamage[client] = 0.0;
+            g_AirStrikeDamage[client] = 0.0; 
+
         }
+
+        if(HasFrontierJustice(client))
+        {
+            g_FrontierJusticeDamage[client] = 0.0;
+            
+        }
+
     }
    // Requ
 }
@@ -227,6 +291,53 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
             }
 
+            if (iClassAttacker == TFClass_Engineer)
+            {
+                if (HasFrontierJustice(attacker) && IsValidEntity(inflictor))
+                {
+
+                    char AttackerObject[128];
+                
+                    GetEdictClassname(inflictor, AttackerObject, sizeof(AttackerObject));
+
+                    if (StrEqual(AttackerObject, "obj_sentrygun")) {
+                        //  fDamage *= 0.1;
+                    
+                   
+                    // IncrementHeadCount(attacker);   
+
+//                     Table: SentrygunLocalData (offset 0) (type DT_SentrygunLocalData)
+//   Member: m_iKills (offset 2648) (type integer) (bits 32) (VarInt|ChangesOften)
+//   Member: m_iAssists (offset 2652) (type integer) (bits 32) (VarInt|ChangesOften)
+
+                    if (g_FrontierJusticeDamage[attacker] >= g_FrontierJusticeDMGRequirement)
+                    {
+                        g_EngineerRevengeCrits[attacker]++;
+
+
+                        int iSentryAssists = GetEntProp(inflictor, Prop_Send, "m_iAssists");
+                        
+                        // PrintToChatAll("I assists %i", iSentryAssists);
+
+                        if(iSentryAssists == -1)
+                        {
+                            iSentryAssists = 1;
+                        }
+                        // PrintToChatAll("I assists again %i", iSentryAssists+1);
+                        SetEntProp(inflictor, Prop_Send, "m_iAssists", iSentryAssists+1);
+                        g_FrontierJusticeDamage[attacker] = 0.0;
+
+                    }else
+                    {
+                        g_FrontierJusticeDamage[attacker] += damage;
+                    }
+
+                        //PrintToChatAll("Sentry damage was %f", damage);
+
+                        }
+                }
+            }
+
                 if(damagecustom == TF_CUSTOM_BACKSTAB)
                 {
 
@@ -302,8 +413,17 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
                 case TF_CUSTOM_BASEBALL:
                 {
-                    TF2_StunPlayer(victim, 2.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
-                    TF2_AddCondition(victim, TFCond_Sapped, 2.5, attacker);
+                    if(IsSandman(weapon))
+                    {
+                    TF2_StunPlayer(victim, 2.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
+                    TF2_AddCondition(victim, TFCond_Sapped, 2.0, attacker);
+                    }
+
+                    if(IsWrap(weapon)){
+                    TF2_StunPlayer(victim, 1.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
+                    TF2_AddCondition(victim, TFCond_Sapped, 1.5, attacker);    
+                    }
+                    
                     return Plugin_Changed;
                 }
                 //TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
@@ -539,6 +659,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
         int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
+        if (TF2_GetPlayerClass(client) == TFClass_Scout)
+        {
+            if (IsAllClassWeapon(Weapon3) || IsBat(Weapon3) && Weapon1 != -1 &&  Weapon2 != -1)
+            {
+                TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 1.5);
+                TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 1.5);
+                MC_PrintToChatEx(client, client, "{teamcolor}Your bat provides your other weapons with {orange}+50%% maxammo");
+            }
+        }
         
         if (IsEyelander(Weapon3))
         {
@@ -642,6 +772,29 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             MC_PrintToChatEx(client, client, "{teamcolor}Your Rocket Launcher provides you {orange}+25%% faster weapon switch speed{teamcolor}");
         }
 
+        if (HasFrontierJustice(client))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Frontier Justice {orange}gains revenge crits{teamcolor} based on damage it deals. %i damage pr crit. Awarded upon sentry desctruction", RoundToNearest(g_FrontierJusticeDMGRequirement));
+        }
+
+        if (IsShotGun(Weapon1))
+        {
+            SetShotGunStats(Weapon1, client);
+        }
+        if (IsShotGun(Weapon2))
+        {
+            SetShotGunStats(Weapon2, client);
+        }
+
+        if(IsSandman(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Baseball {orange}reduces robots move speed by -85%{teamcolor} for 2 seconds on hit");
+        }
+        if(IsWrap(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Ornament {orange}reduces robots move speed by -70%{teamcolor} for 1.5 seconds on hit");
+        }
+
     }
 
     
@@ -650,7 +803,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
     
     
 
-
+void SetShotGunStats(int weapon, int client)
+{
+    TF2Attrib_SetByName(weapon, "projectile penetration", 1.0);
+    MC_PrintToChatEx(client, client, "{teamcolor}Your Shotgun {orange}penetrates through enemies{teamcolor}");
+}
 
 
 bool IsSniperRifle(int weapon)
@@ -743,6 +900,21 @@ bool IsKunai(int weapon)
 	return false;
 }
 
+bool IsFrontierJustice(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other Frontier are added add here
+	case 141, 1004: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool HasDiamondback(int client)
 {
     int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
@@ -770,6 +942,23 @@ bool HasAirStrike(int client)
 	{
 		//If other airstrikes are added, add here
 	case 1104: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool HasFrontierJustice(int client)
+{
+
+    int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other Frontier are added add here
+	case 141, 1004: 
 		{
 			return true;
 		}
@@ -1019,6 +1208,78 @@ bool IsRocketLauncher(int weapon)
 	return false;
 }
 
+bool IsAllClassWeapon(int weapon){
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other allclass are added, add here
+	case 264,423,474,880,939,954,1013,1071,1123,1127,30758: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsBat(int weapon){
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other allclass are added, add here
+	case 0, 190, 660, 30667: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsShotGun(int weapon){
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other shotguns are added, add here
+	case 9,10,11,12,199,415,425,1141,1153,15003,15016,15044,15047,15085,15109,15132,15133,15152: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsSandman(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other sandman are added, add here
+	case 44: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsWrap(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other wrap are added, add here
+	case 648: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 // 
 
 
@@ -1102,3 +1363,5 @@ public Action Combo_Stopper (int client){
 		//g_Timer[attacker] = false;
 
 }
+
+// 

@@ -11,6 +11,7 @@
 #define ROBOT_NAME	"Sentry Buster"
 #define ROBOT_CLASS "Buster"
 #define ROBOT_ROLE "Sentry Buster"
+#define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION ""
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
@@ -40,6 +41,7 @@ public void OnPluginStart()
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = ROBOT_CLASS;
+	//robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;

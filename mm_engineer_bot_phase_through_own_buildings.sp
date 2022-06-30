@@ -46,10 +46,13 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
+bool g_IsHooked[MAXPLAYERS + 1] = false;
+// bool g_IsPhased[2048] = false;
+
 public OnPluginStart()
 {
 
-	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
+	HookEvent("post_inventory_application", post_inventory_application, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
     // for(int client = 1 ; client <= MaxClients ; client++)
     // {
@@ -71,7 +74,8 @@ public void OnClientDisconnect_Post(int client)
 {
 	if (IsValidClient(client))
 	{
-		SDKUnhook(client, SDKHook_Touch, OnTouch);	
+		SDKUnhook(client, SDKHook_Touch, OnTouch);
+		g_IsHooked[client] = false;
 	} 
 }
 
@@ -80,20 +84,28 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	//int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 
-	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Engineer)
+	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Engineer && g_IsHooked[victim])
 	{
 		SDKUnhook(victim, SDKHook_Touch, OnTouch);
+		g_IsHooked[victim] = false;
+		// PrintToChatAll("UnHooked %N", victim);
 	}
 }
 
 
-public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+public Action post_inventory_application(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 
-	if (IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Engineer)
+	if (IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Engineer && !g_IsHooked[client])
 	{
 		SDKHook(client, SDKHook_Touch, OnTouch);
+
+		// SDKHook(client, SDKHook_StartTouch, StartTouch);
+		
+
+		
+		g_IsHooked[client] = true;
 	}
 }
 // public bool:ShouldCollide( entity, collisiongroup, contentsmask, bool:result )
@@ -111,12 +123,45 @@ public Action OnTouch(int client, int ent)
 	{
 
 
-		if (!StrContains(entname, "obj_dispenser") || !StrContains(entname, "obj_sentrygun")){
+		if (!StrContains(entname, "obj_sentrygun")){
+			StartPhasing(ent, 0, client);
+		}
 
-			//	PrintToChatAll("Ent: %s", entname);
+		if (!StrContains(entname, "obj_dispenser"))
+		{
+			StartPhasing(ent, 1, client);
+		}
+	}
+}
+
+// public Action OnTouch(int client, int ent)
+// {
+// 	char entname[MAX_NAME_LENGTH];
+// 	GetEntityClassname(ent, entname, sizeof(entname));
+
+// 	if (IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Engineer)
+// 	{
+
+
+// 		if (!StrContains(entname, "obj_sentrygun")){
+//  	PrintToChatAll("STart touch!");
+// 		}
+			
+			
+		
+// 	}
+// }
+
+
+
+void StartPhasing(int ent, int state, int client)
+{
 		int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+		// int iOwner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
+		// PrintToChatAll("iOwner was %i", iOwner);
+		//PrintToChatAll("Building state: %i", TF2_GetBuildingState(ent));
 
-		if (iBuilder == client)
+		if (iBuilder == client && TF2_GetBuildingState(ent) != state)
 		{
 				//Sets the owner to nobody
 				SetEntPropEnt(ent, Prop_Send, "m_hBuilder", -1);
@@ -129,10 +174,9 @@ public Action OnTouch(int client, int ent)
 				a.Reset();
 				CreateTimer(1.2, Reset_Timer, a);
 
-			}
 		}
-	}
 }
+
 
 // public Action OnTouchPost(int client, int ent)
 // {
@@ -184,7 +228,10 @@ public Action Reset_Timer(Handle timer, DataPack data)
 
 		if (IsValidEntity(entity))
 		{
+		// 			int iOwner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		// PrintToChatAll("iOwner was %i", iOwner);
 			SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);
+			// g_IsPhased[entity] = true;
 		}
 	// }
 	// else
@@ -267,4 +314,16 @@ stock void SetEntitySolid(int entity, bool doSolid)
 		if( m_usSolidFlags & FSOLID_NOT_SOLID == 0 )
 			SetEntProp(entity, Prop_Send,	"m_usSolidFlags", 	m_usSolidFlags | FSOLID_NOT_SOLID,	2);
 	}
+}
+
+public Action TF2_GetBuildingState(int iBuilding)
+{
+	if (IsValidEntity(iBuilding))
+	{
+		int iState = GetEntProp(iBuilding, Prop_Send, "m_iState");
+		// PrintToChatAll("State was %i", iState);
+		return iState;
+	
+	}
+	return -2;
 }

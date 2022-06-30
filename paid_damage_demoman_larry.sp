@@ -9,7 +9,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Loch'n Larry"
-#define ROBOT_ROLE "Anti-Sentry"
+#define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Rapid Anti-Sentry Loch-n-Load"
@@ -46,7 +46,7 @@ public OnPluginStart()
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
+//	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
@@ -230,10 +230,10 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.75);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);

@@ -11,7 +11,7 @@
 #include <sdktools>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Cluster Bomber"
+#define ROBOT_NAME	"Carpet Bomber"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"

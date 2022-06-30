@@ -8,11 +8,11 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Volcanyro"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Prototype"
 #define ROBOT_CLASS "Pyro"
-#define ROBOT_SUBCLASS "Projectile"
+#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Gas Passer, Sharpened Volcano Fragment"
-#define ROBOT_TIPS "Hit enemies with gas, throw gas at them"
+#define ROBOT_TIPS "\nThrow gas at them\nHit enemies with gas\nHit enemies in general"
 
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -127,7 +127,7 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	int iHealth = 3000;
+	int iHealth = 2750;
 		
 	int MaxHealth = 175;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -143,7 +143,7 @@ MakeGiantPyro(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.85);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -152,6 +152,7 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
+	TF2Attrib_SetByName(client, "deploy time decreased", 0.05);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
@@ -217,7 +218,9 @@ stock GiveGiantPyro(client)
 			TF2Attrib_RemoveAll(Weapon3);
 			TF2Attrib_SetByName(Weapon3, "crit vs burning players", 1.0); //Should have explosion effect from BMod SVF
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
-			TF2Attrib_SetByName(Weapon3, "fire rate penalty", 1.2);
+			TF2Attrib_SetByName(Weapon3, "fire rate penalty", 0.85);
+			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 2.0);
+			TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
 			TF2Attrib_SetByName(Weapon3, "damage bonus vs burning", 1.35);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", 1.25); //65 damage per hit, allowing him to 4 shot unhealed Level 3 buildings instead of 5

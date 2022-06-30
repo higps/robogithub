@@ -168,3 +168,4 @@ Warpaints:
 310 Leopard Printed
 390 Dragon Slayer (only on some weapons)
 391 Smissmas Sweater
+15000-15158 These are decorated war hero collection weapon ids. Use the weaponid in place of paint id.

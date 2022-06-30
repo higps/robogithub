@@ -12,7 +12,7 @@
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Projectiles"
 #define ROBOT_DESCRIPTION "Bonk+Rapid Sandman"
-#define ROBOT_DETAILS "Use bonk to take sentry fire\nShoot a ball to begin generating more"
+#define ROBOT_DETAILS "Use bonk to take sentry fire\nShoot a ball to begin generating more\n+3 Coins on death"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -64,7 +64,7 @@ public OnPluginStart()
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
     restrictions.RobotCoins.PerRobot = 1.0; 
 
-	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, restrictions, 2);
+	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, restrictions, 3);
 }
 
 public void OnPluginEnd()
@@ -178,8 +178,8 @@ MakeGiantscout(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
 	//TF2Attrib_SetByName(client, "damage force increase", 10.0);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 2.25);
-	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 2.0);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
+	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.5);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
@@ -245,18 +245,22 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
-			 TF2Attrib_SetByName(Weapon2, "maxammo grenades1 increased", 21.0);
-			 TF2Attrib_SetByName(Weapon2, "effect bar recharge rate increased", 0.2);
+			 TF2Attrib_SetByName(Weapon2, "maxammo grenades1 increased", 30.0);
+			 TF2Attrib_SetByName(Weapon2, "effect bar recharge rate increased", 0.1);
 			 
-			TF2Attrib_SetByName(Weapon2, "damage bonus", 1.33);
+			TF2Attrib_SetByName(Weapon2, "damage bonus", 2.5);
 			//TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 10.0);
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 			
 					// new iOffset = GetEntProp(Weapon2, Prop_Send, "m_iPrimaryAmmoType", 1)*4;
 					// new iAmmoTable = FindSendPropInfo("CTFPlayer", "m_iAmmo");
 					// SetEntData(client, iAmmoTable+iOffset, 23, 0, true);
-						
+			// float Hypemeter = GetEntPropFloat(Weapon2, Prop_Send, "m_flChargeMeter");
+			// PrintToChatAll("Hype was %f", Weapon2);
+			// SetEntPropFloat(client, Prop_Send, "m_flChargeMeter", 0.0);
 		}
+
+		TF2_SetWeaponAmmo(Weapon2, 30);
 	}
 }
 
@@ -264,3 +268,11 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 
 
+stock void TF2_SetWeaponAmmo(int weapon, int amount) {
+	int ammoType = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
+	
+	if (client > 0 && client <= MaxClients && ammoType != -1) {
+		SetEntProp(client, Prop_Send, "m_iAmmo", amount, 4, ammoType);
+	}
+}

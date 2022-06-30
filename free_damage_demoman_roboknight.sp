@@ -7,7 +7,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Robo-Knight"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Prototype"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Eyelander, Chargin' Targe"
@@ -38,6 +38,8 @@ public OnPluginStart()
     LoadTranslations("common.phrases");
 
 	AddNormalSoundHook(BossMortar);
+
+	// HookEvent("player_death", Event_Death, EventHookMode_Post);
 
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
@@ -162,7 +164,7 @@ MakeDemoKnight(client)
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "head scale", 0.75);
+	TF2Attrib_SetByName(client, "head scale", 0.85);
 
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -236,6 +238,47 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
 			TF2Attrib_SetByName(Weapon3, "mult charge turn control", 2.0);		
 			TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
+			TF2Attrib_SetByName(Weapon3, "heal on kill", 150.0);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 		}
 	}
 }
+
+public void TF2_OnConditionAdded(int client, TFCond condition)
+{
+	
+	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
+		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Charging)
+		{	
+			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 1750.0);
+
+		}
+	
+}
+
+// public Event_Death(Event event, const char[] name, bool dontBroadcast)
+// {
+// 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+// 	//int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+// 	if(IsRobot(attacker, ROBOT_NAME))
+// 	{
+
+// 			//PrintToChatAll("HP WAS %i , MAXHP was %i", HP, MAXHP);
+
+// 			RequestFrame(SetHP, attacker);
+
+// 			// SetEntProp(attacker, Prop_Send, "m_iHealth", HP, 1);
+// 			// SetEntProp(attacker, Prop_Data, "m_iHealth", HP, 1);
+
+
+// 	}
+// }
+
+// void SetHP(int attacker)
+// {
+// 			// int HP = GetEntProp(attacker, Prop_Send, "m_iHealth");
+// 			// int MAXHP = GetEntProp(attacker, Prop_Data, "m_iMaxHealth");
+// 			// SetEntProp(attacker, Prop_Send, "m_iMaxHealth", MAXHP+115, 1);
+// 			// SetEntProp(attacker, Prop_Data, "m_iMaxHealth", MAXHP+115, 1);
+// }
