@@ -773,7 +773,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 		}
 
 
-		if(g_AirTime >= 85)
+		if(g_AirTime >= 50)
 		{
 			g_CanWeighDown = true;
 		}else
@@ -1083,6 +1083,7 @@ void DrawRageHUD(int client)
 	{
 
 			Format(sHUDText, sizeof(sHUDText), "Rage Ready!\nTaunt to activate!");
+			g_rage[client] = g_ragelimit;
 			SetHudTextParams(0.85, 0.6, 0.1, 0, 255, 0, 255);
 	}else {
 

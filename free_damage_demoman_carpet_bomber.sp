@@ -12,7 +12,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Carpet Bomber"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Prototype"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Cluster Bomb Grenade Loose Cannon"
