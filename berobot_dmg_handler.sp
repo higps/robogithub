@@ -788,11 +788,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if(IsSandman(Weapon3))
         {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Baseball {orange}reduces robots move speed by 85% for 2 seconds on hit");
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Baseball {orange}reduces robots move speed by -85%{teamcolor} for 2 seconds on hit");
         }
         if(IsWrap(Weapon3))
         {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Ornament {orange}reduces robots move speed by 70% for 1.5 seconds on hit");
+            MC_PrintToChatEx(client, client, "{teamcolor}Your Ornament {orange}reduces robots move speed by -70%{teamcolor} for 1.5 seconds on hit");
         }
 
     }
