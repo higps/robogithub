@@ -92,8 +92,8 @@ public void OnPluginStart()
 
     HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
-    HookEvent("object_destroyed", Event_Object_Destroyed, EventHookMode_Post);
-    HookEvent("object_detonated", Event_Object_Detonated, EventHookMode_Post);
+//     HookEvent("object_destroyed", Event_Object_Destroyed, EventHookMode_Post);
+//     HookEvent("object_detonated", Event_Object_Detonated, EventHookMode_Post);
 }
 
 public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
@@ -109,54 +109,54 @@ public void MM_OnEnabledChanged(int enabled)
     //PrintToChatAll("Enabled was %i", enabled);
 }
 
-public Action Event_Object_Destroyed(Event event, const char[] name, bool dontBroadcast)
-{
-    int client = GetClientOfUserId(GetEventInt(event, "userid"));
-    //char objectype[256];
-    int building = GetEventInt(event, "index");
-    // PrintToChatAll("OBJECT DESTROYED FOR %N", client);
-    int objecttype = TF2_GetObjectType(building);
-    if (objecttype == TFObject_Sentry) {
-        AwardFrontierCrits(client);
-    }
-}
+// public Action Event_Object_Destroyed(Event event, const char[] name, bool dontBroadcast)
+// {
+//     int client = GetClientOfUserId(GetEventInt(event, "userid"));
+//     //char objectype[256];
+//     int building = GetEventInt(event, "index");
+//     // PrintToChatAll("OBJECT DESTROYED FOR %N", client);
+//     int objecttype = TF2_GetObjectType(building);
+//     if (objecttype == TFObject_Sentry) {
+//         // AwardFrontierCrits(client);
+//     }
+// }
 
-void AwardFrontierCrits(int client)
-{
-    if(HasFrontierJustice(client))
-    {
-            int iCrits = GetEntProp(client, Prop_Send, "m_iRevengeCrits");
-            // int Offset = FindSendPropInfo("CTFPlayer", "m_iRevengeCrits");
-            // SetEntData(client, Offset, iCrits+g_EngineerRevengeCrits[client]);
-            // SetEntProp(client, Prop_Send, "m_iRevengeCrits", iCrits+g_EngineerRevengeCrits[client]);
-            SetEntProp(client, Prop_Send, "m_iRevengeCrits", iCrits+g_EngineerRevengeCrits[client]);
+// void AwardFrontierCrits(int client)
+// {
+//     if(HasFrontierJustice(client))
+//     {
+//             int iCrits = GetEntProp(client, Prop_Send, "m_iRevengeCrits");
+//             // int Offset = FindSendPropInfo("CTFPlayer", "m_iRevengeCrits");
+//             // SetEntData(client, Offset, iCrits+g_EngineerRevengeCrits[client]);
+//             // SetEntProp(client, Prop_Send, "m_iRevengeCrits", iCrits+g_EngineerRevengeCrits[client]);
+//             SetEntProp(client, Prop_Send, "m_iRevengeCrits", iCrits+g_EngineerRevengeCrits[client]);
             
-            // SDKCall("SetRevengeCrits", client, iCrits+g_EngineerRevengeCrits[client]);
-            int iActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-            if (IsFrontierJustice(iActiveWeapon))
-            {
-                TF2_AddCondition(client, TFCond_Kritzkrieged);
-            }
+//             // SDKCall("SetRevengeCrits", client, iCrits+g_EngineerRevengeCrits[client]);
+//             int iActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+//             if (IsFrontierJustice(iActiveWeapon))
+//             {
+//                 TF2_AddCondition(client, TFCond_Kritzkrieged);
+//             }
 
 
-            g_EngineerRevengeCrits[client] = 0;
+//             g_EngineerRevengeCrits[client] = 0;
 
 
-    }
-}
+//     }
+// }
 
-public Action Event_Object_Detonated(Event event, const char[] name, bool dontBroadcast)
-{
-    int client = GetClientOfUserId(GetEventInt(event, "userid"));
-    // char objectype[64]
-    // objectype = GetEventString(event, "objecttype");
-    // PrintToChatAll("OBJECT Detonated FOR %N", client);
-    int building = GetEventInt(event, "index");
-    int objecttype = TF2_GetObjectType(building);
-    if (objecttype == TFObject_Sentry) {
-        AwardFrontierCrits(client);
-    }
-}
+// public Action Event_Object_Detonated(Event event, const char[] name, bool dontBroadcast)
+// {
+//     int client = GetClientOfUserId(GetEventInt(event, "userid"));
+//     // char objectype[64]
+//     // objectype = GetEventString(event, "objecttype");
+//     // PrintToChatAll("OBJECT Detonated FOR %N", client);
+//     int building = GetEventInt(event, "index");
+//     int objecttype = TF2_GetObjectType(building);
+//     if (objecttype == TFObject_Sentry) {
+//         AwardFrontierCrits(client);
+//     }
+// }
 
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
@@ -306,9 +306,25 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                    
                     // IncrementHeadCount(attacker);   
 
+//                     Table: SentrygunLocalData (offset 0) (type DT_SentrygunLocalData)
+//   Member: m_iKills (offset 2648) (type integer) (bits 32) (VarInt|ChangesOften)
+//   Member: m_iAssists (offset 2652) (type integer) (bits 32) (VarInt|ChangesOften)
+
                     if (g_FrontierJusticeDamage[attacker] >= g_FrontierJusticeDMGRequirement)
                     {
                         g_EngineerRevengeCrits[attacker]++;
+
+
+                        int iSentryAssists = GetEntProp(inflictor, Prop_Send, "m_iAssists");
+                        
+                        // PrintToChatAll("I assists %i", iSentryAssists);
+
+                        if(iSentryAssists == -1)
+                        {
+                            iSentryAssists = 1;
+                        }
+                        // PrintToChatAll("I assists again %i", iSentryAssists+1);
+                        SetEntProp(inflictor, Prop_Send, "m_iAssists", iSentryAssists+1);
                         g_FrontierJusticeDamage[attacker] = 0.0;
 
                     }else
@@ -1272,3 +1288,5 @@ public Action Combo_Stopper (int client){
 		//g_Timer[attacker] = false;
 
 }
+
+// 
