@@ -83,7 +83,7 @@ public OnPluginStart()
     restrictions.TeamCoins.Overall = 2;
 
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = 1;
+	restrictions.RobotCoins.PerRobot = 1.0;
 
     AddRobot(robot, MakeBigBigJoey, PLUGIN_VERSION, restrictions);
 	

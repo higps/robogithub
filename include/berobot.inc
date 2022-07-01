@@ -30,13 +30,13 @@ methodmap TimeLeftRestrictionDefinition < StringMap {
     }
 }
 methodmap RobotCoinRestrictionDefinition < StringMap {
-    property int PerRobot {
+    property float PerRobot {
         public get(){ 
-            int value;
+            float value;
             this.GetValue("PerRobot", value);
             return value;
         }
-        public set(int value){
+        public set(float value){
             this.SetValue("PerRobot", value);
         }
     }

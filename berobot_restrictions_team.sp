@@ -457,7 +457,7 @@ void GetRestriction(TFTeam team, ArrayList restrictions)
     for(int i = 0; i < _teamCoinRestrictions[team].Length; i++)
     {
         RobotCoins restriction = _teamCoinRestrictions[team].Get(i);
-        SMLogTag(SML_VERBOSE, "TeamCoins set for team %i %i: %i PerRobot; %i Overall", team, i, restriction.PerRobot, restriction.Overall);
+        SMLogTag(SML_VERBOSE, "TeamCoins set for team %i %i: %f PerRobot; %i Overall", team, i, restriction.PerRobot, restriction.Overall);
     }
 }
 
