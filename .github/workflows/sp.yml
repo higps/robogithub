@@ -39,6 +39,8 @@ jobs:
 
       # Dependecies
       - uses: eisbaer66/spm@v0.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       # Compile
       - name: Compile plugins
