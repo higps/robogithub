@@ -542,6 +542,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
             // } 
 
             // }
+            // KillRune();
             
         }
 
@@ -2018,6 +2019,26 @@ stock void TF2_SetHealth(int client, int NewHealth)
     SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
+public void OnEntityCreated(int iEntity, const char[] sClassName) 
+{
+	if (StrContains(sClassName, "item_powerup_rune") == 0)
+	{
+		AcceptEntityInput(iEntity, "Kill");
+	}
+	
+}
+
+// public void KillRune(){
+
+// 			int iEnt = MaxClients + 1;
+// 		while ((iEnt = FindEntityByClassname(iEnt, "item_powerup_rune")) != -1)
+// 		{
+// 			if (IsValidEntity(iEnt))
+// 			{
+// 				AcceptEntityInput(iEnt, "Kill");
+// 			}
+// 		} 
+// }
 
 //OLD TEAM SWITCH CODE, MAY NOT WORK RIGHT
 //HookEvent("teams_changed", Event_Teams_Changed, EventHookMode_Post);
