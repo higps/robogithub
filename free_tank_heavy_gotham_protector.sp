@@ -124,35 +124,35 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 	}
 
-		if (IsRobotWhenDead(victim, ROBOT_NAME))
-	{
-		//PrintToChatAll("Attempting to kill powerup");
-		//Delte the powerup:
-		KillRune();
-	}
+	// 	if (IsRobotWhenDead(victim, ROBOT_NAME))
+	// {
+	// 	//PrintToChatAll("Attempting to kill powerup");
+	// 	//Delte the powerup:
+	// 	KillRune();
+	// }
 	
 	
 }
 
-public void KillRune(){
+// public void KillRune(){
 
-			int iEnt = MaxClients + 1;
-		while ((iEnt = FindEntityByClassname(iEnt, "item_powerup_rune")) != -1)
-		{
-			if (IsValidEntity(iEnt))
-			{
-					//DispatchKeyValue(iEnt, "rendermode", "0");
+// 			int iEnt = MaxClients + 1;
+// 		while ((iEnt = FindEntityByClassname(iEnt, "item_powerup_rune")) != -1)
+// 		{
+// 			if (IsValidEntity(iEnt))
+// 			{
+// 					//DispatchKeyValue(iEnt, "rendermode", "0");
 				
-				//DispatchSpawn(iEnt);
-				AcceptEntityInput(iEnt, "Kill");
-				// float fPos[3];
-				// fPos[0] = 15.0;
-				// fPos[1] = 15.0;
-				// fPos[2] = 15.0;
-				// TeleportEntity(iEnt, fPos, NULL_VECTOR, NULL_VECTOR);
-			}
-		} 
-}
+// 				//DispatchSpawn(iEnt);
+// 				AcceptEntityInput(iEnt, "Kill");
+// 				// float fPos[3];
+// 				// fPos[0] = 15.0;
+// 				// fPos[1] = 15.0;
+// 				// fPos[2] = 15.0;
+// 				// TeleportEntity(iEnt, fPos, NULL_VECTOR, NULL_VECTOR);
+// 			}
+// 		} 
+// }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
 {
@@ -406,7 +406,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			
 		}
 
-		KillRune();
+		// KillRune();
 	}
 
 	//Function to add vs uberchaining
