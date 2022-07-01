@@ -152,6 +152,16 @@ native void UnmakeRobot(int clientId);
 native void SetRobot(char robotname[NAMELENGTH], int clientId);
 
 /**
+ * turns a human into a specified robot, ignoring spawn and alive checks
+ * (usually use SetRobot(...) instead)
+ * 
+ * @param robotname     name robot that should be created
+ * @param clientId      clientId of human
+ * @noreturn
+ */
+native void ForceRobot(char robotname[NAMELENGTH], int clientId);
+
+/**
  * saves whether the provided client is repicking a robot
  *
  * @param clientId      client to whom repicking should be saved
