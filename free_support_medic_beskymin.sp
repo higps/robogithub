@@ -10,7 +10,8 @@
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Medigun"
-#define ROBOT_DESCRIPTION "Vaccinator"
+#define ROBOT_DESCRIPTION "Dmg Reflect Vaccinator"
+#define ROBOT_TIPS "Vaccinator: 15 percent passive resist\n 10 percent resistance when deployed\nGet the Reflect Damage rune when deploying uber on teammate"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -105,9 +106,9 @@ MakeGiantMedic(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
-TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -121,7 +122,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client , "Vaccinator: 15 percent passive resist\n 50 percent resistance when deployed");
+	PrintHintText(client , ROBOT_TIPS);
 
 
 }
