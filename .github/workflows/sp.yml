@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sm-version: [ '1.10.x']
+        sm-version: [ '1.10.x', '1.11.x' ]
         # sm-version: [ '1.10.x', '1.10.6528', '1.11.x', '1.11.6467', '>= 1.11.6478']
 
     name: SM version ${{ matrix.sm-version }}
