@@ -163,7 +163,7 @@ jobs:
                 continue;
             fi
             echo -e "\nCompiling $file..."
-            spcomp -O2 -v2 -i include -i lib-include -o "plugins/$(basename -- "$file" .sp).smx" $file
+            spcomp -O2 -v2 ${{ matrix.compiler-options }} -i include -i lib-include -o "plugins/$(basename -- "$file" .sp).smx" $file
           done
           echo "===OUT FILES==="
           ls
