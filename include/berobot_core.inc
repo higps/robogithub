@@ -152,6 +152,14 @@ native void UnmakeRobot(int clientId);
 native void SetRobot(char robotname[NAMELENGTH], int clientId);
 
 /**
+ * turns a human into a random robot
+ * 
+ * @param clientId      clientId of human
+ * @noreturn
+ */
+native void SetRandomRobot(int clientId);
+
+/**
  * turns a human into a specified robot, ignoring spawn and alive checks
  * (usually use SetRobot(...) instead)
  * 
