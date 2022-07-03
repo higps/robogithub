@@ -10,6 +10,9 @@ jobs:
       matrix:
         sm-version: [ '1.10.x', '1.11.x' ]
         # sm-version: [ '1.10.x', '1.10.6528', '1.11.x', '1.11.6467', '>= 1.11.6478']
+        include:
+          - sm-version: "1.11.x" # https://github.com/rumblefrog/setup-sp/issues/5
+            compiler-options: "-i=$includePath"
 
     name: SM version ${{ matrix.sm-version }}
     steps:
