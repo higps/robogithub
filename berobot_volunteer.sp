@@ -82,6 +82,14 @@ public void OnConfigsExecuted()
     _robocapTeam = GetConVarInt(_robocapTeamConVar);
 }
 
+public void MM_OnClientReseting(int clientId)
+{
+    SMLogTag(SML_VERBOSE, "resetting volunteer status for client %i", clientId);
+
+    _pickedOption[clientId] = false;
+    _volunteered[clientId] = false;
+}
+
 public void AutoVolunteerAdminFlagCvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
 {
     _autoVolunteerAdminFlag = StringToInt(sNewValue);
