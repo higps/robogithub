@@ -18,6 +18,7 @@
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
+#define ROBOT_COST 1.0
 
 #define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
@@ -64,9 +65,9 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 
-		RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 1.0;
+    restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }

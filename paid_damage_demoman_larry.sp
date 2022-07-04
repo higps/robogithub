@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Rapid Anti-Sentry Loch-n-Load"
 #define ROBOT_STATS "-75%%%% damage to players\nAttacks pierce damage resistances\n+75%%%% faster firing speed"
+#define ROBOT_COST 1.5
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -54,7 +55,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 1.0; 
+    restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
     AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
 }

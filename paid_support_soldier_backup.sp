@@ -13,6 +13,7 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Banner"
 #define ROBOT_DESCRIPTION "Battalions Backup"
+#define ROBOT_COST 1.0
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -63,7 +64,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 1.0;
+    restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }

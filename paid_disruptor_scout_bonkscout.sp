@@ -13,6 +13,7 @@
 #define ROBOT_SUBCLASS "Projectiles"
 #define ROBOT_DESCRIPTION "Bonk+Rapid Sandman"
 #define ROBOT_DETAILS "Use bonk to take sentry fire\nShoot a ball to begin generating more\n+3 Coins on death"
+#define ROBOT_COST 1.0
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -62,7 +63,7 @@ public OnPluginStart()
 	
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 1.0; 
+    restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
 	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, restrictions, 3);
 }

@@ -12,6 +12,7 @@
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Energy Shield"
 #define ROBOT_DESCRIPTION "Quickfix + MvM Shield"
+#define ROBOT_COST 3.0
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -45,7 +46,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 3;
+    restrictions.RobotCoins.Overall = ROBOT_COST;
 
     AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION, restrictions);
 }

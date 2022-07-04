@@ -15,6 +15,7 @@
 #define ROBOT_CLASS "Spy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Turn invis on backstab"
+#define ROBOT_COST 1.0
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -64,7 +65,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 1.0;
+    restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
     AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 

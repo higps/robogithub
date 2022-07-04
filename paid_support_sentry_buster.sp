@@ -13,6 +13,7 @@
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION ""
+#define ROBOT_COST 2.0
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
 #define SPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"
@@ -51,7 +52,7 @@ public void OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.Overall = 2;
+    restrictions.RobotCoins.Overall = ROBOT_COST;
 
 	AddRobot(robot, MakeBuster, PLUGIN_VERSION, restrictions);
 

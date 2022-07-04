@@ -12,6 +12,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Energy Shield"
 #define ROBOT_DESCRIPTION "Rage + Shield"
+#define ROBOT_COST 2.5
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -62,7 +63,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 3.0; 
+    restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
     AddRobot(robot, MakeGRageH, PLUGIN_VERSION, restrictions);
 }

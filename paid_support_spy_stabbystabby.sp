@@ -14,7 +14,9 @@
 #define ROBOT_ROLE "Prototype"
 #define ROBOT_CLASS "Spy"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Turn invis on backstab"
+#define ROBOT_DESCRIPTION "Rapid fire kunai"
+#define ROBOT_TIPS "Infinite Cloak\nRapidly trickstab!\nHeal from sapping buildings"
+#define ROBOT_COST 1.0
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -64,7 +66,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 1;
+    restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
     AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 
@@ -190,7 +192,7 @@ MakeSpy(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client, "Infinite Cloak\nStab enemies to gain buff to kill while stealthed!\nHeal from sapping buildings");
+	PrintHintText(client, ROBOT_TIPS);
 
 	// if (IsPlayerAlive(client)){
 	// EmitGameSoundToAll("Announcer.MVM_Spy_Alert");

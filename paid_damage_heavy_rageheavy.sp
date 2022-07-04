@@ -12,6 +12,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Pushback rage"
+#define ROBOT_COST 1.5
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -62,7 +63,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = 2.0; 
+    restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
     AddRobot(robot, MakeGRageH, PLUGIN_VERSION, restrictions);
 }
