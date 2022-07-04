@@ -1364,14 +1364,3 @@ public Action Combo_Stopper (int client){
 
 }
 
-public void KillRune(){
-
-			int iEnt = MaxClients + 1;
-		while ((iEnt = FindEntityByClassname(iEnt, "item_powerup_rune")) != -1)
-		{
-			if (IsValidEntity(iEnt))
-			{
-				AcceptEntityInput(iEnt, "Kill");
-			}
-		} 
-}
