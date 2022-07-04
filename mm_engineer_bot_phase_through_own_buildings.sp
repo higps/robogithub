@@ -40,7 +40,7 @@ enum
 public Plugin:myinfo =
 {
 	name = "[TF2] Enables giant engineer robots to phase through their own buildings",
-	author = "Balancemod.TF",
+	author = "bmod.tf",
 	description = "Temporarily changes the owner of the building of dispensers and sentries allowing the robot engineers to pass through.",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"

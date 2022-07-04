@@ -2,7 +2,7 @@
 #define PLUGIN_DESCRIPTION "Handles backstab modifier as well as other functions for the giant robot plugins"
 #define PLUGIN_AUTHOR "Fragancia & Heavy Is GPS"
 #define PLUGIN_VERSION "1.0.0"
-#define PLUGIN_URL "Balancemod.tf"
+#define PLUGIN_URL "bmod.tf"
 
 #define RED 2
 #define BLUE 3
@@ -740,7 +740,7 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
     if (g_Enable && !g_AprilEnable){
 
         MC_PrintToChatAll("{Green}Type {orange}!info{Green} to see more info about this gamemode");
-        MC_PrintToChatAll("{Green}Visit {orange}balancemod.tf/mannedmachines {Green} To get the assetpack to get the most out of this mode");
+        MC_PrintToChatAll("{Green}Visit {orange}bmod.tf/mannedmachines {Green} To get the assetpack to get the most out of this mode");
 
         if (GameRules_GetProp("m_bSwitchedTeamsThisRound"))
         {
@@ -762,6 +762,7 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
                     g_HumanTeam = BLUE;
                 }
             }
+            
         }
     }
 
