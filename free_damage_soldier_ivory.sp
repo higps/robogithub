@@ -221,12 +221,14 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 		{
 			Format(sample, sizeof(sample), GUNFIRE);
 			EmitSoundToAll(sample, entity);
+			volume = 0.1;
 			
 		}
 		else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
 		{
 			Format(sample, sizeof(sample), GUNFIRE_CRIT);
 			EmitSoundToAll(sample, entity);
+			volume = 0.1;
 		}
 		
 		return Plugin_Changed;
