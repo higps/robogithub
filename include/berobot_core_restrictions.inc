@@ -78,3 +78,10 @@ native int GetTeamCoinsFor(int clientId);
  * @return          amount of robot-coins available to the clients team
  */
 native int GetRobotCoinsFor(int clientId);
+
+/**
+ * resets both type of coins for all clients/teams
+ * 
+ * @noretutn
+ */
+native void ResetCoins();

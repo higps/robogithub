@@ -746,6 +746,8 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
         {
             if(g_cv_bDebugMode) PrintToChatAll("Teamswitch detected!");
 
+            ResetCoins();
+
             switch(g_RoboTeam)
             {
                 

@@ -74,6 +74,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("GetRobotCoinsFor", Native_GetRobotCoinsFor);
     CreateNative("GetTeamCoinsFor", Native_GetTeamCoinsFor);
     CreateNative("PayRobotCoin", Native_PayRobotCoin);
+    CreateNative("ResetCoins", Native_ResetCoins);
     return APLRes_Success;
 }
 
@@ -192,6 +193,11 @@ public any Native_PayRobotCoin(Handle plugin, int numParams)
     return true;
 }
 
+public any Native_ResetCoins(Handle plugin, int numParams)
+{
+    Internal_ResetCoins();
+}
+
 public Action Command_AddRobotCoins(int client, int numParams)
 {
     if (numParams < 2)
@@ -242,7 +248,7 @@ public void OnMapStart()
 {
     SMLogTag(SML_VERBOSE, "OnMapStart called at %i", GetTime());
     GetRestrictions();
-    ResetCoins();
+    Internal_ResetCoins();
 
     for(int i = 0; i <= MaxClients; i++)
     {
@@ -275,7 +281,7 @@ void Start()
     GetRestrictions();
     HookEvent("player_death", OnDeath, EventHookMode_PostNoCopy);
 
-    ResetCoins();
+    Internal_ResetCoins();
 }
 
 public void OnClientConnected(int client)
@@ -311,7 +317,7 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 
 void OnRoundFinished(const char[] output, int caller, int activator, float delay)
 {
-    ResetCoins();
+    Internal_ResetCoins();
 }
 
 int GetSpentRobotCoins(int clientId, TFTeam team, char steamId[64])
@@ -335,7 +341,7 @@ int GetSpentRobotCoins(int clientId, TFTeam team, char steamId[64])
     return spentCoins;
 }
 
-void ResetCoins()
+void Internal_ResetCoins()
 {
     for(TFTeam i = TFTeam_Unassigned; i <= TFTeam_Blue; i++)
     {
