@@ -337,6 +337,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("UnmakeRobot", Native_UnmakeRobot);
     CreateNative("RedrawChooseRobotMenu", Native_RedrawChooseRobotMenu);
     CreateNative("RedrawChooseRobotMenuFor", Native_RedrawChooseRobotMenuFor);
+    CreateNative("SetRandomRobot", Native_SetRandomRobot);
     CreateNative("SetRobot", Native_SetRobot);
     CreateNative("ForceRobot", Native_ForceRobot);
 
@@ -603,7 +604,7 @@ public Action SetRandomRobot_Timer(Handle timer, any client)
 
     if (!IsAnyRobot(client))
     {
-        SetRandomRobot(client);
+        Internal_SetRandomRobot(client);
     }
 }
 // 
@@ -913,7 +914,7 @@ public Action Command_BeRobot(int client, int numParams)
 
 public Action Command_SetRandomRobot(int client, int args)
 {
-    SetRandomRobot(client);
+    Internal_SetRandomRobot(client);
     
 }
 
@@ -1094,7 +1095,7 @@ public Action Command_YT_Robot_Start(int client, int args)
             {
                 if(IsClientInGame(i))
                 {
-                    SetRandomRobot(i);
+                    Internal_SetRandomRobot(i);
                 }
             }
         }
@@ -1390,7 +1391,7 @@ public Action MakeRobot(int client, bool volunteering)
 void MoveToRobots(int client)
 {    
     TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
-    RequestFrame(SetRandomRobot,client);
+    RequestFrame(Internal_SetRandomRobot,client);
     // CreateTimer(0.5, SetRandomRobot_Timer, client);
     // SetClientRepicking(client, false);
     // ChooseRobot(client);
@@ -1402,7 +1403,7 @@ Action ChooseRobot(int client, bool redrawing = false)
     //Setting of bots is handled elsewhere
     // if (IsFakeClient(client))
     // {
-    //     SetRandomRobot(client);
+    //     Internal_SetRandomRobot(client);
     //     return Plugin_Handled;
     // }
 
@@ -1410,7 +1411,7 @@ Action ChooseRobot(int client, bool redrawing = false)
     return Plugin_Handled;
 }
 
-void SetRandomRobot(int client)
+void Internal_SetRandomRobot(int client)
 {
     if (!g_Enable)
         return;
@@ -1441,7 +1442,7 @@ void SetRandomRobot(int client)
                 if(g_cv_bDebugMode)PrintToChatAll("For %N, the robot %s, was enabled, index was: %i", client, robotname, i);
 
                 SMLogTag(SML_VERBOSE, "For %N, the robot %s, was enabled & not active, index was: %i", client, robotname, i);
-                //SetRandomRobot(client);
+                //Internal_SetRandomRobot(client);
                 break;
             }else{
 
@@ -1497,7 +1498,7 @@ void SetRandomRobot(int client)
 //                 if(g_cv_bDebugMode)PrintToChatAll("For %N, the robot %s, was enabled, index was: %i", client, robotname, i);
 
 //                 SMLogTag(SML_VERBOSE, "For %N, the robot %s, was enabled & not active, index was: %i", client, robotname, i);
-//                 //SetRandomRobot(client);
+//                 //Internal_SetRandomRobot(client);
 //                 break;
 //             }else{
 
@@ -1520,6 +1521,13 @@ void SetRandomRobot(int client)
 //     if(g_cv_bDebugMode)PrintToChatAll("setting bot %L to be robot '%s'", client, robotname);
 //     SetRobot(robotname, client);
 // }
+
+any Native_SetRandomRobot(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+
+    Internal_SetRandomRobot(client);
+}
 
 any Native_SetRobot(Handle plugin, int numParams)
 {

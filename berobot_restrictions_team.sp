@@ -294,6 +294,15 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
         SMLogTag(SML_VERBOSE, "not resetting %L's robot, because it was not bought", victimClientId);
         return;
     }
+
+    int count = GetRobotCount(_lastUnrestrictedRobot[victimClientId]);
+    int roboCap = GetRobotCap(_lastUnrestrictedRobot[victimClientId]);
+    if (count >= roboCap)
+    {
+        SMLogTag(SML_VERBOSE, "resetting %L's bought robot to random after death, because %s is already taken", victimClientId, _lastUnrestrictedRobot[victimClientId]);
+        SetRandomRobot(victimClientId);
+        return;
+    }
     
     SMLogTag(SML_VERBOSE, "resetting %L's bought robot to %s after death", victimClientId, _lastUnrestrictedRobot[victimClientId]);
     CreateRobot(_lastUnrestrictedRobot[victimClientId], victimClientId, "");
