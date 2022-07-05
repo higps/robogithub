@@ -7,7 +7,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Samwiz"
-#define ROBOT_ROLE "Prototype"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Brass Beast"

@@ -11,7 +11,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Lazy Purple"
-#define ROBOT_ROLE "Prototype"
+#define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Rapid Direct hit"

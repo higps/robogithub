@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Lister"
-#define ROBOT_ROLE "Prototype"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Dragon's Fury, Powerjack"

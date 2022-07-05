@@ -8,7 +8,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Theory-Y"
-#define ROBOT_ROLE "Prototype"
+#define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Medigun"
 #define ROBOT_DESCRIPTION "Vac-eliminator"
