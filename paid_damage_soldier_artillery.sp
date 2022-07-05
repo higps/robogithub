@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Rapid Long Range Artillery"
-#define ROBOT_COST 1.0
+#define ROBOT_COST 2.5
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -303,11 +303,11 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.3);				
-			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
+			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.85);
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
+			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 6.0);
 
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 2.0);
+			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 

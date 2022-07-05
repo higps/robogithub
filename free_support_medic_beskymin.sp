@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_ontakedamage>
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Skymin Slash"
@@ -241,4 +242,27 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	// }
 
    }
+}
+
+
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+    if(IsValidClient(attacker) &&IsValidClient(victim))
+    {
+		// PrintToChatAll("Attacker was %N , victim was %N weapon was %i", attacker, victim, weapon);
+		// PrintToChatAll("damagecustom was %i , damage type was %i", damagecustom, damagetype);
+
+		if(damagecustom == TF_CUSTOM_RUNE_REFLECT)
+		{
+		PrintToChatAll("damage before change %f", damage);	
+		damage *= 0.4;
+		PrintToChatAll("damage after change %f", damage);	
+		//critType = CritType_None;
+		damageForce[0] == -10.0;
+		damageForce[1] == -10.0;
+		damageForce[2] == -10.0;
+		return Plugin_Handled;
+		}
+	}
+
 }

@@ -14,6 +14,7 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Bushwacka Piss Bot"
+#define ROBOT_TIPS "Rapid swing Bushwacka, become ubered whenever jarated"
 
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
@@ -154,7 +155,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Arrows penetrate enemies!");
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 
@@ -235,7 +236,7 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_SetByName(Kukri, "fire rate bonus", 0.8);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.25);
-			TF2Attrib_SetByName(Kukri, "speed_boost_on_kill", 2.0);
+			// TF2Attrib_SetByName(Kukri, "speed_boost_on_kill", 2.0);
 			// TF2Attrib_SetByName(Kukri, "speed boost when active", 0.8);
 			TF2Attrib_SetByName(Kukri, "heal on kill", 125.0);
 			

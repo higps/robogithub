@@ -66,9 +66,9 @@
 
 #define HALESPEED		340.0
 
-#define HALE_JUMPCHARGE		(25*1.0)
-#define HALERAGEDIST		800.0
-#define HALE_WEIGHDOWN_TIME	3.0
+// #define HALE_JUMPCHARGE		(25*1.0)
+// #define HALERAGEDIST		800.0
+// #define HALE_WEIGHDOWN_TIME	3.0
 
 bool b_SaxtonSaid[MAXPLAYERS + 1] = false;
 float g_JumpTime = 0.0;
@@ -113,7 +113,7 @@ public OnPluginStart()
     restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
     restrictions.TeamCoins.Overall = 2;
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = 2.0;
+	restrictions.RobotCoins.PerRobot = 3.0;
 
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions, 2);
 
@@ -310,7 +310,7 @@ public OnMapStart()
 int g_SuperJumpCharge = 0;
 int g_SuperJumpChargeLimit = 125;
 float g_rage[MAXPLAYERS + 1] = 0;
-float g_ragelimit = 2000.0;
+float g_ragelimit = 100.0;
 
 public Action:SetModel(client, const String:model[])
 {
@@ -918,9 +918,9 @@ public void WeighDown(int client, float power, float reset)
 public void PerformStun(int client)
 {
 	//Get our hero variables
-	float duration = 8.0;
+	float duration = 5.0;
 	bool fullStun = false;
-	float radius = 600.0;
+	float radius = 400.0;
 	int iTeam = GetClientTeam(client);
 	
 	ApplyRadialStun(client, GetOpposingTeam(iTeam), duration, radius, fullStun);

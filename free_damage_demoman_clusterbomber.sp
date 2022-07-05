@@ -91,10 +91,10 @@ public OnPluginStart()
 	RegAdminCmd("sm_clusterbombs", CmdMirv, ADMFLAG_BAN);
 
 	PipeCount = CreateConVar("boss_clusterbomb_count", "4", "Number of child grenades to spawn from a clusterbomb");
-	PipeDamage = CreateConVar("boss_clusterbomb_damage", "350", "Percentage of parent grenade's damage that child grenades should deal");
+	PipeDamage = CreateConVar("boss_clusterbomb_damage", "200", "Percentage of parent grenade's damage that child grenades should deal");
 	PipeScale = CreateConVar("boss_clusterbomb_scale", "1.25", "Model scale for child grenades");
 	PipeModel = CreateConVar("boss_clusterbomb_iron_bomber", "1", "Should child grenades use the iron bomber projectile or derive the model from the parent");
-	PipeSpeed = CreateConVar("boss_clusterbomb_speed", "150", "Max speed child grenades can be launched at");
+	PipeSpeed = CreateConVar("boss_clusterbomb_speed", "300", "Max speed child grenades can be launched at");
 
 
 	AddNormalSoundHook(BossMortar);
@@ -331,15 +331,14 @@ stock GiveGiantDemoKnight(client)
 		{
 			//TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.65);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
-			TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
+			// TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.5);
 			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.6);
-			TF2Attrib_SetByName(Weapon1, "fuse bonus", 0.5);
+			TF2Attrib_SetByName(Weapon1, "fuse bonus", 0.75);
 			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
 			
 			// TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");

@@ -11,12 +11,12 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"StabbyStabby"
-#define ROBOT_ROLE "Prototype"
+#define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Spy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Rapid fire kunai"
-#define ROBOT_TIPS "Infinite Cloak\nRapidly trickstab!\nHeal from sapping buildings"
-#define ROBOT_COST 1.0
+#define ROBOT_TIPS "Infinite Cloak\nRapid stabs\nInstant decloak!\nHeal from sapping buildings"
+#define ROBOT_COST 1.5
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -281,7 +281,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Cloak);
 			
 			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
-			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.4);
+			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.01);
 
 			
 						

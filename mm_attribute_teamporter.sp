@@ -151,6 +151,8 @@ public void OnMapStart()
 	PrecacheSound(TELEPORTER_SPAWN, true);
 	PrecacheSound(TELEPORTER_ACTIVATE, true);
 
+	
+
 }
 
 // public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
@@ -222,6 +224,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 			}else
 			{
 				TE_Particle("teleported_mvm_bot_dust", position, _, _, attach, 1,0);	
+				// TE_Particle("teleported_mvm_bot", position, _, _, attach, 1,0);	
 			}
 			
 			//TE_Particle("teleporter_mvm_bot_persist", position, _, _, attach, 1,0);

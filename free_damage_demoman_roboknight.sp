@@ -7,7 +7,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Robo-Knight"
-#define ROBOT_ROLE "Prototype"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Eyelander, Chargin' Targe"
@@ -159,7 +159,7 @@ MakeDemoKnight(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
@@ -234,12 +234,12 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
 			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 10.0);		
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.75);			
-			TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
+			// TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);			
+			TF2Attrib_SetByName(Weapon3, "critboost on kill", 2.0);		
 			TF2Attrib_SetByName(Weapon3, "mult charge turn control", 2.0);		
 			TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 150.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
 		}
 	}
 }
