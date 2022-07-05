@@ -377,7 +377,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 void StunPlayer (int victim)
 {
-		if (!TF2_IsPlayerInCondition(victim, TFCond_Taunting)){
+		if (!TF2_IsPlayerInCondition(victim, TFCond_Taunting) && !IsAnyRobot(victim)){
 	
 		TF2_StunPlayer(victim, 3.5, 0.0, TF_STUNFLAG_BONKSTUCK);
 		//return Plugin_Changed;
