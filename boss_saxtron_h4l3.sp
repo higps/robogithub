@@ -310,7 +310,7 @@ public OnMapStart()
 int g_SuperJumpCharge = 0;
 int g_SuperJumpChargeLimit = 125;
 float g_rage[MAXPLAYERS + 1] = 0;
-float g_ragelimit = 100.0;
+float g_ragelimit = 2000.0;
 
 public Action:SetModel(client, const String:model[])
 {
