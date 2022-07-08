@@ -648,7 +648,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         
         if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
         {
-            MC_PrintToChatEx(client, client, "{teamcolor}All of your weapons {orange}+25%%% damage{teamcolor} against robots");
+            MC_PrintToChatEx(client, client, "{teamcolor}All of your weapons {orange}Reload 25%%% faster and deal +25%%% damage{teamcolor} against robots");
+            if (Weapon1 != -1)
+            {
+                TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.75);
+            }
+
+            if (Weapon2 != -1)
+            {
+                TF2Attrib_SetByName(Weapon2, "Reload time decreased", 0.75);
+            }
         }
 
         if (TF2_GetPlayerClass(client) == TFClass_Heavy)
