@@ -273,6 +273,8 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
 			TF2Attrib_SetByName(Knife, "restore health on kill", 10.0);
+			TF2Attrib_SetByName(Knife, "speed_boost_on_kill", 10.0);
+			
 			
 						
 		}
