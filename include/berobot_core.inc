@@ -460,7 +460,7 @@ methodmap RobotCoins < RobotCoinRestrictionDefinition {
             return this.Overall;
 
         int robotCount = GetRobotCountPerTeam();
-        int price = robotCount * this.PerRobot;
+        float price = robotCount * this.PerRobot;
         int roundedPrice = RoundToNearest(robotCount * this.PerRobot);
         
         SMLogTag(SML_VERBOSE, "GetPrice(): robotCount: %i, PerRobot %f => %f rounded to %i", robotCount, this.PerRobot, price, roundedPrice);

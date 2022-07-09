@@ -85,6 +85,12 @@ methodmap RobotSubclass < StringMap {
 
         menu.AddItem(key, display, draw);
     }
+
+    public void Dispose()
+    {
+        delete this.Robots;
+        delete this;
+    }
 }
 
 methodmap RobotRole < StringMap {
@@ -148,6 +154,8 @@ methodmap RobotRole < StringMap {
             count += robotSubclass.Count;
             max += robotSubclass.Robots.Length;
         }
+        delete snapshot;
+
         this.Count = count;
         this.Max = max;
         
@@ -164,6 +172,22 @@ methodmap RobotRole < StringMap {
             RobotSubclass robotSubclass = this.Get(key);
             robotSubclass.AddMenuItem(menu, key, key);
         }
+        delete snapshot;
+    }
+
+    public void Dispose()
+    {
+        StringMapSnapshot snapshot = this.Subclasses.Snapshot();
+        for(int i = 0; i < snapshot.Length; i++)
+        {
+            char key[NAMELENGTH];
+            snapshot.GetKey(i, key, sizeof(key));
+            RobotSubclass robotSubclass = this.Get(key);
+            robotSubclass.Dispose();
+        }
+        delete snapshot;
+
+        delete this;
     }
 }
 
@@ -228,6 +252,8 @@ methodmap RobotCategory < StringMap {
             count += robotRole.Count;
             max += robotRole.Max;
         }
+        delete snapshot;
+
         this.Count = count;
         this.Max = max;
         
@@ -252,6 +278,22 @@ methodmap RobotCategory < StringMap {
 
             menu.AddItem(key, display, draw);
         }
+        delete snapshot;
+    }
+
+    public void Dispose()
+    {
+        StringMapSnapshot snapshot = this.Roles.Snapshot();
+        for(int i = 0; i < snapshot.Length; i++)
+        {
+            char key[NAMELENGTH];
+            snapshot.GetKey(i, key, sizeof(key));
+            RobotRole robotRole = this.Get(key);
+            robotRole.Dispose();
+        }
+        delete snapshot;
+
+        delete this;
     }
 }
 
@@ -332,6 +374,15 @@ methodmap RobotSelectionMenu < StringMap {
         this.AddMenuItemForCategory(menu, false, "Paid", "Paid");
         this.GetBosses().AddMenuItem(menu, "Bosses", "ZBOSS");
     }
+
+    public void Dispose()
+    {
+        this.GetBosses().Dispose();
+        this.Get(true).Dispose();
+        this.Get(false).Dispose();
+
+        delete this;
+    }
 }
 
 bool g_ClientIsRepicking[MAXPLAYERS + 1];
@@ -393,6 +444,7 @@ public void LoadMenuTree()
 
         robotDefinitions.PushArray(item);
     }
+    delete robotNames;
     robotDefinitions.SortCustom(RobotDefinitionComparision);
 
     RobotSelectionMenu menu = new RobotSelectionMenu();
@@ -449,6 +501,7 @@ public void LoadMenuTree()
             SMLogTag(SML_VERBOSE, "adding nonBoss-Robot %s (free: %i)", robot.name, isFree);
         }
     }
+    delete robotDefinitions;
 
     StringMap freeCategory = menu.Get(true);
     SMLogTag(SML_VERBOSE, "Free-Robots %i", freeCategory);
@@ -456,6 +509,13 @@ public void LoadMenuTree()
     SMLogTag(SML_VERBOSE, "Paid-Robots %i", paidCategory);
 
     menu.Hydrate();
+
+    if (g_menu)
+    {
+        RobotSelectionMenu oldMenu = g_menu;
+        g_menu = null;
+        oldMenu.Dispose();
+    }
     g_menu = menu;
 }
 
