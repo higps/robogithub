@@ -130,6 +130,9 @@ void Reset()
 
 void LoadVipSteamIds()
 {
+    if (_vipSteamIds)
+        delete _vipSteamIds;
+
     _vipSteamIds = new StringMap();
     File file = OpenFile("mm_volunteer_vip.txt", "r");
     if (file == null)
@@ -249,7 +252,7 @@ public Action Command_Volunteer(int client, int args)
     return Plugin_Handled;
 }
 
-public Action VolunteerTargets(int client, char target[32], bool volunteering)
+public void VolunteerTargets(int client, char target[32], bool volunteering)
 {
     int targetFilter = 0;
     if(target[0] == '\0')
@@ -273,7 +276,7 @@ public Action VolunteerTargets(int client, char target[32], bool volunteering)
           tn_is_ml)) <= 0)
     {
         ReplyToTargetError(client, target_count);
-        return Plugin_Handled;
+        return;
     }
 
     for(int i = 0; i < target_count; i++)
@@ -281,11 +284,9 @@ public Action VolunteerTargets(int client, char target[32], bool volunteering)
         int targetClientId = target_list[i];
         Volunteer(targetClientId, volunteering);
     }
-
-    return Plugin_Handled;
 }
 
-public Action Volunteer(int client, bool volunteering)
+public void Volunteer(int client, bool volunteering)
 {
     _volunteered[client] = volunteering;
     _pickedOption[client] = true;
@@ -314,9 +315,12 @@ int Native_GetRandomVolunteer(Handle plugin, int numParams)
     GetNativeArray(1, ignoredClientIds, length);
     SMLogTag(SML_VERBOSE, "Native_GetRandomVolunteer read %i ignroedClientIds", length);
 
-    ArrayList pickedVolunteers = PickVolunteers(1, ignoredClientIds, length, false);
+    ArrayList pickedVolunteers = PickVolunteers(1, ignoredClientIds, length, false);    
     if (pickedVolunteers.Length <= 0)
+    {
+        delete pickedVolunteers;
         return -1;
+    }
 
     int clientId = pickedVolunteers.Get(0);
     SMLogTag(SML_VERBOSE, "Native_GetRandomVolunteer picked %L", clientId);
@@ -348,7 +352,7 @@ int Native_StartAutomaticVolunteerVote(Handle plugin, int numParams)
     _countdownTarget = GetTime() + _autoVolunteerTimeout;
     _autoVolunteerTimer = CreateTimer(float(_autoVolunteerTimeout), Timer_VolunteerAutomaticVolunteers);
     _countdownTimer = CreateTimer(1.0, Timer_Countdown, _, TIMER_REPEAT);
-    Timer_Countdown(INVALID_HANDLE);
+    TriggerTimer(_countdownTimer, true);
 }
 
 Action Timer_Countdown(Handle timer)

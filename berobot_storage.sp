@@ -84,7 +84,8 @@ public Action Command_DumpRobotStorage(int client, int numParams)
         SMLogTag(SML_INFO, "Robot {%s: %s, callback: %x, sounds: {spawn: %s}, restrictions: {timeLeft: %i}}", 
            item.name, item.class, item.callback, item.sounds.spawn, item.restrictions.TimeLeft);
     }
-    }
+    delete snapshot;
+}
 
 public any Native_AddRobot(Handle plugin, int numParams)
 { 
@@ -169,20 +170,21 @@ public any Native_RemoveRobot(Handle plugin, int numParams)
 
 public any Native_GetRobotNames(Handle plugin, int numParams)
 {
-	Init();
-	
-	ArrayList names = new ArrayList(NAMELENGTH);
+    Init();
 
-	StringMapSnapshot snapshot = _robots.Snapshot();
-	for(int i = 0; i < snapshot.Length; i++)
-	{
-		char name[NAMELENGTH];
-		snapshot.GetKey(i, name, NAMELENGTH);
+    ArrayList names = new ArrayList(NAMELENGTH);
 
-		names.PushString(name);
-	}
+    StringMapSnapshot snapshot = _robots.Snapshot();
+    for(int i = 0; i < snapshot.Length; i++)
+    {
+        char name[NAMELENGTH];
+        snapshot.GetKey(i, name, NAMELENGTH);
 
-	return names;
+        names.PushString(name);
+    }
+    delete snapshot;
+
+    return names;
 }
 
 public any Native_GetRobotClass(Handle plugin, int numParams)
@@ -236,6 +238,7 @@ public any Native_GetRobotRestrictions(Handle plugin, int numParams)
         
         restrictions.Push(item.restrictions);
     }
+    delete snapshot;
 
     return restrictions;
 }
