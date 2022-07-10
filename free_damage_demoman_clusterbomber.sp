@@ -499,7 +499,7 @@ void OnSpawnPost(any ref)
 		//PrintToChatAll("Setting scale");
 		SetEntPropFloat(pipe, Prop_Send, "m_flModelScale", 1.6);
 		// SDKHook(pipe, SDKHook_Touch, OnPipeTouch);
-		SDKhook(pipe, SDKHook_VPhysicsUpdate, OnPipeUpdate);
+		SDKHook(pipe, SDKHook_VPhysicsUpdate, OnPipeUpdate);
 	}
 }
 
