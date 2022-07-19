@@ -50,9 +50,6 @@ public OnPluginStart()
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = 1.0;
 
-	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = 1.0;
-
     AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
 
 }
