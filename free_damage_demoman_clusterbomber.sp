@@ -468,8 +468,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 void OnSpawn(int pipe)
 {
 	int owner = GetEntPropEnt(pipe, Prop_Send, "m_hOwnerEntity");
-	if (IsRobot(owner, ROBOT_NAME))
-	{
+	// if (IsRobot(owner, ROBOT_NAME))
+	// {
 	//	PrintToChatAll("Setting scale");
 
 		
@@ -477,7 +477,7 @@ void OnSpawn(int pipe)
 		Grenade[pipe].owner.set(owner);
 		Grenade[pipe].touched = false;
 		RequestFrame(OnSpawnPost, EntIndexToEntRef(pipe)); //Not everything initializes right away so we will wait another frame before doing anything else
-	}
+	// }
 }
 
 void OnSpawnPost(any ref)

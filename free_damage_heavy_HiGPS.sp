@@ -205,7 +205,7 @@ MakeGDeflectorH(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 //	float spreadpenalty = scale * spreadmodifier;
-	PrintHintText(client , "Shoot down projectiles!\n+30 percent damage bonus");
+	PrintHintText(client , ROBOT_TIPS);
 
 }
  
@@ -265,7 +265,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "attack projectiles", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.45);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
 			//TF2Attrib_SetByName(Weapon1, "mult_spread_scales_consecutive", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "spread penalty", spreadpenalty);

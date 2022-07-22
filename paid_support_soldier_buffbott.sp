@@ -8,7 +8,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Boot Riot"
+#define ROBOT_NAME	"Buff Bot"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Banner"
@@ -232,8 +232,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 #define ARMOREDAUTHORITY 445
-#define ColdfrontCurbstompers 30558
-#define FancyDressUniform 446
+#define Diplomat 30744
+
 stock GiveGiantSoldier(client)
 {
 	if (IsValidClient(client))
@@ -249,9 +249,8 @@ stock GiveGiantSoldier(client)
 
 		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 100.0);
 
-		CreateRoboHat(client, ARMOREDAUTHORITY, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, ColdfrontCurbstompers, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, FancyDressUniform, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, ARMOREDAUTHORITY, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, Diplomat, 10, 6, 0.0, 1.0, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -264,8 +263,9 @@ stock GiveGiantSoldier(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 5.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.8);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);	
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 		}
 		if(IsValidEntity(Weapon2))

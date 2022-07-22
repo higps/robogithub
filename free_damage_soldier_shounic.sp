@@ -351,8 +351,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
 			//TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.25);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.1);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			//TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
@@ -506,7 +506,7 @@ void SimulateLauncher(Reference rocket, Rocket launcher, bool auto)
 			OtherRocket[proj] = true;
 
 			PrecacheSound("weapons/rocket_shoot.wav");
-			EmitSoundToAll("weapons/rocket_shoot.wav", proj, SNDCHAN_AUTO, 90);
+			EmitSoundToAll("weapons/rocket_shoot.wav", proj, SNDCHAN_AUTO, 80);
 
 			SetEntPropEnt(proj, Prop_Data, "m_hOwnerEntity", owner);
 			int team = GetClientTeam(owner);

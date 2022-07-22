@@ -8,7 +8,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"BackUp"
+#define ROBOT_NAME	"Back Up"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Banner"
@@ -28,7 +28,7 @@
 
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant Captain Conch",
+	name = "[TF2] Be the Giant Back Up",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
 	description = "Play as the Giant Bazooka Joe from 2002",
 	version = PLUGIN_VERSION,
@@ -231,8 +231,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantSoldier(client);
 }
 
-#define GrenaderCap 227
-
+#define Breach 31113
+#define Antarctic 30331
 stock GiveGiantSoldier(client)
 {
 	if (IsValidClient(client))
@@ -248,7 +248,8 @@ stock GiveGiantSoldier(client)
 
 		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 100.0);
 
-		CreateRoboHat(client, GrenaderCap, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, Breach, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, Antarctic, 10, 6, 0.0, 1.0, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -261,10 +262,11 @@ stock GiveGiantSoldier(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.8);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.85);
+			TF2Attrib_SetByName(Weapon1, "health on radius damage", 50.0);
+			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
-			TF2Attrib_SetByName(Weapon1, "health on radius damage", 30.0);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);	
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 
 		if(IsValidEntity(Weapon2))

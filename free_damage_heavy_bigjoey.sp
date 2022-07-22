@@ -218,7 +218,7 @@ MakeGDeflectorH(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintCenterText(client, ROBOT_TIPS);
+	PrintHintText(client, ROBOT_TIPS);
 	//EmitSoundToAll(SPAWN, client);
 	//g_IsGPS[client] = true;
 	
@@ -275,7 +275,7 @@ stock GiveBigJoey(client)
 			TF2Attrib_SetByName(Weapon1, "item style override", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.15);
 		}
 	}

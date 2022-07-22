@@ -14,7 +14,7 @@
 #define ROBOT_SUBCLASS "Banner"
 #define ROBOT_DESCRIPTION "Cloaker"
 //#define GSOLDIER             "models/bots/spy/bot_spy.mdl"
-#define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
+#define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
@@ -242,8 +242,6 @@ MakeGiantSoldier(client)
 	
 	//
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	//TF2Attrib_SetByName(client, "head scale", 0.75);
-	TF2Attrib_SetByName(client, "head scale", 0.75);
 	UpdatePlayerHitbox(client,scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -266,7 +264,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define CrossComm 764
+#define Balaclava 521
+#define Cape 30727
 
 // 
 
@@ -287,7 +286,8 @@ stock GiveGiantPyro(client)
 		CreateRoboWeapon(client, "tf_weapon_buff_item", 226, 6, 1, 2, 0);
 		// CreateRoboWeapon(client, "tf_weapon_shovel", 775, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, CrossComm, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, Balaclava, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, Cape, 10, 6, 0.0, 1.0, 1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -298,10 +298,11 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon1, "override projectile type", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);				
+						
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);	
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 		}
 		if(IsValidEntity(Weapon2))
