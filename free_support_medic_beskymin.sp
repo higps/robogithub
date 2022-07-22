@@ -254,9 +254,9 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		if(damagecustom == TF_CUSTOM_RUNE_REFLECT)
 		{
-		PrintToChatAll("damage before change %f", damage);	
+		// PrintToChatAll("damage before change %f", damage);	
 		damage *= 0.4;
-		PrintToChatAll("damage after change %f", damage);	
+		// PrintToChatAll("damage after change %f", damage);	
 		//critType = CritType_None;
 		damageForce[0] == -10.0;
 		damageForce[1] == -10.0;

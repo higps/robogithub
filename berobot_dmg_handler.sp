@@ -646,9 +646,15 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
     {
 
         
+
+
+        int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+        int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+        int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
         if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
         {
-            MC_PrintToChatEx(client, client, "{teamcolor}All of your weapons {orange}Reload 25%%% faster and deal +25%%% damage{teamcolor} against robots");
+            MC_PrintToChatEx(client, client, "{teamcolor}All of your weapons {orange}Reload 25%%%% faster and deal +25%%% damage{teamcolor} against robots");
             if (Weapon1 != -1)
             {
                 TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.75);
@@ -664,10 +670,6 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             MC_PrintToChatEx(client, client, "{teamcolor}Your miniguns all deal {orange}-20%%% damage{teamcolor} against robots");
         }
-
-        int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-        int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-        int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
         if (TF2_GetPlayerClass(client) == TFClass_Scout)
         {

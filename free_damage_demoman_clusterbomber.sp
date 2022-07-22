@@ -69,6 +69,9 @@ enum struct Pipe
 	bool detonated;
 	float timer;
 
+	int current_deflections;
+	int last_deflections;
+
 	bool touched; //dont want to use m_bTouched as that will mess with player hit detection
 }
 Pipe Grenade[2049];
@@ -496,7 +499,22 @@ void OnSpawnPost(any ref)
 		//PrintToChatAll("Setting scale");
 		SetEntPropFloat(pipe, Prop_Send, "m_flModelScale", 1.6);
 		// SDKHook(pipe, SDKHook_Touch, OnPipeTouch);
+		SDKHook(pipe, SDKHook_VPhysicsUpdate, OnPipeUpdate);
 	}
+}
+
+Action OnPipeUpdate(int pipe)
+{
+	if (Grenade[pipe].mirv)
+	{
+		Grenade[pipe].current_deflections = GetEntProp(pipe, Prop_Send, "m_iDeflected");
+		if (Grenade[pipe].current_deflections > Grenade[pipe].last_deflections)
+		{
+			Grenade[pipe].last_deflections = Grenade[pipe].current_deflections;
+			Grenade[pipe].owner.set(GetEntPropEnt(pipe, Prop_Data, "m_hThrower")); //after spawning, owner becomes invalid and thrower is valid
+		}
+	}
+	return Plugin_Continue;
 }
 
 // Action OnPipeTouch(int pipe, int other)

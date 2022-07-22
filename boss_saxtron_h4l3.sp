@@ -111,7 +111,7 @@ public OnPluginStart()
     // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
     // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
     restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-    restrictions.TeamCoins.Overall = 2;
+    restrictions.TeamCoins.Overall = 1;
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = 3.0;
 
@@ -310,7 +310,7 @@ public OnMapStart()
 int g_SuperJumpCharge = 0;
 int g_SuperJumpChargeLimit = 125;
 float g_rage[MAXPLAYERS + 1] = 0;
-float g_ragelimit = 100.0;
+float g_ragelimit = 2000.0;
 
 public Action:SetModel(client, const String:model[])
 {
