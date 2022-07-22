@@ -432,13 +432,13 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 {
 	
 	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
-   if (IsValidClient(client) && !IsRobot(client, ROBOT_NAME)){
+//    if (IsValidClient(client) && !IsRobot(client, ROBOT_NAME)){
 
-    if(condition == TFCond_RuneVampire || condition == TFCond_RuneHaste){
+//     if(condition == TFCond_RuneVampire || condition == TFCond_RuneHaste){
 
-		TF2_RemoveCondition(client, condition);
-	}
-   }
+// 		TF2_RemoveCondition(client, condition);
+// 	}
+//    }
 
 		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
 		{	
