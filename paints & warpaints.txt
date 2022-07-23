@@ -169,3 +169,17 @@ Warpaints:
 390 Dragon Slayer (only on some weapons)
 391 Smissmas Sweater
 15000-15158 These are decorated war hero collection weapon ids. Use the weaponid in place of paint id.
+
+
+	0 "Fireball", 
+	1 "Swarm of Bats", 
+	2 "Overheal", 
+	3 "Pumpkin MIRV", 
+	4 "Blast Jump", 
+	5 "Stealth", 
+	6 "Shadow Leap", 
+	7 "Ball O' Lightning", 
+	8 "Power Up", 
+	9 "Meteor Shower", 
+	10 "Summon MONOCULUS", 
+	11 "Skeletons Horde"
