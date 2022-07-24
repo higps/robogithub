@@ -26,12 +26,6 @@
 #define RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
 
-// #define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
-// #define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
-// #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
-
-//Artillery code
-
 #include <sdktools>
 #include <sdkhooks>
 #include <tf2>
@@ -224,7 +218,7 @@ MakeGiantSoldier(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
+	// TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -368,10 +362,10 @@ void EnterRapidFireMode(int client)
 void ResetWeapon(int client)
 {
 	g_FireMode = false;
-	PrintCenterText(client, "Exiting Firing mode");
+	//PrintCenterText(client, "Exiting Firing mode");
 	TF2Attrib_AddCustomPlayerAttribute(client, "move speed penalty", 0.5);
 	
-	
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	g_skill_time = g_skill + g_skill_cooldown;
 	// PrintToChatAll("Gskill time: %f", g_skill_time);
 	// PrintToChatAll("Gskill: %f", g_skill);
@@ -409,16 +403,6 @@ void DrawHUD(int client)
 
 	int iCountDown = RoundToCeil(g_skill_time - g_skill);
 	int iCountDownFiring = RoundToCeil(FireModeTimer - g_skill);
-	// PrintToChatAll("g_skill %f, g_skill_time %f", g_skill, g_skill_time);
-	// for (int j = 1; j <= 10; j++)
-	// {
-	// 	if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
-	// 	else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
-	// }
-
-	// int team = GetClientTeam(client);
-
-	// float angles[3], pos[3];
 	
 	Format(sHUDText, sizeof(sHUDText), "Rapid Fire: %i   ",iCountDown);
 

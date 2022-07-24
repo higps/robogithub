@@ -8,6 +8,7 @@
 #include <tf_custom_attributes>
 #include <tf_ontakedamage>
 #include <tf2_isPlayerInSpawn>
+#include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Saxtron"
@@ -535,50 +536,67 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	
 //VSH CODE
 
-public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType){
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
 
-	if(IsValidClient(attacker) && IsRobot(victim, ROBOT_NAME))
-	{
-                if(damagecustom == TF_CUSTOM_BACKSTAB)
-                {
-					char stab_snd[PLATFORM_MAX_PATH];
-					Format(stab_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleStubbed132, GetRandomInt(1, 4));
-					SaxtronSay(victim, stab_snd);
-				}
+    if(!IsValidClient(victim))
+        return Plugin_Continue;    
+    if(!IsValidClient(attacker))
+    {
 
-				//PrintToChatAll("Damage was %f, g_rage before %f, g_rage limit was", damage, g_rage, g_ragelimit);
-
-				SaxtronRageIncrease(victim, damage);
-				// if(g_rage[victim] < g_ragelimit)
-				// {
-				// 	// PrintToChatAll("Damage was %f, g_rage before %f", damage, g_rage[victim]);
-				// 	g_rage[victim] += damage;
-				// 	// PrintToChatAll("g_rage after %f", g_rage[victim]);
-				// }
-
-			//	DrawRageHUD(victim);
+		if(IsRobot(victim, ROBOT_NAME) && damagetype == DMG_FALL)
+        {
+        damage *= 0.15;
+        return Plugin_Changed;
+        }
 	}
+		if(IsValidClient(attacker) && IsRobot(victim, ROBOT_NAME))
+		{
 
-		if(IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
-	{
-				//PrintToChatAll("Damage was %f, g_rage before %f, g_rage limit was", damage, g_rage, g_ragelimit);
+		if (IsRobot(victim, ROBOT_NAME))
+		{
+			if(damagecustom == TF_CUSTOM_BACKSTAB)
+			{
+				char stab_snd[PLATFORM_MAX_PATH];
+				Format(stab_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleStubbed132, GetRandomInt(1, 4));
+				SaxtronSay(victim, stab_snd);
+			}
+		}
 
-				// if(g_rage[attacker] < g_ragelimit)
-				// {
-				// 	// PrintToChatAll("Damage was %f, g_rage before %f", damage, g_rage[attacker]);
-				SaxtronRageIncrease(attacker, damage);
-				// 	g_rage[attacker] += damage;
-				// 	if(damage > 250.0)
-				// 	{
-				// 		g_rage[attacker] -= damage;
-				// 		g_rage[attacker] += 250.0;
-				// 	}
-					
-				// 	// PrintToChatAll("g_rage after %f", g_rage[attacker]);
-				// }
+					//PrintToChatAll("Damage was %f, g_rage before %f, g_rage limit was", damage, g_rage, g_ragelimit);
 
-			//	DrawRageHUD(attacker);
-	}
+					SaxtronRageIncrease(victim, damage);
+					// if(g_rage[victim] < g_ragelimit)
+					// {
+					// 	// PrintToChatAll("Damage was %f, g_rage before %f", damage, g_rage[victim]);
+					// 	g_rage[victim] += damage;
+					// 	// PrintToChatAll("g_rage after %f", g_rage[victim]);
+					// }
+
+				//	DrawRageHUD(victim);
+		}
+
+			if(IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
+		{
+					//PrintToChatAll("Damage was %f, g_rage before %f, g_rage limit was", damage, g_rage, g_ragelimit);
+
+					// if(g_rage[attacker] < g_ragelimit)
+					// {
+					// 	// PrintToChatAll("Damage was %f, g_rage before %f", damage, g_rage[attacker]);
+					SaxtronRageIncrease(attacker, damage);
+					// 	g_rage[attacker] += damage;
+					// 	if(damage > 250.0)
+					// 	{
+					// 		g_rage[attacker] -= damage;
+					// 		g_rage[attacker] += 250.0;
+					// 	}
+						
+					// 	// PrintToChatAll("g_rage after %f", g_rage[attacker]);
+					// }
+
+				//	DrawRageHUD(attacker);
+		}
+	
 
 }
 

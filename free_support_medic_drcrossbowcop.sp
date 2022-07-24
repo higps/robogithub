@@ -5,13 +5,15 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
+
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Dr. Crossbow Cop"
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Projectile"
-#define ROBOT_DESCRIPTION "Rapid fire Crossbow"
+#define ROBOT_DESCRIPTION "Strength Buff Crossbow"
+#define ROBOT_TIPS "Strong Heal Bolts\nActivate Strength Bolts with M2\nProvide special buffs to other Cop bots"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -41,6 +43,8 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
+
+	HookEvent("crossbow_heal", Event_Crossbow_Heal, EventHookMode_Post);
 }
 
 public void OnPluginEnd()
@@ -101,9 +105,9 @@ MakeGiantMedic(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
-TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -118,8 +122,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintToChat(client, "1. You are now Giant Dr. Crossbow Cop !");
-	PrintHintText(client , "Primary: Rapid Fire Heal Crossbow\nMelee: Hit enemies with your Crossbow");
+	PrintHintText(client , ROBOT_TIPS);
 
 }
 
@@ -149,12 +152,19 @@ public Action:Timer_Switch(Handle:timer, any:client)
 #define THELAW 30362
 #define LICENSETOMAIM 296
 
+
+bool g_button_held[MAXPLAYERS + 1] = false;
+float g_Recharge[MAXPLAYERS + 1] = 0.0;
+int g_Heal_Bolts_Hits_Needed = 1;
+int g_healcount = 0;
+float g_duration = 8.0;
+
 stock GiveGiantMedic(client)
 {
 	if (IsValidClient(client))
 	{
 		TF2_RemoveWeaponSlot(client, 0);
-		TF2_RemoveWeaponSlot(client, 1);
+		// TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 	
 		RoboRemoveAllWearables(client);
@@ -167,20 +177,22 @@ stock GiveGiantMedic(client)
 		CreateRoboHat(client, LICENSETOMAIM, 10, 6, 0.0, 1.0 , -1.0);//License to maim
 		
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-
+		g_healcount = 0;
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 0.5);
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.5);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.85);
+
+			TF2Attrib_SetByName(Weapon1, "mark for death", 5.0);
 			//TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 50.0);
 
-			TF2Attrib_SetByName(Weapon1, "clip size bonus", 6.0);
+			// TF2Attrib_SetByName(Weapon1, "clip size bonus", 6.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time decreased", 1.5);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			// TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -195,6 +207,147 @@ stock GiveGiantMedic(client)
 		
 	}
 }
-       
+
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+{
+	if (IsRobot(client, ROBOT_NAME))
+	{
+
+		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_RELOAD|IN_USE|IN_ATTACK2) ) 
+		{
+			//  PrintToChatAll("Press");
+            g_button_held[client] = true;
+		}
+
+
+
+		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_RELOAD|IN_USE|IN_ATTACK2) ) 
+		{
+			//  PrintToChatAll("Release");
+			g_button_held[client] = false;
+            
+		}
+		//0 = fireball
+		//PrintToChat(client, "Throwing spell!");
+		// UpdateCharge(client);
+		DrawHUD(client);
+		
+	}
+}
+
+bool isready;
+#define CHAR_FULL "■"
+#define CHAR_EMPTY "□"
+void DrawHUD(int client)
+{
+	char sHUDText[128];
+	char sProgress[32];
+	// int iPercents = RoundToCeil((GetEngineTime() / g_Recharge[client])  * 100.0);
+	int iCountDown = g_Heal_Bolts_Hits_Needed - g_healcount;
+
+	int iCountDownActive = RoundToCeil(g_Recharge[client] - (GetEngineTime()));
+	
+	 int iPercents = RoundToCeil(iCountDownActive / g_duration  * 100.0);
+	for (int j = 1; j <= 10; j++)
+	{
+		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
+		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
+	}
+	
+	if (TF2_IsPlayerInCondition(client, TFCond_CritHype))
+	{
+		Format(sHUDText, sizeof(sHUDText), "Strength Bolts Active!\n               %s", sProgress);
+		SetHudTextParams(1.0, 0.8, 0.5, 255, 69, 0, 255);
+	}
+	else if(iCountDown <= 0)
+	{
+
+
+		Format(sHUDText, sizeof(sHUDText), "Strength Bolts Ready!");
+		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+
+	}else
+	{
+		Format(sHUDText, sizeof(sHUDText), "Strength Bolts: %i", iCountDown);
+		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
+		
+		
+	}
+	
+	ShowHudText(client, -2, sHUDText);
+		
+	if (!isready && iCountDown <= 0)
+	{
+		TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
+		// PrintToChatAll("Ready!");
+		isready = true;	
+	}
+
+	if (g_button_held[client] && iCountDown <= 0 || IsFakeClient(client))
+	{
+		isready = false;
+		
+		TF2_AddCondition(client, TFCond_CritHype, g_duration);
+		g_healcount = 0;
+		g_Recharge[client] = GetEngineTime() + g_duration;
+	}
+}
+
+
+public bool IsKritzed(int client){
+	if (TF2_IsPlayerInCondition(client, (TFCond_Kritzkrieged)) || TF2_IsPlayerInCondition(client, (TFCond_Buffed)) || TF2_IsPlayerInCondition(client, (TFCond_CritCanteen)))
+	{
+		return true;
+	}else
+	{
+		return false;
+	}
+}    
+
+public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroadcast)
+{
+    int healer = GetClientOfUserId(GetEventInt(event, "healer"));
+	int target = GetClientOfUserId(GetEventInt(event, "target"));
+
+	if (IsRobot(healer, ROBOT_NAME))
+	{
+		
+		if(!TF2_IsPlayerInCondition(healer, TFCond_CritHype))g_healcount++;
+
+
+		//PrintToChatAll("%N Healed %N, healcount was %i ", healer, target, g_healcount);
+
+		if (TF2_IsPlayerInCondition(healer, TFCond_CritHype))
+		{
+			float reduced_duration = (g_duration / 2.0) + 1.0;
+
+			
+
+			if (IsRobot(target, "Pancop"))
+			{
+				TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration);
+			}else if (IsRobot(target, "Riotcop"))
+			{
+				TF2_AddCondition(target, TFCond_RunePrecision, reduced_duration);
+			}else
+			{
+				TF2_AddCondition(target, TFCond_RuneStrength, reduced_duration);
+			}
+
+
+			
+
+			if (IsKritzed(healer))
+			{
+				TF2_AddCondition(target, TFCond_CritCanteen, reduced_duration);
+			}
+
+
+			// PrintToChatAll("Duration %f", reduced_duration);
+		}
+
+	}
+    
+}
 
 

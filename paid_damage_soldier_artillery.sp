@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Rapid Long Range Artillery"
 #define ROBOT_COST 2.5
+#define ROBOT_TIPS "Rockets travel in an arc\n45%%%% larger explosion radius\nRapid fire"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -251,7 +252,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "You have rocket specialist\nRockets travel in an arc");
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 
@@ -298,7 +299,7 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon1))
 		{
 
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 2.0);
+			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.45);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
@@ -309,6 +310,8 @@ stock GiveGiantPyro(client)
 
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+
+			// TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=100.0 homing_mode=1 projectilename=tf_projectile_rocket");	
 		}
 
 		

@@ -4,19 +4,22 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+#include <sdkhooks>
+#include <tf_ontakedamage>
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Samwiz"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
-#define ROBOT_DESCRIPTION "Brass Beast"
-#define ROBOT_TIPS "Can't move while spun up\nFast spin up time"
+#define ROBOT_DESCRIPTION "Banana Brass Beast"
+#define ROBOT_TIPS "Can't move while spun up\nFast spin up time\nBanana Powers"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
+#define RED_MODEL "models/items/banana/banana.mdl"
 
 // #define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
 // #define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
@@ -49,6 +52,8 @@ public OnPluginStart()
     LoadTranslations("common.phrases");
 
     AddNormalSoundHook(BossGPS);
+
+	
 
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
@@ -118,6 +123,7 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 	
+	PrecacheModel(RED_MODEL);
 	// PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
@@ -220,7 +226,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -232,7 +238,10 @@ public Action:Timer_Switch(Handle:timer, any:client)
 #define Tsarboosh 30081
 #define DeadofNight 30309
 #define WildWestWhiskers 30960
- 
+
+bool g_BananaMode = false;
+float g_DamageDone = 0.0;
+
 stock GiveGDeflectorH(client)
 {
 	if (IsValidClient(client))
@@ -245,7 +254,7 @@ stock GiveGDeflectorH(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 
-
+		g_DamageDone = 0.0;
 		//void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale, float style);
 		//Default robo head scale = 0.75
 		CreateRoboHat(client, Tsarboosh, 10, 6, 15185211.0, 1.0, -1.0);
@@ -259,6 +268,12 @@ stock GiveGDeflectorH(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
+
+			
+			// TF2Attrib_SetByName(Weapon1, "override projectile type", 2.0);	
+			// TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.1);	
+
+			
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);
@@ -267,6 +282,8 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 0.4);
 			TF2Attrib_SetByName(Weapon1, "aiming movespeed decreased", 0.01);
 			TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 0.5);
+
+			
 			
 			
 		}
@@ -299,57 +316,185 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 }
 
 
-// - Regular paints -
-//set item tint RGB
-// A Color Similar to Slate					3100495
-// A Deep Commitment to Purple					8208497
-// A Distinctive Lack of Hue					1315860
-// A Mann's Mint								12377523
-// After Eight									2960676
-// Aged Moustache Grey							8289918
-// An Extraordinary Abundance of Tinge			15132390
-// Australium Gold								15185211	
-// Color No. 216-190-216						14204632
-// Dark Salmon Injustice						15308410
-// Drably Olive								8421376
-// Indubitably Green							7511618
-// Mann Co. Orange								13595446
-// Muskelmannbraun								10843461
-// Noble Hatter's Violet						5322826
-// Peculiarly Drab Tincture					12955537
-// Pink as Hell								16738740
-// Radigan Conagher Brown						6901050
-// The Bitter Taste of Defeat and Lime			3329330
-// The Color of a Gentlemann's Business Pants	15787660
-// Ye Olde Rustic Colour						8154199
-// Zepheniah's Greed							4345659
 
-// - Team colors -
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+    // if (!g_Enable)
+    //     return Plugin_Continue;
+    if(!IsValidClient(victim))
+        return Plugin_Continue;    
+    if(!IsValidClient(attacker))
+        return Plugin_Continue;
 
-// An Air of Debonair:
-// set item tint RGB : 6637376
-// set item tint RGB 2 : 2636109
+	if (IsRobot(attacker, ROBOT_NAME))
+	{
+		
+		if (g_BananaMode)
+		{
+			SpawnBombs(victim, attacker);
+		}else
+		{
 
-// Balaclavas Are Forever
-// set item tint RGB : 3874595
-// set item tint RGB 2 : 1581885
+			g_DamageDone += damage;
+		}
+	}
+}
 
-// Cream Spirit
-// set item tint RGB : 12807213
-// set item tint RGB 2 : 12091445
+void SetProjectileModel (int iEntity)
+{
+	SetEntityModel(iEntity, RED_MODEL);
+}
 
-// Operator's Overalls
-// set item tint RGB : 4732984
-// set item tint RGB 2 : 3686984
+void SpawnBombs(int client, int attacker)
+{
+	
+	int team = GetClientTeam(attacker);
+	float pos[3], vel[3], ang[3];
+	int children = 1;
+	float speed = 250.0;
 
-// Team Spirit
-// set item tint RGB : 12073019
-// set item tint RGB 2 : 5801378
 
-// The Value of Teamwork
-// set item tint RGB : 8400928
-// set item tint RGB 2 : 2452877
+	GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
+	
 
-// Waterlogged Lab Coat
-// set item tint RGB : 11049612
-// set item tint RGB 2 : 8626083
+	pos[2] += 120.0;
+	for (int i = 1; i <= children; i++)
+	{
+		int child = CreateEntityByName("tf_projectile_pipe");
+		
+		
+		float child_vel[3];
+		float child_ang[3];
+
+		//Prevent child grenades from detonating on contact
+		SetEntProp(child, Prop_Send, "m_bTouched", 1);
+
+		//Set properties
+		//SetEntProp(child, Prop_Send, "m_bCritical", view_as<int>(crit));
+		SetEntPropEnt(child, Prop_Data, "m_hOwnerEntity", attacker);
+		SetEntPropFloat(child, Prop_Send, "m_flDamage", 100.0);
+		SetEntPropFloat(child, Prop_Send, "m_flModelScale", 1.2);
+
+		for (int axis = 0; axis < 3; axis++){
+
+			child_vel[axis] = vel[axis] + GetRandomFloat(speed * -1.0, speed);
+			child_ang[axis] = ang[axis] + GetRandomFloat(0.0 , 360.0);
+		}
+		child_vel[2] = FloatAbs(child_vel[2]);
+
+		SetEntProp(child, Prop_Send, "m_iTeamNum", team);
+		SetEntProp(child, Prop_Send, "m_bIsLive", 1);
+
+		DispatchSpawn(child);
+		//SDKHook(child, SDKHook_Touch, OnMirvOverlap);
+		TeleportEntity(child, pos, child_ang, child_vel);
+		RequestFrame(SetProjectileModel, child);
+	}
+}
+
+
+bool g_button_held[MAXPLAYERS + 1] = false;
+float g_duration = 6.0;
+float FireModeTimer = -1.0;
+float g_skill; 
+float g_skill_cooldown = 1000.0;
+float g_skill_time;
+
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+{
+	if (IsRobot(client, ROBOT_NAME))
+	{
+		//0 = fireball
+		//PrintToChat(client, "Throwing spell!");
+		if( GetEntProp( client, Prop_Data, "m_afButtonPressed" ) & IN_ATTACK3 ) 
+		{
+			// PrintToChatAll("Press");
+            g_button_held[client] = true;
+		}
+
+
+
+		if( GetEntProp( client, Prop_Data, "m_afButtonReleased" ) & IN_ATTACK3 ) 
+		{
+			// PrintToChatAll("Release");
+			g_button_held[client] = false;
+            
+		}
+
+
+
+
+		g_skill = GetEngineTime();
+		
+		DrawHUD(client);
+
+	}
+}
+
+#define CHAR_FULL "■"
+#define CHAR_EMPTY "□"
+void DrawHUD(int client)
+{
+	char sHUDText[128];
+	char sProgress[32];
+	int iPercents = RoundToCeil(g_DamageDone / g_skill_cooldown * 100.0);
+
+	for (int j = 1; j <= 10; j++)
+	{
+		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
+		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
+	}
+	//PrintToChatAll("Damage: %f, skilltime %f", g_DamageDone, g_skill_cooldown);
+
+	// int iCountDown = RoundToCeil(g_skill_time - g_skill);
+	int iCountDownFiring = RoundToCeil(FireModeTimer - g_skill);
+	
+	Format(sHUDText, sizeof(sHUDText), "Banana Mode: %i %%%%\n    %s",iPercents, sProgress);
+
+	if(iPercents >= 100)
+	{
+
+			if (g_BananaMode){
+				Format(sHUDText, sizeof(sHUDText), "Banana Mode! %i", iCountDownFiring);
+				SetHudTextParams(0.85, 0.6, 0.1, 255, 255, 0, 255);
+			}else{
+				Format(sHUDText, sizeof(sHUDText), "Banana Mode Ready!\nUse Special Attack to Activate!");
+			SetHudTextParams(0.85, 0.6, 0.1, 0, 255, 0, 255);	
+				}
+
+
+			
+	}else {
+
+		SetHudTextParams(0.85, 0.6, 0.1, 255, 255, 255, 255);
+	}
+
+	if (g_button_held[client] && iPercents >= 100 && !g_BananaMode)
+		{
+			if (FireModeTimer <= GetEngineTime() || FireModeTimer == -1.0)
+			{
+			EnterBananaMode();
+			}
+		}
+
+	if (FireModeTimer <= GetEngineTime() && g_BananaMode)
+	{
+		g_BananaMode = false;
+		g_DamageDone = 0.0;
+	}
+
+
+	ShowHudText(client, -3, sHUDText);
+	// b_hud_clamp[client] = false;
+}
+
+void EnterBananaMode()
+{
+
+	g_skill_time = g_duration;
+	g_BananaMode = true;
+	FireModeTimer = GetEngineTime() + g_duration;
+
+
+}

@@ -454,7 +454,7 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
         if (!IsValidClient(otherRobotClientIndex))
             continue;
         char otherRobotName[NAMELENGTH];
-        GetRobot(clientId, otherRobotName, NAMELENGTH);
+        GetRobot(otherRobotClientIndex, otherRobotName, NAMELENGTH);
         if (otherRobotName[0] == '\0')
             continue;
         

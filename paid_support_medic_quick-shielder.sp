@@ -10,7 +10,7 @@
 #define ROBOT_NAME	"Quick-Shielder"
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
-#define ROBOT_SUBCLASS "Energy Shield"
+#define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Quickfix + MvM Shield"
 #define ROBOT_COST 4.0
  

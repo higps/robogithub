@@ -10,7 +10,7 @@
 #define ROBOT_NAME	"Shield-Heavy"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Heavy"
-#define ROBOT_SUBCLASS "Energy Shield"
+#define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Rage + Shield"
 #define ROBOT_COST 4.0
  
