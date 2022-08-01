@@ -219,7 +219,7 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon2))
 		{
 			//TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.75);
+			// TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.75);
 
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "self dmg push force increased", 10.0);

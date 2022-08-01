@@ -249,7 +249,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.8);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 3.0);
 			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);

@@ -105,7 +105,7 @@ MakeGiantMedic(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.75);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
@@ -155,7 +155,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 bool g_button_held[MAXPLAYERS + 1] = false;
 float g_Recharge[MAXPLAYERS + 1] = 0.0;
-int g_Heal_Bolts_Hits_Needed = 1;
+int g_Heal_Bolts_Hits_Needed = 12;
 int g_healcount = 0;
 float g_duration = 8.0;
 
@@ -164,7 +164,7 @@ stock GiveGiantMedic(client)
 	if (IsValidClient(client))
 	{
 		TF2_RemoveWeaponSlot(client, 0);
-		// TF2_RemoveWeaponSlot(client, 1);
+		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 	
 		RoboRemoveAllWearables(client);
@@ -182,14 +182,14 @@ stock GiveGiantMedic(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.5);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.35);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.85);
 
 			TF2Attrib_SetByName(Weapon1, "mark for death", 5.0);
 			//TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 50.0);
 
 			// TF2Attrib_SetByName(Weapon1, "clip size bonus", 6.0);
-			TF2Attrib_SetByName(Weapon1, "Reload time decreased", 1.5);
+			TF2Attrib_SetByName(Weapon1, "Reload time decreased", 1.65);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
 			// TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
@@ -201,7 +201,7 @@ stock GiveGiantMedic(client)
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
+			// TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon2, "heal on hit for slowfire", 50.0);
 		}
 		
@@ -328,7 +328,7 @@ public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroad
 				TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration);
 			}else if (IsRobot(target, "Riotcop"))
 			{
-				TF2_AddCondition(target, TFCond_RunePrecision, reduced_duration);
+				TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration);
 			}else
 			{
 				TF2_AddCondition(target, TFCond_RuneStrength, reduced_duration);

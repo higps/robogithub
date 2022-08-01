@@ -172,7 +172,7 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 3300;
+	int iHealth = 1750;
 	
 	
 	int MaxHealth = 175;
@@ -203,7 +203,7 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.15);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
-	TF2Attrib_SetByName(client, "charge impact damage increased", 2.5);
+	// TF2Attrib_SetByName(client, "charge impact damage increased", 2.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
 	UpdatePlayerHitbox(client, 1.75);
@@ -258,7 +258,8 @@ stock GiveGiantDemoKnight(client)
 				//PrintToChatAll("going through entity");
 				TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.65);		
 				TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);			
-			
+				TF2Attrib_SetByName(iEntity2, "dmg taken from fire reduced", 1.0);		
+				TF2Attrib_SetByName(iEntity2, "dmg taken from blast reduced", 1.0);		
 				
 				break;
 			}

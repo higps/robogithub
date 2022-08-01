@@ -887,8 +887,8 @@ bool IsEyelander(int weapon)
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
-		//If other electric weapons are added, add here
-	case 132, 266, 482: //Short Circuit, The Righteous Bison, Cow Mangler
+		//If other eyelander skins
+	case 132, 266, 482, 1082: //Short Circuit, The Righteous Bison, Cow Mangler
 		{
 			return true;
 		}

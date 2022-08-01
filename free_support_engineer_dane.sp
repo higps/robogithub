@@ -271,7 +271,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 		// SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);
 		// SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
 		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter){
-		SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.65);
+		SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.45);
 		// SetEntPropFloat(iObj, Prop_Send, "m_flPercentageConstructed", 1.0);
 		// DispatchKeyValue(iObj, "defaultupgrade", "2"); 
 	
@@ -562,7 +562,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 8.0);
-			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.8);
+			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.9);
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1 enemies=1");
 			
 		}

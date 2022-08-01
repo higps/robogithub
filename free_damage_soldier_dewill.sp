@@ -12,7 +12,7 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
-#define ROBOT_DESCRIPTION "Rapid Air Striker"
+#define ROBOT_DESCRIPTION "Ground Striker"
 #define ROBOT_COST 2.5
 #define ROBOT_TIPS "Rapid Airstrike\nPress Special Attack to enter stationary rapid fire mode\nReduced damage to buildings"
 
