@@ -475,15 +475,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) != TFClass_Spy && !IsRobotEngineer(victim))
 	{
-        //int irandom = GetRandomInt(1,4);
-        int irandom = 1;    
-        if (irandom == 1)
-        {
-            if (TF2_GetPlayerClass(victim) != TFClass_Spy){
-
-            CreateTimer(3.0, SayDeathVoiceline);
-            }
-        }
+        AnnouncerSayDeathVoiceline();
     }
 	
 
@@ -494,9 +486,17 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     
 	// }
 }
-public Action SayDeathVoiceline(Handle timer)
+float g_time_said = 0.0;
+float g_announcer_voice_clamp;
+void AnnouncerSayDeathVoiceline()
 {
+    g_announcer_voice_clamp = GetRandomFloat(10.0, 20.0);
+    
+    if (g_time_said < GetEngineTime())
+    {
     EmitGameSoundToAll("Announcer.MVM_General_Destruction");
+    g_time_said = GetEngineTime() + g_announcer_voice_clamp;
+    }
 }
 
 public Action Event_player_escort_score(Event event, char[] name, bool dontBroadcast)
