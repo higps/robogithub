@@ -55,11 +55,11 @@ bool g_Timer[MAXPLAYERS + 1] = false;
 int g_Eyelander_Counter[MAXPLAYERS + 1] = 0;
 
 float g_AirStrikeDamage[MAXPLAYERS +1] = 0.0;
-float g_AirStrikeDMGRequirement = 600.0;
+float g_AirStrikeDMGRequirement = 400.0;
 float g_ElectricStunDuration = 0.6;
 
 float g_FrontierJusticeDamage[MAXPLAYERS + 1] = 0.0;
-float g_FrontierJusticeDMGRequirement = 600.0;
+float g_FrontierJusticeDMGRequirement = 400.0;
 int g_EngineerRevengeCrits[MAXPLAYERS + 1] = 0;
 
 //bool g_Enabled;
@@ -583,9 +583,16 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 {
                     float chargelevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargedDamage");
                     float add = 35 + (chargelevel / 10);
-                    if (TF2_IsPlayerInCondition(attacker, TFCond_FocusBuff)) add /= 3;
                     float rage = GetEntPropFloat(attacker, Prop_Send, "m_flRageMeter");
+
+                    if (TF2_IsPlayerInCondition(attacker, TFCond_FocusBuff))
+                    {
+                        add /= 4;
+                        RequestFrame(HeatmakerRage, attacker);
+                    }
                     SetEntPropFloat(attacker, Prop_Send, "m_flRageMeter", (rage + add > 100) ? 100.0 : rage + add);
+                    // float nextragetime = GetEntPropFloat(attacker, Prop_Send, "m_flNextRageEarnTime");
+                    
                 }
             }
 
@@ -594,6 +601,16 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
     }
     return Plugin_Continue;
+}
+//Code to handle Heatmaker running out of juice while still having more meter
+public void HeatmakerRage(int attacker)
+{
+    float rage = GetEntPropFloat(attacker, Prop_Send, "m_flRageMeter");
+
+    if (TF2_IsPlayerInCondition(attacker, TFCond_FocusBuff))
+    {
+        TF2_AddCondition(attacker, TFCond_FocusBuff, rage / 10.0);
+    }
 }
 
 bool IsMarketGardner(int weapon)

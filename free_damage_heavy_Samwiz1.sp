@@ -279,9 +279,9 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
-			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 0.4);
+			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 0.1);
 			TF2Attrib_SetByName(Weapon1, "aiming movespeed decreased", 0.01);
-			TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 0.5);
+			TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 0.75);
 
 			
 			
@@ -398,7 +398,7 @@ bool g_button_held[MAXPLAYERS + 1] = false;
 float g_duration = 6.0;
 float FireModeTimer = -1.0;
 float g_skill; 
-float g_skill_cooldown = 1000.0;
+float g_skill_cooldown = 600.0;
 float g_skill_time;
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])

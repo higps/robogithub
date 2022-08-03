@@ -212,7 +212,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 #define Panzer 1088
 #define Madmask 30815
 
- 
+
 stock GiveGRageH(client)
 {
 	if (IsValidClient(client))
@@ -223,8 +223,8 @@ stock GiveGRageH(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_minigun", 15, 6, 1, 2, 0);
-
+		CreateRoboWeapon(client, "tf_weapon_minigun", 202, 6, 15, 0, 204);
+		
 
 		CreateRoboHat(client, Mask, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, Panzer, 10, 6, 0.0, 1.0, -1.0); 
@@ -233,7 +233,7 @@ stock GiveGRageH(client)
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
+			// TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);

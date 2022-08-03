@@ -289,13 +289,13 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		CreateRoboWeapon(client, "tf_weapon_rocketlauncher_directhit", 127, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_rocketlauncher_directhit", 127, 6, 1, 2, 228);
 		
 //		CreateWeapon(client, "tf_weapon_shovel", 447, 6, 1, 2, 0);
 		
 		
-		CreateRoboHat(client, Patriot, 10, 6, 0.0, 0.75, -1.0);
-		CreateRoboHat(client, TheCloudCrasher, 10, 6, 6901050.0, 0.75, -1.0);
+		CreateRoboHat(client, Patriot, 10, 6, 13595446.0, 0.75, -1.0);
+		CreateRoboHat(client, TheCloudCrasher, 10, 6, 13595446.0, 0.75, -1.0);
 	//	CreateRoboHat(client, SteelShako, 10, 6, 0.0, 0.75, -1.0);
 
 	//	CreateHat(client, 30050, 10, 6, true); //Gatebot
@@ -326,7 +326,7 @@ stock GiveGiantPyro(client)
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.25);
 
-
+			SetEntityRenderColor(Weapon1, 207,115,54,0);
 			
 			
 			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			

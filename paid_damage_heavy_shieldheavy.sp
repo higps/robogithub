@@ -242,17 +242,10 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 1.0);
 			
-
-			
-			
 			TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
 
 			TF2CustAttr_SetString(Weapon1, "generate rage on damage patch", "disable_knockback=1.0 disable_rage_damage_penalty=1.0");
 			TF2CustAttr_SetString(Weapon1, "minigun rage creates shield on deploy", "level=1.0 min_rage=1.1 rage_cancelable=0.0 rage_redeployable=1.0");
-			
-			
-			
-			// TF2Attrib_SetByName(Weapon1, "spread penalty", scale);
 
 		}
 		

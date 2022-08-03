@@ -250,7 +250,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
 		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Charging)
 		{	
-			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 1750.0);
+			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 750.0);
 
 		}
 	

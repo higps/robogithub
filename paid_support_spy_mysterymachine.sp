@@ -247,8 +247,8 @@ stock GiveBigRoboDane(client)
 	CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 		
 
-	CreateRoboHat(client, HatToKillFor, 10, 6, 0.0, 1.1, -1.0); 
-	CreateRoboHat(client, LurkerLeathers, 10, 6, 0.0, 1.0, 1.0);
+	CreateRoboHat(client, HatToKillFor, 10, 6, 13595446.0, 1.1, -1.0); 
+	CreateRoboHat(client, LurkerLeathers, 10, 6, 13595446.0, 1.0, 1.0);
 	//CreateRoboHat(client, Spek, 10, 6, 0.0, 1.0, -1.0);
 	
 		
@@ -269,7 +269,7 @@ stock GiveBigRoboDane(client)
 			
 			//TF2Attrib_SetByName(Revolver, "damage bonus while disguised", 1.0);
 			TF2Attrib_SetByName(Revolver, "weapon spread bonus", 0.75);
-			
+			SetEntityRenderColor(Revolver, 207,115,54,0);
 						
 		}
 

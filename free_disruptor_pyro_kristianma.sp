@@ -115,7 +115,7 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	int iHealth = 2000;
+	int iHealth = 1750;
 		
 	int MaxHealth = 175;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -136,11 +136,12 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+	// TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	TF2Attrib_SetByName(client, "deploy time decreased", 0.05);
+	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -222,15 +223,10 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.75);
 
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
-			TF2Attrib_SetByName(Weapon2, "self dmg push force increased", 10.0);
+			TF2Attrib_SetByName(Weapon2, "self dmg push force increased", 12.0);
 			TF2Attrib_SetByName(Weapon2, "Blast radius increased", 1.75);
-			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.15);
+			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.35);
 			//TF2Attrib_SetByName(Weapon2, "Reload time decreased", 5.05);
-			
-			
-			
-			
-			
 		}
 
 		if(IsValidEntity(Weapon3))
