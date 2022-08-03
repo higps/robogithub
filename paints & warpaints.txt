@@ -183,3 +183,21 @@ Warpaints:
 	9 "Meteor Shower", 
 	10 "Summon MONOCULUS", 
 	11 "Skeletons Horde"
+
+
+Normal = 0
+Genuine = 1
+rarity2 = 2 (unused)
+Vintage = 3
+rarity3 = 4 (unused)
+Unusual = 5
+Unique = 6
+Community = 7
+Valve = 8
+Self-Made = 9
+Customized = 10 (unused)
+Strange = 11
+Completed = 12 (unused)
+Haunted = 13
+Collector's = 14
+Decorated Weapon = 15

@@ -285,12 +285,12 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 1104, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 1104, 6, 1, 2, 217);
 		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
 		//CreateRoboWeapon(client, "tf_weapon_shovel", 416, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, peacebreaker, 10, 6, 0.0, 0.75, -1.0);
-		CreateRoboHat(client, AttackPacks, 10, 6, 0.0, 0.75, -1.0);
+		CreateRoboHat(client, peacebreaker, 10, 6, 3329330.0, 0.75, -1.0);
+		CreateRoboHat(client, AttackPacks, 10, 6, 3329330.0, 0.75, -1.0);
 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
@@ -310,7 +310,7 @@ stock GiveGiantPyro(client)
 
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-
+			50 205 50
 			// TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=100.0 homing_mode=1 projectilename=tf_projectile_rocket");	
 		}
 
