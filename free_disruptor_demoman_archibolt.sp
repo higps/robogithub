@@ -101,6 +101,11 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 	PrecacheSound(ENEMY_HIT);
+
+	PrecacheSound(LEFTFOOT);
+	PrecacheSound(LEFTFOOT1);
+	PrecacheSound(RIGHTFOOT);
+	PrecacheSound(RIGHTFOOT1);
 }
 
 public Action:SetModel(client, const String:model[])
@@ -243,8 +248,8 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		}
 	
 }
-float g_said_time = 0.0;
-float g_said_duration = 2.7;
+// float g_said_time = 0.0;
+// float g_said_duration = 2.7;
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
