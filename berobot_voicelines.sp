@@ -398,15 +398,34 @@ public Action Event_teamplay_setup_finished_timer (Handle timer)
     }
 }
 
+int g_robot_kill_count = 0;
+int g_robot_kill_voiceline_requirement = 2;
+float g_robot_death_timer = 5.0;
+float g_robot_deathtime = 0.0;
+
+
 public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
     int victim = GetClientOfUserId(GetEventInt(event, "userid"));
     int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     int assister = GetClientOfUserId(GetEventInt(event, "assister"));
 
-    SMLogTag(SML_VERBOSE, "Event_Death triggerd with attacker %L, assister %L and victim %L", attacker, assister, victim);
+   // SMLogTag(SML_VERBOSE, "Event_Death triggerd with attacker %L, assister %L and victim %L", attacker, assister, victim);
 
     //Robot died
+
+    if (IsAnyRobot(victim))
+	{
+        //On the first kill
+        if (g_robot_kill_count == 0){
+
+            g_robot_deathtime = GetEngineTime() + g_robot_death_timer;
+        }
+
+	    g_robot_kill_count++;
+        
+	}
+
     if (IsAnyRobot(victim) && attacker != victim)
     {
         PlayRobotDeathVoiceOver(attacker, victim);
@@ -471,19 +490,15 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
         }
     }
 
+        // g_robot_deathtime = GetEngineTime() + g_robot_death_timer;
+	    // g_robot_kill_count++;
 
-
-	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) != TFClass_Spy && !IsRobotEngineer(victim))
+	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) != TFClass_Spy && !IsRobotEngineer(victim) 
+    && g_robot_kill_count >= g_robot_kill_voiceline_requirement && g_robot_deathtime >= GetEngineTime())
 	{
-        //int irandom = GetRandomInt(1,4);
-        int irandom = 1;    
-        if (irandom == 1)
-        {
-            if (TF2_GetPlayerClass(victim) != TFClass_Spy){
-
-            CreateTimer(3.0, SayDeathVoiceline);
-            }
-        }
+        // PrintToChatAll("Saying voicelin killcount was %i", g_robot_kill_count);
+        AnnouncerSayDeathVoiceline();
+        g_robot_kill_count = 0;
     }
 	
 
@@ -494,9 +509,20 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     
 	// }
 }
-public Action SayDeathVoiceline(Handle timer)
+float g_time_said = 0.0;
+float g_announcer_voice_clamp;
+void AnnouncerSayDeathVoiceline()
 {
+    g_announcer_voice_clamp = GetRandomFloat(10.0, 20.0);
+    
+    if (g_time_said < GetEngineTime())
+    {
     EmitGameSoundToAll("Announcer.MVM_General_Destruction");
+    g_time_said = GetEngineTime() + g_announcer_voice_clamp;
+    
+    }
+
+    
 }
 
 public Action Event_player_escort_score(Event event, char[] name, bool dontBroadcast)
