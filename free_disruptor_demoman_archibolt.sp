@@ -50,7 +50,7 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 1);
+    AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 2);
 }
 
 public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
