@@ -398,15 +398,34 @@ public Action Event_teamplay_setup_finished_timer (Handle timer)
     }
 }
 
+int g_robot_kill_count = 0;
+int g_robot_kill_voiceline_requirement = 2;
+float g_robot_death_timer = 5.0;
+float g_robot_deathtime = 0.0;
+
+
 public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
     int victim = GetClientOfUserId(GetEventInt(event, "userid"));
     int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     int assister = GetClientOfUserId(GetEventInt(event, "assister"));
 
-    SMLogTag(SML_VERBOSE, "Event_Death triggerd with attacker %L, assister %L and victim %L", attacker, assister, victim);
+   // SMLogTag(SML_VERBOSE, "Event_Death triggerd with attacker %L, assister %L and victim %L", attacker, assister, victim);
 
     //Robot died
+
+    if (IsAnyRobot(victim))
+	{
+        //On the first kill
+        if (g_robot_kill_count == 0){
+
+            g_robot_deathtime = GetEngineTime() + g_robot_death_timer;
+        }
+
+	    g_robot_kill_count++;
+        
+	}
+
     if (IsAnyRobot(victim) && attacker != victim)
     {
         PlayRobotDeathVoiceOver(attacker, victim);
@@ -471,11 +490,15 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
         }
     }
 
+        // g_robot_deathtime = GetEngineTime() + g_robot_death_timer;
+	    // g_robot_kill_count++;
 
-
-	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) != TFClass_Spy && !IsRobotEngineer(victim))
+	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) != TFClass_Spy && !IsRobotEngineer(victim) 
+    && g_robot_kill_count >= g_robot_kill_voiceline_requirement && g_robot_deathtime >= GetEngineTime())
 	{
+        // PrintToChatAll("Saying voicelin killcount was %i", g_robot_kill_count);
         AnnouncerSayDeathVoiceline();
+        g_robot_kill_count = 0;
     }
 	
 
@@ -496,7 +519,10 @@ void AnnouncerSayDeathVoiceline()
     {
     EmitGameSoundToAll("Announcer.MVM_General_Destruction");
     g_time_said = GetEngineTime() + g_announcer_voice_clamp;
+    
     }
+
+    
 }
 
 public Action Event_player_escort_score(Event event, char[] name, bool dontBroadcast)
