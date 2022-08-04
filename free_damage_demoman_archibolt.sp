@@ -7,11 +7,11 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Archibolt"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "I think that enemy got the point"
-#define ROBOT_TIPS "Very Long Charge\n25% charge refill on kill\n3 second crit boost on kill\nHigh Jumps"
+#define ROBOT_TIPS "Use shadow leap to get close to enemies"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -195,7 +195,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 bool g_button_held[MAXPLAYERS + 1] = false;
 float g_Recharge[MAXPLAYERS + 1] = 0.0;
-float g_RechargeCooldown = 5.0;
+float g_RechargeCooldown = 4.0;
 float g_skill;
 
 	
@@ -246,6 +246,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.35);		
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 150.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
+			TF2Attrib_SetByName(Weapon3, "single wep deploy time decreased", 0.01);
 		}
 	}
 
