@@ -216,11 +216,11 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_RemoveAll(Huntsman);
 			
 			TF2Attrib_SetByName(Huntsman, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Huntsman, "dmg penalty vs buildings", 0.75);
+			TF2Attrib_SetByName(Huntsman, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Huntsman, "sniper aiming movespeed decreased", 1.0);
 			TF2Attrib_SetByName(Huntsman, "projectile penetration", 1.0);
 			TF2Attrib_SetByName(Huntsman, "damage bonus", 1.5);
-			TF2Attrib_SetByName(Huntsman, "fire rate bonus", 0.7);
+			TF2Attrib_SetByName(Huntsman, "fire rate bonus", 0.3);
 
 		}
 

@@ -9,6 +9,7 @@
 #include <tf_ontakedamage>
 #include <tf2attributes>
 #include <morecolors_newsyntax>
+#include <tf_custom_attributes>
 // #include <addplayerhealth>
 
 
@@ -53,6 +54,7 @@ int Timer_Punch_Count[MAXPLAYERS + 1] = 0;
 bool g_Timer[MAXPLAYERS + 1] = false;
 
 int g_Eyelander_Counter[MAXPLAYERS + 1] = 0;
+float g_bottle_crit_duration = 6.0;
 
 float g_AirStrikeDamage[MAXPLAYERS +1] = 0.0;
 float g_AirStrikeDMGRequirement = 400.0;
@@ -213,6 +215,15 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 AddPlayerHealth(attacker, 25, 260, true);
                 ShowHealthGain(attacker, 50, attacker);
                 }
+
+                if(IsScorch(weapon) && damagecustom == 0)
+                {
+                    
+                    // PrintToChatAll("Hit with Scorch %i",damagecustom);
+                    ChangeKnockBack(victim);
+
+                }
+
             }
 
              if (iClassAttacker == TFClass_Heavy)
@@ -288,6 +299,14 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         g_AirStrikeDamage[attacker] += damage;
                     }
                     
+                }
+            }
+
+                        if (iClassAttacker == TFClass_DemoMan)
+            {
+                if (IsLooseCannon(weapon))
+                {
+                   RequestFrame(ChangeKnockBack, victim);
                 }
             }
 
@@ -432,6 +451,33 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 
     return Plugin_Continue;
+}
+
+void ChangeKnockBack (int victim)
+{
+                        // PrintToChatAll("WAS LOOSE CANNON %");
+                    float vOrigin[3], vAngles[3], vForward[3], vVelocity[3];
+                    GetClientEyePosition(victim, vOrigin);
+                    GetClientEyeAngles(victim, vAngles);
+                    
+                    // Get the direction we want to go
+                    GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
+                    
+                    // make it usable
+                    float flDistance = 50.0;
+
+                    ScaleVector(vForward, flDistance);	
+                    
+                    // add it to the current velocity to avoid just being able to do full 180s
+                    GetEntPropVector(victim, Prop_Data, "m_vecVelocity", vVelocity);
+                    AddVectors(vVelocity, vForward, vVelocity);
+                    
+                    float flDistanceVertical = 20.0;
+                        
+                    vVelocity[2] -= flDistanceVertical; // we always want to go a bit up
+                    
+                    // And set it
+                    TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, vVelocity);
 }
 
 void Disguiseframe (DataPack info)
@@ -671,15 +717,37 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
         {
-            MC_PrintToChatEx(client, client, "{teamcolor}All of your weapons {orange}Reload 25%%%% faster and deal +25%%% damage{teamcolor} against robots");
-            if (Weapon1 != -1)
+       
+            if (IsDemoKnight(client, Weapon1, Weapon2))
+            {
+                
+                TF2Attrib_SetByName(Weapon3, "dmg taken from bullets reduced", 0.75);
+                TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", 0.75);
+                TF2Attrib_SetByName(Weapon3, "dmg from melee increased", 0.75);
+                TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.75);
+                MC_PrintToChatEx(client, client, "{teamcolor}Melee swings are {orange}25%%%% faster");
+                MC_PrintToChatEx(client, client, "{teamcolor}+25%%% bullet, melee and crit damage resistance");
+
+
+            }else
+            {
+                if (Weapon1 != -1)
             {
                 TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.75);
+
             }
 
             if (Weapon2 != -1)
             {
                 TF2Attrib_SetByName(Weapon2, "Reload time decreased", 0.75);
+            }
+                MC_PrintToChatEx(client, client, "{teamcolor}All of projectile weapons {orange}Reload 25%%% faster");
+                MC_PrintToChatEx(client, client, "{teamcolor}All weapons deal {orange}+25%%% damage{teamcolor} against robots");
+            }
+
+            if (IsBottle(Weapon3) || IsAllClassWeapon(Weapon3))
+            {
+                MC_PrintToChatEx(client, client, "{teamcolor}Drinking from your bottle will grant you {orange}%i seconds of minicrits{teamcolor}", RoundToNearest(g_bottle_crit_duration));
             }
         }
 
@@ -834,7 +902,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 void SetShotGunStats(int weapon, int client)
 {
     TF2Attrib_SetByName(weapon, "projectile penetration", 1.0);
-    MC_PrintToChatEx(client, client, "{teamcolor}Your Shotgun {orange}penetrates through enemies{teamcolor}");
+    TF2Attrib_SetByName(weapon, "Reload time decreased", 0.7);
+    MC_PrintToChatEx(client, client, "{teamcolor}Your Shotgun {orange}penetrates through enemies{teamcolor} and {orange}reloads 30%%% faster");
 }
 
 
@@ -928,20 +997,20 @@ bool IsKunai(int weapon)
 	return false;
 }
 
-bool IsFrontierJustice(int weapon)
-{
-	if(weapon == -1 && weapon <= MaxClients) return false;
+// bool IsFrontierJustice(int weapon)
+// {
+// 	if(weapon == -1 && weapon <= MaxClients) return false;
 	
-	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-	{
-		//If other Frontier are added add here
-	case 141, 1004: 
-		{
-			return true;
-		}
-	}
-	return false;
-}
+// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+// 	{
+// 		//If other Frontier are added add here
+// 	case 141, 1004: 
+// 		{
+// 			return true;
+// 		}
+// 	}
+// 	return false;
+// }
 
 bool HasDiamondback(int client)
 {
@@ -1242,12 +1311,30 @@ bool IsAllClassWeapon(int weapon){
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 		//If other allclass are added, add here
+        
 	case 264,423,474,880,939,954,1013,1071,1123,1127,30758: 
 		{
 			return true;
 		}
 	}
 	return false;
+}
+
+bool IsBottle(int weapon)
+{
+    	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other bottles
+        
+	case 1,191,154,609:
+		{
+			return true;
+		}
+	}
+	return false;
+    
 }
 
 bool IsBat(int weapon){
@@ -1308,6 +1395,59 @@ bool IsWrap(int weapon)
 	return false;
 }
 
+bool IsScorch(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other scorch
+	case 740: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsLooseCannon(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other loose cannon
+	case 996: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsDemoKnight(int client, int weapon1, int weapon2)
+{
+    // int weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+    // int weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+
+    if(weapon1 == -1 && weapon2 == -1)
+    {
+        return true;
+    }
+    return false;
+
+
+
+	// switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	// {
+	// 	//If other kunais are added, add here
+	// case 525: 
+	// 	{
+	// 		return true;
+	// 	}
+	// }
+	// return false;
+}
 // 
 
 
@@ -1401,6 +1541,9 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
             // PrintToChatAll("%N WAS SPUN UP", client);
             TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.25);
 		}
+
+
+
 	
 }
 
@@ -1413,5 +1556,20 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
             // PrintToChatAll("%N WAS DONE SPUN UP", client);
             TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.0);
 		}
+
+
+        if(!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_DemoMan && condition == TFCond_Taunting)
+        {
+             
+             int iActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+             if (IsAllClassWeapon(iActiveWeapon) || IsBottle(iActiveWeapon))
+             {
+			int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+            
+			if (tauntid == -1){
+			TF2_AddCondition(client, TFCond_Buffed, g_bottle_crit_duration);
+			}
+             }
+        }
 	
 }
