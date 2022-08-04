@@ -173,7 +173,6 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.3);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "SET BONUS: dmg from sentry reduced", 0.6);
 	
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
