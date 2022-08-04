@@ -310,7 +310,7 @@ stock GiveGiantPyro(client)
 
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			50 205 50
+			
 			// TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=100.0 homing_mode=1 projectilename=tf_projectile_rocket");	
 		}
 
