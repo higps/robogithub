@@ -252,7 +252,8 @@ public OnMapStart()
 // {
 // PrintToChatAll("Upgrade complete");
 // }
-
+float g_disp_build_time = 0.0;
+float g_disp_build_cool_down = 60.0;
 public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 {
 	// if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)
@@ -277,18 +278,20 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	
 		}
 
-		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
+		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser &&
+		GetEngineTime() >= g_disp_build_time)
 		{
 			//PrintToChatAll("Playing Music");
 
-			int random = GetRandomInt(0,2);
+			// int random = GetRandomInt(0,3);
 
-			if (random == 1)
-			{
+			// if (random == 1)
+			// {
 			EmitSoundToAll(MUSIC, iObj);
 			EmitSoundToAll(MUSIC, iObj);
+			g_disp_build_time = GetEngineTime() + g_disp_build_cool_down;
 			// EmitSoundToAll(MUSIC, iObj);
-			}
+			// }
 
 			
 			

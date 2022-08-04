@@ -361,7 +361,7 @@ void DrawHUD(int client)
 	} else {
 		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
 		
-		/
+		
 	}
 	
 		 ShowHudText(client, -2, sHUDText);
