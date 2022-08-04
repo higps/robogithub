@@ -252,7 +252,6 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	if (IsRobot(attacker, ROBOT_NAME))
 	{
 
-	g_said_time = GetEngineTime();
 	StopSound(attacker, SNDCHAN_AUTO, ENEMY_HIT);
 	StopSound(attacker, SNDCHAN_AUTO, ENEMY_HIT);
 	StopSound(attacker, SNDCHAN_AUTO, ENEMY_HIT);
