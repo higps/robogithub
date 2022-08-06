@@ -360,35 +360,35 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 if(damagecustom == TF_CUSTOM_BACKSTAB)
                 {
 
-                if(IsKunai(weapon))
-                {
-                    AddPlayerHealth(attacker, 60, 210, true);
-                }
+                    if(IsKunai(weapon))
+                    {
+                        AddPlayerHealth(attacker, 60, 210, true);
+                    }
 
-                if (IsBigEarner(weapon))
-                {
-                    TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 3.0);
-                }
+                    if (IsBigEarner(weapon))
+                    {
+                        TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 3.0);
+                    }
 
-                if (IsYer(weapon))
-                {
-                    //PrintToChatAll("Was yer");
-                    //int iteam = GetClientTeam(victim);
-                    TFTeam iTeam = view_as<TFTeam>(GetEntProp(victim, Prop_Send, "m_iTeamNum"));
-                    // int attackerID = GetClientUserId(attacker);
-                    // int victimID = GetClientUserId(victim);
-                    TFClassType iClassVictim = TF2_GetPlayerClass(victim);
+                    if (IsYer(weapon))
+                    {
+                        //PrintToChatAll("Was yer");
+                        //int iteam = GetClientTeam(victim);
+                        TFTeam iTeam = view_as<TFTeam>(GetEntProp(victim, Prop_Send, "m_iTeamNum"));
+                        // int attackerID = GetClientUserId(attacker);
+                        // int victimID = GetClientUserId(victim);
+                        TFClassType iClassVictim = TF2_GetPlayerClass(victim);
 
-                    //TF2_DisguisePlayer(attackerID, iTeam, iClassVictim, victimID);
-                    DataPack info = new DataPack();
-                        info.Reset();
-                        info.WriteCell(GetClientUserId(attacker));
-                        info.WriteCell(iTeam);
-                        info.WriteCell(iClassVictim);
-                        info.WriteCell(GetClientUserId(victim));
+                        //TF2_DisguisePlayer(attackerID, iTeam, iClassVictim, victimID);
+                        DataPack info = new DataPack();
+                            info.Reset();
+                            info.WriteCell(GetClientUserId(attacker));
+                            info.WriteCell(iTeam);
+                            info.WriteCell(iClassVictim);
+                            info.WriteCell(GetClientUserId(victim));
 
-                    RequestFrame(Disguiseframe, info);                  
-                }
+                        RequestFrame(Disguiseframe, info);                  
+                    }
 
                     
                     
@@ -399,8 +399,34 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         SetEntProp(attacker, Prop_Send, "m_iRevengeCrits", iCrits+1);
                     }
 
+                    //Do backstab modifying
                     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-                    damage = g_CV_flSpyBackStabModifier;
+
+                    int victimHP = GetClientHealth(victim);
+                    int victimMAXHP = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+                    int victimHPpercent = RoundToNearest(float(victimHP) / float(victimMAXHP) * 100);
+
+                    // PrintToChatAll("victimHP %i, MAXHP %i", victimHP, victimMAXHP);
+                    
+                    
+                    if (victimHPpercent >= 80){
+
+                        //Code for dynamic damage, but doesn't work well with vulnerabilities
+                        // PrintToChatAll("percent %i", victimHPpercent);
+                        // damage = (float(victimMAXHP) / 4.0) / 3.0;
+
+                        // if (damage > 1250.0)
+                        // {
+                        //     damage = 1250.0;
+                        // }
+                     damage = g_CV_flSpyBackStabModifier * 2.0;
+                    }else{
+                    
+                    damage = g_CV_flSpyBackStabModifier;    
+                    }
+                    
+
+
                     critType = CritType_Crit;
                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                     return Plugin_Changed;
@@ -718,7 +744,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
         {
        
-            if (IsDemoKnight(client, Weapon1, Weapon2))
+            if (IsDemoKnight(Weapon1, Weapon2))
             {
                 
                 TF2Attrib_SetByName(Weapon3, "dmg taken from bullets reduced", 0.75);
@@ -1425,7 +1451,7 @@ bool IsLooseCannon(int weapon)
 	return false;
 }
 
-bool IsDemoKnight(int client, int weapon1, int weapon2)
+bool IsDemoKnight(int weapon1, int weapon2)
 {
     // int weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
     // int weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
