@@ -284,12 +284,12 @@ stock GiveGiantSoldier(client)
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 
-		if(IsValidEntity(Weapon2))
-		{						
-			TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
-			TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
+		// if(IsValidEntity(Weapon2))
+		// {						
+		// 	TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
+		// 	TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
 			
-		}
+		// }
 
 		
 		if(IsValidEntity(Weapon3))
