@@ -308,8 +308,8 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon2))
 		{						
 			TF2CustAttr_SetString(Weapon2, "custom buff type", "mm-cloak");
-			TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
-			TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
+			// TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
+			// TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
 		}
 		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 100.0);
 	}
