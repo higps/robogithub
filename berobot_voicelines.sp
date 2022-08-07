@@ -670,7 +670,10 @@ void PlayRobotDeathVoiceOver(int client, int victim)
             return;
     }
     
-    EmitGameSoundToAll(szVO, client);
+    if(IsPlayerAlive(client))
+    {
+         EmitGameSoundToAll(szVO, client);
+    }
 }
 
 void PlayRobotKilledFriendVoiceOver(int Team)

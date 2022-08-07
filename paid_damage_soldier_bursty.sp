@@ -173,38 +173,38 @@ public Action:BossHomer(clients[64], &numClients, String:sample[PLATFORM_MAX_PAT
 	}
 
 	
-	if (strncmp(sample, ")weapons/", 9, false) == 0)
-	{
-		if (StrContains(sample, "rocket_directhit_shoot.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE);
-			EmitSoundToAll(sample, entity);
+	// if (strncmp(sample, ")weapons/", 9, false) == 0)
+	// {
+	// 	if (StrContains(sample, "rocket_directhit_shoot.wav", false) != -1)
+	// 	{
+	// 		Format(sample, sizeof(sample), GUNFIRE);
+	// 		EmitSoundToAll(sample, entity);
 			
-		}
-		else if (StrContains(sample, "rocket_directhit_shoot_crit.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_CRIT);
-			EmitSoundToAll(sample, entity);
-		}
+	// 	}
+	// 	else if (StrContains(sample, "rocket_directhit_shoot_crit.wav", false) != -1)
+	// 	{
+	// 		Format(sample, sizeof(sample), GUNFIRE_CRIT);
+	// 		EmitSoundToAll(sample, entity);
+	// 	}
 		
-		//Explosion doesnæt quite work
-		/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "explode2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "explode3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-			EmitSoundToAll(sample, entity);
-		} */
-		return Plugin_Changed;
-	}
+	// 	//Explosion doesnæt quite work
+	// 	/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
+	// 	{
+	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+	// 		EmitSoundToAll(sample, entity);
+	// 	}
+	// 	else if (StrContains(sample, "explode2.wav", false) != -1)
+	// 	{
+	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+	// 		EmitSoundToAll(sample, entity);
+	// 	}
+	// 	else if (StrContains(sample, "explode3.wav", false) != -1)
+	// 	{
+	// 		Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+	// 		EmitSoundToAll(sample, entity);
+	// 	} */
+	// 	return Plugin_Changed;
+	// }
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 }
 
@@ -316,13 +316,13 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.15);
 			//TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.6);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip penalty", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.25);
+			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.65);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			TF2Attrib_SetByName(Weapon1, "auto fires when full", 1.0);
+			// TF2Attrib_SetByName(Weapon1, "auto fires when full", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
-			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
+			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.25);
 
