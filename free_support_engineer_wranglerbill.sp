@@ -51,7 +51,7 @@ int EngieTeam = 2;
 // int BossTeleporter;
 
 int OwnerOffset;
-ConVar sm_dispenser_limit;
+// ConVar sm_dispenser_limit;
 ConVar sm_sentry_limit;
 //ConVar sm_instant_upgrade;
 
@@ -224,7 +224,7 @@ public OnMapStart()
 
 	//Multi Sentry Code
 
-	sm_dispenser_limit = CreateConVar("sm_dispenser_limit", "1", "Self explanatory");
+	//sm_dispenser_limit = CreateConVar("sm_dispenser_limit", "1", "Self explanatory");
 	sm_sentry_limit = CreateConVar("sm_sentry_limit", "3", "Self explanatory");
 	//sm_instant_upgrade = CreateConVar("sm_instant_upgrade","0","Self explanatory");
 
