@@ -377,7 +377,7 @@ void DrawHUD(int client)
 			isready = true;	
 		}
 
-	if (g_button_held[client] && iCountDown <= 0)
+	if (g_button_held[client] && iCountDown <= 0 && IsPlayerAlive(client))
 	{
 		RequestFrame(CastSpell, client);
 		g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
