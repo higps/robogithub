@@ -904,7 +904,7 @@ public Action Command_destroy_sentries(int client, int args){
 
 public void function_AllowBuilding(int client){
 
-	int DispenserLimit = GetConVarInt(sm_dispenser_limit);
+	int DispenserLimit = GetConVarInt(sm_sentry_limit);
 	int SentryLimit = GetConVarInt(sm_sentry_limit);
 
 	int DispenserCount = 0;

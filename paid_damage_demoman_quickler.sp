@@ -233,14 +233,14 @@ stock GiveGiantDemoKnight(client)
 
 			
 			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);
+			// TF2Attrib_SetByName(Weapon1, "clip size penalty", 4.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.4);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
 			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 1.0);
-			TF2Attrib_SetByName(Weapon1, "stickybomb charge rate", 0.02);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.75);
+			TF2Attrib_SetByName(Weapon1, "stickybomb charge rate", 0.1);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 			// SetEntityRenderColor(Weapon1, 50,205,50,155);

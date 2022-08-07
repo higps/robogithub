@@ -541,7 +541,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 30.0);
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
+			// TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
 			
 		}
 		if(IsValidEntity(Weapon3))
@@ -550,7 +550,7 @@ stock GiveBigRoboDane(client)
 			// TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
 			// TF2Attrib_SetByName(Weapon1, "item style override", 1.0);
 			//TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.0);
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.0);
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);

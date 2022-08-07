@@ -192,7 +192,7 @@ stock GiveBigRoboHuntsbot(client)
 
 	CreateRoboWeapon(client, "tf_weapon_compound_bow", 56, 6, 1, 0, 0);
 
-	CreateRoboWeapon(client, "tf_weapon_club", 3, 6, 1, 2, 0); //shahansah
+	// CreateRoboWeapon(client, "tf_weapon_club", 3, 6, 1, 2, 0); //shahansah
 		
 	//CreateWeapon(client, "tf_wearable", 642, 6, 1, 3, 0); 
 
@@ -216,24 +216,24 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_RemoveAll(Huntsman);
 			
 			TF2Attrib_SetByName(Huntsman, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Huntsman, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Huntsman, "dmg penalty vs buildings", 0.3);
 			TF2Attrib_SetByName(Huntsman, "sniper aiming movespeed decreased", 1.0);
 			TF2Attrib_SetByName(Huntsman, "projectile penetration", 1.0);
-			TF2Attrib_SetByName(Huntsman, "damage bonus", 1.5);
-			TF2Attrib_SetByName(Huntsman, "fire rate bonus", 0.3);
+			// TF2Attrib_SetByName(Huntsman, "damage bonus", 1.2);
+			TF2Attrib_SetByName(Huntsman, "fire rate bonus", 0.25);
 
 		}
 
-				if(IsValidEntity(Kukri))
-		{
-			TF2Attrib_RemoveAll(Kukri);
+		// 		if(IsValidEntity(Kukri))
+		// {
+		// 	TF2Attrib_RemoveAll(Kukri);
 			
-			TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
-			TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
-			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
+		// 	TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
+		// 	TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
+		// 	TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
 
-		}
+		// }
 	}
 
 

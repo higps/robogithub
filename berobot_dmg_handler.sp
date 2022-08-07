@@ -177,11 +177,10 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
             g_FrontierJusticeDamage[client] = 0.0;
             
         }
-
     }
-   // Requ
 }
 
+//Damage Related functions
 /* Plugin Exclusive Functions */
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
@@ -285,6 +284,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
             }
 
+            if (iClassAttacker == TFClass_Medic)
+            {
+                int Weapon3 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee);
+
+                if(IsSolemnVow(Weapon3))
+                {
+                    damage = 0.0;
+                    return Plugin_Handled;
+                }
+            }
 
             if (iClassAttacker == TFClass_Soldier)
             {
@@ -577,21 +586,21 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 }   
             }
             /*Damage code for Heavy*/
-            if (iClassAttacker == TFClass_Heavy)
-            {
-                int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
+            // if (iClassAttacker == TFClass_Heavy)
+            // {
+            //     int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
                     
-                if (weapon == iWeapon)
-                {
-                    if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-                    damage *= 0.8;
-                    if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                    return Plugin_Changed;
+            //     if (weapon == iWeapon)
+            //     {
+            //         if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+            //         damage *= 0.85;
+            //         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+            //         return Plugin_Changed;
                     
-                }
+            //     }
                     
                     
-            }
+            // }
 
             if (IsElectric(weapon) && IsAnyRobot(victim))
             {
@@ -638,12 +647,12 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                         SetEntProp(attacker, Prop_Send, "m_iDecapitations", decapitations + 1);
                     }else
                     {
-                        if (decapitations == 0)
+                        if (decapitations == 0 || decapitations == 1)
                         {
                             SetEntProp(attacker, Prop_Send, "m_iDecapitations", 0);    
                         }else
                         {
-                            SetEntProp(attacker, Prop_Send, "m_iDecapitations", 0);    
+                            SetEntProp(attacker, Prop_Send, "m_iDecapitations", decapitations - 2);    
                         }
                         
                     }
@@ -685,6 +694,298 @@ public void HeatmakerRage(int attacker)
     }
 }
 
+
+
+
+//Functions to handle attributes for humans
+public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
+{
+
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+    //CreateTimer(0.8, AddAttributes, client);
+
+
+
+
+    if (!IsAnyRobot(client) && IsValidClient(client) && IsPlayerAlive(client))
+    {
+        int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+        int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+        int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
+        if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
+        {
+       
+            if (IsDemoKnight(Weapon1, Weapon2))
+            {
+                
+                TF2Attrib_SetByName(Weapon3, "dmg taken from bullets reduced", 0.75);
+                TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", 0.75);
+                TF2Attrib_SetByName(Weapon3, "dmg from melee increased", 0.75);
+                TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.75);
+                MC_PrintToChatEx(client, client, "{teamcolor}Demoknight: Melee swings are {orange}25%%%% faster");
+                MC_PrintToChatEx(client, client, "{teamcolor}Demoknight: {orange}+25%%% {teamcolor}bullet, melee and crit damage resistance");
+
+
+            }else
+            {
+                if (Weapon1 != -1)
+            {
+                TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.75);
+
+            }
+
+            if (Weapon2 != -1)
+            {
+                TF2Attrib_SetByName(Weapon2, "Reload time decreased", 0.75);
+            }
+                MC_PrintToChatEx(client, client, "{teamcolor}All of projectile weapons {orange}Reload 25%%% faster");
+                MC_PrintToChatEx(client, client, "{teamcolor}All weapons deal {orange}+25%%% damage{teamcolor} against robots");
+            }
+
+            if (IsStockOrAllClassWeapon(Weapon3))
+            {
+                MC_PrintToChatEx(client, client, "{teamcolor}Drinking from your bottle will grant you {orange}%i seconds of minicrits{teamcolor}", RoundToNearest(g_bottle_crit_duration));
+            }
+        }
+
+        // if (TF2_GetPlayerClass(client) == TFClass_Heavy)
+        // {
+        //     MC_PrintToChatEx(client, client, "{teamcolor}Your miniguns all deal {orange}-20%%% damage{teamcolor} against robots");
+        // }
+
+        if (TF2_GetPlayerClass(client) == TFClass_Scout)
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Scout Power: {orange}Greatly reduced respawn time");
+            if (IsStockOrAllClassWeapon(Weapon3) && Weapon1 != -1 &&  Weapon2 != -1)
+            {
+                TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 1.5);
+                TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 1.5);
+                MC_PrintToChatEx(client, client, "{teamcolor}Bat: Provides all weapons with {orange}+50%% maxammo");
+            }
+
+            if(IsMadMilk)
+            {
+                TF2Attrib_SetByName(Weapon2, "applies snare effect", 0.65);
+                MC_PrintToChatEx(client, client, "{teamcolor}Mad Milk: {orange}-35%%% move speed on targets upgrade");
+            }
+        }
+
+        if (TF2_GetPlayerClass(client) == TFClass_Medic)
+        {
+            if(IsBlutsauger(Weapon1))
+            {
+                TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.0);
+                MC_PrintToChatEx(client, client, "{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}");
+            }
+
+            if(IsOverdose(Weapon1) && Weapon2 != -1)
+            {
+                TF2Attrib_SetByName(Weapon2, "overheal expert", 1.0);
+                MC_PrintToChatEx(client, client, "{teamcolor}Overdose: Provides your medigun the {orange}Overheal Expert upgrade");
+            }else
+            {
+                //Remove the attribute if overdose is not present, as it remains on loadout switch
+                TF2Attrib_RemoveByName(Weapon2, "overheal expert");
+            }
+
+            if(!IsOverdose(Weapon1) && Weapon2 != -1)
+            {
+                //Remove the attribute when changing loadout
+                TF2Attrib_RemoveByName(Weapon2, "overheal expert");
+            }
+
+            if(IsAmputator(Weapon3) && Weapon1 != -1)
+            {
+                TF2Attrib_SetByName(Weapon1, "dmg taken from crit reduced", 0.7);
+                MC_PrintToChatEx(client, client, "{teamcolor}Amputator: Provides {orange}+30%%% Passive critical resistance");
+            }
+
+            if(IsSolemnVow(Weapon3))
+            {
+                TF2Attrib_SetByName(Weapon2, "healing mastery", 1.0);
+                MC_PrintToChatEx(client, client, "{teamcolor}Solemn Vow: All weapons deal {darkred}no damage!{teamcolor} But you have the{orange}Healing Mastery upgrade");    
+ 
+            }else
+            {
+                TF2Attrib_RemoveByName(Weapon2, "healing mastery");
+            }
+
+            if(IsSolemnVow(Weapon3) && IsCrossbow(Weapon1))
+            {
+                TF2Attrib_SetByName(Weapon1, "damage bonus", 1.4);
+                MC_PrintToChatEx(client, client, "{teamcolor}Solemn Vow: Crusaders Crossbow heals {orange}+40%%% more");
+            }else
+            {
+                TF2Attrib_RemoveByName(Weapon1, "damage bonus");
+            }
+
+            if(IsStockOrAllClassWeapon(Weapon3))
+            {
+                TF2Attrib_SetByName(Weapon3, "ubercharge rate bonus", 1.25);
+                MC_PrintToChatEx(client, client, "{teamcolor}Melee: Provides your medigun an additional {orange}25%%% faster build rate");
+            }
+
+            if (IsQuickfix(Weapon2))
+            {
+                TF2Attrib_SetByName(Weapon2, "generate rage on heal", 1.0);
+                TF2Attrib_SetByName(Weapon2, "increase buff duration", 0.8);
+			    TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.4");
+                MC_PrintToChatEx(client, client, "{teamcolor}Quickfix: {orange}Medic MvM Shield");
+            }
+
+            if(IsVaccinator(Weapon2))
+            {
+                TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.2);
+			    TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.85);
+			    TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.2);
+			    TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.85);
+			    TF2Attrib_SetByName(Weapon2, "medigun fire resist passive", 0.2);
+			    TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.85);
+                MC_PrintToChatEx(client, client, "{teamcolor}Vaccinator: {orange}+10%%% higher resistances");
+            }
+        }
+        
+        if (IsEyelander(Weapon3))
+        {
+            g_Eyelander_Counter[client] = 0;
+            MC_PrintToChatEx(client, client, "{teamcolor}Eyelander: {orange}gains a head every hit{teamcolor} vs robots");
+        }
+
+        if (IsSniperRifle(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "explosive sniper shot", 1.0);
+            MC_PrintToChatEx(client, client, "{teamcolor}Sniper Rifle: {orange}Explosive headshots {teamcolor}upgrade");
+           
+        }
+
+        if (IsBazaar(Weapon1))
+        {
+
+            MC_PrintToChatEx(client, client, "{teamcolor}Bazaar Bragin: {orange}Gain head on headshot{teamcolor}, but {dark}Lose 2 heads{teamcolor} on bodyshot");
+           
+        }
+
+        if (IsRevolverOrEnforcer(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
+            MC_PrintToChatEx(client, client, "{teamcolor}Enforcer: {orange}Projectile penetration {teamcolor}bonus");
+        }
+
+        if (IsAmbassador(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "crit_dmg_falloff", 0.0);
+            MC_PrintToChatEx(client, client, "{teamcolor}Ambassador: {orange}No critical damage faloff {teamcolor}penalty");
+        }
+
+        if (IsHuntsMan(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
+            MC_PrintToChatEx(client, client, "{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade");
+        }
+
+        if (IsCandyCane(Weapon3))
+        {
+            TF2Attrib_SetByName(Weapon3, "health from packs increased", 1.33);
+            MC_PrintToChatEx(client, client, "{teamcolor}Candy Cane:  {orange}+33%%% more health{teamcolor} from healthpacks");
+        }
+
+        if (IsMarketGardner(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Market Gardner: {orange}+50%%% damage bonus{teamcolor}");
+        }
+
+        if (IsElectric(Weapon1) || IsElectric(Weapon2))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Your electric weapons slow robots for {orange}-60%%% move speed{teamcolor} for %0.1f seconds on hit", g_ElectricStunDuration);
+        }
+
+        if (IsWarriorSpirit(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Warrior Spirit: {orange}+50 HP{teamcolor} on hit against robots");
+        }
+
+        if (IsKGB(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}KGB: {orange}+7 seconds of critical hits{teamcolor} when landing a quick 3 hit combo vs robots");
+        }
+        if (IsJetpack(Weapon2))
+        {
+            TF2Attrib_SetByName(Weapon2, "falling_impact_radius_pushback", 0.0);
+            MC_PrintToChatEx(client, client, "{teamcolor}Jetpack: {darkred}Deals no knockback{teamcolor} when landing");
+        }
+        if (IsAirStrike(Weapon1))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}AirStrike: {orange}Gains additional clip{teamcolor} by doing %i damage to robots", RoundToNearest(g_AirStrikeDMGRequirement));
+        }
+        if (IsBlackBox(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.25);
+            MC_PrintToChatEx(client, client, "{teamcolor}Blackbox: {orange}+25%% larger explosion radius");
+        }
+
+        if (isBeggarsBazooka(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "mult_player_movespeed_active", 1.15);
+            MC_PrintToChatEx(client, client, "{teamcolor}Beggars Bazooka: {orange}+15%% faster move speed while active");
+        }
+
+        if (isLibertyLauncher(Weapon1))
+        {
+            if (IsAnyBanner(Weapon2))
+            {
+                TF2Attrib_SetByName(Weapon2, "increase buff duration", 1.25);
+                MC_PrintToChatEx(client, client, "{teamcolor}Liberty Launcher: Provides banner {orange}+25%% longer buff duration{teamcolor}");
+            }else
+            {
+                MC_PrintToChatEx(client, client, "{teamcolor}Liberty Launcher: {orange}equip a banner to get the buff!");
+            }
+        }
+
+        if (IsRocketLauncher(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "deploy time decreased", 0.75);
+            MC_PrintToChatEx(client, client, "{teamcolor}Rocket Launcher: {orange}+25%% faster weapon switch speed{teamcolor}");
+        }
+
+        if (HasFrontierJustice(client))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Frontier Justice: {orange}Gains revenge crits{teamcolor} every %i damage your sentry doesper crit", RoundToNearest(g_FrontierJusticeDMGRequirement));
+        }
+
+        if (IsShotGun(Weapon1))
+        {
+            SetShotGunStats(Weapon1, client);
+        }
+        if (IsShotGun(Weapon2))
+        {
+            SetShotGunStats(Weapon2, client);
+        }
+
+        if(IsSandman(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Baseball: {orange}Reduce robots move speed by -85%{teamcolor} for 2 seconds on hit");
+        }
+        if(IsWrap(Weapon3))
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Ornament: {orange}Reduce robots move speed by -70%{teamcolor} for 1.5 seconds on hit");
+        }
+
+    }
+
+    
+
+}
+    
+    
+
+void SetShotGunStats(int weapon, int client)
+{
+    TF2Attrib_SetByName(weapon, "projectile penetration", 1.0);
+    TF2Attrib_SetByName(weapon, "Reload time decreased", 0.7);
+    MC_PrintToChatEx(client, client, "{teamcolor}Shotgun: {orange}Penetrates through enemies{teamcolor} and {orange}reloads 30%%% faster");
+}
+
 bool IsMarketGardner(int weapon)
 {
 	if(weapon == -1 && weapon <= MaxClients) return false;
@@ -714,224 +1015,6 @@ bool IsElectric(int weapon)
 	}
 	return false;
 }
-
-
-//Stats to be applied on human weapons
-public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
-{
-
-    int client = GetClientOfUserId(GetEventInt(event, "userid"));
-    //CreateTimer(0.8, AddAttributes, client);
-
-
-
-// public Action AddAttributes(Handle timer, int client)
-// {
-
-    // if (IsValidClient(client)){    
-    // if (IsPlayerAlive(client))
-    // {
-    if (!IsAnyRobot(client) && IsValidClient(client) && IsPlayerAlive(client))
-    {
-
-        
-
-
-        int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-        int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-        int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-
-        if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
-        {
-       
-            if (IsDemoKnight(Weapon1, Weapon2))
-            {
-                
-                TF2Attrib_SetByName(Weapon3, "dmg taken from bullets reduced", 0.75);
-                TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", 0.75);
-                TF2Attrib_SetByName(Weapon3, "dmg from melee increased", 0.75);
-                TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.75);
-                MC_PrintToChatEx(client, client, "{teamcolor}Melee swings are {orange}25%%%% faster");
-                MC_PrintToChatEx(client, client, "{teamcolor}+25%%% bullet, melee and crit damage resistance");
-
-
-            }else
-            {
-                if (Weapon1 != -1)
-            {
-                TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.75);
-
-            }
-
-            if (Weapon2 != -1)
-            {
-                TF2Attrib_SetByName(Weapon2, "Reload time decreased", 0.75);
-            }
-                MC_PrintToChatEx(client, client, "{teamcolor}All of projectile weapons {orange}Reload 25%%% faster");
-                MC_PrintToChatEx(client, client, "{teamcolor}All weapons deal {orange}+25%%% damage{teamcolor} against robots");
-            }
-
-            if (IsBottle(Weapon3) || IsAllClassWeapon(Weapon3))
-            {
-                MC_PrintToChatEx(client, client, "{teamcolor}Drinking from your bottle will grant you {orange}%i seconds of minicrits{teamcolor}", RoundToNearest(g_bottle_crit_duration));
-            }
-        }
-
-        if (TF2_GetPlayerClass(client) == TFClass_Heavy)
-        {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your miniguns all deal {orange}-20%%% damage{teamcolor} against robots");
-        }
-
-        if (TF2_GetPlayerClass(client) == TFClass_Scout)
-        {
-            if (IsAllClassWeapon(Weapon3) || IsBat(Weapon3) && Weapon1 != -1 &&  Weapon2 != -1)
-            {
-                TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 1.5);
-                TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 1.5);
-                MC_PrintToChatEx(client, client, "{teamcolor}Your bat provides your other weapons with {orange}+50%% maxammo");
-            }
-        }
-        
-        if (IsEyelander(Weapon3))
-        {
-            g_Eyelander_Counter[client] = 0;
-            MC_PrintToChatEx(client, client, "{teamcolor}Your eyelander {orange}gains a head every hit{teamcolor} against robots");
-        }
-
-        if (IsSniperRifle(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "explosive sniper shot", 1.0);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your rifle has {orange}explosive headshots {teamcolor}bonus");
-           
-        }
-
-        if (IsBazaar(Weapon1))
-        {
-
-            MC_PrintToChatEx(client, client, "{teamcolor}Your rifle {orange}gains head{teamcolor} on headshot, but {orange}loses all heads{teamcolor} on bodyshot");
-           
-        }
-
-        if (IsRevolverOrEnforcer(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your gun has {orange}projectile penetration {teamcolor}bonus");
-        }
-
-        if (IsAmbassador(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "crit_dmg_falloff", 0.0);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your gun has {orange}no critical damage faloff {teamcolor}penalty");
-        }
-
-        if (IsHuntsMan(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your bow has {orange}projectile penetration {teamcolor}bonus");
-        }
-
-        if (IsCandyCane(Weapon3))
-        {
-            TF2Attrib_SetByName(Weapon3, "health from packs increased", 1.33);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your candy cane gives {orange}+33%%% more heal{teamcolor} from healthpacks");
-        }
-
-        if (IsMarketGardner(Weapon3))
-        {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Market Gardner {orange}+50%%% more damage{teamcolor}");
-        }
-
-        if (IsElectric(Weapon1) || IsElectric(Weapon2))
-        {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your electric weapons slow robots for {orange}-60%%% move speed{teamcolor} for %0.1f seconds on hit", g_ElectricStunDuration);
-        }
-
-        if (IsWarriorSpirit(Weapon3))
-        {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your warrior spirits gives {orange}+50 HP{teamcolor} on hit against robots");
-        }
-
-        if (IsKGB(Weapon3))
-        {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your KGB grants you {orange}+7 seconds of critical hits{teamcolor} when landing a quick 3 hit combo");
-        }
-        if (IsJetpack(Weapon2))
-        {
-            TF2Attrib_SetByName(Weapon2, "falling_impact_radius_pushback", 0.0);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Jetpack {orange}deals no knockback{teamcolor} when landing");
-        }
-        if (IsAirStrike(Weapon1))
-        {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your AirStrike {orange}gains additional clip{teamcolor} by doing %i damage to robots", RoundToNearest(g_AirStrikeDMGRequirement));
-        }
-        if (IsBlackBox(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.25);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Blackbox has {orange}+25%% larger explosion radius");
-        }
-
-        if (isBeggarsBazooka(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "mult_player_movespeed_active", 1.15);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Beggars Bazooka provides {orange}+15%% faster move speed while active");
-        }
-
-        if (isLibertyLauncher(Weapon1))
-        {
-            if (IsAnyBanner(Weapon2))
-            {
-                TF2Attrib_SetByName(Weapon2, "increase buff duration", 1.25);
-                MC_PrintToChatEx(client, client, "{teamcolor}Your Liberty Launcher provides your banners {orange}+25%% longer buff duration{teamcolor}");
-            }else
-            {
-                MC_PrintToChatEx(client, client, "{teamcolor}Your Liberty Launcher provides your banners {orange}equip a banner to get the buff!");
-            }
-        }
-
-        if (IsRocketLauncher(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "deploy time decreased", 0.75);
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Rocket Launcher provides you {orange}+25%% faster weapon switch speed{teamcolor}");
-        }
-
-        if (HasFrontierJustice(client))
-        {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Frontier Justice {orange}gains revenge crits{teamcolor} based on damage it deals. %i damage pr crit. Awarded upon sentry desctruction", RoundToNearest(g_FrontierJusticeDMGRequirement));
-        }
-
-        if (IsShotGun(Weapon1))
-        {
-            SetShotGunStats(Weapon1, client);
-        }
-        if (IsShotGun(Weapon2))
-        {
-            SetShotGunStats(Weapon2, client);
-        }
-
-        if(IsSandman(Weapon3))
-        {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Baseball {orange}reduces robots move speed by -85%{teamcolor} for 2 seconds on hit");
-        }
-        if(IsWrap(Weapon3))
-        {
-            MC_PrintToChatEx(client, client, "{teamcolor}Your Ornament {orange}reduces robots move speed by -70%{teamcolor} for 1.5 seconds on hit");
-        }
-
-    }
-
-    
-
-}
-    
-    
-
-void SetShotGunStats(int weapon, int client)
-{
-    TF2Attrib_SetByName(weapon, "projectile penetration", 1.0);
-    TF2Attrib_SetByName(weapon, "Reload time decreased", 0.7);
-    MC_PrintToChatEx(client, client, "{teamcolor}Your Shotgun {orange}penetrates through enemies{teamcolor} and {orange}reloads 30%%% faster");
-}
-
 
 bool IsSniperRifle(int weapon)
 {
@@ -1331,14 +1414,14 @@ bool IsRocketLauncher(int weapon)
 	return false;
 }
 
-bool IsAllClassWeapon(int weapon){
+bool IsStockOrAllClassWeapon(int weapon){
 	if(weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 		//If other allclass are added, add here
         
-	case 264,423,474,880,939,954,1013,1071,1123,1127,30758: 
+	case 0,1,8,190,191,198,154,609,264,423,474,880,939,954,1013,1071,1123,1127,30758,660,30667: 
 		{
 			return true;
 		}
@@ -1346,36 +1429,36 @@ bool IsAllClassWeapon(int weapon){
 	return false;
 }
 
-bool IsBottle(int weapon)
-{
-    	if(weapon == -1 && weapon <= MaxClients) return false;
+// bool IsBottle(int weapon)
+// {
+//     	if(weapon == -1 && weapon <= MaxClients) return false;
 	
-	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-	{
-		//If other bottles
+// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+// 	{
+// 		//If other bottles
         
-	case 1,191,154,609:
-		{
-			return true;
-		}
-	}
-	return false;
+// 	case 1,191,154,609:
+// 		{
+// 			return true;
+// 		}
+// 	}
+// 	return false;
     
-}
+// }
 
-bool IsBat(int weapon){
-	if(weapon == -1 && weapon <= MaxClients) return false;
+// bool IsBat(int weapon){
+// 	if(weapon == -1 && weapon <= MaxClients) return false;
 	
-	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-	{
-		//If other allclass are added, add here
-	case 0, 190, 660, 30667: 
-		{
-			return true;
-		}
-	}
-	return false;
-}
+// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+// 	{
+// 		//If other allclass are added, add here
+// 	case 0, 190, 660, 30667: 
+// 		{
+// 			return true;
+// 		}
+// 	}
+// 	return false;
+// }
 
 bool IsShotGun(int weapon){
 	if(weapon == -1 && weapon <= MaxClients) return false;
@@ -1453,30 +1536,137 @@ bool IsLooseCannon(int weapon)
 
 bool IsDemoKnight(int weapon1, int weapon2)
 {
-    // int weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-    // int weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-
+    //Demoknights don't have weapons in slot1 or 2
     if(weapon1 == -1 && weapon2 == -1)
     {
         return true;
     }
     return false;
-
-
-
-	// switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-	// {
-	// 	//If other kunais are added, add here
-	// case 525: 
-	// 	{
-	// 		return true;
-	// 	}
-	// }
-	// return false;
 }
-// 
+
+bool IsBlutsauger(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 36: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsOverdose(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 412: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsAmputator(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 304: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsSolemnVow(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 413: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsCrossbow(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 305, 1079: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsQuickfix(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 411: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsVaccinator(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 998: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsMadMilk(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 222: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 
+
+//Functions to deal with different on kill to on hit stuff
 
 void IncrementHeadCount(int iClient)
 {
@@ -1588,7 +1778,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
         {
              
              int iActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-             if (IsAllClassWeapon(iActiveWeapon) || IsBottle(iActiveWeapon))
+             if (IsStockOrAllClassWeapon(iActiveWeapon))
              {
 			int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
             
