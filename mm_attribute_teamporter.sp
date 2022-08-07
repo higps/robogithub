@@ -384,7 +384,7 @@ public Action Teleport_Player(int client)
 	// 	return Plugin_Continue;
 
 	float angles[3], pos[3];
-	if (GetTeamporterTransform(team, angles, pos))
+	if (GetTeamporterTransform(team, angles, pos) == 1)
 	{
 		pos[2] += 15.0;
 		// Don't get stuck inside of teleporter
@@ -406,10 +406,11 @@ public Action Teleport_Player(int client)
 }
 
 //This should find the nearest teleporter exit built by a robo engie and give its rotation and position
-bool GetTeamporterTransform(int team, float angles[3], float pos[3])
+int GetTeamporterTransform(int team, float angles[3], float pos[3])
 {
 	int ent = -1;
 	int tele;
+	int status = 0;
 	int i = (team == 2 ? 1 : 0);
 	float vecSpawn[3];
 	float vecIsActuallyGoingToSpawn[3] = {-99999.0, -99999.0, -99999.0};
@@ -420,13 +421,18 @@ bool GetTeamporterTransform(int team, float angles[3], float pos[3])
 		if (GetEntProp(ent, Prop_Send, "m_iTeamNum") != team)
 			continue;
 		if (GetEntProp(ent, Prop_Send, "m_bBuilding"))
+		{
+			status = 2;
 			continue;	
+		}
 		if (GetEntProp(ent, Prop_Send, "m_bCarried"))	// If being carried
 			continue;
 		if (GetEntProp(ent, Prop_Send, "m_iObjectMode") != 1)	// If not exit
 			continue;
-		if (GetEntProp(ent, Prop_Send, "m_bHasSapper"))//has sapper
+		if (GetEntProp(ent, Prop_Send, "m_bHasSapper")){			//has sapper
+			status = 3;
 			continue;
+		}
 		if (g_iPadType[ent] != PadType_Boss)
 			continue;
 		if (TF2_GetBuildingState(ent) != TELEPORTER_STATE_READY)
@@ -450,14 +456,28 @@ bool GetTeamporterTransform(int team, float angles[3], float pos[3])
 	}
 	// If no teleporters found
 	//if (GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]) >= 70000)
+
+	if (status == 3)
+	{
+		// PrintToChatAll("IsSapped");
+		return 3;
+	}
+
+	if (status == 2)
+	{
+		// PrintToChatAll("IsBuilding");
+		return 2;
+	}
 	if (!tele)
 	{
 		#if defined DEBUG
 			PrintToChatAll("No teleporters found!");
 		#endif
-		return false;
+		// PrintToChatAll("No teleporters found!");
+		return 0;
 	}
-	return true;
+
+	return 1;
 }
 
 public Action Teleport_Clamp(Handle timer, int client)
@@ -579,10 +599,18 @@ public Action Timer_DrawHud(Handle timer, int client)
 	{
 		if (GetTeamporterTransform(team, angles, pos))
 		{
-			Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nCrouch to Teleport!");
-			TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
-			SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
-
+			if (GetTeamporterTransform(team, angles, pos) == 2){
+				Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nTeamporter is building");
+				SetHudTextParams(-1.0, -0.2, 0.1, 0, 130, 130, 255);
+			}else if (GetTeamporterTransform(team, angles, pos) == 3){
+				Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nTeamporter is sapped");
+				SetHudTextParams(-1.0, -0.2, 0.1, 133, 0, 130, 255);
+			}else{
+				Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nCrouch to Teleport!");
+				TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
+				SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
+			}
+			
 			if (!g_spawnclamp[client])
 			{
 				EmitSoundToClient(client, TELEPORTER_ACTIVATE, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.35);
@@ -598,6 +626,9 @@ public Action Timer_DrawHud(Handle timer, int client)
 
 		SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
 	}
+
+
+	
 	ShowHudText(client, -2, sHUDText);
 	b_hud_clamp[client] = false;
 	}
