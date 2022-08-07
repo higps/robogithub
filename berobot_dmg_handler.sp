@@ -729,6 +729,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             }else
             {
+
+                TF2Attrib_RemoveByName(Weapon3, "dmg taken from bullets reduced");
+                TF2Attrib_RemoveByName(Weapon3, "dmg taken from crit reduced");
+                TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
+                TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");
                 if (Weapon1 != -1)
             {
                 TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.75);
@@ -862,7 +867,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsBazaar(Weapon1))
         {
 
-            MC_PrintToChatEx(client, client, "{teamcolor}Bazaar Bragin: {orange}Gain head on headshot{teamcolor}, but {dark}Lose 2 heads{teamcolor} on bodyshot");
+            MC_PrintToChatEx(client, client, "{teamcolor}Bazaar Bragin: {orange}Gain head on headshot{teamcolor}, but {darkred}Lose 2 heads{teamcolor} on bodyshot");
            
         }
 
