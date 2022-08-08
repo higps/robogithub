@@ -719,7 +719,7 @@ void DisplayMMStats(int client, char[] chat_display)
 {
     if (g_Attribute_Display[client] < GetEngineTime() && b_Attribute_Display[client])
     {
-        MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs: - Type {orange}/mminfo {teamcolor}to toggle this information on/off %s",chat_display);
+        //MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs: - Type {orange}/mminfo {teamcolor}to toggle this information on/off %s",chat_display);
         g_Attribute_Display[client] = GetEngineTime() + g_Attribute_Display_CollDown;
     }
 }
