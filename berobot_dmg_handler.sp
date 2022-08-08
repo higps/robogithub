@@ -795,11 +795,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: Provides all weapons with {orange}+50%% maxammo",chat_display);
             }
 
-            if(IsMadMilk)
-            {
-                TF2Attrib_SetByName(Weapon2, "applies snare effect", 0.65);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Mad Milk: {orange}-35%%% move speed on targets upgrade",chat_display);
-            }
+            // if(IsMadMilk)
+            // {
+            //     TF2Attrib_SetByName(Weapon2, "applies snare effect", 0.65);
+            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Mad Milk: {orange}-35%%% move speed on targets upgrade",chat_display);
+            // }
         }
 
         if (TF2_GetPlayerClass(client) == TFClass_Medic)
