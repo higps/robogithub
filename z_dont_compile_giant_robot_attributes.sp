@@ -16,7 +16,7 @@
 //#pragma newdecls required
 
 #define PLUGIN_VERSION "1.0"
-
+#define ROBOT_NAME "A"
 //new g_offsCollisionGroup;
 
 int EngieTeam = 2;
