@@ -10,6 +10,7 @@
 //#include <collisionhook>
 #include <tf2_isPlayerInSpawn>
 #include <morecolors_newsyntax>
+#include <tfobjects>
 
 //#pragma newdecls required
 #define PLUGIN_VERSION "1.0"
@@ -42,7 +43,7 @@ static const char TeleActivateSounds[][256] =
 
 #define TF_OBJECT_TELEPORTER	1
 #define TF_TELEPORTER_ENTR	0
-//#define DEBUG
+#define DEBUG
 //new g_offsCollisionGroup;
 
 /*
@@ -90,6 +91,25 @@ enum //Custom ObjectType
 	PadType_Jump,
 	PadType_Boss
 }
+
+// enum //TFOBjectType
+// {
+// 	TFObject_CartDispenser = 0,
+// 	TFObject_Dispenser,
+// 	TFObject_Teleporter,
+// 	TFObject_Sentry,	
+// 	TFObject_Sapper
+// }
+
+// // TFObjectMode
+// enum
+// {
+// 	TFObjectMode_None = 0,
+// 	TFObjectMode_Entrance,	
+// 	TFObjectMode_Exit,
+// }
+//List of teleporters used to determine the teamporter exists
+int g_teleporters[MAXPLAYERS+1] = {-1, ...};
 
 public Plugin myinfo =
 {
@@ -191,6 +211,8 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Teleporter)
 		{
 
+			g_teleporters[iBuilder] = iObj;
+			PrintToChatAll("Iobj %i", iObj);
 			#if defined DEBUG
 				PrintToChatAll("Built builder teleporter!");
 			#endif
@@ -218,7 +240,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 			int attach = CreateEntityByName("trigger_push");
 			TeleportEntity(attach, position, NULL_VECTOR, NULL_VECTOR);
 
-			if (GetClientTeam(iBuilder) == TFTeam_Blue)
+			if (TF2_GetClientTeam(iBuilder) == TFTeam_Blue)
 			{
 				TE_Particle("teleported_mvm_bot", position, _, _, attach, 1,0);
 			}else
@@ -329,6 +351,9 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	g_Recharge[client] = 0;
 	g_TouchHooked[client] = true;
+	
+	// FindRoboExit(client);
+
 	}
 	
 	// int team = GetClientTeam(client);
@@ -408,6 +433,8 @@ public Action Teleport_Player(int client)
 //This should find the nearest teleporter exit built by a robo engie and give its rotation and position
 int GetTeamporterTransform(int team, float angles[3], float pos[3])
 {
+	PrintToChatAll("Got here1");
+	int j = 1;
 	int ent = -1;
 	int tele;
 	int status = 0;
@@ -415,9 +442,22 @@ int GetTeamporterTransform(int team, float angles[3], float pos[3])
 	float vecSpawn[3];
 	float vecIsActuallyGoingToSpawn[3] = {-99999.0, -99999.0, -99999.0};
 	float dist, otherdist = GetVectorDistance(vecIsActuallyGoingToSpawn, vecSpawns[i]);
-
-	while ((ent = FindEntityByClassname(ent, "obj_teleporter")) != -1)
+	//g_teleporters[client] 
+// while ((ent = FindEntityByClassname(ent, "obj_teleporter")) != -1)
+	while(j++ <= MaxClients+1)
 	{
+		PrintToChatAll("Got here");
+
+				if (IsValidClient(j) && IsClientInGame(j))
+		{
+					if(IsValidEntity(g_teleporters[j])){
+						PrintToChatAll("ITERATING in WHILE %N, %i", j, g_teleporters[j]);
+						continue;
+					}
+		
+		
+		ent = g_teleporters[j];
+		PrintToChatAll("Got here");
 		if (GetEntProp(ent, Prop_Send, "m_iTeamNum") != team)
 			continue;
 		if (GetEntProp(ent, Prop_Send, "m_bBuilding"))
@@ -478,6 +518,7 @@ int GetTeamporterTransform(int team, float angles[3], float pos[3])
 	}
 
 	return 1;
+	}
 }
 
 public Action Teleport_Clamp(Handle timer, int client)
@@ -628,7 +669,7 @@ public Action Timer_DrawHud(Handle timer, int client)
 	}
 
 
-	
+
 	ShowHudText(client, -2, sHUDText);
 	b_hud_clamp[client] = false;
 	}
@@ -868,21 +909,53 @@ stock void TF2_SetBuildingState(int iBuilding, int iState = 0)
 
 bool TeamHasRoboEngineer(int client)
 {
-	int Team = TF2_GetClientTeam(client);
+	TFTeam Team = TF2_GetClientTeam(client);
+	// int positive = 0;
 	for(int i = 1; i <= MaxClients+1; i++)
 	{
 		if (IsValidClient(i) && IsClientInGame(i))
 		{
-		TFTeam iTeam = TF2_GetClientTeam(i);
-		if(iTeam == Team)
-		{
-			TFClassType iClass = TF2_GetPlayerClass(i);
-			if (iClass == TFClass_Engineer && IsAnyRobot(i))
+			TFTeam iTeam = TF2_GetClientTeam(i);
+			if(iTeam == Team)
 			{
-				return true;
+				TFClassType iClass = TF2_GetPlayerClass(i);
+				if (iClass == TFClass_Engineer && IsAnyRobot(i))
+				{
+
+					FindRoboExit(i);
+					return true;
+					
+					// positive++;
+					
+				}
 			}
-		}
 		}
 	}
 	return false;
 }
+
+void FindRoboExit(int client)
+{
+	if (IsAnyRobot(client))
+	{
+		int NumObjects = TF2_GetNumObjects(client, TFObjectMode_Exit, TFObject_Teleporter, false);
+		//Found the teleporter
+		if (NumObjects == 1)
+		{
+			// int teleporter = TF2_GetObject(client, TFObject_Teleporter);
+
+			int teleporter = TF2_GetObjectOfType(client, TFObjectMode_Exit, TFObjectMode_None, false);
+			g_teleporters[client] = teleporter;
+			PrintToChatAll("%N had %i objects. Teleporter %i", client, NumObjects, teleporter);
+			//return teleporter;
+		}else
+		{
+			g_teleporters[client] = 0;
+		}
+
+	// AcceptEntityInput(teleporter, "Kill");
+	}
+	
+	//return 0;
+}
+
