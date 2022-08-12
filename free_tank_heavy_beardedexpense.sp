@@ -378,7 +378,7 @@ stock GiveBearded(client)
 			TF2Attrib_RemoveAll(Weapon3);
 			
 				
-			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.2);
+			// TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.2);
 			TF2Attrib_SetByName(Weapon3, "damage penalty", 1.5);
 			TF2Attrib_SetByName(Weapon3, "critboost on kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);

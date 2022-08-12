@@ -15,20 +15,17 @@
 //#pragma newdecls required
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Uncle Dane"
+#define ROBOT_NAME	"Zonical"
 #define ROBOT_ROLE "Builder"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS ""
-#define ROBOT_DESCRIPTION " Widowmaker, Jag"
-#define ROBOT_TIPS "Buildings build and upgrade instantly when hit by a wrench\nBuild teamporters to easily teleport your team to the front lines\nPhase through buildings"
+#define ROBOT_DESCRIPTION "Quick-draw Pistol, Gunslinger"
+#define ROBOT_TIPS "Buildings build instantly when hit by a wrench\nBuild teamporters to easily teleport your team to the front lines\nPhase through buildings"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
-
-#define MUSIC "uncle_dane_dispenser.wav"
-
 
 // #define ENGIE_SPAWN_SOUND		"vo/announcer_mvm_engbot_arrive02.mp3"
 // #define ENGIE_SPAWN_SOUND2		"vo/announcer_mvm_engbot_arrive03.mp3"
@@ -46,26 +43,26 @@
 
 //new g_offsCollisionGroup;
 
-bool engibotactive;
-bool teleportercheck;
-bool AnnouncerQuiet;
+// bool engibotactive;
+// bool teleportercheck;
+// bool AnnouncerQuiet;
 
 
 int EngieTeam = 2;
-int engieid = -1;
-int g_iMaxEntities;
-int BossTeleporter;
+// int engieid = -1;
+// int g_iMaxEntities;
+// int BossTeleporter;
 
-float vecSpawns[2][3];
+// float vecSpawns[2][3];
 
 static int g_iPadType[2048];
-static int g_iObjectParticle[2048];
+// static int g_iObjectParticle[2048];
 
 static char g_szOffsetStartProp[64];
 static int g_iOffsetMatchingTeleporter = -1;
 
-bool g_ReadyToTeamPort[MAXPLAYERS + 1] = false;
-bool g_Announcerquiet = false;
+// bool g_ReadyToTeamPort[MAXPLAYERS + 1] = false;
+// bool g_Announcerquiet = false;
 
 enum //Teleporter states
 {
@@ -85,22 +82,15 @@ enum //Custom ObjectType
 	PadType_Boss,
 }
 
-enum OBJSOLIDTYPE
-{
-	SOLID_TO_PLAYER_USE_DEFAULT = 0,
-	SOLID_TO_PLAYER_YES,
-	SOLID_TO_PLAYER_NO,
-}
-
 public Plugin:myinfo =
 {
-	name = "[TF2] Be Big Robot Uncle Dane",
+	name = "[TF2] Be Big Robot Zonical",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
 	description = "Play as the Giant Uncle Dane Bot from MvM",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-
+bool b_Hooked[MAXPLAYERS + 1] = false;
 public OnPluginStart()
 {
     LoadTranslations("common.phrases");
@@ -171,6 +161,42 @@ public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
 }
+
+
+
+public void OnClientPutInServer(int client)
+{
+
+
+	// Hook weapon switching for this client here:
+	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitch);
+	b_Hooked[client] = true;
+}
+
+public void OnClientDisconnect(int client)
+{
+
+
+	// Unhook our weapon switching:
+	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitch);
+}
+
+public void OnWeaponSwitch(int client, int weapon)
+{
+	// When we switch weapons, we're going to grant a damage bonus
+	// based off of the "half second damage bonus" attribute.
+
+	// We'll do the damage calculation in another function. Here we'll see
+	// when until we can have this bonus.
+
+	// Do we have "half second damage bonus"?
+	if (IsRobot(client, ROBOT_NAME))
+	{
+		// We have until our current time plus 1 second to have a damage increase.
+		TF2_AddCondition(client, TFCond_Buffed, 1.5);
+	}
+}
+
 // public OnEntityCreated(entity, const String:classname[])
 // {
 //     if(StrContains(classname[1], "item_ammopack", false) != -1 || StrContains(classname[1], "item_healthkit", false) != -1)
@@ -232,76 +258,23 @@ public OnMapStart()
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
-
-	PrecacheSound(MUSIC);
-	
-
 }
 
 
 
-
-/* public bool ShouldCollide(entity, collisiongroup, contentmask, bool result)
-{	
-	PrintToChatAll("Returning false");
-	return false;
-}
- */
-//trigger the event
-// public void PlayerUpgradedobject(Event evnet, const char[] name, bool dontBroadcast)
-// {
-// PrintToChatAll("Upgrade complete");
-// }
-float g_disp_build_time = 0.0;
-float g_disp_build_cool_down = 60.0;
 public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 {
-	// if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)
-	// return;
-	
+
 	
 	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
 	int iObj = event.GetInt("index");
-	//int entRef = EntIndexToEntRef(iObj);
-	//PrintToChatAll("iObj %i", iObj);
 	
 	if (IsValidClient(iBuilder) && IsRobot(iBuilder, ROBOT_NAME)){
 
-	// 	SetVariantInt(0);
-    // AcceptEntityInput(iObj, "SolidToPlayer");
-		// SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);
-		// SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
 		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter){
 		SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.45);
-		// SetEntPropFloat(iObj, Prop_Send, "m_flPercentageConstructed", 1.0);
-		// DispatchKeyValue(iObj, "defaultupgrade", "2"); 
 	
 		}
-
-		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser &&
-		GetEngineTime() >= g_disp_build_time)
-		{
-			//PrintToChatAll("Playing Music");
-
-			// int random = GetRandomInt(0,3);
-
-			// if (random == 1)
-			// {
-			EmitSoundToAll(MUSIC, iObj);
-			EmitSoundToAll(MUSIC, iObj);
-			g_disp_build_time = GetEngineTime() + g_disp_build_cool_down;
-			// EmitSoundToAll(MUSIC, iObj);
-			// }
-
-			
-			
-			// EmitSoundToAll(MUSIC, iObj);
-		}
-
-		// SetVariantInt(2);
-		// AcceptEntityInput(iObj, "SetSolidToPlayer");
-		//FakeClientCommandEx(iBuilder, "stuck");
-
 	}
 }
 
@@ -330,46 +303,16 @@ public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 	
 	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
 	int iObj = event.GetInt("index");
-	//int entRef = EntIndexToEntRef(iObj);
-	//PrintToChatAll("iObj %i", iObj);
+
 	
 	if (IsValidClient(iBuilder) && IsRobot(iBuilder, ROBOT_NAME)){
-		// SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);
-		// SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
+
 		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
 		
-	//	SetEntPropFloat(iObj, Prop_Send, "m_flPercentageConstructed", 1.0);
-		//SetEntProp(iObj, Prop_Send, "m_CollisionGroup", 2); 
-		//SetEntPropFloat(iObj, Prop_Send, "m_bDisposableBuilding", 1.0);	
-//		DispatchKeyValue(iObj, "defaultupgrade", "2"); 
-		//SetEntPropFloat(iObj, Prop_Send, "m_iUpgradeMetalRequired ", 0.1);
-		//SDKHook(iObj, SDKHook_ShouldCollide, ShouldCollide );
-		//CH_PassFilter(iBuilder, iObj, false);
-		//SetEntData(iObj, g_offsCollisionGroup, 2, 4, false);
-		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
-			{
-			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
-			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
-			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
-			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
-			//PrintToChatAll("Attempting music stop");
-		}
+
 	}
 }
 
-/* public Action:CH_PassFilter( ent1, ent2, &bool:result )
-{
-	PrintToChatAll("Should stop");
-			result = false;
-			return Plugin_Stop;
-
-}  */
-
-/* public bool:ShouldCollide( entity, collisiongroup, contentsmask, bool:result )
-{
-	PrintToChatAll("Should not collide");
-    return false;
-}  */
 
 public Action:SetModel(client, const String:model[])
 {
@@ -385,12 +328,6 @@ public Action:SetModel(client, const String:model[])
 		
 	}
 }
-// public Action Dane(int client, int args)
-// {
-// 	// TF2_SetPlayerClass(client, TFClass_Engineer);
-//     // TF2_RegeneratePlayer(client);
-// 	MakeUncleDane(client);
-// }
 
 MakeUncleDane(client)
 {
@@ -448,10 +385,16 @@ MakeUncleDane(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client, ROBOT_TIPS);
+	PrintHintText(client, "You have teamporters");
 	PrintCenterText(client, "Use !stuck if you get stuck in buildings");
 	
 	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
+
+	if (!b_Hooked[client]){
+
+		SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitch);
+		b_Hooked[client] = true;
+	}
 
 //	EmitGameSoundToAll("Announcer.MVM_Engineer_Teleporter_Activated");
 //Doesn't work for whatever reason
@@ -506,9 +449,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	// GiveBigRoboDane(client);
 // }
 
-#define THEDANGER 30420
+// #define THEDANGER 30420
 #define GOLDDIGGER 30172
-#define INSULATOR 30539
+#define ENDOTHERMIC 30412
 
 stock GiveBigRoboDane(client)
 {
@@ -520,30 +463,37 @@ stock GiveBigRoboDane(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_wrench", 197, 9, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_pistol", 22, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_robot_arm", 142, 6, 1, 2, 0);
 
-
+//15126
 		//CreateWeapon(client, "tf_weapon_wrench", 7, 9, 69, 2, 0);
 
 
-		CreateRoboHat(client, THEDANGER, 10, 6, 15132390.0, 1.25, -1.0);
+		// CreateRoboHat(client, THEDANGER, 10, 6, 15132390.0, 1.25, -1.0);
 		CreateRoboHat(client, GOLDDIGGER, 10, 6, 15132390.0, 1.0, -1.0);
-		CreateRoboHat(client, INSULATOR, 10, 6, 15132390.0, 1.0, -1.0);
+		CreateRoboHat(client, ENDOTHERMIC, 10, 6, 15132390.0, 1.0, -1.0);
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
 		//SetEntData(Weapon3, FindSendPropInfo(entclass, "m_iEntityQuality"), 11);
 
-		if(IsValidEntity(Weapon1))
+		if(IsValidEntity(Weapon2))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
+			//TF2Attrib_RemoveAll(Weapon1);
 			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.25);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 30.0);
-			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
+			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", 0.5);
+			TF2Attrib_SetByName(Weapon2, "damage bonus", 1.5);			
+			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.5);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.5);
+			TF2Attrib_SetByName(Weapon2, "weapon spread bonus",	0.25);
+			
+			
+
+			
+			TF2Attrib_SetByName(Weapon2, "engineer building teleporting pickup", 10.0);
 			// TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
 			
 		}
@@ -558,7 +508,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
 			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 4.0);
-			TF2Attrib_SetByName(Weapon3, "single wep deploy time increased", 1.6);
+			// TF2Attrib_SetByName(Weapon3, "single wep deploy time increased", 1.6);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 6.0);
@@ -566,9 +516,10 @@ stock GiveBigRoboDane(client)
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 8.0);
 			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.9);
-			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1 enemies=1");
-			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.65 dispenser_scale=1.65 sentry_count=1 dispenser_count=1 remove_all_sappers=0");	
+			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
+			
 		}
+		
 	}
 }
 

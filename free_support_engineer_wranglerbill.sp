@@ -20,7 +20,7 @@
 #define ROBOT_ROLE "Builder"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS ""
-#define ROBOT_DESCRIPTION " Wrangler, 3 Minisentries, Teamporter"
+#define ROBOT_DESCRIPTION " Wrangler, +3 dispensers and minisentries, Teamporter"
 #define ROBOT_TIPS "Buildings build instantly when hit by a wrench\nBuild teamporters to easily teleport your team to the front lines\nPhase through buildings"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
@@ -484,7 +484,8 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "mod teleporter cost", 4.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-
+	TF2Attrib_SetByName(client, "deploy time decreased", 0.25);
+ 
 	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
 
 	

@@ -229,7 +229,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.5);			
 			// TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
 			// TF2Attrib_SetByName(Weapon3, "mult charge turn control", 2.0);		
-			TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
+			// TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.35);	
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 			
