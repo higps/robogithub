@@ -139,10 +139,10 @@ enum struct ObjectPointer
 		int ent = this.get();
 		if (IsValidEntity(ent) && ent > 0)
 		{
-			if (GetTeleporterStatus(ent) == TELE_READY)
-			{
+			// if (GetTeleporterStatus(ent) == TELE_READY)
+			// {
 				return true;
-			}
+			// }
 
 		}
 			
@@ -607,7 +607,7 @@ int GetTeleporterStatus(int ent){
 		if (GetEntProp(ent, Prop_Send, "m_bBuilding"))
 		{
 			// PrintToChatAll("Building");
-			return TELE_CARRIED;
+			return TELE_IS_BUILDING;
 		}
 		if (GetEntProp(ent, Prop_Send, "m_bCarried"))
 		{
@@ -750,6 +750,8 @@ public Action DrawHUD(int client)
 	// int team = GetClientTeam(client);
 
 	// float angles[3], pos[3];
+	Format(sHUDText, sizeof(sHUDText), "Charging Teamporter: %d%%%%   \n%s   ", iPercents, sProgress);
+	SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
 
 	if(iPercents >= 100)
 	{
@@ -766,7 +768,9 @@ public Action DrawHUD(int client)
 		tele = PlayerTele[client];
 
 		// char description[256];
-
+		Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nNo active Teleporter");
+		SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+		
 		if (tele.valid())
 		{
 			//Check if teleporters are in the correct status
@@ -776,26 +780,31 @@ public Action DrawHUD(int client)
 			{
 				case TELE_IS_BUILDING:
 				{
-					FormatEx(sHUDText, sizeof sHUDText, "Is building");
+				//	PrintCenterTextAll("Ready");
+					Format(sHUDText, sizeof sHUDText, "Is building");
 					SetHudTextParams(-1.0, -0.2, 0.1, 0, 130, 130, 255);
 				}
 				case TELE_CARRIED:
 				{
-					FormatEx(sHUDText, sizeof sHUDText, "Is carried");
+				//	PrintCenterTextAll("Ready");
+					Format(sHUDText, sizeof sHUDText, "Is carried");
 					SetHudTextParams(-1.0, -0.2, 0.1, 130, 130, 0, 255);
 				}
 				case TELE_SAPPER:
 				{
-					FormatEx(sHUDText, sizeof sHUDText, "Disabled/Sapped");
+				//	PrintCenterTextAll("Ready");
+					Format(sHUDText, sizeof sHUDText, "Disabled/Sapped");
 					SetHudTextParams(-1.0, -0.2, 0.1, 133, 0, 130, 255);
 				}
 				case TELE_RECHARGING:
 				{
-					FormatEx(sHUDText, sizeof sHUDText, "Recharging...");
+				//	PrintCenterTextAll("Ready");
+					Format(sHUDText, sizeof sHUDText, "Recharging...");
 					SetHudTextParams(-1.0, -0.2, 0.1, 50, 50, 100, 255);
 				}
 				case TELE_READY:
 				{
+				//	PrintCenterTextAll("Ready");
 					Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nCrouch to Teleport!");
 					TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
 					SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
@@ -846,9 +855,9 @@ public Action DrawHUD(int client)
 
 
 	}else{
-		Format(sHUDText, sizeof(sHUDText), "Charging Teamporter: %d%%%%   \n%s   ", iPercents, sProgress);
-		SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
-
+		
+	Format(sHUDText, sizeof(sHUDText), "Charging Teamporter: %d%%%%   \n%s   ", iPercents, sProgress);
+	SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
 	}
 	ShowHudText(client, -2, sHUDText);
 	b_hud_clamp[client] = false;
@@ -1148,8 +1157,10 @@ Action Teleport_Player(int client)
 {
 	ObjectPointer target;
 	target = PlayerTele[client];
+	
+	int teleporter = target.get();
 
-	if (target.valid())
+	if (target.valid() && GetTeleporterStatus(teleporter) == TELE_READY)
 	{
 
 		float destination[3];
