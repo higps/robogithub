@@ -5,26 +5,27 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
+//#include <sendproxy>
 #include <dhooks>
 #include <sdktools>
+//#include <collisionhook>
 #include <tf_custom_attributes>
 
 #pragma semicolon 1
+//#pragma newdecls required
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Uncle Dane"
+#define ROBOT_NAME	"Gnome"
 #define ROBOT_ROLE "Builder"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS ""
-#define ROBOT_DESCRIPTION " Widowmaker, Jag"
-#define ROBOT_TIPS "Buildings build and upgrade instantly when hit by a wrench\nBuild teamporters to easily teleport your team to the front lines\nPhase through buildings"
+#define ROBOT_DESCRIPTION "Throw your buildings, Frontier Justice"
+#define ROBOT_TIPS "Reload to throw buildings\nBuild teamporters to easily teleport your team to the front lines"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
-
-#define MUSIC "uncle_dane_dispenser.wav"
 
 
 public Plugin:myinfo =
@@ -39,11 +40,6 @@ public Plugin:myinfo =
 public OnPluginStart()
 {
     LoadTranslations("common.phrases");
-
-    //g_offsCollisionGroup = FindSendPropInfo("DT_BaseEntity", "m_CollisionGroup");
-    HookEvent("player_builtobject", ObjectBuilt, EventHookMode_Post);
-	HookEvent("player_carryobject", ObjectCarry, EventHookMode_Post);
-	HookEvent("player_upgradedobject", ObjectBuilt, EventHookMode_Post);
 
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
@@ -75,62 +71,7 @@ public OnMapStart()
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
-
-	PrecacheSound(MUSIC);
-	
-
 }
-
-//Custom code needed for Dane's theme
-float g_disp_build_time = 0.0;
-float g_disp_build_cool_down = 60.0;
-public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
-{
-	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
-	int iObj = event.GetInt("index");
-
-	
-	if (IsValidClient(iBuilder) && IsRobot(iBuilder, ROBOT_NAME)){
-
-
-		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser &&
-		GetEngineTime() >= g_disp_build_time)
-		{
-
-			EmitSoundToAll(MUSIC, iObj);
-			EmitSoundToAll(MUSIC, iObj);
-			g_disp_build_time = GetEngineTime() + g_disp_build_cool_down;
-
-		}
-
-
-	}
-}
-
-
-
-
-public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
-{
-	
-	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
-	int iObj = event.GetInt("index");
-	
-	if (IsValidClient(iBuilder) && IsRobot(iBuilder, ROBOT_NAME)){
-
-		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
-
-		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
-			{
-			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
-			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
-			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
-			StopSound(iObj, SNDCHAN_AUTO, MUSIC);
-			//PrintToChatAll("Attempting music stop");
-		}
-	}
-}
-
 
 public Action:SetModel(client, const String:model[])
 {
@@ -138,11 +79,14 @@ public Action:SetModel(client, const String:model[])
 	{
 		SetVariantString(model);
 		AcceptEntityInput(client, "SetCustomModel");
-		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
 
+
+
+		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
+		
+		
 	}
 }
-
 
 MakeUncleDane(client)
 {
@@ -192,6 +136,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "mod teleporter cost", 9.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	TF2Attrib_SetByName(client, "head scale", 0.85);
 
 	UpdatePlayerHitbox(client, scale);
 	
@@ -199,6 +144,7 @@ MakeUncleDane(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client, ROBOT_TIPS);
+	//PrintCenterText(client, "Use !stuck if you get stuck in buildings");
 	
 	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
 	
@@ -218,9 +164,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	GiveBigRoboDane(client);
 }
 
-
-#define THEDANGER 30420
-#define GOLDDIGGER 30172
+#define GNOMEDOME 31242
+#define FLASHDANCE 30551
 #define INSULATOR 30539
 
 stock GiveBigRoboDane(client)
@@ -233,54 +178,48 @@ stock GiveBigRoboDane(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_shotgun_primary", 527, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_wrench", 197, 9, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_sentry_revenge", 141, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_wrench", 7, 6, 1, 2, 0);
 
 
 		//CreateWeapon(client, "tf_weapon_wrench", 7, 9, 69, 2, 0);
 
 
-		CreateRoboHat(client, THEDANGER, 10, 6, 15132390.0, 1.25, -1.0);
-		CreateRoboHat(client, GOLDDIGGER, 10, 6, 15132390.0, 1.0, -1.0);
-		CreateRoboHat(client, INSULATOR, 10, 6, 15132390.0, 1.0, -1.0);
+		CreateRoboHat(client, GNOMEDOME, 10, 6, 0.0, 1.25, 2.0);
+		CreateRoboHat(client, FLASHDANCE, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, INSULATOR, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
-		//SetEntData(Weapon3, FindSendPropInfo(entclass, "m_iEntityQuality"), 11);
-
 		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
-			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.25);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 30.0);
+			TF2Attrib_SetByName(Weapon1, "mod sentry killed revenge", 1.0);
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
-			// TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
-			
 		}
+
 		if(IsValidEntity(Weapon3))
 		{
-			//TF2Attrib_RemoveAll(Weapon3);
-			// TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
-			// TF2Attrib_SetByName(Weapon1, "item style override", 1.0);
-			//TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.0);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
 			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 4.0);
-			TF2Attrib_SetByName(Weapon3, "single wep deploy time increased", 1.6);
+			// TF2Attrib_SetByName(Weapon3, "single wep deploy time increased", 1.3);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
-			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 6.0);
+			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 3.0);
 			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
-			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 8.0);
+			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 4.0);
 			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.9);
-			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
-			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.65 dispenser_scale=1.65 sentry_count=1 dispenser_count=1 remove_all_sappers=0 yeet=0");	
+			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1 enemies=1");
+			TF2CustAttr_SetString(client, "robot engineer", "sentry_scale=1.25 dispenser_scale=1.25 infinite_ammo=1 sentries=1 dispensers=1 remove_all_sappers=0 yeet=1");
+			
 		}
+		
 	}
 }
