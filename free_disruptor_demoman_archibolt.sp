@@ -378,7 +378,6 @@ void DrawHUD(int client)
 	// PrintToChatAll("Ready!");
 	isready = true;	
 	}
->>>>>>> robot-tweaks:free_damage_demoman_archibolt.sp
 
 	if (g_button_held[client] && iCountDown <= 0 && IsPlayerAlive(client))
 	{
