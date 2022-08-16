@@ -31,18 +31,18 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
 
 	HookEvent("crossbow_heal", Event_Crossbow_Heal, EventHookMode_Post);
 }
@@ -139,7 +139,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -153,8 +153,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 #define LICENSETOMAIM 296
 
 
-bool g_button_held[MAXPLAYERS + 1] = false;
-float g_Recharge[MAXPLAYERS + 1] = 0.0;
+bool g_button_held[MAXPLAYERS + 1] = {false, ...};
+float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
 int g_Heal_Bolts_Hits_Needed = 12;
 int g_healcount = 0;
 float g_duration = 8.0;
@@ -233,6 +233,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		DrawHUD(client);
 		
 	}
+	return Plugin_Continue;
 }
 
 bool isready;
@@ -246,50 +247,50 @@ void DrawHUD(int client)
 	int iCountDown = g_Heal_Bolts_Hits_Needed - g_healcount;
 
 	int iCountDownActive = RoundToCeil(g_Recharge[client] - (GetEngineTime()));
-	
-	 int iPercents = RoundToCeil(iCountDownActive / g_duration  * 100.0);
+
+	int iPercents = RoundToCeil(iCountDownActive / g_duration  * 100.0);
 	for (int j = 1; j <= 10; j++)
 	{
-		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
-		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
+	if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
+	else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
 	}
-	
+
 	if (TF2_IsPlayerInCondition(client, TFCond_CritHype))
 	{
-		Format(sHUDText, sizeof(sHUDText), "Strength Bolts Active!\n               %s", sProgress);
-		SetHudTextParams(1.0, 0.8, 0.5, 255, 69, 0, 255);
+	Format(sHUDText, sizeof(sHUDText), "Strength Bolts Active!\n               %s", sProgress);
+	SetHudTextParams(1.0, 0.8, 0.5, 255, 69, 0, 255);
 	}
 	else if(iCountDown <= 0)
 	{
 
 
-		Format(sHUDText, sizeof(sHUDText), "Strength Bolts Ready!");
-		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+	Format(sHUDText, sizeof(sHUDText), "Strength Bolts Ready!");
+	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
 
 	}else
 	{
-		Format(sHUDText, sizeof(sHUDText), "Strength Bolts: %i", iCountDown);
-		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
-		
-		
+	Format(sHUDText, sizeof(sHUDText), "Strength Bolts: %i", iCountDown);
+	SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
+
+
 	}
-	
+
 	ShowHudText(client, -2, sHUDText);
-		
+
 	if (!isready && iCountDown <= 0)
 	{
-		TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
-		// PrintToChatAll("Ready!");
-		isready = true;	
+	TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
+	// PrintToChatAll("Ready!");
+	isready = true;	
 	}
 
 	if (g_button_held[client] && iCountDown <= 0 || IsFakeClient(client))
 	{
-		isready = false;
-		
-		TF2_AddCondition(client, TFCond_CritHype, g_duration);
-		g_healcount = 0;
-		g_Recharge[client] = GetEngineTime() + g_duration;
+	isready = false;
+
+	TF2_AddCondition(client, TFCond_CritHype, g_duration);
+	g_healcount = 0;
+	g_Recharge[client] = GetEngineTime() + g_duration;
 	}
 }
 
@@ -306,48 +307,48 @@ public bool IsKritzed(int client){
 
 public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroadcast)
 {
-    int healer = GetClientOfUserId(GetEventInt(event, "healer"));
+	int healer = GetClientOfUserId(GetEventInt(event, "healer"));
 	int target = GetClientOfUserId(GetEventInt(event, "target"));
 
 	if (IsRobot(healer, ROBOT_NAME))
 	{
-		
-		if(!TF2_IsPlayerInCondition(healer, TFCond_CritHype))g_healcount++;
+
+	if(!TF2_IsPlayerInCondition(healer, TFCond_CritHype))g_healcount++;
 
 
-		//PrintToChatAll("%N Healed %N, healcount was %i ", healer, target, g_healcount);
+	//PrintToChatAll("%N Healed %N, healcount was %i ", healer, target, g_healcount);
 
-		if (TF2_IsPlayerInCondition(healer, TFCond_CritHype))
-		{
-			float reduced_duration = (g_duration / 2.0) + 1.0;
-
-			
-
-			if (IsRobot(target, "Pancop"))
-			{
-				TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration);
-			}else if (IsRobot(target, "Riotcop"))
-			{
-				TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration);
-			}else
-			{
-				TF2_AddCondition(target, TFCond_RuneStrength, reduced_duration);
-			}
+	if (TF2_IsPlayerInCondition(healer, TFCond_CritHype))
+	{
+	float reduced_duration = (g_duration / 2.0) + 1.0;
 
 
-			
 
-			if (IsKritzed(healer))
-			{
-				TF2_AddCondition(target, TFCond_CritCanteen, reduced_duration);
-			}
+	if (IsRobot(target, "Pancop"))
+	{
+	TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration);
+	}else if (IsRobot(target, "Riotcop"))
+	{
+	TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration);
+	}else
+	{
+	TF2_AddCondition(target, TFCond_RuneStrength, reduced_duration);
+	}
 
 
-			// PrintToChatAll("Duration %f", reduced_duration);
-		}
+
+
+	if (IsKritzed(healer))
+	{
+	TF2_AddCondition(target, TFCond_CritCanteen, reduced_duration);
+	}
+
+
+	// PrintToChatAll("Duration %f", reduced_duration);
+	}
 
 	}
-    
+	return Plugin_Continue;
 }
 
 

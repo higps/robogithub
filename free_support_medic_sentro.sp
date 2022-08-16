@@ -38,18 +38,18 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -116,13 +116,13 @@ MakeGiantMedic(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
-TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	
+
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -151,7 +151,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -164,8 +164,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 #define Grimhatte 383
 #define Foppish 878
 
-bool g_button_held[MAXPLAYERS + 1] = false;
-float g_Recharge[MAXPLAYERS + 1] = 0.0;
+bool g_button_held[MAXPLAYERS + 1] = {false, ...};
+float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
 float g_RechargeCooldown = 25.0;
 float g_skill;
 
@@ -260,12 +260,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		DrawHUD(client);
 		
 	}
+	return Plugin_Continue;
 }
 
 
 public void CastSpell(int client) {
 
-int index;
+	int index;
 	if (IsKritzed(client))
 	{
 		//PrintToChatAll("Was kritzed");
@@ -335,7 +336,7 @@ void DrawHUD(int client)
 	// char sProgress[32];
 	//int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCooldown) * 100.0);
 	int iCountDown = RoundToCeil(g_Recharge[client] - g_skill);
-	
+
 	// for (int j = 1; j <= 10; j++)
 	// {
 	// 	if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
@@ -344,68 +345,68 @@ void DrawHUD(int client)
 
 	if (IsKritzed(client))
 	{
-		Format(sHUDText, sizeof(sHUDText), "Meteor: %i   ", iCountDown);
+	Format(sHUDText, sizeof(sHUDText), "Meteor: %i   ", iCountDown);
 	}else
 	{
-		Format(sHUDText, sizeof(sHUDText), "Fireball: %i   ", iCountDown);
+	Format(sHUDText, sizeof(sHUDText), "Fireball: %i   ", iCountDown);
 	}
 
 	if(iCountDown <= 0)
 	{
-		if (IsKritzed(client))
-		{
-			Format(sHUDText, sizeof(sHUDText), "Meteor Ready!");	
-		}else
-		{
-			Format(sHUDText, sizeof(sHUDText), "Fireball Ready!");
-			
-		}
-		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+	if (IsKritzed(client))
+	{
+	Format(sHUDText, sizeof(sHUDText), "Meteor Ready!");	
+	}else
+	{
+	Format(sHUDText, sizeof(sHUDText), "Fireball Ready!");
 
-		
+	}
+	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+
+
 	} else {
-		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
-		
-		// PrintToChatAll("Not Ready!");
+	SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
+
+	// PrintToChatAll("Not Ready!");
 	}
 	// if (g_hud_post_time + g_hud_draw_delay <= GetEngineTime() || g_hud_post_time == 0.0)
 	// {
-		 ShowHudText(client, -2, sHUDText);
+	ShowHudText(client, -2, sHUDText);
 	// 	 g_hud_post_time = GetEngineTime();
 	// }
 
-		if (!isready && iCountDown <= 0)
-		{
-			TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
-			// PrintToChatAll("Ready!");
-			isready = true;	
-		}
+	if (!isready && iCountDown <= 0)
+	{
+	TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
+	// PrintToChatAll("Ready!");
+	isready = true;	
+	}
 
 	if (g_button_held[client] && iCountDown <= 0)
 	{
-		RequestFrame(CastSpell, client);
-		g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-		isready = false;
-		
+	RequestFrame(CastSpell, client);
+	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+	isready = false;
+
 	}
 }
 
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
 
-    if(!IsValidClient(victim))
-        return Plugin_Continue;    
+	if(!IsValidClient(victim))
+	return Plugin_Continue;    
 
-			if (IsRobot(attacker, ROBOT_NAME))
-		{
-			if (!IsAnyRobot(victim) && damagecustom == TF_CUSTOM_SPELL_FIREBALL)
-			{
-				g_Recharge[attacker] -= 1.0;
-			}
+	if (IsRobot(attacker, ROBOT_NAME))
+	{
+	if (!IsAnyRobot(victim) && damagecustom == TF_CUSTOM_SPELL_FIREBALL)
+	{
+	g_Recharge[attacker] -= 1.0;
+	}
 
-		}
+	}
 
-
+	return Plugin_Continue;
 }
 
 public bool IsKritzed(int client){

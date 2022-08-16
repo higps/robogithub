@@ -50,25 +50,25 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //HookEvent("player_death", Event_Death, EventHookMode_Post);
+	//HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
-    AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
+	AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 
 	PrecacheModel(MODEL);
 	PrecacheSound(SPAWN);
@@ -86,7 +86,7 @@ public OnPluginStart()
 	// PrecacheSound(SPY_DEATH_SOUND5, true);
 	// PrecacheSound(SPY_DEATH_SOUND6, true);
 	// PrecacheSound(SPY_DEATH_SOUND7, true);
-	
+
 }
 
 public void OnPluginEnd()
@@ -203,7 +203,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -253,7 +253,7 @@ stock GiveBigRoboDane(client)
 	
 		
 	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
-	int Knife = GetPlayerWeaponSlot(client, 2); //Knife
+	// int Knife = GetPlayerWeaponSlot(client, 2); //Knife
 	int Cloak = GetPlayerWeaponSlot(client, 4); //Invis watch
 	int Sapper = GetPlayerWeaponSlot(client, 1); //Sapper
 
@@ -309,7 +309,9 @@ stock GiveBigRoboDane(client)
 		}	
 	}
 }
-bool g_PressedButton[MAXPLAYERS + 1] = false;
+
+bool g_PressedButton[MAXPLAYERS + 1] = {false, ...};
+
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_RELOAD|IN_USE))
@@ -345,6 +347,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", tf_weapon_grapplinghook");
 	}
+	return Plugin_Continue;
 }
 
 void WaveDash(int client)
@@ -382,6 +385,7 @@ void WaveDash(int client)
 public Action Timer_Button(Handle timer, any client)
 {
 	g_PressedButton[client] = false;
+	return Plugin_Continue;
 }
 
 

@@ -34,7 +34,7 @@
 // #define SPY_DEATH_SOUND5		"vo/mvm_spybot_death05.mp3"
 // #define SPY_DEATH_SOUND6		"vo/mvm_spybot_death06.mp3"
 // #define SPY_DEATH_SOUND7		"vo/mvm_spybot_death07.mp3"
-bool g_PressedButton[MAXPLAYERS + 1] = false;
+bool g_PressedButton[MAXPLAYERS + 1] = {false, ...};
 
 public Plugin:myinfo =
 {
@@ -49,23 +49,23 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    HookEvent("player_death", Event_Death, EventHookMode_Post);
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
 	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    // restrictions.RobotCoins.PerRobot = 1.0;
+	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	// restrictions.RobotCoins.PerRobot = 1.0;
 
 	AddRobot(robot, MakeSpy, PLUGIN_VERSION);
 	PrecacheModel(MODEL);
@@ -168,8 +168,8 @@ MakeSpy(client)
 	//TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
@@ -201,7 +201,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -330,9 +330,11 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		g_PressedButton[client] = true;
 		//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", tf_weapon_grapplinghook");
 	}
+	return Plugin_Continue;
 }
 
 public Action Timer_Button(Handle timer, any client)
 {
 	g_PressedButton[client] = false;
+	return Plugin_Continue;
 }

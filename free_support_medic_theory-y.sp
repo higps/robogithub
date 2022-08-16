@@ -29,18 +29,18 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -107,8 +107,8 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -130,7 +130,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -226,44 +226,44 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 {
 	
 	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
-   if (IsRobot(client, ROBOT_NAME)){
+	if (IsRobot(client, ROBOT_NAME)){
 
 
 
-    if (condition == TFCond_Taunting)
-    {
-       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
-	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-    }
+	if (condition == TFCond_Taunting)
+	{
+	TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
+	// TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+	}
 
-		int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		int healtarget = -1;
+	int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	int healtarget = -1;
 
-        if(GetEntProp(medigun, Prop_Send, "m_bHealing"))
-        {
-            healtarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
-			//PrintToChatAll("Healtarget was: %N", healtarget);
-        }
+	if(GetEntProp(medigun, Prop_Send, "m_bHealing"))
+	{
+	healtarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
+	//PrintToChatAll("Healtarget was: %N", healtarget);
+	}
 
-		if (IsValidClient(healtarget) && IsPlayerAlive(healtarget))
-		{
-			if(condition == TFCond_UberBulletResist){
+	if (IsValidClient(healtarget) && IsPlayerAlive(healtarget))
+	{
+	if(condition == TFCond_UberBulletResist){
 
-			TF2_AddCondition(healtarget,TFCond_CritCola, 3.5);
-			TF2_AddCondition(client, TFCond_CritCola, 3.5);
-		}
-		
-		if(condition == TFCond_UberBlastResist){
+	TF2_AddCondition(healtarget,TFCond_CritCola, 3.5);
+	TF2_AddCondition(client, TFCond_CritCola, 3.5);
+	}
 
-			TF2_AddCondition(healtarget,TFCond_RegenBuffed, 3.5);
-			TF2_AddCondition(client,TFCond_RegenBuffed, 3.5);
-		}
-		
-		if(condition == TFCond_UberFireResist){
+	if(condition == TFCond_UberBlastResist){
 
-			TF2_AddCondition(healtarget,TFCond_StealthedUserBuffFade, 3.5);
-			TF2_AddCondition(client,TFCond_StealthedUserBuffFade, 3.5);
-		}
+	TF2_AddCondition(healtarget,TFCond_RegenBuffed, 3.5);
+	TF2_AddCondition(client,TFCond_RegenBuffed, 3.5);
+	}
+
+	if(condition == TFCond_UberFireResist){
+
+	TF2_AddCondition(healtarget,TFCond_StealthedUserBuffFade, 3.5);
+	TF2_AddCondition(client,TFCond_StealthedUserBuffFade, 3.5);
+	}
 
 	}
 
@@ -275,5 +275,5 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 	// }
 
-   }
+	}
 }

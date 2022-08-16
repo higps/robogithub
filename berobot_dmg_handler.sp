@@ -49,20 +49,20 @@ ConVar g_cvCvarList[CV_PluginVersion + 1];
 bool g_cv_bDebugMode;
 float g_CV_flSpyBackStabModifier;
 
-int Punch_Count[MAXPLAYERS + 1] = 0;
-int Timer_Punch_Count[MAXPLAYERS + 1] = 0;
-bool g_Timer[MAXPLAYERS + 1] = false;
+int Punch_Count[MAXPLAYERS + 1] = {0, ...};
+int Timer_Punch_Count[MAXPLAYERS + 1] = {0, ...};
+bool g_Timer[MAXPLAYERS + 1] = {false, ...};
 
-int g_Eyelander_Counter[MAXPLAYERS + 1] = 0;
+int g_Eyelander_Counter[MAXPLAYERS + 1] = {0, ...};
 float g_bottle_crit_duration = 6.0;
 
-float g_AirStrikeDamage[MAXPLAYERS +1] = 0.0;
+float g_AirStrikeDamage[MAXPLAYERS +1] = {0.0, ...};
 float g_AirStrikeDMGRequirement = 400.0;
 float g_ElectricStunDuration = 0.6;
 
-float g_FrontierJusticeDamage[MAXPLAYERS + 1] = 0.0;
+float g_FrontierJusticeDamage[MAXPLAYERS + 1] = {0.0, ...};
 float g_FrontierJusticeDMGRequirement = 400.0;
-int g_EngineerRevengeCrits[MAXPLAYERS + 1] = 0;
+int g_EngineerRevengeCrits[MAXPLAYERS + 1] = {0, ...};
 
 //bool g_Enabled;
 

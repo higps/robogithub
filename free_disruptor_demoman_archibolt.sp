@@ -35,16 +35,16 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
 	AddNormalSoundHook(BossMortar);
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
@@ -185,7 +185,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -198,8 +198,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 #define GrayBans 30104
 #define SevenSees 30480
 
-bool g_button_held[MAXPLAYERS + 1] = false;
-float g_Recharge[MAXPLAYERS + 1] = 0.0;
+bool g_button_held[MAXPLAYERS + 1] = {false, ...};
+float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
 float g_RechargeCooldown = 4.0;
 float g_skill;
 
@@ -248,8 +248,8 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		}
 	
 }
-// float g_said_time = 0.0;
-// float g_said_duration = 2.7;
+// // float g_said_time = 0.0;
+// // float g_said_duration = 2.7;
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
@@ -298,6 +298,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		DrawHUD(client);
 		
 	}
+	return Plugin_Continue;
 }
 
 
@@ -357,31 +358,33 @@ void DrawHUD(int client)
 	
 	if(iCountDown <= 0)
 	{
-		Format(sHUDText, sizeof(sHUDText), "Shadow Leap Ready!");
-			
-		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+	Format(sHUDText, sizeof(sHUDText), "Shadow Leap Ready!");
 
-		
+	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+
+
 	} else {
 		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
 		
 		
 	}
 	
-		 ShowHudText(client, -2, sHUDText);
+	ShowHudText(client, -2, sHUDText);
 
 
-		if (!isready && iCountDown <= 0)
-		{
-			TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
-			isready = true;	
-		}
+	if (!isready && iCountDown <= 0)
+	{
+	TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
+	// PrintToChatAll("Ready!");
+	isready = true;	
+	}
+>>>>>>> robot-tweaks:free_damage_demoman_archibolt.sp
 
 	if (g_button_held[client] && iCountDown <= 0 && IsPlayerAlive(client))
 	{
-		RequestFrame(CastSpell, client);
-		g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-		isready = false;
-		
+	RequestFrame(CastSpell, client);
+	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+	isready = false;
+
 	}
 }

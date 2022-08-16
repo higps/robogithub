@@ -42,22 +42,22 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    AddNormalSoundHook(BossScout);
+	AddNormalSoundHook(BossScout);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null, 2);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null, 2);
 }
 
 public void OnPluginEnd()
@@ -103,32 +103,32 @@ public Action:SetModel(client, const String:model[])
 
 public Action:BossScout(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
 {
-		if (!IsValidClient(entity)) return Plugin_Continue;
-		if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
+	if (!IsValidClient(entity)) return Plugin_Continue;
+	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
 
 	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
 	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_01.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_03.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_02.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_04.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
+	if (StrContains(sample, "1.wav", false) != -1)
+	{
+		Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_01.wav");
+		EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "3.wav", false) != -1)
+	{
+		Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_03.wav");
+		EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "2.wav", false) != -1)
+	{
+		Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_02.wav");
+		EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "4.wav", false) != -1)
+	{
+		Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_04.wav");
+		EmitSoundToAll(sample, entity);
+	}
+	return Plugin_Changed;
 	}
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 
@@ -173,8 +173,8 @@ MakeGiantscout(client)
 	TF2Attrib_SetByName(client, "damage force reduction", 2.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 2.0);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
@@ -194,7 +194,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)

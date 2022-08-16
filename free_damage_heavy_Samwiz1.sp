@@ -49,27 +49,27 @@ public Plugin:myinfo =
  
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    AddNormalSoundHook(BossGPS);
+	AddNormalSoundHook(BossGPS);
 
 	
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    // robot.sounds.gunfire = SOUND_GUNFIRE;
-    // robot.sounds.gunspin = SOUND_GUNSPIN;
-    // robot.sounds.windup = SOUND_WINDUP;
-    // robot.sounds.winddown = SOUND_WINDDOWN;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	// robot.sounds.gunfire = SOUND_GUNFIRE;
+	// robot.sounds.gunspin = SOUND_GUNSPIN;
+	// robot.sounds.windup = SOUND_WINDUP;
+	// robot.sounds.winddown = SOUND_WINDDOWN;
+	robot.sounds.death = DEATH;
 
-    AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null, 2);
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -238,6 +238,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 #define Tsarboosh 30081
 #define DeadofNight 30309
 #define WildWestWhiskers 30960
+#define BananaHat 30643
 
 bool g_BananaMode = false;
 float g_DamageDone = 0.0;
@@ -260,7 +261,11 @@ stock GiveGDeflectorH(client)
 		CreateRoboHat(client, Tsarboosh, 10, 6, 15185211.0, 1.0, -1.0);
 		CreateRoboHat(client, DeadofNight, 10, 6, 15185211.0, 1.0, -1.0);
 		CreateRoboHat(client, WildWestWhiskers, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, BananaHat, 10, 6, 0.0, 1.0, -1.0);
+		RequestFrame(FindHat, client);
+		// SetEntityRenderColor(g_bananahat, 255, 255, 255, 150);
 		//Weapon Code
+		
 		//CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, float style (-1.0 for none) );
 		CreateRoboWeapon(client, "tf_weapon_minigun", 312, 6, 1, 0, 0);
 
@@ -282,10 +287,6 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 0.1);
 			TF2Attrib_SetByName(Weapon1, "aiming movespeed decreased", 0.01);
 			TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 0.75);
-
-			
-			
-			
 		}
 	}
 }
@@ -321,23 +322,23 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
     // if (!g_Enable)
     //     return Plugin_Continue;
-    if(!IsValidClient(victim))
-        return Plugin_Continue;    
-    if(!IsValidClient(attacker))
-        return Plugin_Continue;
+	if(!IsValidClient(victim))
+	return Plugin_Continue;    
+	if(!IsValidClient(attacker))
+	return Plugin_Continue;
 
 	if (IsRobot(attacker, ROBOT_NAME))
 	{
-		
-		if (g_BananaMode)
-		{
-			SpawnBombs(victim, attacker);
-		}else
-		{
 
-			g_DamageDone += damage;
-		}
+	if (g_BananaMode)
+	{
+		SpawnBombs(victim, attacker);
+	}else
+	{
+		g_DamageDone += damage;
 	}
+	}
+	return Plugin_Continue;
 }
 
 void SetProjectileModel (int iEntity)
@@ -394,12 +395,12 @@ void SpawnBombs(int client, int attacker)
 }
 
 
-bool g_button_held[MAXPLAYERS + 1] = false;
+bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_duration = 6.0;
 float FireModeTimer = -1.0;
 float g_skill; 
 float g_skill_cooldown = 600.0;
-float g_skill_time;
+// float g_skill_time;
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
@@ -430,6 +431,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		DrawHUD(client);
 
 	}
+	return Plugin_Continue;
 }
 
 #define CHAR_FULL "■"
@@ -460,7 +462,7 @@ void DrawHUD(int client)
 				SetHudTextParams(0.85, 0.6, 0.1, 255, 255, 0, 255);
 			}else{
 				Format(sHUDText, sizeof(sHUDText), "Banana Mode Ready!\nUse Special Attack to Activate!");
-			SetHudTextParams(0.85, 0.6, 0.1, 0, 255, 0, 255);	
+				SetHudTextParams(0.85, 0.6, 0.1, 0, 255, 0, 255);	
 				}
 
 
@@ -474,7 +476,9 @@ void DrawHUD(int client)
 		{
 			if (FireModeTimer <= GetEngineTime() || FireModeTimer == -1.0)
 			{
-			EnterBananaMode();
+				
+				EnterBananaMode(client);
+			
 			}
 		}
 
@@ -482,6 +486,7 @@ void DrawHUD(int client)
 	{
 		g_BananaMode = false;
 		g_DamageDone = 0.0;
+		FindHat(client);
 	}
 
 
@@ -489,12 +494,49 @@ void DrawHUD(int client)
 	// b_hud_clamp[client] = false;
 }
 
-void EnterBananaMode()
+void EnterBananaMode(int client)
 {
 
-	g_skill_time = g_duration;
+	// g_skill_time = g_duration;
 	g_BananaMode = true;
 	FireModeTimer = GetEngineTime() + g_duration;
+	FindHat(client);
 
 
+}
+
+public FindHat(int iClient)
+{
+	int iWearableItem = -1;
+	// PrintToServer("LOOKING HAT 1 !");
+	while ((iWearableItem = FindEntityByClassname(iWearableItem, "tf_wearable*")) != -1) // Regular hats.
+	{	
+		// We check for the wearable's item def index and its owner.
+		int iWearableIndex = GetEntProp(iWearableItem, Prop_Send, "m_iItemDefinitionIndex");
+		int iWearableOwner = GetEntPropEnt(iWearableItem, Prop_Send, "m_hOwnerEntity");
+		// PrintToServer("LOOKING HAT 2 !");
+		// If the owners match.
+		if (iWearableOwner == iClient)
+		{
+			// Going through all items. 4 = cosmetics
+			for (int i = 0; i < 4; i++)
+			{			
+				PrintToServer("LOOKING HAT 3 !");
+				// If a weapon's definition index matches with the one stored...
+				if (iWearableIndex == BananaHat)
+				{
+					PrintToServer("FOUND HAT! %i", iWearableItem);
+					if (g_BananaMode){
+						SetEntityRenderMode(iWearableItem, RENDER_NORMAL);
+					}else
+					{
+						SetEntityRenderMode(iWearableItem, RENDER_NONE);
+					}
+					//SetEntityRenderFx(iWearableItem, RENDER_TRANSALPHA);
+					// return true;
+				}
+			}
+		}
+	}
+	// return false;
 }

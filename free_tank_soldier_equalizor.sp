@@ -48,25 +48,25 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-    AddNormalSoundHook(BossIcebear);
+	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	AddNormalSoundHook(BossIcebear);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
 
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
+	// HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
 public void OnPluginEnd()
@@ -106,28 +106,28 @@ public OnMapStart()
 }
 
 
-public Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-// 	int target = attacker;
-// //	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-
-// TFTeam buffTeam = TF2_GetClientTeam(owner);
-	
-// // disallow enemies, allow disguised players, disallow cloaked
-// if (TF2_GetClientTeamFromClient(target, owner) != buffTeam
+// public Event_Death(Event event, const char[] name, bool dontBroadcast)
 // {
-// 	return;
-// }
+// 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+// // 	int target = attacker;
+// // //	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 
-// 	if (IsRobot(attacker, ROBOT_NAME))
-// 	{
-// 		//PrintToChatAll("applying slowed");
-// 		//TF2_AddCondition(target, TFCond_MarkedForDeath, BUFF_PULSE_CONDITION_DURATION, owner);
-// 		TF2_AddCondition(attacker, TFCond_DefenseBuffNoCritBlock, 10.0, attacker);
-// 	}
+// // TFTeam buffTeam = TF2_GetClientTeam(owner);
 	
-}
+// // // disallow enemies, allow disguised players, disallow cloaked
+// // if (TF2_GetClientTeamFromClient(target, owner) != buffTeam
+// // {
+// // 	return;
+// // }
+
+// // 	if (IsRobot(attacker, ROBOT_NAME))
+// // 	{
+// // 		//PrintToChatAll("applying slowed");
+// // 		//TF2_AddCondition(target, TFCond_MarkedForDeath, BUFF_PULSE_CONDITION_DURATION, owner);
+// // 		TF2_AddCondition(attacker, TFCond_DefenseBuffNoCritBlock, 10.0, attacker);
+// // 	}
+	
+// }
 /* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));

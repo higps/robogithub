@@ -55,36 +55,36 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-	 AddNormalSoundHook(BossBearded);
+	AddNormalSoundHook(BossBearded);
 
-    HookEvent("player_death", Event_Death, EventHookMode_Post);
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
 	g_hGameConf = LoadGameConfigFile("bm_charge_airblast_immunity_data");
-	
+
 	//IsDeflectable
 	g_hIsDeflectable = DHookCreate(0, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, IsPlayerDeflectable);
 	if(g_hIsDeflectable == null) SetFailState("Failed to setup hook for CTFPlayer::IsDeflectable!"); 
-	
+
 	if(!DHookSetFromConf(g_hIsDeflectable, g_hGameConf, SDKConf_Virtual, "CTFPlayer::IsDeflectable"))
 	SetFailState("Failed to find CTFPlayer::IsDeflectable offset in the gamedata!");
-	
+
 	//Finds players to hook for IsDeflectable
 	FindAndHookPlayers();
-	
+
 	delete g_hGameConf;
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeBearded, PLUGIN_VERSION);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeBearded, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -250,6 +250,7 @@ public Action BeardedBoom(Handle timer, any data)
 			}
 		}
 	}
+	return Plugin_Continue;
 }
  
 public Action:SetModel(client, const String:model[])
@@ -322,7 +323,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -418,12 +419,12 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 	if (tauntid == -1)
 	{
 //	 TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
-	 TF2_AddCondition(client, TFCond_MegaHeal);
-	 
-	 
-	 
-	 
-/* 	float pos[3];
+	TF2_AddCondition(client, TFCond_MegaHeal);
+
+
+
+
+	/* 	float pos[3];
 	GetClientEyePosition(client, pos);
 	int clients[64]; */
 	//EmitGameSoundToClient(client, ALARM);
@@ -519,7 +520,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
-if (IsValidClient(attacker) && IsValidClient(victim))
+	if (IsValidClient(attacker) && IsValidClient(victim))
 	{
 		if (IsRobot(attacker, ROBOT_NAME) && damagecustom == TF_CUSTOM_BOOTS_STOMP)
 		{
@@ -532,4 +533,5 @@ if (IsValidClient(attacker) && IsValidClient(victim))
 		}
 
 	}
+	return Plugin_Continue;
 }

@@ -60,33 +60,33 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-    AddNormalSoundHook(BossIcebear);
+	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	AddNormalSoundHook(BossIcebear);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
-    
+
 
 	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    // restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	// restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null);
 	//Artillery Code
 
-	
+
 	//HookEvent("post_inventory_application", Event_PlayerResupply);
 
 }
@@ -245,7 +245,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -295,10 +295,10 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 	
 
-bool g_button_held[MAXPLAYERS + 1] = false;
+bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_duration = 6.0;
 float FireModeTimer = -1.0;
-float g_currenttime;
+// float g_currenttime;
 bool g_FireMode = false;
 float g_skill; 
 float g_skill_cooldown = 12.0;
@@ -307,31 +307,32 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if (IsRobot(client, ROBOT_NAME))
 	{
-		//0 = fireball
-		//PrintToChat(client, "Throwing spell!");
-		if( GetEntProp( client, Prop_Data, "m_afButtonPressed" ) & IN_ATTACK3 ) 
-		{
-			// PrintToChatAll("Press");
-            g_button_held[client] = true;
-		}
+	//0 = fireball
+	//PrintToChat(client, "Throwing spell!");
+	if( GetEntProp( client, Prop_Data, "m_afButtonPressed" ) & IN_ATTACK3 ) 
+	{
+	// PrintToChatAll("Press");
+	g_button_held[client] = true;
+	}
 
 
 
-		if( GetEntProp( client, Prop_Data, "m_afButtonReleased" ) & IN_ATTACK3 ) 
-		{
-			// PrintToChatAll("Release");
-			g_button_held[client] = false;
-            
-		}
-
-
-
-
-			g_skill = GetEngineTime();
-		
-		DrawHUD(client);
+	if( GetEntProp( client, Prop_Data, "m_afButtonReleased" ) & IN_ATTACK3 ) 
+	{
+	// PrintToChatAll("Release");
+	g_button_held[client] = false;
 
 	}
+
+
+
+
+	g_skill = GetEngineTime();
+
+	DrawHUD(client);
+
+	}
+	return Plugin_Continue;
 }
 
 void EnterRapidFireMode(int client)
@@ -347,16 +348,16 @@ void EnterRapidFireMode(int client)
 	TF2Attrib_AddCustomPlayerAttribute(client, "move speed penalty", 0.01);
 
 	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		if(IsValidEntity(Weapon1))
-		{
-	
-			// TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.5);			
-			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.35);
-			// TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 11.0);
-			// TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 1.0);
-			TF2Attrib_SetByName(Weapon1, "major increased jump height", 0.0);		
-		}
+	if(IsValidEntity(Weapon1))
+	{
+
+		// TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.5);			
+		// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
+		TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.35);
+		// TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 11.0);
+		// TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 1.0);
+		TF2Attrib_SetByName(Weapon1, "major increased jump height", 0.0);		
+	}
 }
 
 void ResetWeapon(int client)
@@ -371,25 +372,25 @@ void ResetWeapon(int client)
 	// PrintToChatAll("Gskill: %f", g_skill);
 
 	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		if(IsValidEntity(Weapon1))
-		{
+	if(IsValidEntity(Weapon1))
+	{
 
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.15);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);			
-			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.85);
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
-			TF2Attrib_SetByName(Weapon1, "major increased jump height", 1.0);		
-			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);		
+		TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.15);
+		TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);
+		TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+		TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
+		TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);			
+		// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
+		TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.85);
+		TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
+		TF2Attrib_SetByName(Weapon1, "major increased jump height", 1.0);		
+		
+		TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);		
 
-			// TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 0.0);
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			
-		}
+		// TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 0.0);
+		TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+		
+	}
 }
 
 // #define CHAR_FULL "■"
@@ -403,38 +404,38 @@ void DrawHUD(int client)
 
 	int iCountDown = RoundToCeil(g_skill_time - g_skill);
 	int iCountDownFiring = RoundToCeil(FireModeTimer - g_skill);
-	
+
 	Format(sHUDText, sizeof(sHUDText), "Rapid Fire: %i   ",iCountDown);
 
 	if(iCountDown <= 0)
 	{
 
-			if (g_FireMode){
-				Format(sHUDText, sizeof(sHUDText), "Rapid Fire! %i", iCountDownFiring);
-				SetHudTextParams(0.85, 0.6, 0.1, 255, 69, 0, 255);
-			}else{
-				Format(sHUDText, sizeof(sHUDText), "Rapid Fire Ready!\nUse Special Attack to Activate!");
-			SetHudTextParams(0.85, 0.6, 0.1, 0, 255, 0, 255);	
-				}
+	if (g_FireMode){
+	Format(sHUDText, sizeof(sHUDText), "Rapid Fire! %i", iCountDownFiring);
+	SetHudTextParams(0.85, 0.6, 0.1, 255, 69, 0, 255);
+	}else{
+	Format(sHUDText, sizeof(sHUDText), "Rapid Fire Ready!\nUse Special Attack to Activate!");
+	SetHudTextParams(0.85, 0.6, 0.1, 0, 255, 0, 255);	
+	}
 
 
-			
+
 	}else {
 
-		SetHudTextParams(0.85, 0.6, 0.1, 255, 0, 0, 255);
+	SetHudTextParams(0.85, 0.6, 0.1, 255, 0, 0, 255);
 	}
 
 	if (g_button_held[client] && iCountDown <= 0 && !g_FireMode)
-		{
-			if (FireModeTimer <= GetEngineTime() || FireModeTimer == -1.0)
-			{
-			EnterRapidFireMode(client);
-			}
-		}
+	{
+	if (FireModeTimer <= GetEngineTime() || FireModeTimer == -1.0)
+	{
+	EnterRapidFireMode(client);
+	}
+	}
 
 	if (FireModeTimer <= GetEngineTime() && g_FireMode)
 	{
-		ResetWeapon(client);
+	ResetWeapon(client);
 	}
 
 

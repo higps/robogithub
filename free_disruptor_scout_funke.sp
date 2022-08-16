@@ -43,7 +43,7 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
 
@@ -51,15 +51,15 @@ public OnPluginStart()
 
 
 	RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-	
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+
 	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null, 2);
 }
 
@@ -106,32 +106,32 @@ public Action:SetModel(client, const String:model[])
 
 public Action:BossScout(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
 {
-		if (!IsValidClient(entity)) return Plugin_Continue;
-		if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
+	if (!IsValidClient(entity)) return Plugin_Continue;
+	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
 
 	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
 	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_01.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_03.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_02.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_04.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
+	if (StrContains(sample, "1.wav", false) != -1)
+	{
+	Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_01.wav");
+	EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "3.wav", false) != -1)
+	{
+	Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_03.wav");
+	EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "2.wav", false) != -1)
+	{
+	Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_02.wav");
+	EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "4.wav", false) != -1)
+	{
+	Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_04.wav");
+	EmitSoundToAll(sample, entity);
+	}
+	return Plugin_Changed;
 	}
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 
@@ -195,7 +195,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
