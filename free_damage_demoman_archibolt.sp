@@ -35,22 +35,22 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
 	AddNormalSoundHook(BossMortar);
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 1);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 1);
 }
 
 public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -180,7 +180,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -193,8 +193,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 #define GrayBans 30104
 #define SevenSees 30480
 
-bool g_button_held[MAXPLAYERS + 1] = false;
-float g_Recharge[MAXPLAYERS + 1] = 0.0;
+bool g_button_held[MAXPLAYERS + 1] = {false, ...};
+float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
 float g_RechargeCooldown = 4.0;
 float g_skill;
 
@@ -264,8 +264,8 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		}
 	
 }
-float g_said_time = 0.0;
-float g_said_duration = 2.7;
+// float g_said_time = 0.0;
+// float g_said_duration = 2.7;
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
@@ -305,7 +305,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	
 	
 
-	g_said_time = GetEngineTime();
+	// g_said_time = GetEngineTime();
 	StopSound(attacker, SNDCHAN_AUTO, ENEMY_HIT);
 	StopSound(attacker, SNDCHAN_AUTO, ENEMY_HIT);
 	StopSound(attacker, SNDCHAN_AUTO, ENEMY_HIT);
@@ -350,6 +350,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		DrawHUD(client);
 		
 	}
+	return Plugin_Continue;
 }
 
 
@@ -418,7 +419,7 @@ void DrawHUD(int client)
 	// char sProgress[32];
 	//int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCooldown) * 100.0);
 	int iCountDown = RoundToCeil(g_Recharge[client] - g_skill);
-	
+
 	// for (int j = 1; j <= 10; j++)
 	// {
 	// 	if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
@@ -426,38 +427,38 @@ void DrawHUD(int client)
 	// }
 
 	Format(sHUDText, sizeof(sHUDText), "Shadow Leap: %i   ", iCountDown);
-	
+
 
 	if(iCountDown <= 0)
 	{
-		Format(sHUDText, sizeof(sHUDText), "Shadow Leap Ready!");
-			
-		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+	Format(sHUDText, sizeof(sHUDText), "Shadow Leap Ready!");
 
-		
+	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+
+
 	} else {
-		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
-		
-		// PrintToChatAll("Not Ready!");
+	SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
+
+	// PrintToChatAll("Not Ready!");
 	}
 	// if (g_hud_post_time + g_hud_draw_delay <= GetEngineTime() || g_hud_post_time == 0.0)
 	// {
-		 ShowHudText(client, -2, sHUDText);
+	ShowHudText(client, -2, sHUDText);
 	// 	 g_hud_post_time = GetEngineTime();
 	// }
 
-		if (!isready && iCountDown <= 0)
-		{
-			TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
-			// PrintToChatAll("Ready!");
-			isready = true;	
-		}
+	if (!isready && iCountDown <= 0)
+	{
+	TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
+	// PrintToChatAll("Ready!");
+	isready = true;	
+	}
 
 	if (g_button_held[client] && iCountDown <= 0)
 	{
-		RequestFrame(CastSpell, client);
-		g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-		isready = false;
-		
+	RequestFrame(CastSpell, client);
+	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+	isready = false;
+
 	}
 }

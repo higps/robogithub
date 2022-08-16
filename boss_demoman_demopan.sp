@@ -42,15 +42,15 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-    restrictions.TeamCoins.Overall = 2;
+	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+	restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+	restrictions.TeamCoins.Overall = 2;
 
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = 1.0;
 
-    AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
+	AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
 
 }
 

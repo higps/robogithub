@@ -55,10 +55,10 @@ public OnPluginStart()
 
 	
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
@@ -239,7 +239,6 @@ public Action:Timer_Switch(Handle:timer, any:client)
 #define DeadofNight 30309
 #define WildWestWhiskers 30960
 #define BananaHat 30643
-int g_bananahat;
 
 bool g_BananaMode = false;
 float g_DamageDone = 0.0;
@@ -323,22 +322,23 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
     // if (!g_Enable)
     //     return Plugin_Continue;
-    if(!IsValidClient(victim))
-        return Plugin_Continue;    
-    if(!IsValidClient(attacker))
-        return Plugin_Continue;
+	if(!IsValidClient(victim))
+	return Plugin_Continue;    
+	if(!IsValidClient(attacker))
+	return Plugin_Continue;
 
 	if (IsRobot(attacker, ROBOT_NAME))
 	{
-		
-		if (g_BananaMode)
-		{
-			SpawnBombs(victim, attacker);
-		}else
-		{
-			g_DamageDone += damage;
-		}
+
+	if (g_BananaMode)
+	{
+		SpawnBombs(victim, attacker);
+	}else
+	{
+		g_DamageDone += damage;
 	}
+	}
+	return Plugin_Continue;
 }
 
 void SetProjectileModel (int iEntity)
@@ -395,7 +395,7 @@ void SpawnBombs(int client, int attacker)
 }
 
 
-bool g_button_held[MAXPLAYERS + 1] = false;
+bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_duration = 6.0;
 float FireModeTimer = -1.0;
 float g_skill; 
@@ -431,6 +431,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		DrawHUD(client);
 
 	}
+	return Plugin_Continue;
 }
 
 #define CHAR_FULL "■"
