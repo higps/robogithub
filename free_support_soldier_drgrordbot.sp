@@ -45,23 +45,23 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-    AddNormalSoundHook(BossIcebear);
+	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	AddNormalSoundHook(BossIcebear);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -209,7 +209,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)

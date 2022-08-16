@@ -33,25 +33,25 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //HookEvent("player_death", Event_Death, EventHookMode_Post);
+	//HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
 	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    // restrictions.RobotCoins.Overall = 1;
+	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	// restrictions.RobotCoins.Overall = 1;
 
-    AddRobot(robot, MakeSniper, PLUGIN_VERSION);
+	AddRobot(robot, MakeSniper, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -133,8 +133,8 @@ MakeSniper(client)
 	// TF2Attrib_SetByName(client, "move speed penalty", 1.1);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
@@ -162,7 +162,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -184,7 +184,7 @@ stock GiveBigRoboHuntsbot(client)
 {
 	if (IsValidClient(client))
 	{
-		
+
 	RoboRemoveAllWearables(client);
 
 	TF2_RemoveWeaponSlot(client, 0); //Huntsman
@@ -195,53 +195,53 @@ stock GiveBigRoboHuntsbot(client)
 	CreateRoboWeapon(client, "tf_weapon_jar", 58, 6, 1, 1, 0);
 
 	CreateRoboWeapon(client, "tf_weapon_club", 232, 6, 1, 2, 0); //shahansah
-		
+
 	CreateRoboHat(client, KingTavish, 10, 6, 0.0, 1.25, 1.0); 
 	CreateRoboHat(client, 31037, 10, 6, 0.0, 1.25, 1.0); 
-		
+
 
 	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
 	int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
-    // int iEnt = -1;
-    // while ((iEnt = FindEntityByClassname(iEnt, "tf_wearable")) != -1)
+	// int iEnt = -1;
+	// while ((iEnt = FindEntityByClassname(iEnt, "tf_wearable")) != -1)
 	//  {
-    //     if (GetEntPropEnt(iEnt, Prop_Send, "m_hOwnerEntity") == client && GetEntProp(iEnt, Prop_Send, "m_iItemDefinitionIndex") == 31037) 
+	//     if (GetEntPropEnt(iEnt, Prop_Send, "m_hOwnerEntity") == client && GetEntProp(iEnt, Prop_Send, "m_iItemDefinitionIndex") == 31037) 
 	// 	{
-    //         // PrintToChatAll("ENT %i", iEnt);
+	//         // PrintToChatAll("ENT %i", iEnt);
 	// 		// SetEntityRenderFx(iEnt, 0);
 	// 		SetEntityRenderColor(iEnt, 128, 128, 128, 0);
-			
-    //     }
-   	//  }
-		if(IsValidEntity(SMG))
-		{
-			TF2Attrib_RemoveAll(SMG);
-			
-		TF2Attrib_SetByName(SMG, "provide on active", 1.0);
-		// TF2Attrib_SetByName(SMG, "move speed penalty", 0.5);
-		TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.25);
-		
-			
 
-		}
-	
+	//     }
+	//  }
+	if(IsValidEntity(SMG))
+	{
+	TF2Attrib_RemoveAll(SMG);
 
-				if(IsValidEntity(Kukri))
-		{
-			TF2Attrib_RemoveAll(Kukri);
-			
-			TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Kukri, "fire rate bonus", 0.8);
-			TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
-			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.25);
-			TF2Attrib_SetByName(Kukri, "speed_boost_on_kill", 2.0);
-			// TF2Attrib_SetByName(Kukri, "speed boost when active", 0.8);
-			TF2Attrib_SetByName(Kukri, "heal on kill", 125.0);
-			
-			
+	TF2Attrib_SetByName(SMG, "provide on active", 1.0);
+	// TF2Attrib_SetByName(SMG, "move speed penalty", 0.5);
+	TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.25);
 
-		}
+
+
+	}
+
+
+	if(IsValidEntity(Kukri))
+	{
+	TF2Attrib_RemoveAll(Kukri);
+
+	TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
+	TF2Attrib_SetByName(Kukri, "fire rate bonus", 0.8);
+	TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
+	TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.25);
+	TF2Attrib_SetByName(Kukri, "speed_boost_on_kill", 2.0);
+	// TF2Attrib_SetByName(Kukri, "speed boost when active", 0.8);
+	TF2Attrib_SetByName(Kukri, "heal on kill", 125.0);
+
+
+
+	}
 	}
 
 

@@ -36,24 +36,24 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = "Demoman";
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = "Demoman";
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-    restrictions.TeamCoins.Overall = 1;
+	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+	restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+	restrictions.TeamCoins.Overall = 1;
 
 
-    AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
+	AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
 
 }
 
@@ -163,7 +163,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -178,68 +178,68 @@ stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
 	{
-		RoboRemoveAllWearables(client);
+	RoboRemoveAllWearables(client);
 
-		TF2_RemoveWeaponSlot(client, 0);
-		TF2_RemoveWeaponSlot(client, 1);
-		TF2_RemoveWeaponSlot(client, 2);
-
-
-		CreateRoboWeapon(client, "tf_weapon_cannon", 996, 6, 1, 0, 0);
-		// CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 1, 0);
-		CreateRoboWeapon(client, "tf_weapon_bottle", 609, 6, 1, 2, 0);
-
-		CreateRoboHat(client, TheFragProofFragger, 10, 6, 0.0, 0.75, -1.0); 
+	TF2_RemoveWeaponSlot(client, 0);
+	TF2_RemoveWeaponSlot(client, 1);
+	TF2_RemoveWeaponSlot(client, 2);
 
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+	CreateRoboWeapon(client, "tf_weapon_cannon", 996, 6, 1, 0, 0);
+	// CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 1, 0);
+	CreateRoboWeapon(client, "tf_weapon_bottle", 609, 6, 1, 2, 0);
 
-		if(IsValidEntity(Weapon1))
-		{
-			TF2Attrib_RemoveAll(Weapon1);
-			
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
-			TF2Attrib_SetByName(Weapon1, "grenade launcher mortar mode", 0.0);
-			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
-			TF2Attrib_SetByName(Weapon1, "blast radius increased", 2.25);
-			TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 2.0);
-			TF2Attrib_SetByName(Weapon1, "reload time increased", 1.5);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.0);
-			//TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.1);
+	CreateRoboHat(client, TheFragProofFragger, 10, 6, 0.0, 0.75, -1.0); 
 
-			
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2Attrib_SetByName(Weapon1, "grenade no spin", 1.0);
-			
 
-			
-		}
-		
-		// if(IsValidEntity(Weapon2))
-		// {
+	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+	// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
-		// 	TF2Attrib_SetByName(Weapon2, "damage bonus", 0.9);
-		// 	TF2Attrib_SetByName(Weapon2, "blast radius increased", 1.5);
-		// 	//TF2Attrib_SetByName(Weapon2, "override projectile type", 3.0);
-		// 	TF2Attrib_SetByName(Weapon2, "fire rate penalty", 0.5);
-		// 	TF2Attrib_SetByName(Weapon2, "reload time increased", 0.8);
-		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-		// 	TF2Attrib_SetByName(Weapon2, "projectile spread angle penalty", 5.0);
-		// }
+	if(IsValidEntity(Weapon1))
+	{
+	TF2Attrib_RemoveAll(Weapon1);
 
-				if(IsValidEntity(Weapon3))
-		{
-			
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			//TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 10.0);
-		}	
+	TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
+	TF2Attrib_SetByName(Weapon1, "grenade launcher mortar mode", 0.0);
+	TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
+	TF2Attrib_SetByName(Weapon1, "blast radius increased", 2.25);
+	TF2Attrib_SetByName(Weapon1, "use large smoke explosion", 1.0);
+	TF2Attrib_SetByName(Weapon1, "fire rate penalty", 2.0);
+	TF2Attrib_SetByName(Weapon1, "reload time increased", 1.5);
+	TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 2.0);
+	//TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.1);
+
+
+	TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+	TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+	TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
+	TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+	TF2Attrib_SetByName(Weapon1, "grenade no spin", 1.0);
+
+
+
+	}
+
+	// if(IsValidEntity(Weapon2))
+	// {
+
+	// 	TF2Attrib_SetByName(Weapon2, "damage bonus", 0.9);
+	// 	TF2Attrib_SetByName(Weapon2, "blast radius increased", 1.5);
+	// 	//TF2Attrib_SetByName(Weapon2, "override projectile type", 3.0);
+	// 	TF2Attrib_SetByName(Weapon2, "fire rate penalty", 0.5);
+	// 	TF2Attrib_SetByName(Weapon2, "reload time increased", 0.8);
+	// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+	// 	TF2Attrib_SetByName(Weapon2, "projectile spread angle penalty", 5.0);
+	// }
+
+	if(IsValidEntity(Weapon3))
+	{
+
+	TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
+	TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+	//TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 10.0);
+	}	
 	}
 }
 

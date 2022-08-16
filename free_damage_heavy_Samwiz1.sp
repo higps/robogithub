@@ -46,25 +46,25 @@ public Plugin:myinfo =
  
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    AddNormalSoundHook(BossGPS);
+	AddNormalSoundHook(BossGPS);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    // robot.sounds.gunfire = SOUND_GUNFIRE;
-    // robot.sounds.gunspin = SOUND_GUNSPIN;
-    // robot.sounds.windup = SOUND_WINDUP;
-    // robot.sounds.winddown = SOUND_WINDDOWN;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	// robot.sounds.gunfire = SOUND_GUNFIRE;
+	// robot.sounds.gunspin = SOUND_GUNSPIN;
+	// robot.sounds.windup = SOUND_WINDUP;
+	// robot.sounds.winddown = SOUND_WINDDOWN;
+	robot.sounds.death = DEATH;
 
-    AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null, 2);
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -220,7 +220,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)

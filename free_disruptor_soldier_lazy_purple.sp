@@ -49,23 +49,23 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-    AddNormalSoundHook(BossIcebear);
+	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	AddNormalSoundHook(BossIcebear);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
 }
 
 public void OnPluginEnd()
@@ -130,30 +130,30 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 
 	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
 	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), LEFTFOOT);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), LEFTFOOT1);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), RIGHTFOOT);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-				Format(sample, sizeof(sample), RIGHTFOOT1);
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
+	if (StrContains(sample, "1.wav", false) != -1)
+	{
+	Format(sample, sizeof(sample), LEFTFOOT);
+	EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "3.wav", false) != -1)
+	{
+	Format(sample, sizeof(sample), LEFTFOOT1);
+	EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "2.wav", false) != -1)
+	{
+	Format(sample, sizeof(sample), RIGHTFOOT);
+	EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "4.wav", false) != -1)
+	{
+		Format(sample, sizeof(sample), RIGHTFOOT1);
+		EmitSoundToAll(sample, entity);
+	}
+	return Plugin_Changed;
 	}
 
-	
+
 	// if (strncmp(sample, ")weapons/", 9, false) == 0)
 	// {
 	// 	if (StrContains(sample, "rocket_shoot.wav", false) != -1)
@@ -259,7 +259,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)

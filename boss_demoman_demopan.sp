@@ -31,27 +31,27 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = "Demoman";
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = "Demoman";
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-    restrictions.TeamCoins.Overall = 1;
+	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+	restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+	restrictions.TeamCoins.Overall = 1;
 
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = 1.0;
 
 
-    AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
+	AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
 
 }
 
@@ -158,7 +158,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -173,47 +173,47 @@ stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
 	{
-		RoboRemoveAllWearables(client);
+	RoboRemoveAllWearables(client);
 
-		TF2_RemoveWeaponSlot(client, 0);
-		TF2_RemoveWeaponSlot(client, 1);
-		TF2_RemoveWeaponSlot(client, 2);
-
-
-		//CreateRoboWeapon(client, "tf_weapon_cannon", 996, 6, 1, 0, 0);
-		// CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 1, 0);
-		CreateRoboWeapon(client, "tf_weapon_bottle", 264, 6, 1, 2, 0);
-		
-		CreateRoboWeapon(client, "tf_wearable_demoshield", 131, 6, 1, 1, 0);
+	TF2_RemoveWeaponSlot(client, 0);
+	TF2_RemoveWeaponSlot(client, 1);
+	TF2_RemoveWeaponSlot(client, 2);
 
 
-		CreateRoboHat(client, BountyHat, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, Dangeresque, 10, 6, 0.0, 0.85, -1.0); 
+	//CreateRoboWeapon(client, "tf_weapon_cannon", 996, 6, 1, 0, 0);
+	// CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 1, 0);
+	CreateRoboWeapon(client, "tf_weapon_bottle", 264, 6, 1, 2, 0);
+
+	CreateRoboWeapon(client, "tf_wearable_demoshield", 131, 6, 1, 1, 0);
 
 
-		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+	CreateRoboHat(client, BountyHat, 10, 6, 0.0, 0.75, -1.0); 
+	CreateRoboHat(client, Dangeresque, 10, 6, 0.0, 0.85, -1.0); 
 
-		if(IsValidEntity(Weapon3))
-		{
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-		}
 
-				int iEntity2 = -1;
-		while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_wearable_demoshield")) != -1)
-		{
-			if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
-			{				
-				//PrintToChatAll("going through entity");
-				TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.5);		
-				TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);		
-				TF2Attrib_SetByName(iEntity2, "charge recharge rate increased", 3.5);		
-				TF2Attrib_SetByName(iEntity2, "charge impact damage increased", 2.0);		
-				TF2Attrib_SetByName(iEntity2, "no charge impact range", 1.0);	
-				TF2Attrib_SetByName(iEntity2, "mult charge turn control", 1000.0);	
-				break;
-			}
-		}	
+	int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
+	if(IsValidEntity(Weapon3))
+	{
+	TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
+	TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+	}
+
+	int iEntity2 = -1;
+	while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_wearable_demoshield")) != -1)
+	{
+	if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
+	{				
+		//PrintToChatAll("going through entity");
+		TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.5);		
+		TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);		
+		TF2Attrib_SetByName(iEntity2, "charge recharge rate increased", 3.5);		
+		TF2Attrib_SetByName(iEntity2, "charge impact damage increased", 2.0);		
+		TF2Attrib_SetByName(iEntity2, "no charge impact range", 1.0);	
+		TF2Attrib_SetByName(iEntity2, "mult charge turn control", 1000.0);	
+		break;
+	}
+	}	
 	}
 }
 

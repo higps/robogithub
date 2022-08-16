@@ -27,7 +27,7 @@
 #define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
 
 
-#define ExplodeSound	"weapons/rocket_blackbox_explode2.wav"
+#define ExplodeSound	"ambient/explosions/explode_8.wav"
 #define SENTRYROCKETS "models/buildables/sentry3_rockets.mdl"
 
 bool PlayerHasMirv[MAXPLAYERS+1];
@@ -45,7 +45,7 @@ int glow;
 
 ConVar g_rocketDelay;
 ConVar g_rocketCount;
-int g_rocketCurve;
+bool g_rocketCurve;
 ConVar g_showDebug;
 ConVar g_rocketAngle;
 ConVar g_rocketDiverge;
@@ -73,30 +73,30 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-    AddNormalSoundHook(BossIcebear);
+	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	AddNormalSoundHook(BossIcebear);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
 
-    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
 
 	g_rocketDelay = CreateConVar("ivory_mirv_rocket_delay", "0.8", "Delay before a mirv rocket splits into other rockets");
 	g_rocketCount = CreateConVar("ivory_mirv_rocket_count", "5", "How many rockets a mirv rocket splits into", _, true, 2.0, true, 6.0);
-	g_rocketCurve = 1;
+	g_rocketCurve = true;
 	//g_rocketCurve = CreateConVar("mirv_converge_rockets", "0", "Do rockets converge on a single point after splitting", _, true, 0.0, true, 1.0);
 	g_showDebug = CreateConVar("ivory_mirv_converge_debug", "0", "Show debug angles and trajectory for converging rockets", _, true, 0.0, true, 1.0);
 	g_rocketAngle = CreateConVar("ivory_mirv_split_angle", "60.0", "Positive angle from the down vector at which mirv rockets will split at (0.0 = directly down, 90.0 = no deviation)");
@@ -279,8 +279,8 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	
@@ -301,7 +301,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -369,7 +369,7 @@ public Plugin MyInfo =
 	description = "Rockets split into smaller rockets after a short delay."
 };
 
-#define ExplodeSound	"ambient/explosions/explode_8.wav"
+// #define ExplodeSound	"ambient/explosions/explode_8.wav"
 
 public void OnMirvSettingsChanged(ConVar convar, char[] oldVal, char[] newVal)
 {
@@ -377,33 +377,35 @@ public void OnMirvSettingsChanged(ConVar convar, char[] oldVal, char[] newVal)
 	ShouldMirvConverge = view_as<bool>(cvarValue);
 }
 
-bool g_PushButton[MAXPLAYERS + 1] = false;
+bool g_PushButton[MAXPLAYERS + 1] = {false, ...};
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_USE|IN_ATTACK2) && !g_PushButton[client])
 	{
-		if (g_rocketCurve == 1)
-		{	
-			g_rocketCurve = 0;
-			ShouldMirvConverge = false;
-			PrintCenterText(client, "MIRV MODE:  MORTAR");
-		}else{
-			g_rocketCurve = 1;
-			ShouldMirvConverge = true;
-			PrintCenterText(client, "MIRV MODE: CONVERGE");
-		}
-		g_PushButton[client] = true;
-		CreateTimer(0.2, Button_Reset, client);
-		
-		
+	if (g_rocketCurve == true)
+	{	
+		g_rocketCurve = false;
+		ShouldMirvConverge = false;
+		PrintCenterText(client, "MIRV MODE:  MORTAR");
+	}else{
+		g_rocketCurve = true;
+		ShouldMirvConverge = true;
+		PrintCenterText(client, "MIRV MODE: CONVERGE");
 	}
+	g_PushButton[client] = true;
+	CreateTimer(0.2, Button_Reset, client);
+
+
+	}
+	return Plugin_Continue;
 }
 
 
 public Action Button_Reset(Handle timer, int client)
 {
 	g_PushButton[client] = false;
+	return Plugin_Continue;
 }
 
 public void OnClientPostAdminCheck(int client)
@@ -468,11 +470,6 @@ void SetProjectileModel (int iEntity)
 		SetEntityModel(iEntity, SENTRYROCKETS);
 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 2.0);
 }
-		
-
-
-
-
 
 public Action RocketTimer(Handle timer, any ref)
 {
@@ -482,6 +479,7 @@ public Action RocketTimer(Handle timer, any ref)
 	{
 		SplitRocket(rocket, g_rocketCurve);
 	}
+	return Plugin_Continue;
 }
 
 void SplitRocket(int rocket, bool converge)
