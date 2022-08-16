@@ -65,8 +65,8 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = ROBOT_COST;
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
 	AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 
@@ -86,7 +86,7 @@ public OnPluginStart()
 	// PrecacheSound(SPY_DEATH_SOUND5, true);
 	// PrecacheSound(SPY_DEATH_SOUND6, true);
 	// PrecacheSound(SPY_DEATH_SOUND7, true);
-	
+
 }
 
 public void OnPluginEnd()

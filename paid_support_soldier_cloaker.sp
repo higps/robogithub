@@ -66,8 +66,8 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = ROBOT_COST;
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }

@@ -264,5 +264,5 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Handled;
 		}
 	}
-
+	return Plugin_Continue;
 }

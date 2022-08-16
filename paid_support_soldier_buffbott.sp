@@ -63,9 +63,9 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = ROBOT_COST;
-	
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
+
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
 
@@ -255,7 +255,7 @@ stock GiveGiantSoldier(client)
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 
 		if(IsValidEntity(Weapon1))
 		{
