@@ -239,13 +239,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if (IsRobot(client, ROBOT_NAME))
 	{
-
-		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_RELOAD|IN_USE) ) 
+		//0 = fireball
+		//PrintToChat(client, "Throwing spell!");
+		if (g_Recharge[client] >= g_RechargeCap && !g_SpellClamp)
 		{
-			//  PrintToChatAll("Press");
-            g_button_held[client] = true;
+			CastSpell(client, 0);
+			g_Recharge[client] = 1;
+			CreateTimer(1.0, SpellClamp_Timer);
+			g_SpellClamp = true;
 		}
-
+		
 
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_RELOAD|IN_USE) ) 
@@ -344,7 +347,7 @@ void DrawHUD(int client)
 	// 	else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
 	// }
 
-	if (IsKritzed(client))
+	for (int j = 1; j <= 10; j++)
 	{
 	Format(sHUDText, sizeof(sHUDText), "Meteor: %i   ", iCountDown);
 	}else
@@ -389,6 +392,45 @@ void DrawHUD(int client)
 	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
 	isready = false;
 
+=======
+		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
+		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
+	}
+		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+
+	Format(sHUDText, sizeof(sHUDText), "Fireball: %d%%%%   \n%s   ", iPercents, sProgress);
+
+	if(iPercents >= 100)
+	{
+		SetHudTextParams(1.0, 0.8, 0.5, 255, 0, 0, 255);
+	} else {
+		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
+	}
+	ShowHudText(client, -1, sHUDText);
+}
+
+void UpdateCharge(int client)
+{
+	// if we are already at max charge, no need to check anything
+	if(g_Recharge[client] >= g_RechargeCap)
+	{
+		g_Recharge[client] = g_RechargeCap;
+		return;
+	}
+	
+	if(IsRobot(client, ROBOT_NAME))//only add charge if you are sentro
+	{ 
+		g_Recharge[client] += 2;
+	}
+	//m_iLastHealingAmount[client] = iActualHealingAmount;
+	
+	// if we reached the cap after healing, play the voicelines and such
+	if(g_Recharge[client] >=g_RechargeCap)
+	{
+		g_Recharge[client] = g_RechargeCap;
+		EmitSoundToClient(client, SOUND_HEAL_READY);
+		//EmitSoundToAll(SOUND_HEAL_READY_VO, client);
+>>>>>>> 08890be3adbd8d3b8612c75481edac53b294d0b0
 	}
 }
 

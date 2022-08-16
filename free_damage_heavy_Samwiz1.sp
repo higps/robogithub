@@ -53,10 +53,12 @@ public OnPluginStart()
 
 	AddNormalSoundHook(BossGPS);
 
-	RobotDefinition robot;
-	robot.name = ROBOT_NAME;
-	robot.role = ROBOT_ROLE;
-	robot.class = ROBOT_CLASS;
+	
+
+    RobotDefinition robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
