@@ -50,27 +50,27 @@ public Plugin:myinfo =
  
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    AddNormalSoundHook(BossGPS);
+	AddNormalSoundHook(BossGPS);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.gunfire = SOUND_GUNFIRE;
-    robot.sounds.gunspin = SOUND_GUNSPIN;
-    robot.sounds.windup = SOUND_WINDUP;
-    robot.sounds.winddown = SOUND_WINDDOWN;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.gunfire = SOUND_GUNFIRE;
+	robot.sounds.gunspin = SOUND_GUNSPIN;
+	robot.sounds.windup = SOUND_WINDUP;
+	robot.sounds.winddown = SOUND_WINDDOWN;
+	robot.sounds.death = DEATH;
 
-    AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION, null, 2);
 
 
 }
@@ -197,8 +197,8 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -221,7 +221,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -244,7 +244,7 @@ stock GiveGDeflectorH(client)
 
 		//Cosmetic code
 		
-		float TeamPaint = -1.0;
+		// float TeamPaint = -1.0;
 
 		// if (iTeam == TFTeam_Blue){
 		// 	TeamPaint = 5801378.0;
@@ -350,30 +350,31 @@ public Action HoovyBoom(Handle timer, any data)
 			}
 		}
 	}
+	return Plugin_Continue;
 }
 
 /* Plugin Exclusive Functions */
 //Code that stuns players
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
-    // if (!g_Enable)
-    //     return Plugin_Continue;
-    if(!IsValidClient(victim))
-        return Plugin_Continue;    
-    if(!IsValidClient(attacker))
-        return Plugin_Continue;
+	// if (!g_Enable)
+	//     return Plugin_Continue;
+	if(!IsValidClient(victim))
+	return Plugin_Continue;    
+	if(!IsValidClient(attacker))
+	return Plugin_Continue;
 
 
 	if(IsRobot(attacker, ROBOT_NAME))
-    {
-			
-		RequestFrame(StunPlayer, victim);	
-
+	{
 		
+	RequestFrame(StunPlayer, victim);	
+
+
 	}  
-    
-    
-}
+
+	return Plugin_Continue;
+	}
 
 void StunPlayer (int victim)
 {

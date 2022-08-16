@@ -36,7 +36,7 @@ public Plugin myinfo =
 bool g_Taunt_clamp = false;
 public void OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
@@ -56,18 +56,18 @@ public void OnPluginStart()
 
 	AddRobot(robot, MakeBuster, PLUGIN_VERSION, restrictions);
 
-    for(int client = 1 ; client <= MaxClients ; client++)
-    {
-        if(IsClientInGame(client))
-        {
-            SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
-            SDKHook(client, SDKHook_Touch, OnTouch);
-        }
-    }
+	for(int client = 1 ; client <= MaxClients ; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
+			SDKHook(client, SDKHook_Touch, OnTouch);
+		}
+	}
 
-    HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
-    HookEvent("player_death", Event_Death, EventHookMode_Post);
-}
+	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
+	}
 
 public void OnPluginEnd()
 {
@@ -84,6 +84,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 		CreateTimer(4.0, Timer_Respawn, victim);
 		// PrintToChat(victim,"Creating timer");
 	}
+	return Plugin_Continue;
 }
 
 public Action Timer_Respawn(Handle timer, any client)
@@ -94,6 +95,7 @@ public Action Timer_Respawn(Handle timer, any client)
         TF2_RespawnPlayer(client);
         //PrintToChat(client,"You have instant respawn as scout");
     }
+	return Plugin_Continue;
 }
 
 
@@ -138,20 +140,21 @@ public Action Event_post_inventory_application(Event event, char[] name, bool do
 	{
 		SetEntityRenderColor(client, 255, 255, 255, 0);
 	}
+	return Plugin_Continue;
 }
 public Action OnTouch(int client, int ent)
 {
-    if (IsValidClient(client) && IsValidEntity(ent))
-    {
+	if (IsValidClient(client) && IsValidEntity(ent))
+	{
 		if (IsRobot(client, ROBOT_NAME))
 		{
-        	char entname[MAX_NAME_LENGTH];
-        	GetEntityClassname(ent, entname, sizeof(entname));
+			char entname[MAX_NAME_LENGTH];
+			GetEntityClassname(ent, entname, sizeof(entname));
 
-        	if (StrEqual(entname, "obj_sentrygun"))
-        	{
+			if (StrEqual(entname, "obj_sentrygun"))
+			{
 				
-	            //int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+				//int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
 				int iBuildingTeam = GetEntPropEnt(ent, Prop_Send, "m_iTeamNum");
 				int iClientTeam = GetClientTeam(client);
 
@@ -165,18 +168,18 @@ public Action OnTouch(int client, int ent)
 					g_Taunt_clamp = true;
 					CreateTimer(2.5, FakeCommand_Clamp);
 				}
-        	}
+			}
 			if (StrEqual(entname, "player"))
 			{
 				int iCarried = GetEntPropEnt(ent, Prop_Send, "m_hCarriedObject");
 
 				if (iCarried > MaxClients)
 				{
-					char entname[MAX_NAME_LENGTH];
-        			GetEdictClassname(iCarried, entname, sizeof(entname));
+					// char entname[MAX_NAME_LENGTH];
+					GetEdictClassname(iCarried, entname, sizeof(entname));
 					//	PrintToChatAll("%s Object carried", entname);
 					if (StrEqual(entname, "obj_sentrygun") && !AboutToExplode[client])
-        			{
+					{
 						GetReadyToExplode(client);
 						TF2_AddCondition(client, TFCond_FreezeInput);
 						FakeClientCommand(client, "taunt");
@@ -184,7 +187,8 @@ public Action OnTouch(int client, int ent)
 				}
 			}
 		}
-    }
+	}
+	return Plugin_Continue;
 }
 
 public Action SetModel(int client, const char[] model)
@@ -195,6 +199,7 @@ public Action SetModel(int client, const char[] model)
 		AcceptEntityInput(client, "SetCustomModel");
 		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
 	}
+	return Plugin_Continue;
 }
 
 void MakeBuster(client)
@@ -282,13 +287,14 @@ void DoDamage(int client, int target, int amount) // from Goomba Stomp.
 public Action FakeCommand_Clamp(Handle timer)
 {
 	g_Taunt_clamp = false;
+	return Plugin_Continue;
 }
 
 public void TF2_OnConditionAdded(client, TFCond condition)
 {
-    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-    {
-        int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+	{
+		int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
 		if (IsRobot(client, ROBOT_NAME) && tauntid == -1)
 		{
 			GetReadyToExplode(client);
@@ -426,11 +432,11 @@ stock bool AttachParticle(int Ent, char[] particleType, bool cache = false) // f
 }
 public Action DeleteParticle(Handle timer, any Ent)
 {
-	if (!IsValidEntity(Ent)) return;
+	if (!IsValidEntity(Ent)) return Plugin_Continue;
 	char cls[25];
 	GetEdictClassname(Ent, cls, sizeof(cls));
 	if (StrEqual(cls, "info_particle_system", false)) RemoveEntity(Ent);
-	return;
+	return Plugin_Continue;
 }
 
 stock void TF2_SetHealth(int client, int NewHealth)
@@ -486,6 +492,7 @@ public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& da
 			}
 		}
 		}
+		return Plugin_Continue;
 }
 
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)

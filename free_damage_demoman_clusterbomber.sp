@@ -89,7 +89,7 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
 	RegAdminCmd("sm_clusterbombs", CmdMirv, ADMFLAG_BAN);
 
@@ -102,17 +102,17 @@ public OnPluginStart()
 
 	AddNormalSoundHook(BossMortar);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
-    AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 1);
+	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 1);
 }
 
 
@@ -252,7 +252,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -369,7 +369,7 @@ void TryMirv(int pipe, Pipe grenade)
 		grenade.detonated = (grenade.timer - GetGameTime() <= 0.15); //allow for some variance since the fuse timer will not be exact
 		
 		// if (grenade.detonated)
-			ForceCluster(pipe, grenade);
+		ForceCluster(pipe, grenade);
 	}
 }
 
@@ -555,12 +555,12 @@ public void OnClientPostAdminCheck(int client)
 // }
 
 //Just a simple check to see if we hit a building
-bool IsBuilding(int entity)
-{
-	char classname[64];
-	GetEntityClassname(entity, classname, sizeof classname);
-	if (StrContains(classname, "obj_") != -1)
-		return true;
+// bool IsBuilding(int entity)
+// {
+// 	char classname[64];
+// 	GetEntityClassname(entity, classname, sizeof classname);
+// 	if (StrContains(classname, "obj_") != -1)
+// 		return true;
 
-	return false;
-}
+// 	return false;
+// }

@@ -58,22 +58,22 @@ new bool:CanWindDown[MAXPLAYERS+1];
  
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    AddNormalSoundHook(BossGPS);
+	AddNormalSoundHook(BossGPS);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = "Heavy";
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.gunfire = SOUND_GUNFIRE;
-    robot.sounds.gunspin = SOUND_GUNSPIN;
-    robot.sounds.windup = SOUND_WINDUP;
-    robot.sounds.winddown = SOUND_WINDDOWN;
-    robot.sounds.death = DEATH;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = "Heavy";
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.gunfire = SOUND_GUNFIRE;
+	robot.sounds.gunspin = SOUND_GUNSPIN;
+	robot.sounds.windup = SOUND_WINDUP;
+	robot.sounds.winddown = SOUND_WINDDOWN;
+	robot.sounds.death = DEATH;
 	//robot.deatheffect = DEATHBOOM;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
@@ -85,7 +85,7 @@ public OnPluginStart()
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = 2.0;
 
-    AddRobot(robot, MakeBigBigJoey, PLUGIN_VERSION, restrictions);
+	AddRobot(robot, MakeBigBigJoey, PLUGIN_VERSION, restrictions);
 	
 
 }
@@ -127,7 +127,7 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME) && IsPlayerAlive(iClient))
 	{	
 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-		int iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+		iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 
 		if(IsValidEntity(weapon) && iWeapon == 298)//424==  tomislav
 		{
@@ -189,6 +189,7 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 			}
 		}
 	}
+	return Plugin_Continue;
 }
 
 public void OnPluginEnd()

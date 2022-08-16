@@ -44,7 +44,7 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
 
@@ -52,15 +52,15 @@ public OnPluginStart()
 
 
 	RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-	
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
     restrictions.RobotCoins.PerRobot = ROBOT_COST; 
@@ -111,8 +111,8 @@ public Action:SetModel(client, const String:model[])
 
 public Action:BossScout(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
 {
-		if (!IsValidClient(entity)) return Plugin_Continue;
-		if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
+	if (!IsValidClient(entity)) return Plugin_Continue;
+	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
 
 	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
 	{
@@ -200,7 +200,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -246,13 +246,13 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
-			 TF2Attrib_SetByName(Weapon2, "maxammo grenades1 increased", 30.0);
-			 TF2Attrib_SetByName(Weapon2, "effect bar recharge rate increased", 0.1);
-			 
+			TF2Attrib_SetByName(Weapon2, "maxammo grenades1 increased", 30.0);
+			TF2Attrib_SetByName(Weapon2, "effect bar recharge rate increased", 0.1);
+				
 			TF2Attrib_SetByName(Weapon2, "damage bonus", 2.5);
 			//TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 10.0);
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
-			
+
 					// new iOffset = GetEntProp(Weapon2, Prop_Send, "m_iPrimaryAmmoType", 1)*4;
 					// new iAmmoTable = FindSendPropInfo("CTFPlayer", "m_iAmmo");
 					// SetEntData(client, iAmmoTable+iOffset, 23, 0, true);

@@ -84,33 +84,33 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-    HookEvent("player_death", Event_Death, EventHookMode_Post);
-    
+	//HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
+
 	AddNormalSoundHook(BossGPS);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-
-	
-
-    // RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    // // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-    // // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    // restrictions.RobotCoins.PerRobot= 1.0;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
 
-    AddRobot(robot, MakePanCop, PLUGIN_VERSION);
+
+	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	// // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+	// // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	// restrictions.RobotCoins.PerRobot= 1.0;
+
+
+	AddRobot(robot, MakePanCop, PLUGIN_VERSION);
 }
 
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
@@ -292,7 +292,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -315,59 +315,38 @@ stock GiveGDeflectorH(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-
 		CreateRoboWeapon(client, "tf_weapon_fists", 5, 6, 2, 2, 0);
-		//CreateRoboWeapon(client, "tf_weapon_lunchbox", 311, 6, 2, 1, 0);
 
-
-	CreateRoboHat(client, BattersBracers, 10, 6, 0.0, 1.0, -1.0); 
-	CreateRoboHat(client, CapedCrusader, 10, 6, 0.0, 1.0, 1.0);
-	CreateRoboHat(client, TeufortKnight, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, BattersBracers, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, CapedCrusader, 10, 6, 0.0, 1.0, 1.0);
+		CreateRoboHat(client, TeufortKnight, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.15);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.2);
-			//TF2Attrib_SetByName(Weapon1, "ragdolls become ash", 1.0);
-			//TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 109.0);
 			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.35);
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 			TF2Attrib_SetByName(Weapon1, "move speed penalty", 0.9);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
-			
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.7);
-			// TF2Attrib_SetByName(Weapon1, "increased air control", 1000.0);
-			// TF2Attrib_SetByName(Weapon1, "taunt move speed", 500.0);
-			// TF2Attrib_SetByName(Weapon1, "taunt turn acceleration time", 500.0);
-			// TF2Attrib_SetByName(Weapon1, "taunt move speed", 500.0);
-			
 		}
-		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		// if(IsValidEntity(Weapon2))
-		// {
-		// 	TF2Attrib_RemoveAll(Weapon2);
-		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-		// 	TF2Attrib_SetByName(Weapon2, "lunchbox adds minicrits", 7.0);
-		// 	TF2Attrib_SetByName(Weapon2, "lunchbox healing decreased", 40.0);
-			
 
-
-		// }
 	}
 }
 
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
-    // if (!g_Enable)
-    //     return Plugin_Continue;
-    if(!IsValidClient(victim))
-        return Plugin_Continue;    
-    if(!IsValidClient(attacker))
-        return Plugin_Continue;
+	// if (!g_Enable)
+	//     return Plugin_Continue;
+	if(!IsValidClient(victim))
+		return Plugin_Continue;    
+	if(!IsValidClient(attacker))
+		return Plugin_Continue;
 
 	if (IsRobot(attacker, ROBOT_NAME))
 	{
@@ -412,7 +391,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	//Function to add vs uberchaining
 	if (IsRobot(victim, ROBOT_NAME))
 	{
-	
+
 
 		switch (TF2_GetPlayerClass(attacker))
 		{
@@ -426,6 +405,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 		}
 	}
+
+	return Plugin_Continue;
 }
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
@@ -440,14 +421,15 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 // 	}
 //    }
 
-		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-		{	
-			int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-			if (tauntid == 463 || tauntid == -1){
-			TF2_RemoveCondition(client, condition);
-			}
+	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+	{	
+		int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+		if (tauntid == 463 || tauntid == -1)
+		{
+		TF2_RemoveCondition(client, condition);
 		}
-	
+	}
+
 }
 
 

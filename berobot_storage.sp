@@ -2,6 +2,7 @@
 #include <sdktools>
 #include <sdkhooks>
 #include <tf2>
+#include <morecolors_newsyntax>
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>

@@ -50,9 +50,9 @@ public void OnClientPutInServer(int client) {
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
 
-		if (victim == attacker || attacker < 1 || attacker > MaxClients || GetGameTime() > g_flConchEndTime[attacker]) {
-		//PrintToChatAll("Was returned");
-		return;
+	if (victim == attacker || attacker < 1 || attacker > MaxClients || GetGameTime() > g_flConchEndTime[attacker]) {
+	//PrintToChatAll("Was returned");
+	return Plugin_Continue;
 	}
 	
 	int health = GetClientHealth(attacker);
@@ -79,5 +79,5 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			SetEventInt(healevent, "entindex", attacker);
 			FireEvent(healevent);
 		}
-
+	return Plugin_Continue;
 }

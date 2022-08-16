@@ -48,25 +48,25 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //HookEvent("player_death", Event_Death, EventHookMode_Post);
+	//HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
 	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    // restrictions.RobotCoins.Overall = 3; 
+	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	// restrictions.RobotCoins.Overall = 3; 
 
-    AddRobot(robot, MakeSpy, PLUGIN_VERSION, null);
+	AddRobot(robot, MakeSpy, PLUGIN_VERSION, null);
 
 	PrecacheModel(MODEL);
 	PrecacheSound(SPAWN);
@@ -242,7 +242,7 @@ stock GiveBigRoboDane(client)
 	
 	 //CreateWeapon(client, "tf_weapon_sapper", 933, 6); //Ap-Sap
 	//CreateRoboWeapon(client, "tf_weapon_knife", 356, 6, 1, 2, 0); //kunai
-	 CreateRoboWeapon(client, "tf_weapon_invis", 59, 6, 1, 4, 0); 
+	CreateRoboWeapon(client, "tf_weapon_invis", 59, 6, 1, 4, 0); 
 		
 
 	CreateRoboHat(client, Brimstone, 10, 6, 0.0, 1.1, -1.0); 

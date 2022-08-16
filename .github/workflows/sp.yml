@@ -8,8 +8,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sm-version: [ '1.10.x']
+        sm-version: [ '1.10.x', '1.11.x' ]
         # sm-version: [ '1.10.x', '1.10.6528', '1.11.x', '1.11.6467', '>= 1.11.6478']
+        include:
+          - sm-version: "1.11.x" # https://github.com/rumblefrog/setup-sp/issues/5
+            compiler-options: "-i=$includePath"
 
     name: SM version ${{ matrix.sm-version }}
     steps:
@@ -160,7 +163,7 @@ jobs:
                 continue;
             fi
             echo -e "\nCompiling $file..."
-            spcomp -O2 -v2 -i include -i lib-include -o "plugins/$(basename -- "$file" .sp).smx" $file
+            spcomp -O2 -v2 ${{ matrix.compiler-options }} -i include -i lib-include -o "plugins/$(basename -- "$file" .sp).smx" $file
           done
           echo "===OUT FILES==="
           ls

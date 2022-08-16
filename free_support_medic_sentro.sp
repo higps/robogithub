@@ -25,7 +25,9 @@
 #define CHAR_FULL "■"
 #define CHAR_EMPTY "□"
  
-
+int g_Recharge[MAXPLAYERS + 1] = 1;
+int g_RechargeCap = 75;
+bool g_SpellClamp = false;
 
 public Plugin:myinfo =
 {
@@ -38,18 +40,20 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
+
+	CreateTimer(THINK_RATE, Timer_Think, _, TIMER_REPEAT);
 }
 
 public void OnPluginEnd()
@@ -116,7 +120,7 @@ MakeGiantMedic(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
-TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
@@ -151,7 +155,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -238,13 +242,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if (IsRobot(client, ROBOT_NAME))
 	{
-
-		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_RELOAD|IN_USE) ) 
+		//0 = fireball
+		//PrintToChat(client, "Throwing spell!");
+		if (g_Recharge[client] >= g_RechargeCap && !g_SpellClamp)
 		{
-			//  PrintToChatAll("Press");
-            g_button_held[client] = true;
+			CastSpell(client, 0);
+			g_Recharge[client] = 1;
+			CreateTimer(1.0, SpellClamp_Timer);
+			g_SpellClamp = true;
 		}
-
+		
 
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_RELOAD|IN_USE) ) 
@@ -332,61 +339,48 @@ bool isready;
 void DrawHUD(int client)
 {
 	char sHUDText[128];
-	// char sProgress[32];
-	//int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCooldown) * 100.0);
-	int iCountDown = RoundToCeil(g_Recharge[client] - g_skill);
-	
-	// for (int j = 1; j <= 10; j++)
-	// {
-	// 	if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
-	// 	else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
-	// }
+	char sProgress[32];
+	int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCap) * 100.0);
 
-	if (IsKritzed(client))
+	for (int j = 1; j <= 10; j++)
 	{
-		Format(sHUDText, sizeof(sHUDText), "Meteor: %i   ", iCountDown);
-	}else
-	{
-		Format(sHUDText, sizeof(sHUDText), "Fireball: %i   ", iCountDown);
+		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
+		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
 	}
-
-	if(iCountDown <= 0)
-	{
-		if (IsKritzed(client))
-		{
-			Format(sHUDText, sizeof(sHUDText), "Meteor Ready!");	
-		}else
-		{
-			Format(sHUDText, sizeof(sHUDText), "Fireball Ready!");
-			
-		}
 		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
 
-		
+	Format(sHUDText, sizeof(sHUDText), "Fireball: %d%%%%   \n%s   ", iPercents, sProgress);
+
+	if(iPercents >= 100)
+	{
+		SetHudTextParams(1.0, 0.8, 0.5, 255, 0, 0, 255);
 	} else {
 		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
-		
-		// PrintToChatAll("Not Ready!");
 	}
-	// if (g_hud_post_time + g_hud_draw_delay <= GetEngineTime() || g_hud_post_time == 0.0)
-	// {
-		 ShowHudText(client, -2, sHUDText);
-	// 	 g_hud_post_time = GetEngineTime();
-	// }
+	ShowHudText(client, -1, sHUDText);
+}
 
-		if (!isready && iCountDown <= 0)
-		{
-			TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
-			// PrintToChatAll("Ready!");
-			isready = true;	
-		}
-
-	if (g_button_held[client] && iCountDown <= 0)
+void UpdateCharge(int client)
+{
+	// if we are already at max charge, no need to check anything
+	if(g_Recharge[client] >= g_RechargeCap)
 	{
-		RequestFrame(CastSpell, client);
-		g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-		isready = false;
-		
+		g_Recharge[client] = g_RechargeCap;
+		return;
+	}
+	
+	if(IsRobot(client, ROBOT_NAME))//only add charge if you are sentro
+	{ 
+		g_Recharge[client] += 2;
+	}
+	//m_iLastHealingAmount[client] = iActualHealingAmount;
+	
+	// if we reached the cap after healing, play the voicelines and such
+	if(g_Recharge[client] >=g_RechargeCap)
+	{
+		g_Recharge[client] = g_RechargeCap;
+		EmitSoundToClient(client, SOUND_HEAL_READY);
+		//EmitSoundToAll(SOUND_HEAL_READY_VO, client);
 	}
 }
 
