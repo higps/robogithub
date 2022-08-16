@@ -585,19 +585,6 @@ int GetTeamporterTransform(int team, float angles[3], float pos[3])
 	}
 }
 
-// enum
-// {
-// 	TELE_WRONGTEAM = 0,
-// 	TELE_IS_BUILDING,
-// 	TELE_CARRIED,
-// 	TELE_NOTEXIT,
-// 	TELE_SAPPER,
-// 	TELE_NOT_BOSS,
-// 	TELE_RECHARGING,
-//  TELE_READY
-
-// }
-
 int GetTeleporterStatus(int ent){
 	
 		int team = GetEntProp(ent, Prop_Data, "m_iTeamNum");
@@ -656,20 +643,10 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if(TF2Spawn_IsClientInSpawn(client) && g_Recharge[client] == g_RechargeCap)
 		{
-
 			Teleport_Player(client);
-			
 		}
-		// if (g_Recharge[client] >= g_RechargeCap)
-		// {
-		// 	// CastSpell(client, 0);
-		// 	// g_Recharge[client] = 1;
-		// 	// CreateTimer(1.0, SpellClamp_Timer);
-		// 	// g_SpellClamp = true;
-		// }
 	}
 }
-
 
 //Charging the tele to spawn
 
@@ -682,39 +659,15 @@ void UpdateCharge(int client)
 		{
 			Teleport_Player(client);
 		}
-		
 		if(g_Recharge[client] >= g_RechargeCap)
 		{
 		g_Recharge[client] = g_RechargeCap;
-
-
-		
 		}else
 		{
 			g_Recharge[client]++;
-		}
-		
+		}	
 	}
-
-	//UpdatePoseParameter(client, GetWeaponWithAttribute(client));
 }
-
-// public Action Timer_Think(Handle hTimer, any data)
-// {
-// 	for (int i = 1; i <= MAXPLAYERS; i++)
-// 	{
-// 		if(IsValidClient(i))
-// 		{
-// 			if(IsAnyRobot(i))
-// 			{
-
-// 				UpdateCharge(i);
-// 				DrawHUD(i);
-
-// 			}
-// 		}
-// 	}
-// }
 
 #define CHAR_FULL "■"
 #define CHAR_EMPTY "□"
@@ -760,46 +713,46 @@ public Action DrawHUD(int client)
 		ObjectPointer farthest;
 		GetFarthestTele(client, farthest, teleporters);
 
-		CreateTeleMenu(client, teleporters);
+		// CreateTeleMenu(client, teleporters);
 
-		GetActiveSelection(client, PlayerTele[client], farthest);
+		// GetActiveSelection(client, PlayerTele[client], farthest);
 
-		ObjectPointer tele;
-		tele = PlayerTele[client];
+		// ObjectPointer tele;
+		// tele = PlayerTele[client];
 
 		// char description[256];
 		Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nNo active Teleporter");
 		SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
 		
-		if (tele.valid())
+		if (farthest.valid())
 		{
 			//Check if teleporters are in the correct status
-			int teleporter = tele.get();
+			int teleporter = farthest.get();
 
 			switch(GetTeleporterStatus(teleporter))
 			{
 				case TELE_IS_BUILDING:
 				{
 				//	PrintCenterTextAll("Ready");
-					Format(sHUDText, sizeof sHUDText, "Is building");
+					Format(sHUDText, sizeof sHUDText, "Teamporter Ready!\nTeamporter is building");
 					SetHudTextParams(-1.0, -0.2, 0.1, 0, 130, 130, 255);
 				}
 				case TELE_CARRIED:
 				{
 				//	PrintCenterTextAll("Ready");
-					Format(sHUDText, sizeof sHUDText, "Is carried");
+					Format(sHUDText, sizeof sHUDText, "Teamporter Ready!\nTeamporter is being carried");
 					SetHudTextParams(-1.0, -0.2, 0.1, 130, 130, 0, 255);
 				}
 				case TELE_SAPPER:
 				{
 				//	PrintCenterTextAll("Ready");
-					Format(sHUDText, sizeof sHUDText, "Disabled/Sapped");
+					Format(sHUDText, sizeof sHUDText, "Teamporter Ready!\nTeamporter is Disabled / Sapped");
 					SetHudTextParams(-1.0, -0.2, 0.1, 133, 0, 130, 255);
 				}
 				case TELE_RECHARGING:
 				{
 				//	PrintCenterTextAll("Ready");
-					Format(sHUDText, sizeof sHUDText, "Recharging...");
+					Format(sHUDText, sizeof sHUDText, "Teamporter Ready!\nEngipad Teamporter is Recharging...");
 					SetHudTextParams(-1.0, -0.2, 0.1, 50, 50, 100, 255);
 				}
 				case TELE_READY:
@@ -809,11 +762,11 @@ public Action DrawHUD(int client)
 					TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
 					SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
 				}
-				default:
-				{
-					Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nNo active Teleporter");
-					SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
-				}
+				// default:
+				// {
+				// 	Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nNo active Teleporter");
+				// 	SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+				// }
 
 			}
 		//PrintCenterText(client, description);
@@ -854,8 +807,8 @@ public Action DrawHUD(int client)
 	// }
 
 
-	}else{
-		
+	}else
+	{	
 	Format(sHUDText, sizeof(sHUDText), "Charging Teamporter: %d%%%%   \n%s   ", iPercents, sProgress);
 	SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
 	}
@@ -1158,6 +1111,12 @@ Action Teleport_Player(int client)
 	ObjectPointer target;
 	target = PlayerTele[client];
 	
+	ObjectPointer teleporters[32];
+	ObjectPointer farthest;
+	GetFarthestTele(client, farthest, teleporters);
+	
+	target = farthest;
+
 	int teleporter = target.get();
 
 	if (target.valid() && GetTeleporterStatus(teleporter) == TELE_READY)
@@ -1167,7 +1126,7 @@ Action Teleport_Player(int client)
 		float angles[3];
 		target.GetPos(destination);
 		target.GetAng(angles);
-		destination[2] += 10.0;
+		destination[2] += 15.0;
 
 		TeleportEntity(client, destination, angles, NULL_VECTOR);
 
