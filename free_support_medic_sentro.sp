@@ -50,7 +50,6 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
-
 }
 
 public void OnPluginEnd()
@@ -123,7 +122,7 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	
+
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -239,16 +238,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if (IsRobot(client, ROBOT_NAME))
 	{
-		//0 = fireball
-		//PrintToChat(client, "Throwing spell!");
-		if (g_Recharge[client] >= g_RechargeCap && !g_SpellClamp)
+
+		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_RELOAD|IN_USE) ) 
 		{
-			CastSpell(client, 0);
-			g_Recharge[client] = 1;
-			CreateTimer(1.0, SpellClamp_Timer);
-			g_SpellClamp = true;
+			//  PrintToChatAll("Press");
+            g_button_held[client] = true;
 		}
-		
+
 
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_RELOAD|IN_USE) ) 
@@ -273,14 +269,14 @@ public void CastSpell(int client) {
 	int index;
 	if (IsKritzed(client))
 	{
-	//PrintToChatAll("Was kritzed");
-	index = 9;
+		//PrintToChatAll("Was kritzed");
+		index = 9;
 	}else
 	{
-	//PrintToChatAll("Was not kritzed");
-	index = 0;
+		//PrintToChatAll("Was not kritzed");
+		index = 0;
 	}
-
+	
 
 	// float time = GetGameTime();
 	// bool rare = (index >= PAGE_LENGTH);
@@ -292,34 +288,34 @@ public void CastSpell(int client) {
 	//if (delay > 0)ReplyToCommand(client, "[SM] Please wait %.2f seconds before casting the next spell.", delay);
 	if (!IsPlayerAlive(client))ReplyToCommand(client, "[SM] You must be alive to use this command!");
 	else {
-	int ent = FindSpellbook(client);
-	if (!ent) {
-	ent = CreateEntityByName("tf_weapon_spellbook");
-	if (ent != -1) {
-	SetEntProp(ent, Prop_Send, "m_iItemDefinitionIndex", 1132);
-	SetEntProp(ent, Prop_Send, "m_bInitialized", 1);
-	SetEntProp(ent, Prop_Send, "m_iAccountID", GetSteamAccountID(client));
-	DispatchSpawn(ent);
-	}
-	else {
-	ReplyToCommand(client, "[SM] Could not create spellbook entity!");
-	return;
-	}
-	}
-
-	int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if (active != ent) {
-	SetEntProp(ent, Prop_Send, "m_iSpellCharges", 1);
-	SetEntProp(ent, Prop_Send, "m_iSelectedSpellIndex", index);
-
-	SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", active);
-	EquipPlayerWeapon(client, ent);
-	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", ent);
-
-
-	// if (rare)fTimeFiredRare[client] = time;
-	// fTimeFired[client] = time;
-	}
+		int ent = FindSpellbook(client);
+		if (!ent) {
+			ent = CreateEntityByName("tf_weapon_spellbook");
+			if (ent != -1) {
+				SetEntProp(ent, Prop_Send, "m_iItemDefinitionIndex", 1132);
+				SetEntProp(ent, Prop_Send, "m_bInitialized", 1);
+				SetEntProp(ent, Prop_Send, "m_iAccountID", GetSteamAccountID(client));
+				DispatchSpawn(ent);
+			}
+			else {
+				ReplyToCommand(client, "[SM] Could not create spellbook entity!");
+				return;
+			}
+		}
+		
+		int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if (active != ent) {
+			SetEntProp(ent, Prop_Send, "m_iSpellCharges", 1);
+			SetEntProp(ent, Prop_Send, "m_iSelectedSpellIndex", index);
+			
+			SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", active);
+			EquipPlayerWeapon(client, ent);
+			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", ent);
+			
+			
+			// if (rare)fTimeFiredRare[client] = time;
+			// fTimeFired[client] = time;
+		}
 	}
 }
 
@@ -347,7 +343,7 @@ void DrawHUD(int client)
 	// 	else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
 	// }
 
-	for (int j = 1; j <= 10; j++)
+	if (IsKritzed(client))
 	{
 	Format(sHUDText, sizeof(sHUDText), "Meteor: %i   ", iCountDown);
 	}else
@@ -392,45 +388,6 @@ void DrawHUD(int client)
 	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
 	isready = false;
 
-=======
-		if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
-		else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
-	}
-		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
-
-	Format(sHUDText, sizeof(sHUDText), "Fireball: %d%%%%   \n%s   ", iPercents, sProgress);
-
-	if(iPercents >= 100)
-	{
-		SetHudTextParams(1.0, 0.8, 0.5, 255, 0, 0, 255);
-	} else {
-		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
-	}
-	ShowHudText(client, -1, sHUDText);
-}
-
-void UpdateCharge(int client)
-{
-	// if we are already at max charge, no need to check anything
-	if(g_Recharge[client] >= g_RechargeCap)
-	{
-		g_Recharge[client] = g_RechargeCap;
-		return;
-	}
-	
-	if(IsRobot(client, ROBOT_NAME))//only add charge if you are sentro
-	{ 
-		g_Recharge[client] += 2;
-	}
-	//m_iLastHealingAmount[client] = iActualHealingAmount;
-	
-	// if we reached the cap after healing, play the voicelines and such
-	if(g_Recharge[client] >=g_RechargeCap)
-	{
-		g_Recharge[client] = g_RechargeCap;
-		EmitSoundToClient(client, SOUND_HEAL_READY);
-		//EmitSoundToAll(SOUND_HEAL_READY_VO, client);
->>>>>>> 08890be3adbd8d3b8612c75481edac53b294d0b0
 	}
 }
 
