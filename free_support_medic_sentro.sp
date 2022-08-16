@@ -38,18 +38,20 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
+
+	CreateTimer(THINK_RATE, Timer_Think, _, TIMER_REPEAT);
 }
 
 public void OnPluginEnd()

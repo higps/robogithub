@@ -398,7 +398,7 @@ int CountVolunteers()
 
 void VolunteerAutomaticVolunteers()
 {
-    int[] ignoredClientIds = new int[0];
+    int[] ignoredClientIds = new int[1];
     ArrayList pickedVolunteers = PickVolunteers(_robocapTeam, ignoredClientIds, 0);
 
     int[] volunteerArray = new int[pickedVolunteers.Length];

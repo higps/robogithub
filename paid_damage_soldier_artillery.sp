@@ -73,35 +73,35 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-    AddNormalSoundHook(BossIcebear);
+	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	AddNormalSoundHook(BossIcebear);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
-    
+
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 	//Artillery Code
 	RegConsoleCmd("sm_arcrocket", CmdToggleArc);
-	
+
 	//HookEvent("post_inventory_application", Event_PlayerResupply);
-	
+
 	g_arcDelay = CreateConVar("tf_rocket_arc_delay", "0.5", "Delay in seconds before a rocket is affected by gravity");
 	g_arcGrav = CreateConVar("tf_rocket_arc_gravity", "3.5", "Gravity to apply to arcing rockets");
 }
@@ -260,7 +260,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -335,6 +335,7 @@ public Action CmdToggleArc(int client, int args)
 {
 	arcRockets[client] = !arcRockets[client];
 	PrintToChat(client, "Artillery Launcher %s", arcRockets[client] ? "Enabled. Resupply to obtain it." : "Removed.");
+	return Plugin_Continue;
 }
 
 // public Action Event_PlayerResupply(Handle event, const char[] name, bool dbroad)
@@ -400,6 +401,8 @@ public Action OnProjSpawn(int proj)
 	}
 	else
 		shouldArc[proj] = false;
+
+	return Plugin_Continue;
 }
 
 public void ArcRocket(int rocket)

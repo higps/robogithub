@@ -42,23 +42,23 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.gunfire = SOUND_GUNFIRE;
-    robot.sounds.windup = SOUND_WINDUP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.gunfire = SOUND_GUNFIRE;
+	robot.sounds.windup = SOUND_WINDUP;
+	robot.sounds.death = DEATH;
 
-    AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null, 2);
 }
 
 public void OnPluginEnd()
@@ -164,7 +164,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)

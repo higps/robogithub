@@ -49,25 +49,25 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    HookEvent("player_death", Event_Death, EventHookMode_Post);
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
     restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
     restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
-    AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
+	AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 
 	PrecacheModel(MODEL);
 	PrecacheSound(SPAWN);
@@ -206,7 +206,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)

@@ -158,8 +158,7 @@ public void RemoveHUD(){
 	{
 		if (IsValidEntity(iEnt))
 		{
-			 DispatchKeyValue(iEnt, "rendermode", "0");
-			
+			DispatchKeyValue(iEnt, "rendermode", "0");
 			DispatchSpawn(iEnt);
 			//AcceptEntityInput(iEnt, "Kill");
 			// float fPos[3];

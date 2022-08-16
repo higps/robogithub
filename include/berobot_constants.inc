@@ -10,5 +10,5 @@
 
 #define TEAMCOUNT 4
 
-const int NAMELENGTH = 128;
+#define NAMELENGTH 128
 const int MAX_INT = 2147483647;

@@ -30,18 +30,18 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -132,7 +132,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
  
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -203,34 +203,34 @@ stock GiveGiantMedic(client)
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
-	
+
 	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
-   if (IsRobot(client, ROBOT_NAME))
-   {
+	if (IsRobot(client, ROBOT_NAME))
+	{
 	// PrintToChatAll("Condition was %i", condition);
-    if (condition == TFCond_Taunting)
-    {
-       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
-	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-    }
+	if (condition == TFCond_Taunting)
+	{
+	TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
+	// TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+	}
 
-		int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		int healtarget = -1;
+	int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	int healtarget = -1;
 
-        if(GetEntProp(medigun, Prop_Send, "m_bHealing"))
-        {
-            healtarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
-			//PrintToChatAll("Healtarget was: %N", healtarget);
-        }
+	if(GetEntProp(medigun, Prop_Send, "m_bHealing"))
+	{
+	healtarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
+	//PrintToChatAll("Healtarget was: %N", healtarget);
+	}
 
-		if (IsValidClient(healtarget) && IsPlayerAlive(healtarget))
-		{
-			if(condition == TFCond_UberBulletResist || condition == TFCond_UberBlastResist || condition == TFCond_UberFireResist){
+	if (IsValidClient(healtarget) && IsPlayerAlive(healtarget))
+	{
+	if(condition == TFCond_UberBulletResist || condition == TFCond_UberBlastResist || condition == TFCond_UberFireResist){
 
-			//TF2_AddCondition(healtarget,TFCond_CritCola, 3.5);
-			TF2_AddCondition(client, TFCond_RuneWarlock, 3.5);
-			TF2_AddCondition(healtarget, TFCond_RuneWarlock, 3.5);
-		}
+	//TF2_AddCondition(healtarget,TFCond_CritCola, 3.5);
+	TF2_AddCondition(client, TFCond_RuneWarlock, 3.5);
+	TF2_AddCondition(healtarget, TFCond_RuneWarlock, 3.5);
+	}
 	}
 
 	// if (condition == TFCond_Charging)
@@ -241,7 +241,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 	// }
 
-   }
+	}
 }
 
 

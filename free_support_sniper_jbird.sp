@@ -32,20 +32,20 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //HookEvent("player_death", Event_Death, EventHookMode_Post);
+	//HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeSniper, PLUGIN_VERSION);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeSniper, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -107,16 +107,16 @@ MakeSniper(client)
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	
+
 	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
+
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 0.8);
@@ -125,19 +125,19 @@ TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate)
 	TF2Attrib_SetByName(client, "health regen", 10.0);
 
 	UpdatePlayerHitbox(client, 1.65);
-	
+
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	
+
 	PrintHintText(client , "You have explosive headshots");
-	
+
 }
 
 stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)

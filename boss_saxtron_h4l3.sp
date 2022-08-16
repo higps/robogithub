@@ -71,7 +71,7 @@
 // #define HALERAGEDIST		800.0
 // #define HALE_WEIGHDOWN_TIME	3.0
 
-bool b_SaxtonSaid[MAXPLAYERS + 1] = false;
+bool b_SaxtonSaid[MAXPLAYERS + 1] = {false, ...};
 float g_JumpTime = 0.0;
 public Plugin:myinfo = 
 {
@@ -92,31 +92,31 @@ enum(<<= 1)
 
 public OnPluginStart()
 {
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
-    //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-    AddNormalSoundHook(SaxtronSoundHook);
+	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+	AddNormalSoundHook(SaxtronSoundHook);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = "Soldier";
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = "Soldier";
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
-		RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-    // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-    restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-    restrictions.TeamCoins.Overall = 2;
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+	restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+	restrictions.TeamCoins.Overall = 2;
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = 3.0;
 
-    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions, 2);
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions, 2);
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("object_destroyed",           ObjectDestroyed, EventHookMode_Pre);
@@ -126,14 +126,14 @@ public OnPluginStart()
 public Action Event_teamplay_round_win(Event event, const char[] name, bool dontBroadcast)
 {
 
-    int winteam = GetEventInt(event, "team");
+	int winteam = GetEventInt(event, "team");
 
-  //  PrintToChatAll("Winning team was %i", winteam);
-    CreateTimer(3.0, team_play_win_timer, winteam);
-  
-        
-        //EmitGameSoundToAll("Announcer.mvm_spybot_death");
+	//  PrintToChatAll("Winning team was %i", winteam);
+	CreateTimer(3.0, team_play_win_timer, winteam);
 
+
+	//EmitGameSoundToAll("Announcer.mvm_spybot_death");
+	return Plugin_Continue;
 }
 
 public Action team_play_win_timer (Handle timer, int winteam)
@@ -160,7 +160,7 @@ public Action team_play_win_timer (Handle timer, int winteam)
 	}
 
         
-    
+    return Plugin_Continue;
 }
 
 public void OnPluginEnd()

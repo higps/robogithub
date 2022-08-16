@@ -34,20 +34,20 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-    LoadTranslations("common.phrases");
+	LoadTranslations("common.phrases");
 
 	AddNormalSoundHook(BossMortar);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
-    AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 2);
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 2);
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
@@ -112,7 +112,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 		GetEventString(event, "weapon", weaponName, sizeof(weaponName));
 
 
-		int weaponid = GetEventInt(event, "weaponid");
+		// int weaponid = GetEventInt(event, "weaponid");
 	//	PrintToChatAll("%i a ", weaponid);
 			//PrintToChatAll("%i", GetEventInt(event, "weaponid"));
 			// if (weaponid == -1) return;
@@ -142,6 +142,7 @@ public Action Timer_Respawn(Handle timer, any client)
         TF2_RespawnPlayer(client);
         //PrintToChat(client,"You have instant respawn as scout");
     }
+	return Plugin_Continue;
 }
 
 public Action:SetModel(client, const String:model[])
@@ -195,8 +196,8 @@ MakeDemoKnight(client)
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 1.25);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
@@ -219,7 +220,7 @@ stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
