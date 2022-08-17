@@ -67,8 +67,8 @@ int g_EngineerRevengeCrits[MAXPLAYERS + 1] = {0, ...};
 //bool g_Enabled;
 
 float g_Attribute_Display_CollDown = 0.1;
-float g_Attribute_Display[MAXPLAYERS + 1] = 0.0;
-bool b_Attribute_Display[MAXPLAYERS + 1] = true;
+float g_Attribute_Display[MAXPLAYERS + 1] = {0.0, ...};
+bool b_Attribute_Display[MAXPLAYERS + 1] = {true, ...};
 
 public Plugin myinfo =
 {
@@ -311,6 +311,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     damage = 0.0;
                     return Plugin_Handled;
                 }
+                
             }
 
             if (iClassAttacker == TFClass_Soldier)
@@ -804,9 +805,18 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (TF2_GetPlayerClass(client) == TFClass_Medic)
         {
+    //         	g_vita_saw_heal = ReadIntVar(stat_buffer, "heal", 0);
+	// g_vita_saw_uber = ReadIntVar(stat_buffer, "uber-gain", 0);
+	// g_vita_saw_cooldown = ReadIntVar(stat_buffer, "crit-heal-cooldown", 0);
+	// g_vita_saw_allow_overheal = ReadIntVar(stat_buffer, "allow-overheal", 0);
+            if (IsVitaSaw(Weapon3))
+            {
+                TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0");
+            }
             if(IsBlutsauger(Weapon1))
             {
                 TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.0);
+                TF2CustAttr_SetString(Weapon3, "syringe-heal", "heal=2 uber-gain=0.015 self-heal=1 allow-overheal=0");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}",chat_display);
             }
 
@@ -1593,6 +1603,20 @@ bool IsBlutsauger(int weapon)
 	return false;
 }
 
+bool IsVitaSaw(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 173: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 bool IsOverdose(int weapon)
 {
     if(weapon == -1 && weapon <= MaxClients) return false;
