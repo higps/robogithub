@@ -816,7 +816,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if(IsBlutsauger(Weapon1))
             {
                 TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.0);
-                TF2CustAttr_SetString(Weapon3, "syringe-heal", "heal=2 uber-gain=0.015 self-heal=1 allow-overheal=0");
+                TF2CustAttr_SetString(Weapon1, "syringe-heal", "heal=2 allow-team-overheal=0 heal-on-enemy=2 razorback-max-overheal=15");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}",chat_display);
             }
 
