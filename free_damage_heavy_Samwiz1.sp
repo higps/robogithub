@@ -408,7 +408,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	{
 		//0 = fireball
 		//PrintToChat(client, "Throwing spell!");
-		if( GetEntProp( client, Prop_Data, "m_afButtonPressed" ) & IN_ATTACK3 ) 
+		if( GetEntProp(client, Prop_Data, "m_afButtonPressed") & (IN_ATTACK3|IN_RELOAD|IN_USE)) 
 		{
 			// PrintToChatAll("Press");
             g_button_held[client] = true;
@@ -416,7 +416,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 
 
-		if( GetEntProp( client, Prop_Data, "m_afButtonReleased" ) & IN_ATTACK3 ) 
+		if( GetEntProp(client, Prop_Data, "m_afButtonReleased") & (IN_ATTACK3|IN_RELOAD|IN_USE)) 
 		{
 			// PrintToChatAll("Release");
 			g_button_held[client] = false;
@@ -521,11 +521,11 @@ public FindHat(int iClient)
 			// Going through all items. 4 = cosmetics
 			for (int i = 0; i < 4; i++)
 			{			
-				PrintToServer("LOOKING HAT 3 !");
+				// PrintToServer("LOOKING HAT 3 !");
 				// If a weapon's definition index matches with the one stored...
 				if (iWearableIndex == BananaHat)
 				{
-					PrintToServer("FOUND HAT! %i", iWearableItem);
+					// PrintToServer("FOUND HAT! %i", iWearableItem);
 					if (g_BananaMode){
 						SetEntityRenderMode(iWearableItem, RENDER_NORMAL);
 					}else
