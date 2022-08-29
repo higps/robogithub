@@ -809,31 +809,37 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 	// g_vita_saw_uber = ReadIntVar(stat_buffer, "uber-gain", 0);
 	// g_vita_saw_cooldown = ReadIntVar(stat_buffer, "crit-heal-cooldown", 0);
 	// g_vita_saw_allow_overheal = ReadIntVar(stat_buffer, "allow-overheal", 0);
-            if (IsVitaSaw(Weapon3))
-            {
-                TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0");
-            }
+            // if (IsVitaSaw(Weapon3))
+            // {
+            //     TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0");
+            // }
+
+            //  if(IsSyringeGun(Weapon1))
+            // {
+            //     TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
+                
+            //     //Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}",chat_display);
+            // }
             if(IsBlutsauger(Weapon1))
             {
                 TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.0);
-                TF2CustAttr_SetString(Weapon1, "syringe-heal", "heal=2 allow-team-overheal=0 heal-on-enemy=2 razorback-max-overheal=15");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}",chat_display);
             }
 
             if(IsOverdose(Weapon1) && Weapon2 != -1)
             {
-                TF2Attrib_SetByName(Weapon2, "overheal expert", 1.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Overdose: Provides your medigun the {orange}Overheal Expert upgrade",chat_display);
+                TF2Attrib_SetByName(Weapon2, "overheal decay disabled", 1000.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Overdose: Provides your medigun the {orange}overheal decay disabled upgrade",chat_display);
             }else
             {
                 //Remove the attribute if overdose is not present, as it remains on loadout switch
-                TF2Attrib_RemoveByName(Weapon2, "overheal expert");
+                TF2Attrib_RemoveByName(Weapon2, "overheal decay disabled");
             }
 
             if(!IsOverdose(Weapon1) && Weapon2 != -1)
             {
                 //Remove the attribute when changing loadout
-                TF2Attrib_RemoveByName(Weapon2, "overheal expert");
+                TF2Attrib_RemoveByName(Weapon2, "overheal decay disabled");
             }
 
             if(IsAmputator(Weapon3) && Weapon1 != -1)
@@ -1603,20 +1609,36 @@ bool IsBlutsauger(int weapon)
 	return false;
 }
 
-bool IsVitaSaw(int weapon)
-{
-    if(weapon == -1 && weapon <= MaxClients) return false;
+// bool IsVitaSaw(int weapon)
+// {
+//     if(weapon == -1 && weapon <= MaxClients) return false;
 	
-	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-	{
-		//If others are added, add them here
-	case 173: 
-		{
-			return true;
-		}
-	}
-	return false;
-}
+// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+// 	{
+// 		//If others are added, add them here
+// 	case 173: 
+// 		{
+// 			return true;
+// 		}
+// 	}
+// 	return false;
+// }
+
+// bool IsSyringeGun(int weapon)
+// {
+//     if(weapon == -1 && weapon <= MaxClients) return false;
+	
+// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+// 	{
+// 		//If others are added, add them here
+// 	case 17,204: 
+// 		{
+// 			return true;
+// 		}
+// 	}
+// 	return false;
+// }
+
 bool IsOverdose(int weapon)
 {
     if(weapon == -1 && weapon <= MaxClients) return false;
