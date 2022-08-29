@@ -33,6 +33,25 @@ public Plugin myinfo =
 	url = "www.sourcemod.com"
 }
 
+enum struct SentryBuster
+{
+	int userid;
+	float radius;
+	float damage;
+	
+	float position[3];
+	
+	void Set(int client)
+	{
+		this.userid = GetClientUserId(client);
+	}
+	int Get()
+	{
+		return GetClientOfUserId(this.Get());
+	}
+}
+SentryBuster LastBuster;
+
 bool g_Taunt_clamp = false;
 public void OnPluginStart()
 {
@@ -324,6 +343,8 @@ public Action Bewm(Handle timer, any userid)
 		RemoveEdict(explosion);
 	}
 	bool FF = false;
+	
+	/* Going to try replacing all this with a simple sphere trace
 	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (!IsValidClient(i)) continue;
@@ -370,6 +391,17 @@ public Action Bewm(Handle timer, any userid)
 		// }
 		}
 	}
+	*/
+	
+	// Set our struct info for the sentry buster
+	LastBuster.Set(client); // Set this client as the current exploding sentry buster
+	LastBuster.radius = 300.0; // Whatever we want the explosion radius to be
+	LastBuster.damage = 2500.0; // Damage to deal
+	LastBuster.position = clientPos;
+	
+	// This will include everything in one go, no need to loop through all clients and then also entities
+	TR_EnumerateEntitiesSphere(clientPos, LastBuster.radius, MASK_SHOT, FindEntitiesInSphere, LastBuster.Get());
+	
 	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_explode.wav", client);
 	AttachParticle(client, "fluidSmokeExpl_ring_mvm");
 	DoDamage(client, client, 2500);
@@ -377,6 +409,57 @@ public Action Bewm(Handle timer, any userid)
 	//CreateTimer(0.0, Timer_RemoveRagdoll, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 	TracedTarget = INVALID_ENT_REFERENCE;
 	return Plugin_Handled;
+}
+
+bool FindEntitiesInSphere(int entity, int exclude)
+{
+	// Ignore entities that we can't or shouldn't damage
+	bool damage = false;
+	
+	if (exclude == entity)
+		return true; // continue, do nothing
+		
+	if (entity == 0)
+		return true; // Ignore the world
+		
+		
+	float endPos[3];
+	
+	// Check if this is a client.. we shouldn't have to check for team relations since we can't damage teammates regardless
+	if (entity <= MaxClients)
+	{
+		if (IsPlayerAlive(entity)) // This really shouldn't ever error... but if it for some reason does, just add an additional check for IsClientInGame()
+		{
+			damage = true;
+			
+			GetClientAbsOrigin(entity, endPos);
+			endPos[2] += 40.0; // Center mass
+		}
+	}
+	else if (IsValidEntity(entity)) // Probably not needed? If it's not a client it should always be a valid entity, regardless..
+	{
+		char classname[64];
+		GetEntityClassname(entity, classname, sizeof classname);
+		
+		// All building types
+		if (StrContains(classname, "obj_") != -1)
+		{
+			damage = true;
+			
+			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", endPos);
+		}
+	}
+	
+	if (damage)
+	{
+		if (CanSeeTarget(LastBuster.position, endPos, entity, LastBuster.Get()))
+		{
+			// Damage the entity
+			SDKHooks_TakeDamage(entity, LastBuster.Get(), LastBuster.Get(), LastBuster.damage, DMG_BLAST);
+		}
+	}
+	
+	return true; // We want to keep iterating until we run out of overlapped entities.. nothing should really need to stop this
 }
 
 bool CanSeeTarget(float start[3], float end[3], int target, int source)
