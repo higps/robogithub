@@ -30,6 +30,82 @@ public Plugin myinfo =
 	url = "https://github.com/higps/robogithub"
 };
 
+methodmap VolunteerState < StringMap
+{
+    public VolunteerState() {
+        return view_as<VolunteerState>(new StringMap());
+    }
+
+    property int ClientId {
+        public get(){ 
+            int value;
+            this.GetValue("ClientId", value);
+            return value;
+        }
+        public set(int value){
+            this.SetValue("ClientId", value);
+        }
+    }
+
+    property int QueuePoints {
+        public get(){ 
+            int value;
+            this.GetValue("QueuePoints", value);
+            return value;
+        }
+        public set(int value){
+            this.SetValue("QueuePoints", value);
+        }
+    }
+
+    property bool Admin {
+        public get(){ 
+            bool value;
+            this.GetValue("Admin", value);
+            return value;
+        }
+        public set(bool value){
+            this.SetValue("Admin", value);
+        }
+    }
+
+    property bool Vip {
+        public get(){ 
+            bool value;
+            this.GetValue("Vip", value);
+            return value;
+        }
+        public set(bool value){
+            this.SetValue("Vip", value);
+        }
+    }
+
+    property bool Volunteered {
+        public get(){ 
+            bool value;
+            this.GetValue("Volunteered", value);
+            return value;
+        }
+        public set(bool value){
+            this.SetValue("Volunteered", value);
+        }
+    }
+
+    public void GetClientIdString(char steamId[10]){ 
+        this.GetString("ClientIdString", steamId, sizeof(steamId));
+    }
+    public void SetClientIdString(char value[10]){
+        this.SetString("ClientIdString", value);
+    }
+
+    public void GetSteamId(char steamId[64]){ 
+        this.GetString("SteamId", steamId, sizeof(steamId));
+    }
+    public void SetSteamId(char value[64]){
+        this.SetString("SteamId", value);
+    }
+}
+
 ConVar _autoVolunteerTimeoutConVar;
 int _autoVolunteerTimeout;
 ConVar _autoVolunteerPriaoritizeAdminFlagConVar;
@@ -44,6 +120,7 @@ int _countdownTarget;
 Handle _autoVolunteerTimer;
 bool _pickedOption[MAXPLAYERS + 1];
 bool _volunteered[MAXPLAYERS + 1];
+StringMap _queuePoints;
 
 public void OnPluginStart()
 {
@@ -66,11 +143,13 @@ public void OnPluginStart()
     RegAdminCmd("sm_setvolunteer", Command_SetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to true/enabled");
     RegAdminCmd("sm_unsetvolunteer", Command_UnsetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to false/disabled");
     RegAdminCmd("sm_reload_vip_volunteers", Command_ReloadVipVolunteers, ADMFLAG_SLAY, "reloads VIP-SteamIds from file");
+    RegAdminCmd("sm_reload_queuepoints_volunteers", Command_ReloadQueuepointsVolunteers, ADMFLAG_SLAY, "reloads queuepoints from file");
 
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
     RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
 
     LoadVipSteamIds();    
+    LoadQueuePointsFromFile();    
 
     Reset();
 }
@@ -155,6 +234,11 @@ void LoadVipSteamIds()
 public Action Command_ReloadVipVolunteers(int client, int args)
 {
     LoadVipSteamIds();
+}
+
+public Action Command_ReloadQueuepointsVolunteers(int client, int args)
+{
+    LoadQueuePointsFromFile();
 }
 
 public Action Command_SetVolunteer(int client, int args)
@@ -404,7 +488,8 @@ void VolunteerAutomaticVolunteers()
     int[] volunteerArray = new int[pickedVolunteers.Length];
     for(int i = 0; i < pickedVolunteers.Length; i++)
     {
-        volunteerArray[i] = pickedVolunteers.Get(i);
+        VolunteerState state = pickedVolunteers.Get(i);
+        volunteerArray[i] = state.ClientId;
         SMLogTag(SML_VERBOSE, "setting %L as volunteered", volunteerArray[i]);
     }
     SetVolunteers(volunteerArray, pickedVolunteers.Length);
@@ -415,6 +500,15 @@ void VolunteerAutomaticVolunteers()
     _automaticVolunteerVoteIsInProgress = false;
 }
 
+/**
+ * picks volunteers, based on admin-/vip-/volunteer-status 
+ * 
+ * @param neededVolunteers           amount of needed volunteers
+ * @param ignoredClientIds           array of clientIds that should be ignored (can't ever get picked)
+ * @param ignoredClientIdsLength     length of the ignoredClientIds-array
+ * @param pickNonvolunteers          indicates if nonvolunteers should be picked, if not enough people volunteered (default: true)
+ * @return                           returns a ArrayList of VolunteerStates
+ */
 ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignoredClientIdsLength, bool pickNonvolunteers = true)
 {
     StringMap ignoredClientIdLookup = new StringMap();
@@ -428,10 +522,7 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         ignoredClientIdLookup.SetValue(str, true);
     }
 
-    ArrayList adminVolunteers = new ArrayList();
-    ArrayList vipVolunteers = new ArrayList();
     ArrayList volunteers = new ArrayList();
-    ArrayList nonVolunteers = new ArrayList();
     
     for(int i = 0; i <= MaxClients; i++)
     {
@@ -449,12 +540,34 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
             continue;
         }
 
+        VolunteerState state = new VolunteerState();
+        state.ClientId = i;
+
+        char steamId[64];
+        if (!GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId)))
+        {
+            SMLogTag(SML_ERROR, "could not read steamid for %L. ignoring queue points", i);
+            continue;
+        }
+        SMLogTag(SML_VERBOSE, "read steamid for %L: %s", i, steamId);
+
+        state.SetSteamId(steamId);
+        state.SetClientIdString(str);
+        int queuePoints;
+        _queuePoints.GetValue(steamId, queuePoints);
+        state.QueuePoints = queuePoints;
+        SMLogTag(SML_VERBOSE, "%s has %i Queuepoints", steamId, queuePoints);
+
         if (!_volunteered[i])
         {
             SMLogTag(SML_VERBOSE, "%L has not volunteered", i);
-            nonVolunteers.Push(i);
+            if (pickNonvolunteers)
+                volunteers.Push(state);
             continue;
         }
+
+        state.Volunteered = true;
+        volunteers.Push(state);
 
         if (_autoVolunteerAdminFlag >= 0)
         {
@@ -462,59 +575,203 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
             if (userflags & _autoVolunteerAdminFlag)
             {
                 SMLogTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they have admin-flag %i", i, _autoVolunteerAdminFlag);
-                adminVolunteers.Push(i);
+                state.Admin = true;
                 continue;
             }
         }
 
-        char steamId[64];
-        GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId));
         if (_vipSteamIds.GetValue(steamId, value))
         {
             SMLogTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they are a vip", i);
-            vipVolunteers.Push(i);
+            state.Vip = true;
             continue;
         }
 
         SMLogTag(SML_VERBOSE, "%L has volunteered", i);
-        volunteers.Push(i);
     }
-
-    ArrayList pickedVolunteers = new ArrayList();
-    AddVolunteers(pickedVolunteers, adminVolunteers, neededVolunteers);     //add adminVolunteers until we have enough
-    AddVolunteers(pickedVolunteers, vipVolunteers, neededVolunteers);       //add vipVolunteers until we have enough
-    AddVolunteers(pickedVolunteers, volunteers, neededVolunteers);          //add volunteers until we have enough
-
-    if (pickNonvolunteers)
+    
+    if (volunteers.Length > neededVolunteers)
     {
-        AddVolunteers(pickedVolunteers, nonVolunteers, neededVolunteers);   //add nonvolunteers until we have enough
+        volunteers.SortCustom(VolunteerStateComparision);
+
+        UpdateQueuePoints(volunteers, neededVolunteers);
+
+        volunteers.Resize(neededVolunteers);
     }
-
-    while(pickedVolunteers.Length > neededVolunteers)      //remove volunteers until we have just enough
+    else
     {
-        int i = GetRandomInt(0, pickedVolunteers.Length -1);
-        pickedVolunteers.Erase(i);
+        UpdateQueuePoints(volunteers, neededVolunteers);
     }
 
     delete ignoredClientIdLookup;
-    delete adminVolunteers;
-    delete volunteers;
-    delete nonVolunteers;
-    delete vipVolunteers;
     
-    return pickedVolunteers;
+    return volunteers;
 }
 
-void AddVolunteers(ArrayList destination, ArrayList source, int neededVolunteers)
+void UpdateQueuePoints(ArrayList volunteers, int neededVolunteers)
 {
-    while(destination.Length < neededVolunteers)      
+    for(int volunteerIndex = 0; volunteerIndex < volunteers.Length; volunteerIndex++)
     {
-        if (source.Length == 0)
-            return;
+        VolunteerState state = view_as<VolunteerState>(volunteers.Get(volunteerIndex));
+
+        char steamId[64];
+        state.GetSteamId(steamId);
+
+        int newQueuepoints;
+        if (volunteerIndex < neededVolunteers)
+        {
+            newQueuepoints = 0;
+            SMLogTag(SML_VERBOSE, "reseting Queuepoints for %s", steamId);
+        }
+        else
+        {
+            newQueuepoints = state.QueuePoints + 1;
+            SMLogTag(SML_VERBOSE, "increasing Queuepoints for %s to %i", steamId, newQueuepoints);
+        }
         
-        int i = GetRandomInt(0, source.Length -1);
-        destination.Push(source.Get(i));
-        source.Erase(i);
+        _queuePoints.SetValue(steamId, newQueuepoints);
+    }
+    SaveQueuePointsToFile();
+}
+
+int VolunteerStateComparision(int index1, int index2, Handle array, Handle hndl)
+{
+    ArrayList list = view_as<ArrayList>(array); 
+    VolunteerState a = view_as<VolunteerState>(list.Get(index1));
+    VolunteerState b = view_as<VolunteerState>(list.Get(index2));
+    
+    if (a.Admin && !b.Admin)
+        return -1;
+    if (!a.Admin && b.Admin)
+        return 1;
+    
+    if (a.Vip && !b.Vip)
+        return -1;
+    if (!a.Vip && b.Vip)
+        return 1;
+    
+    if (a.Volunteered && !b.Volunteered)
+        return -1;
+    if (!a.Volunteered && b.Volunteered)
+        return 1;
+
+    if (a.QueuePoints < b.QueuePoints)
+        return -1;
+    if (a.QueuePoints > b.QueuePoints)
+        return 1;
+    return 0;
+}
+
+void SaveQueuePointsToFile()
+{
+    File file = OpenFile("mm_volunteer_queuepoints.txt", "w+");
+    if (file == null)
+    {
+        SMLogTag(SML_ERROR, "Queuepoints could not be saved, because file 'mm_volunteer_queuepoints.txt' could not be opend for writing.");
+        return;
+    }
+
+    StringMapSnapshot snapshot = _queuePoints.Snapshot();
+    for(int i = 0; i < snapshot.Length; i++)
+    {
+        char key[64];
+        snapshot.GetKey(i, key, sizeof(key));
+        int queuePoints;
+        _queuePoints.GetValue(key, queuePoints);
+        
+        bool success = file.WriteLine("%s", key);
+        if (!success)
+        {
+            SMLogTag(SML_ERROR, "could not write steamid line for '%s,%i'", key, queuePoints);
+            
+            delete snapshot;
+            CloseHandle(file);
+
+            return;
+        }
+        success = file.WriteLine("%i", queuePoints);
+        if (!success)
+        {
+            SMLogTag(SML_ERROR, "could not write queuepoints line for '%s,%i'", key, queuePoints);
+            
+            delete snapshot;
+            CloseHandle(file);
+
+            return;
+        }
+
+        file.WriteLine("");
+    }
+    delete snapshot;
+
+    file.Flush();
+    CloseHandle(file);
+
+    SMLogTag(SML_VERBOSE, "%i Queuepoints saved to file 'mm_volunteer_queuepoints.txt'", _queuePoints.Size);
+}
+
+void LoadQueuePointsFromFile()
+{
+    _queuePoints = new StringMap();
+
+    File file = OpenFile("mm_volunteer_queuepoints.txt", "r");
+    if (file == null)
+    {
+        SMLogTag(SML_INFO, "Queuepoints could not be loaded, because file 'mm_volunteer_queuepoints.txt' could not be opend for reading.");
+        return;
+    }
+
+    int lineNumber = 0;
+    while(!file.EndOfFile())
+    {
+        lineNumber++;
+
+        char steamId[64];
+        bool success = file.ReadLine(steamId, sizeof(steamId));
+        if (!success)
+        {
+            SMLogTag(SML_VERBOSE, "could not read steamId line: %i", lineNumber);
+            break;
+        }
+        CutAtNewLine(steamId, sizeof(steamId));
+        SMLogTag(SML_VERBOSE, "read steamId %s", steamId);
+
+        lineNumber++;
+        char queuepointsString[10];
+        success = file.ReadLine(queuepointsString, sizeof(queuepointsString));
+        if (!success)
+        {
+            SMLogTag(SML_ERROR, "could not read queuepoints line: %i", lineNumber);
+            break;
+        }
+        CutAtNewLine(queuepointsString, sizeof(queuepointsString));
+        SMLogTag(SML_VERBOSE, "read queuepoints %s", queuepointsString);
+        
+        lineNumber++;
+        char emptyLine[2];
+        file.ReadLine(emptyLine, sizeof(emptyLine));
+        CutAtNewLine(emptyLine, sizeof(emptyLine));
+        SMLogTag(SML_VERBOSE, "read separator %s", emptyLine);
+        SMLogTag(SML_VERBOSE, "read steamId %s; queuepoints %s", steamId, queuepointsString);
+
+        int queuepoints = StringToInt(queuepointsString);        
+        _queuePoints.SetValue(steamId, queuepoints);
+    }
+
+    CloseHandle(file);
+
+    SMLogTag(SML_INFO, "%i Queuepoints loaded from file 'mm_volunteer_queuepoints.txt'", _queuePoints.Size);
+}
+
+void CutAtNewLine(char[] str, int length)
+{
+    for(int i = 0; i < length; i++)
+    {
+        if (str[i] == '\n')
+        {
+            str[i] = '\0';
+            return;
+        }
     }
 }
 
