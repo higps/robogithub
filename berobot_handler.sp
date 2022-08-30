@@ -85,9 +85,9 @@ bool g_cv_Volunteered[MAXPLAYERS + 1];
 char g_cv_RobotPicked[MAXPLAYERS + 1][NAMELENGTH];
 bool g_Voted[MAXPLAYERS + 1];
 
-bool g_GoingToDie[MAXPLAYERS + 1] = false;
+bool g_GoingToDie[MAXPLAYERS + 1] = {false, ...};
 int g_TimeBombTime[MAXPLAYERS+1] = { 0, ... };
-int g_PlayerHealth[MAXPLAYERS +1] = -1;
+int g_PlayerHealth[MAXPLAYERS +1] = {-1, ...};
 
 GlobalForward _enabledChangedForward;
 GlobalForward _clientReseting;
@@ -340,6 +340,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("SetRandomRobot", Native_SetRandomRobot);
     CreateNative("SetRobot", Native_SetRobot);
     CreateNative("ForceRobot", Native_ForceRobot);
+    CreateNative("GetRobotTeam", Native_GetRobotTeam);
 
     return APLRes_Success;
 }
@@ -852,6 +853,11 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 }
 
 
+public any Native_GetRobotTeam(Handle plugin, int numParams)
+{
+    return g_RoboTeam;
+}
+
 void RobotTeamCheck(int client)
 {
     if(IsClientInGame(client))
@@ -1160,6 +1166,8 @@ public Action Command_RoboVote(int client, int args)
     {
         MC_PrintToChatAllEx(client, "[{orange}SM{default}] {teamcolor}%N {default}Manned Machines mode is {red}disabled", client);
     }
+
+    return;
 
 }
 

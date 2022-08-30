@@ -113,6 +113,9 @@ void SetRoboCapTeam()
     // PrintToChatAll("Total player count was: %i", count);
     // PrintToChatAll("Spectate Team had: %i players", Spectate);
 
+    // int robotteam = GetRobotTeam();
+    // PrintToChatAll("Robot Team was %i", robotteam);
+
     float ratio = _humansPerRobot;
     int robotCount = RoundToFloor(count/ratio);
     // PrintToChatAll("Robocount was: %i", robotCount);
