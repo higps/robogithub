@@ -31,7 +31,13 @@ public Plugin myinfo =
 	version = "0.1",
 	url = "https://github.com/higps/robogithub"
 };
+int g_Allow_Human_Robot_Creation;
+enum //Convar names
+{
+    CV_g_Allow_Human_Robot_Creation
+}
 
+ConVar g_cvCvarList[CV_g_Allow_Human_Robot_Creation + 1];
 
 bool _init;
 char _wasRobot[MAXPLAYERS + 1][NAMELENGTH];
@@ -53,6 +59,11 @@ public void Init()
     RegAdminCmd("sm_trshrbt", Command_TrashRobot, ADMFLAG_SLAY, "Trash a robot");
     RegAdminCmd("sm_tr", Command_TrashRobot, ADMFLAG_SLAY, "Trash a robot");
 
+    g_cvCvarList[CV_g_Allow_Human_Robot_Creation] = CreateConVar("sm_allow_robots_on_human_team", "0", "0 = blocks humans from ever being robots 1 = allows humans to be robots");
+    
+    g_Allow_Human_Robot_Creation = GetConVarInt(g_cvCvarList[CV_g_Allow_Human_Robot_Creation]);
+    g_cvCvarList[CV_g_Allow_Human_Robot_Creation].AddChangeHook(CvarChangeHook);
+
     HookEvent("player_death", Event_Death, EventHookMode_Post);
     HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 
@@ -62,6 +73,12 @@ public void Init()
     }
 
     _init = true;
+}
+
+public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
+{
+    if(convar == g_cvCvarList[CV_g_Allow_Human_Robot_Creation])
+        g_Allow_Human_Robot_Creation = StringToInt(sNewValue); 
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -318,6 +335,16 @@ public any Native_CreateRobot(Handle plugin, int numParams)
             return 3;
         }
 
+        
+        //Check to disallow becoming a robot even with commands if you are not on the robot team
+        if (GetClientTeam(targetClientId) != GetRobotTeam() && g_Allow_Human_Robot_Creation == 0)
+        {
+            
+            SMLogTag(SML_ERROR, "unable to create robot, you are not on the robot team");
+            return 4;
+        }
+        
+        
         char wasRobot[NAMELENGTH];
         int trashError = Trash(targetClientId, wasRobot, name);
         if (trashError > 0)
