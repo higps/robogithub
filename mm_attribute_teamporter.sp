@@ -275,7 +275,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 		{
 
 			g_teleporters[iBuilder] = EntIndexToEntRef(iObj);
-			PrintToChatAll("Iobj %i", iObj);
+			//PrintToChatAll("Iobj %i", iObj);
 			#if defined DEBUG
 				PrintToChatAll("Built builder teleporter!");
 			#endif
@@ -496,7 +496,7 @@ public Action Teleport_Player_old(int client)
 //This should find the nearest teleporter exit built by a robo engie and give its rotation and position
 int GetTeamporterTransform(int team, float angles[3], float pos[3])
 {
-	PrintToChatAll("Got here1");
+	//PrintToChatAll("Got here1");
 	int j = 1;
 	int ent = -1;
 	int tele;
@@ -509,19 +509,19 @@ int GetTeamporterTransform(int team, float angles[3], float pos[3])
 // while ((ent = FindEntityByClassname(ent, "obj_teleporter")) != -1)
 	while(j++ <= MaxClients+1)
 	{
-		PrintToChatAll("Got here");
+	//	PrintToChatAll("Got here");
 
 		if (IsValidClient(j) && IsClientInGame(j))
 		{
 			if(IsValidEntity(g_teleporters[j])){
-						PrintToChatAll("ITERATING in WHILE %N, %i", j, g_teleporters[j]);
+					//	PrintToChatAll("ITERATING in WHILE %N, %i", j, g_teleporters[j]);
 						continue;
 		}
 		
 		
 		ent = EntRefToEntIndex(g_teleporters[j]);
 
-		PrintToChatAll("Got here");
+		//PrintToChatAll("Got here");
 		if (GetEntProp(ent, Prop_Send, "m_iTeamNum") != team)
 			continue;
 		if (GetEntProp(ent, Prop_Send, "m_bBuilding"))

@@ -25,7 +25,7 @@
  
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-int g_Heal_Bolts_Hits_Needed = 12;
+int g_Heal_Bolts_Hits_Needed = 24;
 int g_healcount = 0;
 float g_duration = 8.0;
 float g_organ_duration_bonus_modifier = 2.0;
@@ -441,7 +441,7 @@ public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& da
 			{
 			float reduced_duration = (g_duration / 2.0);
 			//PrintToChatAll("Target Duration %f", reduced_duration);
-			TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration);
+			TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration / 2);
 			}
 
 
