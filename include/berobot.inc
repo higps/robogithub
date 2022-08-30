@@ -228,6 +228,11 @@ native bool IsAnyRobot(int client);
 native int CreateRobot(char[] name, int client, char target[32]);
 
 /**
+ * Returns an int of the team that is currently the robot team 
+ * 
+ * */
+native int GetRobotTeam();
+/**
  * SDKCall for CBasePlayer::EquipWearable
  * 
  * @param client     the client who should wear the equipment/item
