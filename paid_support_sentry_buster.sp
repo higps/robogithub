@@ -12,7 +12,8 @@
 #define ROBOT_CLASS "Buster"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_SUBCLASS "Sentry Buster"
-#define ROBOT_DESCRIPTION ""
+#define ROBOT_DESCRIPTION "Touch sentries to blow up"
+#define ROBOT_TIPS "Hit enemies, touch sentries, or taunt to activate the explosion"
 #define ROBOT_COST 2
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
