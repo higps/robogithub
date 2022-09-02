@@ -1839,7 +1839,19 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		}
 
 
-
+        if(!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_DemoMan && condition == TFCond_Taunting)
+        {
+             
+             int iActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+             if (IsStockOrAllClassWeapon(iActiveWeapon))
+             {
+			int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+            
+			if (tauntid == -1){
+			TF2_AddCondition(client, TFCond_Buffed, g_bottle_crit_duration * 1.25);
+			}
+             }
+        }
 	
 }
 
@@ -1854,18 +1866,6 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 		}
 
 
-        if(!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_DemoMan && condition == TFCond_Taunting)
-        {
-             
-             int iActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-             if (IsStockOrAllClassWeapon(iActiveWeapon))
-             {
-			int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-            
-			if (tauntid == -1){
-			TF2_AddCondition(client, TFCond_Buffed, g_bottle_crit_duration);
-			}
-             }
-        }
+
 	
 }

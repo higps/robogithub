@@ -12,7 +12,8 @@
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Banner"
-#define ROBOT_DESCRIPTION "Equalizor"
+#define ROBOT_DESCRIPTION "Equalizer, base jumper, speed battalion buff"
+#define ROBOT_TIPS "Taunt to get airborne to use the base jumper\nBuild meter and buff your team!"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
@@ -244,7 +245,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Kill All Humans");
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 
@@ -317,6 +318,9 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", 1.5);
+			TF2Attrib_SetByName(Weapon3, "reduced_healing_from_medics", 1.0);
+
+			
 			
 			// TF2Attrib_SetByName(Weapon3, "mod shovel speed boost", 2.0);
 			

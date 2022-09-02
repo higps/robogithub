@@ -192,9 +192,9 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
    
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.5);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.35);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -207,7 +207,7 @@ MakeGDeflectorH(client)
 	//TF2Attrib_SetByName(client, "head scale", 0.75);
 	TF2Attrib_SetByName(client, "hand scale", 1.25);
 	
-	UpdatePlayerHitbox(client, 1.65);
+	UpdatePlayerHitbox(client, 1.5);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);

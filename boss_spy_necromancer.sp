@@ -74,6 +74,10 @@ public OnPluginStart()
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
+	restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+	restrictions.TeamCoins.Overall = 2;
+
+
 	AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 
 	PrecacheModel(MODEL);

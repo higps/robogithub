@@ -261,14 +261,14 @@ stock GiveBigRoboDane(client)
 		{
 			//TF2Attrib_RemoveAll(Revolver);
 			
-			TF2Attrib_SetByName(Revolver, "dmg penalty vs players", 1.15);
+			TF2Attrib_SetByName(Revolver, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Revolver, "fire rate penalty", 1.0);
 			TF2Attrib_SetByName(Revolver, "projectile penetration heavy", 1.0);
 			
 			
 			//TF2Attrib_SetByName(Revolver, "damage bonus while disguised", 1.0);
-			TF2Attrib_SetByName(Revolver, "weapon spread bonus", 0.75);
+			TF2Attrib_SetByName(Revolver, "weapon spread bonus", 0.25);
 			SetEntityRenderColor(Revolver, 207,115,54,0);
 						
 		}
