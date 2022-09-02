@@ -174,7 +174,7 @@ MakeSpy(client)
 	SetModel(client, MODEL);
 
 
-	int iHealth = 3500;
+	int iHealth = 6500;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -186,12 +186,11 @@ MakeSpy(client)
 	//TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
+	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -292,8 +291,10 @@ stock GiveBigRoboDane(client)
 			// TF2Attrib_RemoveAll(Knife);
 			
 			//TF2Attrib_SetByName(Knife, "fire rate bonus", 0.8);
-			//TF2Attrib_SetByName(Knife, "damage bonus", 1.5);
+			TF2Attrib_SetByName(Knife, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Knife, "mod_disguise_consumes_cloak", 0.0);
+			TF2Attrib_SetByName(Knife, "mod weapon blocks healing", 1.0);
 			// TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
 			// TF2Attrib_SetByName(Knife, "restore health on kill", 10.0);
 			
@@ -302,21 +303,22 @@ stock GiveBigRoboDane(client)
 	if(IsValidEntity(Cloak)) //
 		{
 			TF2Attrib_RemoveAll(Cloak);
-			
+			TF2Attrib_SetByName(Cloak, "mod weapon blocks healing", 1.0);
 			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
 			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.01);
 		}
-	// if(IsValidEntity(Sapper)) //
-	// 	{
-	// 		TF2Attrib_RemoveAll(Sapper);
+	if(IsValidEntity(Sapper)) //
+		{
+			//TF2Attrib_RemoveAll(Sapper);
 			
-	// 	//	TF2Attrib_SetByName(Sapper, "mult cloak meter consume rate", 0.0);
-	// 		// TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 50.0);
-	// 		// TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
-			
-	// 		//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
-	// 	}	
+		//	TF2Attrib_SetByName(Sapper, "mult cloak meter consume rate", 0.0);
+			// TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 50.0);
+			// TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
+			TF2Attrib_SetByName(Sapper, "mod weapon blocks healing", 1.0);
+			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
+		}	
 	// }
+	TF2_AddCondition(client, TFCond_CritCanteen);
 	}
 }
 
