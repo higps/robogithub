@@ -43,7 +43,8 @@ enum struct SentryBuster
 	
 	void Set(int client)
 	{
-		this.userid = GetClientUserId(client);
+		if (client > 0 && client <= MaxClients)
+			this.userid = GetClientUserId(client);
 	}
 	int Get()
 	{
@@ -343,6 +344,25 @@ public Action Bewm(Handle timer, any userid)
 		RemoveEdict(explosion);
 	}
 	bool FF = false;
+
+	// Set our struct info for the sentry buster
+	LastBuster.Set(client); // Set this client as the current exploding sentry buster
+	LastBuster.radius = 300.0; // Whatever we want the explosion radius to be
+	LastBuster.damage = 2500.0; // Damage to deal
+	LastBuster.position = clientPos;
+
+	PrintToChatAll("Last Buster = Client: %i\nRadius = %.1f\nDamage = %.1f", LastBuster.Get(), LastBuster.radius, LastBuster.damage);
+	
+	// This will include everything in one go, no need to loop through all clients and then also entities
+	TR_EnumerateEntitiesSphere(clientPos, LastBuster.radius, MASK_SHOT, FindEntitiesInSphere, LastBuster.Get());
+
+	PrintToChatAll("Enumerating");
+	
+	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_explode.wav", client);
+	AttachParticle(client, "fluidSmokeExpl_ring_mvm");
+	DoDamage(client, client, 2500);
+	FakeClientCommand(client, "kill");
+	//CreateTimer(0.0, Timer_RemoveRagdoll, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 	
 	/* Going to try replacing all this with a simple sphere trace
 	for (int i = 1; i <= MaxClients; i++)
@@ -392,22 +412,7 @@ public Action Bewm(Handle timer, any userid)
 		}
 	}
 	*/
-	
-	// Set our struct info for the sentry buster
-	LastBuster.Set(client); // Set this client as the current exploding sentry buster
-	LastBuster.radius = 300.0; // Whatever we want the explosion radius to be
-	LastBuster.damage = 2500.0; // Damage to deal
-	LastBuster.position = clientPos;
-	
-	// This will include everything in one go, no need to loop through all clients and then also entities
-	TR_EnumerateEntitiesSphere(clientPos, LastBuster.radius, MASK_SHOT, FindEntitiesInSphere, LastBuster.Get());
-	
-	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_explode.wav", client);
-	AttachParticle(client, "fluidSmokeExpl_ring_mvm");
-	DoDamage(client, client, 2500);
-	FakeClientCommand(client, "kill");
-	//CreateTimer(0.0, Timer_RemoveRagdoll, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-	TracedTarget = INVALID_ENT_REFERENCE;
+
 	return Plugin_Handled;
 }
 
@@ -422,12 +427,14 @@ bool FindEntitiesInSphere(int entity, int exclude)
 	if (entity == 0)
 		return true; // Ignore the world
 		
+	PrintToChatAll("Found entity");
 		
 	float endPos[3];
 	
 	// Check if this is a client.. we shouldn't have to check for team relations since we can't damage teammates regardless
 	if (entity <= MaxClients)
 	{
+		PrintToChatAll("Entity is a client");
 		if (IsPlayerAlive(entity)) // This really shouldn't ever error... but if it for some reason does, just add an additional check for IsClientInGame()
 		{
 			damage = true;
@@ -440,6 +447,8 @@ bool FindEntitiesInSphere(int entity, int exclude)
 	{
 		char classname[64];
 		GetEntityClassname(entity, classname, sizeof classname);
+
+		PrintToChatAll("Entity is a building: %s", classname);
 		
 		// All building types
 		if (StrContains(classname, "obj_") != -1)
@@ -452,8 +461,10 @@ bool FindEntitiesInSphere(int entity, int exclude)
 	
 	if (damage)
 	{
+		//TracedTarget = INVALID_ENT_REFERENCE;
 		if (CanSeeTarget(LastBuster.position, endPos, entity, LastBuster.Get()))
 		{
+			PrintToChatAll("Target is visible");
 			// Damage the entity
 			SDKHooks_TakeDamage(entity, LastBuster.Get(), LastBuster.Get(), LastBuster.damage, DMG_BLAST);
 		}
