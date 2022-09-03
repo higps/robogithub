@@ -48,7 +48,7 @@ enum struct SentryBuster
 	}
 	int Get()
 	{
-		return GetClientOfUserId(this.Get());
+		return GetClientOfUserId(this.userid);
 	}
 }
 SentryBuster LastBuster;
