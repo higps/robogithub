@@ -556,7 +556,7 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         int queuePoints;
         _queuePoints.GetValue(steamId, queuePoints);
         state.QueuePoints = queuePoints;
-        SMLogTag(SML_VERBOSE, "%s has %i Queuepoints", steamId, queuePoints);
+        SMLogTag(SML_VERBOSE, "%L with steamid %s has %i Queuepoints", i, steamId, queuePoints);
 
         if (!_volunteered[i])
         {
@@ -627,12 +627,12 @@ void UpdateQueuePoints(ArrayList volunteers, int neededVolunteers)
         if (volunteerIndex < neededVolunteers)
         {
             newQueuepoints = 0;
-            SMLogTag(SML_VERBOSE, "reseting Queuepoints for %s", steamId);
+            SMLogTag(SML_VERBOSE, "reseting Queuepoints for %L with steamid %s", state.ClientId, steamId);
         }
         else
         {
             newQueuepoints = state.QueuePoints + 1;
-            SMLogTag(SML_VERBOSE, "increasing Queuepoints for %s to %i", steamId, newQueuepoints);
+            SMLogTag(SML_VERBOSE, "increasing Queuepoints for %L with steamid %s to %i", state.ClientId, steamId, newQueuepoints);
         }
         
         _queuePoints.SetValue(steamId, newQueuepoints);
@@ -662,9 +662,9 @@ int VolunteerStateComparision(int index1, int index2, Handle array, Handle hndl)
         return 1;
 
     if (a.QueuePoints < b.QueuePoints)
-        return -1;
-    if (a.QueuePoints > b.QueuePoints)
         return 1;
+    if (a.QueuePoints > b.QueuePoints)
+        return -1;
     return 0;
 }
 
