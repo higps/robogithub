@@ -161,7 +161,7 @@ public void OnConfigsExecuted()
     _robocapTeam = GetConVarInt(_robocapTeamConVar);
 }
 
-public void MM_OnClientReseting(int clientId)
+public void MM_OnClientResetting(int clientId)
 {
     SMLogTag(SML_VERBOSE, "resetting volunteer status for client %i", clientId);
 
@@ -627,7 +627,7 @@ void UpdateQueuePoints(ArrayList volunteers, int neededVolunteers)
         if (volunteerIndex < neededVolunteers)
         {
             newQueuepoints = 0;
-            SMLogTag(SML_VERBOSE, "reseting Queuepoints for %L with steamid %s", state.ClientId, steamId);
+            SMLogTag(SML_VERBOSE, "resetting Queuepoints for %L with steamid %s", state.ClientId, steamId);
         }
         else
         {

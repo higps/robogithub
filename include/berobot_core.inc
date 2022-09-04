@@ -247,11 +247,11 @@ forward void MM_OnRobotStorageChanged();
 forward void MM_OnEnabledChanged(int enabled);
 
 /**
- * Called while reseting a client from being a robot
+ * Called while resetting a client from being a robot
  * 
  * @noreturn
  */
-forward void MM_OnClientReseting(int clientId);
+forward void MM_OnClientResetting(int clientId);
 
 /**
  * Called when mode-reset was requested
