@@ -589,6 +589,8 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
 
         SMLogTag(SML_VERBOSE, "%L has volunteered", i);
     }
+
+    delete ignoredClientIdLookup;
     
     if (volunteers.Length > neededVolunteers)
     {
@@ -603,7 +605,11 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         UpdateQueuePoints(volunteers, neededVolunteers);
     }
 
-    delete ignoredClientIdLookup;
+    for(int volunteerIndex = 0; volunteerIndex < volunteers.Length; volunteerIndex++)
+    {
+        VolunteerState state = volunteers.Get(volunteerIndex);
+        SMLogTag(SML_VERBOSE, "%L was picked with %i queuepoints (Admin: %i; Vip: %i; Volunteered: %i)", state.ClientId, state.QueuePoints, state.Admin, state.Vip, state.Volunteered);
+    }
     
     return volunteers;
 }
