@@ -234,7 +234,7 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.25);
 			// TF2Attrib_SetByName(Kukri, "speed_boost_on_kill", 2.0);
-			// TF2Attrib_SetByName(Kukri, "speed boost when active", 0.8);
+			TF2Attrib_SetByName(Kukri, "dmg taken increased", 1.0);
 			TF2Attrib_SetByName(Kukri, "heal on kill", 125.0);
 		}	
 	}

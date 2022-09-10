@@ -194,7 +194,8 @@ stock GiveGiantDemoKnight(client)
 
 	if(IsValidEntity(Weapon3))
 	{
-	TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
+	TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 2.5);
+	TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);
 	TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 	}
 
@@ -210,6 +211,12 @@ stock GiveGiantDemoKnight(client)
 		TF2Attrib_SetByName(iEntity2, "charge impact damage increased", 2.0);		
 		TF2Attrib_SetByName(iEntity2, "no charge impact range", 1.0);	
 		TF2Attrib_SetByName(iEntity2, "mult charge turn control", 1000.0);	
+		TF2Attrib_SetByName(iEntity2, "dmg taken from blast reduced", 1.0);	
+		TF2Attrib_SetByName(iEntity2, "dmg taken from fire reduced", 1.0);	
+		TF2Attrib_SetByName(iEntity2, "SET BONUS: dmg from sentry reduced", 0.3);	
+
+		
+		
 		break;
 	}
 	}	

@@ -44,10 +44,10 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-new bool:Locked1[MAXPLAYERS+1];
-new bool:Locked2[MAXPLAYERS+1];
-new bool:Locked3[MAXPLAYERS+1];
-new bool:CanWindDown[MAXPLAYERS+1];
+// new bool:Locked1[MAXPLAYERS+1];
+// new bool:Locked2[MAXPLAYERS+1];
+// new bool:Locked3[MAXPLAYERS+1];
+// new bool:CanWindDown[MAXPLAYERS+1];
 
 public OnPluginStart()
 {
@@ -251,72 +251,72 @@ stock GiveGiantPyro(client)
 	}
 }
 
-public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
-{
-	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME) && IsPlayerAlive(iClient)) 
-	{	
-		//add a check to prevent errors related to switching classes
+// public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
+// {
+// 	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME) && IsPlayerAlive(iClient)) 
+// 	{	
+// 		//add a check to prevent errors related to switching classes
 		
  
-		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-		iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+// 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
+// 		iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 
-		if(IsValidEntity(weapon) && iWeapon == 215)//215 == flamethrower
-		{
-			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
-			if (iWeaponState == 1 && !Locked1[iClient])
-			{
-				EmitSoundToAll(SOUND_WINDUP, iClient);
-			//	PrintToChatAll("WeaponState = Windup");
+// 		if(IsValidEntity(weapon) && iWeapon == 215)//215 == flamethrower
+// 		{
+// 			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
+// 			if (iWeaponState == 1 && !Locked1[iClient])
+// 			{
+// 				EmitSoundToAll(SOUND_WINDUP, iClient);
+// 			//	PrintToChatAll("WeaponState = Windup");
 				
-				Locked1[iClient] = true;
-				Locked2[iClient] = false;
-				Locked3[iClient] = false;
-				CanWindDown[iClient] = true;
+// 				Locked1[iClient] = true;
+// 				Locked2[iClient] = false;
+// 				Locked3[iClient] = false;
+// 				CanWindDown[iClient] = true;
 				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-			}
-			else if (iWeaponState == 2 && !Locked2[iClient])
-			{
-				EmitSoundToAll(SOUND_GUNFIRE, iClient);
-			//	PrintToChatAll("WeaponState = Firing");
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
+// 			}
+// 			else if (iWeaponState == 2 && !Locked2[iClient])
+// 			{
+// 				EmitSoundToAll(SOUND_GUNFIRE, iClient);
+// 			//	PrintToChatAll("WeaponState = Firing");
 				
-				Locked2[iClient] = true;
-				Locked1[iClient] = true;
-				Locked3[iClient] = false;
-				CanWindDown[iClient] = true;
+// 				Locked2[iClient] = true;
+// 				Locked1[iClient] = true;
+// 				Locked3[iClient] = false;
+// 				CanWindDown[iClient] = true;
 				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-			}
-			else if (iWeaponState == 3 && !Locked3[iClient])
-			{
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
+// 			}
+// 			else if (iWeaponState == 3 && !Locked3[iClient])
+// 			{
 
-			//	PrintToChatAll("WeaponState = Spun Up");
+// 			//	PrintToChatAll("WeaponState = Spun Up");
 				
-				Locked3[iClient] = true;
-				Locked1[iClient] = true;
-				Locked2[iClient] = false;
-				CanWindDown[iClient] = true;
+// 				Locked3[iClient] = true;
+// 				Locked1[iClient] = true;
+// 				Locked2[iClient] = false;
+// 				CanWindDown[iClient] = true;
 				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-			}
-			else if (iWeaponState == 0)
-			{
-				if (CanWindDown[iClient])
-				{
-			//		PrintToChatAll("WeaponState = WindDown");
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
+// 			}
+// 			else if (iWeaponState == 0)
+// 			{
+// 				if (CanWindDown[iClient])
+// 				{
+// 			//		PrintToChatAll("WeaponState = WindDown");
 
-					CanWindDown[iClient] = false;
-				}
+// 					CanWindDown[iClient] = false;
+// 				}
 				
-				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
+// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
 				
-				Locked1[iClient] = false;
-				Locked2[iClient] = false;
-				Locked3[iClient] = false;
-			}
-		}
-	}
-	return Plugin_Continue;
-}
+// 				Locked1[iClient] = false;
+// 				Locked2[iClient] = false;
+// 				Locked3[iClient] = false;
+// 			}
+// 		}
+// 	}
+// 	return Plugin_Continue;
+// }

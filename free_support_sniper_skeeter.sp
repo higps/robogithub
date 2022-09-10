@@ -123,7 +123,7 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "major increased jump height", 0.8);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "health regen", 10.0);
+	// TF2Attrib_SetByName(client, "health regen", 10.0);
 
 	UpdatePlayerHitbox(client, 1.65);
 
@@ -188,15 +188,15 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.65);
 		
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
-			// TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
+			TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
 			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 10.0);
 			
 			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
 			TF2Attrib_SetByName(SniperRifle, "apply z velocity on damage", 450.0);
-			TF2Attrib_SetByName(SniperRifle, "faster reload rate", 0.75);
+			TF2Attrib_SetByName(SniperRifle, "faster reload rate", 0.5);
 			
-			// TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 2.5);
+			TF2Attrib_SetByName(SniperRifle, "heal on hit for rapidfire", 15.0);
 			// TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
 			TF2CustAttr_SetString(SniperRifle, "knockback modifier", "4.0");
 			
