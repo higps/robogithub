@@ -216,6 +216,8 @@ public void OnPluginStart()
     RegConsoleCmd("sm_changerobot", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_chngrbt", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_cr", Command_ChangeRobot, "change your robot");
+    RegConsoleCmd("sm_bot", Command_ChangeRobot, "change your robot");
+    RegConsoleCmd("sm_robot", Command_ChangeRobot, "change your robot");
 
 
     RegConsoleCmd("sm_mount", Command_MountRobot, "get a taunt mount for your robot");
