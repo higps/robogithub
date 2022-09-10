@@ -15,7 +15,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Killing Gloves of Boxing"
-#define ROBOT_TIPS "Kill enemies to get crits!"
+#define ROBOT_TIPS "Kill enemies to get long time crits!\nYou have melee resist"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -182,7 +182,7 @@ MakeGDeflectorH(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.5);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.2);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -201,7 +201,7 @@ MakeGDeflectorH(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	// TF2_AddCondition(client, TFCond_CritCanteen);
 
-	PrintHintText(client , "Punch people\nMake them laugh\nTaunt kill them to create a massive boom!");
+	PrintHintText(client , ROBOT_TIPS);
 
 }
  
@@ -244,11 +244,12 @@ stock GiveGDeflectorH(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
-			TF2Attrib_SetByName(Weapon1, "critboost on kill", 15.0);
+			TF2Attrib_SetByName(Weapon1, "critboost on kill", 180.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);
+			TF2Attrib_SetByName(Weapon1, "dmg from melee increased", 0.25);
+			
 			
 		}
 	}
