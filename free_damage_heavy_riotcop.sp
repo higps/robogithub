@@ -264,7 +264,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 		if (TF2_IsPlayerInCondition(client, TFCond_Taunting))
 		{
 		TF2_RemoveCondition(client, TFCond_Taunting);
-		TF2_AddCondition(client, TFCond_CritCola, 6.5);
+		TF2_AddCondition(client, TFCond_CritCola, 8.0);
 		}
 	}
 }

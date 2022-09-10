@@ -12,6 +12,7 @@
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Scatter Scout"
+#define ROBOT_TIPS "Rapid reload scattergun, pistol and rapid fire melee"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -175,7 +176,7 @@ MakeGiantscout(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "move speed penalty", 0.85);
+	// TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.65);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
@@ -194,7 +195,7 @@ MakeGiantscout(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintToChat(client, "1. You are now Giant B4nny!");
+	PrintHintText(client, ROBOT_TIPS);
 	// SetEntProp(client, Prop_Send, "m_bForcedSkin", 1);
 	// SetEntProp(client, Prop_Send, "m_nForcedSkin", 0);
 
@@ -241,11 +242,11 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Scattergun);
 			TF2Attrib_SetByName(Scattergun, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Threerune, "fire rate bonus", 0.9);
-			TF2Attrib_SetByName(Scattergun, "weapon spread bonus", 0.6);
+			// TF2Attrib_SetByName(Threerune, "fire rate bonus", 0.9);
+			// TF2Attrib_SetByName(Scattergun, "weapon spread bonus", 0.6);
 			TF2Attrib_SetByName(Scattergun, "clip size bonus", 1.4);
 			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.8);
-			TF2Attrib_SetByName(Scattergun, "dmg penalty vs players", 1.30);
+			TF2Attrib_SetByName(Scattergun, "dmg penalty vs players", 1.15);
 		}
 		if(IsValidEntity(Lugermorph))
 		{
