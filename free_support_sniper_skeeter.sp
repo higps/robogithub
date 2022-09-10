@@ -2,11 +2,11 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
-#include <sdkhooks>
+// #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
 //#include <sendproxy>
-#include <dhooks>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Skeeter"
@@ -148,9 +148,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 
-#define Panama 109
-#define OutbackIntellectial 645
-#define Veil 393
+#define Ellishat 263
+#define ExtraLayer 30328
+// #define Veil 393
 
 stock GiveBigRoboJbird(client)
 {
@@ -163,19 +163,19 @@ stock GiveBigRoboJbird(client)
 	TF2_RemoveWeaponSlot(client, 1); //Smg
 	TF2_RemoveWeaponSlot(client, 2); // kukri
 
-	CreateRoboWeapon(client, "tf_weapon_sniperrifle", 14, 6, 1, 0, 0);
+	CreateRoboWeapon(client, "tf_weapon_sniperrifle_classic", 1098, 6, 1, 0, 0);
 	//CreateRoboWeapon(client, "tf_weapon_smg", 16, 6, 1, 1, 0);
-	CreateRoboWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
+	// CreateRoboWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
 
 
-	CreateRoboHat(client, Panama, 10, 6, 0.0, 1.3, -1.0); 
-	CreateRoboHat(client, OutbackIntellectial, 10, 6, 7511618.0, 1.3, -1.0); 
-	CreateRoboHat(client, Veil, 10, 6, 7511618.0, 1.3, -1.0); 
+	CreateRoboHat(client, Ellishat, 10, 6, 0.0, 1.6, -1.0); 
+	CreateRoboHat(client, ExtraLayer, 10, 6, 0.0, 1.0, -1.0); 
+	
 
 
 		
 	int SniperRifle = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //SniperRifle
-	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
+	// int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
 	// int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
 
@@ -185,16 +185,20 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_RemoveAll(SniperRifle);
 			
 			TF2Attrib_SetByName(SniperRifle, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.75);
+			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.65);
 		
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
 			// TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
-			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 10.0);
+			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 1.75);
 			
 			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
+			TF2Attrib_SetByName(SniperRifle, "apply z velocity on damage", 450.0);
+			TF2Attrib_SetByName(SniperRifle, "faster reload rate", 0.75);
+			
 			// TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 2.5);
-			TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
+			// TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
+			TF2CustAttr_SetString(SniperRifle, "knockback modifier", "4.0");
 			
 			
 			
