@@ -143,7 +143,7 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.85);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "major increased jump height", 0.8);
+	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "health regen", 10.0);
@@ -215,20 +215,17 @@ stock GiveBigRoboHuntsbot(client)
 
 	//     }
 	//  }
-	if(IsValidEntity(SMG))
-	{
-	TF2Attrib_RemoveAll(SMG);
+		if(IsValidEntity(SMG))
+		{
+		TF2Attrib_RemoveAll(SMG);
 
-	TF2Attrib_SetByName(SMG, "provide on active", 1.0);
-	// TF2Attrib_SetByName(SMG, "move speed penalty", 0.5);
-	TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.25);
-
-
-
-	}
+		TF2Attrib_SetByName(SMG, "provide on active", 1.0);
+		// TF2Attrib_SetByName(SMG, "move speed penalty", 0.5);
+		TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.25);
+		}
 
 
-				if(IsValidEntity(Kukri))
+		if(IsValidEntity(Kukri))
 		{
 			TF2Attrib_RemoveAll(Kukri);
 			
@@ -237,12 +234,9 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.25);
 			// TF2Attrib_SetByName(Kukri, "speed_boost_on_kill", 2.0);
-			// TF2Attrib_SetByName(Kukri, "speed boost when active", 0.8);
+			TF2Attrib_SetByName(Kukri, "dmg taken increased", 1.0);
 			TF2Attrib_SetByName(Kukri, "heal on kill", 125.0);
-			
-			
-
-	}
+		}	
 	}
 
 

@@ -214,6 +214,7 @@ stock GiveGiantToofty(client)
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.8);
 			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			TF2CustAttr_SetString(client, "projectile-size", "size=1.75 update-hitbox=1");
 		}
 		
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -240,23 +241,20 @@ stock GiveGiantToofty(client)
 	}
 }
 
-public void OnEntityCreated(int iEntity, const char[] sClassName) 
-{
-	if (StrContains(sClassName, "tf_projectile_pipe") == 0)
-	{
-		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-	}
+// public void OnEntityCreated(int iEntity, const char[] sClassName) 
+// {
+// 	if (StrContains(sClassName, "tf_projectile_pipe") == 0)
+// 	{
+// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+// 	}
 	
-}
+// }
 
-public void Hook_OnProjectileSpawn(iEntity) {
-	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+// public void Hook_OnProjectileSpawn(iEntity) {
+// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
 
-
-
-
-	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
 		
-	}
-}
+// 	}
+// }

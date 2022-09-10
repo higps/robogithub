@@ -14,8 +14,8 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
-#define ROBOT_DESCRIPTION "High Damage Rocket Launcher Specialist"
-
+#define ROBOT_DESCRIPTION "Rocket Launching Rocket Launchers"
+#define ROBOT_TIPS "Fire rocket launchers firing rockets, aim where to aim all rocket launchers"
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
@@ -114,7 +114,7 @@ public OnPluginStart()
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
 	AutoAim = CreateConVar("shounic_rocket_launcher_auto_aim", "0", "Should a fired rocket launcher automatically target players", _, true, 0.0, true, 1.0);
-	AttackTime = CreateConVar("shounic_rocket_launcher_fire_delay", "1.2", "Attack delay for fired rocket launchers");
+	AttackTime = CreateConVar("shounic_rocket_launcher_fire_delay", "1.1", "Attack delay for fired rocket launchers");
 }
 
 public void OnPluginEnd()
@@ -296,7 +296,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "You have the rocket specialist perk!\n+100 percent dmg vs players\n-20 percent slower rockets");
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 

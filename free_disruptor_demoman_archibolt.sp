@@ -200,7 +200,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-float g_RechargeCooldown = 4.0;
+float g_RechargeCooldown = 3.0;
 float g_skill;
 
 	

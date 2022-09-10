@@ -8,7 +8,7 @@
 
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Dr. Crossbow Cop"
+#define ROBOT_NAME	"Dr Crossbow Cop"
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Projectile"
@@ -289,6 +289,7 @@ void DrawHUD(int client)
 	isready = false;
 
 	TF2_AddCondition(client, TFCond_CritHype, g_duration);
+	TF2_AddCondition(client, TFCond_RuneStrength, g_duration);
 	g_healcount = 0;
 	g_Recharge[client] = GetEngineTime() + g_duration;
 	}

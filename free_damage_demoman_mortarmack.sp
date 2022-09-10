@@ -210,7 +210,7 @@ stock GiveGiantDemoKnight(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 
-		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 19, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 206, 6, 1, 2, 217);
 		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
 
 		CreateRoboHat(client, ScotchBonnet, 10, 6, 0.0, 0.75, -1.0); 
@@ -221,7 +221,7 @@ stock GiveGiantDemoKnight(client)
 		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
+			//TF2Attrib_RemoveAll(Weapon1);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
@@ -232,9 +232,9 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.3);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 10.0);
+			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 8.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.4);
-			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
+			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.75);
 			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
 			// TF2Attrib_SetByName(Weapon1, "grenade no spin", 0.0);
 		}

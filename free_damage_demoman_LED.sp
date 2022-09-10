@@ -5,23 +5,21 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
-#include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Quickler"
+#define ROBOT_NAME	"LED"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
-#define ROBOT_DESCRIPTION "Long Range Sticky Bombardment"
-#define ROBOT_STATS "Rapid Charge Quickiebombs"
-#define ROBOT_COST 2.5
+#define ROBOT_DESCRIPTION "Increased Knockback + Larger Grenades"
+#define ROBOT_TIPS "Grenades have 75%%%% faster projectile speed, larger explosion and knockback"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
-#define GUNFIRE	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
+// #define GUNFIRE	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 
 #define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
 #define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
@@ -53,11 +51,9 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 
-	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
-	AddRobot(robot, MakeSolar, PLUGIN_VERSION, restrictions);
+
+	AddRobot(robot, MakeSolar, PLUGIN_VERSION);
 }
 
 public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -86,17 +82,17 @@ public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PA
 		return Plugin_Changed;
 	}
 
-	if (strncmp(sample, ")weapons/", 9, false) == 0)
-	{
-		if (StrContains(sample, "grenade_launcher_shoot.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE);
-			EmitSoundToAll(sample, entity,_,_,_, 0.07);	
-		//	PrintToChatAll("SOUND!--");
-			return Plugin_Changed;	
-		}
+	// if (strncmp(sample, ")weapons/", 9, false) == 0)
+	// {
+	// 	if (StrContains(sample, "grenade_launcher_shoot.wav", false) != -1)
+	// 	{
+	// 		Format(sample, sizeof(sample), GUNFIRE);
+	// 		EmitSoundToAll(sample, entity,_,_,_, 0.07);	
+	// 	//	PrintToChatAll("SOUND!--");
+	// 		return Plugin_Changed;	
+	// 	}
 		
-	}
+	// }
 	return Plugin_Continue;
 }
 
@@ -124,7 +120,7 @@ public OnMapStart()
 	PrecacheSound(RIGHTFOOT);
 	PrecacheSound(RIGHTFOOT1);
 
-	PrecacheSound(GUNFIRE);
+	// PrecacheSound(GUNFIRE);
 
 }
 
@@ -178,21 +174,20 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , ROBOT_STATS);
+	PrintHintText(client , ROBOT_TIPS);
 }
 
 stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
 	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action:Timer_Switch(Handle:timer, any:client)
@@ -201,9 +196,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	GiveGiantDemoKnight(client);
 }
 
-#define BlastDefense 30863
-#define BlastBlocker 30945
-
+#define Tartan 30334
+#define Bombardier 830
+#define Dustcatcher 30788
 stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
@@ -216,52 +211,31 @@ stock GiveGiantDemoKnight(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 
-		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 1150, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 206, 9, 1, 2, 0);
+		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
 
-
-		CreateRoboHat(client, BlastDefense, 10, 6, 3329330.0, 0.75, -1.0); 
-		CreateRoboHat(client, BlastBlocker, 10, 6, 3329330.0, 0.75, -1.0); 
+		CreateRoboHat(client, Tartan, 10, 6, 15185211.0, 0.75, -1.0); 
+		CreateRoboHat(client, Bombardier, 10, 6, 15185211.0, 0.75, -1.0); 
+		CreateRoboHat(client, Dustcatcher, 10, 6, 15185211.0, 0.75, -1.0); 
 		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
 		//CreateHat(client, 30945, 10, 6, false);//blast locker
-
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		TF2CustAttr_SetString(client, "projectile-size", "size=1.75 update-hitbox=1");
+		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
-			// TF2Attrib_RemoveAll(Weapon1);
-
-			
-			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
-			// TF2Attrib_SetByName(Weapon1, "clip size penalty", 4.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
-			// TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
-			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.0);
+			//TF2Attrib_RemoveAll(Weapon1);
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
+			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.75);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.5);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.8);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.75);
-			TF2Attrib_SetByName(Weapon1, "stickybomb charge rate", 0.05);
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			
-			// SetEntityRenderColor(Weapon1, 50,205,50,155);
-			// //SetEntityRenderFx(Weapon1, RENDERFX_HOLOGRAM);
-			// SetEntityRenderMode(Weapon1, RENDER_TRANSTEXTURE);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.4);
+			TF2CustAttr_SetString(Weapon1, "knockback modifier", "2.5");
 		}
-	}
-}
-
-public void OnEntityCreated(int iEntity, const char[] sClassName) 
-{
-	if (StrContains(sClassName, "tf_projectile") == 0)
-	{
-		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-	}
-	
-}
-
-public void Hook_OnProjectileSpawn(iEntity) {
-	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.4);
 	}
 }
 

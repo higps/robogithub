@@ -208,6 +208,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
+	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "metal regen", 200.0);
 	// TF2Attrib_SetByName(client, "building cost reduction", 2.5);
 	TF2Attrib_SetByName(client, "mod teleporter cost", 9.0);
@@ -290,8 +291,8 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", 0.5);
 			TF2Attrib_SetByName(Weapon2, "damage bonus", 1.5);			
-			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.5);
-			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.5);
+			// TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.5);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 1.5);
 			TF2Attrib_SetByName(Weapon2, "weapon spread bonus",	0.25);
 			TF2Attrib_SetByName(Weapon2, "engineer building teleporting pickup", 10.0);
 			// TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);

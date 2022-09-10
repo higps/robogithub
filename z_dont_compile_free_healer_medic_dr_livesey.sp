@@ -119,7 +119,7 @@ MakeGiantMedic(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GMEDIC);
    	
-	int iHealth = 1410;
+	int iHealth = 2210;
 	int MaxHealth = 150;
 	int iAdditiveHP = iHealth - MaxHealth;
    
@@ -209,12 +209,13 @@ stock GiveGiantMedic(client)
 			//TF2Attrib_RemoveAll(Weapon3);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.3);
-			// TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.5);
+			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.25);
 			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 			TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 allow-overheal=0");
 			
 		}
+		g_healcount = 0;
 	}
 }
 
@@ -302,6 +303,7 @@ void DrawHUD(int client)
 	isready = false;
 
 	TF2_AddCondition(client, TFCond_CritHype, g_duration + g_organ_bonus);
+	TF2_AddCondition(client, TFCond_RuneHaste, g_duration + g_organ_bonus);
 	// PrintToChatAll("SELF BUFF DURATION %f", GetOrganBonus(client)); 
 	g_healcount = 0;
 	SetEntProp(client, Prop_Send, "m_iDecapitations", 0);
@@ -384,7 +386,7 @@ public bool IsKritzed(int client){
 
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
-if (IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
+	if (IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
 	{
 		if(!TF2_IsPlayerInCondition(attacker, TFCond_CritHype))
 		{
@@ -441,7 +443,13 @@ public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& da
 			{
 			float reduced_duration = (g_duration / 2.0);
 			//PrintToChatAll("Target Duration %f", reduced_duration);
+<<<<<<< Updated upstream
 			TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration / 2);
+=======
+			TF2_AddCondition(target, TFCond_SpeedBuffAlly, reduced_duration / 2);
+			TF2_AddCondition(target, TFCond_Buffed, reduced_duration / 2);
+			
+>>>>>>> Stashed changes
 			}
 
 

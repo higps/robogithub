@@ -8,12 +8,11 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Sentry Buster"
+#define ROBOT_NAME	"King Sentry Buster"
 #define ROBOT_CLASS "Buster"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_SUBCLASS "Sentry Buster"
-#define ROBOT_DESCRIPTION "Touch sentries to blow up"
-#define ROBOT_TIPS "Hit enemies, touch sentries, or taunt to activate the explosion"
+#define ROBOT_DESCRIPTION ""
 #define ROBOT_COST 2
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
@@ -224,8 +223,8 @@ void MakeBuster(client)
 	int MaxHealth = 175;
 	int iAdditiveHP = iHealth - MaxHealth;
 	TF2_SetHealth(client, iHealth);
-
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	float scale = 1.75;
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
@@ -241,8 +240,8 @@ void MakeBuster(client)
 	TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-
-	UpdatePlayerHitbox(client, 1.75);
+	// TF2Attrib_SetByName(client, "head scale", 0.15);
+	UpdatePlayerHitbox(client, scale);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
@@ -453,6 +452,10 @@ void ClientSwitch(int client)
 		GiveGiantDemoKnight(client);
 }
 
+#define KingTavish 342
+#define KingOfScotland 874
+#define CoolBreeze 979
+
 stock void GiveGiantDemoKnight(int client)
 {
 	if (IsValidClient(client))
@@ -461,22 +464,43 @@ stock void GiveGiantDemoKnight(int client)
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
-		CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
+		
+		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
+		
+		CreateRoboWeapon(client, "tf_weapon_sword", 132, 6, 1, 2, 0);
+		// int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		// if(IsValidEntity(Weapon1))
+		// {
+		// 	TF2Attrib_RemoveAll(Weapon1);
+		// 	TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.0);
+		// 	TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.0);
+		// 	TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=1.25 frequency=1.5 range=400.0");
+		// 	SetEntProp(Weapon1, Prop_Send, "m_iDetonated", 1);
+		// 	SetEntPropFloat(Weapon1, Prop_Send, "m_flModelScale", 0.01);
+		// }
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		if(IsValidEntity(Weapon1))
+		CreateRoboHat(client, KingTavish, 10, 6, 0.0, 1.0, 1.0); 
+		CreateRoboHat(client, KingOfScotland, 10, 6, 0.0, 1.0, 1.0); 
+		CreateRoboHat(client, CoolBreeze, 10, 6, 0.0, 1.0, 1.0); 
+	
+		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		if(IsValidEntity(Weapon3))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.0);
-			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=1.25 frequency=1.5 range=400.0");
-			SetEntProp(Weapon1, Prop_Send, "m_iDetonated", 1);
+			//TF2Attrib_RemoveAll(Weapon3);
 			
-			
-			SetEntPropFloat(Weapon1, Prop_Send, "m_flModelScale", 0.01);
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
+			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
+			TF2Attrib_SetByName(Weapon3, "charge time increased", 10.0);		
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.8);			
+			// TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
+			TF2Attrib_SetByName(Weapon3, "mult charge turn control", 20.0);		
+			TF2Attrib_SetByName(Weapon3, "kill refills meter", 1.0);		
+			TF2Attrib_SetByName(Weapon3, "heal on kill", 150.0);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
 		}
 	}
+	
 }
 
 public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
