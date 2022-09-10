@@ -147,6 +147,7 @@ public void OnPluginStart()
 
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
     RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
+    RegConsoleCmd("sm_join", Command_Volunteer, "Volunters you to be a giant robot");
 
     LoadVipSteamIds();    
     LoadQueuePointsFromFile();    
@@ -558,6 +559,9 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         _queuePoints.GetValue(steamId, queuePoints);
         state.QueuePoints = queuePoints;
         SMLogTag(SML_VERBOSE, "%L with steamid %s has %i Queuepoints", i, steamId, queuePoints);
+        // PrintToChatAll("%L has %i Queuepoints", i, queuePoints);
+        // // PrintCenterText(i, "You have %i points", queuePoints);
+        // PrintToConsoleAll("%L has %i Queuepoints", i, queuePoints);
 
         if (!_volunteered[i])
         {
