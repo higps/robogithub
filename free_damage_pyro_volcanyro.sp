@@ -5,6 +5,7 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Volcanyro"
@@ -225,6 +226,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", 1.25); //65 damage per hit, allowing him to 4 shot unhealed Level 3 buildings instead of 5
 			TF2Attrib_SetByName(Weapon3, "weapon burn dmg reduced", 0.5); //Since it crits, this should do about 7.5 per tick instead of 13 per tick
+			TF2CustAttr_SetString(Weapon3,"spawn-fireballs", "damage=65.0 range=350.0 projectiles=9 firetime=5.0 angle=160 only-yaw=1 random-spread=0");
+			
 	}
 }
 }
