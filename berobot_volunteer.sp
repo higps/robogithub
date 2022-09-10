@@ -407,7 +407,8 @@ int Native_GetRandomVolunteer(Handle plugin, int numParams)
         return -1;
     }
 
-    int clientId = pickedVolunteers.Get(0);
+    VolunteerState state = pickedVolunteers.Get(0);
+    int clientId = state.ClientId;
     SMLogTag(SML_VERBOSE, "Native_GetRandomVolunteer picked %L", clientId);
 
     delete pickedVolunteers;
