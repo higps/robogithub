@@ -7,13 +7,12 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Bonk Scout"
-#define ROBOT_ROLE "Disruptor"
+#define ROBOT_NAME	"Bat Attack"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Scout"
-#define ROBOT_SUBCLASS "Projectiles"
-#define ROBOT_DESCRIPTION "Bonk+Rapid Sandman"
-#define ROBOT_DETAILS "Use bonk to take sentry fire\nShoot a ball to begin generating more\n+3 Coins on death"
-#define ROBOT_COST 2.0
+#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_DESCRIPTION "High Damage Melee swings"
+#define ROBOT_TIPS "You are fast and swing faster"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -24,6 +23,10 @@
 #define LEFTFOOT1       ")mvm/giant_scout/giant_scout_step_03.wav"
 #define RIGHTFOOT       ")mvm/giant_scout/giant_scout_step_02.wav"
 #define RIGHTFOOT1      ")mvm/giant_scout/giant_scout_step_04.wav"
+
+#define PRINNYPOUCH 30757
+#define GRAYBANNS 30104
+#define BROTHEROFARMS 30066
 
 public Plugin:myinfo = 
 {
@@ -60,12 +63,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
-
-	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
-
-	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, restrictions, 3);
+	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -116,27 +114,27 @@ public Action:BossScout(clients[64], &numClients, String:sample[PLATFORM_MAX_PAT
 
 	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
 	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_01.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_03.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_02.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_04.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
+	if (StrContains(sample, "1.wav", false) != -1)
+	{
+		Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_01.wav");
+		EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "3.wav", false) != -1)
+	{
+		Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_03.wav");
+		EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "2.wav", false) != -1)
+	{
+		Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_02.wav");
+		EmitSoundToAll(sample, entity);
+	}
+	else if (StrContains(sample, "4.wav", false) != -1)
+	{
+		Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_04.wav");
+		EmitSoundToAll(sample, entity);
+	}
+	return Plugin_Changed;
 	}
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 
@@ -173,27 +171,34 @@ MakeGiantscout(client)
 	
 	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
+	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
-	//TF2Attrib_SetByName(client, "damage force increase", 10.0);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.5);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.25);
+	TF2Attrib_SetByName(client, "damage force reduction", 1.5);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.35);
+	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.35);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "increased jump height", 1.25);
+	
+	
+	TF2Attrib_SetByName(client, "increased jump height", 1.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	UpdatePlayerHitbox(client, 1.75);
+	TF2Attrib_SetByName(client, "self dmg push force increased", 3.0);
+	
+	UpdatePlayerHitbox(client, 1.5);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , ROBOT_DETAILS);
-	
+	PrintHintText(client, ROBOT_TIPS);
+	// SetEntProp(client, Prop_Send, "m_bForcedSkin", 1);
+	// SetEntProp(client, Prop_Send, "m_nForcedSkin", 0);
+
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -209,9 +214,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define BonkHelm 106
-#define TrackTerrorizer 827
-
+#define BattersBracers 30722
+#define CapedCrusader 30727
+#define TeufortKnight 30733
 
 stock GiveGiantPyro(client)
 {
@@ -223,57 +228,27 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_lunchbox_drink", 46, 6, 1, 1, 0);
-		CreateRoboWeapon(client, "tf_weapon_bat_wood", 44, 6, 1, 2, 0);
+
+		CreateRoboWeapon(client, "tf_weapon_bat", 0, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, BonkHelm, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, TrackTerrorizer, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, BattersBracers, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, CapedCrusader, 10, 6, 0.0, 1.0, 0.0);
+		CreateRoboHat(client, TeufortKnight, 10, 6, 0.0, 1.0, -1.0); 
+		
+		int Threerune = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		if(IsValidEntity(Weapon1))
+
+		if(IsValidEntity(Threerune))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 0.75);
-			TF2Attrib_SetByName(Weapon1, "increase buff duration", 0.15);
-			
+			TF2Attrib_RemoveAll(Threerune);
+			TF2Attrib_SetByName(Threerune, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Threerune, "dmg penalty vs players", 1.75);
+			TF2Attrib_SetByName(Threerune, "dmg penalty vs buildings", 0.25);
+			 
 		}
-
-
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		if(IsValidEntity(Weapon2))
-		{
-			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
-			// TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
-			TF2Attrib_SetByName(Weapon2, "maxammo grenades1 increased", 30.0);
-			TF2Attrib_SetByName(Weapon2, "effect bar recharge rate increased", 0.1);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.25);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 2.5);
-			//TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 10.0);
-			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
-
-					// new iOffset = GetEntProp(Weapon2, Prop_Send, "m_iPrimaryAmmoType", 1)*4;
-					// new iAmmoTable = FindSendPropInfo("CTFPlayer", "m_iAmmo");
-					// SetEntData(client, iAmmoTable+iOffset, 23, 0, true);
-			// float Hypemeter = GetEntPropFloat(Weapon2, Prop_Send, "m_flChargeMeter");
-			// PrintToChatAll("Hype was %f", Weapon2);
-			// SetEntPropFloat(client, Prop_Send, "m_flChargeMeter", 0.0);
-		}
-
-		TF2_SetWeaponAmmo(Weapon2, 30);
 	}
 }
-
+ 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 
-
-stock void TF2_SetWeaponAmmo(int weapon, int amount) {
-	int ammoType = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
-	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
-	
-	if (client > 0 && client <= MaxClients && ammoType != -1) {
-		SetEntProp(client, Prop_Send, "m_iAmmo", amount, 4, ammoType);
-	}
-}
