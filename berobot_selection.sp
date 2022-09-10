@@ -407,7 +407,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     return APLRes_Success;
 }
 
-public void MM_OnClientReseting(int clientId)
+public void MM_OnClientResetting(int clientId)
 {
     g_ClientIsRepicking[clientId] = false;
     g_selections[clientId][0] = "";

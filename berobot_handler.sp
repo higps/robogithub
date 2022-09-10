@@ -90,7 +90,7 @@ int g_TimeBombTime[MAXPLAYERS+1] = { 0, ... };
 int g_PlayerHealth[MAXPLAYERS +1] = {-1, ...};
 
 GlobalForward _enabledChangedForward;
-GlobalForward _clientReseting;
+GlobalForward _clientResetting;
 GlobalForward _modeResetRequestedForward;
 
 // float g_CV_flSpyBackStabModifier;
@@ -200,7 +200,7 @@ public void OnPluginStart()
     
 
     _enabledChangedForward = new GlobalForward("MM_OnEnabledChanged", ET_Ignore, Param_Cell);
-    _clientReseting = new GlobalForward("MM_OnClientReseting", ET_Ignore, Param_Cell);
+    _clientResetting = new GlobalForward("MM_OnClientResetting", ET_Ignore, Param_Cell);
     _modeResetRequestedForward = new GlobalForward("MM_ModeResetRequested", ET_Ignore);
 
     RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
@@ -216,6 +216,8 @@ public void OnPluginStart()
     RegConsoleCmd("sm_changerobot", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_chngrbt", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_cr", Command_ChangeRobot, "change your robot");
+    RegConsoleCmd("sm_bot", Command_ChangeRobot, "change your robot");
+    RegConsoleCmd("sm_robot", Command_ChangeRobot, "change your robot");
 
 
     RegConsoleCmd("sm_mount", Command_MountRobot, "get a taunt mount for your robot");
@@ -399,7 +401,7 @@ void Reset(int client)
     if (index >= 0)
         g_Volunteers.Erase(index);
 
-    Call_StartForward(_clientReseting);
+    Call_StartForward(_clientResetting);
     Call_PushCell(client);
     Call_Finish();
 
