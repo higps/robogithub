@@ -189,7 +189,7 @@ stock GiveBigRoboJbird(client)
 		
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
 			// TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
-			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 1.75);
+			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 10.0);
 			
 			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
