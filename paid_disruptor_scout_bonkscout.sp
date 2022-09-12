@@ -248,8 +248,8 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
 			TF2Attrib_SetByName(Weapon2, "maxammo grenades1 increased", 30.0);
 			TF2Attrib_SetByName(Weapon2, "effect bar recharge rate increased", 0.1);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.25);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 2.5);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.15);
+			TF2Attrib_SetByName(Weapon2, "damage bonus", 2.5);
 			//TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 10.0);
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 
