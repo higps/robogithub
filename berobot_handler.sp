@@ -1636,7 +1636,7 @@ public Action OnClientCommand(int client, int args)
 
     /* Get the argument */
     GetCmdArg(0, cmd, sizeof(cmd));
-    if(strcmp(cmd, "jointeam", true) == 0 || strcmp(cmd, "autoteam", true) == 0 )
+    if(strcmp(cmd, "jointeam", true) == 0 || strcmp(cmd, "autoteam", true) == 0 || strcmp(cmd, "spectate", true) == 0)
     {
         TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
         
