@@ -66,9 +66,13 @@ int g_EngineerRevengeCrits[MAXPLAYERS + 1] = {0, ...};
 
 //bool g_Enabled;
 
-float g_Attribute_Display_CollDown = 0.1;
+float g_Attribute_Display_CollDown = 5.0;
 float g_Attribute_Display[MAXPLAYERS + 1] = {0.0, ...};
 bool b_Attribute_Display[MAXPLAYERS + 1] = {true, ...};
+
+
+#define SPY_ROBOT_STAB	"weapons/saxxy_impact_gen_01.wav"
+// #define SPY_ROBOT_STAB	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 
 public Plugin myinfo =
 {
@@ -101,7 +105,13 @@ public void OnPluginStart()
     RegConsoleCmd("sm_mminfo", Command_ToggleMMHumanDisplay, "Toggle Manned Machines Stats Display for humans");
 //     HookEvent("object_destroyed", Event_Object_Destroyed, EventHookMode_Post);
 //     HookEvent("object_detonated", Event_Object_Detonated, EventHookMode_Post);
+
 }
+public void OnMapStart()
+{
+    PrecacheSound(SPY_ROBOT_STAB);
+}
+
 
 public Action Command_ToggleMMHumanDisplay(int client, int args)
 {
@@ -114,6 +124,7 @@ public Action Command_ToggleMMHumanDisplay(int client, int args)
         b_Attribute_Display[client] = true;
         MC_PrintToChatEx(client, client, "{orange}Chat Display of stats: on");
     }
+    return Plugin_Continue;
 }
 
 public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
@@ -451,12 +462,20 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     }else{
                     
                     damage = g_CV_flSpyBackStabModifier;    
+
+
                     }
                     
-
+                    //Bonus dmg vs heavies
+                    if (TF2_GetPlayerClass(victim) == TFClass_Heavy)
+                    {
+                        damage *= 1.2;
+                    }
 
                     critType = CritType_Crit;
                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                    EmitSoundToAll(SPY_ROBOT_STAB, victim);
+                    // EmitSoundToClient(victim, SPY_ROBOT_STAB);
                     return Plugin_Changed;
                 }
 
@@ -718,9 +737,10 @@ public void HeatmakerRage(int attacker)
 
 void DisplayMMStats(int client, char[] chat_display)
 {
-    if (g_Attribute_Display[client] < GetEngineTime() && b_Attribute_Display[client])
+    if (g_Attribute_Display[client] < GetEngineTime() && b_Attribute_Display[client] && !strlen(chat_display) < 1)
     {
-        //MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs: - Type {orange}/mminfo {teamcolor}to toggle this information on/off %s",chat_display);
+        MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs:%s",chat_display);
+        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}/mminfo {teamcolor}to toggle this information on/off");
         g_Attribute_Display[client] = GetEngineTime() + g_Attribute_Display_CollDown;
     }
 }
@@ -916,7 +936,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsRevolverOrEnforcer(Weapon1))
         {
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Enforcer: {orange}Projectile penetration {teamcolor}bonus",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus",chat_display);
         }
 
         if (IsAmbassador(Weapon1))
@@ -1021,6 +1041,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots move speed by -70%{teamcolor} for 1.5 seconds on hit",chat_display);
         }
+        // if (IsSapper(Weapon2))
+        // {
+        //     // Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sapper: {orange}Stuns robots{teamcolor} or some shit",chat_display);
+        //     // TF2Attrib_SetByName(Weapon2, "robo sapper", 4.0);
+            
+        // }
         DisplayMMStats(client, chat_display);
 
     }
@@ -1744,6 +1770,20 @@ bool IsMadMilk(int weapon)
 	return false;
 }
 
+// bool IsSapper(int weapon)
+// {
+//     if(weapon == -1 && weapon <= MaxClients) return false;
+	
+// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+// 	{
+// 		//If others are added, add them here
+// 	case 735, 736: 
+// 		{
+// 			return true;
+// 		}
+// 	}
+// 	return false;
+// }
 
 
 //Functions to deal with different on kill to on hit stuff

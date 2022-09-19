@@ -235,6 +235,9 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.4);
 			TF2CustAttr_SetString(Weapon1, "knockback modifier", "2.5");
+			// TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=1500.0 homing_mode=0 projectilename=tf_projectile_pipe");
+
+			
 		}
 	}
 }
