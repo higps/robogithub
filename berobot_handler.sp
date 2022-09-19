@@ -343,6 +343,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("SetRobot", Native_SetRobot);
     CreateNative("ForceRobot", Native_ForceRobot);
     CreateNative("GetRobotTeam", Native_GetRobotTeam);
+    CreateNative("IsMMEnabled", Native_IsMMEnabled);
 
     return APLRes_Success;
 }
@@ -854,7 +855,10 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     return Plugin_Continue;
 }
 
-
+public any Native_IsMMEnabled(Handle plugun, int numParams)
+{
+    return g_Enable;
+}
 public any Native_GetRobotTeam(Handle plugin, int numParams)
 {
     return g_RoboTeam;

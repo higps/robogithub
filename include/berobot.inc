@@ -232,6 +232,13 @@ native int CreateRobot(char[] name, int client, char target[32]);
  * 
  * */
 native int GetRobotTeam();
+
+
+/**
+ * Returns an int of the cvar sm_mm_enable is 0 or 1
+ * 
+ * */
+native int IsMMEnabled();
 /**
  * SDKCall for CBasePlayer::EquipWearable
  * 

@@ -100,6 +100,8 @@ void SetRoboCapTeam()
     if (!_enabled)
         return;
 
+    if (!IsMMEnabled())
+        return;
     //int count = GetClientCount();
 
     // int Spectate = GetTeamClientCount(1);
