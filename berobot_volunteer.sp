@@ -426,9 +426,9 @@ int Native_StartAutomaticVolunteerVote(Handle plugin, int numParams)
         if (_pickedOption[i])
         {            
             if (_volunteered[i])
-                MM_PrintToChat(i, "You already volunteered to be a robot. type '!volunteer' to cancle your volunteer-state.");
+                MM_PrintToChat(i, "You already volunteered to be a robot. type '!join' to cancel your volunteer-state.");
             else
-                MM_PrintToChat(i, "You already decided not volunteering to be a robot. type '!volunteer' to volunteer again.");
+                MM_PrintToChat(i, "You already decided not volunteering to be a robot. type '!join' to volunteer again.");
             continue;
         }
         
