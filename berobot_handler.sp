@@ -428,7 +428,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         // {
         //     MC_PrintToChatEx(client, client, "{teamcolor}You're a robot on the robot team!");
         // }
-        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!cr{teamcolor} or {orange}change class{teamcolor} in spawn to change robot!");
+        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!bot{teamcolor} or {orange}change class{teamcolor} in spawn to change robot!");
         MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!mt{teamcolor} get a mount to move around faster");
         if(g_cv_bDebugMode)PrintToChatAll("%N spawned, with %i health from previous life", client, g_PlayerHealth[client]);
         //FakeClientCommand(client, "tf_respawn_on_loadoutchanges 0");
@@ -1143,7 +1143,7 @@ public Action Command_RoboVote(int client, int args)
 
         if (g_RoboMode == 1)
         {
-            MC_PrintToChatEx(client, client,"[{orange}SM{default}]{teamcolor} Voting is disabled. Use {green}!volunteer{green} to become a robot, game starts when enough volunteers are reached");
+            MC_PrintToChatEx(client, client,"[{orange}SM{default}]{teamcolor} Voting is disabled. Use {green}!join{green} to become a robot, game starts when enough volunteers are reached");
             return;
         }
         
@@ -1784,7 +1784,7 @@ public Action cmd_blocker(int client, const char[] command, int argc)
     }
     else if (IsAnyRobot(client) && g_BossMode && IsPlayerAlive(client))
     {
-        PrintCenterText(client,"Unable to change class. Use !cr to change robot or !stuck if you are stuck");
+        PrintCenterText(client,"Unable to change class. Use !bot to change robot or !stuck if you are stuck");
 
         SetClientRepicking(client, true);
         ChooseRobot(client);
@@ -1911,7 +1911,7 @@ bool AddRandomVolunteer()
     {
         SMLogTag(SML_VERBOSE, "no volunteer found notifying players of open spot", newVolunteer);
         int islots = g_RoboCapTeam - g_Volunteers.Length;
-        PrintToChatAll("A new robot-slot is available. There is now %i available robot slots remains. Type !volunteer to become a giant robot", islots);
+        PrintToChatAll("A new robot-slot is available. There is now %i available robot slots remains. Type !join to become a giant robot", islots);
 
         return false;
     }
