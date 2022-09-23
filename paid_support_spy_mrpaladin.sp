@@ -13,7 +13,7 @@
 #define ROBOT_NAME	"MrPaladin"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Spy"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_SUBCLASS "Support"
 #define ROBOT_DESCRIPTION "Turn invis on backstab"
 #define ROBOT_COST 1.5
 
@@ -118,7 +118,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 356 && customkill == 2)
 	{
-		TF2_AddCondition(attacker, TFCond_StealthedUserBuffFade, 5.0);
+		TF2_AddCondition(attacker, TFCond_Stealthed, 5.0);
 	}
 
 }

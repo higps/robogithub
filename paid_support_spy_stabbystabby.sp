@@ -13,7 +13,7 @@
 #define ROBOT_NAME	"StabbyStabby"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Spy"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_SUBCLASS "Support"
 #define ROBOT_DESCRIPTION "Rapid fire kunai"
 #define ROBOT_TIPS "Infinite Cloak\nRapid stabs\nInstant decloak!\nHeal from sapping buildings"
 #define ROBOT_COST 1.5

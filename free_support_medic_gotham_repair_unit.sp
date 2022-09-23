@@ -9,9 +9,10 @@
 #include <sdkhooks>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Dr Livesey"
+#define ROBOT_NAME	"Gotham Repair Unit"
 #define ROBOT_ROLE "Healer"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_CLASS "Medic"
+#define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Vita-Saw Medic Healer"
 #define ROBOT_TIPS "Each organ gives 0.5 additional self-buff duration" 
 
@@ -46,7 +47,7 @@ public OnPluginStart()
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
-    robot.class = "Medic";
+    robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
@@ -180,8 +181,12 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 
-#define FOPPISH 878
-#define POWDERED 30069
+// #define FOPPISH 878
+// #define POWDERED 30069
+
+#define BattersBracers 30722
+#define CapedCrusader 30727
+#define TeufortKnight 30733
 
 stock GiveGiantMedic(client)
 {
@@ -197,9 +202,13 @@ stock GiveGiantMedic(client)
 		//CreateRoboWeapon(client, "tf_wearable_demoshield", 131, 6, 1, 1, 0);
 		// CreateRoboWeapon(client, "tf_weapon_bonesaw", 8, 6, 1, 2, 0);
 
-		CreateRoboHat(client, FOPPISH, 10, 6, 3100495.0, 1.0, -1.0); 
-		CreateRoboHat(client, POWDERED, 10, 6, 6901050.0, 1.0, -1.0); 
-		CreateRoboHat(client, 30149, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, BattersBracers, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, CapedCrusader, 10, 6, 0.0, 1.0, 1.0);
+		CreateRoboHat(client, TeufortKnight, 10, 6, 0.0, 1.0, -1.0);
+		
+		// CreateRoboHat(client, FOPPISH, 10, 6, 3100495.0, 1.0, -1.0); 
+		// CreateRoboHat(client, POWDERED, 10, 6, 6901050.0, 1.0, -1.0); 
+		// CreateRoboHat(client, 30149, 10, 6, 0.0, 1.0, -1.0);
 
 		//int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		 int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -270,7 +279,7 @@ void DrawHUD(int client)
 
 	if (TF2_IsPlayerInCondition(client, TFCond_CritHype))
 	{
-	Format(sHUDText, sizeof(sHUDText), "Speed Injection Active! %i", iCountDownActive);
+	Format(sHUDText, sizeof(sHUDText), "Mini-Crit Injection! %i", iCountDownActive);
 	//Format(sHUDText, sizeof(sHUDText), "Speed Injection Active!\n               %s", sProgress);
 	SetHudTextParams(1.0, 0.8, 0.5, 255, 69, 0, 255);
 	}
@@ -278,12 +287,12 @@ void DrawHUD(int client)
 	{
 
 
-	Format(sHUDText, sizeof(sHUDText), "Speed Injection Ready!");
+	Format(sHUDText, sizeof(sHUDText), "Mini-Crit Injection: Ready!");
 	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
 
 	}else
 	{
-	Format(sHUDText, sizeof(sHUDText), "Speed Injection: %i", iCountDown);
+	Format(sHUDText, sizeof(sHUDText), "Mini-Crit Injection: %i", iCountDown);
 	SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
 
 
@@ -303,6 +312,8 @@ void DrawHUD(int client)
 	isready = false;
 
 	TF2_AddCondition(client, TFCond_CritHype, g_duration + g_organ_bonus);
+	TF2_AddCondition(client, TFCond_Buffed, g_duration + g_organ_bonus);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, g_duration + g_organ_bonus);
 	TF2_AddCondition(client, TFCond_RuneHaste, g_duration + g_organ_bonus);
 	// PrintToChatAll("SELF BUFF DURATION %f", GetOrganBonus(client)); 
 	g_healcount = 0;
@@ -337,51 +348,6 @@ public bool IsKritzed(int client){
 	}
 }    
 
-// public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroadcast)
-// {
-// 	int healer = GetClientOfUserId(GetEventInt(event, "healer"));
-// 	int target = GetClientOfUserId(GetEventInt(event, "target"));
-
-// 	if (IsRobot(healer, ROBOT_NAME))
-// 	{
-
-// 	if(!TF2_IsPlayerInCondition(healer, TFCond_CritHype))g_healcount++;
-
-
-// 	//PrintToChatAll("%N Healed %N, healcount was %i ", healer, target, g_healcount);
-
-// 	if (TF2_IsPlayerInCondition(healer, TFCond_CritHype))
-// 	{
-// 	float reduced_duration = (g_duration / 2.0) + 1.0;
-
-
-
-// 	if (IsRobot(target, "Pancop"))
-// 	{
-// 	TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration);
-// 	}else if (IsRobot(target, "Riotcop"))
-// 	{
-// 	TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration);
-// 	}else
-// 	{
-// 	TF2_AddCondition(target, TFCond_RuneStrength, reduced_duration);
-// 	}
-
-
-
-
-// 	if (IsKritzed(healer))
-// 	{
-// 	TF2_AddCondition(target, TFCond_CritCanteen, reduced_duration);
-// 	}
-
-
-// 	// PrintToChatAll("Duration %f", reduced_duration);
-// 	}
-
-// 	}
-// 	return Plugin_Continue;
-// }
 
 
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
@@ -441,15 +407,12 @@ public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& da
 
 			if (TF2_IsPlayerInCondition(healer, TFCond_CritHype))
 			{
-			float reduced_duration = (g_duration / 2.0);
+			float reduced_duration = ((g_duration / 2.0) + g_organ_bonus);
 			//PrintToChatAll("Target Duration %f", reduced_duration);
-<<<<<<< Updated upstream
-			TF2_AddCondition(target, TFCond_RuneHaste, reduced_duration / 2);
-=======
-			TF2_AddCondition(target, TFCond_SpeedBuffAlly, reduced_duration / 2);
-			TF2_AddCondition(target, TFCond_Buffed, reduced_duration / 2);
+			TF2_AddCondition(target, TFCond_SpeedBuffAlly, reduced_duration);
+			TF2_AddCondition(target, TFCond_Buffed, reduced_duration);
+			TF2_AddCondition(target, TFCond_RuneRegen, reduced_duration);
 			
->>>>>>> Stashed changes
 			}
 
 

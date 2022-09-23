@@ -11,7 +11,7 @@
 #define ROBOT_NAME	"Cloaker"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Banner"
+#define ROBOT_SUBCLASS "Support"
 #define ROBOT_DESCRIPTION "Cloaker"
 //#define GSOLDIER             "models/bots/spy/bot_spy.mdl"
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
