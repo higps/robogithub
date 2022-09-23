@@ -10,7 +10,7 @@
 #define ROBOT_NAME	"Kristianma"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Pyro"
-#define ROBOT_SUBCLASS "Flames"
+#define ROBOT_SUBCLASS "Jumper"
 #define ROBOT_DESCRIPTION "Detonator, Axtinguisher"
 
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"

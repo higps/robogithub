@@ -11,7 +11,7 @@
 #define ROBOT_NAME	"Funke"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Scout"
-#define ROBOT_SUBCLASS "Projectile"
+#define ROBOT_SUBCLASS "Fast"
 #define ROBOT_DESCRIPTION "Rapid Cleaver"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"

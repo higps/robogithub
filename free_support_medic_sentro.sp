@@ -13,8 +13,8 @@
 #define ROBOT_NAME	"Sentro"
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
-#define ROBOT_SUBCLASS "Medigun"
-#define ROBOT_DESCRIPTION "Can throw fireballs"
+#define ROBOT_SUBCLASS "Healer"
+#define ROBOT_DESCRIPTION "AOE Heal uber + Fireball"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

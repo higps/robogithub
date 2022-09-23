@@ -14,7 +14,7 @@
 #define ROBOT_NAME	"BatBot"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Spy"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_SUBCLASS "Jumper"
 #define ROBOT_DESCRIPTION "You have grappling hook"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"

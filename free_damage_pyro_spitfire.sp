@@ -11,7 +11,7 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
-#define ROBOT_DESCRIPTION "Fire Shotgun, Homewrecker"
+#define ROBOT_DESCRIPTION "Fire Shotgun"
 
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

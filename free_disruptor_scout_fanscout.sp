@@ -10,7 +10,7 @@
 #define ROBOT_NAME	"Fan Scout"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Scout"
-#define ROBOT_SUBCLASS "Hitscan"
+#define ROBOT_SUBCLASS "Fast"
 #define ROBOT_DESCRIPTION "High Pushback"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"

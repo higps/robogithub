@@ -11,7 +11,7 @@
 #define ROBOT_NAME	"Capt Conch"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Banner"
+#define ROBOT_SUBCLASS "Support"
 #define ROBOT_DESCRIPTION "Conch"
 #define ROBOT_COST 1.0
 

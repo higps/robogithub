@@ -10,7 +10,7 @@
 #define ROBOT_NAME	"Skymin Slash"
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
-#define ROBOT_SUBCLASS "Medigun"
+#define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Dmg Reflect Vaccinator"
 #define ROBOT_TIPS "Vaccinator: 15 percent passive resist\n 10 percent resistance when deployed\nGet the Reflect Damage rune when deploying uber on teammate"
  

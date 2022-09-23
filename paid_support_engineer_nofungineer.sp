@@ -202,8 +202,12 @@ stock GiveBigRoboDane(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 2.0);
-			// TF2Attrib_SetByName(Weapon1, "clip size penalty", 2.5);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.25);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
+			
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
+			
 			TF2Attrib_SetByName(Weapon1, "subtract victim medigun charge on hit", 100.0);
 			TF2Attrib_SetByName(Weapon1, "subtract victim cloak on hit", 100.0);
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
@@ -223,7 +227,8 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
 			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 4.0);
-			// TF2Attrib_SetByName(Weapon3, "single wep deploy time increased", 1.3);
+			
+			TF2Attrib_SetByName(Weapon3, "mod wrench builds minisentry", 0.0);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
 			// TF2Attrib_SetByName(Weapon3, "engy sentry radius increased", 100.0);
@@ -233,7 +238,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 4.0);
 
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
-			TF2CustAttr_SetString(client, "robot engineer", "sentry_scale=1.75 dispenser_scale=1.25 infinite_ammo=0 sentries=1 dispensers=1 remove_all_sappers=0 yeet=0");
+			TF2CustAttr_SetString(client, "robot engineer", "sentry_scale=1.35 dispenser_scale=1.25 infinite_ammo=1 sentries=3 dispensers=2 remove_all_sappers=1 yeet=0");
 			
 		}
 		

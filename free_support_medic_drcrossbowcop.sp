@@ -11,7 +11,7 @@
 #define ROBOT_NAME	"Dr Crossbow Cop"
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
-#define ROBOT_SUBCLASS "Projectile"
+#define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Strength Buff Crossbow"
 #define ROBOT_TIPS "Strong Heal Bolts\nActivate Strength Bolts with M2\nProvide special buffs to other Cop bots"
  
@@ -95,7 +95,7 @@ MakeGiantMedic(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GMEDIC);
    
-	int iHealth = 2500;
+	int iHealth = 2200;
 	int MaxHealth = 150;
 	int iAdditiveHP = iHealth - MaxHealth;
    
@@ -103,7 +103,7 @@ MakeGiantMedic(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+	// TF2Attrib_SetByName(client, "move speed penalty", 0.6);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.75);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -182,14 +182,14 @@ stock GiveGiantMedic(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.35);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.85);
+			// TF2Attrib_SetByName(Weapon1, "damage bonus", 1.15);
+			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.95);
 
 			TF2Attrib_SetByName(Weapon1, "mark for death", 5.0);
-			//TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 50.0);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.01);
 
-			// TF2Attrib_SetByName(Weapon1, "clip size bonus", 6.0);
-			TF2Attrib_SetByName(Weapon1, "Reload time decreased", 1.65);
+			TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
+			// TF2Attrib_SetByName(Weapon1, "Reload time decreased", 1.65);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
 			// TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
@@ -201,7 +201,7 @@ stock GiveGiantMedic(client)
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon2, "heal on hit for slowfire", 50.0);
 		}
 		

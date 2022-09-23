@@ -10,7 +10,7 @@
 #define ROBOT_NAME	"Theory-Y"
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
-#define ROBOT_SUBCLASS "Medigun"
+#define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Vac-eliminator"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
@@ -189,7 +189,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			// TF2Attrib_SetByName(Weapon1, "health drain", 0.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.25);
+			// TF2Attrib_SetByName(Weapon1, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);

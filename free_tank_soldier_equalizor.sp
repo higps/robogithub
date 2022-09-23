@@ -11,7 +11,7 @@
 #define ROBOT_NAME	"Equalizor"
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Banner"
+#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Equalizer, base jumper, speed battalion buff"
 #define ROBOT_TIPS "Taunt to get airborne to use the base jumper\nBuild meter and buff your team!"
 
@@ -216,7 +216,7 @@ MakeGiantSoldier(client)
 
 	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
 
-	float scale = 1.65;
+	float scale = 1.75;
 	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);

@@ -11,7 +11,7 @@
 #define ROBOT_NAME	"Buff Bot"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Banner"
+#define ROBOT_SUBCLASS "Support"
 #define ROBOT_DESCRIPTION "Buff-Banner"
 #define ROBOT_COST 1.0
 

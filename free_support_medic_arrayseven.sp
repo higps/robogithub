@@ -9,7 +9,7 @@
 #define ROBOT_NAME	"Array Seven"
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
-#define ROBOT_SUBCLASS "Medigun"
+#define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Kritzkrieg"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"

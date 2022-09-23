@@ -12,7 +12,7 @@
 #define ROBOT_NAME	"Skeeter"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Sniper"
-#define ROBOT_SUBCLASS "Hitscan"
+#define ROBOT_SUBCLASS "Support"
 #define ROBOT_DESCRIPTION "Knockback Sniper"
 #define ROBOT_TIPS "Your shots deal increased knockback on target"
 
@@ -193,10 +193,10 @@ stock GiveBigRoboJbird(client)
 			
 			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
-			TF2Attrib_SetByName(SniperRifle, "apply z velocity on damage", 450.0);
+			TF2Attrib_SetByName(SniperRifle, "apply z velocity on damage", 550.0);
 			TF2Attrib_SetByName(SniperRifle, "faster reload rate", 0.5);
 			
-			TF2Attrib_SetByName(SniperRifle, "heal on hit for rapidfire", 15.0);
+			TF2Attrib_SetByName(SniperRifle, "heal on hit for rapidfire", 25.0);
 			// TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
 			TF2CustAttr_SetString(SniperRifle, "knockback modifier", "4.0");
 			
