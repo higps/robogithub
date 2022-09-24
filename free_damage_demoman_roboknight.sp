@@ -158,7 +158,7 @@ MakeDemoKnight(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.85);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
@@ -221,6 +221,8 @@ stock GiveGiantDemoKnight(client)
 				TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);			
 				TF2Attrib_SetByName(iEntity2, "dmg taken from fire reduced", 1.0);			
 				TF2Attrib_SetByName(iEntity2, "dmg taken from blast reduced", 1.0);			
+						
+				
 
 				break;
 			}
@@ -234,11 +236,13 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
 			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 10.0);		
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.35);			
-			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.85);			
-			 
-			// TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
-			// TF2Attrib_SetByName(Weapon3, "mult charge turn control", 20.0);		
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.4);			
+			// TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.75);			
+			TF2Attrib_SetByName(Weapon3, "charge impact damage increased", 5.0);	
+			TF2Attrib_SetByName(Weapon3, "no charge impact range", 100.0);	
+			
+			// TF2Attrib_SetByName(Weapon3, "minicrits become crits", 1.0);		
+			TF2Attrib_SetByName(Weapon3, "mult charge turn control", 2.0);		
 			TF2Attrib_SetByName(Weapon3, "kill refills meter", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 150.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
@@ -253,7 +257,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Charging)
 		{	
 			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 750.0);
-
+			// TF2_AddCondition(client, TFCond_CritCanteen, 3.0);
 		}
 	
 }

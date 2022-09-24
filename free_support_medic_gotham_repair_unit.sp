@@ -26,7 +26,11 @@
  
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
+<<<<<<< Updated upstream
 int g_Heal_Bolts_Hits_Needed = 12;
+=======
+int g_Heal_Bolts_Hits_Needed = 16;
+>>>>>>> Stashed changes
 int g_healcount = 0;
 float g_duration = 8.0;
 float g_organ_duration_bonus_modifier = 2.0;
@@ -135,7 +139,6 @@ MakeGiantMedic(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.75);
@@ -152,18 +155,18 @@ MakeGiantMedic(client)
 	SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
 }
 
-// public TF2_OnConditionAdded(client, TFCond:condition)
-// {
-//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-//     {
-//        TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
-// 	   //TF2_RemoveCondition(client, TFCond_Taunting);
-// //	   TF2_AddCondition(client,TFCond_Charging, 2.5);
+public TF2_OnConditionRemoved(int client, TFCond:condition)
+{
+    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_RuneHaste)
+    {
+       TF2_AddCondition(client,TFCond_SpeedBuffAlly, 0.1);
+	   //TF2_RemoveCondition(client, TFCond_Taunting);
+//	   TF2_AddCondition(client,TFCond_Charging, 2.5);
 
 	
-// 	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-//     }
-// }
+	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+    }
+}
 
 
  
@@ -407,11 +410,10 @@ public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& da
 
 			if (TF2_IsPlayerInCondition(healer, TFCond_CritHype))
 			{
-			float reduced_duration = ((g_duration / 2.0) + g_organ_bonus);
-			//PrintToChatAll("Target Duration %f", reduced_duration);
-			TF2_AddCondition(target, TFCond_SpeedBuffAlly, reduced_duration);
-			TF2_AddCondition(target, TFCond_Buffed, reduced_duration);
-			TF2_AddCondition(target, TFCond_RuneRegen, reduced_duration);
+			float team_duration = g_duration  + g_organ_bonus;
+			//PrintToChatAll("Target Duration %f", team_duration);
+			TF2_AddCondition(target, TFCond_SpeedBuffAlly, team_duration);
+			TF2_AddCondition(target, TFCond_Buffed, team_duration);
 			
 			}
 

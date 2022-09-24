@@ -396,7 +396,7 @@ void SpawnBombs(int client, int attacker)
 
 
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
-float g_duration = 6.0;
+float g_duration = 12.0;
 float FireModeTimer = -1.0;
 float g_skill; 
 float g_skill_cooldown = 600.0;
