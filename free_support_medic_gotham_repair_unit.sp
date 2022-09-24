@@ -26,11 +26,7 @@
  
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-<<<<<<< Updated upstream
-int g_Heal_Bolts_Hits_Needed = 12;
-=======
 int g_Heal_Bolts_Hits_Needed = 16;
->>>>>>> Stashed changes
 int g_healcount = 0;
 float g_duration = 8.0;
 float g_organ_duration_bonus_modifier = 2.0;
