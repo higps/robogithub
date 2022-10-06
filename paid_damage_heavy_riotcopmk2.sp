@@ -7,13 +7,13 @@
 #include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Firewall"
+#define ROBOT_NAME	"Riot Cop MK II"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
-#define ROBOT_DESCRIPTION "Overheating Heavy"
-#define ROBOT_COST 3.0
-#define ROBOT_TIPS "Overheat % = damage bonus\nDon't let it overheat!"
+#define ROBOT_DESCRIPTION "Super Shotgun"
+#define ROBOT_COST 2.0
+#define ROBOT_TIPS "SURPRESS RIOTS!"
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -186,13 +186,13 @@ MakeGRageH(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "head scale", 0.75);
+	// TF2Attrib_SetByName(client, "head scale", 0.75);
 
 	UpdatePlayerHitbox(client, scale);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	PrintHintText(client , "You are %s\n %s,", ROBOT_NAME, ROBOT_DESCRIPTION);
+	PrintHintText(client , ROBOT_TIPS);
 
 }
  
@@ -206,91 +206,130 @@ stock TF2_SetHealth(client, NewHealth)
 public Action:Timer_Switch(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
-		GiveGRageH(client);
+		GiveGDeflectorH(client);
 }
 
-// #define Hat1 30397
-#define WarGoggles 30368
-#define HorrorShawl 31304
-#define RoadBlock 31306
-//War Goggles 30368
-
-stock GiveGRageH(client)
+#define EliminatorSafeguard 30369
+// #define HeavyHarness 30910
+#define CombatSlacks 30372
+#define Flatliner 30913
+//#define Flatliner 31121		
+stock GiveGDeflectorH(client)
 {
 	if (IsValidClient(client))
 	{
+
 		RoboRemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
+		CreateRoboWeapon(client, "tf_weapon_shotgun_hwg", 199, 6, 2, 2, 204);
 
-		CreateRoboWeapon(client, "tf_weapon_minigun", 811, 6, 15, 0, 204);
-		
-		//Cosmetic code
-		// Cream Spirit
-// set item tint RGB : 12807213
-// set item tint RGB 2 : 12091445
-		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
-		float TeamPaint = 0.0;
+		// CreateRoboHat(client, HeavyHarness, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, EliminatorSafeguard, 10, 6, 1315860.0, 0.75, 1.0); 
+		CreateRoboHat(client, Flatliner, 10, 6, 1315860.0, 0.60, -1.0); 
+		CreateRoboHat(client, CombatSlacks, 10, 6, 0.0, 1.0, -1.0); 
 
-		if (iTeam == TFTeam_Blue){
-			TeamPaint = 12807213.0;
-			
-		}
-		if (iTeam == TFTeam_Red){
-			
-			TeamPaint = 12091445.0;
-		}
-
-		// CreateRoboHat(client, Hat1, 10, 6, 0.75, 1.0, -1.0); 
-		CreateRoboHat(client, WarGoggles, 10, 6, 1.75, 1.0, -1.0); 
-		CreateRoboHat(client, HorrorShawl, 10, 6, TeamPaint, 1.0, -1.0); 
-		CreateRoboHat(client, RoadBlock, 10, 6, TeamPaint, 1.0, -1.0); 
-
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		if(IsValidEntity(Weapon1))
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		if(IsValidEntity(Weapon2))
 		{
-			// TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.3);
-			TF2Attrib_SetByName(Weapon1, "ring of fire while aiming", 45.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus vs burning", 0.9);
-			TF2Attrib_SetByName(Weapon1, "minicrit vs burning player", 1.0);
-			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 1.8);
-			
-			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.9);
-			//TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
-			// TF2Attrib_SetByName(Weapon1, "spread penalty", scale);
-
-			TF2CustAttr_SetString(Weapon1, "weapon overheat", "heat_rate=0.0035 heat_rate_alt=0.0015 cooldown=3.0 decay_time=0.1 decay_rate=0.2 overheat_dmg_scale=3.0");
-			TF2CustAttr_SetString(Weapon1, "weapon overheat sound", "weapons/bumper_car_decelerate.wav");
+			// TF2Attrib_RemoveAll(Weapon2);
+			// TF2Attrib_SetByName(Weapon2, "fire rate penalty", 0.8);
+			// TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 10.0);
+			// TF2Attrib_SetByName(Weapon2, "damage penalty", 1.25);
+			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.45);
+			TF2Attrib_SetByName(Weapon2, "spread penalty", 0.8);
+			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.15);
+			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.5);
+			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
+			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.53);
+			// TF2Attrib_SetByName(Weapon2, "mult_spread_scales_consecutive", 0.0);
+			TF2Attrib_SetByName(Weapon2, "auto fires full clip penalty", 1.0);
+			TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
 
 		}
-		
-		PrintHintText(client, ROBOT_TIPS);
+
 	}
 }
 
-// public TF2_OnConditionAdded(client, TFCond:condition)
-// {
-//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-//     {	
-//         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+public TF2_OnConditionAdded(client, TFCond:condition)
+{
+    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+    {	
+        int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+        if (tauntid == -1)
+        {
+        CreateTimer(3.2, Timer_Taunt_Cancel, client);
+        }	  
 
-//         if (tauntid == -1)
-//         {
-//            	 CreateTimer(1.2, Timer_Taunt_Cancel, client);
-//         }	  
+	}
+}
 
-// 	}
-// }
+public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
+{
+	if (IsValidClient(client)){
 
-// public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
-// {
-// 	if (IsValidClient(client)){
-// 		TF2_RemoveCondition(client, TFCond_Taunting);
-		
-// 	}
-// }
+		if (TF2_IsPlayerInCondition(client, TFCond_Taunting))
+		{
+		TF2_RemoveCondition(client, TFCond_Taunting);
+		TF2_AddCondition(client, TFCond_CritCola, 8.0);
+		}
+	}
+}
+
+// - Regular paints -
+//set item tint RGB
+// A Color Similar to Slate					3100495
+// A Deep Commitment to Purple					8208497
+// A Distinctive Lack of Hue					1315860
+// A Mann's Mint								12377523
+// After Eight									2960676
+// Aged Moustache Grey							8289918
+// An Extraordinary Abundance of Tinge			15132390
+// Australium Gold								15185211	
+// Color No. 216-190-216						14204632
+// Dark Salmon Injustice						15308410
+// Drably Olive								8421376
+// Indubitably Green							7511618
+// Mann Co. Orange								13595446
+// Muskelmannbraun								10843461
+// Noble Hatter's Violet						5322826
+// Peculiarly Drab Tincture					12955537
+// Pink as Hell								16738740
+// Radigan Conagher Brown						6901050
+// The Bitter Taste of Defeat and Lime			3329330
+// The Color of a Gentlemann's Business Pants	15787660
+// Ye Olde Rustic Colour						8154199
+// Zepheniah's Greed							4345659
+
+// - Team colors -
+
+// An Air of Debonair:
+// set item tint RGB : 6637376
+// set item tint RGB 2 : 2636109
+
+// Balaclavas Are Forever
+// set item tint RGB : 3874595
+// set item tint RGB 2 : 1581885
+
+// Cream Spirit
+// set item tint RGB : 12807213
+// set item tint RGB 2 : 12091445
+
+// Operator's Overalls
+// set item tint RGB : 4732984
+// set item tint RGB 2 : 3686984
+
+// Team Spirit
+// set item tint RGB : 12073019
+// set item tint RGB 2 : 5801378
+
+// The Value of Teamwork
+// set item tint RGB : 8400928
+// set item tint RGB 2 : 2452877
+
+// Waterlogged Lab Coat
+// set item tint RGB : 11049612
+// set item tint RGB 2 : 8626083
