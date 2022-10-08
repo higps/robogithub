@@ -163,7 +163,7 @@ MakeDemoKnight(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
@@ -200,7 +200,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-float g_RechargeCooldown = 3.0;
+float g_RechargeCooldown = 1.0;
 float g_skill;
 
 	
@@ -226,9 +226,9 @@ stock GiveGiantDemoKnight(client)
 		{
 			//TF2Attrib_RemoveAll(Weapon3);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);						
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);			
-			TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 150.0);
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.3);			
+			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 10.0);		
+			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
 			TF2Attrib_SetByName(Weapon3, "single wep deploy time decreased", 0.01);
 		}

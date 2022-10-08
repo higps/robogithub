@@ -177,7 +177,7 @@ MakeGiantscout(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
+	// TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.5);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
@@ -249,9 +249,9 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
                         
-			TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.35);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.25);
+			// TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.35);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.75);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			// TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.1);
 			TF2Attrib_SetByName(Weapon1, "hype resets on jump", 0.0);
@@ -259,7 +259,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "boost on damage", 0.0);
 			
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 2.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
                         
 		}
 	}

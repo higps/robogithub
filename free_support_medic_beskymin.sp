@@ -196,6 +196,7 @@ stock GiveGiantMedic(client)
 		{
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
 		}
 
 	}

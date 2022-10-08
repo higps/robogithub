@@ -7,13 +7,13 @@
 #include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Riot Cop MK II"
+#define ROBOT_NAME	"Enforcer"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
-#define ROBOT_DESCRIPTION "Super Shotgun"
+#define ROBOT_DESCRIPTION "Super Shotgun, high bullet count"
 #define ROBOT_COST 2.0
-#define ROBOT_TIPS "SURPRESS RIOTS!"
+#define ROBOT_TIPS "Taunt to minicrit"
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -224,7 +224,7 @@ stock GiveGDeflectorH(client)
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
-		CreateRoboWeapon(client, "tf_weapon_shotgun_hwg", 199, 6, 2, 2, 204);
+		CreateRoboWeapon(client, "tf_weapon_shotgun_hwg", 1153, 6, 2, 2, 204);
 
 		// CreateRoboHat(client, HeavyHarness, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, EliminatorSafeguard, 10, 6, 1315860.0, 0.75, 1.0); 
@@ -235,20 +235,22 @@ stock GiveGDeflectorH(client)
 		if(IsValidEntity(Weapon2))
 		{
 			// TF2Attrib_RemoveAll(Weapon2);
-			// TF2Attrib_SetByName(Weapon2, "fire rate penalty", 0.8);
-			// TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 10.0);
-			// TF2Attrib_SetByName(Weapon2, "damage penalty", 1.25);
-			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.45);
-			TF2Attrib_SetByName(Weapon2, "spread penalty", 0.8);
-			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.15);
-			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.5);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.0);
+			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 40.0);
+			TF2Attrib_SetByName(Weapon2, "damage penalty", 0.5);
+			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.3);
+			TF2Attrib_SetByName(Weapon2, "spread penalty", 1.2);
+			
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.53);
-			// TF2Attrib_SetByName(Weapon2, "mult_spread_scales_consecutive", 0.0);
-			TF2Attrib_SetByName(Weapon2, "auto fires full clip penalty", 1.0);
-			TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
-
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.35);
+			TF2Attrib_SetByName(Weapon2, "mult_spread_scales_consecutive", 0.0);
+			TF2Attrib_SetByName(Weapon2, "spread penalty", 2.5);
+			TF2Attrib_SetByName(Weapon2, "fixed_shot_pattern", 0.0);
+			
+			 
+			//TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
+			
 		}
 
 	}
