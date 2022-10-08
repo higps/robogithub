@@ -21,7 +21,7 @@
 #define SPAWN	"mvm/mvm_tank_horn.wav"
 #define DEATH       "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/mvm_tank_loop.wav"
-#define SOUND_LEAP  "TFPlayer.AirBlastImpact"
+// #define SOUND_LEAP  "TFPlayer.AirBlastImpact"
 
 
 #define sBoomNoise  "weapons/explode3.wav"
@@ -141,7 +141,7 @@ public OnMapStart()
 	PrecacheSound(sBoomNoise);
 	PrecacheSound(ALARM);
 	PrecacheSound(JUMP);
-	PrecacheSound(SOUND_LEAP);
+	// PrecacheSound(SOUND_LEAP);
 }
 
 public Action:BossBearded(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -304,9 +304,9 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-	TF2Attrib_SetByName(client, "increased air control", 500.0);
+	TF2Attrib_SetByName(client, "increased air control", 5.0);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.5);
-	// TF2Attrib_SetByName(client, "damage force reduction", 0.0);
+	TF2Attrib_SetByName(client, "increased jump height", 0.5);
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -384,10 +384,10 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "critboost on kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
-			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 2.0);
+			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 10.0);
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 400.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
-			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
+			// TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 			TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);
 			
@@ -496,6 +496,10 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	
 	// make it usable
 	float flDistance = 350.0;
+		if (TF2_IsPlayerInCondition(client, TFCond_SpeedBuffAlly))
+	{
+		flDistance *= 1.5;
+	}
 
 	ScaleVector(vForward, flDistance);	
 	
@@ -508,6 +512,8 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	vVelocity[2] += flDistanceVertical; // we always want to go a bit up
 	
 	// And set it
+
+
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vVelocity);
 	
 	//EmitGameSoundToAll(SOUND_LEAP,client);

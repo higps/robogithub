@@ -5,6 +5,7 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"B4nny"
@@ -12,7 +13,7 @@
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Scatter Scout"
-#define ROBOT_TIPS "Rapid reload scattergun, pistol and rapid fire melee"
+#define ROBOT_TIPS "Rapid reload scattergun\nDeal damage to increase damage bonus\nDamage bonus is lost on kill"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -176,7 +177,7 @@ MakeGiantscout(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "move speed penalty", 0.9);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.95);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.65);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
@@ -225,8 +226,8 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		CreateRoboWeapon(client, "tf_weapon_scattergun", 13, 6, 1, 0, 0);//scattergun
-		CreateRoboWeapon(client, "tf_weapon_pistol", 294, 6, 1, 1, 0);//lugermorph
-		CreateRoboWeapon(client, "tf_weapon_bat", 452, 6, 1, 2, 0);//three rune blade
+		// CreateRoboWeapon(client, "tf_weapon_pistol", 294, 6, 1, 1, 0);//lugermorph
+		// CreateRoboWeapon(client, "tf_weapon_bat", 452, 6, 1, 2, 0);//three rune blade
 		
 		CreateRoboHat(client, PRINNYPOUCH, 10, 6, 0.0, 1.0, -1.0); //Prinny Pouch
 		CreateRoboHat(client, GRAYBANNS, 10, 6, 1315860.0, 1.0, 0.0);//gray banns
@@ -235,8 +236,8 @@ stock GiveGiantPyro(client)
 		//TF2Attrib_SetByDefIndex(hat, 542, 2.0);
 
 		int Scattergun = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Lugermorph = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		int Threerune = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		// int Lugermorph = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		// int Threerune = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
 		if(IsValidEntity(Scattergun))
 		{
@@ -247,21 +248,22 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Scattergun, "clip size bonus", 1.4);
 			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.8);
 			TF2Attrib_SetByName(Scattergun, "dmg penalty vs players", 1.15);
+			TF2CustAttr_SetString(Scattergun, "damage increase mult on hit", "amount=0.15 max=3.0 decay_start=5.0 decay_per_second=0.05 reset_on_kill=1 show_on_hud=1");
 		}
-		if(IsValidEntity(Lugermorph))
-		{
-			TF2Attrib_RemoveAll(Lugermorph);
-			TF2Attrib_SetByName(Lugermorph, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Lugermorph, "clip size bonus", 1.35);
-			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.4);
+		// if(IsValidEntity(Lugermorph))
+		// {
+		// 	TF2Attrib_RemoveAll(Lugermorph);
+		// 	TF2Attrib_SetByName(Lugermorph, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Lugermorph, "clip size bonus", 1.35);
+		// 	TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.4);
 			
-		}
-		if(IsValidEntity(Threerune))
-		{
-			TF2Attrib_RemoveAll(Threerune);
-			TF2Attrib_SetByName(Threerune, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Threerune, "fire rate bonus", 0.75);
-		}
+		// }
+		// if(IsValidEntity(Threerune))
+		// {
+		// 	TF2Attrib_RemoveAll(Threerune);
+		// 	TF2Attrib_SetByName(Threerune, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Threerune, "fire rate bonus", 0.75);
+		// }
 	}
 }
  

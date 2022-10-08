@@ -371,9 +371,10 @@ methodmap RobotSelectionMenu < StringMap {
 
     public void AddMenuItem(Menu menu)
     {
-        this.AddMenuItemForCategory(menu, true, "Free", "Free");
-        this.AddMenuItemForCategory(menu, false, "Paid", "Paid");
-        this.GetBosses().AddMenuItem(menu, "Bosses", "ZBOSS");
+        this.AddMenuItemForCategory(menu, true, "MK I: Gain R₡", "Free");
+        this.AddMenuItemForCategory(menu, false, "MK II: Spend R₡", "Paid");
+        this.GetBosses().AddMenuItem(menu, "Bosses: Spend B₡ + R₡ ", "ZBOSS");
+        // Robot-₡oins: %i\nBoss-₡oins:
     }
 
     public void Dispose()

@@ -186,13 +186,13 @@ stock GiveGiantMedic(client)
 			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.95);
 
 			TF2Attrib_SetByName(Weapon1, "mark for death", 5.0);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.01);
+			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.01);
 
 			TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
-			// TF2Attrib_SetByName(Weapon1, "Reload time decreased", 1.65);
+			// TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.45);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
-			// TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);

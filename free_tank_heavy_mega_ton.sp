@@ -247,7 +247,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.6);
 			//TF2Attrib_SetByName(Weapon1, "critboost on kill", 180.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.2);
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.3);
 			
 			TF2Attrib_SetByName(Weapon1, "reduced_healing_from_medics", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
@@ -256,6 +256,9 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "apply z velocity on damage", 650.0);
 			TF2CustAttr_SetString(Weapon1, "knockback modifier", "20.0");
 			TF2Attrib_SetByName(Weapon1, "dmg taken from crit reduced", 0.30);
+
+			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
+			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 			//TF2Attrib_SetByName(Weapon1, "dmg from melee increased", 0.25);
 		}
 	}

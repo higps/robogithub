@@ -70,6 +70,7 @@ float g_Attribute_Display_CollDown = 5.0;
 float g_Attribute_Display[MAXPLAYERS + 1] = {0.0, ...};
 bool b_Attribute_Display[MAXPLAYERS + 1] = {true, ...};
 
+ float g__bleed_duration_bonus = 10.0;
 
 #define SPY_ROBOT_STAB	"weapons/saxxy_impact_gen_01.wav"
 // #define SPY_ROBOT_STAB	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
@@ -948,6 +949,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsHuntsMan(Weapon1))
         {
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
+            TF2Attrib_SetByName(Weapon1, "bleeding duration", g__bleed_duration_bonus);
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade",chat_display);
         }
 
@@ -987,8 +989,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         }
         if (IsBlackBox(Weapon1))
         {
-            TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.25);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blackbox: {orange}+25%% larger explosion radius",chat_display);
+            TF2Attrib_SetByName(Weapon1, "heal on hit for rapidfire", 30.0);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blackbox: On Hit: Up to {orange}30 bonus health",chat_display);
         }
 
         if (isBeggarsBazooka(Weapon1))
@@ -1002,6 +1004,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsAnyBanner(Weapon2))
             {
                 TF2Attrib_SetByName(Weapon2, "increase buff duration", 1.25);
+                
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+25%% longer buff duration{teamcolor}",chat_display);
             }else
             {
@@ -1011,8 +1014,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsRocketLauncher(Weapon1))
         {
-            TF2Attrib_SetByName(Weapon1, "deploy time decreased", 0.75);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher: {orange}+25%% faster weapon switch speed{teamcolor}",chat_display);
+            TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.3);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+30%% larger explosion radius",chat_display);
         }
 
         if (HasFrontierJustice(client))
@@ -1040,6 +1043,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if(IsWrap(Weapon3))
         {
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots move speed by -70%{teamcolor} for 1.5 seconds on hit",chat_display);
+        }
+
+       if(IsCleaver(Weapon2))
+        {
+            TF2Attrib_SetByName(Weapon2, "bleeding duration", g__bleed_duration_bonus);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cleaver: {orange}On Hit: Bleed for 10 seconds",chat_display);
         }
         // if (IsSapper(Weapon2))
         // {
@@ -1613,8 +1622,11 @@ bool IsLooseCannon(int weapon)
 bool IsDemoKnight(int weapon1, int weapon2)
 {
     //Demoknights don't have weapons in slot1 or 2
-    if(weapon1 == -1 && weapon2 == -1)
+    // PrintToChatAll("Weapon1 was %i", weapon1);
+    // PrintToChatAll("Weapon2 was %i", weapon2);
+    if(weapon2 == -1)
     {
+        if(weapon1 == -1 || IsBaseJumper(weapon1))
         return true;
     }
     return false;
@@ -1628,6 +1640,37 @@ bool IsBlutsauger(int weapon)
 	{
 		//If others are added, add them here
 	case 36: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsCleaver(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Candy Cane
+	case 812, 833: 
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool IsBaseJumper(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Candy Cane
+	case 1101: 
 		{
 			return true;
 		}

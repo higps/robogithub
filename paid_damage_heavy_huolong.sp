@@ -211,8 +211,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 // #define Hat1 30397
 #define WarGoggles 30368
-#define WarHood 30866
-
+#define HorrorShawl 31304
+#define RoadBlock 31306
 //War Goggles 30368
 
 stock GiveGRageH(client)
@@ -245,7 +245,8 @@ stock GiveGRageH(client)
 
 		// CreateRoboHat(client, Hat1, 10, 6, 0.75, 1.0, -1.0); 
 		CreateRoboHat(client, WarGoggles, 10, 6, 1.75, 1.0, -1.0); 
-		CreateRoboHat(client, WarHood, 10, 6, TeamPaint, 1.0, -1.0); 
+		CreateRoboHat(client, HorrorShawl, 10, 6, TeamPaint, 1.0, -1.0); 
+		CreateRoboHat(client, RoadBlock, 10, 6, TeamPaint, 1.0, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
@@ -259,11 +260,11 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "minicrit vs burning player", 1.0);
 			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 1.8);
 			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.9);
+			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.9);
 			//TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
 			// TF2Attrib_SetByName(Weapon1, "spread penalty", scale);
 
-			TF2CustAttr_SetString(Weapon1, "weapon overheat", "heat_rate=0.0075 heat_rate_alt=0.0015 cooldown=3.0 decay_time=0.1 decay_rate=0.2 overheat_dmg_scale=2.0");
+			TF2CustAttr_SetString(Weapon1, "weapon overheat", "heat_rate=0.0035 heat_rate_alt=0.0015 cooldown=3.0 decay_time=0.1 decay_rate=0.2 overheat_dmg_scale=3.0");
 			TF2CustAttr_SetString(Weapon1, "weapon overheat sound", "weapons/bumper_car_decelerate.wav");
 
 		}
@@ -272,24 +273,24 @@ stock GiveGRageH(client)
 	}
 }
 
-public TF2_OnConditionAdded(client, TFCond:condition)
-{
-    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-    {	
-        int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+// public TF2_OnConditionAdded(client, TFCond:condition)
+// {
+//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+//     {	
+//         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
 
-        if (tauntid == -1)
-        {
-           	 CreateTimer(1.2, Timer_Taunt_Cancel, client);
-        }	  
+//         if (tauntid == -1)
+//         {
+//            	 CreateTimer(1.2, Timer_Taunt_Cancel, client);
+//         }	  
 
-	}
-}
+// 	}
+// }
 
-public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
-{
-	if (IsValidClient(client)){
-		TF2_RemoveCondition(client, TFCond_Taunting);
+// public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
+// {
+// 	if (IsValidClient(client)){
+// 		TF2_RemoveCondition(client, TFCond_Taunting);
 		
-	}
-}
+// 	}
+// }
