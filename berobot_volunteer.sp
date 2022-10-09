@@ -120,6 +120,10 @@ int _countdownTarget;
 Handle _autoVolunteerTimer;
 bool _pickedOption[MAXPLAYERS + 1];
 bool _volunteered[MAXPLAYERS + 1];
+
+/**
+ *  maps a (char steamId[64]) key to a (int queuePoints) valuelunteerStates
+ */
 StringMap _queuePoints;
 
 public void OnPluginStart()
@@ -144,6 +148,10 @@ public void OnPluginStart()
     RegAdminCmd("sm_unsetvolunteer", Command_UnsetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to false/disabled");
     RegAdminCmd("sm_reload_vip_volunteers", Command_ReloadVipVolunteers, ADMFLAG_SLAY, "reloads VIP-SteamIds from file");
     RegAdminCmd("sm_reload_queuepoints_volunteers", Command_ReloadQueuepointsVolunteers, ADMFLAG_SLAY, "reloads queuepoints from file");
+
+    RegConsoleCmd("sm_queuepoints", Command_OutputQueuepoints, "outputs queuepoints into chat");
+    RegConsoleCmd("sm_qpnts", Command_OutputQueuepoints, "outputs queuepoints into chat");
+    RegConsoleCmd("sm_qp", Command_OutputQueuepoints, "outputs queuepoints into chat");
 
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
     RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
@@ -337,6 +345,24 @@ public Action Command_Volunteer(int client, int args)
     return Plugin_Handled;
 }
 
+public Action Command_OutputQueuepoints(int client, int args)
+{
+    SMLogTag(SML_VERBOSE, "Command_OutputQueuepoints called for %L", client);
+
+    int ignored[1];
+    ArrayList queuePointList = CreateSortedVolunteersList(ignored, 0);
+    
+    for(int i = 0; i < queuePointList.Length; i++)
+    {
+        VolunteerState state = queuePointList.Get(i);
+
+        PrintToChat(client, "%-64N %i (admin: %i; vip: %i)", state.ClientId, state.QueuePoints, state.Admin, state.Vip);
+    }
+
+    delete queuePointList;
+    return Plugin_Handled;
+}
+
 public void VolunteerTargets(int client, char target[32], bool volunteering)
 {
     int targetFilter = 0;
@@ -513,6 +539,32 @@ void VolunteerAutomaticVolunteers()
  */
 ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignoredClientIdsLength, bool pickNonvolunteers = true)
 {
+    ArrayList volunteers = CreateSortedVolunteersList(ignoredClientIds, ignoredClientIdsLength, pickNonvolunteers);
+    
+    if (volunteers.Length > neededVolunteers)
+    {
+        volunteers.SortCustom(VolunteerStateComparision);
+
+        UpdateQueuePoints(volunteers, neededVolunteers);
+
+        volunteers.Resize(neededVolunteers);
+    }
+    else
+    {
+        UpdateQueuePoints(volunteers, neededVolunteers);
+    }
+
+    for(int volunteerIndex = 0; volunteerIndex < volunteers.Length; volunteerIndex++)
+    {
+        VolunteerState state = volunteers.Get(volunteerIndex);
+        SMLogTag(SML_VERBOSE, "%L was picked with %i queuepoints (Admin: %i; Vip: %i; Volunteered: %i)", state.ClientId, state.QueuePoints, state.Admin, state.Vip, state.Volunteered);
+    }
+    
+    return volunteers;
+}
+
+ArrayList CreateSortedVolunteersList(int[] ignoredClientIds, int ignoredClientIdsLength, bool pickNonvolunteers = true)
+{
     StringMap ignoredClientIdLookup = new StringMap();
     for(int i = 0; i < ignoredClientIdsLength; i++)
     {
@@ -559,9 +611,6 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         _queuePoints.GetValue(steamId, queuePoints);
         state.QueuePoints = queuePoints;
         SMLogTag(SML_VERBOSE, "%L with steamid %s has %i Queuepoints", i, steamId, queuePoints);
-        // PrintToChatAll("%L has %i Queuepoints", i, queuePoints);
-        // // PrintCenterText(i, "You have %i points", queuePoints);
-        // PrintToConsoleAll("%L has %i Queuepoints", i, queuePoints);
 
         if (!_volunteered[i])
         {
@@ -596,25 +645,7 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
     }
 
     delete ignoredClientIdLookup;
-    
-    if (volunteers.Length > neededVolunteers)
-    {
-        volunteers.SortCustom(VolunteerStateComparision);
-
-        UpdateQueuePoints(volunteers, neededVolunteers);
-
-        volunteers.Resize(neededVolunteers);
-    }
-    else
-    {
-        UpdateQueuePoints(volunteers, neededVolunteers);
-    }
-
-    for(int volunteerIndex = 0; volunteerIndex < volunteers.Length; volunteerIndex++)
-    {
-        VolunteerState state = volunteers.Get(volunteerIndex);
-        SMLogTag(SML_VERBOSE, "%L was picked with %i queuepoints (Admin: %i; Vip: %i; Volunteered: %i)", state.ClientId, state.QueuePoints, state.Admin, state.Vip, state.Volunteered);
-    }
+    volunteers.SortCustom(VolunteerStateComparision);
     
     return volunteers;
 }
