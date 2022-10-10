@@ -357,7 +357,7 @@ public Action Command_OutputQueuepoints(int client, int args)
         VolunteerState state = queuePointList.Get(i);
 
         int clientId = GetClientOfUserId(state.UserId);
-        PrintToChat(client, "%-64N %i (admin: %i; vip: %i)", clientId, state.QueuePoints, state.Admin, state.Vip);
+        PrintToChat(client, "%-64N %i (admin: %i; vip: %i; volunteered: %i)", clientId, state.QueuePoints, state.Admin, state.Volunteered);
     }
 
     delete queuePointList;
