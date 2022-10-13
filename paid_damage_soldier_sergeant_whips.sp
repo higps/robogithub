@@ -15,6 +15,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Mini-Crit buffing Whip"
 #define ROBOT_TIPS "Your disciplinary action gives teammates mini crit"
+#define ROBOT_COST 3.0
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -65,7 +66,13 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
-	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
+
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
+	
 }
 
 public void OnPluginEnd()
