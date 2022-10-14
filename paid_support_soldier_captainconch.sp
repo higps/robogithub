@@ -8,7 +8,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Capt Concho"
+#define ROBOT_NAME	"Captitan Concho"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Support"
