@@ -250,14 +250,13 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.75);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.85);
 			TF2Attrib_SetByName(Weapon1, "clip size bonus upgrade", 1.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.25);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "crits_become_minicrits", 0.0);			
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);					
 
 		}
 
@@ -275,7 +274,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.4);
 			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon2, "auto fires full clip all at once", 1.0);			
+			// TF2Attrib_SetByName(Weapon2, "auto fires full clip all at once", 1.0);			
 
 			
 		}

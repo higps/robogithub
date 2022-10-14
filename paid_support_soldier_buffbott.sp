@@ -184,7 +184,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 2000;
+	int iHealth = 3800;
 		
 	int MaxHealth = 200;
 	
@@ -196,7 +196,7 @@ MakeGiantSoldier(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
@@ -262,9 +262,13 @@ stock GiveGiantSoldier(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
+			
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 5.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);	
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 		}

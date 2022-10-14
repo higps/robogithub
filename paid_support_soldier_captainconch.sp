@@ -8,7 +8,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Capt Conch"
+#define ROBOT_NAME	"Capt Concho"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Support"
@@ -184,7 +184,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 2000;
+	int iHealth = 3800;
 		
 	int MaxHealth = 200;
 	
@@ -196,7 +196,7 @@ MakeGiantSoldier(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
@@ -231,8 +231,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantSoldier(client);
 }
 
-#define HONGKONGCONE 30177
-#define ShogunShoulderGuard 30126
+#define Zapateador 31069
+#define Poncho 31070
 
 stock GiveGiantSoldier(client)
 {
@@ -246,16 +246,16 @@ stock GiveGiantSoldier(client)
 
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 513, 6, 1, 0, 0);
 		CreateRoboWeapon(client, "tf_weapon_buff_item", 354, 6, 1, 1, 0);
-		CreateRoboWeapon(client, "tf_weapon_katana", 357, 6, 1, 2, 0);
+		// CreateRoboWeapon(client, "tf_weapon_katana", 357, 6, 1, 2, 0);
 
 		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 100.0);
 
-		CreateRoboHat(client, HONGKONGCONE, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, ShogunShoulderGuard, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, Zapateador, 10, 6, 0.0, 0.85, -1.0); 
+		CreateRoboHat(client, Poncho, 10, 6, 0.0, 0.75, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
 		
 		
@@ -278,9 +278,13 @@ stock GiveGiantSoldier(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 3.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);	
+			
+			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 5.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 
@@ -292,12 +296,12 @@ stock GiveGiantSoldier(client)
 		// }
 
 		
-		if(IsValidEntity(Weapon3))
-		{
-			TF2Attrib_RemoveAll(Weapon3);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
-			TF2Attrib_SetByName(Weapon3, "restore health on kill", 25.0);
-		}
+		// if(IsValidEntity(Weapon3))
+		// {
+		// 	TF2Attrib_RemoveAll(Weapon3);
+		// 	TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
+		// 	TF2Attrib_SetByName(Weapon3, "restore health on kill", 25.0);
+		// }
 	}
 }
 
