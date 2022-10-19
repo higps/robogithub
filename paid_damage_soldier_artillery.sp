@@ -302,7 +302,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.45);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.3);				
 			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.85);

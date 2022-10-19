@@ -179,7 +179,7 @@ MakeGDeflectorH(client)
 	float scale = 1.8;
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -237,25 +237,26 @@ stock GiveGDeflectorH(client)
 		CreateRoboHat(client, AirborneAttire, 10, 6, 0.0, 1.0, -1.0);
 
 
-		CreateRoboWeapon(client, "tf_weapon_fists", 331, 6, 1, 0, 0);
+		CreateRoboWeapon(client, "tf_weapon_fists", 1100, 6, 1, 0, 0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
 			// TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.6);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.1);
 			//TF2Attrib_SetByName(Weapon1, "critboost on kill", 180.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.3);
-			
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.75);
 			TF2Attrib_SetByName(Weapon1, "reduced_healing_from_medics", 1.0);
-			TF2CustAttr_SetString(Weapon1, "knockback modifier", "20.0");
-
-			TF2Attrib_SetByName(Weapon1, "override projectile type", 24.0);
-
+			// TF2Attrib_SetByName(Weapon1, "move speed bonus", 0.693);
+			TF2Attrib_SetByName(Weapon1, "mod_maxhealth_drain_rate", 0.0);
+			TF2Attrib_SetByName(Weapon1, "heal on kill", 200.0);
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
+			TF2CustAttr_SetString(Weapon1, "on-hit-addcond", "TFCond=27 duration=10.0 apply-to-self=0 apply-to-enemy=1");
+			// TF2CustAttr_SetString(Weapon1, "on-hit-addcond", "TFCond=128 duration=5.0 apply-to-self=1 apply-to-enemy=0");
+			// TFCond_HalloweenHellHeal
 			//TF2Attrib_SetByName(Weapon1, "dmg from melee increased", 0.25);
 		}
 	}

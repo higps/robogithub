@@ -311,7 +311,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 6.0);
-			TF2CustAttr_SetString(Weapon3, "team-hit-addcond", "TFCond=19 duration=6.0 apply-to-self=1");
+			TF2CustAttr_SetString(Weapon3, "on-hit-addcond", "TFCond=19 duration=6.0 apply-to-self=1 apply-to-teammate=1");
 		}
 		
 
