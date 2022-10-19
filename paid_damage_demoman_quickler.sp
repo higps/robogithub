@@ -232,7 +232,7 @@ stock GiveGiantDemoKnight(client)
 
 			
 			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
-			// TF2Attrib_SetByName(Weapon1, "clip size penalty", 4.0);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
 			// TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
 			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.0);

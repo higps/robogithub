@@ -376,23 +376,24 @@ stock GiveBearded(client)
 
 		if(IsValidEntity(Weapon3))
 		{
-			TF2Attrib_RemoveAll(Weapon3);
+			// TF2Attrib_RemoveAll(Weapon3);
 			
 				
 			// TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.2);
+			TF2Attrib_SetByName(Weapon3, "move speed bonus", 0.693);
 			TF2Attrib_SetByName(Weapon3, "damage penalty", 1.5);
 			TF2Attrib_SetByName(Weapon3, "critboost on kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
-			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 10.0);
+			// TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
+			// TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 10.0);
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 400.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
 			// TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
-			TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
+			// TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);
 			
 
-			TF2Attrib_SetByName(Weapon3, "move speed penalty", 0.5163);
+			
 			TF2Attrib_SetByName(Weapon3, "mod_maxhealth_drain_rate", 0.0);
 			//SetEntPropFloat(Weapon3, Prop_Send, "m_flModelScale", 2.75);
 
@@ -445,7 +446,7 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 	EmitSoundToAll(ALARM, client);
 
 	//EmitSoundToAll("misc/bonzo_vomit01.wav", _, _, 5, _, 10.0);
-	CreateTimer(3.35, Timer_Taunt_Cancel, client);
+	CreateTimer(2.3, Timer_Taunt_Cancel, client);
 	}
 
         if (tauntid == -1)
@@ -457,7 +458,7 @@ public TF2_OnConditionAdded(client, TFCond:condition)
             // TF2_AddCondition(client, TFCond_GrapplingHookSafeFall, TFCondDuration_Infinite);
             //TFCond_CritHype
             // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-            CreateTimer(3.35, Timer_Taunt_Cancel, client);
+            CreateTimer(2.3, Timer_Taunt_Cancel, client);
         }	  
     }
 }
