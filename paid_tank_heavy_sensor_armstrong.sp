@@ -183,6 +183,7 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
+	TF2Attrib_SetByName(client, "head scale", 0.8);
 	// TF2Attrib_SetByName(client, "healing received penalty", 15.5);
 	UpdatePlayerHitbox(client, 1.75);
    
