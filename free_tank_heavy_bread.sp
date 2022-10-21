@@ -7,16 +7,16 @@
 #include <berobot>
 #include <tf_custom_attributes>
 // #include <dhooks>
-// #include <tf_ontakedamage>
+#include <tf_ontakedamage>
 // #include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Bread"
+#define ROBOT_NAME	"Bread Virus"
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Bread"
-#define ROBOT_TIPS "Bread"
+#define ROBOT_DESCRIPTION "Applies Mad Milk to enemies in a radius"
+#define ROBOT_TIPS "Hitting enemies will cover them in mad milk for 5"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
@@ -247,17 +247,130 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.1);
 			//TF2Attrib_SetByName(Weapon1, "critboost on kill", 180.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.75);
+			// TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.75);
 			TF2Attrib_SetByName(Weapon1, "reduced_healing_from_medics", 1.0);
 			// TF2Attrib_SetByName(Weapon1, "move speed bonus", 0.693);
 			TF2Attrib_SetByName(Weapon1, "mod_maxhealth_drain_rate", 0.0);
 			TF2Attrib_SetByName(Weapon1, "heal on kill", 200.0);
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
-			TF2CustAttr_SetString(Weapon1, "on-hit-addcond", "TFCond=27 duration=10.0 apply-to-self=0 apply-to-enemy=1");
+			// TF2CustAttr_SetString(Weapon1, "on-hit-addcond", "TFCond=27 duration=10.0 apply-to-self=0 apply-to-enemy=1");
 			// TF2CustAttr_SetString(Weapon1, "on-hit-addcond", "TFCond=128 duration=5.0 apply-to-self=1 apply-to-enemy=0");
 			// TFCond_HalloweenHellHeal
 			//TF2Attrib_SetByName(Weapon1, "dmg from melee increased", 0.25);
 		}
 	}
+}
+
+
+
+public Action BreadBoom(int attacker, int victim)
+{
+
+	float pos1[3];
+	float pos22[3];
+	GetClientAbsOrigin(attacker, pos1); // hack: make the explosion actually come from the attacker, that way we only have to hook one client
+	GetClientAbsOrigin(victim, pos22);
+
+	int particle = CreateEntityByName("info_particle_system");
+	DispatchKeyValue(particle, "effect_name", "peejar_impact_milk");
+	AcceptEntityInput(particle, "Start");
+	TeleportEntity(particle, pos22, NULL_VECTOR, NULL_VECTOR);
+	DispatchSpawn(particle);
+	ActivateEntity(particle);
+	float pos2[3];
+//	float ignitetime = GetConVarFloat(FindConVar("sharpened_volcano_fragment_firetime"));
+	
+	for(int client = 1 ; client <= MaxClients ; client++ )
+	{
+		if(IsClientInGame(client))
+		{
+			GetClientAbsOrigin(client, pos2);
+			if(GetVectorDistance(pos1, pos2) <= 350.0 && TF2_GetClientTeam(attacker) != TF2_GetClientTeam(client))
+			{
+				//SDKHooks_TakeDamage(client, 0, attacker, 1500.0, 0, -1);
+				TF2_AddCondition(client, TFCond_Milked, 3.0);
+				// ClientCommand(client, "playgamesound weapons/explode1.wav");
+				//ClientCommand(client, "playgamesound %s", sound);
+				//EmitAmbientSound(sBoomNoise, pos22, client, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
+				
+				//return Plugin_Changed;
+
+			}
+		}
+	}
+	return Plugin_Continue;
+}
+
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+	// if (!g_Enable)
+	//     return Plugin_Continue;
+	if(!IsValidClient(victim))
+		return Plugin_Continue;    
+	if(!IsValidClient(attacker))
+		return Plugin_Continue;
+
+	if (IsRobot(attacker, ROBOT_NAME))
+	{
+
+		SpawnBombs(victim, attacker);
+		// BreadBoom(attacker, victim);
+
+
+	}
+
+
+	return Plugin_Continue;
+}
+
+void SpawnBombs(int client, int attacker)
+{
+    
+    int team = GetClientTeam(attacker);
+    float pos[3], vel[3];// ang[3];
+    int children = 1;
+    float speed = 250.0;
+
+
+    GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+    GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
+    
+
+    pos[2] += 120.0;
+    for (int i = 1; i <= children; i++)
+    {
+        int child = CreateEntityByName("tf_projectile_jar_milk");
+        
+        
+        float child_vel[3];
+        float child_ang[3];
+
+        //Prevent child grenades from detonating on contact
+        SetEntProp(child, Prop_Send, "m_bTouched", 1);
+
+        //Set properties
+        //SetEntProp(child, Prop_Send, "m_bCritical", view_as<int>(crit));
+        SetEntPropEnt(child, Prop_Data, "m_hOwnerEntity", attacker);
+        SetEntPropEnt(child, Prop_Data, "m_hThrower", attacker);
+
+        
+        // SetEntPropFloat(child, Prop_Send, "m_flDamage", 100.0);
+        // SetEntPropFloat(child, Prop_Send, "m_flModelScale", 1.2);
+        
+        GetClientEyeAngles(client, child_ang);
+        
+        GetAngleVectors(child_ang, child_vel, NULL_VECTOR, NULL_VECTOR);
+        
+        ScaleVector(child_vel, speed);
+            
+        //child_vel[2] = FloatAbs(child_vel[2]);
+
+        SetEntProp(child, Prop_Send, "m_iTeamNum", team);
+        SetEntProp(child, Prop_Send, "m_bIsLive", 1);
+
+        TeleportEntity(child, pos, child_ang, child_vel);
+        DispatchSpawn(child);
+        //SDKHook(child, SDKHook_Touch, OnMirvOverlap);
+    }
 }

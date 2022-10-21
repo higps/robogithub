@@ -13,8 +13,9 @@
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
-#define ROBOT_DESCRIPTION "Uber-Saw Medic Healer"
-#define ROBOT_TIPS "UBER!" 
+#define ROBOT_DESCRIPTION "Uber-Saw Healer"
+#define ROBOT_TIPS "Right Click to activate uber\n hit teammates to give them uber\nGetting hit by ubered players ubers you for 1 second" 
+#define ROBOT_COST 1.0
 
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -25,12 +26,12 @@
 #define DMG_TYPE_MELEE_CRIT 135270528
  
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
-float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-int g_Heal_Bolts_Hits_Needed = 16;
 int g_healcount = 0;
-float g_duration = 8.0;
-float g_organ_duration_bonus_modifier = 2.0;
-float g_organ_bonus = 0.0;
+float g_duration = 1.0;
+float g_resethit = 0.0;
+float g_charge = 0.0;
+int g_release = 0;
+float g_teamduration = 0.0;
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Dr Livesey",
@@ -53,7 +54,15 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
+
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
+
+	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION, restrictions);
+
 	for(int client = 1 ; client <= MaxClients ; client++)
 	{
 		if(IsClientInGame(client))
@@ -120,7 +129,7 @@ MakeGiantMedic(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GMEDIC);
    	
-	int iHealth = 2210;
+	int iHealth = 2500;
 	int MaxHealth = 150;
 	int iAdditiveHP = iHealth - MaxHealth;
    
@@ -128,7 +137,7 @@ MakeGiantMedic(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	// TF2Attrib_SetByName(client, "move speed penalty", 0.75);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.25);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -155,7 +164,7 @@ public TF2_OnConditionRemoved(int client, TFCond:condition)
 {
     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_RuneHaste)
     {
-       TF2_AddCondition(client,TFCond_SpeedBuffAlly, 0.1);
+    //    TF2_AddCondition(client,TFCond_SpeedBuffAlly, 0.1);
 	   //TF2_RemoveCondition(client, TFCond_Taunting);
 //	   TF2_AddCondition(client,TFCond_Charging, 2.5);
 
@@ -217,9 +226,11 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.3);
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.25);
-			TF2Attrib_SetByName(Weapon3, "add uber charge on hit", 0.1);
+			TF2Attrib_SetByName(Weapon3, "add uber charge on hit", 0.30);
+			TF2Attrib_SetByName(Weapon3, "special taunt", 0.0);
+			
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
-			// TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 allow-overheal=0");
+			TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=80 allow-overheal=0 uber-gain=0.05");
 			
 		}
 		g_healcount = 0;
@@ -278,90 +289,53 @@ bool isready;
 
 void DrawHUD(int client)
 {
-	char sHUDText[128];
-	char sProgress[32];
-	// int iPercents = RoundToCeil((GetEngineTime() / g_Recharge[client])  * 100.0);
-	int iCountDown = g_Heal_Bolts_Hits_Needed - g_healcount;
+	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	g_release = GetEntProp(Weapon2, Prop_Send, "m_bChargeRelease");
 
-	int iCountDownActive = RoundToCeil(g_Recharge[client] + g_organ_bonus - (GetEngineTime()));
-
-	int iPercents = RoundToCeil(iCountDownActive / g_duration + g_organ_bonus * 100.0);
-	for (int j = 1; j <= 10; j++)
+	if (g_release == 1)
 	{
-	if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
-	else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
-	}
-
-	if (TF2_IsPlayerInCondition(client, TFCond_CritHype))
-	{
-	Format(sHUDText, sizeof(sHUDText), "Uber Injection! %i", iCountDownActive);
-	//Format(sHUDText, sizeof(sHUDText), "Speed Injection Active!\n               %s", sProgress);
-	SetHudTextParams(1.0, 0.8, 0.5, 255, 69, 0, 255);
-	}
-	else if(iCountDown <= 0)
-	{
-
-
-	Format(sHUDText, sizeof(sHUDText), "Uber Injection: Ready!");
-	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
-
+		TF2_AddCondition(client, TFCond_UberchargedCanteen, 0.5);
 	}else
 	{
-	Format(sHUDText, sizeof(sHUDText), "Uber Injection: %i", iCountDown);
-	SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
-
-
+		if (g_resethit < GetEngineTime())
+		{
+			TF2_RemoveCondition(client, TFCond_UberchargedCanteen);
+		}
 	}
 
-	ShowHudText(client, -2, sHUDText);
-
-	if (!isready && iCountDown <= 0)
+	if (g_charge == 1.0)
 	{
-	TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
-	// PrintToChatAll("Ready!");
-	isready = true;	
+		isready = true;	
+	}else
+	{
+		isready = false;
 	}
 
-	if (g_button_held[client] && iCountDown <= 0 || IsFakeClient(client))
+	if (g_button_held[client] && isready)
 	{
 	isready = false;
 
-	TF2_AddCondition(client, TFCond_CritHype, g_duration + g_organ_bonus);
-	TF2_AddCondition(client, TFCond_Buffed, g_duration + g_organ_bonus);
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, g_duration + g_organ_bonus);
-	TF2_AddCondition(client, TFCond_RuneHaste, g_duration + g_organ_bonus);
-	// PrintToChatAll("SELF BUFF DURATION %f", GetOrganBonus(client)); 
-	g_healcount = 0;
-	SetEntProp(client, Prop_Send, "m_iDecapitations", 0);
-	g_Recharge[client] = GetEngineTime() + g_duration;
+	SetEntProp(Weapon2, Prop_Send, "m_bChargeRelease", 1);
+	
 	}
 }
 
-float GetOrganBonus(int client)
+// SetEntPropFloat(medigunlist[client], Prop_Send, "m_flChargeLevel", 0.00);
+
+void GetChargeLevel(int client)
 {
 
-	int organs = GetEntProp(client, Prop_Send, "m_iDecapitations");
-	// PrintToChatAll("Organs %i", organs);
-	if (organs == 0)
+	// int  organs = GetEntProp(client, Prop_Send, "m_iDecapitations");
+	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	if (Weapon2 == -1)
 	{
-		return 0.0;
-	}else
-	{
-		return (float(organs) / g_organ_duration_bonus_modifier);	
+		g_charge = 0.0;
 	}
-	
+
+	g_charge = GetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel");
+	// PrintToChatAll("Charge %f", g_charge);
+	// return (g_charge);	
 }
-
-
-public bool IsKritzed(int client){
-	if (TF2_IsPlayerInCondition(client, (TFCond_Kritzkrieged)) || TF2_IsPlayerInCondition(client, (TFCond_Buffed)) || TF2_IsPlayerInCondition(client, (TFCond_CritCanteen)))
-	{
-		return true;
-	}else
-	{
-		return false;
-	}
-}    
 
 
 
@@ -369,11 +343,22 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
 	if (IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
 	{
-		if(!TF2_IsPlayerInCondition(attacker, TFCond_CritHype))
+		if(!TF2_IsPlayerInCondition(attacker, TFCond_UberchargedCanteen))
 		{
-			g_healcount++;
-			g_organ_bonus = GetOrganBonus(attacker);
+			RequestFrame(GetChargeLevel, attacker);
 		}
+	}
+
+	if (IsValidClient(attacker) && IsRobot(victim, ROBOT_NAME))
+	{
+		
+
+				if (TF2_IsPlayerInCondition(attacker, TFCond_Ubercharged))
+				{
+					
+					g_resethit = g_duration + GetEngineTime();
+					TF2_AddCondition(victim, TFCond_UberchargedCanteen, g_duration);
+				}
 	}
 	return Plugin_Continue;
 }
@@ -410,22 +395,20 @@ public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& da
 
 			int healer = attacker;
 			int target = victim;
-
-			if(!TF2_IsPlayerInCondition(healer, TFCond_CritHype))
-			{
-				g_healcount++;
-				g_organ_bonus = GetOrganBonus(attacker);
-			}
-
+			RequestFrame(GetChargeLevel, attacker);
 
 			//PrintToChatAll("%N Healed %N, healcount was %i ", healer, target, g_healcount);
 
-			if (TF2_IsPlayerInCondition(healer, TFCond_CritHype))
+			if (TF2_IsPlayerInCondition(healer, TFCond_UberchargedCanteen))
 			{
-			float team_duration = g_duration  + g_organ_bonus;
 			//PrintToChatAll("Target Duration %f", team_duration);
-			TF2_AddCondition(target, TFCond_SpeedBuffAlly, team_duration);
-			TF2_AddCondition(target, TFCond_Buffed, team_duration);
+			//TF2_AddCondition(target, TFCond_SpeedBuffAlly, team_duration);
+			//1.0 = 4.0
+			GetChargeLevel(healer);
+			float duration = (g_charge * 4.0);
+			// PrintToChatAll("Charge: %f", g_charge);
+			// PrintToChatAll("Duration: %f", duration);
+			TF2_AddCondition(target, TFCond_UberchargedCanteen, duration);
 			
 			}
 

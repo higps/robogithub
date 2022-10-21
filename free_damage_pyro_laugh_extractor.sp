@@ -7,12 +7,12 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Agro"
+#define ROBOT_NAME	"Laugh Extractor"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
-#define ROBOT_DESCRIPTION "Degreaser, Scorch shot, Maul"
-#define ROBOT_TIPS "You have 3 weapons\nScorch shot homes in on burning players"
+#define ROBOT_DESCRIPTION "Extract the funnies"
+#define ROBOT_TIPS "Funnies"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -22,9 +22,6 @@
 #define SOUND_GUNFIRE	")mvm/giant_pyro/giant_pyro_flamethrower_loop.wav"
 #define SOUND_WINDUP	")mvm/giant_pyro/giant_pyro_flamethrower_start.wav"
 
-#define LOFILONGWAVE 470
-#define HANDSOMEDEVIL 31135
-#define PHOBOS 30652
 
 
 public Plugin:myinfo = 
@@ -68,6 +65,8 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
+
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
 public void OnPluginEnd()
@@ -178,6 +177,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	if (IsValidClient(client))
 		GiveGiantPyro(client);
 }
+#define Grim 949 
+#define FireTooth  31144 
+#define FlavorfulBaggies  31145 
 
 stock GiveGiantPyro(client)
 {
@@ -188,137 +190,178 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		CreateRoboWeapon(client, "tf_weapon_flamethrower", 215, 6, 1, 2, 0);	
-		CreateRoboWeapon(client, "tf_weapon_flaregun", 740, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_fireaxe", 466, 6, 1, 2, 0);
-		
-		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
-		
-		float TeamPaint = 0.0;
+		CreateRoboWeapon(client, "tf_weapon_flamethrower", 21, 6, 1, 2, 0);	
 
-		if (iTeam == TFTeam_Blue){
-			TeamPaint = 12807213.0;
-		}
-		if (iTeam == TFTeam_Red){
-			TeamPaint = 12091445.0;
-		}
-
-		CreateRoboHat(client, LOFILONGWAVE, 10, 6, TeamPaint, 1.0, -1.0);
-		CreateRoboHat(client, HANDSOMEDEVIL, 10, 6, TeamPaint, 0.75, -1.0);
-		CreateRoboHat(client, PHOBOS, 10, 6, 0.0, 0.75, -1.0);
+		CreateRoboHat(client, Grim, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, FireTooth, 10, 6, 0.0, 0.75, -1.0);
+		CreateRoboHat(client, FlavorfulBaggies, 10, 6, 0.0, 0.75, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
 		
 		if(IsValidEntity(Weapon1))
 		{
 			//TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.5);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 2.5);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			// TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 0.6);		
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.8);			
+			// TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.6);		
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);			
 			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
-			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
-			TF2Attrib_SetByName(Weapon1, "attach particle effect", 4.0);
-			TF2Attrib_SetByName(Weapon1, "single wep deploy time decreased", 0.4);
-			TF2Attrib_SetByName(Weapon1, "switch from wep deploy time decreased", 0.7);
-			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 250.0);
-			
-			TF2Attrib_SetByName(Weapon1, "weapon burn dmg reduced", 1.0);
+			TF2Attrib_SetByName(Weapon1, "flame_speed", 3450.0);
+			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.5);
 
-		}
-		
-		if(IsValidEntity(Weapon2))
-		{
-			TF2Attrib_RemoveAll(Weapon2);
-			//TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 0.5);
-			TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.6);
-			TF2Attrib_SetByName(Weapon2, "damage causes airblast", 1.0);
-			TF2Attrib_SetByName(Weapon2, "mod projectile heat seek power", 3600.0);
-			//TF2Attrib_SetByName(Weapon2, "apply look velocity on damage", 1500.0);
-		}
-
-		if(IsValidEntity(Weapon3))
-		{
-			//TF2Attrib_RemoveAll(Weapon3);
-			TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", 3.25);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
-			TF2Attrib_SetByName(Weapon3, "fire rate penalty", 1.2);
 			
-			//TF2Attrib_SetByName(Weapon2, "apply look velocity on damage", 1500.0);
+			
+			// TF2Attrib_SetByName(Weapon1, "airblast vertical pushback scale", 1.5);
+			
+			// charged airblast
+
+
 		}
 	}
 }
 
-// public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
-// {
-// 	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME) && IsPlayerAlive(iClient)) 
-// 	{	
-// 		//add a check to prevent errors related to switching classes
+
+bool g_button_held[MAXPLAYERS + 1] = false;
+float g_Recharge[MAXPLAYERS + 1] = 0.0;
+float g_RechargeCooldown = 5.0;
+float g_skill;
+int g_KillCount = 0;
+int g_KillsNeeded = 5;
+
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+{
+	if (IsRobot(client, ROBOT_NAME))
+	{
+
+		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_RELOAD|IN_USE) ) 
+		{
+			//  PrintToChatAll("Press");
+            g_button_held[client] = true;
+		}
+
+
+
+		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_RELOAD|IN_USE) ) 
+		{
+			//  PrintToChatAll("Release");
+			g_button_held[client] = false;
+            
+		}
+		//0 = Shadow Leap
+		//PrintToChat(client, "Throwing spell!");
+		// UpdateCharge(client);
+		g_skill = GetEngineTime();
+		DrawHUD(client);
 		
- 
-// 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-// 		iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+	}
+}
 
-// 		if(IsValidEntity(weapon) && iWeapon == 215)//215 == flamethrower
-// 		{
-// 			new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
-// 			if (iWeaponState == 1 && !Locked1[iClient])
-// 			{
-// 				EmitSoundToAll(SOUND_WINDUP, iClient);
-// 			//	PrintToChatAll("WeaponState = Windup");
-				
-// 				Locked1[iClient] = true;
-// 				Locked2[iClient] = false;
-// 				Locked3[iClient] = false;
-// 				CanWindDown[iClient] = true;
-				
-// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-// 			}
-// 			else if (iWeaponState == 2 && !Locked2[iClient])
-// 			{
-// 				EmitSoundToAll(SOUND_GUNFIRE, iClient);
-// 			//	PrintToChatAll("WeaponState = Firing");
-				
-// 				Locked2[iClient] = true;
-// 				Locked1[iClient] = true;
-// 				Locked3[iClient] = false;
-// 				CanWindDown[iClient] = true;
-				
-// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-// 			}
-// 			else if (iWeaponState == 3 && !Locked3[iClient])
-// 			{
+// float g_hud_draw_delay = 0.1;
+// float g_hud_post_time = 0.0;
+bool isready;
+void DrawHUD(int client)
+{
+	char sHUDText[128];
+	// char sProgress[32];
+	//int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCooldown) * 100.0);
+	int iCountDown = g_KillsNeeded- g_KillCount;
+	
+	// for (int j = 1; j <= 10; j++)
+	// {
+	// 	if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
+	// 	else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
+	// }
 
-// 			//	PrintToChatAll("WeaponState = Spun Up");
-				
-// 				Locked3[iClient] = true;
-// 				Locked1[iClient] = true;
-// 				Locked2[iClient] = false;
-// 				CanWindDown[iClient] = true;
-				
-// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-// 			}
-// 			else if (iWeaponState == 0)
-// 			{
-// 				if (CanWindDown[iClient])
-// 				{
-// 			//		PrintToChatAll("WeaponState = WindDown");
+	Format(sHUDText, sizeof(sHUDText), "Laugh Extraction: %i   ", iCountDown);
+	
 
-// 					CanWindDown[iClient] = false;
-// 				}
-				
-// 				StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-				
-// 				Locked1[iClient] = false;
-// 				Locked2[iClient] = false;
-// 				Locked3[iClient] = false;
-// 			}
-// 		}
-// 	}
-// 	return Plugin_Continue;
-// }
+	if(iCountDown <= 0)
+	{
+		Format(sHUDText, sizeof(sHUDText), "Laugh Extraction Ready!\nReload to use!");
+			
+		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+
+		
+	} else {
+		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
+		
+		// PrintToChatAll("Not Ready!");
+	}
+	// if (g_hud_post_time + g_hud_draw_delay <= GetEngineTime() || g_hud_post_time == 0.0)
+	// {
+		 ShowHudText(client, -2, sHUDText);
+	// 	 g_hud_post_time = GetEngineTime();
+	// }
+
+		if (!isready && iCountDown <= 0)
+		{
+			TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
+			// PrintToChatAll("Ready!");
+			isready = true;	
+		}
+
+	if (g_button_held[client] && iCountDown <= 0)
+	{
+		ApplyRadialStun(client, 3.0, 500.0);
+		g_KillCount = 0;
+		// g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+		isready = false;
+		
+	}
+}
+
+void LaughExtract(int client)
+{
+
+	// TFTeam iTeam = TF2_GetClientTeam(client);
+	
+	
+}
+
+public Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	if (!IsAnyRobot(victim) && IsRobot(attacker, ROBOT_NAME))
+	{
+		if(g_KillCount <= g_KillsNeeded)
+		{
+			g_KillCount++;
+		}
+
+		
+		
+
+	}
+}
+
+public void ApplyRadialStun(int hero, float flDuration, float flRadius)
+{
+	//positions
+	float heroPos[3];
+	float playerPos[3];
+	int team = GetClientTeam(hero);
+	//Get our hero's position
+	GetClientAbsOrigin(hero, heroPos);
+	int stunflag = TF_STUNFLAGS_GHOSTSCARE;
+		
+	//loop through players
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (IsValidClient(client) && IsPlayerAlive(client))
+		{
+			int cteam = GetClientTeam(client);
+			if (cteam == team) continue;
+			
+			GetClientAbsOrigin(client, playerPos);
+			if (GetVectorDistance(playerPos, heroPos) <= flRadius)
+			{
+					TF2_StunPlayer(client, flDuration, 0.0, stunflag);
+			}
+		}
+	}
+}

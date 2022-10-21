@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Tomislav"
-#define ROBOT_TIPS "+15%% damage to players\nLess damage done to buildings"
+#define ROBOT_TIPS "+15%%%% damage to players\nOverheat increases accuracy up to 75%%%%\nLess damage done to buildings"
 
 
 //#define MODEL "models/weapons/shells/shell_minigun.mdl"
@@ -281,7 +281,7 @@ stock GiveBigJoey(client)
 
 			// TF2CustAttr_SetString(Weapon1, "weapon overheat", "heat_rate=0.0035 heat_rate_alt=0.0015 cooldown=0.0 decay_time=0.0 decay_rate=0.2 overheat_spread_scale=0.5");
 			// TF2CustAttr_SetString(Weapon1, "weapon overheat sound", "weapons/bumper_car_decelerate.wav");
-			TF2CustAttr_SetString(Weapon1, "weapon overheat", "heat_rate=0.01 heat_rate_alt=0.0 decay_time=0.1 decay_rate=0.2 overheat_spread_scale=0.35 cooldown=3.0");
+			TF2CustAttr_SetString(Weapon1, "weapon overheat", "heat_rate=0.01 heat_rate_alt=0.0 decay_time=0.1 decay_rate=0.2 overheat_spread_scale=0.25 cooldown=3.0");
 			TF2CustAttr_SetString(Weapon1, "weapon overheat sound", "weapons/bumper_car_decelerate.wav");
 		}
 	}

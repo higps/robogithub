@@ -9,17 +9,19 @@
 #include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Sergeant Crits"
-#define ROBOT_ROLE "ZBOSS"
+#define ROBOT_NAME	"Commander Crocket"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Rockets"
-#define ROBOT_DESCRIPTION "Rapid Critical Rockets"
-#define ROBOT_TIPS "Firing speed increases as health decreases"
+#define ROBOT_SUBCLASS "Rocket"
+#define ROBOT_DESCRIPTION "Crit-Banner"
+#define ROBOT_COST 3.0
+#define ROBOT_TIPS "Give your teammates crit buff!"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
-#define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
-#define DEATH   "mvm/mvm_tank_explode.wav"
+#define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
+
 
 #define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
@@ -31,8 +33,8 @@
 #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 
 
-#define Tyrantium_Helmet 30014
-float scale = 1.95;
+// #define Chaser 30014
+float scale = 1.75;
 
 public Plugin:myinfo = 
 {
@@ -63,20 +65,16 @@ public OnPluginStart()
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
-	robot.class = "Soldier";
+	robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-	restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-	restrictions.TeamCoins.Overall = 2;
-
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = 2.0;
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
@@ -230,7 +228,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
 	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.65);
-	TF2Attrib_SetByName(client, "hand scale", 1.3);
+	// TF2Attrib_SetByName(client, "hand scale", 1.3);
 	UpdatePlayerHitbox(client, scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -263,35 +261,39 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboHat(client, Tyrantium_Helmet, 10, 6, 0.0, 1.0, -1.0); //Bobby Bonnet
-		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
+		CreateRoboHat(client, 31276, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, 378, 10, 6, 0.0, 1.0, -1.0);//team captain
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 15130, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_buff_item", 129, 6, 1, 2, 0);
 		
+		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 100.0);
+		
+		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.8);
-			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 7.0);
-			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.5);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 1.1);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.75);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.15);
-			//TF2Attrib_SetByName(Weapon1, "mini rockets", 5.0);
-			//TF2Attrib_SetByName(Weapon1, "auto fires when full", 1.0);
-			//TF2Attrib_SetByName(Weapon1, "auto fires full clip", 1.0);
 			
-			
-			 
+			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 5.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2CustAttr_SetString(client, "projectile-size", "size=1.3 update-hitbox=1");
-			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=0 projectilename=tf_projectile_rocket");			
 		}
-		TF2_AddCondition(client, TFCond_CritCanteen);
+		
+		if(IsValidEntity(Weapon2))
+		{						
+			TF2CustAttr_SetString(Weapon2, "custom buff type", "mm-crit");
+			// TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
+			// TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
+		}
+
 	}
 }
 
@@ -299,19 +301,3 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 
 	
-
-// public void OnEntityCreated(int iEntity, const char[] sClassName) 
-// {
-// 	if (StrContains(sClassName, "tf_projectile") == 0)
-// 	{
-// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-// 	}
-	
-// }
-
-// public void Hook_OnProjectileSpawn(iEntity) {
-// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.25);
-// 	}
-// }
