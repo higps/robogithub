@@ -14,12 +14,16 @@
 #define ROBOT_DESCRIPTION "Uber, very fast move speed"
 #define ROBOT_TIPS "You can provide uber normally, but are weaker and faster"
 #define ROBOT_COST 1.0
- 
+
+
+
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_demoman/giant_demoman_loop.wav"
- 
+
+bool g_spawn_uber[MAXPLAYERS + 1] = {true,...};
+
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Mini-Medic",
@@ -50,6 +54,8 @@ public OnPluginStart()
 	restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
 	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION, restrictions);
+
+	HookEvent("player_death", Event_Death, EventHookMode_Pre);
 }
 
 public void OnPluginEnd()
@@ -177,6 +183,22 @@ stock GiveGiantMedic(client)
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 
-		SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
+		if (g_spawn_uber[client])
+		{
+			SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
+			g_spawn_uber[client] = false;
+		}
 	}
+}
+
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	// int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+    
+	if(IsRobot(victim, ROBOT_NAME))
+	{
+		g_spawn_uber[victim] = true;
+	}
+
 }

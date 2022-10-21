@@ -12,7 +12,7 @@
 #define ROBOT_NAME	"Jouleson"
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Sniper"
-#define ROBOT_SUBCLASS "Tank"
+#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Invisible Spell Sniper"
 #define ROBOT_TIPS "Be invisible\nBe scary"
 #define ROBOT_COST 1.0

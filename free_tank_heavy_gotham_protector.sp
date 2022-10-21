@@ -12,7 +12,7 @@
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Punish Criminals"
+#define ROBOT_DESCRIPTION "Gain buffs depending on who you punch"
 #define ROBOT_INFO "Immune to tickles\nGains uber from uberchains"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
