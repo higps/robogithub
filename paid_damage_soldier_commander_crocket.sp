@@ -208,7 +208,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 5800;		
+	int iHealth = 3800;		
 	int MaxHealth = 200;
 	int iAdditiveHP = iHealth - MaxHealth;
 	
