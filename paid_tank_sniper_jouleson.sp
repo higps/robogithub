@@ -236,7 +236,6 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_SetByName(Kukri, "bleeding duration", 12.0);
 
 			
-			 TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.25);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.25);
 			TF2Attrib_SetByName(Kukri, "speed_boost_on_hit", 1.0);
 			
@@ -248,19 +247,6 @@ stock GiveBigRoboHuntsbot(client)
 
 
 }
-		
-public void TF2_OnConditionAdded(int client, TFCond condition)
-{
-	
-	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Jarated)
-	{	
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-		// TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
-		
-	}
-	
-}
-
 
 // public void OnEntityCreated(int iEntity, const char[] sClassName) 
 // {
