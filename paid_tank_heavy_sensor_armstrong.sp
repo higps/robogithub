@@ -260,33 +260,6 @@ stock GiveGDeflectorH(client)
 	}
 }
 
-// public TF2_OnConditionAdded(client, TFCond:condition)
-// {
-//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-//     {	
-//         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-//         if (tauntid == -1)
-//         {
-// 		TF2_AddCondition(client, TFCond_CritCola, 30.0);
-// 		TF2_AddCondition(client, TFCond_RegenBuffed, 30.0);
-// 		TF2_AddCondition(client, TFCond_RestrictToMelee, 30.0);
-// 		CreateTimer(2.5, Timer_Taunt_Cancel, client);
-//         }	  
-// 	}
-// }
-
-// public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
-// {
-// 	if (IsValidClient(client)){
-
-// 		TF2_RemoveCondition(client, TFCond_Taunting);
-
-// 		int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-
-// 		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon); 
-// 	}
-// }
-
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
     // if (!g_Enable)
