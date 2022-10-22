@@ -5,16 +5,17 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
-#include <tf_custom_attributes>
+// #include <tf_custom_attributes>
 //#include <tf_ontakedamage>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Sergeant Whips"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_NAME	"Shogun"
+#define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Mini-Crit buffing Whip"
+#define ROBOT_DESCRIPTION "Half-Zatoichi"
 #define ROBOT_TIPS "Your disciplinary action gives teammates mini crit"
+
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -65,7 +66,15 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+
+	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	// restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
+
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
+	
 }
 
 public void OnPluginEnd()
@@ -222,14 +231,14 @@ MakeGiantSoldier(client)
 
 	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
 
-	float scale = 1.65;
+	float scale = 1.75;
 	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.2);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.25);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -268,8 +277,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define DrillHatMetal 30026
-// #define MistakenMovember 30554
+#define KillersKabuto 152
+#define ShounderGuard 30126
 
 
 stock GiveGiantPyro(client)
@@ -284,15 +293,12 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_shovel", 447, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_katana", 357, 6, 1, 2, 0);
 
-		//CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
+		//CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachut
 
-		
-
-
-		CreateRoboHat(client, DrillHatMetal, 10, 6, 0.0, 1.2, -1.0);
-		// CreateRoboHat(client, MistakenMovember, 10, 6, 0.0, 1.265, -1.0);
+		CreateRoboHat(client, KillersKabuto, 10, 6, 0.0, 1.2, -1.0);
+		CreateRoboHat(client, ShounderGuard, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
@@ -300,20 +306,56 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.75);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);		
+			TF2Attrib_SetByName(Weapon3, "restore health on kill", 10.0);						
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 6.0);
-			TF2CustAttr_SetString(Weapon3, "team-hit-addcond", "TFCond=19 duration=6.0 apply-to-self=1");
 		}
-		
-
 	}
 }
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 	
+
+public Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	if (IsRobotWhenDead(victim, ROBOT_NAME))
+	{
+		char weaponName[32];
+		GetEventString(event, "weapon", weaponName, sizeof(weaponName));
+
+
+		// int weaponid = GetEventInt(event, "weaponid");
+	//	PrintToChatAll("%i a ", weaponid);
+			//PrintToChatAll("%i", GetEventInt(event, "weaponid"));
+			// if (weaponid == -1) return;
+			
+			//int weapondef = GetEntProp(weaponid, Prop_Send, "m_iItemDefinitionIndex");	
+			
+		if (StrEqual(weaponName, "demokatana"))//If killed by katana you respawn faster
+		{
+		//PrintToChatAll("%N was killed by weapon id %i which was named %s", victim, weaponid, weaponName);
+		
+		CreateTimer(4.0, Timer_Respawn, victim);
+		}
+		
+	}
+
+
+}
+
+public Action Timer_Respawn(Handle timer, any client)
+{
+    //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
+	if (IsValidClient(client) && !IsPlayerAlive(client))
+    {
+        TF2_RespawnPlayer(client);
+        //PrintToChat(client,"You have instant respawn as scout");
+    }
+	return Plugin_Continue;
+}
 // public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 // {
 

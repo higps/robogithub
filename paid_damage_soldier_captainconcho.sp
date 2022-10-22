@@ -8,11 +8,12 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Icebear"
+#define ROBOT_NAME	"Captitan Concho"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Rockets"
-#define ROBOT_DESCRIPTION "Rapid Rocket Launcher Specialist"
+#define ROBOT_SUBCLASS "Rocket"
+#define ROBOT_DESCRIPTION "Conch"
+#define ROBOT_COST 1.5
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -24,15 +25,12 @@
 #define RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
 
-#define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
-#define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
-#define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant Icebear Soldier",
+	name = "[TF2] Be the Giant Captain Conch",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Icebear from Frankfurt",
+	description = "Play as the Giant Bazooka Joe from 2002",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -63,7 +61,12 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
-	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
+
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
+
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }
 
 public void OnPluginEnd()
@@ -78,17 +81,25 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
+public OnClientPutInServer(client)
+{
+	OnClientDisconnect_Post(client);
+}
+
+public OnClientDisconnect_Post(client)
+{
+	if (IsValidClient(client) && IsRobot(client, ROBOT_NAME)) 
+	{
+		StopSound(client, SNDCHAN_AUTO, LOOP);
+	}
+}
+
 public OnMapStart()
 {
 	PrecacheModel(GSOLDIER);
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
-
-	PrecacheSound(GUNFIRE);
-	PrecacheSound(GUNFIRE_CRIT);
-	PrecacheSound(GUNFIRE_EXPLOSION);
-	
 
 	PrecacheSound(LEFTFOOT);
 	PrecacheSound(LEFTFOOT1);
@@ -150,41 +161,9 @@ public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_P
 		}
 		return Plugin_Changed;
 	}
-
-	
-	if (strncmp(sample, ")weapons/", 9, false) == 0)
-	{
-		if (StrContains(sample, "rocket_shoot.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE);
-			EmitSoundToAll(sample, entity);
-			
-		}
-		else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_CRIT);
-			EmitSoundToAll(sample, entity);
-		}
-		
-		//Explosion doesnæt quite work
-		/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "explode2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "explode3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-			EmitSoundToAll(sample, entity);
-		} */
-		return Plugin_Changed;
-	}
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
+
+	return Plugin_Continue;
 }
 
 MakeGiantSoldier(client)
@@ -208,19 +187,11 @@ MakeGiantSoldier(client)
 	int iHealth = 3800;
 		
 	int MaxHealth = 200;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
 	int iAdditiveHP = iHealth - MaxHealth;
 	
 	TF2_SetHealth(client, iHealth);
-	float OverHealRate = 1.5;
 
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
-
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
-	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
@@ -232,17 +203,19 @@ MakeGiantSoldier(client)
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
+	TF2Attrib_SetByName(client, "health regen", 12.0);
 	
-	//TF2Attrib_SetByName(client, "override footstep sound set", 3.0);
-	
+	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
+	TF2Attrib_SetByName(client, "increase buff duration", 2.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "You have the rocket specialist perk!");
-	
+	PrintToChat(client, "1. You are now %s!", ROBOT_NAME);
+	PrintHintText(client , "You have extended banner duration");
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -255,68 +228,84 @@ stock TF2_SetHealth(client, NewHealth)
 public Action:Timer_Switch(Handle:timer, any:client)
 {
 	if (IsValidClient(client))
-		GiveGiantPyro(client);
+		GiveGiantSoldier(client);
 }
 
-#define SergeantsDrillHat 183
-#define TheAllFather 647
-#define Professorspeks 343
+#define Zapateador 31069
+#define Poncho 31070
 
-stock GiveGiantPyro(client)
+stock GiveGiantSoldier(client)
 {
 	if (IsValidClient(client))
 	{
-		
 		RoboRemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
-		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 15006, 6, 1, 2, 0);
-		
-//		CreateWeapon(client, "tf_weapon_shovel", 447, 6, 1, 2, 0);
-		
-		CreateRoboHat(client, SergeantsDrillHat, 10, 6, 0.0, 0.75, -1.0);
-		CreateRoboHat(client, TheAllFather, 10, 6, 0.0, 1.0, -1.0);
-		CreateRoboHat(client, Professorspeks, 10, 6, 0.0, 0.75, 1.0);
-		
-		// CreateHat(client, 183, 10, 6, true); //Sergeant's Drill Hat
-		// CreateHat(client, 647, 10, 6, true); //The All-Father
-		// CreateHat(client, 343, 10, 6, true);//Professor speks
+
+		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 513, 6, 1, 0, 0);
+		CreateRoboWeapon(client, "tf_weapon_buff_item", 354, 6, 1, 1, 0);
+		// CreateRoboWeapon(client, "tf_weapon_katana", 357, 6, 1, 2, 0);
+
+		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 100.0);
+
+		CreateRoboHat(client, Zapateador, 10, 6, 0.0, 0.85, -1.0); 
+		CreateRoboHat(client, Poncho, 10, 6, 0.0, 0.75, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		//int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
 		
+		
+		// if(IsValidEntity(Weapon1))
+		// {
+
+		// 	TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.00);
+		// 	TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+		// 	TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
+		// 	TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);				
+		// 	TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+		// }
+		// if(IsValidEntity(Weapon3))
+		// {						
+		// 	TF2CustAttr_SetString(Weapon3, "custom buff type", "mm-conch");
+		// }
+
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
+			
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 5.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-
-			//TF2Attrib_SetByName(Weapon1, "reload full clip at once", 1.0);
-			
-			
-		//	SetEntProp(Weapon1, Prop_Send, "m_bInReload", 1.0);
-			
-		//	TF2Attrib_SetByName(Weapon1, "disable fancy class select anim", 1.0);
-									
 		}
-		
 
+		// if(IsValidEntity(Weapon2))
+		// {						
+		// 	TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
+		// 	TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
+			
+		// }
+
+		
+		// if(IsValidEntity(Weapon3))
+		// {
+		// 	TF2Attrib_RemoveAll(Weapon3);
+		// 	TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
+		// 	TF2Attrib_SetByName(Weapon3, "restore health on kill", 25.0);
+		// }
 	}
 }
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
+
 	

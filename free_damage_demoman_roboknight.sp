@@ -235,7 +235,7 @@ stock GiveGiantDemoKnight(client)
 			
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
 			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
-			TF2Attrib_SetByName(Weapon3, "charge time increased", 10.0);		
+			TF2Attrib_SetByName(Weapon3, "charge time increased", 5.0);		
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.4);			
 			// TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.75);			
 			TF2Attrib_SetByName(Weapon3, "charge impact damage increased", 5.0);	

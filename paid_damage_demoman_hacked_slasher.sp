@@ -6,14 +6,16 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"EXEcutioner"
+#define ROBOT_NAME	"Hacked Slasher"
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "SkullCutter"
+#define ROBOT_DESCRIPTION "Power-Walk Charge"
+#define ROBOT_COST 1.0
+#define ROBOT_TIPS "Very Long & Slow Charge\nHeal + Charge refill on kill\n3 second speed boost on hit"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
-#define SPAWN	"mvm/mvm_tank_horn.wav"
+#define SPAWN	"#mvm/mvm_tank_horn.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/mvm_tank_loop.wav"
 
@@ -38,6 +40,8 @@ public OnPluginStart()
 
 	AddNormalSoundHook(BossMortar);
 
+	// HookEvent("player_death", Event_Death, EventHookMode_Post);
+
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
@@ -47,7 +51,14 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
-	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 1);
+	
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
+	
+	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, restrictions);
 }
 
 public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -98,12 +109,6 @@ public OnMapStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 
-	PrecacheSound (LEFTFOOT);
-	PrecacheSound (LEFTFOOT1);
-	PrecacheSound (RIGHTFOOT);
-	PrecacheSound (RIGHTFOOT1);
-
-
 }
 
 public Action:SetModel(client, const String:model[])
@@ -134,7 +139,7 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 6600;
+	int iHealth = 6000;
 	
 	
 	int MaxHealth = 175;
@@ -160,28 +165,24 @@ MakeDemoKnight(client)
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	//TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
+	TF2Attrib_SetByName(client, "damage force reduction", 0.1);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
+	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "hand scale", 1.5);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
-	// TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
+	TF2Attrib_SetByName(client, "head scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-	
-	
 
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "High Damage Axe\nIncreased melee range");
+	PrintHintText(client , ROBOT_TIPS);
 
 	
-	// TF2_AddCondition(client, TFCond_MegaHeal);
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -197,9 +198,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	GiveGiantDemoKnight(client);
 }
 
-#define Executioner 921
-#define Tunic 30373
-// #define CoolBreeze 979
+#define NightbaneBrim 31308
+#define Goalkeeper 31217
+#define ToothKicker 734
 
 stock GiveGiantDemoKnight(client)
 {
@@ -211,13 +212,43 @@ stock GiveGiantDemoKnight(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		// CreateRoboWeapon(client, "tf_wearable_demoshield", 131, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_sword", 172, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_wearable_demoshield", 1099, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_sword", 327, 6, 1, 2, 0);
+		
+		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		float TeamPaint = 0.0;
+		
+		if (iTeam == TFTeam_Red){
+			TeamPaint = 3874595.0;
+			
+		}
+		if (iTeam == TFTeam_Blue){
+			
+			TeamPaint = 1581885.0;
+		}
 
-		CreateRoboHat(client, Executioner, 10, 6, 0.0, 0.75, 1.0); 
-		CreateRoboHat(client, Tunic, 10, 6, 0.0, 1.0, 1.0); 
-		// CreateRoboHat(client, CoolBreeze, 10, 6, 0.0, 1.0, 1.0); 
+		CreateRoboHat(client, NightbaneBrim, 10, 6, 0.0, 0.9, -1.0); 
+		CreateRoboHat(client, Goalkeeper, 10, 6, TeamPaint, 0.85, 1.0); 
+		CreateRoboHat(client, ToothKicker, 10, 6, TeamPaint, 1.0, -1.0); 
 
+		
+		int iEntity2 = -1;
+		while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_wearable_demoshield")) != -1)
+		{
+			if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
+			{				
+				//PrintToChatAll("going through entity");
+				TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.0);		
+				TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.1);			
+				TF2Attrib_SetByName(iEntity2, "dmg taken from fire reduced", 1.0);			
+				TF2Attrib_SetByName(iEntity2, "dmg taken from blast reduced", 1.0);			
+						
+				
+
+				break;
+			}
+		}
+		
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon3))
 		{
@@ -225,16 +256,58 @@ stock GiveGiantDemoKnight(client)
 			
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
 			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
-			TF2Attrib_SetByName(Weapon3, "charge time increased", 10.0);		
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.5);			
-			// TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
-			// TF2Attrib_SetByName(Weapon3, "mult charge turn control", 2.0);		
-			// TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.35);	
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
+			TF2Attrib_SetByName(Weapon3, "charge time increased", 15.0);		
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.4);			
+			// TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.75);			
+			TF2Attrib_SetByName(Weapon3, "charge impact damage increased", 5.0);	
+			TF2Attrib_SetByName(Weapon3, "no charge impact range", 100.0);	
 			
-			
+			// TF2Attrib_SetByName(Weapon3, "minicrits become crits", 1.0);		
+			TF2Attrib_SetByName(Weapon3, "mult charge turn control", 5.0);		
+			TF2Attrib_SetByName(Weapon3, "kill refills meter", 1.0);		
+			TF2Attrib_SetByName(Weapon3, "heal on kill", 400.0);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);	
+			// TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 3.0);
+			TF2Attrib_SetByName(Weapon3, "dmg taken increased", 1.0);
 		}
-		
 	}
 }
+
+public void TF2_OnConditionAdded(int client, TFCond condition)
+{
+	
+	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
+		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Charging)
+		{	
+			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 350.0);
+			// TF2_AddCondition(client, TFCond_CritCanteen, 3.0);
+		}
+	
+}
+
+// public Event_Death(Event event, const char[] name, bool dontBroadcast)
+// {
+// 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+// 	//int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+// 	if(IsRobot(attacker, ROBOT_NAME))
+// 	{
+
+// 			//PrintToChatAll("HP WAS %i , MAXHP was %i", HP, MAXHP);
+
+// 			RequestFrame(SetHP, attacker);
+
+// 			// SetEntProp(attacker, Prop_Send, "m_iHealth", HP, 1);
+// 			// SetEntProp(attacker, Prop_Data, "m_iHealth", HP, 1);
+
+
+// 	}
+// }
+
+// void SetHP(int attacker)
+// {
+// 			// int HP = GetEntProp(attacker, Prop_Send, "m_iHealth");
+// 			// int MAXHP = GetEntProp(attacker, Prop_Data, "m_iMaxHealth");
+// 			// SetEntProp(attacker, Prop_Send, "m_iMaxHealth", MAXHP+115, 1);
+// 			// SetEntProp(attacker, Prop_Data, "m_iMaxHealth", MAXHP+115, 1);
+// }

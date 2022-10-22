@@ -7,13 +7,14 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Spitfire"
+#define ROBOT_NAME	"Rocket Man"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
-#define ROBOT_DESCRIPTION "Fire Shotgun"
+#define ROBOT_DESCRIPTION "Fast Airblast\nFaster Move Speed"
+#define ROBOT_TIPS "25%%%% Faster Airblast\n75%%%% more damage\n15%%%% Faster move speed\n15%%%% longer flame range"
 
-#define GPYRO		"models/bots/pyro/bot_pyro.mdl"
+#define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_pyro/giant_pyro_loop.wav"
@@ -40,6 +41,11 @@ enum(<<= 1)
     SML_ERROR,
 }
 
+// new bool:Locked1[MAXPLAYERS+1];
+// new bool:Locked2[MAXPLAYERS+1];
+// new bool:Locked3[MAXPLAYERS+1];
+// new bool:CanWindDown[MAXPLAYERS+1];
+
 public OnPluginStart()
 {
 	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
@@ -58,7 +64,7 @@ public OnPluginStart()
 	robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 
-	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -98,7 +104,7 @@ public Action:SetModel(client, const String:model[])
 
 MakeGiantPyro(client)
 {
-	SMLogTag(SML_VERBOSE, "Createing Kristianma");
+	SMLogTag(SML_VERBOSE, "Createing Agro");
 	TF2_SetPlayerClass(client, TFClass_Pyro);
 	//TF2_RespawnPlayer(client);
 	TF2_RegeneratePlayer(client);
@@ -115,7 +121,7 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	int iHealth = 2500;
+	int iHealth = 3000;
 		
 	int MaxHealth = 175;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -124,38 +130,35 @@ MakeGiantPyro(client)
 	
 	TF2_SetHealth(client, iHealth);
 	// PrintToChatAll("iHealth %i", iHealth);
-	float scale = 1.65;
+	
 	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
-	//TF2Attrib_SetByName(client, "deploy time decreased", 1.0);
-	//TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
-	
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.75);
 
 	
 	
-	UpdatePlayerHitbox(client, scale);
+	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	
-	PrintHintText(client , "Ignite enemies from a distance w/ your shotgun");
+	PrintHintText(client , ROBOT_TIPS);
 	
 	
 }
@@ -172,10 +175,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	if (IsValidClient(client))
 		GiveGiantPyro(client);
 }
-
-
-#define BrimOfFire 31185
-#define LunaticLeathers 30400
+#define BubblePipe 597 
+#define Filamental  30036 
+#define Pyrotechnic  856 
 
 stock GiveGiantPyro(client)
 {
@@ -186,67 +188,47 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		//CreateRoboWeapon(client, "tf_weapon_flamethrower", 215, 6, 1, 2, 0);	
-		CreateRoboWeapon(client, "tf_weapon_shotgun_pyro", 199, 8, 1, 2, 390);
-		// CreateRoboWeapon(client, "tf_weapon_fireaxe", 153, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_flamethrower", 21, 6, 1, 2, 0);	
 
-		//CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 1151, 8, 1, 0, 213);
 		
-		// TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
 		
-		// float TeamPaint = 0.0;
+		float TeamPaint = 0.0;
 
-		// // Team Spirit
-		// // set item tint RGB : 12073019
-		// // set item tint RGB 2 : 5801378
-
-		// if (iTeam == TFTeam_Blue){
-		// 	TeamPaint = 12073019.0;
-		// }
-		// if (iTeam == TFTeam_Red){
-		// 	TeamPaint = 5801378.0;
-		// }
-
-		CreateRoboHat(client, BrimOfFire, 10, 6, 0.0, 1.0, -1.0);
-		CreateRoboHat(client, LunaticLeathers, 10, 6, 0.0, 1.0, -1.0);
-
-	//	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		
-		
-		if(IsValidEntity(Weapon2))
-		{
-			//TF2Attrib_RemoveAll(Weapon2);
-			// TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.75);
-
-			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
-			//TF2Attrib_SetByName(Weapon2, "self dmg push force increased", 12.0);
-			//TF2Attrib_SetByName(Weapon2, "Blast radius increased", 1.75);
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.85);
-			TF2Attrib_SetByName(Weapon2, "projectile penetration heavy", 1.0);
-			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.8);
-			TF2Attrib_SetByName(Weapon2, "weapon spread bonus", 0.75);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.2);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.4);
-			TF2Attrib_SetByName(Weapon2, "minicrit vs burning player", 1.0);
-			TF2Attrib_SetByName(Weapon2, "Set DamageType Ignite", 3.0);
+		if (iTeam == TFTeam_Blue){
+			TeamPaint = 12807213.0;
+		}
+		if (iTeam == TFTeam_Red){
+			TeamPaint = 12091445.0;
 		}
 
-		// if(IsValidEntity(Weapon3))
-		// {
-		// 	//TF2Attrib_RemoveAll(Weapon3);
-		// 	//TF2Attrib_SetByName(Weapon3, "is australium item", 1.0);
-		// 	//TF2Attrib_SetByName(Weapon3, "item style override", 1.0);
-		// 	TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
-		// 	TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.0);
-		// 	TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
-		// 	TF2Attrib_SetByName(Weapon3, "fire rate penalty", 1.0);
-		// 	TF2Attrib_SetByName(Weapon3, "move speed bonus", 0.8);
-		// 	//TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
+		CreateRoboHat(client, BubblePipe, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, Filamental, 10, 6, TeamPaint, 0.75, -1.0);
+		CreateRoboHat(client, Pyrotechnic, 10, 6, 5322826.0, 0.75, -1.0);
+
+		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+
+		
+		if(IsValidEntity(Weapon1))
+		{
+			//TF2Attrib_RemoveAll(Weapon1);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
+			// TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.6);		
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);			
+			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
+			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
+			TF2Attrib_SetByName(Weapon1, "flame_speed", 4140.0);
+			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 0.75);
+
 			
-		// 	//TF2Attrib_SetByName(Weapon2, "apply look velocity on damage", 1500.0);
-		// }
+			
+			// TF2Attrib_SetByName(Weapon1, "airblast vertical pushback scale", 1.5);
+			
+			// charged airblast
+
+
+		}
 	}
 }

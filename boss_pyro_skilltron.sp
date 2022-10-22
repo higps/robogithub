@@ -74,7 +74,7 @@ public OnPluginStart()
 	restrictions.TeamCoins.Overall = 2;
 
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = 2.0;
+	restrictions.RobotCoins.PerRobot = 1.0;
 
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions);
 }
@@ -222,11 +222,9 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 7.0);			
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.8);
 			TF2Attrib_SetByName(Weapon1, "flame_speed", 3800.0);
-			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 0.1);
+			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 0.25);
 			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
 			// TF2Attrib_SetByName(Weapon1, "airblast cost decreased", 0.85);
-			
-			
 
 		}
 		// if(IsValidEntity(Weapon2))

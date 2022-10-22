@@ -1,3 +1,7 @@
+Abbriviations
+
+BOSS = Biological Obliteration Super Soldier
+
 
 // - Regular paints -
 //set item tint RGB

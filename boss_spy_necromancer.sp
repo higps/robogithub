@@ -365,7 +365,7 @@ public void CastSpell(int client) {
 
 
 		//PrintToChatAll("Was not kritzed");
-	int index = 11;
+	int index = 1;
 	
 	
 
@@ -462,13 +462,13 @@ void DrawHUD(int client)
 	// }
 
 
-	Format(sHUDText, sizeof(sHUDText), "Souls: %i/%i", g_souls, g_soul_required);
+	Format(sHUDText, sizeof(sHUDText), "Bats: %i/%i", g_souls, g_soul_required);
 	
 
 	if(g_souls >= 3)
 	{
 
-	Format(sHUDText, sizeof(sHUDText), "Souls: %i/%i\nReady!",g_souls, g_soul_required);
+	Format(sHUDText, sizeof(sHUDText), "Bats: %i/%i\nReady!",g_souls, g_soul_required);
 
 	
 	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
