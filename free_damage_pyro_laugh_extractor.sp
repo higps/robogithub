@@ -12,7 +12,7 @@
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Extract the funnies"
-#define ROBOT_TIPS "Funnies"
+#define ROBOT_TIPS "Kill 5 enemies to scare them later"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
