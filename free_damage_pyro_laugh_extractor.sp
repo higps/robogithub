@@ -202,14 +202,14 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon1))
 		{
 			//TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 2.5);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			// TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.6);		
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);			
 			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
-			TF2Attrib_SetByName(Weapon1, "flame_speed", 3450.0);
+			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.5);
 
 			

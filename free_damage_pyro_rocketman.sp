@@ -219,7 +219,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);			
 			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
-			TF2Attrib_SetByName(Weapon1, "flame_speed", 4140.0);
+			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 0.75);
 
 			

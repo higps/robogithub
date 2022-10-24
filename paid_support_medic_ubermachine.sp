@@ -129,7 +129,7 @@ MakeGiantMedic(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GMEDIC);
    	
-	int iHealth = 2500;
+	int iHealth = 2150;
 	int MaxHealth = 150;
 	int iAdditiveHP = iHealth - MaxHealth;
    
@@ -137,7 +137,7 @@ MakeGiantMedic(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.25);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -349,17 +349,17 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 	}
 
-	if (IsValidClient(attacker) && IsRobot(victim, ROBOT_NAME))
-	{
+	// if (IsValidClient(attacker) && IsRobot(victim, ROBOT_NAME))
+	// {
 		
 
-				if (TF2_IsPlayerInCondition(attacker, TFCond_Ubercharged))
-				{
+	// 			if (TF2_IsPlayerInCondition(attacker, TFCond_Ubercharged))
+	// 			{
 					
-					g_resethit = g_duration + GetEngineTime();
-					TF2_AddCondition(victim, TFCond_UberchargedCanteen, g_duration);
-				}
-	}
+	// 				g_resethit = g_duration + GetEngineTime();
+	// 				TF2_AddCondition(victim, TFCond_UberchargedCanteen, g_duration);
+	// 			}
+	// }
 	return Plugin_Continue;
 }
 
