@@ -342,6 +342,15 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
             }
 
+            if (iClassAttacker == TFClass_Sniper)
+            {
+                if (IsSMG(weapon))
+                {
+                    TF2_StunPlayer(victim, 0.1, 0.6, TF_STUNFLAG_SLOWDOWN, attacker);
+                    TF2_AddCondition(victim, TFCond_Sapped, 0.1, attacker);    
+                }
+            }
+
                         if (iClassAttacker == TFClass_DemoMan)
             {
                 if (IsLooseCannon(weapon))
@@ -352,7 +361,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
             if (iClassAttacker == TFClass_Engineer)
             {
-                if (HasFrontierJustice(attacker) && IsValidEntity(inflictor))
+                if (IsValidEntity(inflictor))
                 {
 
                     char AttackerObject[128];
@@ -625,21 +634,21 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 }   
             }
             /*Damage code for Heavy*/
-            // if (iClassAttacker == TFClass_Heavy)
-            // {
-            //     int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
+            if (iClassAttacker == TFClass_Heavy)
+            {
+                int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
                     
-            //     if (weapon == iWeapon)
-            //     {
-            //         if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-            //         damage *= 0.85;
-            //         if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-            //         return Plugin_Changed;
+                if (weapon == iWeapon)
+                {
+                    if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                    damage *= 0.80;
+                    if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                    return Plugin_Changed;
                     
-            //     }
+                }
                     
                     
-            // }
+            }
 
             if (IsElectric(weapon) && IsAnyRobot(victim))
             {
@@ -802,10 +811,28 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
         }
 
-        // if (TF2_GetPlayerClass(client) == TFClass_Heavy)
-        // {
-        //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your miniguns all deal {orange}-20%%% damage{teamcolor} against robots");
-        // }
+        if (TF2_GetPlayerClass(client) == TFClass_Heavy)
+        {
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your minigun deals {orange}-20%%% damage{teamcolor} against robots",chat_display);
+        }
+
+        if (TF2_GetPlayerClass(client) == TFClass_Sniper)
+        {
+            if(IsStockOrAllClassWeapon(Weapon3))
+            {
+                
+                TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.15);
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+15%% move speed{teamcolor} while active",chat_display);
+            }
+
+            if(IsShahanshah(Weapon3))
+            {
+                TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", 3.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+200%% damage{teamcolor} while half dead",chat_display);
+            }
+            
+        }
 
         if (TF2_GetPlayerClass(client) == TFClass_Scout)
         {
@@ -814,7 +841,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 1.5);
                 TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 1.5);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: Provides all weapons with {orange}+50%% maxammo",chat_display);
+                TF2Attrib_SetByName(Weapon2, "Reload time increased", 0.75);
+                TF2Attrib_SetByName(Weapon1, "Reload time increased", 0.75);
+
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: Provides all weapons with {orange}+50%% maxammo and +25%% faster reload",chat_display);
+            }
+
+            if (IsAtomizer(Weapon3))
+            {
+                TF2Attrib_SetByName(Weapon3, "air dash count", 6.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: {orange}6 Bonus Jumps",chat_display);
             }
 
             // if(IsMadMilk)
@@ -881,11 +917,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsSolemnVow(Weapon3) && IsCrossbow(Weapon1))
             {
-                TF2Attrib_SetByName(Weapon1, "damage bonus", 1.4);
+                TF2Attrib_SetByName(Weapon1, "damage penalty", 1.4);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Solemn Vow: Crusaders Crossbow heals {orange}+40%%% more",chat_display);
             }else
             {
-                TF2Attrib_RemoveByName(Weapon1, "damage bonus");
+                TF2Attrib_RemoveByName(Weapon1, "damage penalty");
             }
 
             if(IsStockOrAllClassWeapon(Weapon3))
@@ -934,10 +970,25 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
            
         }
 
-        if (IsRevolverOrEnforcer(Weapon1))
+        if (IsClassic(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "sniper no headshot without full charge", 0.0);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Classic: {orange}Headshot anytime",chat_display);
+           
+        }
+
+        if (IsRevolver(Weapon1))
         {
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus",chat_display);
+            TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "5.0");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}Tags robots on hit{teamcolor} for 5 seconds",chat_display);
+        }
+
+        if (IsEnforcer(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
+            TF2CustAttr_SetString(Weapon1, "dmg-bonus-vs-sapped-buildings", "damage=3.0");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}200%%% Damage bonus {teamcolor}vs sapped buildings",chat_display);
         }
 
         if (IsAmbassador(Weapon1))
@@ -1003,9 +1054,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             if (IsAnyBanner(Weapon2))
             {
-                TF2Attrib_SetByName(Weapon2, "increase buff duration", 1.25);
+                TF2Attrib_SetByName(Weapon2, "increase buff duration", 3.0);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+25%% longer buff duration{teamcolor}",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+200%%%% longer buff duration{teamcolor}",chat_display);
             }else
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}equip a banner to get the buff!",chat_display);
@@ -1045,10 +1096,26 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots move speed by -70%{teamcolor} for 1.5 seconds on hit",chat_display);
         }
 
-       if(IsCleaver(Weapon2))
+        if(IsCleaver(Weapon2))
         {
             TF2Attrib_SetByName(Weapon2, "bleeding duration", g__bleed_duration_bonus);
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cleaver: {orange}On Hit: Bleed for 10 seconds",chat_display);
+        }
+
+        if(IsSMG(Weapon2))
+        {
+            // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
+            // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
+            
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}SMG: {orange}On Hit: {teamcolor}Slow target movement by 40%%% for 0.1 seconds",chat_display);
+        }
+
+        if(IsShiv(Weapon3))
+        {
+            // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
+            TF2Attrib_SetByName(Weapon3, "bleeding duration", 20.0);
+            
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tribalmans Shiv: {orange}Bleed lasts 20 seconds",chat_display);
         }
         // if (IsSapper(Weapon2))
         // {
@@ -1116,6 +1183,36 @@ bool IsSniperRifle(int weapon)
 	return false;
 }
 
+bool IsSMG(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Sniper Rifles and Reskins
+	case 16, 203, 1149, 15001, 15022, 15032, 15037, 15058, 15076, 15110, 15134, 15153:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsShiv(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Sniper Rifles and Reskins
+	case 171:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool IsHuntsMan(int weapon)
 {
 	if(weapon == -1 && weapon <= MaxClients) return false;
@@ -1154,6 +1251,21 @@ bool IsHeatmaker(int weapon)
 	{
 		//If other electric weapons are added, add here
 	case 752: //Short Circuit, The Righteous Bison, Cow Mangler
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsClassic(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		
+	case 1098: 
 		{
 			return true;
 		}
@@ -1348,20 +1460,36 @@ bool IsKGB(int weapon)
 	return false;
 }
 
-bool IsRevolverOrEnforcer(int weapon)
+bool IsRevolver(int weapon)
 {
 	if(weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 		//Revolver and Enforcer
-	case 24, 210, 1142, 460, 161, 15011, 15027, 15042, 15051, 15062, 15063, 15064, 15103, 15128, 15127, 15149: //Holiday_Punch
+	case 24, 210, 1142,  161, 15011, 15027, 15042, 15051, 15062, 15063, 15064, 15103, 15128, 15127, 15149: //Holiday_Punch
 		{
 			return true;
 		}
 	}
 	return false;
 }
+
+bool IsEnforcer(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Revolver and Enforcer
+	case 460:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 
 bool IsAmbassador(int weapon)
 {
@@ -1506,7 +1634,7 @@ bool IsStockOrAllClassWeapon(int weapon){
 	{
 		//If other allclass are added, add here
         
-	case 0,1,8,190,191,198,154,609,264,423,474,880,939,954,1013,1071,1123,1127,30758,660,30667: 
+	case 0,1,3,8,190,191,193,198,154,609,264,423,474,880,939,954,1013,1071,1123,1127,30758,660,30667: 
 		{
 			return true;
 		}
@@ -1813,6 +1941,36 @@ bool IsMadMilk(int weapon)
 	return false;
 }
 
+bool IsShahanshah(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 401:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsAtomizer(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 450:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 // bool IsSapper(int weapon)
 // {
 //     if(weapon == -1 && weapon <= MaxClients) return false;
@@ -1899,15 +2057,17 @@ public Action Combo_Check_Timer (Handle timer, int client)
 	}
 }
 
-public Action Combo_Stopper (int client){
+public Action Combo_Stopper (int client)
+{
 
-			Punch_Count[client] = 0;
-			Timer_Punch_Count[client] = 0;
-			// PrintToChatAll("========================");
-			// PrintToChatAll("Resetting combo");
-				// PrintToChatAll("Inside timer Punch_Count %i:", Punch_Count[client]);
-	// PrintToChatAll("Inside timer Timer_Punch_Count %i:", Timer_Punch_Count[client]);
-		//g_Timer[attacker] = false;
+    Punch_Count[client] = 0;
+    Timer_Punch_Count[client] = 0;
+    // PrintToChatAll("========================");
+    // PrintToChatAll("Resetting combo");
+    // PrintToChatAll("Inside timer Punch_Count %i:", Punch_Count[client]);
+    // PrintToChatAll("Inside timer Timer_Punch_Count %i:", Timer_Punch_Count[client]);
+    //g_Timer[attacker] = false;
+    return Plugin_Continue;
 
 }
 

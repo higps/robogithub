@@ -704,7 +704,12 @@ public MRESReturn UpdateOnRemove(int pThis)
 			if(iBuiltOnEntity == -1) return MRES_Ignored;
 			
 			iBuilderClient = GetEntPropEnt(iBuiltOnEntity, Prop_Send, "m_hBuilder");
-
+			//PrintToChatAll("I builder client %i", iBuilderClient);
+				//Proofing for when a building doesn't have an owner , when it's spawned
+			if(!IsValidClient(iBuilderClient))
+			{
+				return MRES_Ignored;
+			}
 			if(IsAnyRobot(iBuilderClient))
 			{
 					char stat_buffer[256];
