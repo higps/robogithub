@@ -13,7 +13,7 @@
 #define ROBOT_NAME	"Mystery Machine"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_CLASS "Spy"
-#define ROBOT_SUBCLASS "Hitscan"
+#define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Enforcer, WaveDash"
 #define ROBOT_TIPS "Infinite Cloak\nNo Knife\nPowerful Enforcer that penetrates players\nThrowable sapper\nSapper Heals you when sapping\nWaveDash"
 #define ROBOT_COST 1.0

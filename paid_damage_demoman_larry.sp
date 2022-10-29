@@ -11,7 +11,7 @@
 #define ROBOT_NAME	"Loch'n Larry"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_CLASS "Demoman"
-#define ROBOT_SUBCLASS "Grenades"
+#define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Rapid Anti-Sentry Loch-n-Load"
 #define ROBOT_STATS "-75%%%% damage to players\nAttacks pierce damage resistances\n+75%%%% faster firing speed"
 #define ROBOT_COST 2.5
@@ -47,7 +47,7 @@ public OnPluginStart()
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
 	robot.class = ROBOT_CLASS;
-	//	robot.subclass = ROBOT_SUBCLASS;
+	robot.subclass = ROBOT_SUBCLASS;
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;

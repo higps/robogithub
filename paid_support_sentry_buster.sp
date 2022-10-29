@@ -8,13 +8,13 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Sentry Buster"
-#define ROBOT_CLASS "Buster"
+#define ROBOT_NAME	"Buster"
+#define ROBOT_CLASS "Sentry"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Touch sentries to blow up"
 #define ROBOT_TIPS "Hit enemies, touch sentries, or taunt to activate the explosion"
-#define ROBOT_COST 2
+#define ROBOT_COST 1
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
 #define SPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"
@@ -261,7 +261,7 @@ void GetReadyToExplode(int client)
 	TF2_AddCondition(client, TFCond_MegaHeal);
 	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav", client);
 	StopSound(client, SNDCHAN_AUTO, "mvm/sentrybuster/mvm_sentrybuster_loop.wav");
-	CreateTimer(2.0, Bewm, GetClientUserId(client));
+	CreateTimer(1.0, Bewm, GetClientUserId(client));
 	AboutToExplode[client] = true;
 }
 

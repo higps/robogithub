@@ -12,7 +12,7 @@
 #define ROBOT_NAME	"Bursty"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Rockets"
+#define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Anti-Wrangler"
 #define ROBOT_COST 2.5
 #define ROBOT_STATS "Burst fire 3 rockets\nIgnores damage resistance buffs\n-25%%%% damage to players\n-40%%%% damage to buildings\nRocket Specialist"
