@@ -18,7 +18,7 @@ bool ActiveHasStatWeapon(int iActiveWeapon)
 		return false;
 	}
 	g_dmg = ReadFloatVar(stat_buffer, "damage", 1.0);
-	PrintToChatAll("HAS STATS");
+	// PrintToChatAll("HAS STATS");
 	return true;
 }
 

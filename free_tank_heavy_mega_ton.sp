@@ -190,14 +190,15 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "hand scale", 1.35);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
-	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
-	
+
+
 	UpdatePlayerHitbox(client, scale);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	// TF2_AddCondition(client, TFCond_CritCanteen);
+
 
 	PrintHintText(client , ROBOT_TIPS);
 
@@ -251,11 +252,13 @@ stock GiveGDeflectorH(client)
 			
 			TF2Attrib_SetByName(Weapon1, "reduced_healing_from_medics", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
+			TF2Attrib_SetByName(Weapon1, "dmg from ranged reduced", 0.9);
+			TF2Attrib_SetByName(Weapon1, "dmg from melee increased", 1.1);
+			
 			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.75);
 			TF2Attrib_SetByName(Weapon1, "apply z velocity on damage", 650.0);
 			TF2CustAttr_SetString(Weapon1, "knockback modifier", "20.0");
-			TF2Attrib_SetByName(Weapon1, "dmg taken from crit reduced", 0.30);
+			
 
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");

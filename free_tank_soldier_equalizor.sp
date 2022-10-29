@@ -235,16 +235,18 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 4.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
-	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	//
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.75);
+
+
 	UpdatePlayerHitbox(client,scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	
+
 	PrintHintText(client , ROBOT_TIPS);
 	
 }

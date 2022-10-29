@@ -148,14 +148,15 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	// TF2Attrib_SetByName(client, "health regen", 10.0);
-	
+
 	
 	
 	UpdatePlayerHitbox(client, scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	
+
+
 	PrintHintText(client , ROBOT_TIPS);
 	
 }

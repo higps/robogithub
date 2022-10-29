@@ -11,8 +11,10 @@
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Heal on hit."
+#define ROBOT_DESCRIPTION "Rapid Heal on hit."
+#define ROBOT_TIPS "You are a Tank!\nYou can't contest objectives\nEat steak to heal and run fast and deal minicrits!"
 #define ROBOT_COST 2.5
+
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
@@ -178,14 +180,18 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	// TF2Attrib_SetByName(client, "increased jump height", 0.0);
+
+	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
+	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
+
 	UpdatePlayerHitbox(client, 1.75);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	TF2_AddCondition(client, TFCond_CritCola);
+	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 
-
-	PrintHintText(client, "You are a Tank!\nYou can't contest objectives\nEat steak to heal and run fast and deal minicrits!");
+	PrintHintText(client, ROBOT_TIPS);
 
 	
 
