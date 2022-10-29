@@ -299,19 +299,20 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 0.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
-	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.65);
+	
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+
 	TF2Attrib_SetByName(client, "increased air control", 5.0);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.5);
-	TF2Attrib_SetByName(client, "increased jump height", 0.5);
+	// TF2Attrib_SetByName(client, "increased jump height", 0.5);
+
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+
 
 	PrintHintText(client, ROBOT_TIPS);
 

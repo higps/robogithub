@@ -91,12 +91,22 @@ public void Event_Player_Spawned(Handle event, const char[] name, bool dontBroad
 
     TrackRobotCreation(client, false);
 
+    // if (IsTank(client))
+    //     {
+    //         SetTankStats(client);
+    //     }
     bool isAlive = IsPlayerAlive(client);
     char robotName[NAMELENGTH];
     GetRobot(client, robotName, NAMELENGTH);
     SMLogTag(SML_VERBOSE, "Event_Player_Spawned for %L (alive: %b) received with robot-name %s", client, isAlive, robotName);
+    
+
+
 
     ResetPreviousRobot(client);
+    
+
+
     if (robotName[0] == '\0') 
     {
         return;
@@ -131,7 +141,7 @@ public void ResetPreviousRobot(int client)
     _wasRobot[client] = "";
 }
 
-bool b_SpawnSoundClamp[MAXPLAYERS + 1] = false;
+float f_SpawnSoundClamp[MAXPLAYERS + 1] = {0.0, ...};
 
 public Action Timer_Locker(Handle timer, any client)
 {
@@ -142,6 +152,12 @@ public Action Timer_Locker(Handle timer, any client)
     GetRobot(client, robotName, NAMELENGTH);
     SMLogTag(SML_VERBOSE, "Event_Player_Spawned for %L received with robot-name %s", client, robotName);
 
+
+    if (IsTank(client))
+        {
+            SetTankStats(client);
+        }
+
     Robot item;
     if (GetRobotDefinition(robotName, item) != 0)
     {
@@ -149,21 +165,17 @@ public Action Timer_Locker(Handle timer, any client)
         return Plugin_Handled;
     }
 
-    if (IsPlayerAlive(client) && !b_SpawnSoundClamp[client])
-    { 
-        EmitSoundToAll(item.sounds.spawn);
-        b_SpawnSoundClamp[client] = true;
-        CreateTimer(15.0, Timer_SpawnSoundClamp, client);
-    }
+
+
+    // if (IsPlayerAlive(client) && f_SpawnSoundClamp[client] < GetEngineTime())
+    // { 
+    //     EmitSoundToAll(item.sounds.spawn);
+    //     f_SpawnSoundClamp[client] = GetEngineTime() + 15.0;
+    // }
 
     CallCreate(client, item);
 
     return Plugin_Handled;
-}
-
-public Action Timer_SpawnSoundClamp(Handle timer, int client)
-{
-    b_SpawnSoundClamp[client] = false;
 }
 
 public void Event_Death(Handle event, const char[] name, bool dontBroadcast)
@@ -261,7 +273,6 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	GetNativeString(3, target, 32);
 
 
-
     
 	int targetFilter = 0;
 	if (target[0] == '\0')
@@ -296,6 +307,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 		SMLogTag(SML_ERROR, "could not create robot. no robot with name '%s' found", name);
 		return 1;
 	}
+
 
 
 
@@ -339,10 +351,16 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         { 
           //  PrintToChatAll("PLAYER WAS ALIVE");
             EmitSoundToAll(item.sounds.spawn);
-            
+
+            if (IsTank(client))
+            {
+                SetTankStats(client);
+            }
         }
 
 	}
+
+
 
 	return 0;
 }
@@ -392,6 +410,23 @@ public any Native_IsTank(Handle plugin, int numParams)
     }
 }
 
+void SetTankStats(int client)
+{
+    PrintToChatAll("Setting Tank Stats for %N", client);
+    TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
+    TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
+	TF2_RemoveCondition(client,TFCond_DefenseBuffNoCritBlock);
+    CreateTimer(0.1, Timer_SetDefenseBuff, client);
+}
+
+public Action Timer_SetDefenseBuff(Handle timer, any client)
+{
+    if(IsTank(client))
+    {
+    TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+    }
+}
 int TrashTargetedRobot(int clientId, char target[32])
 {
     int targetFilter = 0;

@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Gain buffs depending on who you punch"
-#define ROBOT_INFO "Immune to tickles\nGains uber from uberchains"
+#define ROBOT_TIPS "Immune to tickles\nBecomes ubered briefly when hit by an ubercharged medic's ubersaw"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
@@ -272,7 +272,7 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "head scale", 0.95);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
-	 
+
 	 
 
 	UpdatePlayerHitbox(client, 1.75);
@@ -280,7 +280,10 @@ MakePanCop(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client, "You are a Tank!\nYou can't contest objectives\nOn Hit: Gain a 1.5 second buff depending on class");
+
+
+
+	PrintHintText(client, ROBOT_TIPS);
 	
 
 	

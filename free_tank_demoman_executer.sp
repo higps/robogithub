@@ -11,6 +11,7 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "SkullCutter"
+#define ROBOT_TIPS "High Damage Axe\nIncreased melee range"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
@@ -134,7 +135,7 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 6600;
+	int iHealth = 6000;
 	
 	
 	int MaxHealth = 175;
@@ -169,16 +170,18 @@ MakeDemoKnight(client)
 	TF2Attrib_SetByName(client, "hand scale", 1.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	// TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
-	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-	
-	
+	// TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	// TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
+	// 	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	
-	PrintHintText(client , "High Damage Axe\nIncreased melee range");
+
+	// TF2_RemoveCondition(client,TFCond_DefenseBuffNoCritBlock);
+
+	PrintHintText(client , ROBOT_TIPS);
 
 	
 	// TF2_AddCondition(client, TFCond_MegaHeal);
