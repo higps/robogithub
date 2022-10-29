@@ -441,7 +441,7 @@ public any Native_IsTank(Handle plugin, int numParams)
 
 void SetTankStats(int client)
 {
-    PrintToChatAll("Setting Tank Stats for %N", client);
+    // PrintToChatAll("Setting Tank Stats for %N", client);
     TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
@@ -455,6 +455,7 @@ public Action Timer_SetDefenseBuff(Handle timer, any client)
     {
     TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
     }
+    return Plugin_Continue;
 }
 int TrashTargetedRobot(int clientId, char target[32])
 {

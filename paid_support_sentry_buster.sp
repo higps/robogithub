@@ -140,6 +140,8 @@ public Action Event_post_inventory_application(Event event, char[] name, bool do
 	if (IsValidClient(client))
 	{
 		SetEntityRenderColor(client, 255, 255, 255, 0);
+
+
 	}
 	return Plugin_Continue;
 }
@@ -252,8 +254,35 @@ void MakeBuster(client)
 	PrintHintText(client , "Touch sentries, taunt or hit enemies with the caber to explode");
 
 	EmitGameSoundToAll("Announcer.MVM_Sentry_Buster_Alert");
+
+			int ent = -1;
+			while ((ent = FindEntityByClassname2(ent, "obj_sentrygun")) != -1)
+			{
+				int owner = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+				if (IsValidEntity(ent) && IsValidClient(owner))
+				{
+				//int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+				
+				
+				TFTeam iBuildingTeam = TF2_GetClientTeam(owner);
+				TFTeam iClientTeam = TF2_GetClientTeam(client);
+
+				
+				if(iClientTeam != iBuildingTeam)
+				{
+						SetEntPropEnt(ent, Prop_Send, "m_bGlowEnabled", 1);
+				}
+	
+				}
+			}
 }
 
+stock int FindEntityByClassname2(int startEnt, char[] classname)
+{
+	/* If startEnt isn't valid shifting it back to the nearest valid one */
+	while (startEnt > -1 && !IsValidEntity(startEnt)) startEnt--;
+	return FindEntityByClassname(startEnt, classname);
+}
 
 
 void GetReadyToExplode(int client)
