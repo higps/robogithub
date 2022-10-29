@@ -475,7 +475,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
 	TF2Attrib_SetByName(client, "increased air control", 4.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
-	//
+TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "head scale", 0.5);
 	UpdatePlayerHitbox(client,scale);

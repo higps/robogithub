@@ -202,6 +202,8 @@ MakeSpy(client)
 	// TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
 	// TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
 	// TF2Attrib_SetByName(client, "metal regen", 50.0);
+
+	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
