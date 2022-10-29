@@ -144,7 +144,8 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "hand scale", 1.8);
 	
-	
+		TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+		
 	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
 	
 	UpdatePlayerHitbox(client, scale);
