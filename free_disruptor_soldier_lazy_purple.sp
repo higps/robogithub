@@ -344,24 +344,24 @@ stock GiveGiantPyro(client)
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 	
-public void TF2_OnConditionAdded(int client, TFCond condition)
-{
+// public void TF2_OnConditionAdded(int client, TFCond condition)
+// {
 	
-	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
-//    if (IsValidClient(client) && !IsRobot(client, ROBOT_NAME)){
+// 	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
+// //    if (IsValidClient(client) && !IsRobot(client, ROBOT_NAME)){
 
-// 	if(condition == TFCond_RuneVampire || condition == TFCond_RuneHaste){
+// // 	if(condition == TFCond_RuneVampire || condition == TFCond_RuneHaste){
 
-// 		TF2_RemoveCondition(client, condition);
+// // 		TF2_RemoveCondition(client, condition);
+// // 	}
+// //    }
+
+// 	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_BlastJumping)
+// 	{	
+// 		TF2_AddCondition(client, TFCond_Buffed, 3.0);
 // 	}
-//    }
 
-	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_BlastJumping)
-	{	
-		TF2_AddCondition(client, TFCond_Buffed, 3.0);
-	}
-
-}
+// }
 // 	public void OnEntityCreated(int iEntity, const char[] sClassName) 
 // {
 // 	if (StrContains(sClassName, "tf_projectile") == 0)

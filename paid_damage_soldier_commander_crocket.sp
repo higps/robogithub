@@ -14,7 +14,7 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rocket"
 #define ROBOT_DESCRIPTION "Crit-Banner"
-#define ROBOT_COST 3.0
+#define ROBOT_COST 4.0
 #define ROBOT_TIPS "Give your teammates crit buff!"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
