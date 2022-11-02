@@ -871,7 +871,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsSolemnVow(Weapon3))
             {
-                TF2Attrib_SetByName(Weapon2, "healing mastery", 1.0);
+                TF2Attrib_SetByName(Weapon2, "healing mastery", 4.0);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Solemn Vow: All weapons deal {darkred}no damage!{teamcolor} But you have the{orange}Healing Mastery upgrade",chat_display);    
  
             }else
