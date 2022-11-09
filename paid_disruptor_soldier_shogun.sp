@@ -12,10 +12,11 @@
 #define ROBOT_NAME	"Shogun"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Half-Zatoichi"
 #define ROBOT_TIPS "Your disciplinary action gives teammates mini crit"
-
+#define ROBOT_COST 1.0
+#define ROBOT_COIN_GENERATION 3
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -67,11 +68,11 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 
-	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	// restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
-	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions, ROBOT_COIN_GENERATION);
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	
@@ -307,7 +308,7 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);		
-			TF2Attrib_SetByName(Weapon3, "restore health on kill", 10.0);						
+			TF2Attrib_SetByName(Weapon3, "restore health on kill", 20.0);						
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 6.0);
 		}
 	}

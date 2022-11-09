@@ -217,7 +217,7 @@ stock GiveGiantDemoKnight(client)
 			if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
 			{				
 				//PrintToChatAll("going through entity");
-				TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.35);		
+				// TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.35);		
 				TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);			
 				TF2Attrib_SetByName(iEntity2, "dmg taken from fire reduced", 1.0);			
 				TF2Attrib_SetByName(iEntity2, "dmg taken from blast reduced", 1.0);			
@@ -236,13 +236,13 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
 			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 5.0);		
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.4);			
-			// TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.75);			
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.40);			
+			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.9);			
 			TF2Attrib_SetByName(Weapon3, "charge impact damage increased", 5.0);	
 			TF2Attrib_SetByName(Weapon3, "no charge impact range", 100.0);	
 			
-			// TF2Attrib_SetByName(Weapon3, "minicrits become crits", 1.0);		
-			TF2Attrib_SetByName(Weapon3, "mult charge turn control", 2.0);		
+			TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 5.0);		
+			TF2Attrib_SetByName(Weapon3, "full charge turn control", 50.0);		
 			TF2Attrib_SetByName(Weapon3, "kill refills meter", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 150.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	

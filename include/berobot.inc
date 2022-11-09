@@ -274,6 +274,12 @@ native void  CreateRoboHat(int client, int itemindex, int level, int quality, fl
 native void RoboRemoveAllWearables(int client);
 
 /**
+* Fixes Clipsize on weapons that has less or more standard clip size
+*
+**/
+native void RoboCorrectClipSize(int item);
+
+/**
  * scales the hitbox of player-hitbox
  * 
  * @param client     clientId of the player being scaled

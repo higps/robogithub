@@ -10,10 +10,11 @@
 #define ROBOT_NAME	"Bonk Scout"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Scout"
-#define ROBOT_SUBCLASS "Projectiles"
+#define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Bonk+Rapid Sandman"
 #define ROBOT_DETAILS "Use bonk to take sentry fire\nShoot a ball to begin generating more\n+3 Coins on death"
 #define ROBOT_COST 2.0
+#define ROBOT_COIN_GENERATION 3
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -65,7 +66,7 @@ public OnPluginStart()
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
-	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, restrictions, 3);
+	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, restrictions, ROBOT_COIN_GENERATION);
 }
 
 public void OnPluginEnd()
@@ -177,7 +178,7 @@ MakeGiantscout(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
 	//TF2Attrib_SetByName(client, "damage force increase", 10.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.5);
@@ -245,11 +246,11 @@ stock GiveGiantPyro(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
-			// TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
+			TF2Attrib_SetByName(Weapon2, "damage penalty", 1.75);
 			TF2Attrib_SetByName(Weapon2, "maxammo grenades1 increased", 30.0);
 			TF2Attrib_SetByName(Weapon2, "effect bar recharge rate increased", 0.1);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.25);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 2.5);
+			// TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 2.5);
 			//TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 10.0);
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 

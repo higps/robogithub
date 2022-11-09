@@ -7,6 +7,7 @@
 #include <berobot>
 #include <sdkhooks>
 #include <tf_custom_attributes>
+#include <tf2utils>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Sky Sweeper"
@@ -276,7 +277,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	if (IsValidClient(client))
 		GiveGiantPyro(client);
 }
-#define RebelRouser 30120
+#define JumperJeepCap 417
 #define ManInSlacks 30392
 #define Attire 30983
 
@@ -292,11 +293,11 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		
 		// CreateRoboWeapon(client, "tf_weapon_shotgun", 199, 6, 2, 2, 0);
-		
+		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 414, 6, 1, 0, 0);
 		CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 415, 8, 1, 2, 0);
 		
 		
-		CreateRoboHat(client, RebelRouser, 10, 6, 0.0, 0.75, -1.0);
+		CreateRoboHat(client, JumperJeepCap, 10, 6, 0.0, 0.8, -1.0);
 		CreateRoboHat(client, ManInSlacks, 10, 6, 0.0, 1.0, -1.0);
 		CreateRoboHat(client, Attire, 10, 6, 0.0, 0.75, -1.0);
 
@@ -305,9 +306,22 @@ stock GiveGiantPyro(client)
 		//CreateHat(client, 647, 10, 6, true); //The All-Father
 		//CreateHat(client, 343, 10, 6, true);//Professor speks
 
-		// int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		
+		if(IsValidEntity(Weapon1))
+		{
+			//TF2Attrib_RemoveAll(Weapon1);
+			
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.85);
+			TF2Attrib_SetByName(Weapon1, "Reload time increased", 0.25);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.25);
+
+		}
+
+
 		if(IsValidEntity(Weapon2))
 		{
 			//TF2Attrib_RemoveAll(Weapon1);
@@ -315,18 +329,13 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "weapon spread bonus", 0.85);
-			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.20);
-			TF2Attrib_SetByName(Weapon2, "auto fires full clip penalty", 1.0);
-			TF2Attrib_SetByName(Weapon2, "Reload time increased", 2.75);
-			TF2Attrib_SetByName(Weapon2, "clip size penalty", 1.5);
-			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.5);
-			
-			
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.25);
-			TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
+			TF2Attrib_SetByName(Weapon2, "Reload time increased", 0.25);
+			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.1);
+
 		}
 		
-		
+		RoboCorrectClipSize(Weapon1);
+		RoboCorrectClipSize(Weapon2);
 
 	}
 }

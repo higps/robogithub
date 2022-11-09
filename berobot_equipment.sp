@@ -6,6 +6,7 @@
 #include <berobot>
 #include <tf2_stocks>
 #include <tf2attributes>
+#include <tf2utils>
 
 #pragma newdecls required
 #pragma semicolon 1
@@ -57,6 +58,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("CreateRoboWeapon", Native_CreateRoboWeapon);
 	CreateNative("CreateRoboHat", Native_CreateRoboHat);
 	CreateNative("RoboRemoveAllWearables", Native_RoboRemoveAllWearables);
+	CreateNative("RoboCorrectClipSize", Native_RoboCorrectClipSize);
 	
 	return APLRes_Success;
 }
@@ -66,6 +68,7 @@ public any Native_EquipWearable(Handle plugin, int numParams)
 	int client = GetNativeCell(1);
 	int item = GetNativeCell(2);
 	SDKCall(g_hEquipWearable, client, item);
+	return Plugin_Continue;
 }
 
 public any Native_CreateRoboWeapon(Handle plugin, int numParams)
@@ -239,59 +242,16 @@ public any Native_RoboRemoveAllWearables(Handle plugin, int numParams)
 			}
 		}
 	}
+	return Plugin_Continue;
 }
 
-// - Regular paints -
-//set item tint RGB
-// A Color Similar to Slate					3100495
-// A Deep Commitment to Purple					8208497
-// A Distinctive Lack of Hue					1315860
-// A Mann's Mint								12377523
-// After Eight									2960676
-// Aged Moustache Grey							8289918
-// An Extraordinary Abundance of Tinge			15132390
-// Australium Gold								15185211	
-// Color No. 216-190-216						14204632
-// Dark Salmon Injustice						15308410
-// Drably Olive								8421376
-// Indubitably Green							7511618
-// Mann Co. Orange								13595446
-// Muskelmannbraun								10843461
-// Noble Hatter's Violet						5322826
-// Peculiarly Drab Tincture					12955537
-// Pink as Hell								16738740
-// Radigan Conagher Brown						6901050
-// The Bitter Taste of Defeat and Lime			3329330
-// The Color of a Gentlemann's Business Pants	15787660
-// Ye Olde Rustic Colour						8154199
-// Zepheniah's Greed							4345659
-
-// - Team colors -
-
-// An Air of Debonair:
-// set item tint RGB : 6637376
-// set item tint RGB 2 : 2636109
-
-// Balaclavas Are Forever
-// set item tint RGB : 3874595
-// set item tint RGB 2 : 1581885
-
-// Cream Spirit
-// set item tint RGB : 12807213
-// set item tint RGB 2 : 12091445
-
-// Operator's Overalls
-// set item tint RGB : 4732984
-// set item tint RGB 2 : 3686984
-
-// Team Spirit
-// set item tint RGB : 12073019
-// set item tint RGB 2 : 5801378
-
-// The Value of Teamwork
-// set item tint RGB : 8400928
-// set item tint RGB 2 : 2452877
-
-// Waterlogged Lab Coat
-// set item tint RGB : 11049612
-// set item tint RGB 2 : 8626083
+public any Native_RoboCorrectClipSize(Handle plugin, int numParams)
+{
+		int item = GetNativeCell(1);
+		int ammoType = GetEntProp(item, Prop_Send, "m_iPrimaryAmmoType");
+		if (ammoType != -1) {
+			SetEntProp(item, Prop_Send, "m_iClip1", TF2Util_GetWeaponMaxClip(item));
+			return true;
+		}
+		return false;
+}

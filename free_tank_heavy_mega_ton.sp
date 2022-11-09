@@ -256,7 +256,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "dmg from melee increased", 1.1);
 			
 			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.75);
-			TF2Attrib_SetByName(Weapon1, "apply z velocity on damage", 650.0);
+			TF2Attrib_SetByName(Weapon1, "apply z velocity on damage", 350.0);
 			TF2CustAttr_SetString(Weapon1, "knockback modifier", "20.0");
 			
 

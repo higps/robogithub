@@ -9,7 +9,7 @@
 #define ROBOT_NAME	"Samur-A.I."
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Demoman"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Half-Zatoichi, Splendid Screen"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
