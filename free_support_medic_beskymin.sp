@@ -200,6 +200,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
 		}
 		
+				//Condition to add heal on taunting
 		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");
 	}
 }

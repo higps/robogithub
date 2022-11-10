@@ -149,7 +149,7 @@ MakePanCop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 7500;
+	int iHealth = 7000;
 	
 	
 	int MaxHealth = 300;
@@ -166,7 +166,7 @@ MakePanCop(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	// TF2Attrib_SetByName(client, "move speed penalty", 0.55);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.75);
 
@@ -393,7 +393,8 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
     if(condition == TFCond_UberchargedCanteen){
 		TF2Attrib_RemoveCustomPlayerAttribute(client, "move speed penalty");
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-
+		TF2Attrib_SetByName(client, "move speed penalty", 1.3);
+		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	}
 	// TF2_RemoveCondition(client, TFCond_Dazed);
 	// TF2_RemoveCondition(client, TFCond_KnockedIntoAir);

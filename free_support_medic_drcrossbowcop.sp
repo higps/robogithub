@@ -125,15 +125,6 @@ MakeGiantMedic(client)
 	PrintHintText(client , ROBOT_TIPS);
 
 }
-
-public TF2_OnConditionAdded(client, TFCond:condition)
-{
-    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-    {
-       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
-	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-    }
-}
  
 stock TF2_SetHealth(client, NewHealth)
 {
@@ -205,6 +196,8 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "heal on hit for slowfire", 50.0);
 		}
 		
+				//Condition to add heal on taunting
+		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");
 	}
 }
 

@@ -4,7 +4,7 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
-// #include <tf_custom_attributes>
+#include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Theory-Y"
@@ -219,6 +219,9 @@ stock GiveGiantMedic(client)
 			
 		}
 
+				//Condition to add heal on taunting
+		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");
+
 	}
 }
 
@@ -228,13 +231,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
 	if (IsRobot(client, ROBOT_NAME)){
 
-
-
-	if (condition == TFCond_Taunting)
-	{
-	TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
-	// TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-	}
 
 	int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 	int healtarget = -1;
