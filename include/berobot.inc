@@ -202,6 +202,16 @@ native bool IsAnyRobot(int client);
  */
  native void SetBossHealth(int client);
 
+  /**
+ * The Health of the robot during creation
+ * 
+ * @param client    clientId to check for robot
+ * 
+ * @return          Handled
+ *                  
+ */
+ native void RoboSetHealth(int client);
+
  /**
  * Sets the boss healthbar
  * 

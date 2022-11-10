@@ -5,6 +5,7 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Wamo"
@@ -225,6 +226,8 @@ stock GiveGiantPyro(client)
 			
 		//	TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.75);
 		}
+
+		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=44 duration=5.0 addcond=52");
 	}
 }
 // public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
