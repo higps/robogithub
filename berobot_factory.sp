@@ -86,6 +86,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("CreateRobot", Native_CreateRobot);
     CreateNative("TrashRobot", Native_TrashRobot);
     CreateNative("IsTank", Native_IsTank);
+    CreateNative("RoboSetHealth", Native_RoboSetHealth);
 
     return APLRes_Success;
 }
@@ -447,6 +448,16 @@ void SetTankStats(int client)
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
 	TF2_RemoveCondition(client,TFCond_DefenseBuffNoCritBlock);
     CreateTimer(0.1, Timer_SetDefenseBuff, client);
+}
+
+
+public any Native_RoboSetHealth(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    int NewHealth = GetNativeCell(2);
+	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
 public Action Timer_SetDefenseBuff(Handle timer, any client)

@@ -160,18 +160,7 @@ MakeGiantMedic(client)
 	SDKHook(client, SDKHook_TraceAttack, OnTraceAttack);
 }
 
-public TF2_OnConditionRemoved(int client, TFCond:condition)
-{
-    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_RuneHaste)
-    {
-    //    TF2_AddCondition(client,TFCond_SpeedBuffAlly, 0.1);
-	   //TF2_RemoveCondition(client, TFCond_Taunting);
-//	   TF2_AddCondition(client,TFCond_Charging, 2.5);
 
-	
-	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-    }
-}
 
 
  
@@ -237,6 +226,9 @@ stock GiveGiantMedic(client)
 
 		TF2_AddCondition(client, TFCond_RestrictToMelee);
 		RequestFrame(MakeMediGun, client);
+
+		//Condition to add heal on taunting
+		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");
 	}
 }
 

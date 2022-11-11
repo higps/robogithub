@@ -13,7 +13,7 @@
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Overheating Heavy"
 #define ROBOT_COST 3.0
-#define ROBOT_TIPS "Overheat % = damage bonus\nDon't let it overheat!"
+#define ROBOT_TIPS "Overheat % = damage bonus\nDon't let it  fully overheat!"
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -192,7 +192,6 @@ MakeGRageH(client)
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	PrintHintText(client , "You are %s\n %s,", ROBOT_NAME, ROBOT_DESCRIPTION);
 
 }
  
@@ -256,8 +255,8 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.3);
 			TF2Attrib_SetByName(Weapon1, "ring of fire while aiming", 45.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus vs burning", 0.9);
-			TF2Attrib_SetByName(Weapon1, "minicrit vs burning player", 1.0);
+			TF2Attrib_SetByName(Weapon1, "damage bonus vs burning", 0.5);
+			TF2Attrib_SetByName(Weapon1, "crit vs burning players", 1.0);
 			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 1.8);
 			
 			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.9);

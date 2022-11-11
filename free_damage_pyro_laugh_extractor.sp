@@ -19,9 +19,7 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_pyro/giant_pyro_loop.wav"
 
-#define SOUND_GUNFIRE	")mvm/giant_pyro/giant_pyro_flamethrower_loop.wav"
-#define SOUND_WINDUP	")mvm/giant_pyro/giant_pyro_flamethrower_start.wav"
-
+#define SCREAM	"ambient/halloween/male_scream_10.wav"
 
 
 public Plugin:myinfo = 
@@ -60,8 +58,8 @@ public OnPluginStart()
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
-	robot.sounds.gunfire = SOUND_GUNFIRE;
-	robot.sounds.windup = SOUND_WINDUP;
+	// robot.sounds.gunfire = SOUND_GUNFIRE;
+	// robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
@@ -87,9 +85,7 @@ public OnMapStart()
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
-	
-	PrecacheSound(SOUND_GUNFIRE);
-	PrecacheSound(SOUND_WINDUP);
+	PrecacheSound(SCREAM);
 	
 }
 
@@ -360,8 +356,12 @@ public void ApplyRadialStun(int hero, float flDuration, float flRadius)
 			GetClientAbsOrigin(client, playerPos);
 			if (GetVectorDistance(playerPos, heroPos) <= flRadius)
 			{
-					TF2_StunPlayer(client, flDuration, 0.0, stunflag);
+				
+				TF2_StunPlayer(client, flDuration, 0.0, stunflag);
 			}
 		}
 	}
+	EmitSoundToAll(SCREAM, hero, SNDCHAN_ITEM, SNDLEVEL_GUNFIRE);
+	EmitSoundToAll(SCREAM, hero, SNDCHAN_ITEM, SNDLEVEL_GUNFIRE);
+	EmitSoundToAll(SCREAM, hero, SNDCHAN_ITEM, SNDLEVEL_GUNFIRE);
 }

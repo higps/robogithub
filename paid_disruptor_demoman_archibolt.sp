@@ -9,9 +9,11 @@
 #define ROBOT_NAME	"Archibolt"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Demoman"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "HYAH! I think that enemy got the point"
 #define ROBOT_TIPS "Use shadow leap to get close to enemies"
+#define ROBOT_COST 1.0
+#define ROBOT_COIN_GENERATION 3
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -50,7 +52,13 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
-    AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 2);
+
+
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+
+    AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, restrictions, ROBOT_COIN_GENERATION);
 }
 
 public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -136,7 +144,7 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 2500;
+	int iHealth = 3500;
 	
 	
 	int MaxHealth = 175;

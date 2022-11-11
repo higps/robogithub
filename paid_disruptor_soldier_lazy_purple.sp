@@ -13,9 +13,11 @@
 #define ROBOT_NAME	"Lazy Purple"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Jumper"
-#define ROBOT_DESCRIPTION "Crit Jumping Direct hit, Market Garden"
+#define ROBOT_SUBCLASS "Disruptor"
+#define ROBOT_DESCRIPTION "Fast Direct hit, Market Garden"
 #define ROBOT_TIPS "Gain Mini-Crits when Blast Jumping"
+#define ROBOT_COST 1.0
+#define ROBOT_COIN_GENERATION 3
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -66,7 +68,12 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
-	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
+
+		RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions, ROBOT_COIN_GENERATION);
 }
 
 public void OnPluginEnd()
@@ -230,7 +237,7 @@ MakeGiantSoldier(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.85);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.25);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -313,13 +320,13 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon1, "damage penalty", 0.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 1.25);
+			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.8);
 						
 			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);	
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.9);			
+			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);	
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.2);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
+			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 		// if(IsValidEntity(Weapon2))
@@ -334,7 +341,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);
+			TF2Attrib_SetByName(Weapon3, "heal on kill", 300.0);
 		}
 		
 
@@ -344,24 +351,24 @@ stock GiveGiantPyro(client)
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 	
-public void TF2_OnConditionAdded(int client, TFCond condition)
-{
+// public void TF2_OnConditionAdded(int client, TFCond condition)
+// {
 	
-	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
-//    if (IsValidClient(client) && !IsRobot(client, ROBOT_NAME)){
+// 	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
+// //    if (IsValidClient(client) && !IsRobot(client, ROBOT_NAME)){
 
-// 	if(condition == TFCond_RuneVampire || condition == TFCond_RuneHaste){
+// // 	if(condition == TFCond_RuneVampire || condition == TFCond_RuneHaste){
 
-// 		TF2_RemoveCondition(client, condition);
+// // 		TF2_RemoveCondition(client, condition);
+// // 	}
+// //    }
+
+// 	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_BlastJumping)
+// 	{	
+// 		TF2_AddCondition(client, TFCond_Buffed, 3.0);
 // 	}
-//    }
 
-	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_BlastJumping)
-	{	
-		TF2_AddCondition(client, TFCond_Buffed, 3.0);
-	}
-
-}
+// }
 // 	public void OnEntityCreated(int iEntity, const char[] sClassName) 
 // {
 // 	if (StrContains(sClassName, "tf_projectile") == 0)

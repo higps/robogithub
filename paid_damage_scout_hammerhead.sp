@@ -14,6 +14,7 @@
 #define ROBOT_DESCRIPTION "Long Range Shortstop"
 #define ROBOT_DETAILS "Your shortstop has long range"
 #define ROBOT_COST 1.5
+#define ROBOT_COIN_GENERATION 2
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -65,7 +66,7 @@ public OnPluginStart()
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
-	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, restrictions, 3);
+	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, restrictions, ROBOT_COIN_GENERATION);
 }
 
 public void OnPluginEnd()
@@ -161,7 +162,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 1250;
+	int iHealth = 2000;
 		
 	int MaxHealth = 125;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);

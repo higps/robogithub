@@ -149,7 +149,7 @@ MakePanCop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 7500;
+	int iHealth = 7000;
 	
 	
 	int MaxHealth = 300;
@@ -166,7 +166,7 @@ MakePanCop(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	// TF2Attrib_SetByName(client, "move speed penalty", 0.55);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.75);
 
@@ -179,20 +179,18 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
 	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
-	//TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 
-	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
-	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	// TF2Attrib_SetByName(client, "healing received penalty", 15.5);
+
+
 	UpdatePlayerHitbox(client, 1.75);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+
 
 	PrintHintText(client, ROBOT_TIPS);
 
@@ -395,7 +393,8 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
     if(condition == TFCond_UberchargedCanteen){
 		TF2Attrib_RemoveCustomPlayerAttribute(client, "move speed penalty");
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-
+		TF2Attrib_SetByName(client, "move speed penalty", 1.3);
+		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	}
 	// TF2_RemoveCondition(client, TFCond_Dazed);
 	// TF2_RemoveCondition(client, TFCond_KnockedIntoAir);

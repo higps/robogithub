@@ -5,6 +5,7 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_ontakedamage>
+#include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Skymin Slash"
@@ -198,7 +199,9 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
 		}
-
+		
+				//Condition to add heal on taunting
+		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");
 	}
 }
 
@@ -209,11 +212,11 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	if (IsRobot(client, ROBOT_NAME))
 	{
 	// PrintToChatAll("Condition was %i", condition);
-	if (condition == TFCond_Taunting)
-	{
-	TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
-	// TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-	}
+	// if (condition == TFCond_Taunting)
+	// {
+	// TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
+	// // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+	// }
 
 	int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 	int healtarget = -1;

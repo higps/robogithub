@@ -11,11 +11,14 @@
 #include <tf_ontakedamage.inc>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"BatBot"
+#define ROBOT_NAME	"GrappleHook"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Spy"
-#define ROBOT_SUBCLASS "Jumper"
+#define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "You have grappling hook"
+#define ROBOT_TIPS "No Revolver\nSharp Dresser\nCan only backstab\nUse grappling hook with reload or specialattack!"
+#define ROBOT_COST 1.0
+#define ROBOT_COIN_GENERATION 3
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -63,11 +66,11 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 
-	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	// restrictions.RobotCoins.PerRobot = 1.0;
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
-	AddRobot(robot, MakeSpy, PLUGIN_VERSION);
+	AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions, ROBOT_COIN_GENERATION);
 	PrecacheModel(MODEL);
 	PrecacheSound(SPAWN);
 	PrecacheSound(DEATH);
@@ -156,7 +159,7 @@ MakeSpy(client)
 	SetModel(client, MODEL);
 
 
-	int iHealth = 1250;
+	int iHealth = 1750;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -177,9 +180,6 @@ MakeSpy(client)
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
-	TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
-	TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
-	TF2Attrib_SetByName(client, "metal regen", 50.0);
 	
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
@@ -191,7 +191,7 @@ MakeSpy(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 	
-	PrintHintText(client, "No Revolver\nSharp Dresser\nCan only backstab\nUse grappling hook with reload or specialattack!");
+	PrintHintText(client, ROBOT_TIPS);
 
 	//EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
 
@@ -273,7 +273,7 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
 			
 			
-			TF2Attrib_SetByName(Knife, "damage penalty", 0.25);
+			TF2Attrib_SetByName(Knife, "damage penalty", 0.75);
 			TF2Attrib_SetByName(Knife, "fire rate bonus", 0.55);
 			TF2Attrib_SetByName(Knife, "dmg penalty vs buildings", 0.0);
 		}

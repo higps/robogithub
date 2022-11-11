@@ -121,7 +121,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 // }
 int g_souls = 0;
-int g_soul_required = 3;
+int g_soul_required = 2;
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));

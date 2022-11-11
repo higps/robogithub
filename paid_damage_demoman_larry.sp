@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Rapid Anti-Sentry Loch-n-Load"
-#define ROBOT_STATS "-75%%%% damage to players\nAttacks pierce damage resistances\n+75%%%% faster firing speed"
+#define ROBOT_STATS "-75%%%% damage to players\nProjectiles don't shatter on surfaces\n+75%%%% faster firing speed"
 #define ROBOT_COST 2.5
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
@@ -242,9 +242,9 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 2.5);
 			
 			// TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
-			// TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 0.5);
-			TF2Attrib_SetByName(Weapon1, "fuse bonus", 50.0);
-			TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
+			TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
+			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.25);
+			// TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
 			SetEntityRenderColor(Weapon1, 207,115,54,0);
 			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
 			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);

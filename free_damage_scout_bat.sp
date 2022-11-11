@@ -7,12 +7,12 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Gotham Bat Droid"
+#define ROBOT_NAME	"Gotham Attack Droid"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "High Damage Melee swings"
-#define ROBOT_TIPS "You are fast and swing faster"
+#define ROBOT_DESCRIPTION "Fast movespeed, High Damage Melee swings"
+#define ROBOT_TIPS "You are fast and deal increased damage"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

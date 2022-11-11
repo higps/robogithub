@@ -12,7 +12,7 @@
 #define ROBOT_NAME	"Elmaxo"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Jumper"
+#define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Rocket Launcher, Market Gardner"
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"

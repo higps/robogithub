@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Array Seven"
@@ -125,14 +126,14 @@ MakeGiantMedic(client)
 	PrintHintText(client, "%s", ROBOT_DESCRIPTION);
 }
 
-public TF2_OnConditionAdded(client, TFCond:condition)
-{
-    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-    {
-       TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
-	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-    }
-}
+// public TF2_OnConditionAdded(client, TFCond:condition)
+// {
+//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+//     {
+//        TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
+// 	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
+//     }
+// }
  
 stock TF2_SetHealth(client, NewHealth)
 {
@@ -187,6 +188,8 @@ stock GiveGiantMedic(client)
 			//SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 			
 		}
+
+		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");
 	}
 }
   

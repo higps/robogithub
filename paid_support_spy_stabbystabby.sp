@@ -75,10 +75,10 @@ public OnPluginStart()
 	PrecacheSound(DEATH);
 	PrecacheSound(LOOP);
 
-	// PrecacheSound(SPY_SPAWN_SOUND1, true);
-	// PrecacheSound(SPY_SPAWN_SOUND2, true);
-	// PrecacheSound(SPY_SPAWN_SOUND3, true);
-	// PrecacheSound(SPY_SPAWN_SOUND4, true);
+	PrecacheSound(SPY_SPAWN_SOUND1, true);
+	PrecacheSound(SPY_SPAWN_SOUND2, true);
+	PrecacheSound(SPY_SPAWN_SOUND3, true);
+	PrecacheSound(SPY_SPAWN_SOUND4, true);
 	// PrecacheSound(SPY_DEATH_SOUND1, true);
 	// PrecacheSound(SPY_DEATH_SOUND2, true);
 	// PrecacheSound(SPY_DEATH_SOUND3, true);
@@ -194,9 +194,9 @@ MakeSpy(client)
 
 	PrintHintText(client, ROBOT_TIPS);
 
-	// if (IsPlayerAlive(client)){
-	// EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
-	// } 
+	if (IsPlayerAlive(client)){
+	EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
+	} 
 
 
 }

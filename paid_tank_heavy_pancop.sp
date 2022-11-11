@@ -177,19 +177,18 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
 	//TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.3);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	// TF2Attrib_SetByName(client, "increased jump height", 0.0);
 
-	TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
-	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
+
 
 	UpdatePlayerHitbox(client, 1.75);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	TF2_AddCondition(client, TFCond_CritCola);
-	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+
 
 	PrintHintText(client, ROBOT_TIPS);
 

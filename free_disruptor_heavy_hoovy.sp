@@ -13,7 +13,7 @@
 #define ROBOT_NAME	"Hoovy"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Heavy"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Robot Hoovy"
 #define ROBOT_TIPS "Tickle enemies\nTaunt kill to make them laugh so hard they explode"
  
