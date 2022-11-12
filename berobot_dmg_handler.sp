@@ -107,6 +107,7 @@ public void OnPluginStart()
 //     HookEvent("object_destroyed", Event_Object_Destroyed, EventHookMode_Post);
 //     HookEvent("object_detonated", Event_Object_Detonated, EventHookMode_Post);
 
+
 }
 public void OnMapStart()
 {
@@ -177,18 +178,7 @@ public void MM_OnEnabledChanged(int enabled)
 //     }
 // }
 
-// public Action Event_Object_Detonated(Event event, const char[] name, bool dontBroadcast)
-// {
-//     int client = GetClientOfUserId(GetEventInt(event, "userid"));
-//     // char objectype[64]
-//     // objectype = GetEventString(event, "objecttype");
-//     // PrintToChatAll("OBJECT Detonated FOR %N", client);
-//     int building = GetEventInt(event, "index");
-//     int objecttype = TF2_GetObjectType(building);
-//     if (objecttype == TFObject_Sentry) {
-//         AwardFrontierCrits(client);
-//     }
-// }
+
 
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
@@ -210,10 +200,15 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     }
 }
 
+
+float g_Razorback_Original_Recharge = -1.0;
+float g_Razorback_Original_Recharge_Robot_Hit = 0.2;
 //Damage Related functions
 /* Plugin Exclusive Functions */
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
+
+    
     if(!IsValidClient(victim))
         return Plugin_Continue;    
     if(!IsValidClient(attacker))
@@ -224,7 +219,52 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
         return Plugin_Changed;
         }
         return Plugin_Continue;
-    }       
+    }
+
+    
+        if(!IsAnyRobot(victim))
+        {
+
+            //     //m_flItemChargeMeter
+            // float data = GetEntPropFloat(victim, Prop_Send, "m_flItemChargeMeter");
+            // PrintToChatAll("Data %f", data);
+              
+             switch (damagecustom)
+                {
+                    case TF_CUSTOM_BACKSTAB:
+                    {
+                        // PrintToChatAll("BACKSTAB 0!");
+                        int razorback = FindTFWearable(victim, 57);
+                        if(IsValidEntity(razorback))
+                        {
+                            // PrintToChatAll("%N had razorback when stabbed", victim);
+
+                            // PrintToChatAll("Charge was before  %f", g_Razorback_Original_Recharge);
+                            Address rstats;
+                            if (g_Razorback_Original_Recharge == -1.0){
+                            
+                            // PrintToChatAll("Finding item_meter");
+
+                            rstats = TF2Attrib_GetByName(razorback, "item_meter_charge_rate");
+                            g_Razorback_Original_Recharge = TF2Attrib_GetValue(rstats);
+
+                            }
+                            // PrintToChatAll("Charge was after %f", g_Razorback_Original_Recharge);
+                            if (IsAnyRobot(attacker))
+                            {
+                                TF2Attrib_SetByName(razorback, "item_meter_charge_rate", g_Razorback_Original_Recharge_Robot_Hit);
+                                TF2_StunPlayer(attacker, 0.5, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
+                                TF2_AddCondition(attacker, TFCond_Sapped, 0.5, attacker);
+                            }else
+                            {
+                                if(g_Razorback_Original_Recharge != -1.0)TF2Attrib_SetByName(razorback, "item_meter_charge_rate", g_Razorback_Original_Recharge);
+                            }
+                            // TF2Attrib_AddCustomPlayerAttribute(victim, "item_meter_charge_rate", 0.1, 5.0);
+                        }
+                    }
+                }
+          }
+
     if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
     {
 
@@ -342,16 +382,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
             }
 
-            if (iClassAttacker == TFClass_Sniper)
-            {
-                if (IsSMG(weapon))
-                {
-                    TF2_StunPlayer(victim, 0.1, 0.6, TF_STUNFLAG_SLOWDOWN, attacker);
-                    TF2_AddCondition(victim, TFCond_Sapped, 0.1, attacker);    
-                }
-            }
+            // if (iClassAttacker == TFClass_Sniper)
+            // {
+            //     if (IsSMG(weapon))
+            //     {
+            //         TF2_StunPlayer(victim, 0.1, 0.6, TF_STUNFLAG_SLOWDOWN, attacker);
+            //         TF2_AddCondition(victim, TFCond_Sapped, 0.1, attacker);    
+            //     }
+            // }
 
-                        if (iClassAttacker == TFClass_DemoMan)
+            if (iClassAttacker == TFClass_DemoMan)
             {
                 if (IsLooseCannon(weapon))
                 {
@@ -528,9 +568,12 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     
                     return Plugin_Changed;
                 }
+
                 //TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
                 }
     }
+
+
 
 
     return Plugin_Continue;
@@ -1106,8 +1149,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
             // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
-            
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}SMG: {orange}On Hit: {teamcolor}Slow target movement by 40%%% for 0.1 seconds",chat_display);
+            TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", 2.0);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}SMG: {orange}On Hit: {teamcolor}Speed boost for 2.0 seconds",chat_display);
         }
 
         if(IsShiv(Weapon3))
@@ -1116,6 +1159,21 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2Attrib_SetByName(Weapon3, "bleeding duration", 20.0);
             
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tribalmans Shiv: {orange}Bleed lasts 20 seconds",chat_display);
+        }
+
+        if (IsWearable(Weapon2))
+        {
+            int razorback = FindTFWearable(client, 57);
+            if (IsValidEntity(razorback) && Weapon1 != -1 && Weapon3 != -1)
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Razorback: {orange}+50%% melee damage resistance. {teamcolor}Will instantly recharge and stun spy robot when triggered",chat_display);
+                TF2Attrib_SetByName(Weapon1, "dmg from melee increased", 0.5);
+                TF2Attrib_SetByName(Weapon3, "dmg from melee increased", 0.5);
+            }else
+            {
+                TF2Attrib_RemoveByName(Weapon1, "dmg from melee increased");
+                TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
+            }
         }
         // if (IsSapper(Weapon2))
         // {
@@ -1969,6 +2027,63 @@ bool IsAtomizer(int weapon)
 		}
 	}
 	return false;
+}
+
+bool IsWearable(int weapon)
+{
+
+    if(weapon == -1 && weapon <= MaxClients)
+    {
+        return true;
+    }else
+    {
+        return false;       
+    }
+	
+
+}
+
+// bool IsWearable(int weapon)
+// {
+
+//     if(weapon == -1 && weapon <= MaxClients)
+//     {
+//         return true;
+//     }else
+//     {
+//         return false;       
+//     }
+	
+
+// }
+
+public int FindTFWearable(int iClient, int item)
+{
+	int iWearableItem = -1;
+	// PrintToServer("LOOKING HAT 1 !");
+	while ((iWearableItem = FindEntityByClassname(iWearableItem, "tf_wearable*")) != -1) // Regular hats.
+	{	
+		// We check for the wearable's item def index and its owner.
+		int iWearableIndex = GetEntProp(iWearableItem, Prop_Send, "m_iItemDefinitionIndex");
+		int iWearableOwner = GetEntPropEnt(iWearableItem, Prop_Send, "m_hOwnerEntity");
+		// PrintToServer("LOOKING HAT 2 !");
+		// If the owners match.
+		if (iWearableOwner == iClient)
+		{
+			// Going through all items. 4 = cosmetics
+			for (int i = 0; i < 4; i++)
+			{			
+				// PrintToServer("LOOKING HAT 3 !");
+				// If a weapon's definition index matches with the one stored...
+				if (iWearableIndex == item)
+				{
+    				return iWearableItem;
+
+				}
+			}
+		}
+	}
+	return -1;
 }
 
 // bool IsSapper(int weapon)
