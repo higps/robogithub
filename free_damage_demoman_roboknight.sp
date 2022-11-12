@@ -236,15 +236,15 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
 			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 5.0);		
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.40);			
-			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.9);			
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.3);			
+			// TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.9);			
 			TF2Attrib_SetByName(Weapon3, "charge impact damage increased", 5.0);	
 			TF2Attrib_SetByName(Weapon3, "no charge impact range", 100.0);	
 			
 			TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 5.0);		
 			TF2Attrib_SetByName(Weapon3, "full charge turn control", 50.0);		
 			TF2Attrib_SetByName(Weapon3, "kill refills meter", 1.0);		
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 150.0);
+			// TF2Attrib_SetByName(Weapon3, "heal on kill", 150.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
 		}
 	}
@@ -256,7 +256,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
 		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Charging)
 		{	
-			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 750.0);
+			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 550.0);
 			// TF2_AddCondition(client, TFCond_CritCanteen, 3.0);
 		}
 	

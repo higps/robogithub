@@ -191,6 +191,15 @@ native bool IsAnyRobot(int client);
  */
  native bool IsTank(int client);
 
+ /**
+ * Sets the stats for tanks
+ * 
+ * @param client    clientId to check for robot
+ * 
+ * @return          Handled
+ *                  
+ */
+ native void SetTankStats(int client);
 
  /**
  * Sets the boss healthbar

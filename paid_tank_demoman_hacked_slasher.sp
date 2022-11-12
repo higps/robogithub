@@ -180,7 +180,8 @@ MakeDemoKnight(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client , ROBOT_TIPS);
-
+	SetTankStats(client);
+	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 	
 }
 

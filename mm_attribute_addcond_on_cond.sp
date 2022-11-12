@@ -60,7 +60,8 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
     if(ActiveHasAddCondStatPlayer(client))
     {
-        if (condition = g_TFCond)
+        // PrintToChatAll("Condition was %i , g_TFCOND was %i", condition, g_TFCond);
+        if (condition == g_TFCond)
         {
             TF2_AddCondition(client, g_TFCond_addcond, g_TFCond_duration);
         }
@@ -85,7 +86,8 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 
     if(ActiveHasRemoveCondStatPlayer(client))
     {
-        if (condition = g_TFCond)
+        
+        if (condition == g_TFCond)
         {
             TF2_AddCondition(client, g_TFCond_addcond, g_TFCond_duration);
         }

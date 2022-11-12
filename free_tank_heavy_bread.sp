@@ -194,7 +194,10 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 
 	UpdatePlayerHitbox(client, scale);
-   
+   	
+	SetTankStats(client);
+	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 

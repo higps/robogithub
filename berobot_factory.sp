@@ -87,6 +87,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("TrashRobot", Native_TrashRobot);
     CreateNative("IsTank", Native_IsTank);
     CreateNative("RoboSetHealth", Native_RoboSetHealth);
+    CreateNative("SetTankStats", Native_SetTankStats);
 
     return APLRes_Success;
 }
@@ -171,10 +172,10 @@ public Action Timer_Locker(Handle timer, any client)
     SMLogTag(SML_VERBOSE, "Event_Player_Spawned for %L received with robot-name %s", client, robotName);
 
 
-    if (IsTank(client))
-        {
-            SetTankStats(client);
-        }
+    // if (IsTank(client))
+    //     {
+    //         SetTankStats(client);
+    //     }
 
     Robot item;
     if (GetRobotDefinition(robotName, item) != 0)
@@ -382,10 +383,10 @@ public any Native_CreateRobot(Handle plugin, int numParams)
           //  PrintToChatAll("PLAYER WAS ALIVE");
             EmitSoundToAll(item.sounds.spawn);
 
-            if (IsTank(client))
-            {
-                SetTankStats(client);
-            }
+            // if (IsTank(client))
+            // {
+            //     SetTankStats(client);
+            // }
         }
 
 	}
@@ -440,16 +441,29 @@ public any Native_IsTank(Handle plugin, int numParams)
     }
 }
 
-void SetTankStats(int client)
+// void SetTankStats(int client)
+// {
+//     // PrintToChatAll("Setting Tank Stats for %N", client);
+//     TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
+//     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+// 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
+// 	TF2_RemoveCondition(client,TFCond_DefenseBuffNoCritBlock);
+//     CreateTimer(0.1, Timer_SetDefenseBuff, client);
+// }
+
+public any Native_SetTankStats(Handle plugin, int numParams)
 {
-    // PrintToChatAll("Setting Tank Stats for %N", client);
+    
+    int client = GetNativeCell(1);
+    //TF2_RemoveCondition(client, TFCond_DefenseBuffNoCritBlock);
     TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	TF2_RemoveCondition(client,TFCond_DefenseBuffNoCritBlock);
-    CreateTimer(0.1, Timer_SetDefenseBuff, client);
-}
+    // TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 
+    return Plugin_Continue;  
+
+}
 
 public any Native_RoboSetHealth(Handle plugin, int numParams)
 {
@@ -460,14 +474,18 @@ public any Native_RoboSetHealth(Handle plugin, int numParams)
 	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
 }
 
-public Action Timer_SetDefenseBuff(Handle timer, any client)
-{
-    if(IsTank(client))
-    {
-    TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
-    }
-    return Plugin_Continue;
-}
+// public Action Timer_SetDefenseBuff(Handle timer, any client)
+// {
+//     if(IsTank(client))
+//     {
+    //     TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
+//     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+// 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
+//     TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+//     }
+//     return Plugin_Continue;
+// }
+
 int TrashTargetedRobot(int clientId, char target[32])
 {
     int targetFilter = 0;

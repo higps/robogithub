@@ -247,7 +247,8 @@ stock GiveBigRoboHuntsbot(client)
 		}	
 	}
 
-
+	SetTankStats(client);
+	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 }
 
 // public void OnEntityCreated(int iEntity, const char[] sClassName) 

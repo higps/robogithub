@@ -285,8 +285,8 @@ MakePanCop(client)
 
 	PrintHintText(client, ROBOT_TIPS);
 	
-
-	
+	SetTankStats(client);
+	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 	// SetEntityRenderColor(client, 0, 0, 0, 0);
 
 }
