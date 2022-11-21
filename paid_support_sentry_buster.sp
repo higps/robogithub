@@ -57,7 +57,7 @@ public void OnPluginStart()
 
 
 	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
+	// HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
 public void OnPluginEnd()
@@ -65,29 +65,29 @@ public void OnPluginEnd()
 	RemoveRobot(ROBOT_NAME);
 }
 
-public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-	// PrintToChat(victim,"You died as sentry buster");
-	if (IsRobotWhenDead(victim, ROBOT_NAME))
-	{
-		AboutToExplode[victim] = false;
-		CreateTimer(4.0, Timer_Respawn, victim);
-		// PrintToChat(victim,"Creating timer");
-	}
-	return Plugin_Continue;
-}
+// public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+// {
+// 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+// 	// PrintToChat(victim,"You died as sentry buster");
+// 	if (IsRobotWhenDead(victim, ROBOT_NAME))
+// 	{
+// 		AboutToExplode[victim] = false;
+// 		CreateTimer(4.0, Timer_Respawn, victim);
+// 		// PrintToChat(victim,"Creating timer");
+// 	}
+// 	return Plugin_Continue;
+// }
 
-public Action Timer_Respawn(Handle timer, any client)
-{
-    //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
-	if (IsValidClient(client) && !IsPlayerAlive(client))
-    {
-        TF2_RespawnPlayer(client);
-        //PrintToChat(client,"You have instant respawn as scout");
-    }
-	return Plugin_Continue;
-}
+// public Action Timer_Respawn(Handle timer, any client)
+// {
+//     //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
+// 	if (IsValidClient(client) && !IsPlayerAlive(client))
+//     {
+//         TF2_RespawnPlayer(client);
+//         //PrintToChat(client,"You have instant respawn as scout");
+//     }
+// 	return Plugin_Continue;
+// }
 
 
 public APLRes AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
@@ -222,5 +222,6 @@ stock void GiveGiantDemoKnight(int client)
 			SetEntPropFloat(Weapon1, Prop_Send, "m_flModelScale", 0.01);
 		}
 		TF2CustAttr_SetString(client, "Sentry Buster", "damage=2500.0 range=500.0 lineofsight=1");
+		TF2CustAttr_SetString(client, "faster-respawn", "4.0");
 	}
 }
