@@ -15,8 +15,8 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Fast Direct hit, Market Garden"
-#define ROBOT_TIPS "Gain Mini-Crits when Blast Jumping"
-#define ROBOT_COST 1.0
+#define ROBOT_TIPS "You heal from landing market gardens"
+#define ROBOT_COST 3.0
 #define ROBOT_COIN_GENERATION 3
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
@@ -238,7 +238,8 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.85);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.25);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.25);
+	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
@@ -339,7 +340,7 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
+			// TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 300.0);
 		}

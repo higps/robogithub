@@ -245,7 +245,7 @@ stock GiveGiantPyro(client)
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		//int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		
+		// TF2Attrib_SetByName(client, "gesture speed increase", 10.0);
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
