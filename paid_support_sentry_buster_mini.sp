@@ -121,7 +121,7 @@ void MakeBuster(client)
 	}
 	RequestFrame(ClientSwitch, client);
 	SetModel(client, GBUSTER);
-	int iHealth = 1000;
+	int iHealth = 500;
 	int MaxHealth = 175;
 	int iAdditiveHP = iHealth - MaxHealth;
 	TF2_SetHealth(client, iHealth);
@@ -138,7 +138,7 @@ void MakeBuster(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 
 	TF2Attrib_SetByName(client, "override footstep sound set", 7.0);
-	TF2Attrib_SetByName(client, "increased jump height", 2.0);
+	// TF2Attrib_SetByName(client, "increased jump height", 2.0);
 	TF2Attrib_SetByName(client, "cannot be backstabbed", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
@@ -212,7 +212,7 @@ stock void GiveGiantDemoKnight(int client)
 			
 			SetEntPropFloat(Weapon1, Prop_Send, "m_flModelScale", 0.01);
 		}
-		TF2CustAttr_SetString(client, "Sentry Buster", "damage=500.0 range=250.0 lineofsight=1 timer=0.2");
-		TF2CustAttr_SetString(client, "faster-respawn", "2.0");
+		TF2CustAttr_SetString(client, "Sentry Buster", "damage=500.0 radius=150.0 lineofsight=1 timer=0.8");
+		TF2CustAttr_SetString(client, "faster-respawn", "4.0");
 	}
 }
