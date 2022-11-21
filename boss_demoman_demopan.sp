@@ -206,7 +206,7 @@ stock GiveGiantDemoKnight(client)
 	if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
 	{				
 		//PrintToChatAll("going through entity");
-		TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.5);		
+		TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.125);		
 		TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);		
 		TF2Attrib_SetByName(iEntity2, "charge recharge rate increased", 3.5);		
 		TF2Attrib_SetByName(iEntity2, "charge impact damage increased", 2.0);		

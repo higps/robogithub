@@ -139,7 +139,7 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 6000;
+	int iHealth = 7000;
 	
 	
 	int MaxHealth = 175;
@@ -264,7 +264,7 @@ stock GiveGiantDemoKnight(client)
 			// TF2Attrib_SetByName(Weapon3, "minicrits become crits", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "mult charge turn control", 5.0);		
 			TF2Attrib_SetByName(Weapon3, "kill refills meter", 1.0);		
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 400.0);
+			// TF2Attrib_SetByName(Weapon3, "heal on kill", 400.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);	
 			// TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 3.0);
 			TF2Attrib_SetByName(Weapon3, "dmg taken increased", 1.0);

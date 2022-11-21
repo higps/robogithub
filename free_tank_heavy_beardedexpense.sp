@@ -282,7 +282,7 @@ MakeBearded(client)
 	SetModel(client, SHWC);
    
 		
-	int iHealth = 5000;
+	int iHealth = 7000;
 	TF2_SetHealth(client, iHealth);
 	
 	int MaxHealth = 300;
@@ -387,7 +387,7 @@ stock GiveBearded(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			// TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
 			// TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 10.0);
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 400.0);
+			// TF2Attrib_SetByName(Weapon3, "heal on kill", 400.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
 			// TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 			// TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);

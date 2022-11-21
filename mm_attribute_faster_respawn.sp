@@ -59,13 +59,9 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	// PrintToChat(victim,"You died as sentry buster");
 	if (HasStat(victim))
 	{
-		PrintToChatAll("preparing respawn");
+		// PrintToChatAll("preparing respawn");
 		CreateTimer(g_respawn_time, Timer_Respawn, victim);
-	}else
-	{
-		PrintToChatAll("didn't have stat");
 	}
-
 	// int weaponid = GetEventInt(event, "weaponid");
 
 	// // int wepindex = GetEntProp(weaponid, Prop_Send, "m_iItemDefinitionIndex");
@@ -77,7 +73,7 @@ public Action Timer_Respawn(Handle timer, any client)
 {
 	if (IsValidClient(client) && !IsPlayerAlive(client) && IsClientInGame(client))
     {
-		PrintToChatAll("Respawning");
+		// PrintToChatAll("Respawning");
         TF2_RespawnPlayer(client);
     }
 	return Plugin_Continue;

@@ -228,12 +228,15 @@ stock GiveGiantDemoKnight(client)
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.75);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.5);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 3.0);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.8);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.4);
+			// TF2Attrib_SetByName(Weapon1, "mod max primary clip override", 10.0);
+			// TF2Attrib_SetByName(Weapon1, "mod use metal ammo type", 1.0);
+			
 			TF2CustAttr_SetString(Weapon1, "knockback modifier", "2.5");
 			// TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=1500.0 homing_mode=0 projectilename=tf_projectile_pipe");
 

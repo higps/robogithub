@@ -122,7 +122,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 5250;
+	int iHealth = 6500;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 	float scale = 1.85;
@@ -241,8 +241,8 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_SetByName(Kukri, "speed_boost_on_hit", 1.0);
 			
 			 
-			TF2Attrib_SetByName(Kukri, "heal on hit for rapidfire", 15.0);
-			TF2Attrib_SetByName(Kukri, "heal on kill", 150.0);
+			// TF2Attrib_SetByName(Kukri, "heal on hit for rapidfire", 15.0);
+			// TF2Attrib_SetByName(Kukri, "heal on kill", 150.0);
 		}	
 	}
 
