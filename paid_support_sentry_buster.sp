@@ -54,41 +54,13 @@ public void OnPluginStart()
 	restrictions.RobotCoins.Overall = ROBOT_COST;
 
 	AddRobot(robot, MakeBuster, PLUGIN_VERSION, restrictions);
-
-
 	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
-	// HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
 }
-
-// public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
-// {
-// 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-// 	// PrintToChat(victim,"You died as sentry buster");
-// 	if (IsRobotWhenDead(victim, ROBOT_NAME))
-// 	{
-// 		AboutToExplode[victim] = false;
-// 		CreateTimer(4.0, Timer_Respawn, victim);
-// 		// PrintToChat(victim,"Creating timer");
-// 	}
-// 	return Plugin_Continue;
-// }
-
-// public Action Timer_Respawn(Handle timer, any client)
-// {
-//     //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
-// 	if (IsValidClient(client) && !IsPlayerAlive(client))
-//     {
-//         TF2_RespawnPlayer(client);
-//         //PrintToChat(client,"You have instant respawn as scout");
-//     }
-// 	return Plugin_Continue;
-// }
-
 
 public APLRes AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
@@ -183,6 +155,27 @@ void MakeBuster(client)
 	PrintHintText(client , "Touch sentries, taunt or hit enemies with the caber to explode");
 
 	EmitGameSoundToAll("Announcer.MVM_Sentry_Buster_Alert");
+
+			// int ent = -1;
+			// while ((ent = FindEntityByClassname2(ent, "obj_sentrygun")) != -1)
+			// {
+			// 	int owner = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+			// 	if (IsValidEntity(ent) && IsValidClient(owner))
+			// 	{
+			// 	//int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
+				
+				
+			// 	TFTeam iBuildingTeam = TF2_GetClientTeam(owner);
+			// 	TFTeam iClientTeam = TF2_GetClientTeam(client);
+
+				
+			// 	if(iClientTeam != iBuildingTeam)
+			// 	{
+			// 			SetEntPropEnt(ent, Prop_Send, "m_bGlowEnabled", 1);
+			// 	}
+	
+			// 	}
+			// }
 }
 
 stock void TF2_SetHealth(int client, int NewHealth)
