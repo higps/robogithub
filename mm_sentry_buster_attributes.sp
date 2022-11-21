@@ -26,6 +26,7 @@ enum struct FSentryBuster
 	int ref;
 	float Damage;
 	float Radius;
+	float Timer;
 
 	float Pos[3];
 
@@ -61,33 +62,8 @@ public void OnPluginStart()
 	}
 
 	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
-Action Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-	// PrintToChat(victim,"You died as sentry buster");
-	if (IsSentryBuster(victim))
-	{
-		AboutToExplode[victim] = false;
-		CreateTimer(4.0, Timer_Respawn, victim);
-		// PrintToChat(victim,"Creating timer");
-	}
-
-	return Plugin_Continue;
-}
-
-public Action Timer_Respawn(Handle timer, any client)
-{
-	//PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
-	if (IsValidClient(client) && !IsPlayerAlive(client))
-	{
-		TF2_RespawnPlayer(client);
-		//PrintToChat(client,"You have instant respawn as scout");
-	}
-	return Plugin_Continue;
-}
 
 public void OnClientPostAdminCheck(int client)
 {
@@ -167,7 +143,13 @@ void GetReadyToExplode(int client)
 	TF2_AddCondition(client, TFCond_MegaHeal);
 	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav", client);
 	StopSound(client, SNDCHAN_AUTO, "mvm/sentrybuster/mvm_sentrybuster_loop.wav");
-	CreateTimer(2.0, Bewm, GetClientUserId(client));
+	
+	char stats[256];
+	TF2CustAttr_GetString(client, "Sentry Buster", stats, sizeof stats);
+	LastBuster.Set(client);
+	LastBuster.Timer = ReadFloatVar(stats, "timer", 4.0);
+
+	CreateTimer(LastBuster.Timer, Bewm, GetClientUserId(client));
 	AboutToExplode[client] = true;
 }
 
@@ -240,6 +222,7 @@ Action Bewm(Handle timer, any userid)
 	LastBuster.Damage = ReadFloatVar(stats, "damage", 2500.0);
 	PrintToChatAll("Damage: %.1f", LastBuster.Damage);
 	LastBuster.Radius = ReadFloatVar(stats, "radius", 500.0);
+	
 	LastBuster.LineOfSight = view_as<bool>(ReadIntVar(stats, "lineofsight", 0));
 
 	LastBuster.Pos = clientPos;
