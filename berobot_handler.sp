@@ -516,13 +516,13 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     //PrintToChatAll("You died  %N", victim);
     //GetRobotNames();
     //EmitGameSoundToAll("Announcer.MVM_General_Destruction");
-        if (!IsAnyRobot(victim) && IsAnyRobot(attacker))
-        {
-            //PrintChatAll("You are not a robot %N", victim);
-            if (TF2_GetPlayerClass(victim) == TFClass_Scout){
-                CreateTimer(6.0, Timer_Respawn, victim);
-            }
-        }
+        // if (!IsAnyRobot(victim) && IsAnyRobot(attacker))
+        // {
+        //     //PrintChatAll("You are not a robot %N", victim);
+        //     if (TF2_GetPlayerClass(victim) == TFClass_Scout){
+        //         CreateTimer(6.0, Timer_Respawn, victim);
+        //     }
+        // }
 
         //Removes the robot ragdoll and causes explosion
        
@@ -592,15 +592,15 @@ public Action RemoveBody(Handle timer, any client)
     }
 }
 
-public Action Timer_Respawn(Handle timer, any client)
-{
-    //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
-	if (IsValidClient(client) && !IsPlayerAlive(client))
-    {
-        TF2_RespawnPlayer(client);
-        //PrintHintText(client,"You have instant respawn as scout");
-    }
-}
+// public Action Timer_Respawn(Handle timer, any client)
+// {
+//     //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
+// 	if (IsValidClient(client) && !IsPlayerAlive(client))
+//     {
+//         TF2_RespawnPlayer(client);
+//         //PrintHintText(client,"You have instant respawn as scout");
+//     }
+// }
 
 public Action SetRandomRobot_Timer(Handle timer, any client)
 {

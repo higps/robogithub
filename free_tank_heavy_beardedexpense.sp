@@ -310,19 +310,11 @@ MakeBearded(client)
 
 	UpdatePlayerHitbox(client, 1.75);
 	
-	//Tank Stats
-	SetTankStats(client);
-	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
-
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	
 
 	PrintHintText(client, ROBOT_TIPS);
-
-	
-	
 }
  
 stock TF2_SetHealth(client, NewHealth)
