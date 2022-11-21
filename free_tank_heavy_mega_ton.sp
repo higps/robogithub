@@ -157,7 +157,7 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 5000;
+	int iHealth = 7000;
 	
 	
 	int MaxHealth = 300;

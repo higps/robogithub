@@ -243,8 +243,6 @@ stock GiveGiantDemoKnight(client)
 			
 			TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 5.0);		
 			TF2Attrib_SetByName(Weapon3, "full charge turn control", 50.0);		
-			TF2Attrib_SetByName(Weapon3, "kill refills meter", 1.0);		
-			// TF2Attrib_SetByName(Weapon3, "heal on kill", 150.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
 		}
 	}

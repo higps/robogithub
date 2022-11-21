@@ -8,11 +8,11 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Buster Normal"
+#define ROBOT_NAME	"Buster Mini"
 #define ROBOT_CLASS "Sentry"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_SUBCLASS "Sentry Buster"
-#define ROBOT_DESCRIPTION "Touch sentries to blow up"
+#define ROBOT_DESCRIPTION "Faster detonation, less range and damage"
 #define ROBOT_TIPS "Hit enemies, touch sentries, or taunt to activate the explosion"
 #define ROBOT_COST 1
 
@@ -121,12 +121,12 @@ void MakeBuster(client)
 	}
 	RequestFrame(ClientSwitch, client);
 	SetModel(client, GBUSTER);
-	int iHealth = 2500;
+	int iHealth = 1000;
 	int MaxHealth = 175;
 	int iAdditiveHP = iHealth - MaxHealth;
 	TF2_SetHealth(client, iHealth);
 
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
@@ -143,7 +143,7 @@ void MakeBuster(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 
-	UpdatePlayerHitbox(client, 1.75);
+	UpdatePlayerHitbox(client, 0.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
@@ -206,15 +206,13 @@ stock void GiveGiantDemoKnight(int client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.0);
-			TF2Attrib_SetByName(Weapon1, "gesture speed increase", 1.25);
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=1.25 frequency=1.5 range=400.0");
 			SetEntProp(Weapon1, Prop_Send, "m_iDetonated", 1);
 			
 			
 			SetEntPropFloat(Weapon1, Prop_Send, "m_flModelScale", 0.01);
 		}
-		TF2CustAttr_SetString(client, "Sentry Buster", "damage=2500.0 range=500.0 lineofsight=1 timer=1.25");
-		
-		TF2CustAttr_SetString(client, "faster-respawn", "4.0");
+		TF2CustAttr_SetString(client, "Sentry Buster", "damage=500.0 range=250.0 lineofsight=1 timer=0.2");
+		TF2CustAttr_SetString(client, "faster-respawn", "2.0");
 	}
 }

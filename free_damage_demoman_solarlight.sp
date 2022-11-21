@@ -252,7 +252,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 3.0);
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 
@@ -264,10 +264,8 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_RemoveAll(Weapon3);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon3, "is_festivized", 1.0);		
-			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 4.0);		
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);		
-			//TF2Attrib_SetByName(Weapon3, "melee cleave attack", 1.0);	
 			TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);		
 			
 			
@@ -283,7 +281,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
 		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Charging)
 		{	
-			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 600.0);
+			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 550.0);
 
 		}
 	

@@ -135,7 +135,7 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 6000;
+	int iHealth = 7000;
 	
 	
 	int MaxHealth = 175;

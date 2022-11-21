@@ -157,7 +157,7 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 5000;
+	int iHealth = 7000;
 	
 	
 	int MaxHealth = 300;
@@ -254,7 +254,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "reduced_healing_from_medics", 1.0);
 			// TF2Attrib_SetByName(Weapon1, "move speed bonus", 0.693);
 			TF2Attrib_SetByName(Weapon1, "mod_maxhealth_drain_rate", 0.0);
-			TF2Attrib_SetByName(Weapon1, "heal on kill", 200.0);
+			// TF2Attrib_SetByName(Weapon1, "heal on kill", 200.0);
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 			// TF2CustAttr_SetString(Weapon1, "on-hit-addcond", "TFCond=27 duration=10.0 apply-to-self=0 apply-to-enemy=1");
