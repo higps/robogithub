@@ -14,6 +14,7 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Support"
 #define ROBOT_DESCRIPTION "Penetrating Huntsman"
+#define ROBOT_TIPS "Arrows penetrate enemies!"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -123,10 +124,11 @@ MakeSniper(client)
 	int iHealth = 2000;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
+	float scale = 1.5;
 
 	TF2_SetHealth(client, iHealth);
 
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 
 	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
@@ -148,12 +150,12 @@ MakeSniper(client)
 	
 	
 	
-	UpdatePlayerHitbox(client, 1.65);
+	UpdatePlayerHitbox(client, scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Arrows penetrate enemies!");
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 
@@ -218,11 +220,12 @@ stock GiveBigRoboHuntsbot(client)
 			
 			TF2Attrib_SetByName(Huntsman, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Huntsman, "dmg penalty vs buildings", 0.3);
-			TF2Attrib_SetByName(Huntsman, "sniper aiming movespeed decreased", 1.0);
+			// TF2Attrib_SetByName(Huntsman, "sniper aiming movespeed decreased", 0.1);
 			TF2Attrib_SetByName(Huntsman, "projectile penetration", 1.0);
-			// TF2Attrib_SetByName(Huntsman, "damage bonus", 1.2);
-			TF2Attrib_SetByName(Huntsman, "fire rate bonus", 0.25);
+			TF2Attrib_SetByName(Huntsman, "gesture speed increase", 1.95);
+			TF2Attrib_SetByName(Huntsman, "fire rate bonus", 0.4);
 			TF2Attrib_SetByName(Huntsman, "heal on kill", 50.0);
+			// TF2Attrib_SetByName(Huntsman, "faster reload rate", 3.5);
 			
 
 		}

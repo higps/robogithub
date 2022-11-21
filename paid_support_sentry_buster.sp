@@ -14,7 +14,7 @@
 #define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Touch sentries to blow up"
 #define ROBOT_TIPS "Hit enemies, touch sentries, or taunt to activate the explosion"
-#define ROBOT_COST 2
+#define ROBOT_COST 4
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
 #define SPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"
@@ -133,7 +133,7 @@ void MakeBuster(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 2.0);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", -5.0);
+	// TF2Attrib_SetByName(client, "airblast vulnerability multiplier", -5.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 
@@ -213,7 +213,7 @@ stock void GiveGiantDemoKnight(int client)
 			
 			SetEntPropFloat(Weapon1, Prop_Send, "m_flModelScale", 0.01);
 		}
-		TF2CustAttr_SetString(client, "Sentry Buster", "damage=2500.0 range=500.0 lineofsight=1 timer=1.25");
+		TF2CustAttr_SetString(client, "Sentry Buster", "damage=2500.0 radius=500.0 lineofsight=1 timer=1.25");
 		
 		TF2CustAttr_SetString(client, "faster-respawn", "4.0");
 	}

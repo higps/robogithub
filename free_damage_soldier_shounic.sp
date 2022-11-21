@@ -114,7 +114,7 @@ public OnPluginStart()
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
 	AutoAim = CreateConVar("shounic_rocket_launcher_auto_aim", "0", "Should a fired rocket launcher automatically target players", _, true, 0.0, true, 1.0);
-	AttackTime = CreateConVar("shounic_rocket_launcher_fire_delay", "1.1", "Attack delay for fired rocket launchers");
+	AttackTime = CreateConVar("shounic_rocket_launcher_fire_delay", "0.9", "Attack delay for fired rocket launchers");
 }
 
 public void OnPluginEnd()
