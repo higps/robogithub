@@ -220,7 +220,7 @@ Action Bewm(Handle timer, any userid)
 
 	LastBuster.Set(client);
 	LastBuster.Damage = ReadFloatVar(stats, "damage", 2500.0);
-	PrintToChatAll("Damage: %.1f", LastBuster.Damage);
+	// PrintToChatAll("Damage: %.1f", LastBuster.Damage);
 	LastBuster.Radius = ReadFloatVar(stats, "radius", 500.0);
 	
 	LastBuster.LineOfSight = view_as<bool>(ReadIntVar(stats, "lineofsight", 0));
