@@ -519,7 +519,7 @@ void VolunteerAutomaticVolunteers()
     {
         VolunteerState state = pickedVolunteers.Get(i);
         volunteerArray[i] = state.UserId;
-        SMLogTag(SML_VERBOSE, "setting %L as volunteered", volunteerArray[i]);
+        SMLogTag(SML_VERBOSE, "setting %L as volunteered", GetClientOfUserId(volunteerArray[i]));
     }
     SetVolunteers(volunteerArray, pickedVolunteers.Length);
 
