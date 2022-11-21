@@ -386,14 +386,14 @@ Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, in
 		if (AboutToExplode[victim])
 		{
 			damage = 0.0;
-			PrintToChatAll("State 1");
+
 			FakeClientCommand(victim, "taunt");
 			return Plugin_Changed;
 		}
 		else if (damage+10.0 > GetClientHealth(victim))
 		{
 			damage = 0.0;
-			PrintToChatAll("State 2");
+
 			GetReadyToExplode(victim);
 			FakeClientCommand(victim, "taunt");
 			return Plugin_Changed;
