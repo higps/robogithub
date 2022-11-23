@@ -160,15 +160,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnMapStart()
 {
-	PrecacheModel(GDEKNIGHT);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
 
-	PrecacheSound(LEFTFOOT);
-	PrecacheSound(LEFTFOOT1);
-	PrecacheSound(RIGHTFOOT);
-	PrecacheSound(RIGHTFOOT1);
 
 }
 

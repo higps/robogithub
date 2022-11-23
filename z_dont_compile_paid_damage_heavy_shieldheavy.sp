@@ -114,10 +114,10 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
  
 public OnMapStart()
 {
-	PrecacheModel(GRageH);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+	
+
+
+
 	
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
 	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");

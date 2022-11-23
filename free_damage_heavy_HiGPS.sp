@@ -115,10 +115,10 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
  
 public OnMapStart()
 {
-	PrecacheModel(GDEFLECTORH);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+	// PrecacheModel(GDEFLECTORH);
+	// PrecacheSound(SPAWN);
+	// PrecacheSound(DEATH);
+	// PrecacheSound(LOOP);
 	
 	// PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
@@ -129,10 +129,10 @@ public OnMapStart()
 	// PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
 	
-	PrecacheSound(LEFTFOOT);
-	PrecacheSound(LEFTFOOT1);
-	PrecacheSound(RIGHTFOOT);
-	PrecacheSound(RIGHTFOOT1);
+	// PrecacheSound(LEFTFOOT);
+	// PrecacheSound(LEFTFOOT1);
+	// 
+	// 
 
 	PrecacheSound(SOUND_GUNFIRE);
 	PrecacheSound(SOUND_GUNSPIN);

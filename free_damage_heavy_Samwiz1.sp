@@ -19,7 +19,7 @@
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
-#define RED_MODEL "models/items/banana/banana.mdl"
+#define BANANA_MODEL "models/items/banana/banana.mdl"
 
 // #define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
 // #define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
@@ -118,12 +118,12 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
  
 public OnMapStart()
 {
-	PrecacheModel(GDEFLECTORH);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+//
+
+
+
 	
-	PrecacheModel(RED_MODEL);
+	PrecacheModel(BANANA_MODEL);
 	// PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
@@ -343,7 +343,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 void SetProjectileModel (int iEntity)
 {
-	SetEntityModel(iEntity, RED_MODEL);
+	SetEntityModel(iEntity, BANANA_MODEL);
 }
 
 void SpawnBombs(int client, int attacker)

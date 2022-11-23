@@ -115,9 +115,9 @@ public OnClientDisconnect_Post(client)
 public OnMapStart()
 {
 	PrecacheModel(GBUSTER);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+
+
+
 
 	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_01.wav");
 	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_02.wav");

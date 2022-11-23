@@ -48,6 +48,25 @@ char _wasRobot[MAXPLAYERS + 1][NAMELENGTH];
 #define BOSS_SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
 #define TANK_SPAWN	"mvm/mvm_tank_horn.wav"
 #define TANK_LOOP	"mvm/mvm_tank_loop.wav"
+#define ROBOSTEP1 "^mvm/giant_common/giant_common_step_01.wav"
+#define ROBOSTEP2 "^mvm/giant_common/giant_common_step_02.wav"
+#define ROBOSTEP3 "^mvm/giant_common/giant_common_step_03.wav"
+#define ROBOSTEP4 "^mvm/giant_common/giant_common_step_04.wav"
+#define ROBOSTEP5 "^mvm/giant_common/giant_common_step_05.wav"
+#define ROBOSTEP6 "^mvm/giant_common/giant_common_step_06.wav"
+#define ROBOSTEP7 "^mvm/giant_common/giant_common_step_07.wav"
+#define ROBOSTEP8 "^mvm/giant_common/giant_common_step_08.wav"
+
+
+//SentryBuster
+#define SENTRYBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
+#define SENTRYBUSTERSPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"
+#define SENTRYBUSTERLOOP	"mvm/sentrybuster/mvm_sentrybuster_loop.wav"
+#define SENTRYBUSTER_LEFTFOOT "^mvm/sentrybuster/mvm_sentrybuster_step_01.wav"
+#define SENTRYBUSTER_LEFTFOOT1 "^mvm/sentrybuster/mvm_sentrybuster_step_02.wav"
+#define SENTRYBUSTER_RIGHTFOOT "^mvm/sentrybuster/mvm_sentrybuster_step_03.wav"
+#define SENTRYBUSTER_RIGHTFOOT1 "^mvm/sentrybuster/mvm_sentrybuster_step_04.wav"
+#define SENTRYBUSTER_SPIN "mvm/sentrybuster/mvm_sentrybuster_spin.wav"
 
 //Demo
 #define DEMO		"models/bots/demo/bot_demo.mdl"
@@ -109,7 +128,8 @@ char _wasRobot[MAXPLAYERS + 1][NAMELENGTH];
 char Models[][] = {DEMO, DEMO_BOSS, HEAVY, HEAVY_BOSS, SOLDIER, SOLDIER_BOSS, SCOUT, PYRO, PYRO_BOSS, SNIPER, MEDIC, SPY};
 char Sounds[][] = {SPAWN, DEATH, BOSS_SPAWN,TANK_SPAWN, TANK_LOOP, LOOP_DEMO, DEMO_LEFTFOOT, DEMO_LEFTFOOT1, DEMO_RIGHTFOOT, DEMO_RIGHTFOOT1, HEAVY_LOOP
 ,HEAVY_LEFTFOOT,HEAVY_LEFTFOOT1, HEAVY_RIGHTFOOT, HEAVY_RIGHTFOOT1, SOLDIER_DEATH, SOLDIER_LOOP, SOLDIER_LEFTFOOT, SOLDIER_LEFTFOOT1
-,SOLDIER_RIGHTFOOT1, SCOUT_LOOP, SCOUT_LEFTFOOT, SCOUT_LEFTFOOT1,SCOUT_RIGHTFOOT,SCOUT_RIGHTFOOT1,PYRO_LOOP};
+,SOLDIER_RIGHTFOOT1, SCOUT_LOOP, SCOUT_LEFTFOOT, SCOUT_LEFTFOOT1,SCOUT_RIGHTFOOT,SCOUT_RIGHTFOOT1,PYRO_LOOP,SENTRYBUSTER, SENTRYBUSTERSPAWN, SENTRYBUSTERLOOP,
+ROBOSTEP1, ROBOSTEP2,ROBOSTEP3,ROBOSTEP4,ROBOSTEP5,ROBOSTEP6,ROBOSTEP7,ROBOSTEP8};
 
 
 
@@ -158,7 +178,7 @@ public void PrecacheModelsAndSounds()
     }
     for (int i = 0; i < sizeof(Models); i++)
     {
-        PrecacheSound(Models[i]);
+        PrecacheModel(Models[i]);
         // PrintToConsoleAll("Precached Models %s", Models[i]);
     }
 }

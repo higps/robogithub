@@ -128,15 +128,15 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnMapStart()
 {
-	PrecacheModel(SHWC);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+	// PrecacheModel(SHWC);
+
+
+
 	
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
 
 	PrecacheSound(sBoomNoise);
 	PrecacheSound(ALARM);

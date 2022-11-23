@@ -106,10 +106,10 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
  
 public OnMapStart()
 {
-	PrecacheModel(GDEFLECTORH);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+//
+
+
+
 	
 	// PrecacheSound(sBoomNoise1);
 	// PrecacheSound(sBoomNoise2);

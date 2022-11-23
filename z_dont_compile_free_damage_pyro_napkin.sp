@@ -76,10 +76,10 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnMapStart()
 {
-	PrecacheModel(GPYRO);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+//
+
+
+
 	
 	PrecacheSound(SOUND_GUNFIRE);
 	PrecacheSound(SOUND_WINDUP);

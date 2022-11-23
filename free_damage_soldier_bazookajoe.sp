@@ -98,20 +98,20 @@ public OnClientDisconnect_Post(client)
 
 public OnMapStart()
 {
-	PrecacheModel(GSOLDIER);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+	
+
+
+
 
 	PrecacheSound(GUNFIRE);
 	PrecacheSound(GUNFIRE_CRIT);
 	PrecacheSound(GUNFIRE_EXPLOSION);
 	
 
-	PrecacheSound(LEFTFOOT);
-	PrecacheSound(LEFTFOOT1);
-	PrecacheSound(RIGHTFOOT);
-	PrecacheSound(RIGHTFOOT1);
+
+
+	
+	
 	
 	//PrecacheSound(SOUND_GUNFIRE);
 	//PrecacheSound(SOUND_WINDUP);
