@@ -27,10 +27,7 @@
 // #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 
 
-#define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
-#define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
-#define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
-#define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
+
 
 #define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
@@ -149,10 +146,6 @@ public OnMapStart()
 	PrecacheSound(RIGHTFOOT);
 	PrecacheSound(RIGHTFOOT1);
 
-	PrecacheSound(SOUND_GUNFIRE);
-	PrecacheSound(SOUND_GUNSPIN);
-	PrecacheSound(SOUND_WINDUP);
-	PrecacheSound(SOUND_WINDDOWN);
 }
  
 public Action:SetModel(client, const String:model[])

@@ -42,9 +42,83 @@ ConVar g_cvCvarList[CV_g_Allow_Human_Robot_Creation + 1];
 bool _init;
 char _wasRobot[MAXPLAYERS + 1][NAMELENGTH];
 
+//Universal
+#define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
+#define BOSS_SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
+#define TANK_SPAWN	"mvm/mvm_tank_horn.wav"
+#define TANK_LOOP	"mvm/mvm_tank_loop.wav"
+
+//Demo
+#define DEMO		"models/bots/demo/bot_demo.mdl"
+#define DEMO_BOSS		"models/bots/demo_boss/bot_demo_boss.mdl"
+#define LOOP_DEMO	"mvm/giant_demoman/giant_demoman_loop.wav"
+#define DEMO_LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
+#define DEMO_LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
+#define DEMO_RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
+#define DEMO_RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
+
+//Heavy
+#define HEAVY      "models/bots/heavy/bot_heavy.mdl"
+#define HEAVY_BOSS      "models/bots/heavy_boss/bot_heavy_boss.mdl"
+#define HEAVY_LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
+#define HEAVY_LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
+#define HEAVY_LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
+#define HEAVY_RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
+#define HEAVY_RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
+
+//Soldier
+#define SOLDIER		"models/bots/soldier/bot_soldier.mdl"
+#define SOLDIER_BOSS		"models/bots/soldier_boss/bot_soldier_boss.mdl"
+#define SOLDIER_DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
+#define SOLDIER_LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
+
+#define SOLDIER_LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
+#define SOLDIER_LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
+#define SOLDIER_RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
+#define SOLDIER_RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
+
+//Scout
+#define SCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
+#define SCOUT_LOOP	"mvm/giant_scout/giant_scout_loop.wav"
+#define SCOUT_LEFTFOOT        ")mvm/giant_scout/giant_scout_step_01.wav"
+#define SCOUT_LEFTFOOT1       ")mvm/giant_scout/giant_scout_step_03.wav"
+#define SCOUT_RIGHTFOOT       ")mvm/giant_scout/giant_scout_step_02.wav"
+#define SCOUT_RIGHTFOOT1      ")mvm/giant_scout/giant_scout_step_04.wav"
+
+//Pyro
+#define PYRO		"models/bots/pyro/bot_pyro.mdl"
+#define PYRO_BOSS	"models/bots/pyro_boss/bot_pyro_boss.mdl"
+#define PYRO_LOOP	"mvm/giant_pyro/giant_pyro_loop.wav"
+
+//Sniper
+#define SNIPER             "models/bots/Sniper/bot_Sniper.mdl"
+
+//Engineer
+#define ENGINEER    "models/bots/engineer/bot_engineer.mdl"
+
+//Medic
+#define MEDIC             "models/bots/medic/bot_medic.mdl"
+
+// SPY
+#define SPY             "models/bots/spy/bot_spy.mdl"
+
+// #define Models {SNIPER}
+// #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
+// #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
+char Models[][] = {DEMO, DEMO_BOSS, HEAVY, HEAVY_BOSS, SOLDIER, SOLDIER_BOSS, SCOUT, PYRO, PYRO_BOSS, SNIPER, MEDIC, SPY};
+char Sounds[][] = {SPAWN, DEATH, BOSS_SPAWN,TANK_SPAWN, TANK_LOOP, LOOP_DEMO, DEMO_LEFTFOOT, DEMO_LEFTFOOT1, DEMO_RIGHTFOOT, DEMO_RIGHTFOOT1, HEAVY_LOOP
+,HEAVY_LEFTFOOT,HEAVY_LEFTFOOT1, HEAVY_RIGHTFOOT, HEAVY_RIGHTFOOT1, SOLDIER_DEATH, SOLDIER_LOOP, SOLDIER_LEFTFOOT, SOLDIER_LEFTFOOT1
+,SOLDIER_RIGHTFOOT1, SCOUT_LOOP, SCOUT_LEFTFOOT, SCOUT_LEFTFOOT1,SCOUT_RIGHTFOOT,SCOUT_RIGHTFOOT1,PYRO_LOOP};
+
+
+
+
+
 public void OnPluginStart()
 {
     Init();
+    PrecacheModelsAndSounds();
 }
 
 public void Init()
@@ -73,6 +147,20 @@ public void Init()
     }
 
     _init = true;
+}
+
+public void PrecacheModelsAndSounds()
+{
+    for (int i = 0; i < sizeof(Sounds); i++)
+    {
+        PrecacheSound(Sounds[i]);
+        // PrintToConsoleAll("Precached %s", Sounds[i]);
+    }
+    for (int i = 0; i < sizeof(Models); i++)
+    {
+        PrecacheSound(Models[i]);
+        // PrintToConsoleAll("Precached Models %s", Models[i]);
+    }
 }
 
 public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)

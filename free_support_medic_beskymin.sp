@@ -211,12 +211,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
 	if (IsRobot(client, ROBOT_NAME))
 	{
-	// PrintToChatAll("Condition was %i", condition);
-	// if (condition == TFCond_Taunting)
-	// {
-	// TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
-	// // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-	// }
 
 	int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 	int healtarget = -1;
@@ -236,15 +230,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	TF2_AddCondition(healtarget, TFCond_RuneWarlock, 3.5);
 	}
 	}
-
-	// if (condition == TFCond_Charging)
-	// {	
-
-	// 		SetEntPropFloat(healtarget, Prop_Send, "m_flMaxspeed", 750.0);
-	// 		SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 750.0);
-
-	// }
-
 	}
 }
 
