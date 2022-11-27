@@ -310,8 +310,9 @@ MakeBearded(client)
 
 	UpdatePlayerHitbox(client, 1.75);
 	
-	//Tank Stats
-	SetTankStats(client);
+    TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
+    TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
 	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);

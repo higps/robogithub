@@ -154,10 +154,10 @@ public Action Timer_Locker(Handle timer, any client)
     SMLogTag(SML_VERBOSE, "Event_Player_Spawned for %L received with robot-name %s", client, robotName);
 
 
-    if (IsTank(client))
-        {
-            SetTankStats(client);
-        }
+    // if (IsTank(client))
+    //     {
+    //         SetTankStats(client);
+    //     }
 
     Robot item;
     if (GetRobotDefinition(robotName, item) != 0)
@@ -353,10 +353,10 @@ public any Native_CreateRobot(Handle plugin, int numParams)
           //  PrintToChatAll("PLAYER WAS ALIVE");
             EmitSoundToAll(item.sounds.spawn);
 
-            if (IsTank(client))
-            {
-                SetTankStats(client);
-            }
+            // if (IsTank(client))
+            // {
+            //     SetTankStats(client);
+            // }
         }
 
 	}
@@ -411,15 +411,15 @@ public any Native_IsTank(Handle plugin, int numParams)
     }
 }
 
-void SetTankStats(int client)
-{
-    PrintToChatAll("Setting Tank Stats for %N", client);
-    TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
-    TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	TF2_RemoveCondition(client,TFCond_DefenseBuffNoCritBlock);
-    CreateTimer(0.1, Timer_SetDefenseBuff, client);
-}
+// void SetTankStats(int client)
+// {
+//     PrintToChatAll("Setting Tank Stats for %N", client);
+//     TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
+//     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+// 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
+// 	TF2_RemoveCondition(client,TFCond_DefenseBuffNoCritBlock);
+//     CreateTimer(0.1, Timer_SetDefenseBuff, client);
+// }
 
 
 public any Native_RoboSetHealth(Handle plugin, int numParams)
