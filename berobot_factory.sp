@@ -87,7 +87,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("TrashRobot", Native_TrashRobot);
     CreateNative("IsTank", Native_IsTank);
     CreateNative("RoboSetHealth", Native_RoboSetHealth);
-    CreateNative("SetTankStats", Native_SetTankStats);
+    // CreateNative("SetTankStats", Native_SetTankStats);
 
     return APLRes_Success;
 }
