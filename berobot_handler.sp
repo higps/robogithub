@@ -1848,7 +1848,8 @@ int Native_SetVolunteers(Handle plugin, int numParams)
 
     for(int i = 0; i < length; i++)
     {
-        MakeRobot(volunteers[i], true);
+        int clientId = GetClientOfUserId(volunteers[i]);
+        MakeRobot(clientId, true);
     }
 }
 
@@ -1903,7 +1904,7 @@ bool AddRandomVolunteer()
     int[] ignoredVolunteers = new int[g_Volunteers.Length];
     for(int i = 0; i < g_Volunteers.Length; i++)
     {
-        ignoredVolunteers[i] = g_Volunteers.Get(i);
+        ignoredVolunteers[i] = GetClientUserId(g_Volunteers.Get(i));
     }
     int newVolunteer = GetRandomVolunteer(ignoredVolunteers, g_Volunteers.Length);
     SMLogTag(SML_VERBOSE, "GetRandomVolunteer returned %i", newVolunteer);

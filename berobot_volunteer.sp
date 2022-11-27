@@ -36,14 +36,14 @@ methodmap VolunteerState < StringMap
         return view_as<VolunteerState>(new StringMap());
     }
 
-    property int ClientId {
+    property int UserId {
         public get(){ 
             int value;
-            this.GetValue("ClientId", value);
+            this.GetValue("UserId", value);
             return value;
         }
         public set(int value){
-            this.SetValue("ClientId", value);
+            this.SetValue("UserId", value);
         }
     }
 
@@ -91,11 +91,11 @@ methodmap VolunteerState < StringMap
         }
     }
 
-    public void GetClientIdString(char steamId[10]){ 
-        this.GetString("ClientIdString", steamId, sizeof(steamId));
+    public void GetUserIdString(char steamId[10]){ 
+        this.GetString("UserIdString", steamId, sizeof(steamId));
     }
-    public void SetClientIdString(char value[10]){
-        this.SetString("ClientIdString", value);
+    public void SetUserIdString(char value[10]){
+        this.SetString("UserIdString", value);
     }
 
     public void GetSteamId(char steamId[64]){ 
@@ -120,6 +120,10 @@ int _countdownTarget;
 Handle _autoVolunteerTimer;
 bool _pickedOption[MAXPLAYERS + 1];
 bool _volunteered[MAXPLAYERS + 1];
+
+/**
+ *  maps a (char steamId[64]) key to a (int queuePoints) valuelunteerStates
+ */
 StringMap _queuePoints;
 
 public void OnPluginStart()
@@ -144,6 +148,10 @@ public void OnPluginStart()
     RegAdminCmd("sm_unsetvolunteer", Command_UnsetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to false/disabled");
     RegAdminCmd("sm_reload_vip_volunteers", Command_ReloadVipVolunteers, ADMFLAG_SLAY, "reloads VIP-SteamIds from file");
     RegAdminCmd("sm_reload_queuepoints_volunteers", Command_ReloadQueuepointsVolunteers, ADMFLAG_SLAY, "reloads queuepoints from file");
+
+    RegConsoleCmd("sm_queuepoints", Command_OutputQueuepoints, "outputs queuepoints into chat");
+    RegConsoleCmd("sm_qpnts", Command_OutputQueuepoints, "outputs queuepoints into chat");
+    RegConsoleCmd("sm_qp", Command_OutputQueuepoints, "outputs queuepoints into chat");
 
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
     RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
@@ -337,6 +345,25 @@ public Action Command_Volunteer(int client, int args)
     return Plugin_Handled;
 }
 
+public Action Command_OutputQueuepoints(int client, int args)
+{
+    SMLogTag(SML_VERBOSE, "Command_OutputQueuepoints called for %L", client);
+
+    int ignored[1];
+    ArrayList queuePointList = CreateSortedVolunteersList(ignored, 0);
+    
+    for(int i = 0; i < queuePointList.Length; i++)
+    {
+        VolunteerState state = queuePointList.Get(i);
+
+        int clientId = GetClientOfUserId(state.UserId);
+        PrintToChat(client, "%-64N %i (admin: %i; vip: %i; volunteered: %i)", clientId, state.QueuePoints, state.Admin, state.Vip, state.Volunteered);
+    }
+
+    delete queuePointList;
+    return Plugin_Handled;
+}
+
 public void VolunteerTargets(int client, char target[32], bool volunteering)
 {
     int targetFilter = 0;
@@ -396,11 +423,11 @@ int Native_AutomaticVolunteerVoteIsInProgress(Handle plugin, int numParams)
 int Native_GetRandomVolunteer(Handle plugin, int numParams)
 {
     int length = GetNativeCell(2);
-    int[] ignoredClientIds = new int[length];
-    GetNativeArray(1, ignoredClientIds, length);
+    int[] ignoredUserIds = new int[length];
+    GetNativeArray(1, ignoredUserIds, length);
     SMLogTag(SML_VERBOSE, "Native_GetRandomVolunteer read %i ignroedClientIds", length);
 
-    ArrayList pickedVolunteers = PickVolunteers(1, ignoredClientIds, length, false);    
+    ArrayList pickedVolunteers = PickVolunteers(1, ignoredUserIds, length, false);    
     if (pickedVolunteers.Length <= 0)
     {
         delete pickedVolunteers;
@@ -408,7 +435,7 @@ int Native_GetRandomVolunteer(Handle plugin, int numParams)
     }
 
     VolunteerState state = pickedVolunteers.Get(0);
-    int clientId = state.ClientId;
+    int clientId = GetClientOfUserId(state.UserId);
     SMLogTag(SML_VERBOSE, "Native_GetRandomVolunteer picked %L", clientId);
 
     delete pickedVolunteers;
@@ -484,15 +511,15 @@ int CountVolunteers()
 
 void VolunteerAutomaticVolunteers()
 {
-    int[] ignoredClientIds = new int[1];
-    ArrayList pickedVolunteers = PickVolunteers(_robocapTeam, ignoredClientIds, 0);
+    int[] ignoredUserIds = new int[1];
+    ArrayList pickedVolunteers = PickVolunteers(_robocapTeam, ignoredUserIds, 0);
 
     int[] volunteerArray = new int[pickedVolunteers.Length];
     for(int i = 0; i < pickedVolunteers.Length; i++)
     {
         VolunteerState state = pickedVolunteers.Get(i);
-        volunteerArray[i] = state.ClientId;
-        SMLogTag(SML_VERBOSE, "setting %L as volunteered", volunteerArray[i]);
+        volunteerArray[i] = state.UserId;
+        SMLogTag(SML_VERBOSE, "setting %L as volunteered", GetClientOfUserId(volunteerArray[i]));
     }
     SetVolunteers(volunteerArray, pickedVolunteers.Length);
 
@@ -506,22 +533,49 @@ void VolunteerAutomaticVolunteers()
  * picks volunteers, based on admin-/vip-/volunteer-status 
  * 
  * @param neededVolunteers           amount of needed volunteers
- * @param ignoredClientIds           array of clientIds that should be ignored (can't ever get picked)
- * @param ignoredClientIdsLength     length of the ignoredClientIds-array
+ * @param ignoredUserIds           array of userIds that should be ignored (can't ever get picked)
+ * @param ignoredUserIdsLength     length of the ignoredUserIds-array
  * @param pickNonvolunteers          indicates if nonvolunteers should be picked, if not enough people volunteered (default: true)
  * @return                           returns a ArrayList of VolunteerStates
  */
-ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignoredClientIdsLength, bool pickNonvolunteers = true)
+ArrayList PickVolunteers(int neededVolunteers, int[] ignoredUserIds, int ignoredUserIdsLength, bool pickNonvolunteers = true)
 {
-    StringMap ignoredClientIdLookup = new StringMap();
-    for(int i = 0; i < ignoredClientIdsLength; i++)
+    ArrayList volunteers = CreateSortedVolunteersList(ignoredUserIds, ignoredUserIdsLength, pickNonvolunteers);
+    
+    if (volunteers.Length > neededVolunteers)
     {
-        int ignoredClientId = ignoredClientIds[i];
-        char str[10];
-        IntToString(ignoredClientId, str, 10);
+        volunteers.SortCustom(VolunteerStateComparision);
 
-        SMLogTag(SML_VERBOSE, "adding %s for %i to ignored volunteers", str, ignoredClientId);
-        ignoredClientIdLookup.SetValue(str, true);
+        UpdateQueuePoints(volunteers, neededVolunteers);
+
+        volunteers.Resize(neededVolunteers);
+    }
+    else
+    {
+        UpdateQueuePoints(volunteers, neededVolunteers);
+    }
+
+    for(int volunteerIndex = 0; volunteerIndex < volunteers.Length; volunteerIndex++)
+    {
+        VolunteerState state = volunteers.Get(volunteerIndex);
+        int clientId = GetClientOfUserId(state.UserId);
+        SMLogTag(SML_VERBOSE, "%L was picked with %i queuepoints (Admin: %i; Vip: %i; Volunteered: %i)", clientId, state.QueuePoints, state.Admin, state.Vip, state.Volunteered);
+    }
+    
+    return volunteers;
+}
+
+ArrayList CreateSortedVolunteersList(int[] ignoredUserIds, int ignoredUserIdsLength, bool pickNonvolunteers = true)
+{
+    StringMap ignoredUserIdLookup = new StringMap();
+    for(int i = 0; i < ignoredUserIdsLength; i++)
+    {
+        int ignoredUserId = ignoredUserIds[i];
+        char str[10];
+        IntToString(ignoredUserId, str, 10);
+
+        SMLogTag(SML_VERBOSE, "adding %s for %i to ignored volunteers", str, GetClientOfUserId(ignoredUserId));
+        ignoredUserIdLookup.SetValue(str, true);
     }
 
     ArrayList volunteers = new ArrayList();
@@ -533,17 +587,18 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         if (!IsClientInGame(i))
             continue;
 
+        int userId = GetClientUserId(i);
         char str[10];
-        IntToString(i, str, 10);
+        IntToString(userId, str, 10);
         bool value;
-        if (ignoredClientIdLookup.GetValue(str, value))
+        if (ignoredUserIdLookup.GetValue(str, value))
         {
             SMLogTag(SML_VERBOSE, "ignoring %L for picking volunteers", i);
             continue;
         }
 
         VolunteerState state = new VolunteerState();
-        state.ClientId = i;
+        state.UserId = userId;
 
         char steamId[64];
         if (!GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId)))
@@ -554,14 +609,11 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         SMLogTag(SML_VERBOSE, "read steamid for %L: %s", i, steamId);
 
         state.SetSteamId(steamId);
-        state.SetClientIdString(str);
+        state.SetUserIdString(str);
         int queuePoints;
         _queuePoints.GetValue(steamId, queuePoints);
         state.QueuePoints = queuePoints;
         SMLogTag(SML_VERBOSE, "%L with steamid %s has %i Queuepoints", i, steamId, queuePoints);
-        // PrintToChatAll("%L has %i Queuepoints", i, queuePoints);
-        // // PrintCenterText(i, "You have %i points", queuePoints);
-        // PrintToConsoleAll("%L has %i Queuepoints", i, queuePoints);
 
         if (!_volunteered[i])
         {
@@ -595,26 +647,8 @@ ArrayList PickVolunteers(int neededVolunteers, int[] ignoredClientIds, int ignor
         SMLogTag(SML_VERBOSE, "%L has volunteered", i);
     }
 
-    delete ignoredClientIdLookup;
-    
-    if (volunteers.Length > neededVolunteers)
-    {
-        volunteers.SortCustom(VolunteerStateComparision);
-
-        UpdateQueuePoints(volunteers, neededVolunteers);
-
-        volunteers.Resize(neededVolunteers);
-    }
-    else
-    {
-        UpdateQueuePoints(volunteers, neededVolunteers);
-    }
-
-    for(int volunteerIndex = 0; volunteerIndex < volunteers.Length; volunteerIndex++)
-    {
-        VolunteerState state = volunteers.Get(volunteerIndex);
-        SMLogTag(SML_VERBOSE, "%L was picked with %i queuepoints (Admin: %i; Vip: %i; Volunteered: %i)", state.ClientId, state.QueuePoints, state.Admin, state.Vip, state.Volunteered);
-    }
+    delete ignoredUserIdLookup;
+    volunteers.SortCustom(VolunteerStateComparision);
     
     return volunteers;
 }
@@ -628,16 +662,17 @@ void UpdateQueuePoints(ArrayList volunteers, int neededVolunteers)
         char steamId[64];
         state.GetSteamId(steamId);
 
+        int clientId = GetClientOfUserId(state.UserId);
         int newQueuepoints;
         if (volunteerIndex < neededVolunteers)
         {
             newQueuepoints = 0;
-            SMLogTag(SML_VERBOSE, "resetting Queuepoints for %L with steamid %s", state.ClientId, steamId);
+            SMLogTag(SML_VERBOSE, "resetting Queuepoints for %L with steamid %s", clientId, steamId);
         }
         else
         {
             newQueuepoints = state.QueuePoints + 1;
-            SMLogTag(SML_VERBOSE, "increasing Queuepoints for %L with steamid %s to %i", state.ClientId, steamId, newQueuepoints);
+            SMLogTag(SML_VERBOSE, "increasing Queuepoints for %L with steamid %s to %i", clientId, steamId, newQueuepoints);
         }
         
         _queuePoints.SetValue(steamId, newQueuepoints);

@@ -110,17 +110,17 @@ native bool AutomaticVolunteerVoteIsInProgress();
 /**
  * returns a clientId of previously volunteered player
  * 
- * @param ignoredClientIds      array of clientIds that will be ignored when picking volunteer
+ * @param ignoredUserIds      array of userIds that will be ignored when picking volunteer
  * @param maxDestLength         maximum length of ignoredClientIds-array
  * @return                      clientId of previously volunteered player; 
                                 -1 if no volunteers are left
  */
-native int GetRandomVolunteer(int[] ignoredClientIds, int length);
+native int GetRandomVolunteer(int[] ignoredUserIds, int length);
 
 /**
- * sets the provided clientIds as volunteers
+ * sets the provided userIds as volunteers
  * 
- * @param volunteers    array of clientIds that should be set as volunteers
+ * @param volunteers    array of userIds that should be set as volunteers
  * @param length        length of the volunteers-array
  * @noreturn
  */
