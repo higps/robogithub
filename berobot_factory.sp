@@ -443,27 +443,13 @@ public any Native_IsTank(Handle plugin, int numParams)
 
 // void SetTankStats(int client)
 // {
-//     // PrintToChatAll("Setting Tank Stats for %N", client);
+//     PrintToChatAll("Setting Tank Stats for %N", client);
 //     TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
 //     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 // 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
 // 	TF2_RemoveCondition(client,TFCond_DefenseBuffNoCritBlock);
 //     CreateTimer(0.1, Timer_SetDefenseBuff, client);
 // }
-
-public any Native_SetTankStats(Handle plugin, int numParams)
-{
-    
-    int client = GetNativeCell(1);
-    //TF2_RemoveCondition(client, TFCond_DefenseBuffNoCritBlock);
-    TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
-    TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-    // TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
-
-    return Plugin_Continue;  
-
-}
 
 public any Native_RoboSetHealth(Handle plugin, int numParams)
 {
