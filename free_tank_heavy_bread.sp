@@ -195,7 +195,7 @@ MakeGDeflectorH(client)
 
 	UpdatePlayerHitbox(client, scale);
    	
-	SetTankStats(client);
+	// SetTankStats(client);
 	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	

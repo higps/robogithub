@@ -251,7 +251,7 @@ stock GiveBigRoboHuntsbot(client)
 		}	
 	}
 
-	SetTankStats(client);
+	// SetTankStats(client);
 	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 }
 
