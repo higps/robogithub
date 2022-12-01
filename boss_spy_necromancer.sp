@@ -80,10 +80,10 @@ public OnPluginStart()
 
 	AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 
-	PrecacheModel(MODEL);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+	// PrecacheModel(MODEL);
+
+
+
 
 	// PrecacheSound(SPY_SPAWN_SOUND1, true);
 	// PrecacheSound(SPY_SPAWN_SOUND2, true);
@@ -114,9 +114,9 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 // public OnMapStart()
 // {
 // 	PrecacheModel(MODEL);
-// 	PrecacheSound(SPAWN);
-// 	PrecacheSound(DEATH);
-// 	PrecacheSound(LOOP);
+// 
+// 
+// 
 
 
 // }

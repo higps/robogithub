@@ -61,10 +61,10 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
  
 public OnMapStart()
 {
-	PrecacheModel(GMEDIC);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+//
+
+
+
    
 }
  
@@ -189,6 +189,7 @@ stock GiveGiantMedic(client)
 			
 		}
 
+		//Condition to add heal on taunting
 		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");
 	}
 }

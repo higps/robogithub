@@ -69,16 +69,16 @@ public APLRes AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnMapStart()
 {
-	PrecacheModel(GBUSTER);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+	// PrecacheModel(GBUSTER);
 
-	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_01.wav");
-	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_02.wav");
-	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_03.wav");
-	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_04.wav");
-	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
+
+
+
+	// PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_01.wav");
+	// PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_02.wav");
+	// PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_03.wav");
+	// PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_04.wav");
+	// PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 
 }
 

@@ -123,30 +123,14 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnMapStart()
 {
-	// PrecacheModel(GDEFLECTORH);
-	// PrecacheSound(SPAWN);
-	// PrecacheSound(DEATH);
-	// PrecacheSound(LOOP);
+//
+
+
+
 	
 	PrecacheSound(sBoomNoise1);
 	PrecacheSound(sBoomNoise2);
 	PrecacheSound(sBoomNoise3);
-
-	// PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_04.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_05.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
-	
-	// PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
-	// PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
-	// PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
-	// PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
-
-			
 
 }
  

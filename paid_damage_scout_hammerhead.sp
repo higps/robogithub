@@ -83,10 +83,10 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnMapStart()
 {
-	PrecacheModel(GSCOUT);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+	
+
+
+
 	
 
 	PrecacheSound("mvm/giant_scout/giant_scout_step_01.wav");
