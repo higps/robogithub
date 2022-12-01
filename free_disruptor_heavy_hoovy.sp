@@ -47,7 +47,7 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
- 
+char sTime[64]; 
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
@@ -73,6 +73,7 @@ public OnPluginStart()
 	AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION, null, 2);
 
 
+	FormatTime(sTime, sizeof sTime, "%m", GetTime());
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -119,12 +120,13 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
  
+
 public OnMapStart()
 {
-	PrecacheModel(GDEFLECTORH);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+	// PrecacheModel(GDEFLECTORH);
+	// PrecacheSound(SPAWN);
+	// PrecacheSound(DEATH);
+	// PrecacheSound(LOOP);
 	
 	PrecacheSound(sBoomNoise1);
 	PrecacheSound(sBoomNoise2);
@@ -139,10 +141,13 @@ public OnMapStart()
 	// PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
 	// PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
 	
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
+	// PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
+
+			
+
 }
  
 public Action:SetModel(client, const String:model[])
@@ -254,21 +259,33 @@ stock GiveGDeflectorH(client)
 			
 		// 	TeamPaint = 12073019.0;
 		// }
-
-
-		//void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale, float style);
-		CreateRoboHat(client, ALLFATHER, 10, 6, 0.0, 1.0, -1.0);//Rotation sensation
-		CreateRoboHat(client, Toque, 10, 6, 0.0, 1.0, -1.0);//Summer shades
-
 		CreateRoboWeapon(client, "tf_weapon_fists", 656, 6, 1, 0, 0);
 
+
+		if (StrEqual(sTime, "12"))
+		{
+		CreateRoboHat(client, 666, 10, 6, 0.0, 1.0, -1.0);//bmoc
+		CreateRoboHat(client, 30747, 10, 6, 0.0, 1.0, -1.0);//gift bringer	
+		}else
+		{
+		CreateRoboHat(client, Toque, 10, 6, 0.0, 1.0, -1.0);//Toque
+		}
+		//void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale, float style);
+		CreateRoboHat(client, ALLFATHER, 10, 6, 0.0, 1.0, -1.0);//all father
+		
+
+	
+
+
+
+		// PrintToChatAll("String: %s", sTime);
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
+			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
 		}
 	}
 }
