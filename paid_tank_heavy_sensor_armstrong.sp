@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Nanomachines"
-#define ROBOT_TIPS "Deal 800 damage to fill meter, once activated become slower and ubered"
+#define ROBOT_TIPS "Deal or take 800 damage to fill meter, once activated become slower, ubered and repair yourself"
 #define ROBOT_COST 2.5
 
  
@@ -109,18 +109,18 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
  
-public OnMapStart()
-{
-	PrecacheModel(GDEFLECTORH);
-	PrecacheSound(SPAWN);
-	PrecacheSound(DEATH);
-	PrecacheSound(LOOP);
+// public OnMapStart()
+// {
+// 	PrecacheModel(GDEFLECTORH);
+// 	PrecacheSound(SPAWN);
+// 	PrecacheSound(DEATH);
+// 	PrecacheSound(LOOP);
 	
-	PrecacheSound(LEFTFOOT);
-	PrecacheSound(LEFTFOOT1);
-	PrecacheSound(RIGHTFOOT);
-	PrecacheSound(RIGHTFOOT1);
-}
+// 	PrecacheSound(LEFTFOOT);
+// 	PrecacheSound(LEFTFOOT1);
+// 	PrecacheSound(RIGHTFOOT);
+// 	PrecacheSound(RIGHTFOOT1);
+// }
  
 public Action:SetModel(client, const String:model[])
 {
@@ -257,6 +257,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.23076923076923077);
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.1);
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 
@@ -274,7 +275,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(!IsValidClient(attacker))
 	return Plugin_Continue;
 
-	if (IsRobot(attacker, ROBOT_NAME))
+	if (IsRobot(attacker, ROBOT_NAME) || IsRobot(victim, ROBOT_NAME))
 	{
 
 	if (g_Nanomode)
@@ -372,7 +373,8 @@ void DrawHUD(int client)
 			{
 				TF2_AddCondition(client, TFCond_UberchargedCanteen, g_duration);
 				TF2_AddCondition(client, TFCond_HalloweenQuickHeal, g_duration);
-				TF2Attrib_AddCustomPlayerAttribute(client, "move speed penalty", 0.5);
+				TF2Attrib_AddCustomPlayerAttribute(client, "healing received bonus", 5.0, g_duration);
+				TF2Attrib_AddCustomPlayerAttribute(client, "move speed penalty", 0.75);
 				g_DamageDone = 0.0;
 			}
 		}

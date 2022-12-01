@@ -24,7 +24,7 @@ public void OnCritBannerPulse(int owner, int target, const char[] name, int buff
 	}
 	
 	// the game internally does this
-	TF2_AddCondition(target, TFCond_Stealthed, BUFF_PULSE_CONDITION_DURATION, owner);
+	TF2_AddCondition(target, TFCond_Stealthed);
 }
 
 public void OnLibraryAdded(const char[] name) {

@@ -12,7 +12,8 @@
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Vac-eliminator"
- 
+#define ROBOT_TIPS "Vaccinator is weaker, but gives additional buffs:\nBullet resist = mini-crit\nExplosive = Conch buff\nFire = Battalion Backup Buff"
+
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -122,7 +123,7 @@ MakeGiantMedic(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client , "Vaccinator is weaker, but gives additional buffs:\nBullet resist = mini-crit\nExplosive = Conch buff\nFire = Cloak");
+	PrintHintText(client , ROBOT_TIPS);
 
 }
 
@@ -257,8 +258,8 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 	if(condition == TFCond_UberFireResist){
 
-	TF2_AddCondition(healtarget,TFCond_StealthedUserBuffFade, 3.5);
-	TF2_AddCondition(client,TFCond_StealthedUserBuffFade, 3.5);
+	TF2_AddCondition(healtarget,TFCond_DefenseBuffed, 3.5);
+	TF2_AddCondition(client,TFCond_DefenseBuffed, 3.5);
 	}
 
 	}
