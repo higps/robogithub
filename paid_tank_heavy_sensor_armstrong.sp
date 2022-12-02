@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Nanomachines"
-#define ROBOT_TIPS "Deal or take 800 damage to fill meter, once activated become slower, ubered and repair yourself"
+#define ROBOT_TIPS "Deal or take 1000 damage to fill meter, once activated become slower, ubered and repair yourself"
 #define ROBOT_COST 2.5
 
  
@@ -150,10 +150,10 @@ MakePanCop(client)
 	 // PrintToChatAll("iHealth %i", iHealth);
 	
 	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
+	float scale = 1.85;
 	
    
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
@@ -175,7 +175,7 @@ MakePanCop(client)
 
 
 
-	UpdatePlayerHitbox(client, 1.75);
+	UpdatePlayerHitbox(client, scale);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
@@ -247,6 +247,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.23076923076923077);
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.1);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 
@@ -261,19 +262,34 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     //     return Plugin_Continue;
 	if(!IsValidClient(victim))
 	return Plugin_Continue;    
-	if(!IsValidClient(attacker))
-	return Plugin_Continue;
+	// if(!IsValidClient(attacker))
+	// return Plugin_Continue;
 
 	if (IsRobot(attacker, ROBOT_NAME) || IsRobot(victim, ROBOT_NAME))
 	{
 
-	if (g_Nanomode)
-	{
-	
-	}else
-	{
-		g_DamageDone += damage;
-	}
+
+
+			 if (IsRobot(victim, ROBOT_NAME))
+			 {
+				if (TF2_IsPlayerInCondition(victim, TFCond_Ubercharged) || (TF2_IsPlayerInCondition(victim, TFCond_UberchargedCanteen)))
+				{
+					return Plugin_Continue;
+				}
+			 }
+
+			 if (IsRobot(attacker, ROBOT_NAME))
+			 {
+				if (TF2_IsPlayerInCondition(victim, TFCond_Ubercharged) || (TF2_IsPlayerInCondition(victim, TFCond_UberchargedCanteen)
+				|| TF2_IsPlayerInCondition(attacker, TFCond_Ubercharged) || TF2_IsPlayerInCondition(attacker, TFCond_UberchargedCanteen) ))
+				{
+					return Plugin_Continue;
+				}
+			 }
+
+			
+			g_DamageDone += damage;
+		
 	}
 	return Plugin_Continue;
 }
@@ -283,7 +299,7 @@ bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_duration = 5.0;
 float FireModeTimer = -1.0;
 float g_skill; 
-float g_skill_cooldown = 600.0;
+float g_skill_cooldown = 1000.0;
 // float g_skill_time;
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -362,7 +378,8 @@ void DrawHUD(int client)
 			{
 				TF2_AddCondition(client, TFCond_UberchargedCanteen, g_duration);
 				TF2_AddCondition(client, TFCond_HalloweenQuickHeal, g_duration);
-				TF2Attrib_AddCustomPlayerAttribute(client, "healing received bonus", 5.0, g_duration);
+				TF2Attrib_AddCustomPlayerAttribute(client, "healing received bonus", 4.0, g_duration);
+				TF2Attrib_AddCustomPlayerAttribute(client, "mod weapon blocks healing", 1.0, g_duration);
 				TF2Attrib_AddCustomPlayerAttribute(client, "move speed penalty", 0.75);
 				g_DamageDone = 0.0;
 			}

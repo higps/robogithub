@@ -155,7 +155,7 @@ MakeGDeflectorH(client)
 	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
 	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
-	float scale = 1.8;
+	float scale = 1.75;
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.9);

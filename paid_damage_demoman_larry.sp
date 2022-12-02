@@ -241,14 +241,12 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 2.5);
 			
-			// TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
+
 			TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.25);
-			// TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
+
 			SetEntityRenderColor(Weapon1, 207,115,54,0);
-			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
-			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
-			// TF2Attrib_SetByName(Weapon1, "grenade no spin", 0.0);
+
 		}
 	}
 }
