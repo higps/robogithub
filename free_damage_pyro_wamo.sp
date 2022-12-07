@@ -19,6 +19,9 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_pyro/giant_pyro_loop.wav"
 
+
+
+
 #define SOUND_GUNFIRE	")mvm/giant_pyro/giant_pyro_flamethrower_loop.wav"
 #define SOUND_WINDUP	")mvm/giant_pyro/giant_pyro_flamethrower_start.wav"
 

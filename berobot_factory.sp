@@ -125,11 +125,8 @@ char _wasRobot[MAXPLAYERS + 1][NAMELENGTH];
 // #define Models {SNIPER}
 // #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 // #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
-char Models[][] = {DEMO, DEMO_BOSS, HEAVY, HEAVY_BOSS, SOLDIER, SOLDIER_BOSS, SCOUT, PYRO, PYRO_BOSS, SNIPER, MEDIC, SPY};
-char Sounds[][] = {SPAWN, DEATH, BOSS_SPAWN,TANK_SPAWN, TANK_LOOP, LOOP_DEMO, DEMO_LEFTFOOT, DEMO_LEFTFOOT1, DEMO_RIGHTFOOT, DEMO_RIGHTFOOT1, HEAVY_LOOP
-,HEAVY_LEFTFOOT,HEAVY_LEFTFOOT1, HEAVY_RIGHTFOOT, HEAVY_RIGHTFOOT1, SOLDIER_DEATH, SOLDIER_LOOP, SOLDIER_LEFTFOOT, SOLDIER_LEFTFOOT1
-,SOLDIER_RIGHTFOOT1, SCOUT_LOOP, SCOUT_LEFTFOOT, SCOUT_LEFTFOOT1,SCOUT_RIGHTFOOT,SCOUT_RIGHTFOOT1,PYRO_LOOP,SENTRYBUSTER, SENTRYBUSTERSPAWN, SENTRYBUSTERLOOP,
-ROBOSTEP1, ROBOSTEP2,ROBOSTEP3,ROBOSTEP4,ROBOSTEP5,ROBOSTEP6,ROBOSTEP7,ROBOSTEP8};
+
+
 
 
 
@@ -138,7 +135,12 @@ ROBOSTEP1, ROBOSTEP2,ROBOSTEP3,ROBOSTEP4,ROBOSTEP5,ROBOSTEP6,ROBOSTEP7,ROBOSTEP8
 public void OnPluginStart()
 {
     Init();
-    PrecacheModelsAndSounds();
+   
+}
+
+public void OnMapStart()
+{
+     PrecacheModelsAndSounds();
 }
 
 public void Init()
@@ -168,19 +170,40 @@ public void Init()
 
     _init = true;
 }
+static const char ROBOT_SOUNDS[][256] =
+{
+SPAWN, DEATH, BOSS_SPAWN,TANK_SPAWN, TANK_LOOP, LOOP_DEMO, DEMO_LEFTFOOT, DEMO_LEFTFOOT1, DEMO_RIGHTFOOT, DEMO_RIGHTFOOT1, HEAVY_LOOP
+,HEAVY_LEFTFOOT,HEAVY_LEFTFOOT1, HEAVY_RIGHTFOOT, HEAVY_RIGHTFOOT1, SOLDIER_DEATH, SOLDIER_LOOP, SOLDIER_LEFTFOOT, SOLDIER_LEFTFOOT1
+,SOLDIER_RIGHTFOOT1, SCOUT_LOOP, SCOUT_LEFTFOOT, SCOUT_LEFTFOOT1,SCOUT_RIGHTFOOT,SCOUT_RIGHTFOOT1,PYRO_LOOP,SENTRYBUSTER, SENTRYBUSTERSPAWN, SENTRYBUSTERLOOP,
+ROBOSTEP1, ROBOSTEP2,ROBOSTEP3,ROBOSTEP4,ROBOSTEP5,ROBOSTEP6,ROBOSTEP7,ROBOSTEP8
+};
+
+static const char ROBOT_MODELS[][256]= 
+{
+DEMO, DEMO_BOSS, HEAVY, HEAVY_BOSS, SOLDIER, SOLDIER_BOSS, SCOUT, PYRO, PYRO_BOSS, SNIPER, MEDIC, SPY
+};
 
 public void PrecacheModelsAndSounds()
 {
-    for (int i = 0; i < sizeof(Sounds); i++)
-    {
-        PrecacheSound(Sounds[i]);
-        // PrintToConsoleAll("Precached %s", Sounds[i]);
-    }
-    for (int i = 0; i < sizeof(Models); i++)
-    {
-        PrecacheModel(Models[i]);
-        // PrintToConsoleAll("Precached Models %s", Models[i]);
-    }
+
+    int size = sizeof ROBOT_SOUNDS;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(ROBOT_SOUNDS[i], true);
+
+
+   size = sizeof ROBOT_MODELS;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(ROBOT_MODELS[i], true);
+    // for (int i = 0; i < sizeof(Sounds); i++)
+    // {
+    //     PrecacheSound(Sounds[i]);
+    //     PrintToConsoleAll("Precached %s", Sounds[i]);
+    // }
+    // for (int i = 0; i < sizeof(Models); i++)
+    // {
+    //     PrecacheModel(Models[i]);
+    //     // PrintToConsoleAll("Precached Models %s", Models[i]);
+    // }
 }
 
 public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
