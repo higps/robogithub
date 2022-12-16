@@ -230,12 +230,12 @@ stock GiveBigRoboDane(client)
 			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
 			// TF2Attrib_SetByName(Weapon3, "engy sentry radius increased", 100.0);
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 3.0);
-			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 1.75);
+			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 1.1);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 4.0);
 
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
-			TF2CustAttr_SetString(client, "robot engineer", "sentry_scale=1.35 dispenser_scale=1.25 infinite_ammo=1 sentries=3 dispensers=2 remove_all_sappers=1 yeet=0");
+			TF2CustAttr_SetString(client, "robot engineer", "sentry_scale=1.15 dispenser_scale=1.15 infinite_ammo=1 sentries=3 dispensers=2 remove_all_sappers=1 yeet=0");
 			
 		}
 		

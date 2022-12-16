@@ -236,12 +236,12 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
 			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 5.0);		
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.3);			
-			// TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.9);			
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);			
+			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.9);			
 			TF2Attrib_SetByName(Weapon3, "charge impact damage increased", 5.0);	
 			TF2Attrib_SetByName(Weapon3, "no charge impact range", 100.0);	
 			
-			TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 5.0);		
+			// TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 5.0);		
 			TF2Attrib_SetByName(Weapon3, "full charge turn control", 50.0);		
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
 		}

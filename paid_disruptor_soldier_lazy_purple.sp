@@ -91,34 +91,8 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 public OnMapStart()
 {
 	
-
-
-
-
-	// PrecacheSound(GUNFIRE);
-	// PrecacheSound(GUNFIRE_CRIT);
-	// PrecacheSound(GUNFIRE_EXPLOSION);
-	
-
-
-
-	
-	
-	
-	//PrecacheSound(SOUND_GUNFIRE);
-	//PrecacheSound(SOUND_WINDUP);
-	
 }
 
-/* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if(g_bIsGSoldier[client])
-	{
-		g_bIsGSoldier[client] = false;
-	}
-} */
 
 public Action:SetModel(client, const String:model[])
 {
@@ -321,10 +295,10 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon1, "damage penalty", 0.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.8);
+			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.8);
 						
 			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.9);			
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);			
 			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);	
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.2);
 			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
@@ -342,7 +316,6 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
 			// TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 300.0);
 		}
 		
 

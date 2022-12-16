@@ -58,7 +58,8 @@ float g_bottle_crit_duration = 6.0;
 
 float g_AirStrikeDamage[MAXPLAYERS +1] = {0.0, ...};
 float g_AirStrikeDMGRequirement = 400.0;
-float g_ElectricStunDuration = 0.6;
+float g_ElectricStunDuration = 1.0;
+float g_HealDebuff = 0.5;
 
 float g_FrontierJusticeDamage[MAXPLAYERS + 1] = {0.0, ...};
 float g_FrontierJusticeDMGRequirement = 400.0;
@@ -202,6 +203,18 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         {
             TF2CustAttr_SetString(client, "faster-respawn", "4.0");
         }
+
+        if(TF2_GetPlayerClass(client) == TFClass_Engineer)
+        {
+            int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
+            if (IsGunSlinger(Weapon3))
+            {
+                TF2CustAttr_SetString(client, "robot engineer", "sentries=2 dispensers=1");
+            }
+            
+        }
+
     }
 }
 
@@ -255,7 +268,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                             }
                             // PrintToChatAll("Charge was after %f", g_Razorback_Original_Recharge);
-                            if (IsAnyRobot(attacker))
+                            if (IsAnyRobot(attacker) && !IsBoss(attacker))
                             {
                                 TF2Attrib_SetByName(razorback, "item_meter_charge_rate", g_Razorback_Original_Recharge_Robot_Hit);
                                 TF2_StunPlayer(attacker, 0.5, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
@@ -547,34 +560,34 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
                 }
 
-                switch (damagecustom)
+                if (!IsBoss(victim))
                 {
-                case TF_CUSTOM_CHARGE_IMPACT, TF_CUSTOM_BOOTS_STOMP:
-                {
-                    //damage *= 1.5;
-                    if (IsTank(victim)){
-                        TF2_StunPlayer(victim, 0.5, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
-                        TF2_AddCondition(victim, TFCond_Sapped, 0.5, attacker);
-                    }
-                    return Plugin_Changed;
-                }
-                case TF_CUSTOM_BASEBALL:
-                {
-                    if(IsSandman(weapon))
+                    switch (damagecustom)
                     {
-                    TF2_StunPlayer(victim, 2.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
-                    TF2_AddCondition(victim, TFCond_Sapped, 2.0, attacker);
-                    }
+                        case TF_CUSTOM_CHARGE_IMPACT, TF_CUSTOM_BOOTS_STOMP:
+                        {
+                            //damage *= 1.5;
+                            if (IsTank(victim))
+                            {
+                                TF2_StunPlayer(victim, 0.5, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
+                                SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
+                            }
+                            return Plugin_Changed;
+                        }
+                        case TF_CUSTOM_BASEBALL:
+                        {
+                            if(IsSandman(weapon))
+                            {
+                                SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
+                            }
 
-                    if(IsWrap(weapon)){
-                    TF2_StunPlayer(victim, 1.5, 0.7, TF_STUNFLAG_SLOWDOWN, attacker);
-                    TF2_AddCondition(victim, TFCond_Sapped, 1.5, attacker);    
+                            if(IsWrap(weapon)){
+                                SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
+                            }
+                            
+                            return Plugin_Changed;
+                        }
                     }
-                    
-                    return Plugin_Changed;
-                }
-
-                //TF2_StunPlayer(victim, 10.0, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
                 }
     }
 
@@ -675,8 +688,10 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 case TF_CUSTOM_PLASMA_CHARGED: 
                 {
                     damage *= 1.5;
-                    TF2_StunPlayer(victim, g_ElectricStunDuration*2, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
+                    // TF2_StunPlayer(victim, g_ElectricStunDuration*2, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
+                    TF2_AddCondition(victim, TFCond_HealingDebuff, g_ElectricStunDuration*2, attacker);
                     TF2_AddCondition(victim, TFCond_Sapped, g_ElectricStunDuration*2, attacker);
+
                     return Plugin_Changed;
 
                 }   
@@ -700,8 +715,9 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
             if (IsElectric(weapon) && IsAnyRobot(victim))
             {
-                TF2_StunPlayer(victim, g_ElectricStunDuration, 0.75, TF_STUNFLAG_SLOWDOWN, attacker);
-                TF2_AddCondition(victim, TFCond_Sapped, g_ElectricStunDuration, attacker);
+                TF2_AddCondition(victim, TFCond_HealingDebuff, g_ElectricStunDuration, attacker);
+
+                SetHealingDebuff(victim, g_HealDebuff, g_ElectricStunDuration, attacker);
             }
             
             if (iClassAttacker == TFClass_DemoMan && !IsAnyRobot(attacker))
@@ -710,10 +726,10 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 if(IsEyelander(weapon)) IncrementHeadCount(attacker);
 
 
-                if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-                damage *= 1.25;
-                if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                return Plugin_Changed;
+                // if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                // damage *= 1.25;
+                // if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                // return Plugin_Changed;
                 
                     
             }
@@ -841,22 +857,32 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
                 TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");
                 if (Weapon1 != -1)
-            {
-                TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.75);
+                {
+                    TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.75);
+                    SetDemoDamageBuff(Weapon1);
+                    
+                }
 
+                if (Weapon2 != -1)
+                {
+                    TF2Attrib_SetByName(Weapon2, "Reload time decreased", 0.75);
+                    SetDemoDamageBuff(Weapon2);
+                    
+                }
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}All of projectile weapons {orange}Reload 25%%% faster\n{teamcolor}All weapons deal {orange}more damage{teamcolor} the more damage you do",chat_display);
             }
 
-            if (Weapon2 != -1)
+            if (Weapon3 != -1)
             {
-                TF2Attrib_SetByName(Weapon2, "Reload time decreased", 0.75);
-            }
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}All of projectile weapons {orange}Reload 25%%% faster\n{teamcolor}All weapons deal {orange}+25%%% damage{teamcolor} against robots",chat_display);
+                SetDemoDamageBuff(Weapon3);
             }
 
             if (IsStockOrAllClassWeapon(Weapon3))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Drinking from your bottle will grant you {orange}%i seconds of minicrits{teamcolor}",chat_display, RoundToNearest(g_bottle_crit_duration));
             }
+
+            
         }
 
         if (TF2_GetPlayerClass(client) == TFClass_Heavy)
@@ -892,8 +918,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 1.5);
                 TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 1.5);
-                TF2Attrib_SetByName(Weapon2, "Reload time increased", 0.75);
-                TF2Attrib_SetByName(Weapon1, "Reload time increased", 0.75);
+                TF2Attrib_SetByName(Weapon2, "Reload time decreased", 0.6);
+                TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.6);
 
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: Provides all weapons with {orange}+50%% maxammo and +25%% faster reload",chat_display);
             }
@@ -904,11 +930,27 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: {orange}6 Bonus Jumps",chat_display);
             }
 
+            if (IsPistol(Weapon2))
+            {
+                    TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", 2.0);
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pistol: {orange}On Hit: {teamcolor}Speed boost for 2.0 seconds",chat_display);
+            }
+
             // if(IsMadMilk)
             // {
             //     TF2Attrib_SetByName(Weapon2, "applies snare effect", 0.65);
             //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Mad Milk: {orange}-35%%% move speed on targets upgrade",chat_display);
             // }
+        }
+
+        if(TF2_GetPlayerClass(client) == TFClass_Engineer)
+        {
+            if (IsPistol(Weapon2))
+            {
+                    TF2Attrib_SetByName(Weapon2, "clip size bonus", 2.0);
+                    // TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.5);
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pistol: {orange}+100%% clip size",chat_display);
+            }
         }
 
         if (TF2_GetPlayerClass(client) == TFClass_Medic)
@@ -1183,6 +1225,15 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
             }
         }
+
+        if(IsGunSlinger(Weapon3))
+        {
+            // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
+            TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.15);
+            TF2CustAttr_SetString(client, "robot engineer", "sentries=2 dispensers=1");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+1 Sentry build count and +15%% faster movement speed",chat_display);
+            
+        }
         // if (IsSapper(Weapon2))
         // {
         //     // Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sapper: {orange}Stuns robots{teamcolor} or some shit",chat_display);
@@ -1192,16 +1243,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         DisplayMMStats(client, chat_display);
 
     }
-
-    
-
 }
     
     
 
-void SetShotGunStats(int weapon, int client)
+void SetDemoDamageBuff(int weapon)
 {
-
+    TF2CustAttr_SetString(weapon, "damage increase mult on hit", "amount=0.1 max=0.4 decay_start=0.5 decay_per_second=0.05 reset_on_kill=1 show_on_hud=1");
 }
 
 bool IsMarketGardner(int weapon)
@@ -1872,6 +1920,21 @@ bool IsBaseJumper(int weapon)
 	return false;
 }
 
+bool IsGunSlinger(int weapon)
+
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Gunslinger
+	case 142: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 // bool IsVitaSaw(int weapon)
 // {
 //     if(weapon == -1 && weapon <= MaxClients) return false;
@@ -2037,6 +2100,21 @@ bool IsAtomizer(int weapon)
 	return false;
 }
 
+bool IsPistol(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 22, 23, 209, 160, 294, 15013, 15018, 15035, 15041, 15046, 15056, 15060, 15061, 15100, 15101, 15102, 15126, 15148, 30666:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool IsWearable(int weapon)
 {
 
@@ -2191,6 +2269,35 @@ public Action Combo_Stopper (int client)
     // PrintToChatAll("Inside timer Timer_Punch_Count %i:", Timer_Punch_Count[client]);
     //g_Timer[attacker] = false;
     return Plugin_Continue;
+
+}
+
+void SetHealingDebuff(int victim, float value, float duration, int attacker)
+{
+
+// PrintToChatAll("Setting Debuff on %N", client);
+    TF2_AddCondition(victim, TFCond_HealingDebuff, duration, attacker);
+    TF2_AddCondition(victim, TFCond_Sapped, duration, attacker);
+    TF2Attrib_AddCustomPlayerAttribute(victim, "mult_health_fromhealers_penalty_active", value, duration);
+
+//         int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+//         int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+//         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+// TF2Attrib_AddCustomPlayerAttribute()
+//     if (Weapon1 != -1)
+//     {
+//         TF2Attrib_SetByName(Weapon1, "fire rate penalty", value);
+//     }
+
+//     if (Weapon2 != -1)
+//     {
+//         TF2Attrib_SetByName(Weapon2, "fire rate penalty", value);
+//     }
+
+//     if (Weapon3 != -1)
+//     {
+//         TF2Attrib_SetByName(Weapon3, "fire rate penalty", value);
+//     }
 
 }
 

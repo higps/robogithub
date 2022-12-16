@@ -228,6 +228,39 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
+int g_infinite_ammo;
+int g_SentryLimit;
+int g_DispenserLimit;
+int g_yeet;
+float g_sentry_scale;
+float g_dispenser_scale;
+
+bool HasStat(int client)
+{
+
+	//PrintToChatAll("Checking has stat for %N", client);
+	char stat_buffer[256];
+	if (!TF2CustAttr_GetString(client, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
+		//PrintToChatAll("Has Stat Not Found for %N", client);
+		return false;
+		
+	}
+
+	//PrintToChatAll("Has Stat Found for %N, setting variables", client);
+	g_SentryLimit = ReadIntVar(stat_buffer, "sentries", 1);
+	g_sentry_scale = ReadFloatVar(stat_buffer, "sentry_scale", 0.0);
+	g_DispenserLimit = ReadIntVar(stat_buffer, "dispensers", 1);
+	g_dispenser_scale = ReadFloatVar(stat_buffer, "dispenser_scale", 0.0);
+	g_infinite_ammo = ReadIntVar(stat_buffer, "infinite_ammo", 0);
+
+	g_yeet = ReadIntVar(stat_buffer, "yeet", 0);
+
+//PrintToChatAll("SG Limit: %i, SG Scale: %f, Disp Limit: %i, Disp Scale: %f, infinite ammo: %i, Yeet: %i for %N",g_SentryLimit, g_sentry_scale, g_DispenserLimit, g_dispenser_scale, g_infinite_ammo, g_yeet, client);
+//PrintToChatAll("Has Stat Found for %N, setting variables", client);
+
+	// g_bmod_disciplinary = ReadIntVar(stat_buffer, "bmod-disciplinary", 0);
+	return true;
+}
 // public OnMapStart()
 // {
 
@@ -246,19 +279,19 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
 
 	
-	//PrintToChatAll("Buildt Object attribute! %N", iBuilder);
+	////PrintToChatAll("Buildt Object attribute! %N", iBuilder);
 
 
 
-	if (IsValidClient(iBuilder) && IsAnyRobot(iBuilder)){
+	if (IsValidClient(iBuilder) && HasStat(iBuilder)){
 
 
 
-	char stat_buffer[256];
-	if (!TF2CustAttr_GetString(iBuilder, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
-		return;
+	// char stat_buffer[256];
+	// if (!TF2CustAttr_GetString(iBuilder, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
+	// 	return;
 		
-	}
+	// }
 
 		SDKUnhook(iBuilder, SDKHook_WeaponSwitch, WeaponSwitch);
 		SDKHookEx(iBuilder, SDKHook_WeaponSwitch, WeaponSwitch);
@@ -268,21 +301,21 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 		
 		
 		
-		int infinite_ammo = ReadIntVar(stat_buffer, "infinite_ammo", 0);
+		// int infinite_ammo = ReadIntVar(stat_buffer, "infinite_ammo", 0);
 		
 
 		
 		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Sentry)
 		{
-			float sentry_scale = ReadFloatVar(stat_buffer, "sentry_scale", 0.0);
+
 			int flags = GetEntProp(iObj, Prop_Data, "m_spawnflags");
 
-			if (sentry_scale > 0.0)
+			if (g_sentry_scale > 0.0)
 			{
-			SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", sentry_scale);
+			SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", g_sentry_scale);
 			}
 
-			if (infinite_ammo > 0)
+			if (g_infinite_ammo > 0)
 			{
 				SetEntProp(iObj, Prop_Data, "m_spawnflags", flags|1<<3);
 			}
@@ -299,10 +332,10 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 
 		if(view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
 		{
-			float dispenser_scale = ReadFloatVar(stat_buffer, "dispenser_scale", 0.0);
-			if (dispenser_scale > 0.0)
+			
+			if (g_dispenser_scale > 0.0)
 			{
-			SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", dispenser_scale);
+			SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", g_dispenser_scale);
 			}
 		}
 	}
@@ -329,7 +362,7 @@ stock void TF2_SetMatchingTeleporter(int iTele, int iMatch)	//Set the matching t
 
 	if (IsValidEntity(iTele) && HasEntProp(iTele, Prop_Send, g_szOffsetStartProp))
 	{
-		////PrintToChatAll("Matching telepoters");
+		//////PrintToChatAll("Matching telepoters");
 		int iOffs = FindSendPropInfo("CObjectTeleporter", g_szOffsetStartProp) + g_iOffsetMatchingTeleporter;
 		SetEntDataEnt2(iTele, iOffs, iMatch, true);
 	}
@@ -341,7 +374,7 @@ public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
 	int iObj = event.GetInt("index");
 
-	if (IsValidClient(iBuilder) && IsAnyRobot(iBuilder)){
+	if (IsValidClient(iBuilder) && HasStat(iBuilder)){
 
 		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
 	}
@@ -398,7 +431,7 @@ public void OnGameFrame()
 		if (IsValidEntity(i))
 		{
 			if (g_iPadType[i] == PadType_Boss){
-				////PrintToChatAll("THINKING!");
+				//////PrintToChatAll("THINKING!");
 				OnPadThink(i);
 			}
 				
@@ -415,7 +448,7 @@ void OnPadThink(int iPad)
 	bool bDisabled = view_as<bool>(GetEntProp(iPad, Prop_Send, "m_bDisabled"));
 	bool bSapped = view_as<bool>(GetEntProp(iPad, Prop_Send, "m_bHasSapper"));
 	
-	////PrintToChatAll("Teleporter state: %i", TF2_GetBuildingState(iPad));
+	//////PrintToChatAll("Teleporter state: %i", TF2_GetBuildingState(iPad));
 
 	if (bCarried || bPlacing || bDisabled)
 	{
@@ -442,7 +475,7 @@ void OnPadThink(int iPad)
 			TF2_SetBuildingState(iPad, TELEPORTER_STATE_IDLE);
 			
 		}
-		//	//PrintToChatAll("Sapped");
+		//	////PrintToChatAll("Sapped");
 		return;
 	}
 
@@ -455,7 +488,7 @@ void OnPadThink(int iPad)
 			
 		//	AcceptEntityInput(iObjParti, "Start");
 			// #if defined DEBUG
-			// //PrintToChatAll("%i Ready!", iPad);
+			// ////PrintToChatAll("%i Ready!", iPad);
 			// #endif
 		}
 		// if (TF2_GetBuildingState(iPad) == TELEPORTER_STATE_READY && IsValidEntity(iObjParti) && !bSapped)
@@ -502,7 +535,7 @@ stock void TF2_SetBuildingState(int iBuilding, int iState = 0)
 
 public Action WeaponSwitch(client, weapon){
 	//Safety Checks
-	if(IsAnyRobot(client))
+	if(HasStat(client))
 	{
 
 	if(!IsClientInGame(client)){
@@ -526,9 +559,9 @@ public Action WeaponSwitch(client, weapon){
 
 	//if the building pda is opened
 	//Switches some buildings to sappers so the game doesn't count them as engie buildings
-//	//PrintToChatAll("Switching weapons");
+//	////PrintToChatAll("Switching weapons");
 	if(GetPlayerWeaponSlot(client,3)==weapon){
-//		//PrintToChatAll("Running Function Allow Building");
+//		////PrintToChatAll("Running Function Allow Building");
 		function_AllowBuilding(client);
 		return Plugin_Continue;
 	}//else if the client is not holding the building tool
@@ -595,12 +628,12 @@ public Action Command_destroy_sentries(int client, int args){
 public void function_AllowBuilding(int client){
 
 
-	char stat_buffer[256];
-	if (!TF2CustAttr_GetString(client, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
+
+	if (!HasStat(client)) {
 		return;
 	}
-	int SentryLimit = ReadIntVar(stat_buffer, "sentries", 1);
-	int DispenserLimit = ReadIntVar(stat_buffer, "dispensers", 1);
+	int SentryLimit = g_SentryLimit;
+	int DispenserLimit = g_DispenserLimit;
 	// int DispenserLimit = GetConVarInt(sm_sentry_limit);
 	// int SentryLimit = GetConVarInt(sm_sentry_limit);
 	int DispenserCount = 0;
@@ -619,7 +652,7 @@ public void function_AllowBuilding(int client){
 			continue;
 		}
 
-		if(GetEntDataEnt2(i, OwnerOffset) != client && IsAnyRobot(client)){
+		if(GetEntDataEnt2(i, OwnerOffset) != client && HasStat(client)){
 			continue;
 		}
 
@@ -639,7 +672,7 @@ public void function_AllowBuilding(int client){
 		//not a dispenser,
 		}else if(type==view_as<int>(TFObject_Sentry)){
 			SentryCount++;
-		//	//PrintToChatAll("Sentry count is %i", SentryCount);
+		//	////PrintToChatAll("Sentry count is %i", SentryCount);
 			SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
 			if(SentryCount>=SentryLimit){
 				//if the limit is reached, disallow building
@@ -691,7 +724,7 @@ public MRESReturn UpdateOnRemove(int pThis)
 {
 	int iObjectType = GetEntProp(pThis, Prop_Send, "m_iObjectType");
 	//int user = GetClientUserId(pThis);
-	////PrintToChatAll("Removed sapper %i", iObjectType);
+	//////PrintToChatAll("Removed sapper %i", iObjectType);
 	int iBuiltOnEntity;
 	int iBuilderClient;
 //	int iObjectTypeBOE;
@@ -704,13 +737,13 @@ public MRESReturn UpdateOnRemove(int pThis)
 			if(iBuiltOnEntity == -1) return MRES_Ignored;
 			
 			iBuilderClient = GetEntPropEnt(iBuiltOnEntity, Prop_Send, "m_hBuilder");
-			//PrintToChatAll("I builder client %i", iBuilderClient);
+			////PrintToChatAll("I builder client %i", iBuilderClient);
 				//Proofing for when a building doesn't have an owner , when it's spawned
 			if(!IsValidClient(iBuilderClient))
 			{
 				return MRES_Ignored;
 			}
-			if(IsAnyRobot(iBuilderClient))
+			if(HasStat(iBuilderClient))
 			{
 					char stat_buffer[256];
 				if (!TF2CustAttr_GetString(iBuilderClient, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
@@ -722,27 +755,27 @@ public MRESReturn UpdateOnRemove(int pThis)
 									new ent = -1;	//Check all buildings owned by robot and remove sappers
 					while ((ent = FindEntityByClassname(ent, "obj_attachment_sapper")) != -1)
 					{
-						//PrintToChatAll("Looking for sappers!");
+						////PrintToChatAll("Looking for sappers!");
 
 						// int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
 						// if (IsValidClient(iBuilder))
 						// {
-						// 	//PrintToChatAll("iBulder %N", iBuilder);	
+						// 	////PrintToChatAll("iBulder %N", iBuilder);	
 						// // }
 						if (IsValidEntity(ent))
 						{
 							
 							int uBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuiltOnEntity");
 							int uBuilderClient;
-							////PrintToChatAll("iBulder %N", uBuilder);	
+							//////PrintToChatAll("iBulder %N", uBuilder);	
 							if(uBuilder != -1)
 							{
 								uBuilderClient = GetEntPropEnt(uBuilder, Prop_Send, "m_hBuilder");
 							
-								if (IsAnyRobot(uBuilderClient))
+								if (HasStat(uBuilderClient))
 									{
 
-										//PrintToChatAll("Removing sappers for %N, ent was: %i", uBuilderClient, ent);
+										////PrintToChatAll("Removing sappers for %N, ent was: %i", uBuilderClient, ent);
 										
 										//SetVariantInt(999);
 										RequestFrame(DetonateObject, ent);
@@ -756,8 +789,8 @@ public MRESReturn UpdateOnRemove(int pThis)
 
 				}
 		}
-	////PrintToChatAll("Remove Sapper: %i, OT: %i", pThis, GetEntProp(pThis, Prop_Send, "m_iObjectType"));
-	////PrintToChatAll("Built on: %i", GetEntPropEnt(pThis, Prop_Send, "m_hBuiltOnEntity"));
+	//////PrintToChatAll("Remove Sapper: %i, OT: %i", pThis, GetEntProp(pThis, Prop_Send, "m_iObjectType"));
+	//////PrintToChatAll("Built on: %i", GetEntPropEnt(pThis, Prop_Send, "m_hBuiltOnEntity"));
 	//return MRES_Ignored;
 	}
 	return MRES_Ignored;
@@ -836,24 +869,24 @@ public void OnLibraryRemoved(const char[] name) {
 	if (StrEqual(name, "tf2hudmsg")) g_bDepHudMsg = false;
 }
 
-bool HasYeetStat(int client)
-{
-	char stat_buffer[256];
-	if (!TF2CustAttr_GetString(client, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
-		return false;
-	}
-	int yeet = ReadIntVar(stat_buffer, "yeet", 1);
+// bool HasYeetStat(int client)
+// {
+// 	char stat_buffer[256];
+// 	if (!TF2CustAttr_GetString(client, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
+// 		return false;
+// 	}
+// 	int yeet = ReadIntVar(stat_buffer, "yeet", 0);
 
-	if(yeet == 1)
-	{
-		return true;
-	}
-	return false;
-}
+// 	if(yeet == 1)
+// 	{
+// 		return true;
+// 	}
+// 	return false;
+// }
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2]) {
 	if (!(1<=client<=MaxClients) || !IsClientInGame(client) || IsFakeClient(client)) return Plugin_Continue;
-	if ((buttons & IN_RELOAD)!=0 && !g_bPlayerThrow[client] && HasYeetStat(client)) {
+	if ((buttons & IN_RELOAD)!=0 && !g_bPlayerThrow[client] && g_yeet == 1) {
 		if ( IsThrowBlocked(client) ) {
 			if (GetClientTime(client) - g_flClientLastNotif[client] >= 1.0) {
 				g_flClientLastNotif[client] = GetClientTime(client);
@@ -873,7 +906,7 @@ public void OnPlayerCarryObject(Event event, const char[] name, bool dontBroadca
 	int owner = GetClientOfUserId(event.GetInt("userid"));
 	int objecttype = event.GetInt("object");
 	int building = event.GetInt("index");
-	if ((HasYeetStat(owner) && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && ( g_iAllowTypes&(1<<objecttype) )!=0) {
+	if ((g_yeet == 1 && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && ( g_iAllowTypes&(1<<objecttype) )!=0) {
 		//small sanity check: was this building picked up while flagged as thrown?
 		if (g_aAirbornObjects.FindValue(EntIndexToEntRef(building), AirbornData::building) != -1) {
 			//visually destory the building, the check timer will clean up the phys prop later
@@ -888,7 +921,7 @@ public void OnPlayerBuiltObject(Event event, const char[] name, bool dontBroadca
 	int objecttype = event.GetInt("object");
 	int building = event.GetInt("index");
 	
-	if ((HasYeetStat(owner) && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && g_bPlayerThrow[owner]) {
+	if ((g_yeet == 1 && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && g_bPlayerThrow[owner]) {
 		g_bPlayerThrow[owner] = false;
 		RequestFrame(ThrowBuilding,EntIndexToEntRef(building));
 	}

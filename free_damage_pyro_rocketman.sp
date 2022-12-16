@@ -12,7 +12,7 @@
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Fast Airblast\nFaster Move Speed"
-#define ROBOT_TIPS "25%%%% Faster Airblast\n75%%%% more damage\n15%%%% Faster move speed\n15%%%% longer flame range"
+#define ROBOT_TIPS "25%%%% Faster Airblast\n75%%%% more damage\n-35%%%%% Faster move speed\n15%%%% longer flame range"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -175,9 +175,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	if (IsValidClient(client))
 		GiveGiantPyro(client);
 }
-#define BubblePipe 597 
-#define Filamental  30036 
-#define Pyrotechnic  856 
+#define MoonmanBackpack  596 
+#define MK50  30473 
+// #define Pyrotechnic  856 
 
 stock GiveGiantPyro(client)
 {
@@ -188,7 +188,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		CreateRoboWeapon(client, "tf_weapon_flamethrower", 21, 6, 1, 2, 0);	
+		CreateRoboWeapon(client, "tf_weapon_flamethrower", 30474, 6, 1, 2, 0);	
 
 		
 		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
@@ -202,9 +202,9 @@ stock GiveGiantPyro(client)
 			TeamPaint = 12091445.0;
 		}
 
-		CreateRoboHat(client, BubblePipe, 10, 6, 0.0, 1.0, -1.0);
-		CreateRoboHat(client, Filamental, 10, 6, TeamPaint, 0.75, -1.0);
-		CreateRoboHat(client, Pyrotechnic, 10, 6, 5322826.0, 0.75, -1.0);
+		CreateRoboHat(client, MoonmanBackpack, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, MK50, 10, 6, TeamPaint, 0.75, -1.0);
+		// CreateRoboHat(client, Pyrotechnic, 10, 6, 5322826.0, 0.75, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 
@@ -212,7 +212,7 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon1))
 		{
 			//TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			// TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.6);		

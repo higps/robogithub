@@ -6,11 +6,12 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Samur-A.I."
+#define ROBOT_NAME	"S.A.M."
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Half-Zatoichi, Splendid Screen"
+#define ROBOT_TIPS "Samurai Anti Mann"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -278,7 +279,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "mult charge turn control", 10.0);		
 			TF2Attrib_SetByName(Weapon3, "charge meter on hit", 1.0);
 			TF2Attrib_SetByName(Weapon3, "restore health on kill", 10.0);	
-			TF2Attrib_SetByName(Weapon3, "minicrits become crits", 1.0);			
+			// TF2Attrib_SetByName(Weapon3, "minicrits become crits", 1.0);			
 		}
 	}
 }

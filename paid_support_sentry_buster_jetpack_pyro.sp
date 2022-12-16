@@ -9,24 +9,19 @@
 
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Lister"
-#define ROBOT_ROLE "Damage"
-#define ROBOT_CLASS "Pyro"
-#define ROBOT_SUBCLASS "Flames"
-#define ROBOT_DESCRIPTION "Dragon's Fury, Powerjack"
-#define ROBOT_TIPS "Giant Dragon's Fury, Powerjack"
+#define ROBOT_NAME	"Pilgrim"
+#define ROBOT_CLASS "Sentry"
+#define ROBOT_ROLE "Sentry Buster"
+#define ROBOT_SUBCLASS "Sentry Buster"
+#define ROBOT_DESCRIPTION "Jetpack + Homewrecker"
+#define ROBOT_TIPS "Use your jetpack to smack"
+#define ROBOT_COST 1.0
 
-#define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
+#define GPYRO		"models/bots/pyro/bot_pyro.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_pyro/giant_pyro_loop.wav"
 
-// #define SOUND_GUNFIRE	")mvm/giant_pyro/giant_pyro_flamethrower_loop.wav"
-// #define SOUND_WINDUP	")mvm/giant_pyro/giant_pyro_flamethrower_start.wav"
-
-// #define LOFILONGWAVE 470
-// #define HANDSOMEDEVIL 31135
-// #define PHOBOS 30652
 
 
 public Plugin:myinfo = 
@@ -60,11 +55,18 @@ public OnPluginStart()
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 	// robot.sounds.gunfire = SOUND_GUNFIRE;
 	// robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 
-	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null, 2);
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
+
+	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions);
 }
 
 public void OnPluginEnd()
@@ -135,19 +137,21 @@ MakeGiantPyro(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
+
+	
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	//
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "deploy time decreased", 0.05);
-	//TF2Attrib_SetByName(client, "head scale", 0.75);
+	TF2Attrib_SetByName(client, "head scale", 0.85);
 	
 
 	
@@ -176,8 +180,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define DeadCone 435
-
+#define FireFly 30741
+#define SpaceDiver 30664
 stock GiveGiantPyro(client)
 {
 	if (IsValidClient(client))
@@ -187,24 +191,19 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		CreateRoboWeapon(client, "tf_weapon_rocketlauncher_fireball", 1178, 6, 1, 0, 390);	
-		CreateRoboWeapon(client, "tf_weapon_fireaxe", 214, 6, 1, 2, 0);	
+		CreateRoboWeapon(client, "tf_weapon_rocketpack", 1179, 6, 1, 0, 390);	
+		CreateRoboWeapon(client, "tf_weapon_fireaxe", 153, 6, 1, 2, 0);	
 
-		CreateRoboHat(client, DeadCone, 10, 6, 0.0, 0.75, 1.0); 
+		CreateRoboHat(client, FireFly, 10, 6, 0.0, 0.75, 1.0); 
+		CreateRoboHat(client, SpaceDiver, 10, 6, 0.0, 0.75, 1.0); 
 
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
-		if(IsValidEntity(Weapon1))
+		if(IsValidEntity(Weapon2))
 		{
 		//	TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
-			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 175.0);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "afterburn duration bonus", 3.0);
-			
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.5);			
+			TF2Attrib_SetByName(Weapon2, "thermal_thruster_air_launch", 1.0);		
 		}
 
 		if(IsValidEntity(Weapon3))
@@ -212,9 +211,9 @@ stock GiveGiantPyro(client)
 		//	TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);					
-			TF2Attrib_SetByName(Weapon3, "move speed bonus", 1.5);				
-			TF2Attrib_SetByName(Weapon3, "dmg taken increased", 1.6);	
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
+			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);				
+			// TF2Attrib_SetByName(Weapon3, "dmg taken increased", 1.6);	
+			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
 			
 			
 			//TF2Attrib_SetByName(Weapon3, "provide on active", 1.0);					

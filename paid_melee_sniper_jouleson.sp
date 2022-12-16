@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Jouleson"
-#define ROBOT_ROLE "Tank"
+#define ROBOT_ROLE "Melee"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Invisible Spell Sniper"
@@ -104,7 +104,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 6500;
+	int iHealth = 3500;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 	float scale = 1.85;
@@ -113,7 +113,7 @@ MakeSniper(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -128,7 +128,7 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	// TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	// TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	// TF2Attrib_SetByName(client, "health regen", 10.0);
 
 	
@@ -140,11 +140,11 @@ MakeSniper(client)
 
 
 	PrintHintText(client , ROBOT_TIPS);
-	//Tank stats
-    TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
-    TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+	// //Tank stats
+    // TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
+    // TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	// TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
+	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 }
 
 stock TF2_SetHealth(client, NewHealth)
