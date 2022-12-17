@@ -1110,7 +1110,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsElectric(Weapon1) || IsElectric(Weapon2))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons slow robots for {orange}-60%%% move speed{teamcolor} for %0.1f seconds on hit",chat_display, g_ElectricStunDuration);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons {orange}reduce robot heal rate{teamcolor} for %0.1f seconds on hit",chat_display, g_ElectricStunDuration);
         }
 
         if (IsWarriorSpirit(Weapon3))
@@ -1182,11 +1182,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if(IsSandman(Weapon3))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Baseball: {orange}Reduce robots move speed by -85%{teamcolor} for 2 seconds on hit",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Baseball: {orange}Reduce robots heal rate",chat_display);
         }
         if(IsWrap(Weapon3))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots move speed by -70%{teamcolor} for 1.5 seconds on hit",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots heal rate",chat_display);
         }
 
         if(IsCleaver(Weapon2))

@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Pilgrim"
-#define ROBOT_CLASS "Sentry"
+#define ROBOT_CLASS "Pyro"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Jetpack + Homewrecker"
