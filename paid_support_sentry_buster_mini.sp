@@ -52,6 +52,7 @@ public void OnPluginStart()
 	restrictions.RobotCoins.Overall = ROBOT_COST;
 
 	AddRobot(robot, MakeBuster, PLUGIN_VERSION, restrictions);
+	
 	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
 }
 
