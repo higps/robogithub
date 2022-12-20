@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Rapid Anti-Sentry Loch-n-Load"
-#define ROBOT_STATS "-75%%%% damage to players\nProjectiles don't shatter on surfaces\n+75%%%% faster firing speed"
+#define ROBOT_STATS "-65%%%% damage to players\nProjectiles don't shatter on surfaces\n+75%%%% faster firing speed"
 #define ROBOT_COST 2.5
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
@@ -231,7 +231,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.35);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.25);

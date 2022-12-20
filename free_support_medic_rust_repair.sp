@@ -9,7 +9,7 @@
 #include <sdkhooks>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Gotham Repair Unit"
+#define ROBOT_NAME	"Rust Repair"
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
@@ -183,9 +183,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 // #define FOPPISH 878
 // #define POWDERED 30069
 
-#define BattersBracers 30722
-#define CapedCrusader 30727
-#define TeufortKnight 30733
+#define PlatinumPickelhaube 30042
+#define DasMetalmeatencasen 30098
+#define TheSurgeonSidearms 30813
 
 stock GiveGiantMedic(client)
 {
@@ -201,9 +201,20 @@ stock GiveGiantMedic(client)
 		//CreateRoboWeapon(client, "tf_wearable_demoshield", 131, 6, 1, 1, 0);
 		// CreateRoboWeapon(client, "tf_weapon_bonesaw", 8, 6, 1, 2, 0);
 
-		CreateRoboHat(client, BattersBracers, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, CapedCrusader, 10, 6, 0.0, 1.0, 1.0);
-		CreateRoboHat(client, TeufortKnight, 10, 6, 0.0, 1.0, -1.0);
+		//Cosmetic code
+		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		float TeamPaint = 0.0;
+
+		if (iTeam == TFTeam_Blue){
+			TeamPaint = 8626083.0;
+			
+		}
+		if (iTeam == TFTeam_Red){
+			TeamPaint = 11049612.0;
+		}
+		CreateRoboHat(client, PlatinumPickelhaube, 10, 6, TeamPaint, 1.0, -1.0); 
+		CreateRoboHat(client, DasMetalmeatencasen, 10, 6, 0.0, 1.0, 1.0);
+		CreateRoboHat(client, TheSurgeonSidearms, 10, 6, 0.0, 1.0, -1.0);
 		
 		// CreateRoboHat(client, FOPPISH, 10, 6, 3100495.0, 1.0, -1.0); 
 		// CreateRoboHat(client, POWDERED, 10, 6, 6901050.0, 1.0, -1.0); 

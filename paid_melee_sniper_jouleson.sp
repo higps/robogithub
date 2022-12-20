@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Jouleson"
-#define ROBOT_ROLE "Melee"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Invisible Spell Sniper"
@@ -234,7 +234,7 @@ stock GiveBigRoboHuntsbot(client)
 	}
 
 	// SetTankStats(client);
-	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 }
 
 // public void OnEntityCreated(int iEntity, const char[] sClassName) 

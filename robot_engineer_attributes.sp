@@ -237,10 +237,10 @@ float g_dispenser_scale;
 
 bool HasStat(int client)
 {
-
+ 	int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 	//PrintToChatAll("Checking has stat for %N", client);
 	char stat_buffer[256];
-	if (!TF2CustAttr_GetString(client, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
+	if (!TF2CustAttr_GetString(Weapon3, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
 		//PrintToChatAll("Has Stat Not Found for %N", client);
 		return false;
 		
@@ -374,9 +374,23 @@ public void ObjectCarry(Event event, const char[] name, bool dontBroadcast)
 	int iBuilder = GetClientOfUserId(event.GetInt("userid"));
 	int iObj = event.GetInt("index");
 
-	if (IsValidClient(iBuilder) && HasStat(iBuilder)){
+	if (IsValidClient(iBuilder) && HasStat(iBuilder))
+	{
 
-		if (view_as<TFObjectType>(event.GetInt("object")) != TFObject_Teleporter)SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
+		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Sentry && g_sentry_scale > 0.0)
+		{
+			SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
+		}
+
+		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser && g_dispenser_scale > 0.0)
+		{
+			SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
+		}
+
+		// if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Teleporter && g_dispenser_scale > 0.0)
+		// {
+		// 	SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
+		// }
 	}
 }
 

@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Nanomachines"
-#define ROBOT_TIPS "Deal or take 1000 damage to fill meter, once activated become slower, ubered and repair yourself"
+#define ROBOT_TIPS "Deal or take 4000 damage to fill meter, once activated become slower, ubered and repair yourself"
 #define ROBOT_COST 2.5
 
  
@@ -299,7 +299,7 @@ bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_duration = 5.0;
 float FireModeTimer = -1.0;
 float g_skill; 
-float g_skill_cooldown = 1000.0;
+float g_skill_cooldown = 4000.0;
 // float g_skill_time;
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])

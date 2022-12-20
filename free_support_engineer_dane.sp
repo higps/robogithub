@@ -280,7 +280,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 8.0);
 			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.9);
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
-			TF2CustAttr_SetString(client, "robot engineer", "sentry_scale=1.45 dispenser_scale=1.45 sentry_count=1 dispenser_count=1 remove_all_sappers=0 yeet=0");	
+			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.45 dispenser_scale=1.45 sentry_count=1 dispenser_count=1 remove_all_sappers=0 yeet=0");	
 		}
 	}
 }
