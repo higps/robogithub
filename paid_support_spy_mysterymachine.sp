@@ -16,7 +16,7 @@
 #define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Enforcer, WaveDash"
 #define ROBOT_TIPS "Infinite Cloak\nNo Knife\nPowerful Enforcer that penetrates players\nThrowable sapper\nSapper Heals you when sapping\nWaveDash"
-#define ROBOT_COST 1.0
+#define ROBOT_COST 2
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -66,7 +66,7 @@ public OnPluginStart()
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+	restrictions.RobotCoins.Overall = ROBOT_COST; 
 
 	AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 

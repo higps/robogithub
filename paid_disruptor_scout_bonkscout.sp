@@ -246,11 +246,11 @@ stock GiveGiantPyro(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
-			TF2Attrib_SetByName(Weapon2, "damage penalty", 1.75);
+			// TF2Attrib_SetByName(Weapon2, "damage penalty", 1.0);
 			TF2Attrib_SetByName(Weapon2, "maxammo grenades1 increased", 30.0);
 			TF2Attrib_SetByName(Weapon2, "effect bar recharge rate increased", 0.1);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.15);
-			TF2Attrib_SetByName(Weapon2, "damage bonus", 2.5);
+			// TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.0);
 			//TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 10.0);
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 

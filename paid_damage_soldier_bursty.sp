@@ -15,7 +15,7 @@
 #define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Anti-Wrangler"
 #define ROBOT_COST 2.5
-#define ROBOT_STATS "Burst fire 3 rockets\nIgnores damage resistance buffs\n-25%%%% damage to players\n-40%%%% damage to buildings\nRocket Specialist"
+#define ROBOT_STATS "Burst fire 3 rockets\nIgnores damage resistance buffs\n-35%%%% damage to players\n-40%%%% damage to buildings\nRocket Specialist"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -319,7 +319,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.65);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.65);
 			// TF2Attrib_SetByName(Weapon1, "auto fires when full", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
 			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);

@@ -204,16 +204,16 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
             TF2CustAttr_SetString(client, "faster-respawn", "4.0");
         }
 
-        if(TF2_GetPlayerClass(client) == TFClass_Engineer)
-        {
-            int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+        // if(TF2_GetPlayerClass(client) == TFClass_Engineer)
+        // {
+        //     int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
-            if (IsGunSlinger(Weapon3))
-            {
-                TF2CustAttr_SetString(client, "robot engineer", "sentries=2 dispensers=1");
-            }
+        //     if (IsGunSlinger(Weapon3))
+        //     {
+        //         TF2CustAttr_SetString(Weapon3, "robot engineer", "sentries=2");
+        //     }
             
-        }
+        // }
 
     }
 }
@@ -1230,7 +1230,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
             TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.15);
-            TF2CustAttr_SetString(client, "robot engineer", "sentries=2 dispensers=1");
+            TF2CustAttr_SetString(Weapon3, "robot engineer", "sentries=2");
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+1 Sentry build count and +15%% faster movement speed",chat_display);
             
         }
