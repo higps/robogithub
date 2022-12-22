@@ -171,6 +171,7 @@ void GetReadyToExplode(int client)
 	AboutToExplode[client] = true;
 }
 
+/*
 void DoDamage(int client, int target, int amount) // from Goomba Stomp.
 {
 	int pointHurt = CreateEntityByName("point_hurt");
@@ -190,6 +191,7 @@ void DoDamage(int client, int target, int amount) // from Goomba Stomp.
 		RemoveEdict(pointHurt);
 	}
 }
+*/
 
 Action FakeCommand_Clamp(Handle timer)
 {
@@ -233,14 +235,24 @@ Action Bewm(Handle timer, any userid)
 	}
 	//bool FF = false;
 
+	int melee = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+	if (!IsValidEntity(melee) || melee < MaxClients)
+		return Plugin_Continue;
+	
 	char stats[256];
-	TF2CustAttr_GetString(client, "Sentry Buster", stats, sizeof stats);
+	TF2CustAttr_GetString(melee, "Sentry Buster", stats, sizeof stats);
 
 	LastBuster.Set(client);
 	LastBuster.Damage = ReadFloatVar(stats, "damage", 2500.0);
-	PrintToChatAll("Damage: %.1f", LastBuster.Damage);
+	//PrintToChatAll("Damage: %.1f", LastBuster.Damage);
 	LastBuster.Radius = ReadFloatVar(stats, "radius", 500.0);
 	LastBuster.LineOfSight = view_as<bool>(ReadIntVar(stats, "lineofsight", 0));
+
+	// Debug radius of explosion
+	//int color[4];
+	//color = {255, 255, 255, 255};
+	//TE_SetupBeamRingPoint(clientPos, LastBuster.Radius, LastBuster.Radius, PrecacheModel("materials/sprites/laser.vmt"), PrecacheModel("materials/sprites/laser.vmt"), 0, 0, 10.0, 150.0, 0.0, color, 0, 0);
+	//TE_SendToAll();
 
 	LastBuster.Pos = clientPos;
 
@@ -249,8 +261,10 @@ Action Bewm(Handle timer, any userid)
 	
 	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_explode.wav", client);
 	AttachParticle(client, "fluidSmokeExpl_ring_mvm");
-	DoDamage(client, client, 2500);
-	FakeClientCommand(client, "kill");
+	SDKHooks_TakeDamage(client, client, client, 2500.0, DMG_BLAST);
+
+	//DoDamage(client, client, 2500);
+	//FakeClientCommand(client, "kill"); //?
 
 	return Plugin_Handled;
 }
@@ -411,14 +425,6 @@ Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, in
 			damage = 0.0;
 			GetReadyToExplode(victim);
 			FakeClientCommand(victim, "taunt");
-			return Plugin_Changed;
-		}
-	}
-	if (IsValidClient(attacker)) // This is a Sentry.
-	{
-		if (!AboutToExplode[attacker])
-		{
-			damage = 0.0;
 			return Plugin_Changed;
 		}
 	}
