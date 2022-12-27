@@ -231,7 +231,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 int g_infinite_ammo;
 int g_SentryLimit;
 int g_DispenserLimit;
-int g_yeet;
+// int g_yeet;
 float g_sentry_scale;
 float g_dispenser_scale;
 
@@ -253,7 +253,7 @@ bool HasStat(int client)
 	g_dispenser_scale = ReadFloatVar(stat_buffer, "dispenser_scale", 0.0);
 	g_infinite_ammo = ReadIntVar(stat_buffer, "infinite_ammo", 0);
 
-	g_yeet = ReadIntVar(stat_buffer, "yeet", 0);
+	// g_yeet = ReadIntVar(stat_buffer, "yeet", 0);
 
 //PrintToChatAll("SG Limit: %i, SG Scale: %f, Disp Limit: %i, Disp Scale: %f, infinite ammo: %i, Yeet: %i for %N",g_SentryLimit, g_sentry_scale, g_DispenserLimit, g_dispenser_scale, g_infinite_ammo, g_yeet, client);
 //PrintToChatAll("Has Stat Found for %N, setting variables", client);
@@ -883,24 +883,26 @@ public void OnLibraryRemoved(const char[] name) {
 	if (StrEqual(name, "tf2hudmsg")) g_bDepHudMsg = false;
 }
 
-// bool HasYeetStat(int client)
-// {
-// 	char stat_buffer[256];
-// 	if (!TF2CustAttr_GetString(client, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
-// 		return false;
-// 	}
-// 	int yeet = ReadIntVar(stat_buffer, "yeet", 0);
+bool HasYeetStat(int client)
+{
+	int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+	
+	char stat_buffer[256];
+	if (!TF2CustAttr_GetString(Weapon3, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
+		return false;
+	}
+	int yeet = ReadIntVar(stat_buffer, "yeet", 0);
 
-// 	if(yeet == 1)
-// 	{
-// 		return true;
-// 	}
-// 	return false;
-// }
+	if(yeet == 1)
+	{
+		return true;
+	}
+	return false;
+}
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2]) {
 	if (!(1<=client<=MaxClients) || !IsClientInGame(client) || IsFakeClient(client)) return Plugin_Continue;
-	if ((buttons & IN_RELOAD)!=0 && !g_bPlayerThrow[client] && g_yeet == 1) {
+	if ((buttons & IN_RELOAD)!=0 && !g_bPlayerThrow[client] && HasYeetStat(client)) {
 		if ( IsThrowBlocked(client) ) {
 			if (GetClientTime(client) - g_flClientLastNotif[client] >= 1.0) {
 				g_flClientLastNotif[client] = GetClientTime(client);
@@ -920,7 +922,7 @@ public void OnPlayerCarryObject(Event event, const char[] name, bool dontBroadca
 	int owner = GetClientOfUserId(event.GetInt("userid"));
 	int objecttype = event.GetInt("object");
 	int building = event.GetInt("index");
-	if ((g_yeet == 1 && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && ( g_iAllowTypes&(1<<objecttype) )!=0) {
+	if ((HasYeetStat(owner) && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && ( g_iAllowTypes&(1<<objecttype) )!=0) {
 		//small sanity check: was this building picked up while flagged as thrown?
 		if (g_aAirbornObjects.FindValue(EntIndexToEntRef(building), AirbornData::building) != -1) {
 			//visually destory the building, the check timer will clean up the phys prop later
@@ -935,7 +937,7 @@ public void OnPlayerBuiltObject(Event event, const char[] name, bool dontBroadca
 	int objecttype = event.GetInt("object");
 	int building = event.GetInt("index");
 	
-	if ((g_yeet == 1 && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && g_bPlayerThrow[owner]) {
+	if ((HasYeetStat(owner) && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && g_bPlayerThrow[owner]) {
 		g_bPlayerThrow[owner] = false;
 		RequestFrame(ThrowBuilding,EntIndexToEntRef(building));
 	}
