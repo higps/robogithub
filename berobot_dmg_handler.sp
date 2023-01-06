@@ -1139,8 +1139,10 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (isBeggarsBazooka(Weapon1))
         {
-            TF2Attrib_SetByName(Weapon1, "mult_player_movespeed_active", 1.15);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Beggars Bazooka: {orange}+15%% faster move speed while active",chat_display);
+            TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
+            TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.4);
+            // TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.8);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Beggars Bazooka: {orange}+2 clip size, Up to +60%% fasterer firing speed based on remaining health",chat_display);
         }
 
         if (isLibertyLauncher(Weapon1))
@@ -1158,8 +1160,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsRocketLauncher(Weapon1))
         {
-            TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.3);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+30%% larger explosion radius",chat_display);
+            TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.5);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+50%% larger explosion radius",chat_display);
         }
 
         if (HasFrontierJustice(client))
