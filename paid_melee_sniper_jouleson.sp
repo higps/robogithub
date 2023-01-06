@@ -193,17 +193,6 @@ stock GiveBigRoboHuntsbot(client)
 	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
 	int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
-	// int iEnt = -1;
-	// while ((iEnt = FindEntityByClassname(iEnt, "tf_wearable")) != -1)
-	//  {
-	//     if (GetEntPropEnt(iEnt, Prop_Send, "m_hOwnerEntity") == client && GetEntProp(iEnt, Prop_Send, "m_iItemDefinitionIndex") == 31037) 
-	// 	{
-	//         // PrintToChatAll("ENT %i", iEnt);
-	// 		// SetEntityRenderFx(iEnt, 0);
-	// 		SetEntityRenderColor(iEnt, 128, 128, 128, 0);
-
-	//     }
-	//  }
 		if(IsValidEntity(SMG))
 		{
 		TF2Attrib_RemoveAll(SMG);
