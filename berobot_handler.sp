@@ -109,6 +109,7 @@ int g_iVotes;
 int g_iVotesNeeded;
 int g_AprilEnable;
 
+int g_Damage_Bonus = 1;
 //bool g_IsAprilRTD[MAXPLAYERS + 1] = false;
 
 int g_RoundCount;
@@ -835,6 +836,16 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
     }
 }
 
+// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+// {
+
+//     if (IsValidClient(attacker) && IsValidClient(victim))
+//     {
+//         //Damage bonus is not active, no need to do anything
+
+//     }
+//     return Plugin_Continue;
+// }
 
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
@@ -851,6 +862,19 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
         RequestFrame(Set_g_PlayerHealth, victim);        
         
     }
+
+    if (g_Damage_Bonus != 1)
+    {
+        if(!IsAnyRobot(attacker) && IsAnyRobot(victim))
+        {
+            PrintToChatAll("Damage before is %f, g_damagebonus was %f", damage, float(g_Damage_Bonus));
+            damage *= float(g_Damage_Bonus);
+            PrintToChatAll("Damage after is %f", damage);
+            return Plugin_Changed;
+        }
+    }
+
+
     return Plugin_Continue;
 }
 
@@ -1862,16 +1886,52 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
     {
         bool success = AddRandomVolunteer();
         SMLogTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
+        
+        g_Damage_Bonus = 1;
+
         if (!success)
             break;
     }
 
     while (g_Volunteers.Length > g_RoboCapTeam)
     {
-        bool success = RemoveRandomRobot();
-        SMLogTag(SML_VERBOSE, "removing random robot succcess: %b", success);
-        if (!success)
-            break;
+        //Old code, may use as CVAR later
+        // bool success = RemoveRandomRobot();
+        // SMLogTag(SML_VERBOSE, "removing random robot succcess: %b", success);
+        // if (!success)
+        //     break;
+
+        int TotalClients = GetClientCount();
+        // int maxplayers = GetMaxHumanPlayers(); 
+        //Failsafe for when you have admins who became a robot without volunteering
+        int CurrentRobots = 0;
+        int Humans = 0;
+        for(int i = 1; i <= MaxClients+1; i++)
+        {
+            if(IsAnyRobot(i))
+            {
+                CurrentRobots++;
+            }else if (IsValidClient(i))
+            {
+                Humans++;
+            }
+        }
+        int MissingPlayers = GetMaxHumanPlayers()-Humans-CurrentRobots;
+        // int RobotOverflow = CurrentRobots-g_RoboCapTeam;
+
+        PrintToChatAll("Volunteer length: %i g_RoboCapTeam: %i, Players In Game %i", g_Volunteers.Length,g_RoboCapTeam, TotalClients);
+        PrintToChatAll("Current Robots %i",CurrentRobots);
+        // PrintToChatAll("RobotOverflow: %i", RobotOverflow);
+        PrintToChatAll("Missing Humans: %i", MissingPlayers);
+
+        ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
+        float f_dynamic_robot_count = drobotcount.FloatValue;
+        PrintToChatAll("Dynamic count was %f", f_dynamic_robot_count);
+        // g_RoboCapTeam //How many robots it should be
+        // Humans //The Amount of Humans
+        // CurrentRobots //The amount of robts
+        g_Damage_Bonus = MissingPlayers;
+        break;
     }
 
 }
@@ -1879,10 +1939,12 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 int Native_UnmakeRobot(Handle plugin, int numParams)
 {
     if (!g_BossMode)
-        return;
+        return 0;
     
     int clientId = GetNativeCell(1);
     MakeRobot(clientId, false);
+    
+    return 1;
 }
 
 int Native_GetRobotCap(Handle plugin, int numParams)
