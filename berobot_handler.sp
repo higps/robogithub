@@ -1930,6 +1930,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         // g_RoboCapTeam //How many robots it should be
         // Humans //The Amount of Humans
         // CurrentRobots //The amount of robts
+        //Calculate the ratio of how many more robots there are than humans and add that as damage bonus
         g_Damage_Bonus = MissingPlayers;
         break;
     }
