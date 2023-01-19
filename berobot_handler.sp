@@ -863,7 +863,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
         
     }
 
-    if (g_f_Damage_Bonus != 1.0)
+    if (g_f_Damage_Bonus != -1.0)
     {
         if(!IsAnyRobot(attacker) && IsAnyRobot(victim))
         {
@@ -1887,7 +1887,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         bool success = AddRandomVolunteer();
         SMLogTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
         
-        g_f_Damage_Bonus = 1.0;
+        g_f_Damage_Bonus = -1.0;
 
         if (!success)
             break;
@@ -1904,10 +1904,10 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
         //We now know there's too many robots compared to humans
         int TotalClients = GetClientCount();
-        int ServerMaxplayers = GetMaxHumanPlayers(); 
+        int ServerMaxplayers = GetMaxHumanPlayers() - 1; 
         //Failsafe for when you have admins who became a robot without volunteering
         int CurrentRobots = 0;
-        int Humans = 0;
+        int CurrentHumans = 0;
         // int STV = 0;
         for(int i = 1; i <= MaxClients+1; i++)
         {
@@ -1918,7 +1918,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
             if(!IsAnyRobot(i) && IsValidClient(i))
             {
-                Humans++;
+                CurrentHumans++;
             }
 
             // if (IsClientInGame(i) && IsClientSourceTV(i))
@@ -1930,14 +1930,14 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
         PrintToChatAll("Dynamic count was %f", drobotcount.FloatValue);
 
-        PrintToChatAll("Robots: %i Humans %i", CurrentRobots, Humans);
-
+        PrintToChatAll("Robots: %i Humans %i", CurrentRobots, CurrentHumans);
         // float MissingHumans = (drobotcount.FloatValue*float(CurrentRobots))-float(Humans);
-        int IntendedHumans = ServerMaxplayers - CurrentRobots;
+   
+        int TargetRobots = RoundToFloor(float(TotalClients) / drobotcount.FloatValue);
+        
+        int TargetHumans = TotalClients-TargetRobots;
 
-        int MissingHumans = IntendedHumans-Humans;
-
-        //int MissingHumans = GetMaxHumanPlayers()-Humans-CurrentRobots;
+        int MissingHumans = TargetHumans-CurrentHumans;
         // int RobotOverflow = CurrentRobots-g_RoboCapTeam;
 
 //24 - 18 - 6 
@@ -1945,8 +1945,8 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         //PrintToChatAll("Volunteer length: %i g_RoboCapTeam: %i, Players In Game %i", g_Volunteers.Length,g_RoboCapTeam, TotalClients);
         //PrintToChatAll("Current Robots %i",CurrentRobots);
         // PrintToChatAll("RobotOverflow: %i", RobotOverflow);
-        PrintToChatAll("Missing Humans/TotalPlayers/MaxPlayers: %i/%i/%i", MissingHumans, TotalClients, ServerMaxplayers);
-
+        PrintToChatAll("Missing Humans/Current Humans %i/%i", MissingHumans, CurrentHumans);
+        PrintToChatAll("Target Humans: %i / Target Robots %i", TargetHumans, TargetRobots);
 
         // g_RoboCapTeam //How many robots it should be
         // Humans //The Amount of Humans
