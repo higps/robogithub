@@ -109,7 +109,7 @@ int g_iVotes;
 int g_iVotesNeeded;
 int g_AprilEnable;
 
-int g_Damage_Bonus = 1;
+float g_f_Damage_Bonus = 1.0;
 //bool g_IsAprilRTD[MAXPLAYERS + 1] = false;
 
 int g_RoundCount;
@@ -863,12 +863,12 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
         
     }
 
-    if (g_Damage_Bonus != 1)
+    if (g_f_Damage_Bonus != 1.0)
     {
         if(!IsAnyRobot(attacker) && IsAnyRobot(victim))
         {
-            PrintToChatAll("Damage before is %f, g_damagebonus was %f", damage, float(g_Damage_Bonus));
-            damage *= float(g_Damage_Bonus);
+            PrintToChatAll("Damage before is %f, g_damagebonus was %f", damage, g_f_Damage_Bonus);
+            damage *= g_f_Damage_Bonus;
             PrintToChatAll("Damage after is %f", damage);
             return Plugin_Changed;
         }
@@ -1887,7 +1887,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         bool success = AddRandomVolunteer();
         SMLogTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
         
-        g_Damage_Bonus = 1;
+        g_f_Damage_Bonus = 1.0;
 
         if (!success)
             break;
@@ -1901,37 +1901,54 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         // if (!success)
         //     break;
 
+
+        //We now know there's too many robots compared to humans
         int TotalClients = GetClientCount();
         // int maxplayers = GetMaxHumanPlayers(); 
         //Failsafe for when you have admins who became a robot without volunteering
         int CurrentRobots = 0;
         int Humans = 0;
+        int STV = 0;
         for(int i = 1; i <= MaxClients+1; i++)
         {
             if(IsAnyRobot(i))
             {
                 CurrentRobots++;
-            }else if (IsValidClient(i))
+            }
+
+            if(!IsAnyRobot(i) && IsValidClient(i))
             {
                 Humans++;
             }
-        }
-        int MissingPlayers = GetMaxHumanPlayers()-Humans-CurrentRobots;
-        // int RobotOverflow = CurrentRobots-g_RoboCapTeam;
 
-        PrintToChatAll("Volunteer length: %i g_RoboCapTeam: %i, Players In Game %i", g_Volunteers.Length,g_RoboCapTeam, TotalClients);
-        PrintToChatAll("Current Robots %i",CurrentRobots);
-        // PrintToChatAll("RobotOverflow: %i", RobotOverflow);
-        PrintToChatAll("Missing Humans: %i", MissingPlayers);
+            if (IsClientInGame(i) && IsClientSourceTV(i))
+            {
+                STV = 1;
+            }
+        }
 
         ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
-        float f_dynamic_robot_count = drobotcount.FloatValue;
-        PrintToChatAll("Dynamic count was %f", f_dynamic_robot_count);
+        PrintToChatAll("Dynamic count was %f", drobotcount.FloatValue);
+
+        PrintToChatAll("Robots: %i Humans %i stv: %i", CurrentRobots, Humans, STV);
+
+        // float MissingHumans = (drobotcount.FloatValue*float(CurrentRobots))-float(Humans);
+        int MissingHumans = GetMaxHumanPlayers()-Humans-CurrentRobots;
+        // int RobotOverflow = CurrentRobots-g_RoboCapTeam;
+
+//24 - 18 - 6 
+
+        //PrintToChatAll("Volunteer length: %i g_RoboCapTeam: %i, Players In Game %i", g_Volunteers.Length,g_RoboCapTeam, TotalClients);
+        //PrintToChatAll("Current Robots %i",CurrentRobots);
+        // PrintToChatAll("RobotOverflow: %i", RobotOverflow);
+        PrintToChatAll("Missing Humans: %f/%i", MissingHumans, TotalClients);
+
+
         // g_RoboCapTeam //How many robots it should be
         // Humans //The Amount of Humans
         // CurrentRobots //The amount of robts
         //Calculate the ratio of how many more robots there are than humans and add that as damage bonus
-        g_Damage_Bonus = MissingPlayers;
+        g_f_Damage_Bonus = 0.7 * float(MissingHumans);
         break;
     }
 
