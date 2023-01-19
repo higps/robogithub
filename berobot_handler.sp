@@ -1904,11 +1904,11 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
         //We now know there's too many robots compared to humans
         int TotalClients = GetClientCount();
-        // int maxplayers = GetMaxHumanPlayers(); 
+        int ServerMaxplayers = GetMaxHumanPlayers(); 
         //Failsafe for when you have admins who became a robot without volunteering
         int CurrentRobots = 0;
         int Humans = 0;
-        int STV = 0;
+        // int STV = 0;
         for(int i = 1; i <= MaxClients+1; i++)
         {
             if(IsAnyRobot(i))
@@ -1921,19 +1921,23 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
                 Humans++;
             }
 
-            if (IsClientInGame(i) && IsClientSourceTV(i))
-            {
-                STV = 1;
-            }
+            // if (IsClientInGame(i) && IsClientSourceTV(i))
+            // {
+            //     STV = 1;
+            // }
         }
 
         ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
         PrintToChatAll("Dynamic count was %f", drobotcount.FloatValue);
 
-        PrintToChatAll("Robots: %i Humans %i stv: %i", CurrentRobots, Humans, STV);
+        PrintToChatAll("Robots: %i Humans %i", CurrentRobots, Humans);
 
         // float MissingHumans = (drobotcount.FloatValue*float(CurrentRobots))-float(Humans);
-        int MissingHumans = GetMaxHumanPlayers()-Humans-CurrentRobots;
+        int IntendedHumans = ServerMaxplayers - CurrentRobots;
+
+        int MissingHumans = IntendedHumans-Humans;
+
+        //int MissingHumans = GetMaxHumanPlayers()-Humans-CurrentRobots;
         // int RobotOverflow = CurrentRobots-g_RoboCapTeam;
 
 //24 - 18 - 6 
@@ -1941,14 +1945,14 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         //PrintToChatAll("Volunteer length: %i g_RoboCapTeam: %i, Players In Game %i", g_Volunteers.Length,g_RoboCapTeam, TotalClients);
         //PrintToChatAll("Current Robots %i",CurrentRobots);
         // PrintToChatAll("RobotOverflow: %i", RobotOverflow);
-        PrintToChatAll("Missing Humans: %f/%i", MissingHumans, TotalClients);
+        PrintToChatAll("Missing Humans/TotalPlayers/MaxPlayers: %i/%i/%i", MissingHumans, TotalClients, ServerMaxplayers);
 
 
         // g_RoboCapTeam //How many robots it should be
         // Humans //The Amount of Humans
         // CurrentRobots //The amount of robts
         //Calculate the ratio of how many more robots there are than humans and add that as damage bonus
-        g_f_Damage_Bonus = 0.7 * float(MissingHumans);
+        g_f_Damage_Bonus = 1.0 + (float(MissingHumans)/10.0);
         break;
     }
 
