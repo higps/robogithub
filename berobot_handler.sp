@@ -1904,7 +1904,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
         //We now know there's too many robots compared to humans
         int TotalClients = GetClientCount();
-        int ServerMaxplayers = GetMaxHumanPlayers() - 1; 
+        // int ServerMaxplayers = GetMaxHumanPlayers() - 1; 
         //Failsafe for when you have admins who became a robot without volunteering
         int CurrentRobots = 0;
         int CurrentHumans = 0;
