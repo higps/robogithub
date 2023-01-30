@@ -110,6 +110,7 @@ int g_iVotesNeeded;
 int g_AprilEnable;
 
 float g_f_Damage_Bonus = 1.0;
+float g_f_previous_dmg_bonus = -1.0;
 //bool g_IsAprilRTD[MAXPLAYERS + 1] = false;
 
 int g_RoundCount;
@@ -867,9 +868,9 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     {
         if(!IsAnyRobot(attacker) && IsAnyRobot(victim))
         {
-            PrintToChatAll("Damage before is %f, g_damagebonus was %f", damage, g_f_Damage_Bonus);
+            // PrintToChatAll("Damage before is %f, g_damagebonus was %f", damage, g_f_Damage_Bonus);
             damage *= g_f_Damage_Bonus;
-            PrintToChatAll("Damage after is %f", damage);
+            // PrintToChatAll("Damage after is %f", damage);
             return Plugin_Changed;
         }
     }
@@ -1876,6 +1877,7 @@ int Native_SetVolunteers(Handle plugin, int numParams)
         MakeRobot(clientId, true);
     }
 }
+bool g_b_changed_dmg = false;
 
 int Native_EnsureRobotCount(Handle plugin, int numParams)
 {
@@ -1888,9 +1890,22 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         SMLogTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
         
         g_f_Damage_Bonus = -1.0;
+        g_b_changed_dmg = false;
 
         if (!success)
             break;
+    }
+
+    while (g_Volunteers.Length == g_RoboCapTeam)
+    {
+        if (g_b_changed_dmg)
+        {
+            PrintCenterTextAll("Alert: Robot Power Restored\nRobots take normal damage");
+        }
+        
+        g_f_Damage_Bonus = -1.0;
+        g_b_changed_dmg = false;
+        break;
     }
 
     while (g_Volunteers.Length > g_RoboCapTeam)
@@ -1936,7 +1951,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         int TargetRobots = RoundToFloor(float(CurrentRobots+CurrentHumans) / drobotcount.FloatValue);
         // int RobotSurplus = CurrentRobots-TargetRobots;
 
-        int TargetHumans = RoundToFloor(float(TargetRobots+1) * drobotcount.FloatValue) - CurrentRobots;
+        int TargetHumans = RoundToFloor(float(CurrentRobots+1) * drobotcount.FloatValue) - CurrentRobots;
 
         int MissingHumans = TargetHumans-CurrentHumans;
         // int RobotOverflow = CurrentRobots-g_RoboCapTeam;
@@ -1946,11 +1961,22 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         // {
         //     TargetRobots = 1;
         // }
-        PrintToChatAll("Target Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
-        PrintCenterTextAll("Target Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
+        // PrintToChatAll("Current Robots: %i\nTarget Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", CurrentRobots, TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
+        // PrintCenterTextAll("Target Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
 
 
-        g_f_Damage_Bonus = 1.0 + float(MissingHumans)/float(TargetHumans);
+        g_f_Damage_Bonus = float(TargetHumans)/float(CurrentHumans);
+
+        
+        if (g_f_previous_dmg_bonus != g_f_Damage_Bonus)
+        {
+            // float displaydmg = g_f_Damage_Bonus-1.0;
+
+            PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% more damage!", (g_f_Damage_Bonus-1.0)*100);
+        }
+        
+        g_f_previous_dmg_bonus = g_f_Damage_Bonus;
+        g_b_changed_dmg = true;
         break;
     }
 
