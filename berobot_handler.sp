@@ -1934,24 +1934,23 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         // float MissingHumans = (drobotcount.FloatValue*float(CurrentRobots))-float(Humans);
    
         int TargetRobots = RoundToFloor(float(TotalClients) / drobotcount.FloatValue);
-        
-        int TargetHumans = TotalClients-TargetRobots;
+        int RobotSurplus = CurrentRobots-TargetRobots;
+
+        int TargetHumans = RoundToFloor(float(TargetRobots) * drobotcount.FloatValue);
 
         int MissingHumans = TargetHumans-CurrentHumans;
         // int RobotOverflow = CurrentRobots-g_RoboCapTeam;
 
 //24 - 18 - 6 
+        if(TargetRobots >= 0)
+        {
+            TargetRobots = 1;
+        }
 
-        //PrintToChatAll("Volunteer length: %i g_RoboCapTeam: %i, Players In Game %i", g_Volunteers.Length,g_RoboCapTeam, TotalClients);
-        //PrintToChatAll("Current Robots %i",CurrentRobots);
-        // PrintToChatAll("RobotOverflow: %i", RobotOverflow);
         PrintToChatAll("Missing Humans/Current Humans %i/%i", MissingHumans, CurrentHumans);
-        PrintToChatAll("Target Humans: %i / Target Robots %i", TargetHumans, TargetRobots);
+        PrintToChatAll("Target Humans: %i / Target Robots %i / Robot Surplus %i", TargetHumans, TargetRobots, RobotSurplus);
 
-        // g_RoboCapTeam //How many robots it should be
-        // Humans //The Amount of Humans
-        // CurrentRobots //The amount of robts
-        //Calculate the ratio of how many more robots there are than humans and add that as damage bonus
+
         g_f_Damage_Bonus = 1.0 + (float(MissingHumans)/10.0);
         break;
     }
