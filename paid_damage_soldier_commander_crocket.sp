@@ -14,8 +14,8 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rocket"
 #define ROBOT_DESCRIPTION "Crit-Banner"
-#define ROBOT_COST 4.0
-#define ROBOT_TIPS "Give your teammates crit buff!"
+#define ROBOT_COST 8.0
+#define ROBOT_TIPS "Give your teammates critical buff!"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -225,8 +225,6 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
-	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.65);
 	// TF2Attrib_SetByName(client, "hand scale", 1.3);
 	UpdatePlayerHitbox(client, scale);

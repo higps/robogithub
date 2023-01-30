@@ -229,15 +229,15 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     
     if(!IsValidClient(victim))
         return Plugin_Continue;    
-    if(!IsValidClient(attacker))
-    {
-        if(IsAnyRobot(victim) && damagetype == DMG_FALL && !IsBoss(victim))
-        {
-        damage *= 0.25;
-        return Plugin_Changed;
-        }
-        return Plugin_Continue;
-    }
+    // if(!IsValidClient(attacker))
+    // {
+    //     if(IsAnyRobot(victim) && damagetype == DMG_FALL && !IsBoss(victim))
+    //     {
+    //     damage *= 0.25;
+    //     return Plugin_Changed;
+    //     }
+    //     return Plugin_Continue;
+    // }
 
     
         if(!IsAnyRobot(victim))
@@ -1073,7 +1073,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsRevolver(Weapon1))
         {
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "5.0");
+            TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "8.0");
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}Tags robots on hit{teamcolor} for 5 seconds",chat_display);
         }
 
@@ -1251,7 +1251,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
 void SetDemoDamageBuff(int weapon)
 {
-    TF2CustAttr_SetString(weapon, "damage increase mult on hit", "amount=0.1 max=0.4 decay_start=0.5 decay_per_second=0.05 reset_on_kill=1 show_on_hud=1");
+    TF2CustAttr_SetString(weapon, "damage increase mult on hit", "amount=0.1 max=0.4 decay_start=0.5 decay_per_second=0.025 reset_on_kill=0 show_on_hud=1");
 }
 
 bool IsMarketGardner(int weapon)
