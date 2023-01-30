@@ -1903,13 +1903,13 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
 
         //We now know there's too many robots compared to humans
-        int TotalClients = GetClientCount();
+        // int TotalClients = GetClientCount();
         // int ServerMaxplayers = GetMaxHumanPlayers() - 1; 
         //Failsafe for when you have admins who became a robot without volunteering
         int CurrentRobots = 0;
         int CurrentHumans = 0;
         // int STV = 0;
-        for(int i = 1; i <= MaxClients+1; i++)
+        for(int i = 0; i <= MaxClients+1; i++)
         {
             if(IsAnyRobot(i))
             {
@@ -1928,30 +1928,29 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         }
 
         ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
-        PrintToChatAll("Dynamic count was %f", drobotcount.FloatValue);
+        // PrintToChatAll("Dynamic count was %f", drobotcount.FloatValue);
 
-        PrintToChatAll("Robots: %i Humans %i", CurrentRobots, CurrentHumans);
+        // PrintToChatAll("Robots: %i Humans %i", CurrentRobots, CurrentHumans);
         // float MissingHumans = (drobotcount.FloatValue*float(CurrentRobots))-float(Humans);
    
-        int TargetRobots = RoundToFloor(float(TotalClients) / drobotcount.FloatValue);
-        int RobotSurplus = CurrentRobots-TargetRobots;
+        int TargetRobots = RoundToFloor(float(CurrentRobots+CurrentHumans) / drobotcount.FloatValue);
+        // int RobotSurplus = CurrentRobots-TargetRobots;
 
-        int TargetHumans = RoundToFloor(float(TargetRobots) * drobotcount.FloatValue);
+        int TargetHumans = RoundToFloor(float(TargetRobots+1) * drobotcount.FloatValue) - CurrentRobots;
 
         int MissingHumans = TargetHumans-CurrentHumans;
         // int RobotOverflow = CurrentRobots-g_RoboCapTeam;
 
 //24 - 18 - 6 
-        if(TargetRobots >= 0)
-        {
-            TargetRobots = 1;
-        }
+        // if(TargetRobots >= 0)
+        // {
+        //     TargetRobots = 1;
+        // }
+        PrintToChatAll("Target Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
+        PrintCenterTextAll("Target Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
 
-        PrintToChatAll("Missing Humans/Current Humans %i/%i", MissingHumans, CurrentHumans);
-        PrintToChatAll("Target Humans: %i / Target Robots %i / Robot Surplus %i", TargetHumans, TargetRobots, RobotSurplus);
 
-
-        g_f_Damage_Bonus = 1.0 + (float(MissingHumans)/10.0);
+        g_f_Damage_Bonus = 1.0 + float(MissingHumans)/float(TargetHumans);
         break;
     }
 
