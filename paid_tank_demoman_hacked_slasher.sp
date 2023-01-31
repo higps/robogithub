@@ -131,7 +131,7 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 7000;
+	int iHealth = 9000;
 	
 	
 	int MaxHealth = 175;
@@ -173,10 +173,10 @@ MakeDemoKnight(client)
 	
 	PrintHintText(client , ROBOT_TIPS);
 	//Tank stats
-    TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
+    // TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 	
 }
 
@@ -275,10 +275,22 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Charging)
 		{	
 			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 350.0);
-			// TF2_AddCondition(client, TFCond_CritCanteen, 3.0);
+			
 		}
 	
 }
+public void TF2_OnConditionRemoved(int client, TFCond condition)
+{
+	
+	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
+		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Charging)
+		{	
+			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+			
+		}
+	
+}
+
 
 // public Event_Death(Event event, const char[] name, bool dontBroadcast)
 // {

@@ -136,7 +136,7 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 7000;
+	int iHealth = 9000;
 	
 	
 	int MaxHealth = 300;
@@ -181,10 +181,10 @@ MakeGDeflectorH(client)
 
 	PrintHintText(client , ROBOT_TIPS);
 	//Tank stats
-    TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
+    // TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 }
  
 stock TF2_SetHealth(client, NewHealth)

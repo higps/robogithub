@@ -282,7 +282,7 @@ MakeBearded(client)
 	SetModel(client, SHWC);
    
 		
-	int iHealth = 7000;
+	int iHealth = 9000;
 	TF2_SetHealth(client, iHealth);
 	
 	int MaxHealth = 300;
@@ -304,17 +304,17 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
-	TF2Attrib_SetByName(client, "increased air control", 5.0);
+	// TF2Attrib_SetByName(client, "increased air control", 5.0);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.5);
 	// TF2Attrib_SetByName(client, "increased jump height", 0.5);
 
 	UpdatePlayerHitbox(client, 1.75);
 	
 	//Tank stats
-    TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
+    // TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
@@ -539,7 +539,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		KvSetNum(infokv, "victim", victim);
 		CreateTimer(0.0, BeardedBoom, infokv);
 
-		SDKHooks_TakeDamage(attacker, 0, attacker, 120.0, 0, -1);
+		// SDKHooks_TakeDamage(attacker, 0, attacker, 120.0, 0, -1);
 		}
 
 	}

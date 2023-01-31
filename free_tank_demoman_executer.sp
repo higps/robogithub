@@ -125,7 +125,7 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 7000;
+	int iHealth = 9000;
 	
 	
 	int MaxHealth = 175;
@@ -173,10 +173,8 @@ MakeDemoKnight(client)
 
 	PrintHintText(client , ROBOT_TIPS);
 
-    TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 	// TF2_AddCondition(client, TFCond_MegaHeal);
 }
 
@@ -226,7 +224,7 @@ stock GiveGiantDemoKnight(client)
 			// TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
 			// TF2Attrib_SetByName(Weapon3, "mult charge turn control", 2.0);		
 			// TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.35);	
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);	
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 			
 			

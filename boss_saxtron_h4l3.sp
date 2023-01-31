@@ -177,54 +177,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnMapStart()
 {
-	
-
-
-
-
-	// PrecacheSound(GUNFIRE);
-	// PrecacheSound(GUNFIRE_CRIT);
-	// PrecacheSound(GUNFIRE_EXPLOSION);
-
-
-
-
-	
-	
-
-	//PrecacheSound(SOUND_GUNFIRE);
-	//PrecacheSound(SOUND_WINDUP);
-	// PrecacheSound(HaleComicArmsFallSound);
-	// PrecacheSound(HaleLastB);
-	// PrecacheSound(HaleKSpree);
-	// PrecacheSound(HaleKSpree2);
-	// PrecacheSound(HaleRoundStart);
-	// PrecacheSound(HaleJump);
-	// PrecacheSound(HaleRageSound);
-	// PrecacheSound(HaleKillMedic);
-	// PrecacheSound(HaleKillSniper1);
-	// PrecacheSound(HaleKillSniper2);
-	// PrecacheSound(HaleKillSpy1);
-	// PrecacheSound(HaleKillSpy2);
-	// PrecacheSound(HaleKillEngie1);
-	// PrecacheSound(HaleKillEngie2);
-	// PrecacheSound(HaleKSpreeNew);
-	// PrecacheSound(HaleWin);
-	// PrecacheSound(HaleLastMan);
-	// PrecacheSound(HaleFail);
-	// PrecacheSound(HaleJump132);
-	// PrecacheSound(HaleStart132);
-	// PrecacheSound(HaleKillDemo132);
-	// PrecacheSound(HaleKillEngie132);
-	// PrecacheSound(HaleKillHeavy132);
-	// PrecacheSound(HaleKillScout132);
-	// PrecacheSound(HaleKillSpy132);
-	// PrecacheSound(HaleKillPyro132);
-	// PrecacheSound(HaleSappinMahSentry132);
-	// PrecacheSound(HaleKillKSpree132);
-	// PrecacheSound(HaleKillLast132);
-	// PrecacheSound(HaleStubbed132);
-
 	PrecacheSound(HaleKSpree);
 
 	char s[PLATFORM_MAX_PATH];
@@ -475,7 +427,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
 	TF2Attrib_SetByName(client, "increased air control", 4.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
-TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "head scale", 0.5);
 	UpdatePlayerHitbox(client,scale);
@@ -536,31 +488,78 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	
 //VSH CODE
 
+public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor,
+		float &damage, int &damagetype, int &weapon, float damageForce[3],
+		float damagePosition[3], int damagecustom, CritType &critType)
+{
+	if(!IsValidClient(victim))
+	return Plugin_Continue;    
+
+	if(!IsValidClient(attacker))
+	{
+
+		if(IsRobot(victim, ROBOT_NAME) && damagetype == DMG_FALL)
+		{
+			// PrintToChatAll("Taking regular fall damage %N", victim);
+			damage *= 0.0;
+			return Plugin_Changed;
+		}
+	}else
+	{
+		if(IsRobot(attacker, ROBOT_NAME) && damagetype == DMG_FALL)
+		{
+			// PrintToChatAll("Else attacker was %N", attacker);
+			// PrintToChatAll("Else vicitm was %N", victim);
+			damage *= 0.25;
+			return Plugin_Changed;
+		}
+	}
+}
+
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
 
 	if(!IsValidClient(victim))
 	return Plugin_Continue;    
-	if(!IsValidClient(attacker))
-	{
 
-	if(IsRobot(victim, ROBOT_NAME) && damagetype == DMG_FALL)
-	{
-	damage *= 0.15;
-	return Plugin_Changed;
-	}
-	}
+	// if(!IsValidClient(attacker))
+	// {
+
+	// 	if(IsRobot(victim, ROBOT_NAME) && damagetype == DMG_FALL)
+	// 	{
+	// 		PrintToChatAll("Taking regular fall damage %N", victim);
+	// 		// damage *= 0.0;
+	// 		// return Plugin_Changed;
+	// 	}
+	// }else
+	// {
+	// 	if(IsRobot(attacker, ROBOT_NAME) && damagetype == DMG_FALL)
+	// 	{
+	// 		PrintToChatAll("Else attacker was %N", attacker);
+	// 		PrintToChatAll("Else vicitm was %N", victim);
+	// 		damage *= 0.25;
+	// 		return Plugin_Changed;
+	// 	}
+	// }
+
+
+
+
+
+
+
+
 	if(IsValidClient(attacker) && IsRobot(victim, ROBOT_NAME))
 	{
 
-	if (IsRobot(victim, ROBOT_NAME))
-	{
-	if(damagecustom == TF_CUSTOM_BACKSTAB)
-	{
-	char stab_snd[PLATFORM_MAX_PATH];
-	Format(stab_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleStubbed132, GetRandomInt(1, 4));
-	SaxtronSay(victim, stab_snd);
-	}
+		if (IsRobot(victim, ROBOT_NAME))
+		{
+			if(damagecustom == TF_CUSTOM_BACKSTAB)
+			{
+			char stab_snd[PLATFORM_MAX_PATH];
+			Format(stab_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleStubbed132, GetRandomInt(1, 4));
+			SaxtronSay(victim, stab_snd);
+			}
 	}
 
 	//PrintToChatAll("Damage was %f, g_rage before %f, g_rage limit was", damage, g_rage, g_ragelimit);
@@ -852,6 +851,28 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 
 
 
+
+
+	}
+
+
+	if (buttons & IN_RELOAD || buttons & IN_ATTACK3)
+	{
+
+
+			int IsJumping = GetEntProp(client, Prop_Send, "m_bJumping");
+			
+			//TF2_RemoveCondition(client, condition);
+			
+			if (!IsJumping && g_rage[client] >= g_ragelimit)
+			{
+		
+			PerformStun(client);
+			SaxtronSay(client,"saxtron_h413/saxtron_h413_responce_spree1.wav");
+			g_rage[client] = 0.0;
+		
+			}
+		
 	}
 
 	// if (buttons & IN_ATTACK2 && !IsJumping && g_rage[client] >= g_ragelimit)
@@ -942,9 +963,9 @@ public void PerformStun(int client)
 	int iTeam = GetClientTeam(client);
 
 	ApplyRadialStun(client, GetOpposingTeam(iTeam), duration, radius, fullStun);
-	FakeClientCommandEx(client, "taunt");
-	TF2_AddCondition(client, TFCond_DefenseBuffed, 15.0);
-	TF2_AddCondition(client, TFCond_FreezeInput, 4.0);
+	// FakeClientCommandEx(client, "taunt");
+	// TF2_AddCondition(client, TFCond_DefenseBuffed, 15.0);
+	// TF2_AddCondition(client, TFCond_FreezeInput, 4.0);
 	int random = GetRandomInt(1,4);
 
 
@@ -1101,7 +1122,7 @@ void DrawRageHUD(int client)
 	if(iPercents >= 100)
 	{
 
-			Format(sHUDText, sizeof(sHUDText), "Rage Ready!\nTaunt to activate!");
+			Format(sHUDText, sizeof(sHUDText), "Rage Ready!\nReload to activate!");
 			SetHudTextParams(0.85, 0.6, 0.1, 0, 255, 0, 255);
 	}else {
 

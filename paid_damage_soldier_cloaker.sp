@@ -18,7 +18,7 @@
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
-#define ROBOT_COST 1.5
+#define ROBOT_COST 1.25
 
 #define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
