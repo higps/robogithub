@@ -229,15 +229,15 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     
     if(!IsValidClient(victim))
         return Plugin_Continue;    
-    // if(!IsValidClient(attacker))
-    // {
-    //     if(IsAnyRobot(victim) && damagetype == DMG_FALL && !IsBoss(victim))
-    //     {
-    //     damage *= 0.25;
-    //     return Plugin_Changed;
-    //     }
-    //     return Plugin_Continue;
-    // }
+    if(!IsValidClient(attacker))
+    {
+        if(IsAnyRobot(victim) && damagetype == DMG_FALL && !IsBoss(victim))
+        {
+        damage *= 0.25;
+        return Plugin_Changed;
+        }
+        return Plugin_Continue;
+    }
 
     
         if(!IsAnyRobot(victim))

@@ -499,7 +499,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
 	
 	// make it usable
-	float flDistance = 350.0;
+	float flDistance = 380.0;
 		if (TF2_IsPlayerInCondition(client, TFCond_SpeedBuffAlly))
 	{
 		flDistance *= 1.5;
