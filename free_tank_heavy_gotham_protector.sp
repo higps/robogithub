@@ -267,7 +267,7 @@ MakePanCop(client)
 	//TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
 	//TF2Attrib_SetByName(client, "increase buff duration", 10.0);
 	// TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
-	TF2Attrib_SetByName(client, "dmg taken from crit increased", 0.5);
+	// TF2Attrib_SetByName(client, "dmg taken from crit increased", 0.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "head scale", 0.95);
