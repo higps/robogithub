@@ -95,7 +95,7 @@ MakeGiantMedic(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GMEDIC);
    
-	int iHealth = 2200;
+	int iHealth = 1500;
 	int MaxHealth = 150;
 	int iAdditiveHP = iHealth - MaxHealth;
    
@@ -176,7 +176,7 @@ stock GiveGiantMedic(client)
 			// TF2Attrib_SetByName(Weapon1, "damage bonus", 1.15);
 			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.95);
 
-			TF2Attrib_SetByName(Weapon1, "mark for death", 5.0);
+			// TF2Attrib_SetByName(Weapon1, "mark for death", 5.0);
 			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.01);
 
 			TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
