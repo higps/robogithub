@@ -129,7 +129,7 @@ MakeGiantMedic(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GMEDIC);
    	
-	int iHealth = 150;
+	int iHealth = 1500;
 	int MaxHealth = 150;
 	int iAdditiveHP = iHealth - MaxHealth;
    
