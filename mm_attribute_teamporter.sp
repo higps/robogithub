@@ -1158,7 +1158,7 @@ void GetFarthestTele(int client, ObjectPointer target, ObjectPointer teleporters
 	{
 		if (IsClientInGame(i))
 		{
-			if (TF2_GetPlayerClass(i) == TFClass_Engineer && GetClientTeam(client) == GetClientTeam(i)) //engineers on same team
+			if (TF2_GetPlayerClass(i) == TFClass_Engineer && CanUseTele(client, i)) //engineers on same team
 			{
 				ObjectPointer tele;
 				tele.set(TF2_GetObjectOfType(i, TFObject_Teleporter, TFObjectMode_Exit, false));
@@ -1182,6 +1182,14 @@ void GetFarthestTele(int client, ObjectPointer target, ObjectPointer teleporters
 			}
 		}
 	}
+}
+
+bool CanUseTele(int client, int engi)
+{
+	if (TF2_GetPlayerClass(client) == TFClass_Spy) // Spies can use whatever teleporter they want, so we don't bother checking teams
+		return true;
+
+	return (GetClientTeam(client) == GetClientTeam(engi)); // Otherwise check to see we are on the same team
 }
 
 ///
