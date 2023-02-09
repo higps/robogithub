@@ -21,7 +21,7 @@
 #define ROBOT_SUBCLASS ""
 #define ROBOT_DESCRIPTION "Throw your buildings, Frontier Justice"
 #define ROBOT_TIPS "Reload to throw buildings\nBuild teamporters to easily teleport your team to the front lines"
-#define ROBOT_COST 0.75
+#define ROBOT_COST 1.0
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
