@@ -953,7 +953,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
         }
 
-        if (TF2_GetPlayerClass(client) == TFClass_Medic)
+        if (TF2_GetPlayerClass(client) == TFClass_Spy)
         {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spy Power: {orange}Use enemy teamporters by touching their spawn",chat_display);
         }
