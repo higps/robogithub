@@ -437,6 +437,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	return Plugin_Continue;
 }
+bool g_b_CanGetTeled[MAXPLAYERS + 1];
 
 public Action OnTouch(int client, int ent)
 {
@@ -452,46 +453,69 @@ public Action OnTouch(int client, int ent)
 			{
 				UpdateCharge(client);
 				DrawHUD(client);
+				// PrintCenterText(client, "Touching Spawn Robo");
+				g_b_CanGetTeled[client] = true;
 			}	
-		}
-	}
-}
+			
+			if (!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Spy)
+			{
+				int teamNum = GetEntProp(ent, Prop_Send, "m_iTeamNum");
+				int clientTeam = GetClientTeam(client);
+				if (teamNum != clientTeam)
+				{
+					UpdateCharge(client);
+					DrawHUD(client);
+					// PrintCenterText(client, "Touching Enemy Spawn Spy");
+					g_b_CanGetTeled[client] = true;
+				}
+				
+			}
 
-public Action Teleport_Player_old(int client)
-{
-	if (g_Teleported[client])
-		return Plugin_Continue;
-
-	#if defined DEBUG
-	PrintToChatAll("%N spawned", client);
-	#endif
-
-	int team = GetClientTeam(client);
-
-	// if (team != EngieTeam)
-	// 	return Plugin_Continue;
-
-	float angles[3], pos[3];
-	if (GetTeamporterTransform(team, angles, pos) == 1)
-	{
-		pos[2] += 15.0;
-		// Don't get stuck inside of teleporter
-		#if defined DEBUG
-			PrintToChatAll("%N was teleported", client);
-		#endif
-		TeleportEntity(client, pos, angles, NULL_VECTOR);
-		EmitSoundToAll(TELEPORTER_SPAWN, client, _,_,_, 0.3);
-		CreateTimer(0.5, Teleport_Clamp, client);
-		g_Recharge[client] = 1;
-		g_Teleported[client] = true;
-		float oober = 3.0;
-		TF2_AddCondition(client, TFCond_Ubercharged, oober);
-		TF2_AddCondition(client, TFCond_TeleportedGlow, 5.0);
-		g_spawnclamp[client] = false;
+		}else
+		{
+			g_b_CanGetTeled[client] = false;
+		}	
+		
 		
 	}
 	return Plugin_Continue;
 }
+
+// public Action Teleport_Player_old(int client)
+// {
+// 	if (g_Teleported[client])
+// 		return Plugin_Continue;
+
+// 	#if defined DEBUG
+// 	PrintToChatAll("%N spawned", client);
+// 	#endif
+
+// 	int team = GetClientTeam(client);
+
+// 	// if (team != EngieTeam)
+// 	// 	return Plugin_Continue;
+
+// 	float angles[3], pos[3];
+// 	if (GetTeamporterTransform(team, angles, pos) == 1)
+// 	{
+// 		pos[2] += 15.0;
+// 		// Don't get stuck inside of teleporter
+// 		#if defined DEBUG
+// 			PrintToChatAll("%N was teleported", client);
+// 		#endif
+// 		TeleportEntity(client, pos, angles, NULL_VECTOR);
+// 		EmitSoundToAll(TELEPORTER_SPAWN, client, _,_,_, 0.3);
+// 		CreateTimer(0.5, Teleport_Clamp, client);
+// 		g_Recharge[client] = 1;
+// 		g_Teleported[client] = true;
+// 		float oober = 3.0;
+// 		TF2_AddCondition(client, TFCond_Ubercharged, oober);
+// 		TF2_AddCondition(client, TFCond_TeleportedGlow, 5.0);
+// 		g_spawnclamp[client] = false;
+		
+// 	}
+// 	return Plugin_Continue;
+// }
 
 //This should find the nearest teleporter exit built by a robo engie and give its rotation and position
 int GetTeamporterTransform(int team, float angles[3], float pos[3])
@@ -638,10 +662,10 @@ public Action SpawnSound_Clamp(Handle timer, int client)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if (IsAnyRobot(client) && buttons & (IN_DUCK))
+	if (CanUseTele(client, client) && buttons & (IN_DUCK))
 	{
 
-		if(TF2Spawn_IsClientInSpawn(client) && g_Recharge[client] == g_RechargeCap)
+		if(g_b_CanGetTeled[client] && g_Recharge[client] == g_RechargeCap)
 		{
 			Teleport_Player(client);
 		}
@@ -653,7 +677,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 void UpdateCharge(int client)
 {
 	// if we are already at max charge, no need to check anything
-	if(IsAnyRobot(client))
+	if(CanUseTele(client, client))
 	{
 		if(IsFakeClient(client))
 		{
@@ -1158,7 +1182,7 @@ void GetFarthestTele(int client, ObjectPointer target, ObjectPointer teleporters
 	{
 		if (IsClientInGame(i))
 		{
-			if (TF2_GetPlayerClass(i) == TFClass_Engineer && GetClientTeam(client) == GetClientTeam(i)) //engineers on same team
+			if (TF2_GetPlayerClass(i) == TFClass_Engineer && CanUseTele(client, i)) //engineers on same team
 			{
 				ObjectPointer tele;
 				tele.set(TF2_GetObjectOfType(i, TFObject_Teleporter, TFObjectMode_Exit, false));
@@ -1182,6 +1206,14 @@ void GetFarthestTele(int client, ObjectPointer target, ObjectPointer teleporters
 			}
 		}
 	}
+}
+
+bool CanUseTele(int client, int engi)
+{
+	if (TF2_GetPlayerClass(client) == TFClass_Spy) // Spies can use whatever teleporter they want, so we don't bother checking teams
+		return true;
+
+	return (GetClientTeam(client) == GetClientTeam(engi)); // Otherwise check to see we are on the same team
 }
 
 ///

@@ -114,7 +114,7 @@ MakeGiantMedic(client)
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	// TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -179,7 +179,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
 			TF2Attrib_SetByName(Weapon2, "increase buff duration", 0.8);
 			TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.75");
-			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.375);
+			// TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.375);
 		}
 
 				//Condition to add heal on taunting

@@ -955,6 +955,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (TF2_GetPlayerClass(client) == TFClass_Medic)
         {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spy Power: {orange}Use enemy teamporters by touching their spawn",chat_display);
+        }
+
+        if (TF2_GetPlayerClass(client) == TFClass_Medic)
+        {
     //         	g_vita_saw_heal = ReadIntVar(stat_buffer, "heal", 0);
 	// g_vita_saw_uber = ReadIntVar(stat_buffer, "uber-gain", 0);
 	// g_vita_saw_cooldown = ReadIntVar(stat_buffer, "crit-heal-cooldown", 0);

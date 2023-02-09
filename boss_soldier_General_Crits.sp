@@ -31,7 +31,7 @@
 #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 
 
-float scale = 1.95;
+float scale = 1.75;
 
 public Plugin:myinfo = 
 {
