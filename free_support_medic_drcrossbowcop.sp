@@ -161,7 +161,7 @@ stock GiveGiantMedic(client)
 		RoboRemoveAllWearables(client);
 		
 		CreateRoboWeapon(client, "tf_weapon_crossbow", 305, 6, 1, 0, 0);
-		CreateRoboWeapon(client, "tf_weapon_bonesaw", 305, 6, 1, 2, 0);
+		// CreateRoboWeapon(client, "tf_weapon_bonesaw", 305, 6, 1, 2, 0);
 		
 		CreateRoboHat(client, MACHOMANN, 10, 6, 0.0, 1.0 , -1.0); //Macho mann
 		CreateRoboHat(client, THELAW, 10, 6, 0.0, 1.0 , -1.0); //the law
@@ -186,15 +186,15 @@ stock GiveGiantMedic(client)
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
-		if(IsValidEntity(Weapon2))
-		{
-			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
-			TF2Attrib_SetByName(Weapon2, "heal on hit for slowfire", 50.0);
-		}
+		// if(IsValidEntity(Weapon2))
+		// {
+		// 	TF2Attrib_RemoveAll(Weapon2);
+		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
+		// 	TF2Attrib_SetByName(Weapon2, "heal on hit for slowfire", 50.0);
+		// }
 		
 				//Condition to add heal on taunting
 		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");

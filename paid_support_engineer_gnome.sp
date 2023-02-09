@@ -21,7 +21,7 @@
 #define ROBOT_SUBCLASS ""
 #define ROBOT_DESCRIPTION "Throw your buildings, Frontier Justice"
 #define ROBOT_TIPS "Reload to throw buildings\nBuild teamporters to easily teleport your team to the front lines"
-#define ROBOT_COST 1.0
+#define ROBOT_COST 0.75
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -225,7 +225,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 4.0);
 			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.9);
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1 enemies=1");
-			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.25 dispenser_scale=1.25 infinite_ammo=1 sentries=1 dispensers=3 remove_all_sappers=0 yeet=1");
+			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.25 dispenser_scale=1.25 infinite_ammo=1 sentries=1 dispensers=2 remove_all_sappers=0 yeet=1");
 			
 		}
 		
