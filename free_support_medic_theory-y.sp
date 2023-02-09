@@ -105,7 +105,7 @@ MakeGiantMedic(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	// TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -214,7 +214,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "medigun fire resist passive", 0.10);
 			TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.25);
 			TF2Attrib_SetByName(Weapon2, "ubercharge overheal rate penalty", 1.0);
-			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
+			// TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 			//TF2CustAttr_SetString(Weapon2,"medigun charge is group overheal", "range=500.0 heal_rate=80.0 overheal_ratio=1.05 overheal_duration_mult=0.25");
 
 			

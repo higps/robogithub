@@ -286,7 +286,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 	//	CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_buff_item", 226, 6, 1, 2, 0);
+		// CreateRoboWeapon(client, "tf_weapon_buff_item", 226, 6, 1, 2, 0);
 		CreateRoboWeapon(client, "tf_weapon_shovel", 775, 6, 1, 2, 0);
 		
 		CreateRoboHat(client, DoeBoy, 10, 6, 0.0, 1.0, -1.0);
@@ -307,11 +307,11 @@ stock GiveGiantPyro(client)
 		// 	TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);				
 		// 	TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		// }
-		if(IsValidEntity(Weapon2))
-		{						
-			//TF2CustAttr_SetString(Weapon2, "custom buff type", "mm-conch");
-			TF2CustAttr_SetString(Weapon2, "custom buff type", "mvm-banner");
-		}
+		// if(IsValidEntity(Weapon2))
+		// {						
+		// 	//TF2CustAttr_SetString(Weapon2, "custom buff type", "mm-conch");
+		// 	TF2CustAttr_SetString(Weapon2, "custom buff type", "mvm-banner");
+		// }
 
 		if(IsValidEntity(Weapon3))
 		{
@@ -325,7 +325,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", 1.5);
 			TF2Attrib_SetByName(Weapon3, "reduced_healing_from_medics", 1.0);
-
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.3);
 			
 			
 			// TF2Attrib_SetByName(Weapon3, "mod shovel speed boost", 2.0);
