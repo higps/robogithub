@@ -213,7 +213,7 @@ stock void GiveGiantDemoKnight(int client)
 			
 			SetEntPropFloat(Weapon1, Prop_Send, "m_flModelScale", 0.01);
 		}
-		TF2CustAttr_SetString(client, "Sentry Buster", "damage=2500.0 radius=500.0 lineofsight=1 timer=1.25");
+		TF2CustAttr_SetString(client, "Sentry Buster", "damage=2500.0 radius=250.0 lineofsight=1 timer=1.25");
 		
 		TF2CustAttr_SetString(client, "faster-respawn", "4.0");
 	}

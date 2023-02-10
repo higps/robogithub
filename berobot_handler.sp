@@ -274,57 +274,57 @@ public void OnPluginStart()
     if(!DHookEnableDetour(g_hRegen, false, OnRegenerate))
         SetFailState("Failed to detour OnRegenerate!");
 
-    g_hGameConf = LoadGameConfigFile("bm_charge_airblast_immunity_data");
+    // g_hGameConf = LoadGameConfigFile("bm_charge_airblast_immunity_data");
 
-    //IsDeflectable
-    g_hIsDeflectable = DHookCreate(0, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, IsPlayerDeflectable);
-    if(g_hIsDeflectable == null) SetFailState("Failed to setup hook for CTFPlayer::IsDeflectable!"); 
+    // //IsDeflectable
+    // // g_hIsDeflectable = DHookCreate(0, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, IsPlayerDeflectable);
+    // // if(g_hIsDeflectable == null) SetFailState("Failed to setup hook for CTFPlayer::IsDeflectable!"); 
 
-    if(!DHookSetFromConf(g_hIsDeflectable, g_hGameConf, SDKConf_Virtual, "CTFPlayer::IsDeflectable"))
-    SetFailState("Failed to find CTFPlayer::IsDeflectable offset in the gamedata!");
+    // if(!DHookSetFromConf(g_hIsDeflectable, g_hGameConf, SDKConf_Virtual, "CTFPlayer::IsDeflectable"))
+    // SetFailState("Failed to find CTFPlayer::IsDeflectable offset in the gamedata!");
 
-    //Finds players to hook for IsDeflectable
-    FindAndHookPlayers();
+    // //Finds players to hook for IsDeflectable
+    // // FindAndHookPlayers();
 
     delete g_hGameConf;
 
 }
 
-void FindAndHookPlayers()
-{
-	for(int i = 1; i <= MaxClients+1; i++)
-	{
-		if(IsValidClient(i))
-		{
-			DHookEntity(g_hIsDeflectable, false, i);
-		}
-	}
-}
+// void FindAndHookPlayers()
+// {
+// 	for(int i = 1; i <= MaxClients+1; i++)
+// 	{
+// 		if(IsValidClient(i))
+// 		{
+// 			DHookEntity(g_hIsDeflectable, false, i);
+// 		}
+// 	}
+// }
 
 public void OnClientPutInServer(int client)
 {
-    DHookEntity(g_hIsDeflectable, false, client);
+    // DHookEntity(g_hIsDeflectable, false, client);
 
     g_PlayerHealth[client] = -1;
 }
 
-public MRESReturn IsPlayerDeflectable(int pThis, Handle hReturn, Handle hParams)
-{
-    //PrintToChatAll("Shouldn't airblast target %N", pThis);
-    //int clientID = GetClientOfUserId(pThis);
-	if(IsTank(pThis))
-	{
-	//	PrintToChatAll("Shouldn't airblast target %N", pThis);
+// public MRESReturn IsPlayerDeflectable(int pThis, Handle hReturn, Handle hParams)
+// {
+//     //PrintToChatAll("Shouldn't airblast target %N", pThis);
+//     //int clientID = GetClientOfUserId(pThis);
+// 	// if(IsTank(pThis))
+// 	// {
+// 	// //	PrintToChatAll("Shouldn't airblast target %N", pThis);
 		
-    DHookSetReturn(hReturn, false);
+//     // DHookSetReturn(hReturn, false);
     
-    EmitSoundToAll(RESISTANCE, pThis);
+//     // EmitSoundToAll(RESISTANCE, pThis);
     
     
-    return MRES_Override;
-	}
-	return MRES_Ignored;
-}
+//     // return MRES_Override;
+// 	// }
+// 	return MRES_Ignored;
+// }
 
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)

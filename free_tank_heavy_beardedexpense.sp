@@ -6,7 +6,7 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
-#include <dhooks>
+// #include <dhooks>
 #include <tf_ontakedamage>
 
 #define PLUGIN_VERSION "1.0"
@@ -61,19 +61,19 @@ public OnPluginStart()
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-	g_hGameConf = LoadGameConfigFile("bm_charge_airblast_immunity_data");
+	// g_hGameConf = LoadGameConfigFile("bm_charge_airblast_immunity_data");
 
-	//IsDeflectable
-	g_hIsDeflectable = DHookCreate(0, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, IsPlayerDeflectable);
-	if(g_hIsDeflectable == null) SetFailState("Failed to setup hook for CTFPlayer::IsDeflectable!"); 
+	// //IsDeflectable
+	// g_hIsDeflectable = DHookCreate(0, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, IsPlayerDeflectable);
+	// if(g_hIsDeflectable == null) SetFailState("Failed to setup hook for CTFPlayer::IsDeflectable!"); 
 
-	if(!DHookSetFromConf(g_hIsDeflectable, g_hGameConf, SDKConf_Virtual, "CTFPlayer::IsDeflectable"))
-	SetFailState("Failed to find CTFPlayer::IsDeflectable offset in the gamedata!");
+	// if(!DHookSetFromConf(g_hIsDeflectable, g_hGameConf, SDKConf_Virtual, "CTFPlayer::IsDeflectable"))
+	// SetFailState("Failed to find CTFPlayer::IsDeflectable offset in the gamedata!");
 
-	//Finds players to hook for IsDeflectable
-	FindAndHookPlayers();
+	// //Finds players to hook for IsDeflectable
+	// FindAndHookPlayers();
 
-	delete g_hGameConf;
+	// delete g_hGameConf;
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -92,34 +92,34 @@ public void OnPluginEnd()
 	RemoveRobot(ROBOT_NAME);
 }
 
-void FindAndHookPlayers()
-{
-	for(int i = 1; i <= MaxClients+1; i++)
-	{
-		if(IsValidClient(i))
-		{
-			DHookEntity(g_hIsDeflectable, false, i);
-		}
-	}
-}
+// void FindAndHookPlayers()
+// {
+// 	for(int i = 1; i <= MaxClients+1; i++)
+// 	{
+// 		if(IsValidClient(i))
+// 		{
+// 			DHookEntity(g_hIsDeflectable, false, i);
+// 		}
+// 	}
+// }
 
-public void OnClientPutInServer(int client)
-{
-	DHookEntity(g_hIsDeflectable, false, client);
-}
+// public void OnClientPutInServer(int client)
+// {
+// 	DHookEntity(g_hIsDeflectable, false, client);
+// }
 
-public MRESReturn IsPlayerDeflectable(int pThis, Handle hReturn, Handle hParams)
-{
-	if(IsRobot(pThis, ROBOT_NAME))
-	{
-		//PrintToChatAll("Shouldn't airblast target %N", pThis);
+// public MRESReturn IsPlayerDeflectable(int pThis, Handle hReturn, Handle hParams)
+// {
+// 	if(IsRobot(pThis, ROBOT_NAME))
+// 	{
+// 		//PrintToChatAll("Shouldn't airblast target %N", pThis);
 		
-		DHookSetReturn(hReturn, false);
+// 		DHookSetReturn(hReturn, false);
 		
-		return MRES_Override;
-	}
-	return MRES_Ignored;
-}
+// 		return MRES_Override;
+// 	}
+// 	return MRES_Ignored;
+// }
  
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
@@ -292,7 +292,7 @@ MakeBearded(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 
 	TF2Attrib_SetByName(client, "damage force reduction", 0.1);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));

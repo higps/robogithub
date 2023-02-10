@@ -179,7 +179,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
 			TF2Attrib_SetByName(Weapon2, "increase buff duration", 0.8);
 			TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.75");
-			// TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.375);
+			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.375);
 		}
 
 				//Condition to add heal on taunting
