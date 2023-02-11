@@ -245,7 +245,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
             {
                 if (IsCaber(weapon))
                 {
-                    // PrintToChatAll("Removing Bonus"); //Removes the damage bonus from caber after use, in case of ubered players
+                    // int Detonated = GetEntProp(weapon, Prop_Send, "m_iDetonated");// PrintToChatAll("Removing Bonus"); //Removes the damage bonus from caber after use, in case of ubered players
+                    // PrintToChatAll("Detonated %i", Detonated);
                     TF2Attrib_RemoveByName(weapon, "damage bonus");
                 }
             }

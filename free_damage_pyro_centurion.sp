@@ -12,7 +12,7 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Critical Third Degree"
+#define ROBOT_DESCRIPTION "Critical Chain Third Degree"
 #define ROBOT_TIPS "Rush down medics and kill who ever they are healing"
 
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"

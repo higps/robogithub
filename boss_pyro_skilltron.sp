@@ -74,7 +74,7 @@ public OnPluginStart()
 	restrictions.TeamCoins.Overall = 2;
 
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = 1.0;
+	restrictions.RobotCoins.PerRobot = 2.0;
 
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions);
 }

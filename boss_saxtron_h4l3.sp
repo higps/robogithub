@@ -114,7 +114,7 @@ public OnPluginStart()
 	restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
 	restrictions.TeamCoins.Overall = 2;
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = 1.0;
+	restrictions.RobotCoins.PerRobot = 2.0;
 
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions, 2);
 
@@ -426,7 +426,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "self dmg push force increased", 6.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
 	TF2Attrib_SetByName(client, "increased air control", 4.0);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.3);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "head scale", 0.5);
@@ -475,7 +475,7 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.75);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
+			// TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);					
 		}

@@ -226,21 +226,27 @@ stock GiveGDeflectorH(client)
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.0);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 1.0);
+			// TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.0);
 			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 10.0);
 			TF2Attrib_SetByName(Weapon2, "damage penalty", 0.5);
-			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.3);
+			// TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.3);
 			TF2Attrib_SetByName(Weapon2, "spread penalty", 1.2);
+			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.1);
+
+			
 			
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.53);
 			TF2Attrib_SetByName(Weapon2, "mult_spread_scales_consecutive", 0.0);
+
 			
 			//TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
 
 		}
-
+		// TF2_SetWeaponAmmo(Weapon2, 1);
+		RoboCorrectClipSize(Weapon2);
 	}
 }
 
@@ -264,8 +270,17 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 		if (TF2_IsPlayerInCondition(client, TFCond_Taunting))
 		{
 		TF2_RemoveCondition(client, TFCond_Taunting);
-		TF2_AddCondition(client, TFCond_CritCola, 8.0);
+		TF2_AddCondition(client, TFCond_Buffed, 4.0);
 		}
+	}
+}
+
+stock void TF2_SetWeaponAmmo(int weapon, int amount) {
+	int ammoType = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
+	
+	if (client > 0 && client <= MaxClients && ammoType != -1) {
+		SetEntProp(client, Prop_Send, "m_iAmmo", amount, 4, ammoType);
 	}
 }
 

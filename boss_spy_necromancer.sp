@@ -15,7 +15,7 @@
 #define ROBOT_CLASS "Spy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Summon skeletons"
-#define ROBOT_COST 1.5
+#define ROBOT_COST 2.0
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

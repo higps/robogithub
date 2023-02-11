@@ -8,13 +8,13 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Buster Normal"
+#define ROBOT_NAME	"Buster"
 #define ROBOT_CLASS "Sentry"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Touch sentries to blow up"
 #define ROBOT_TIPS "Hit enemies, touch sentries, or taunt to activate the explosion"
-#define ROBOT_COST 4
+#define ROBOT_COST 1.0
 
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
 #define SPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"
@@ -49,7 +49,7 @@ public void OnPluginStart()
 	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
 	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.Overall = ROBOT_COST;
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
 	AddRobot(robot, MakeBuster, PLUGIN_VERSION, restrictions);
 	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
