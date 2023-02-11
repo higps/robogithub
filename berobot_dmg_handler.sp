@@ -490,6 +490,12 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 3.0);
                     }
 
+                    if(IsSpycicle(weapon))
+                    {
+                        
+                        TF2_StunPlayer(victim, 1.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
+                    }
+
                     if (IsYer(weapon))
                     {
                         //PrintToChatAll("Was yer");
@@ -1141,7 +1147,26 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
             TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "8.0");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}Tags robots on hit{teamcolor} for 5 seconds",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}Tags robots on hit{teamcolor} for 8 seconds",chat_display);
+        }
+
+        
+        if (IsStockKnife(Weapon3))
+        {
+            TF2CustAttr_SetString(Weapon3, "tag last enemy hit", "8.0");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Knife:{orange}Tags robots on hit{teamcolor} for 8 seconds",chat_display);
+        }
+
+
+        if (IsBigEarner(Weapon3))
+        {
+            TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.15);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants 15% movespeed while actove",chat_display);
+        }
+
+        if(IsSpycicle(Weapon3))
+        {
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spycicle:{orange}On Backstab: Slows robots for 1 second",chat_display);
         }
 
         if (IsEnforcer(Weapon1))
@@ -2208,6 +2233,36 @@ bool IsPistol(int weapon)
 	{
 		//If others are added, add them here
 	case 22, 23, 209, 160, 294, 15013, 15018, 15035, 15041, 15046, 15056, 15060, 15061, 15100, 15101, 15102, 15126, 15148, 30666:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsStockKnife(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 4, 194, 423, 638, 665, 727, 794, 803, 883, 892, 901, 910, 959, 968, 1071, 15062, 15094, 15095, 15096, 15118, 15119, 15143, 15144, 30758:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsSpycicle(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 649:
 		{
 			return true;
 		}
