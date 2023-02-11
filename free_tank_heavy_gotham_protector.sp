@@ -261,7 +261,7 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-	//TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
+TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	//TF2Attrib_SetByName(client, "jarate backstabber", 1.0);

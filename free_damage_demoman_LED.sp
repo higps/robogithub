@@ -229,7 +229,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.75);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 3.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.8);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);

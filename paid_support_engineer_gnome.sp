@@ -215,7 +215,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
-			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 4.0);
+			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 3.0);
 			// TF2Attrib_SetByName(Weapon3, "single wep deploy time increased", 1.3);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
@@ -223,9 +223,9 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 4.0);
-			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.9);
+
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1 enemies=1");
-			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.25 dispenser_scale=1.25 infinite_ammo=1 sentries=1 dispensers=2 remove_all_sappers=0 yeet=1");
+			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.25 dispenser_scale=1.25 infinite_ammo=0 sentries=1 dispensers=2 remove_all_sappers=0 yeet=1");
 			
 		}
 		

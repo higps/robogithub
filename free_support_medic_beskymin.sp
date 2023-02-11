@@ -190,7 +190,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "medigun fire resist passive", 0.15);
 			TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.10);
 			TF2Attrib_SetByName(Weapon2, "ubercharge overheal rate penalty", 1.0);
-			// TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
+			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 		}
 
 		if(IsValidEntity(Weapon3))

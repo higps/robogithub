@@ -250,6 +250,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Scattergun, "dmg penalty vs players", 1.15);
 			TF2CustAttr_SetString(Scattergun, "damage increase mult on hit", "amount=0.15 max=3.0 decay_start=5.0 decay_per_second=0.05 reset_on_kill=1 show_on_hud=1");
 		}
+		
 		// if(IsValidEntity(Lugermorph))
 		// {
 		// 	TF2Attrib_RemoveAll(Lugermorph);

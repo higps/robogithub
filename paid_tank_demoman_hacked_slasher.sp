@@ -159,13 +159,12 @@ MakeDemoKnight(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.1);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.85);
-
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);

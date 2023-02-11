@@ -239,6 +239,19 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
         return Plugin_Continue;
     }
 
+        if(IsAnyRobot(victim))
+        {
+            if (TF2_GetPlayerClass(attacker) == TFClass_DemoMan)
+            {
+                if (IsCaber(weapon))
+                {
+                    // int Detonated = GetEntProp(weapon, Prop_Send, "m_iDetonated");// PrintToChatAll("Removing Bonus"); //Removes the damage bonus from caber after use, in case of ubered players
+                    // PrintToChatAll("Detonated %i", Detonated);
+                    TF2Attrib_RemoveByName(weapon, "damage bonus");
+                }
+            }
+        }
+
     
         if(!IsAnyRobot(victim))
         {
@@ -469,12 +482,18 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                     if(IsKunai(weapon))
                     {
-                        AddPlayerHealth(attacker, 60, 210, true);
+                        AddPlayerHealth(attacker, 120, 210, true);
                     }
 
                     if (IsBigEarner(weapon))
                     {
                         TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 3.0);
+                    }
+
+                    if(IsSpycicle(weapon))
+                    {
+                        
+                        TF2_StunPlayer(victim, 1.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
                     }
 
                     if (IsYer(weapon))
@@ -549,13 +568,23 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                 switch (damagecustom)
                 {
-                case TF_CUSTOM_TAUNT_HADOUKEN, TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, 
+                case TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, 
                 TF_CUSTOM_TAUNT_FENCING, TF_CUSTOM_TAUNT_ARROW_STAB, TF_CUSTOM_TELEFRAG,
-                 TF_CUSTOM_TAUNT_GRENADE, TF_CUSTOM_TAUNT_BARBARIAN_SWING, TF_CUSTOM_TAUNT_UBERSLICE, 
+                TF_CUSTOM_TAUNT_BARBARIAN_SWING, TF_CUSTOM_TAUNT_UBERSLICE, 
                  TF_CUSTOM_TAUNT_ENGINEER_SMASH, TF_CUSTOM_TAUNT_ENGINEER_ARM, TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF,
                  TF_CUSTOM_TAUNTATK_GASBLAST:
                 {
                     damage *= 2.5;
+                    return Plugin_Changed;
+                }
+                case TF_CUSTOM_TAUNT_GRENADE:
+                {
+                    damage *= 3.5;
+                    return Plugin_Changed;
+                }
+                case TF_CUSTOM_TAUNT_HADOUKEN:
+                {
+                    damage *= 3.0;
                     return Plugin_Changed;
                 }
                 }
@@ -733,6 +762,8 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 
                     
             }
+
+
             if (iClassAttacker == TFClass_Soldier && TF2_IsPlayerInCondition(attacker, TFCond_BlastJumping))
             {
                 //int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
@@ -834,6 +865,21 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
         char chat_display[512];
+
+        if (TF2_GetPlayerClass(client) == TFClass_Pyro)
+        {
+            if(IsThirdDegree(Weapon3))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Third Degree: {orange}Crits players who are healed. Hits all players connected to the same heal source",chat_display);
+                
+                TF2CustAttr_SetString(Weapon3,"third-degree", "critType=2 hitGroup=1");
+                // TF2CustAttr_GetAttributeKeyValues();
+                // TF2CustAttr_SetInt(Weapon3, "critType", 2);
+                // TF2CustAttr_SetInt(Weapon3, "hitGroup", 1);
+                // TF2CustAttr_SetString(Weapon3, "third-degree", "critType=2 hitGroup=1")
+            }
+            
+        }
         if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
         {
        
@@ -880,6 +926,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsStockOrAllClassWeapon(Weapon3))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Drinking from your bottle will grant you {orange}%i seconds of minicrits{teamcolor}",chat_display, RoundToNearest(g_bottle_crit_duration));
+            }
+            if (IsCaber(Weapon3))
+            {
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Caber: {orange}%i %% increased damage bonus{teamcolor}",chat_display, RoundToNearest(g_bottle_crit_duration));
+                TF2Attrib_SetByName(Weapon3, "damage bonus", 15.0);
+                TF2Attrib_SetByName(Weapon3, "blast dmg to self increased", 1000.0);
             }
 
             
@@ -1046,12 +1099,27 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 			    TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.85);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vaccinator: {orange}+10%%% higher resistances",chat_display);
             }
+
+            if(Weapon2 != -1)
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Organs: {oraange}Restore up to 50% uber on death",chat_display);
+                TF2Attrib_SetByName(Weapon3, "ubercharge_preserved_on_spawn_max", 0.5);
+            }
         }
         
         if (IsEyelander(Weapon3))
         {
+
+            //attribute "add head on hit"//
             g_Eyelander_Counter[client] = 0;
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Eyelander: {orange}gains a head every hit{teamcolor} vs robots",chat_display);
+        }
+
+        if (IsZatoichi(Weapon3))
+        {
+            
+            TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", 35.0);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains 35 HP on hit",chat_display);
         }
 
         if (IsSniperRifle(Weapon1))
@@ -1079,7 +1147,26 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
             TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "8.0");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}Tags robots on hit{teamcolor} for 5 seconds",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}Tags robots on hit{teamcolor} for 8 seconds",chat_display);
+        }
+
+        
+        if (IsStockKnife(Weapon3))
+        {
+            TF2CustAttr_SetString(Weapon3, "tag last enemy hit", "8.0");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Knife:{orange}Tags robots on hit{teamcolor} for 8 seconds",chat_display);
+        }
+
+
+        if (IsBigEarner(Weapon3))
+        {
+            TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.15);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants 15% movespeed while actove",chat_display);
+        }
+
+        if(IsSpycicle(Weapon3))
+        {
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spycicle:{orange}On Backstab: Slows robots for 1 second",chat_display);
         }
 
         if (IsEnforcer(Weapon1))
@@ -1408,6 +1495,22 @@ bool IsEyelander(int weapon)
 	}
 	return false;
 }
+
+bool IsZatoichi(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other half-zatoichi
+	case 357: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 
 bool IsKunai(int weapon)
 {
@@ -1763,22 +1866,37 @@ bool IsStockOrAllClassWeapon(int weapon){
 	return false;
 }
 
-// bool IsBottle(int weapon)
-// {
-//     	if(weapon == -1 && weapon <= MaxClients) return false;
+bool IsCaber(int weapon)
+{
+    	if(weapon == -1 && weapon <= MaxClients) return false;
 	
-// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-// 	{
-// 		//If other bottles
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other bottles
         
-// 	case 1,191,154,609:
-// 		{
-// 			return true;
-// 		}
-// 	}
-// 	return false;
+	case 307:
+		{
+			return true;
+		}
+	}
+	return false;
     
-// }
+}
+
+bool IsThirdDegree(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Third Degree
+	case 593: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 // bool IsBat(int weapon){
 // 	if(weapon == -1 && weapon <= MaxClients) return false;
@@ -2115,6 +2233,36 @@ bool IsPistol(int weapon)
 	{
 		//If others are added, add them here
 	case 22, 23, 209, 160, 294, 15013, 15018, 15035, 15041, 15046, 15056, 15060, 15061, 15100, 15101, 15102, 15126, 15148, 30666:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsStockKnife(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 4, 194, 423, 638, 665, 727, 794, 803, 883, 892, 901, 910, 959, 968, 1071, 15062, 15094, 15095, 15096, 15118, 15119, 15143, 15144, 30758:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsSpycicle(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 649:
 		{
 			return true;
 		}

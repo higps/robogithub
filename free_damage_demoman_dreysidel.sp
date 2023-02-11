@@ -226,7 +226,7 @@ stock GiveGiantToofty(client)
 			TF2Attrib_SetByName(Weapon3, "Projectile speed increased", 1.25);
 			TF2Attrib_SetByName(Weapon3, "Blast radius increased", 1.50);
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.50);
-			TF2Attrib_SetByName(Weapon3, "faster reload rate", 1.75);
+			TF2Attrib_SetByName(Weapon3, "faster reload rate", 3.75);
 			TF2Attrib_SetByName(Weapon3, "sticky arm time penalty", 0.5);
 			TF2Attrib_SetByName(Weapon3, "max pipebombs increased", 16.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);

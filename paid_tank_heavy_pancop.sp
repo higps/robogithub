@@ -152,7 +152,7 @@ MakePanCop(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.55);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.75);
+
 
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
@@ -166,7 +166,7 @@ MakePanCop(client)
 
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	// TF2Attrib_SetByName(client, "increased jump height", 0.0);
-
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
 
 
 	UpdatePlayerHitbox(client, 1.75);
