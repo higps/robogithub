@@ -929,12 +929,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
             if (IsCaber(Weapon3))
             {
-                float dmgbonus = 10.0;
+                float dmgbonus = 2.0;
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Caber: {orange}%i %% increased damage bonus{teamcolor}",chat_display, RoundToNearest(dmgbonus));
                 TF2Attrib_SetByName(Weapon3, "damage bonus", dmgbonus);
                 TF2Attrib_SetByName(Weapon3, "crits_become_minicrits", 1.0);
                 
-                TF2Attrib_SetByName(Weapon3, "blast dmg to self increased", 1000.0);
+                // TF2Attrib_SetByName(Weapon3, "blast dmg to self increased", 1000.0);
             }
 
             
@@ -1104,7 +1104,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(Weapon2 != -1)
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Organs: {oraange}Restore up to 50% uber on death",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Organs: {orange}Restore up to 50% uber on death",chat_display);
                 TF2Attrib_SetByName(Weapon3, "ubercharge_preserved_on_spawn_max", 0.5);
             }
         }

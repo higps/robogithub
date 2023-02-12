@@ -308,7 +308,7 @@ stock GiveBigRoboDane(client)
 	if(IsValidEntity(Cloak)) //
 		{
 			TF2Attrib_RemoveAll(Cloak);
-			TF2Attrib_SetByName(Cloak, "mod weapon blocks healing", 1.0);
+			// TF2Attrib_SetByName(Cloak, "mod weapon blocks healing", 1.0);
 			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
 			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.01);
 		}
