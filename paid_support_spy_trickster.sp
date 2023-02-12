@@ -10,17 +10,20 @@
 //#include <tf2items_giveweapon>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Necromancer"
-#define ROBOT_ROLE "ZBOSS"
+#define ROBOT_NAME	"Trickster"
+#define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Spy"
-#define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Summon skeletons"
-#define ROBOT_COST 2.0
+#define ROBOT_SUBCLASS "Support"
+#define ROBOT_DESCRIPTION "BotZip Shrink Powers"
+#define ROBOT_COST 1.5
+#define ROBOT_TIPS "Infinite cloak\nStab enemies to gain shrink ability\nGain size back on kill"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
+#define SHRINK    "sound/ui/gmm_rank_up.wav"
+#define SIZE_RESTORED    "sound/ui/gmm_rank_up.wav/mm_rank_up_achieved.wav"
 
 #define SPY_SPAWN_SOUND1		"vo/mvm_spy_spawn01.mp3"
 #define SPY_SPAWN_SOUND2		"vo/mvm_spy_spawn02.mp3"
@@ -74,8 +77,8 @@ public OnPluginStart()
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
-	restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-	restrictions.TeamCoins.Overall = 2;
+	// restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+	// restrictions.TeamCoins.Overall = 2;
 
 
 	AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
@@ -94,8 +97,7 @@ public OnPluginStart()
 	// PrecacheSound(SPY_DEATH_SOUND3, true);
 	// PrecacheSound(SPY_DEATH_SOUND4, true);
 	// PrecacheSound(SPY_DEATH_SOUND5, true);
-	// PrecacheSound(SPY_DEATH_SOUND6, true);
-	// PrecacheSound(SPY_DEATH_SOUND7, true);
+
 	
 }
 
@@ -111,25 +113,27 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-// public OnMapStart()
-// {
-// 	PrecacheModel(MODEL);
-// 
-// 
-// 
+public OnMapStart()
+{
+	// PrecacheModel(MODEL);
+	PrecacheSound(SHRINK, true);
+	PrecacheSound(SIZE_RESTORED, true);
 
-
-// }
+}
 int g_souls = 0;
-int g_soul_required = 2;
+int g_soul_required = 3;
+float g_scale = 1.75;
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 	int victim = GetClientOfUserId(GetEventInt(event, "victim"));
 
-	if (IsAnyRobot(attacker) && !IsAnyRobot(victim) && g_souls < g_soul_required)
+	if (IsRobot(attacker, ROBOT_NAME) && !IsAnyRobot(victim) && g_souls < g_soul_required)
 	{
 		g_souls++;
+		SetEntPropFloat(attacker, Prop_Send, "m_flModelScale", g_scale);
+		UpdatePlayerHitbox(attacker, g_scale);
+		// EmitGameSoundToAll(SHRINK,attacker);
 		// PrintToChatAll("Souls needed: %i/%i", g_souls, g_soul_required);
 	}
 
@@ -178,30 +182,26 @@ MakeSpy(client)
 	SetModel(client, MODEL);
 
 
-	int iHealth = 6500;
+	int iHealth = 2000;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
 	TF2_SetHealth(client, iHealth);
 
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", g_scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
 	//TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
-	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
-	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
+	// TF2Attrib_SetByName(client, "override footstep sound set", 10.0);
 	
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
-	// TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
-	// TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
-	// TF2Attrib_SetByName(client, "metal regen", 50.0);
+	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	
@@ -209,14 +209,14 @@ MakeSpy(client)
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
 	
-	UpdatePlayerHitbox(client, 1.65);
+	UpdatePlayerHitbox(client, g_scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 	
-	PrintToChat(client, "1. You are now Giant Mr Paladin robot!");
-	PrintHintText(client, "Infinite Cloak\nStab enemies to gain buff to kill while stealthed!\nHeal from sapping buildings");
+	// PrintToChat(client, "1. You are now Giant Mr Paladin robot!");
+	PrintHintText(client, ROBOT_TIPS);
 
 	if (IsPlayerAlive(client)){
 	EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
@@ -244,9 +244,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	// GiveBigRoboDane(client);
 // }
 
-#define DeadHead 30775
-#define VoodoVizier 31072
-#define RobeRogue 30389
+#define BigTopper 30798
+// #define VoodoVizier 31072
+#define ShowStopper 30797
 // #define Spek 343
 // #define WhitePaint 15132390.0
 
@@ -270,9 +270,9 @@ stock GiveBigRoboDane(client)
 	CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 	CreateRoboWeapon(client, "tf_weapon_sapper", 735, 6, 1, 1, 0);//snack attack
 
-	CreateRoboHat(client, DeadHead, 10, 6, 0.0, 1.0, -1.0); 
-	CreateRoboHat(client, VoodoVizier, 10, 6, 8208497.0, 1.0, -1.0); 
-	CreateRoboHat(client, RobeRogue, 10, 6, 8208497.0, 1.0, -1.0); 
+	CreateRoboHat(client, BigTopper, 10, 6, 0.0, 1.0, -1.0); 
+	// CreateRoboHat(client, VoodoVizier, 10, 6, 8208497.0, 1.0, -1.0); 
+	CreateRoboHat(client, ShowStopper, 10, 6, 0.0, 1.0, -1.0); 
 	// CreateRoboHat(client, LadyKiller, 10, 6, 0.0, 1.0, -1.0);
 	// CreateRoboHat(client, Spek, 10, 6, 0.0, 1.0, -1.0);
 	
@@ -300,7 +300,6 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Knife, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Knife, "mod_disguise_consumes_cloak", 0.0);
-			TF2Attrib_SetByName(Knife, "mod weapon blocks healing", 1.0);
 			// TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
 			// TF2Attrib_SetByName(Knife, "restore health on kill", 10.0);
 			
@@ -318,13 +317,13 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_RemoveAll(Sapper);
 			
 		//	TF2Attrib_SetByName(Sapper, "mult cloak meter consume rate", 0.0);
-			// TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 50.0);
-			// TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
-			TF2Attrib_SetByName(Sapper, "mod weapon blocks healing", 1.0);
+			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 50.0);
+			TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
+			// TF2Attrib_SetByName(Sapper, "mod weapon blocks healing", 1.0);
 			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
 		}	
 	// }
-	TF2_AddCondition(client, TFCond_CritCanteen);
+	// TF2_AddCondition(client, TFCond_CritCanteen);
 	}
 }
 
@@ -365,86 +364,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 public void CastSpell(int client) {
 
-
-		//PrintToChatAll("Was not kritzed");
-	int index = 1;
-	
-	
-
-	// float time = GetGameTime();
-	// bool rare = (index >= PAGE_LENGTH);
-	// float delay = 0.5;
-	// if (rare) {
-	// 	float actual = fTimeFiredRare[client] - time + fSpellDelay + fSpellDelayRare;
-	// 	if (actual > 0)delay = actual;
-	// }
-	//if (delay > 0)ReplyToCommand(client, "[SM] Please wait %.2f seconds before casting the next spell.", delay);
-	if (!IsPlayerAlive(client))ReplyToCommand(client, "[SM] You must be alive to use this command!");
-	else {
-		int ent = FindSpellbook(client);
-		if (!ent) {
-			ent = CreateEntityByName("tf_weapon_spellbook");
-			if (ent != -1) {
-				SetEntProp(ent, Prop_Send, "m_iItemDefinitionIndex", 1132);
-				SetEntProp(ent, Prop_Send, "m_bInitialized", 1);
-				SetEntProp(ent, Prop_Send, "m_iAccountID", GetSteamAccountID(client));
-				DispatchSpawn(ent);
-			}
-			else {
-				ReplyToCommand(client, "[SM] Could not create spellbook entity!");
-				return;
-			}
-		}
-		
-		int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if (active != ent) {
-			SetEntProp(ent, Prop_Send, "m_iSpellCharges", 1);
-			SetEntProp(ent, Prop_Send, "m_iSelectedSpellIndex", index);
-			
-			SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", active);
-			EquipPlayerWeapon(client, ent);
-			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", ent);
-			
-			// if(GetEntityCount() >= GetMaxEntities()-64)
-			// {
-			// 	PrintToChat(client, "[SM] Entity limit is reached. Can't spawn anymore skeletons.");
-			// 	return;
-			// }
-
-			// int iTeam = GetClientTeam(client);
-			// while (g_souls-- >= 0)
-			// {
-			// new entity = CreateEntityByName("tf_zombie");
-			
-			// if(IsValidEntity(entity))
-			// 	{
-
-			// 	float pos[3];
-			// 	float angles[3];
-			// 	GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
-			// 	GetEntPropVector(client, Prop_Send, "m_angRotation", angles);
-
-
-
-			// 	SetEntProp(entity, Prop_Send, "m_iTeamNum", iTeam); 
-			// 	DispatchSpawn(entity);
-			// 	TeleportEntity(entity, pos, angles, NULL_VECTOR);
-			// 	PrintToChatAll("Spawning soulG souls: %i", g_souls);
-			// 	}
-				
-			// }
-			// if (rare)fTimeFiredRare[client] = time;
-			// fTimeFired[client] = time;
-		}
-	}
-}
-
-public int FindSpellbook(int client) {
-	int i = -1;
-	while ((i = FindEntityByClassname(i, "tf_weapon_spellbook")) != -1) {
-		if (IsValidEntity(i) && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client && !GetEntProp(i, Prop_Send, "m_bDisguiseWeapon"))return i;
-	}
-	return 0;
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.15);
+	UpdatePlayerHitbox(client, 1.15);
+	EmitSoundToAll(SHRINK,client);
 }
 
 // float g_hud_draw_delay = 0.1;
@@ -464,13 +386,13 @@ void DrawHUD(int client)
 	// }
 
 
-	Format(sHUDText, sizeof(sHUDText), "Bats: %i/%i", g_souls, g_soul_required);
+	Format(sHUDText, sizeof(sHUDText), "Shrink: %i/%i", g_souls, g_soul_required);
 	
 
-	if(g_souls >= 3)
+	if(g_souls >= g_soul_required)
 	{
 
-	Format(sHUDText, sizeof(sHUDText), "Bats: %i/%i\nReady!",g_souls, g_soul_required);
+	Format(sHUDText, sizeof(sHUDText), "Shrink: %i/%i\nReady!",g_souls, g_soul_required);
 
 	
 	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
