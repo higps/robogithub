@@ -6,7 +6,7 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
-// #include <dhooks>
+#include <dhooks>
 #include <tf_ontakedamage>
 
 #define PLUGIN_VERSION "1.0"
@@ -220,6 +220,7 @@ public Action BeardedBoom(Handle timer, any data)
 	int victim = KvGetNum(infokv, "victim");
 	float pos1[3];
 	float pos22[3];
+	float pos2[3];
 	GetClientAbsOrigin(attacker, pos1); // hack: make the explosion actually come from the attacker, that way we only have to hook one client
 	GetClientAbsOrigin(victim, pos22);
 
@@ -229,7 +230,6 @@ public Action BeardedBoom(Handle timer, any data)
 	TeleportEntity(particle, pos22, NULL_VECTOR, NULL_VECTOR);
 	DispatchSpawn(particle);
 	ActivateEntity(particle);
-	float pos2[3];
 //	float ignitetime = GetConVarFloat(FindConVar("sharpened_volcano_fragment_firetime"));
 	
 	for(int client = 1 ; client <= MaxClients ; client++ )

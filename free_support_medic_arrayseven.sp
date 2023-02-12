@@ -174,15 +174,14 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon1, "health drain", 0.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.15);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 		}
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.5);
-			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
-			//TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.5);
+			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
+			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.75);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
 			//SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
