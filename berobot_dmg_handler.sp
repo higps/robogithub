@@ -915,7 +915,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                     SetDemoDamageBuff(Weapon2);
                     
                 }
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}All of projectile weapons {orange}Reload 25%%% faster\n{teamcolor}All weapons deal {orange}more damage{teamcolor} the more damage you do",chat_display);
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoman: All of projectile weapons {orange}Reload 25%%% faster\n{teamcolor}All weapons deal {orange}more damage{teamcolor} the more damage you do",chat_display);
             }
 
             if (Weapon3 != -1)
@@ -952,13 +952,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
                 TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.15);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+15%% move speed{teamcolor} while active",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Stock Melee: {orange}+15%% move speed{teamcolor} while active",chat_display);
             }
 
             if(IsShahanshah(Weapon3))
             {
                 TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", 3.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+200%% damage{teamcolor} while half dead",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shahansah {orange}+200%% damage{teamcolor} while half dead",chat_display);
             }
             
         }
@@ -982,13 +982,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsAtomizer(Weapon3))
             {
                 TF2Attrib_SetByName(Weapon3, "air dash count", 6.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: {orange}6 Bonus Jumps",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Atomizer: {orange}6 Bonus Jumps",chat_display);
             }
 
             if (IsPistol(Weapon2))
             {
                     TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", 2.0);
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pistol: {orange}On Hit: {teamcolor}Speed boost for 2.0 seconds",chat_display);
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Pistol: {orange}On Hit: {teamcolor}Speed boost for 2.0 seconds",chat_display);
             }
 
             // if(IsMadMilk)
@@ -1004,7 +1004,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                     TF2Attrib_SetByName(Weapon2, "clip size bonus", 2.0);
                     // TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.5);
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pistol: {orange}+100%% clip size",chat_display);
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: {orange}+100%% clip size",chat_display);
             }
         }
 
@@ -1080,7 +1080,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if(IsStockOrAllClassWeapon(Weapon3))
             {
                 TF2Attrib_SetByName(Weapon3, "ubercharge rate bonus", 1.25);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: Provides your medigun an additional {orange}25%%% faster build rate",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Medic Stock Melee: Provides your medigun an additional {orange}25%%% faster build rate",chat_display);
             }
 
             if (IsQuickfix(Weapon2))
@@ -1104,7 +1104,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(Weapon2 != -1)
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Organs: {orange}Restore up to 50% uber on death",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}All Medic Melee: Organs: {orange}Restore up to 50% uber on death",chat_display);
                 TF2Attrib_SetByName(Weapon3, "ubercharge_preserved_on_spawn_max", 0.5);
             }
         }
@@ -1120,7 +1120,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsZatoichi(Weapon3))
         {
             
-            TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", 35.0);
+            TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", 15.0);
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains 35 HP on hit",chat_display);
         }
 
@@ -1149,7 +1149,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
             TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "8.0");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}Tags robots on hit{teamcolor} for 8 seconds",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Revolver: {orange}Projectile penetration {teamcolor}bonus & {orange}Tags robots on hit{teamcolor} for 8 seconds",chat_display);
         }
 
         
@@ -1199,7 +1199,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsMarketGardner(Weapon3))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Market Gardner: {orange}+50%%% damage bonus{teamcolor}",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Market Gardner: {orange}+50%%% damage bonus while rocket jumping{teamcolor}",chat_display);
         }
 
         if (IsElectric(Weapon1) || IsElectric(Weapon2))
@@ -1260,7 +1260,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (HasFrontierJustice(client))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Frontier Justice: {orange}Gains revenge crits{teamcolor} every %i damage your sentry doesper crit",chat_display, RoundToNearest(g_FrontierJusticeDMGRequirement));
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Frontier Justice: {orange}Gains 1 revenge crit{teamcolor} every %i damage your sentry does to robots",chat_display, RoundToNearest(g_FrontierJusticeDMGRequirement));
         }
 
         if (IsShotGun(Weapon1))

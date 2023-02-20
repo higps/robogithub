@@ -214,7 +214,7 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon1))
 		{
 			//TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.35);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			// TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 0.6);		

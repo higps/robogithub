@@ -238,6 +238,10 @@ float g_dispenser_scale;
 bool HasStat(int client)
 {
  	int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+	if(Weapon3 == -1)
+	{
+		return false;
+	}
 	//PrintToChatAll("Checking has stat for %N", client);
 	char stat_buffer[256];
 	if (!TF2CustAttr_GetString(Weapon3, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
