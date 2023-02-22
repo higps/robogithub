@@ -17,7 +17,7 @@
 #define ROBOT_TIPS "Crit Stickies"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
-#define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 

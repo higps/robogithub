@@ -943,6 +943,26 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (TF2_GetPlayerClass(client) == TFClass_Heavy)
         {
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your minigun deals {orange}-20%%% damage{teamcolor} against robots",chat_display);
+
+            if(IsNatascha(Weapon1))
+            {
+                
+                TF2Attrib_SetByName(Weapon1, "speed_boost_on_hit", 3.0);
+                TF2Attrib_SetByName(Weapon1, "aiming movespeed increased", 1.2);
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Heavy Natascha: {orange}+3 second speed boost on hit +20% faster movespeed while spun up{teamcolor}",chat_display);
+            }
+
+            if(IsTomiSlav(Weapon1))
+            {
+                
+                TF2Attrib_SetByName(Weapon1, "minigun spinup time decreased", 0.4);
+                TF2Attrib_SetByName(Weapon1, "closerange backattack minicrits", 1.0);
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tomislav: {orange}+Mini-crits targets when fired at their back from close range. +60%% faster {teamcolor}rev up speed",chat_display);
+                
+            }
+
         }
 
         if (TF2_GetPlayerClass(client) == TFClass_Sniper)
@@ -951,7 +971,6 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 
                 TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.15);
-                
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Stock Melee: {orange}+15%% move speed{teamcolor} while active",chat_display);
             }
 
@@ -1144,44 +1163,47 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Classic: {orange}Headshot anytime",chat_display);
            
         }
-
-        if (IsRevolver(Weapon1))
+        if (TF2_GetPlayerClass(client) == TFClass_Spy)
         {
-            TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "8.0");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Revolver: {orange}Projectile penetration {teamcolor}bonus & {orange}Tags robots on hit{teamcolor} for 8 seconds",chat_display);
-        }
 
-        
-        if (IsStockKnife(Weapon3))
-        {
-            TF2CustAttr_SetString(Weapon3, "tag last enemy hit", "8.0");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Knife:{orange}Tags robots on hit{teamcolor} for 8 seconds",chat_display);
-        }
+            if (IsRevolver(Weapon1))
+            {
+                TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
+                TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "8.0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Revolver: {orange}Projectile penetration {teamcolor}bonus & {orange}Tags robots on hit{teamcolor} for 8 seconds",chat_display);
+            }
+
+            
+            if (IsStockKnife(Weapon3))
+            {
+                TF2CustAttr_SetString(Weapon3, "tag last enemy hit", "8.0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Knife:{orange}Tags robots on hit{teamcolor} for 8 seconds",chat_display);
+            }
 
 
-        if (IsBigEarner(Weapon3))
-        {
-            TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.15);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants 15% movespeed while actove",chat_display);
-        }
+            if (IsBigEarner(Weapon3))
+            {
+                TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.15);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants 15% movespeed while actove",chat_display);
+            }
 
-        if(IsSpycicle(Weapon3))
-        {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spycicle:{orange}On Backstab: Slows robots for 1 second",chat_display);
-        }
+            if(IsSpycicle(Weapon3))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spycicle:{orange}On Backstab: Slows robots for 1 second",chat_display);
+            }
 
-        if (IsEnforcer(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            TF2CustAttr_SetString(Weapon1, "dmg-bonus-vs-sapped-buildings", "damage=3.0");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}200%%% Damage bonus {teamcolor}vs sapped buildings",chat_display);
-        }
+            if (IsEnforcer(Weapon1))
+            {
+                TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
+                TF2CustAttr_SetString(Weapon1, "dmg-bonus-vs-sapped-buildings", "damage=3.0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}200%%% Damage bonus {teamcolor}vs sapped buildings",chat_display);
+            }
 
-        if (IsAmbassador(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "crit_dmg_falloff", 0.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ambassador: {orange}No critical damage faloff {teamcolor}penalty",chat_display);
+            if (IsAmbassador(Weapon1))
+            {
+                TF2Attrib_SetByName(Weapon1, "crit_dmg_falloff", 0.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ambassador: {orange}No critical damage faloff {teamcolor}penalty",chat_display);
+            }
         }
 
         if (IsHuntsMan(Weapon1))
@@ -2056,6 +2078,36 @@ bool IsGunSlinger(int weapon)
 	{
 		//Gunslinger
 	case 142: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsNatascha(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Gunslinger
+	case 41: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsTomiSlav(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Gunslinger
+	case 424: 
 		{
 			return true;
 		}

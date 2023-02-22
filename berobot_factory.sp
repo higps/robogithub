@@ -371,6 +371,7 @@ void ResetOnDeath(int client, Robot item)
     TrackRobotCreation(client, false);
 }
 
+//Stops loops
 void StopSounds(int client, Robot item)
 {    
     SMLogTag(SML_VERBOSE, "stopping sounds for %L as %s", client, item.name);
@@ -511,13 +512,12 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 
         if (IsPlayerAlive(client))
         { 
-          //  PrintToChatAll("PLAYER WAS ALIVE");
+            // PrintToChatAll("PLAYER %N WAS ALIVE", client);
             EmitSoundToAll(item.sounds.spawn);
 
-            // if (IsTank(client))
-            // {
-            //     SetTankStats(client);
-            // }
+            // EmitGameSoundToAll(item.sounds.spawn);
+            
+
         }
 
 	}
@@ -765,7 +765,7 @@ void CallCreate(int client, Robot item)
     SMLogTag(SML_VERBOSE, "starting loop-sound %s for %L as %s", item.sounds.loop, client, item.name);
 
     if (IsPlayerAlive(client)){
-        EmitSoundToAll(item.sounds.loop, client,_,_,_, 0.25);
+        EmitSoundToAll(item.sounds.loop, client, SNDCHAN_REPLACE,_,_, 0.25);
     }
     TrackRobot(client, item.name);
     TrackRobotCreation(client, true);

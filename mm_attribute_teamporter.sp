@@ -792,6 +792,9 @@ public Action DrawHUD(int client)
 			}
 		//PrintCenterText(client, description);
 		// return Plugin_Continue;	
+		}else
+		{
+			PrintToConsole(client, "NOT VALID TELE FOUND!");
 		}
 
 	
@@ -1179,7 +1182,8 @@ void GetFarthestTele(int client, ObjectPointer target, ObjectPointer teleporters
 	{
 		if (IsClientInGame(i))
 		{
-			if (IsAnyRobot(i) && TF2_GetPlayerClass(i) == TFClass_Engineer && GetClientTeam(client) == GetClientTeam(i)) //engineers on same team
+			if (IsAnyRobot(i) && GetClientTeam(client) == GetClientTeam(i)
+			|| !IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Spy && GetClientTeam(client) != GetClientTeam(i)) //engineers on same team
 			{
 				ObjectPointer tele;
 				tele.set(TF2_GetObjectOfType(i, TFObject_Teleporter, TFObjectMode_Exit, false));
