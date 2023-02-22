@@ -887,21 +887,6 @@ public void OnLibraryRemoved(const char[] name) {
 	if (StrEqual(name, "tf2hudmsg")) g_bDepHudMsg = false;
 }
 
-// bool HasYeetStat(int client)
-// {
-// 	char stat_buffer[256];
-// 	if (!TF2CustAttr_GetString(client, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
-// 		return false;
-// 	}
-// 	int yeet = ReadIntVar(stat_buffer, "yeet", 0);
-
-// 	if(yeet == 1)
-// 	{
-// 		return true;
-// 	}
-// 	return false;
-// }
-
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2]) {
 	if (!(1<=client<=MaxClients) || !IsClientInGame(client) || IsFakeClient(client)) return Plugin_Continue;
 	if ((buttons & IN_RELOAD)!=0 && !g_bPlayerThrow[client] && g_yeet == 1) {
