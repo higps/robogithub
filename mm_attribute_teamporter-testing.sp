@@ -446,14 +446,32 @@ public Action OnTouch(int client, int ent)
 		char entname[MAX_NAME_LENGTH];
 		GetEntityClassname(ent, entname, sizeof(entname));
 
-		if (!StrContains(entname, "func_respawnroom")){
-			// PrintToChatAll("%N is touching %s", client, entname);
+		if (!StrContains(entname, "func_respawnroom"))
+		{
+			//Code for robots in their own spawn
 			if (IsAnyRobot(client) && TF2Spawn_IsClientInSpawn(client) && TeamHasRoboEngineer(client))
 			{
 				UpdateCharge(client);
 				DrawHUD(client);
 			}	
+
+					
+			if (!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Spy)
+			{
+				int teamNum = GetEntProp(ent, Prop_Send, "m_iTeamNum");
+				int clientTeam = GetClientTeam(client);
+				if (teamNum != clientTeam)
+				{
+					UpdateCharge(client);
+					DrawHUD(client);
+					// PrintCenterText(client, "Touching Enemy Spawn Spy");
+					// g_b_CanGetTeled[client] = true;
+				}
+				
+			}
 		}
+
+
 	}
 }
 
@@ -653,8 +671,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 void UpdateCharge(int client)
 {
 	// if we are already at max charge, no need to check anything
-	if(IsAnyRobot(client))
-	{
+	// if(IsAnyRobot(client))
+	// {
 		if(IsFakeClient(client))
 		{
 			Teleport_Player(client);
@@ -666,7 +684,7 @@ void UpdateCharge(int client)
 		{
 			g_Recharge[client]++;
 		}	
-	}
+	// }
 }
 
 #define CHAR_FULL "■"
@@ -1159,7 +1177,7 @@ void GetFarthestTele(int client, ObjectPointer target, ObjectPointer teleporters
 		if (IsClientInGame(i))
 		{
 			if (TF2_GetPlayerClass(i) == TFClass_Engineer && GetClientTeam(client) == GetClientTeam(i)) //engineers on same team
-			if (TF2_GetPlayerClass(i) == TFClass_Engineer && CanUseTele(client, i)) //engineers on same team
+			if (TF2_GetPlayerClass(i) == TFClass_Spy) //engineers on same team
 			{
 				ObjectPointer tele;
 				tele.set(TF2_GetObjectOfType(i, TFObject_Teleporter, TFObjectMode_Exit, false));

@@ -459,9 +459,9 @@ public Action OnTouch(int client, int ent)
 			
 			if (!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Spy)
 			{
-				int teamNum = GetEntProp(ent, Prop_Send, "m_iTeamNum");
+				int EntTeamNum = GetEntProp(ent, Prop_Send, "m_iTeamNum");
 				int clientTeam = GetClientTeam(client);
-				if (teamNum != clientTeam)
+				if (EntTeamNum != clientTeam)
 				{
 					UpdateCharge(client);
 					DrawHUD(client);
@@ -548,6 +548,8 @@ int GetTeamporterTransform(int team, float angles[3], float pos[3])
 		//PrintToChatAll("Got here");
 		if (GetEntProp(ent, Prop_Send, "m_iTeamNum") != team)
 			continue;
+
+
 		if (GetEntProp(ent, Prop_Send, "m_bBuilding"))
 		{
 			status = 2;
@@ -698,18 +700,6 @@ void UpdateCharge(int client)
 
 bool b_hud_clamp[MAXPLAYERS + 1] = false;
 
-// void DrawHUD_old(int client)
-// {
-
-//         if (!b_hud_clamp[client])
-// 		{
-// 			CreateTimer(0.05, Timer_DrawHud, client);
-// 			b_hud_clamp[client] = true;
-// 		}
-
-// }
-
-//public Action Timer_DrawHud(Handle timer, int client)
 public Action DrawHUD(int client)
 {
 
@@ -786,6 +776,13 @@ public Action DrawHUD(int client)
 					TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
 					SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
 				}
+				// case TELE_WRONGTEAM:
+				// {
+				// //	PrintCenterTextAll("Ready");
+				// 	Format(sHUDText, sizeof(sHUDText), "Wrong Team!\nCrouch to Teleport!");
+				// 	TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
+				// 	SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
+				// }
 				// default:
 				// {
 				// 	Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nNo active Teleporter");
@@ -1182,15 +1179,15 @@ void GetFarthestTele(int client, ObjectPointer target, ObjectPointer teleporters
 	{
 		if (IsClientInGame(i))
 		{
-			if (TF2_GetPlayerClass(i) == TFClass_Engineer && CanUseTele(client, i)) //engineers on same team
+			if (IsAnyRobot(i) && TF2_GetPlayerClass(i) == TFClass_Engineer && GetClientTeam(client) == GetClientTeam(i)) //engineers on same team
 			{
 				ObjectPointer tele;
 				tele.set(TF2_GetObjectOfType(i, TFObject_Teleporter, TFObjectMode_Exit, false));
-
+				// PrintToChatAll("Checking if valid");
 				if (tele.valid())
 				{
 					teleporters[count] = tele;
-
+					// PrintToChatAll("Was valid");
 					count++;
 
 					tele.GetPos(destination);
@@ -1201,6 +1198,7 @@ void GetFarthestTele(int client, ObjectPointer target, ObjectPointer teleporters
 					{
 						distance = teleDistance;
 						target = tele;
+						// PrintToChatAll("Setting valid");
 					}
 				}
 			}
