@@ -257,7 +257,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	return Plugin_Continue;
 }
 
-
+bool isready;
 public void CastSpell(int client) {
 
 	int index;
@@ -311,6 +311,8 @@ public void CastSpell(int client) {
 			// fTimeFired[client] = time;
 		}
 	}
+	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+	isready = false;
 }
 
 public int FindSpellbook(int client) {
@@ -323,7 +325,7 @@ public int FindSpellbook(int client) {
 
 // float g_hud_draw_delay = 0.1;
 // float g_hud_post_time = 0.0;
-bool isready;
+
 void DrawHUD(int client)
 {
 	char sHUDText[128];
@@ -379,8 +381,7 @@ void DrawHUD(int client)
 	if (g_button_held[client] && iCountDown <= 0)
 	{
 	RequestFrame(CastSpell, client);
-	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-	isready = false;
+
 
 	}
 }
