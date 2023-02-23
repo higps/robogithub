@@ -161,6 +161,7 @@ MakeDemoKnight(client)
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	// TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
 	// TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	// TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
 	// 	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 	UpdatePlayerHitbox(client, 1.75);
@@ -173,6 +174,7 @@ MakeDemoKnight(client)
 	PrintHintText(client , ROBOT_TIPS);
 
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
 	// TF2_AddCondition(client, TFCond_MegaHeal);
 }

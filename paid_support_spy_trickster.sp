@@ -203,7 +203,8 @@ MakeSpy(client)
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 
-	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	// TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
