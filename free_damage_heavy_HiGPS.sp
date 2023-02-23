@@ -33,8 +33,6 @@
 #define WEIGHTROOMWARMER 30178
 
 float scale = 1.75;
-// float spreadmodifier = 0.75;
-
 
 public Plugin:myinfo =
 {
@@ -108,31 +106,11 @@ public void OnPluginEnd()
  
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-//	CreateNative("BeGDeflectorH_MakeGDeflectorH", Native_SetGDeflectorH);
-//	CreateNative("BeGDeflectorH_IsGDeflectorH", Native_IsGDeflectorH);
 	return APLRes_Success;
 }
  
 public OnMapStart()
 {
-	// PrecacheModel(GDEFLECTORH);
-	// PrecacheSound(SPAWN);
-	// PrecacheSound(DEATH);
-	// PrecacheSound(LOOP);
-	
-	// PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_04.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_05.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
-	
-	// PrecacheSound(LEFTFOOT);
-	// PrecacheSound(LEFTFOOT1);
-	// 
-	// 
 
 	PrecacheSound(SOUND_GUNFIRE);
 	PrecacheSound(SOUND_GUNSPIN);
@@ -247,29 +225,22 @@ stock GiveGDeflectorH(client)
 			TeamPaint = 12073019.0;
 		}
 
-
-		//void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale, float style);
-		//Default robo head scale = 0.75
 		CreateRoboHat(client, ROTATIONSENSATION, 10, 6, TeamPaint, 0.75, -1.0);//Rotation sensation
 		CreateRoboHat(client, SUMMERSHADES, 10, 6, 1315860.0, 0.75, -1.0);//Summer shades
 		CreateRoboHat(client, WEIGHTROOMWARMER, 10, 6, 0.0, 1.0, -1.0);//Weightroom warmer
-		//Weapon Code
-		//CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, float style (-1.0 for none) );
+
 		CreateRoboWeapon(client, "tf_weapon_minigun", 850, 6, 1, 0, 0);
 		
-		//float spreadpenalty = scale * spreadmodifier;
+
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "attack projectiles", 1.0);
+			TF2Attrib_SetByName(Weapon1, "attack projectiles", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.45);
-			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
-			//TF2Attrib_SetByName(Weapon1, "mult_spread_scales_consecutive", 1.0);
-			//TF2Attrib_SetByName(Weapon1, "spread penalty", spreadpenalty);
 			
 			
 		}
@@ -349,30 +320,3 @@ public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float
 	}
 	return Plugin_Continue;
 }
-
-// public TF2_OnConditionAdded(client, TFCond:condition)
-// {
-//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-//     {	
-//         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-
-// 	//PrintToChatAll("Taunt ID %i", tauntid);
-	
-
-//         if (tauntid == -1)
-//         {
-// 		//	TF2_AddCondition(client, TFCond_SpawnOutline, 10);
-//            	 CreateTimer(1.2, Timer_Taunt_Cancel, client);
-//         }	  
-
-// 	}
-// }
-
-// public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
-// {
-// 	if (IsValidClient(client)){
-// 		TF2_RemoveCondition(client, TFCond_Taunting);
-		
-// 	}
-// }
-

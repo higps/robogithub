@@ -205,7 +205,7 @@ stock GiveGiantMedic(client)
 			//TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.5);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
-			TF2CustAttr_SetString(Weapon2,"medigun charge is group overheal", "range=800.0 heal_rate=145.0 overheal_ratio=1.05 overheal_duration_mult=0.25");
+			TF2CustAttr_SetString(Weapon2,"medigun charge is group overheal", "range=600.0 heal_rate=75.0 overheal_ratio=1.05 overheal_duration_mult=0.25");
 
 			// 
 			
@@ -257,7 +257,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	return Plugin_Continue;
 }
 
-
+bool isready;
 public void CastSpell(int client) {
 
 	int index;
@@ -311,6 +311,8 @@ public void CastSpell(int client) {
 			// fTimeFired[client] = time;
 		}
 	}
+	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+	isready = false;
 }
 
 public int FindSpellbook(int client) {
@@ -323,7 +325,7 @@ public int FindSpellbook(int client) {
 
 // float g_hud_draw_delay = 0.1;
 // float g_hud_post_time = 0.0;
-bool isready;
+
 void DrawHUD(int client)
 {
 	char sHUDText[128];
@@ -379,8 +381,7 @@ void DrawHUD(int client)
 	if (g_button_held[client] && iCountDown <= 0)
 	{
 	RequestFrame(CastSpell, client);
-	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-	isready = false;
+
 
 	}
 }

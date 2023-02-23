@@ -237,7 +237,7 @@ MakePanCop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 9000;
+	int iHealth = 6000;
 	
 	
 	int MaxHealth = 300;
@@ -270,6 +270,7 @@ TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
 	// TF2Attrib_SetByName(client, "dmg taken from crit increased", 0.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	TF2Attrib_SetByName(client, "head scale", 0.95);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 
@@ -288,6 +289,7 @@ TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
 	//Tank stats
     // TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
 	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 	

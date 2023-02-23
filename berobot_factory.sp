@@ -371,6 +371,7 @@ void ResetOnDeath(int client, Robot item)
     TrackRobotCreation(client, false);
 }
 
+//Stops loops
 void StopSounds(int client, Robot item)
 {    
     SMLogTag(SML_VERBOSE, "stopping sounds for %L as %s", client, item.name);
@@ -511,13 +512,12 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 
         if (IsPlayerAlive(client))
         { 
-          //  PrintToChatAll("PLAYER WAS ALIVE");
+            // PrintToChatAll("PLAYER %N WAS ALIVE", client);
             EmitSoundToAll(item.sounds.spawn);
 
-            // if (IsTank(client))
-            // {
-            //     SetTankStats(client);
-            // }
+            // EmitGameSoundToAll(item.sounds.spawn);
+            
+
         }
 
 	}
@@ -577,6 +577,7 @@ public any Native_IsTank(Handle plugin, int numParams)
 //     PrintToChatAll("Setting Tank Stats for %N", client);
 //     TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
 //     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+// TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 // 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
 // 	TF2_RemoveCondition(client,TFCond_DefenseBuffNoCritBlock);
 //     CreateTimer(0.1, Timer_SetDefenseBuff, client);
@@ -597,6 +598,7 @@ public any Native_RoboSetHealth(Handle plugin, int numParams)
 //     {
     //     TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
 //     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+// TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 // 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
 //     TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 //     }
@@ -765,7 +767,7 @@ void CallCreate(int client, Robot item)
     SMLogTag(SML_VERBOSE, "starting loop-sound %s for %L as %s", item.sounds.loop, client, item.name);
 
     if (IsPlayerAlive(client)){
-        EmitSoundToAll(item.sounds.loop, client,_,_,_, 0.25);
+        EmitSoundToAll(item.sounds.loop, client, SNDCHAN_REPLACE,_,_, 0.25);
     }
     TrackRobot(client, item.name);
     TrackRobotCreation(client, true);

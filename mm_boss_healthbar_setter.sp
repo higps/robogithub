@@ -9,7 +9,7 @@
 #include <sdktools>
 
 //#define BOSSTUNE "music.mvm_end_mid_wave"
-#define BOSSTUNE "#*music/mvm_start_last_wave.wav"
+#define BOSSTUNE "music/mvm_start_last_wave.wav"
 
 enum TFBossHealthState {
 	HealthState_Default = 0,
@@ -134,6 +134,7 @@ public void OnMapStart()
 
     //PrecacheScriptSound(BOSSTUNE);
 	PrecacheSound(BOSSTUNE);
+	
 }
 
 // public Action Event_Death_RemoveHUD(Event event, const char[] name, bool dontBroadcast)
@@ -180,7 +181,7 @@ public void OnInventoryApplied(Event event, const char[] name, bool dontBroadcas
 		SetEntProp(client, Prop_Send, "m_bUseBossHealthBar", false);
 	}
 
-	if (IsBoss(client))
+	if (IsBoss(client) && IsPlayerAlive(client))
 	{
 		//PrintToChatAll("WAS BOSS!");
 		SetBossHealthTargetCommand(client);	
@@ -213,7 +214,13 @@ public Action SetBossHealthTarget(int client, int argc) {
 		// if (IsValidEntity(g_iBossTarget)){
 		// 	SetEntProp(g_iBossTarget, Prop_Send, "m_bGlowEnabled", 0);
 		// }
-		EmitSoundToAll(BOSSTUNE);
+		// EmitGameSoundToAll(BOSSTUNE,_,SNDCHAN_AUTO);
+
+		// for(int i = 1; i < MaxClients; i++) {
+        // if(IsClientInGame(i) && !IsFakeClient(i)) {
+        //         EmitSoundToClient(i, BOSSTUNE);
+        // }
+    
 	//	ReplyToCommand(client, "Switched boss target to %N", iTarget);
 	} else {
 		g_iBossTarget = -1;
@@ -243,7 +250,19 @@ public Action SetBossHealthTargetCommand(int client) {
 	//	ReplyToCommand(client, "Switched boss target to %N", iTarget);
 	} 
 
-	EmitSoundToAll(BOSSTUNE);
+	// EmitSoundToAll(BOSSTUNE, _, SNDCHAN_USER_BASE); //Works for all, but cancels on bot change
+
+	// EmitSoundToClient(iTarget,BOSSTUNE);
+	for(int i = 1; i <= MAXPLAYERS+1; i++)
+	{
+
+		if (IsValidClient(i) && !IsFakeClient(i))
+		{
+			EmitSoundToClient(i,BOSSTUNE);
+			// PrintToChatAll("Playing sound %s to %N ", BOSSTUNE, i);
+		}
+	}
+	// PrintToChatAll("Emitting sound");
 	// else {
 	// 	g_iBossTarget = -1;
 	// //	ReplyToCommand(client, "Removed boss target");

@@ -13,8 +13,8 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
-#define ROBOT_DESCRIPTION "Electro Ball, Cowlmanger, Bison"
-#define ROBOT_TIPS "You have rapid reload Cow Mangler & Bison"
+#define ROBOT_DESCRIPTION "Electro Ball, Cow Mangler"
+#define ROBOT_TIPS "You have rapid reload Cow Mangler & Electroball"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -219,7 +219,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		CreateRoboWeapon(client, "tf_weapon_particle_cannon", 441, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_raygun", 442, 6, 1, 2, 0);
+		// CreateRoboWeapon(client, "tf_weapon_raygun", 442, 6, 1, 2, 0);
 //		CreateWeapon(client, "tf_weapon_shovel", 447, 6, 1, 2, 0);
 		
 		CreateRoboHat(client, LordCockswain, 10, 6, 0.0, 1.0, -1.0);
@@ -250,21 +250,21 @@ stock GiveGiantPyro(client)
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		//int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
-		if(IsValidEntity(Weapon2))
-		{
-			TF2Attrib_RemoveAll(Weapon2);
+		// if(IsValidEntity(Weapon2))
+		// {
+		// 	TF2Attrib_RemoveAll(Weapon2);
 			
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 3.0);
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 2.0);
-			TF2Attrib_SetByName(Weapon2, "clip size bonus upgrade", 3.0);
-			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.4);
-			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.2);
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);			
-			// TF2Attrib_SetByName(Weapon2, "auto fires full clip all at once", 1.0);			
+		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 3.0);
+		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 2.0);
+		// 	TF2Attrib_SetByName(Weapon2, "clip size bonus upgrade", 3.0);
+		// 	TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.4);
+		// 	TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.2);
+		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);			
+		// 	// TF2Attrib_SetByName(Weapon2, "auto fires full clip all at once", 1.0);			
 
 			
-		}
+		// }
 		
 
 	}

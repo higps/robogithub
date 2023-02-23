@@ -17,7 +17,7 @@
 #define ROBOT_TIPS "Crit Stickies"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
-#define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
@@ -56,7 +56,7 @@ public OnPluginStart()
 
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = 3.0;
-	AddRobot(robot, MakeToofty, PLUGIN_VERSION);
+	AddRobot(robot, MakeToofty, PLUGIN_VERSION, restrictions);
 
 	AddNormalSoundHook(BossMortar);
 }
@@ -158,7 +158,8 @@ MakeToofty(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
-	
+	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -211,7 +212,8 @@ stock GiveGiantToofty(client)
 		CreateRoboHat(client, PatriotPeak, 10, 6, 15185211.0, 0.8, 1.0); //Bruiser's Bandana
 		CreateRoboHat(client, SnowSleeve, 10, 6, 15185211.0, 0.8, -1.0); //Antarctic Eyewear
 		CreateRoboHat(client, FlashdanceFooties, 10, 6, 15185211.0, 1.1, -1.0); //Spooky Sleeves
-	
+		
+		TF2CustAttr_SetString(client, "projectile-size", "size=1.45");
 		
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		if(IsValidEntity(Weapon2))

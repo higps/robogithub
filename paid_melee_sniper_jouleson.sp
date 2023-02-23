@@ -129,6 +129,7 @@ MakeSniper(client)
 	// TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	// TF2Attrib_SetByName(client, "increase player capture value", -1.0);
+TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	// TF2Attrib_SetByName(client, "health regen", 10.0);
 
 	
@@ -140,11 +141,6 @@ MakeSniper(client)
 
 
 	PrintHintText(client , ROBOT_TIPS);
-	// //Tank stats
-    // TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
-    // TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-	// TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 }
 
 stock TF2_SetHealth(client, NewHealth)
