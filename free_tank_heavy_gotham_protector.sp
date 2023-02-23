@@ -237,7 +237,7 @@ MakePanCop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 9000;
+	int iHealth = 6000;
 	
 	
 	int MaxHealth = 300;

@@ -229,8 +229,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     
     if(!IsValidClient(victim))
         return Plugin_Continue;    
-    // if(!IsValidClient(attacker))
-    // {
+    if(!IsValidClient(attacker))
+     return Plugin_Continue;   
     //     if(IsAnyRobot(victim) && damagetype == DMG_FALL && !IsBoss(victim))
     //     {
     //     damage *= 0.25;
@@ -704,15 +704,38 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     //     return Plugin_Continue;
     if(!IsValidClient(victim))
         return Plugin_Continue;    
+
+
+
+
+	if(!IsValidClient(attacker))
+	{
+
+		if(IsAnyRobot(victim) && damagetype == DMG_FALL)
+		{
+			// PrintToChatAll("Taking regular fall damage %N", victim);
+			damage *= 0.5;
+			return Plugin_Changed;
+		}
+	}else
+	{
+		if(IsAnyRobot(attacker) && damagetype == DMG_FALL)
+		{
+			// PrintToChatAll("Else attacker was %N", attacker);
+			// PrintToChatAll("Else vicitm was %N", victim);
+			damage *= 0.25;
+			return Plugin_Changed;
+		}
+	}
+
     if(!IsValidClient(attacker))
         return Plugin_Continue;
-
-    TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
-
     
+       
+
     if(IsAnyRobot(victim))
     {
-
+    TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
             switch(damagecustom){
                 case TF_CUSTOM_PLASMA_CHARGED: 
                 {
@@ -1296,6 +1319,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
             TF2Attrib_SetByName(Weapon2, "Reload time decreased", 0.7);
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates through enemies{teamcolor} and {orange}reloads 30%%% faster",chat_display);
+        }
+
+        if (IsReserveShooter(Weapon2))
+        {
+            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.5 critType=2");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter: {orange}+50%% damage and crits jumping robots",chat_display);
         }
 
         if(IsSandman(Weapon3))
@@ -1943,6 +1972,20 @@ bool IsShotGun(int weapon){
 	{
 		//If other shotguns are added, add here
 	case 9,10,11,12,199,415,425,1141,1153,15003,15016,15044,15047,15085,15109,15132,15133,15152: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsReserveShooter(int weapon){
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other shotguns are added, add here
+	case 415: 
 		{
 			return true;
 		}
