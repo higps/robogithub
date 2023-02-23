@@ -260,7 +260,7 @@ bool HasStat(int client)
 	g_yeet = ReadIntVar(stat_buffer, "yeet", 0);
 
 //PrintToChatAll("SG Limit: %i, SG Scale: %f, Disp Limit: %i, Disp Scale: %f, infinite ammo: %i, Yeet: %i for %N",g_SentryLimit, g_sentry_scale, g_DispenserLimit, g_dispenser_scale, g_infinite_ammo, g_yeet, client);
-//PrintToChatAll("Has Stat Found for %N, setting variables", client);
+// PrintToChatAll("Has Stat Found for %N, dispenser count was %i", client, g_DispenserLimit);
 
 	// g_bmod_disciplinary = ReadIntVar(stat_buffer, "bmod-disciplinary", 0);
 	return true;
