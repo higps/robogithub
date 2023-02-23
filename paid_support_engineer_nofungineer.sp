@@ -108,7 +108,7 @@ MakeUncleDane(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, ChangeDane);
 
-	int iHealth = 1250;
+	int iHealth = 2000;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 	float OverHealRate = 1.5;

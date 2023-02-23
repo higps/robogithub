@@ -114,7 +114,7 @@ MakeUncleDane(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, ChangeDane);
 
-	int iHealth = 1250;
+	int iHealth = 2000;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 	float OverHealRate = 1.5;
@@ -211,6 +211,7 @@ stock GiveBigRoboDane(client)
 
 		if(IsValidEntity(Weapon3))
 		{
+			
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
@@ -225,7 +226,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 4.0);
 
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1 enemies=1");
-			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.25 dispenser_scale=1.25 infinite_ammo=0 sentries=1 dispensers=2 remove_all_sappers=0 yeet=1");
+			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.25 dispenser_scale=1.25 infinite_ammo=0 remove_all_sappers=0 yeet=1");
 			
 		}
 		
