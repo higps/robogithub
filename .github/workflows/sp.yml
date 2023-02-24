@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sm-version: [ '1.10.x', '1.11.x' ]
+        sm-version: [ '1.11.x' ]
         # sm-version: [ '1.10.x', '1.10.6528', '1.11.x', '1.11.6467', '>= 1.11.6478']
         include:
           - sm-version: "1.11.x" # https://github.com/rumblefrog/setup-sp/issues/5
@@ -41,6 +41,14 @@ jobs:
         working-directory: ${{ env.SCRIPTS_PATH }}
 
       # Dependecies
+        # nosoop/SM-TFUtils
+      - name: Download nosoop/SM-TFUtils
+        uses: Legion2/download-release-action@v2.1.0
+        with:
+          repository: nosoop/SM-TFUtils
+          tag: '1.3.1.1'
+          path: './lib-include'
+          file: tf2utils.inc
         # nosoop/tf2attributes
       - name: Download nosoop/tf2attributes
         uses: Legion2/download-release-action@v2.1.0
@@ -132,12 +140,157 @@ jobs:
         with:
           file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/entity_prop_stocks.inc'
           location: './lib-include/stocksoup/tf'
+        # stocksoup/string.inc
+      - name: Download string.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/string.inc'
+          location: './lib-include/stocksoup'
+        # stocksoup/var_strings.inc
+      - name: Download var_strings.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/var_strings.inc'
+          location: './lib-include/stocksoup'
         # tf_cattr_buff_override.inc
       - name: Download tf_cattr_buff_override.inc
         uses: carlosperate/download-file-action@v1
         with:
           file-url: 'https://raw.githubusercontent.com/nosoop/SM-TFCustomAttributeStarterPack/master/scripting/include/tf_cattr_buff_override.inc'
           location: './lib-include'
+        # tf2wearables.inc
+      - name: Download tf2wearables.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/powerlord/sourcemod-tf2wearables/master/addons/sourcemod/scripting/include/tf2wearables.inc'
+          location: './lib-include'
+        # vphysics.inc
+      - name: Download vphysics.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/Alienmario/vphysics/patch-1/vphysics.inc'
+          location: './lib-include'
+        # smlib.inc & co
+      - name: Download smlib.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib.inc'
+          location: './lib-include'
+      - name: Download smlib/arrays.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/arrays.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/clients.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/clients.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/colors.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/colors.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/concommands.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/concommands.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/convars.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/convars.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/crypt.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/crypt.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/debug.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/debug.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/dynarrays.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/dynarrays.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/edicts.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/edicts.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/effects.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/effects.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/entities.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/entities.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/files.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/files.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/game.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/game.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/general.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/general.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/math.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/math.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/menus.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/menus.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/server.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/server.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/sql.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/sql.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/strings.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/strings.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/teams.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/teams.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/vehicles.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/vehicles.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/weapons.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/weapons.inc'
+          location: './lib-include/smlib'
+      - name: Download smlib/world.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/world.inc'
+          location: './lib-include/smlib'
 
 
       # Compile
