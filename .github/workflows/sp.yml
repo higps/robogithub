@@ -128,17 +128,41 @@ jobs:
         with:
           file-url: 'http://ddhoward.com/sourcemod/updater/scripting/include/tf2_isPlayerInSpawn.inc'
           location: './lib-include'
-        # stocksoup/tf/teams.inc
-      - name: Download entity_prop_stocks.inc
+        # stocksoup/client.inc
+      - name: Download stocksoup/client.inc
         uses: carlosperate/download-file-action@v1
         with:
-          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/teams.inc'
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/client.inc'
+          location: './lib-include/stocksoup'
+        # stocksoup/tf/client.inc
+      - name: Download stocksoup/tf/client.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/client.inc'
+          location: './lib-include/stocksoup/tf'
+        # stocksoup/tf/econ.inc
+      - name: Download econ.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/econ.inc'
           location: './lib-include/stocksoup/tf'
         # stocksoup/tf/entity_prop_stocks.inc
       - name: Download entity_prop_stocks.inc
         uses: carlosperate/download-file-action@v1
         with:
           file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/entity_prop_stocks.inc'
+          location: './lib-include/stocksoup/tf'
+        # stocksoup/tf/teams.inc
+      - name: Download teams.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/teams.inc'
+          location: './lib-include/stocksoup/tf'
+        # stocksoup/tf/tempents_stocks.inc
+      - name: Download tempents_stocks.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/tempents_stocks.inc'
           location: './lib-include/stocksoup/tf'
         # stocksoup/string.inc
       - name: Download string.inc
