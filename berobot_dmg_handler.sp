@@ -953,7 +953,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsCaber(Weapon3))
             {
                 float dmgbonus = 2.0;
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Caber: {orange}%i %% increased damage bonus{teamcolor}",chat_display, RoundToNearest(dmgbonus));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Caber: {orange}%i0 %% increased damage bonus{teamcolor}",chat_display, RoundToNearest(dmgbonus));
                 TF2Attrib_SetByName(Weapon3, "damage bonus", dmgbonus);
                 TF2Attrib_SetByName(Weapon3, "crits_become_minicrits", 1.0);
                 
@@ -1072,11 +1072,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
             //     //Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}",chat_display);
             // }
-            if(IsBlutsauger(Weapon1))
-            {
-                TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}",chat_display);
-            }
+            // if(IsBlutsauger(Weapon1))
+            // {
+            //     TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.0);
+            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}",chat_display);
+            // }
 
             if(IsOverdose(Weapon1) && Weapon2 != -1)
             {

@@ -212,7 +212,7 @@ stock GiveGiantToofty(client)
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.8);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.3);
 			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2CustAttr_SetString(client, "projectile-size", "size=1.75 update-hitbox=1");

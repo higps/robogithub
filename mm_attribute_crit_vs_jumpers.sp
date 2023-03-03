@@ -39,7 +39,7 @@ int damagecustom, CritType &critType)
 
 				if (IsJumping)
 				{
-				PrintToChatAll("CORRECT WEP");
+				// PrintToChatAll("CORRECT WEP");
 				damage *= g_dmg;
 				critType = g_critType;
 				return Plugin_Changed;
