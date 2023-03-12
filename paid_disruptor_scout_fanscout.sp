@@ -176,7 +176,7 @@ MakeGiantscout(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.2);
 	TF2Attrib_SetByName(client, "damage force reduction", 2.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 2.0);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);

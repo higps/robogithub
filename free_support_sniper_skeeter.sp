@@ -12,7 +12,7 @@
 #define ROBOT_NAME	"Skeeter"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Sniper"
-#define ROBOT_SUBCLASS "Support"
+#define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Knockback Sniper"
 #define ROBOT_TIPS "Your shots deal increased knockback on target"
 

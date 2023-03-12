@@ -12,7 +12,7 @@
 #define ROBOT_NAME	"Crockotron"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Sniper"
-#define ROBOT_SUBCLASS "Support"
+#define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Sydney Sleeper"
 #define ROBOT_TIPS "Shoot piss"
 

@@ -12,7 +12,7 @@
 #define ROBOT_NAME	"Carbine Cassidy"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Sniper"
-#define ROBOT_SUBCLASS "Support"
+#define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Hitman's Heatmaker, Carbine"
 #define ROBOT_TIPS "Mini-crit becomes crits"
 

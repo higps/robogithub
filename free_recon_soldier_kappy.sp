@@ -9,10 +9,10 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Kappy"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Recon"
-#define ROBOT_DESCRIPTION "Recon Remote Rocket"
+#define ROBOT_DESCRIPTION "Remote Control Rocket"
 #define ROBOT_TIPS "Activate Remote Control by pressing M2"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -233,12 +233,14 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.3);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.75);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 1.1);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.7);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.2);
 			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2CustAttr_SetString(Weapon1, "mouse-control-rocket", "turnspeed=100.0");
-			TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "4.0");
+			TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "10.0");
+			TF2Attrib_SetByName(Weapon1, "mark for death", 1.0);
+			
 			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		}
 

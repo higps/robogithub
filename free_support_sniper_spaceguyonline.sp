@@ -12,7 +12,7 @@
 #define ROBOT_NAME	"SpaceGuyOnline"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Sniper"
-#define ROBOT_SUBCLASS "Support"
+#define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Bullet Penetration"
 #define ROBOT_TIPS "Crit On Kill Shooting Star\nSMG"
 

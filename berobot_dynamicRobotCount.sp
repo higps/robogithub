@@ -123,6 +123,12 @@ void SetRoboCapTeam()
         robotCount = 1;
     }
 
+// Code to account for low player counts
+    if (robotCount < 3 && count < 7 && count >= 5)
+    {
+        robotCount ++;
+        //PrintToChatAll("TRIGGERING LOW PLAYER CHANGE, ROBOT COUNT IS NOW %i", robotCount);
+    }
 //    SMLogTag(SML_VERBOSE, "setting %s to %i for %i players", CONVAR_ROBOCAP_TEAM, robotCount, count);
     _roboCapTeamConVar.SetInt(robotCount);
 
