@@ -13,7 +13,7 @@
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Disruptor"
-#define ROBOT_DESCRIPTION "Rocket Launcher, Market Gardner"
+#define ROBOT_DESCRIPTION "High Knock Back Rockets"
 #define ROBOT_COST 3.0
 #define ROBOT_COIN_GENERATION 3
 
