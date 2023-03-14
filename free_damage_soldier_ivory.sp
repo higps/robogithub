@@ -387,20 +387,22 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_USE|IN_RELOAD) && !g_PushButton[client])
 	{
-	if (g_rocketCurve == true)
-	{	
-		g_rocketCurve = false;
-		ShouldMirvConverge = false;
-		PrintCenterText(client, "MIRV MODE:  MORTAR");
-	}else{
-		g_rocketCurve = true;
-		ShouldMirvConverge = true;
-		PrintCenterText(client, "MIRV MODE: CONVERGE");
+		
+		if (g_rocketCurve == true)
+		{	
+			g_rocketCurve = false;
+			ShouldMirvConverge = false;
+			PrintCenterText(client, "MIRV MODE:  MORTAR");
+		}else{
+			g_rocketCurve = true;
+			ShouldMirvConverge = true;
+			PrintCenterText(client, "MIRV MODE: CONVERGE");
+		}
+		g_PushButton[client] = true;
+		CreateTimer(0.2, Button_Reset, client);
 	}
+	
 
-
-
-	}
 
 	if (IsRobot(client, ROBOT_NAME) && buttons & IN_ATTACK2 && !g_PushButton[client])
 	{
@@ -422,10 +424,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			
 			
 		}
+		g_PushButton[client] = true;
+		CreateTimer(0.2, Button_Reset, client);
 	}
+
 	
-	g_PushButton[client] = true;
-	CreateTimer(0.2, Button_Reset, client);
+	
 
 
 	}
