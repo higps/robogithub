@@ -381,9 +381,11 @@ public void OnMirvSettingsChanged(ConVar convar, char[] oldVal, char[] newVal)
 
 bool g_PushButton[MAXPLAYERS + 1] = {false, ...};
 
+bool exploded[MAXPLAYERS + 1] = {false, ...};
+
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_USE|IN_ATTACK2) && !g_PushButton[client])
+	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_USE|IN_RELOAD) && !g_PushButton[client])
 	{
 	if (g_rocketCurve == true)
 	{	
@@ -395,6 +397,33 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		ShouldMirvConverge = true;
 		PrintCenterText(client, "MIRV MODE: CONVERGE");
 	}
+
+
+
+	}
+
+	if (IsRobot(client, ROBOT_NAME) && buttons & IN_ATTACK2 && !g_PushButton[client])
+	{
+		
+		//Loop through all rockets
+		int i = 1;
+		while (((i = FindEntityByClassname(i, "tf_projectile_rocket")) != -1))
+		{
+		
+		int owner = GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity");
+		if (owner == client && !exploded[client]){
+			
+			if (IsValidRocket(i) && RocketOverride[i])
+			{
+			exploded[client] = true;
+			SplitRocket(i, g_rocketAngle);
+			PrintToChatAll("Splitting rocket for %i",i);
+			}
+			
+			
+		}
+	}
+	
 	g_PushButton[client] = true;
 	CreateTimer(0.2, Button_Reset, client);
 
@@ -407,6 +436,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 public Action Button_Reset(Handle timer, int client)
 {
 	g_PushButton[client] = false;
+	exploded[client] = false;
 	return Plugin_Continue;
 }
 
@@ -414,19 +444,6 @@ public void OnClientPostAdminCheck(int client)
 {
 	PlayerHasMirv[client] = false;
 }
-
-// Action CmdControl(int client, int args)
-// {
-// 	if (TF2_GetPlayerClass(client) != TFClass_Soldier)
-// 	{
-// 		PrintToChat(client, "[SM] You must be a soldier to use this command!");
-// 	}
-// 	else
-// 	{
-// 		PlayerHasMirv[client] = !PlayerHasMirv[client];
-// 		PrintToChat(client, "[SM] MIRV Rockets %s!", PlayerHasMirv[client] ? "enabled" : "disabled");
-// 	}
-// }
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
@@ -475,12 +492,12 @@ void SetProjectileModel (int iEntity)
 
 public Action RocketTimer(Handle timer, any ref)
 {
-	int rocket = EntRefToEntIndex(ref);
-	//PrintToChatAll("Rocket: %i", rocket);
-	if (IsValidRocket(rocket) && RocketOverride[rocket])
-	{
-		SplitRocket(rocket, g_rocketCurve);
-	}
+	// int rocket = EntRefToEntIndex(ref);
+	// //PrintToChatAll("Rocket: %i", rocket);
+	// if (IsValidRocket(rocket) && RocketOverride[rocket])
+	// {
+	// 	SplitRocket(rocket, g_rocketCurve);
+	// }
 	return Plugin_Continue;
 }
 
