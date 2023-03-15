@@ -381,8 +381,6 @@ public void OnMirvSettingsChanged(ConVar convar, char[] oldVal, char[] newVal)
 
 bool g_PushButton[MAXPLAYERS + 1] = {false, ...};
 
-bool exploded[MAXPLAYERS + 1] = {false, ...};
-
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_USE|IN_RELOAD) && !g_PushButton[client])
@@ -411,26 +409,22 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		int i = 1;
 		while (((i = FindEntityByClassname(i, "tf_projectile_rocket")) != -1))
 		{
-		
-		int owner = GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity");
-		if (owner == client && !exploded[client]){
 			
-			if (IsValidRocket(i) && RocketOverride[i])
-			{
-			exploded[client] = true;
-			SplitRocket(i, g_rocketAngle);
-			PrintToChatAll("Splitting rocket for %i",i);
+			int owner = GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity");
+			if (owner == client){
+				
+				if (IsValidRocket(i) && RocketOverride[i])
+				{
+
+				SplitRocket(i, ShouldMirvConverge);
+				// PrintToChatAll("Splitting rocket for %i",i);
+				}
+				
+				
 			}
-			
-			
+			g_PushButton[client] = true;
+			CreateTimer(0.2, Button_Reset, client);
 		}
-		g_PushButton[client] = true;
-		CreateTimer(0.2, Button_Reset, client);
-	}
-
-	
-	
-
 
 	}
 	return Plugin_Continue;
@@ -440,7 +434,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 public Action Button_Reset(Handle timer, int client)
 {
 	g_PushButton[client] = false;
-	exploded[client] = false;
+
 	return Plugin_Continue;
 }
 
@@ -482,7 +476,7 @@ public void OnRocketSpawned(int rocket)
 		//PrintToChat(owner, "Rocket Spawned");
 		RocketOverride[rocket] = true;
 		int ref = EntIndexToEntRef(rocket);
-		CreateTimer(GetConVarFloat(g_rocketDelay), RocketTimer, ref, TIMER_FLAG_NO_MAPCHANGE);
+	//	CreateTimer(GetConVarFloat(g_rocketDelay), RocketTimer, ref, TIMER_FLAG_NO_MAPCHANGE);
 		RequestFrame(SetProjectileModel, rocket);
 		
 	}
@@ -490,8 +484,11 @@ public void OnRocketSpawned(int rocket)
 
 void SetProjectileModel (int iEntity)
 {
+	if(IsValidEntity(iEntity))
+	{
 		SetEntityModel(iEntity, SENTRYROCKETS);
 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 2.0);
+	}
 }
 
 public Action RocketTimer(Handle timer, any ref)
