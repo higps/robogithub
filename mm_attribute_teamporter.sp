@@ -794,7 +794,7 @@ public Action DrawHUD(int client)
 		// return Plugin_Continue;	
 		}else
 		{
-			PrintToConsole(client, "NOT VALID TELE FOUND!");
+			//PrintToConsole(client, "NOT VALID TELE FOUND!");
 		}
 
 	

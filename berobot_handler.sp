@@ -1912,8 +1912,8 @@ bool AddRandomVolunteer()
     {
         SMLogTag(SML_VERBOSE, "no volunteer found notifying players of open spot", newVolunteer);
         int islots = g_RoboCapTeam - g_Volunteers.Length;
-        PrintToChatAll("A new robot-slot is available. There is now %i available robot slots remains. Type !join to become a giant robot", islots);
-
+        //PrintToChatAll("A new robot-slot is available. There is now %i available robot slots remains. Type !join to become a giant robot", islots);
+        MC_PrintToChatAll("{green}%i{orange} Robot-slot available! Type {green}!join{orange} to become a giant robot!", islots);
         return false;
     }
 
@@ -1926,7 +1926,8 @@ bool AddRandomVolunteer()
     }
 
     SMLogTag(SML_VERBOSE, "turning %L into a robot", newVolunteer);
-    PrintToChatAll("A new robot-slot is available. %N was automatically chosen to fillup the robot-team.", newVolunteer);
+    //PrintToChatAll("A new robot-slot is available. %N was automatically chosen to fillup the robot-team.", newVolunteer);
+    MC_PrintToChatAllEx(newVolunteer, "{teamcolor}%N{orange} was automatically chosen to fillup the robot-team.", newVolunteer);
     MakeRobot(newVolunteer, true);
     ChangeClientTeam(newVolunteer, g_RoboTeam);
 

@@ -10,13 +10,13 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Toofty"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Demoman"
-#define ROBOT_SUBCLASS "Grenades"
+#define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Iron Bomber, Sticky jumper"
 #define ROBOT_TIPS "Land on enemies to deal stomp damage"
 
-#define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
+#define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
@@ -49,7 +49,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
-	AddRobot(robot, MakeToofty, PLUGIN_VERSION);
+	AddRobot(robot, MakeToofty, PLUGIN_VERSION, null, 2);
 
 	AddNormalSoundHook(BossMortar);
 }
@@ -131,7 +131,7 @@ MakeToofty(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 3000;
+	int iHealth = 1750;
 	
 	
 	int MaxHealth = 175;
@@ -146,12 +146,12 @@ MakeToofty(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.85);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.3);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
-	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
+	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
@@ -196,24 +196,25 @@ stock GiveGiantToofty(client)
 		
 		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 1151, 8, 1, 0, 213);
 		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 265, 6, 1, 1, 0);
-	//	CreateRoboWeapon(client, "tf_weapon_parachute", 1101, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_parachute", 1101, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, BEARDEDBOMBARDIER, 10, 6, 0.0, 0.75, -1.0); //Bearded Bombardier
-		CreateRoboHat(client, WELLROUNDEDRIFLEMAN, 10, 6, 0.0, 0.75, -1.0); //well rounded rifle man
-		//CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
+		CreateRoboHat(client, BEARDEDBOMBARDIER, 10, 6, 0.0, 1.0, -1.0); //Bearded Bombardier
+		CreateRoboHat(client, WELLROUNDEDRIFLEMAN, 10, 6, 0.0, 1.0, -1.0); //well rounded rifle man
+		CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
 		{
 
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.20);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.75);
+			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.85);
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.35);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);			
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);	
+		
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
-			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.8);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);
-			
+						
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2CustAttr_SetString(client, "projectile-size", "size=1.75 update-hitbox=1");
 		}
