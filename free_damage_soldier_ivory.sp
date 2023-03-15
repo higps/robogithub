@@ -15,6 +15,7 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "MIRV Rocket Launcher"
+#define ROBOT_TIPS "Use M2 to trigger MIRV, use +use or +reload to change MIRV modes"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -56,9 +57,9 @@ ConVar g_rocketDiverge;
 
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant Basic Soldier",
-	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Icebear from Frankfurt",
+	name = "[TF2] Be the Giant Ivory Soldier",
+	author = "HiGPS",
+	description = "Play as the Giant Ivory",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -295,7 +296,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Your rockets explodes in to more rockets!\nUse M2 or special attack to change modes!");
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 
