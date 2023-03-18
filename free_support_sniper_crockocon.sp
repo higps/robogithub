@@ -190,7 +190,7 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
 			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 10.0);
-			TF2Attrib_SetByName(SniperRifle, "minicrits become crits", 1.0);
+			// TF2Attrib_SetByName(SniperRifle, "minicrits become crits", 1.0);
 			
 			// TF2Attrib_SetByName(SniperRifle, "projectile penetration", 1.0);
 			
