@@ -247,7 +247,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if (IsRobot(client, ROBOT_NAME))
 	{
 
-		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_RELOAD|IN_USE|IN_ATTACK2) ) 
+		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE|IN_ATTACK2) ) 
 		{
 			//  PrintToChatAll("Press");
             g_button_held[client] = true;
@@ -255,7 +255,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 
 
-		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_RELOAD|IN_USE|IN_ATTACK2) ) 
+		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_USE|IN_ATTACK2) ) 
 		{
 			//  PrintToChatAll("Release");
 			g_button_held[client] = false;
