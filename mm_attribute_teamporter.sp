@@ -437,7 +437,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	return Plugin_Continue;
 }
-bool g_b_CanGetTeled[MAXPLAYERS + 1];
+// bool g_b_CanGetTeled[MAXPLAYERS + 1];
 
 public Action OnTouch(int client, int ent)
 {
@@ -447,17 +447,17 @@ public Action OnTouch(int client, int ent)
 		char entname[MAX_NAME_LENGTH];
 		GetEntityClassname(ent, entname, sizeof(entname));
 
-		if (!StrContains(entname, "func_respawnroom")){
+		if (!StrContains(entname, "func_respawnroom"))
+		{
 			// PrintToChatAll("%N is touching %s", client, entname);
 			if (IsAnyRobot(client) && TF2Spawn_IsClientInSpawn(client) && TeamHasRoboEngineer(client))
 			{
 				UpdateCharge(client);
 				DrawHUD(client);
 				// PrintCenterText(client, "Touching Spawn Robo");
-				g_b_CanGetTeled[client] = true;
-			}	
-			
-			if (!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Spy)
+				// g_b_CanGetTeled[client] = true;
+			}
+			else if (!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Spy)
 			{
 				int EntTeamNum = GetEntProp(ent, Prop_Send, "m_iTeamNum");
 				int clientTeam = GetClientTeam(client);
@@ -466,17 +466,13 @@ public Action OnTouch(int client, int ent)
 					UpdateCharge(client);
 					DrawHUD(client);
 					// PrintCenterText(client, "Touching Enemy Spawn Spy");
-					g_b_CanGetTeled[client] = true;
+					// g_b_CanGetTeled[client] = true;
 				}
-				
 			}
-
-		}else
-		{
-			g_b_CanGetTeled[client] = false;
-		}	
 		
-		
+				
+				
+		}
 	}
 	return Plugin_Continue;
 }
@@ -664,10 +660,10 @@ public Action SpawnSound_Clamp(Handle timer, int client)
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if (CanUseTele(client, client) && buttons & (IN_DUCK))
+	if (CanUseTele(client) && buttons & (IN_DUCK))
 	{
 
-		if(g_b_CanGetTeled[client] && g_Recharge[client] == g_RechargeCap)
+		if(g_Recharge[client] == g_RechargeCap && TF2_IsPlayerInCondition(client, TFCond_TeleportedGlow))
 		{
 			Teleport_Player(client);
 		}
@@ -679,7 +675,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 void UpdateCharge(int client)
 {
 	// if we are already at max charge, no need to check anything
-	if(CanUseTele(client, client))
+	if(CanUseTele(client))
 	{
 		if(IsFakeClient(client))
 		{
@@ -1210,12 +1206,12 @@ void GetFarthestTele(int client, ObjectPointer target, ObjectPointer teleporters
 	}
 }
 
-bool CanUseTele(int client, int engi)
+bool CanUseTele(int client)
 {
-	if (TF2_GetPlayerClass(client) == TFClass_Spy) // Spies can use whatever teleporter they want, so we don't bother checking teams
+	if (TF2_GetPlayerClass(client) == TFClass_Spy || IsAnyRobot(client)) // Spies can use whatever teleporter they want, so we don't bother checking teams
 		return true;
 
-	return (GetClientTeam(client) == GetClientTeam(engi)); // Otherwise check to see we are on the same team
+	// return (GetClientTeam(client) == GetClientTeam(engi)); // Otherwise check to see we are on the same team
 }
 
 ///
