@@ -314,7 +314,7 @@ bool g_PressedButton[MAXPLAYERS + 1] = {false, ...};
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_RELOAD|IN_USE))
+	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_USE))
 	{
 		//0 = fireball
 		//PrintToChat(client, "Throwing spell!");
