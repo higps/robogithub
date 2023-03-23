@@ -68,7 +68,7 @@ public OnPluginStart()
 
 
 
- HookEvent("player_extinguished", Event_player_extinguished, EventHookMode_Post);
+//  HookEvent("player_extinguished", Event_player_extinguished, EventHookMode_Post);
 
 }
 
@@ -235,144 +235,11 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "mod projectile heat seek power", 360.0);
 			TF2Attrib_SetByName(Weapon2, "extinguish restores health", 200.0);
 			
+			TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=44 duration=5.0 addcond=52");
+			TF2CustAttr_SetString(Weapon2, "Extinguish-Health-Gain", "HealthGain=180 StaticMax=1 ShowGain=0");
 		//	TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.75);
 		}
 
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=44 duration=5.0 addcond=52");
+		// TF2CustAttr_SetString(client, "Extinguish-Health-Gain", "HealthGain=180 StaticMax=0 ShowGain=0");
 	}
 }
-
-
-public Action Event_player_extinguished(Event event, const char[] name, bool dontBroadcast)
-{
-    int client = GetEventInt(event, "healer");
-    // PrintToChatAll("%N", client);
-    if (IsRobot(client, ROBOT_NAME))
-    {
-		// PrintToChatAll("DAH2");
-		AddPlayerHealth(client, 200-20, 260, false);
-        ShowHealthGain(client, 200, client);
-    }
-	return Plugin_Continue;
-}
-
-//Temporary Code that should be added as a native in dmg_handler
-void AddPlayerHealth(int iClient, int iAdd, int iOverheal = 0, bool bStaticMax = false)
-{
-    int iHealth = GetClientHealth(iClient);
-
-    
-    int iNewHealth = iHealth + iAdd;
-    int iMax = bStaticMax ? iOverheal : GetEntProp(iClient, Prop_Data, "m_iMaxHealth") + iOverheal;
-
-    // PrintToChatAll("Ihealth was: %i iAdd was: %i, iMax was: %i", iHealth, iAdd, iMax);
-    if (iNewHealth <= iMax)
-    {
-        //iNewHealth = min(iNewHealth, iMax);
-        SetEntityHealth(iClient, iNewHealth);
-    }else
-    {
-        SetEntityHealth(iClient, iMax);
-    }
-}
-
-void ShowHealthGain(int iPatient, int iHealth, int iHealer = -1)
-{
-    int iUserId = GetClientUserId(iPatient);
-    Handle hEvent = CreateEvent("player_healed", true);
-    SetEventBool(hEvent, "sourcemod", true);
-    SetEventInt(hEvent, "patient", iUserId);
-    SetEventInt(hEvent, "healer", IsValidClient(iHealer) ? GetClientUserId(iHealer) : iUserId);
-    SetEventInt(hEvent, "amount", iHealth);
-    FireEvent(hEvent);
-
-    hEvent = CreateEvent("player_healonhit", true);
-    SetEventBool(hEvent, "sourcemod", true);
-    SetEventInt(hEvent, "amount", iHealth);
-    SetEventInt(hEvent, "entindex", iPatient);
-    FireEvent(hEvent);
-}
-// public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
-// {
-// 	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME) && IsPlayerAlive(iClient)) 
-// 	{	
-// 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-// 		// if (!IsValidEntity(weapon))return Plugin_Continue;
-		
-		
-
-
-// 		// if(IsValidEntity(weapon))
-// 		// {
-			
-// 			if (HasEntProp(weapon, Prop_Send, "m_iWeaponState"))
-// 			{
-// 		// 		if (iWeapon == 594)//594 == phlogistinator
-// 		// 		{
-// 				iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-// 				if(IsValidEntity(weapon) && iWeapon == 594)//215 == flamethrower
-// 				{
-
-
-// 				new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
-// 				if (iWeaponState == 1 && !Locked1[iClient])
-// 				{
-// 					EmitSoundToAll(SOUND_WINDUP, iClient);
-// 				//	PrintToChatAll("WeaponState = Windup");
-					
-// 					Locked1[iClient] = true;
-// 					Locked2[iClient] = false;
-// 					Locked3[iClient] = false;
-// 					CanWindDown[iClient] = true;
-					
-// 					StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-// 				}
-// 				else if (iWeaponState == 2 && !Locked2[iClient])
-// 				{
-// 					EmitSoundToAll(SOUND_GUNFIRE, iClient);
-// 				//	PrintToChatAll("WeaponState = Firing");
-					
-// 					Locked2[iClient] = true;
-// 					Locked1[iClient] = true;
-// 					Locked3[iClient] = false;
-// 					CanWindDown[iClient] = true;
-					
-// 					StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-// 				}
-// 				else if (iWeaponState == 3 && !Locked3[iClient])
-// 				{
-
-// 				//	PrintToChatAll("WeaponState = Spun Up");
-					
-// 					Locked3[iClient] = true;
-// 					Locked1[iClient] = true;
-// 					Locked2[iClient] = false;
-// 					CanWindDown[iClient] = true;
-					
-// 					StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-// 					StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-// 				}
-// 				else if (iWeaponState == 0)
-// 				{
-// 					if (CanWindDown[iClient])
-// 					{
-// 				//		PrintToChatAll("WeaponState = WindDown");
-
-// 						CanWindDown[iClient] = false;
-// 					}
-					
-// 					StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-					
-// 					Locked1[iClient] = false;
-// 					Locked2[iClient] = false;
-// 					Locked3[iClient] = false;
-
-// 				}
-				
-// 			}
-// 		}
-		
-// 	}
-// 	return Plugin_Continue;
-// }
-
