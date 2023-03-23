@@ -186,7 +186,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		CreateRoboWeapon(client, "tf_weapon_flamethrower", 21, 6, 1, 2, 0);	
+		CreateRoboWeapon(client, "tf_weapon_flamethrower", 40, 6, 1, 2, 0);	
 
 		CreateRoboHat(client, Grim, 10, 6, 0.0, 1.0, -1.0);
 		CreateRoboHat(client, FireTooth, 10, 6, 0.0, 0.75, -1.0);
@@ -207,7 +207,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
 			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.5);
-
+			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 250.0);
 			
 			
 			// TF2Attrib_SetByName(Weapon1, "airblast vertical pushback scale", 1.5);

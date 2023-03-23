@@ -206,7 +206,7 @@ public Action OnRocketEnd(int rocket, int victim)
 }
 
 bool g_PushButton[MAXPLAYERS + 1] = {false, ...};
-
+bool g_toggethirdperson[MAXPLAYERS + 1] = {false, ...};
 public Action Button_Reset(Handle timer, int client)
 {
 	g_PushButton[client] = false;
@@ -216,7 +216,7 @@ public Action Button_Reset(Handle timer, int client)
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
 
-	if (HasStat(client) && buttons & (IN_ATTACK3|IN_USE|IN_ATTACK2) && !g_PushButton[client])
+	if (HasStat(client) && buttons & (IN_ATTACK2) && !g_PushButton[client])
 	{
 		if (PlayerControlRockets[client] == false && ControllingRocket[client] == false)
 		{	
@@ -224,13 +224,32 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 			PrintCenterText(client, "REMOTE ROCKET CONTROL: ON");
 
+
+		}else if (PlayerControlRockets[client] == true && ControllingRocket[client] == false) {
+				
+				PlayerControlRockets[client] = false;
+
+				PrintCenterText(client, "REMOTE ROCKET CONTROL: OFF");
+		}
+		g_PushButton[client] = true;
+		CreateTimer(0.2, Button_Reset, client);
+
+
+	}
+
+	if (HasStat(client) && buttons & (IN_ATTACK3|IN_USE) && !g_PushButton[client])
+	{
+		if (g_toggethirdperson[client] == false && ControllingRocket[client] == false)
+		{	
+			g_toggethirdperson[client] = true;
+
 			SetVariantInt(1);
 			AcceptEntityInput(client, "SetForcedTauntCam");
-		}else if (PlayerControlRockets[client] == true && ControllingRocket[client] == false) {
+		}else if (g_toggethirdperson[client] == true && ControllingRocket[client] == false) {
 
-			PlayerControlRockets[client] = false;
+			g_toggethirdperson[client] = false;
 
-			PrintCenterText(client, "REMOTE ROCKET CONTROL: OFF");
+
 
 			SetVariantInt(0);
 			AcceptEntityInput(client, "SetForcedTauntCam");
@@ -255,13 +274,13 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		{
 			case 0: //player movement
 			{
-				if (buttons & IN_FORWARD) //angle down
-				{
-					rocketAngle[0] += rate;
-				}
-				if (buttons & IN_BACK) //angle up
+				if (buttons & IN_FORWARD) //angle up
 				{
 					rocketAngle[0] -= rate;
+				}
+				if (buttons & IN_BACK) //angle down
+				{
+					rocketAngle[0] += rate;
 				}
 				if (buttons & IN_MOVERIGHT)
 				{

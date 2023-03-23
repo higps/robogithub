@@ -312,7 +312,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 if(IsPowerJack(weapon))
                 {
                 
-                AddPlayerHealth(attacker, 25, 260, true);
+                AddPlayerHealth(attacker, 50, 260, true);
                 ShowHealthGain(attacker, 50, attacker);
                 }
 

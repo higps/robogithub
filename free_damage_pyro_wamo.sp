@@ -65,6 +65,11 @@ public OnPluginStart()
 	robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
+
+
+
+ HookEvent("player_extinguished", Event_player_extinguished, EventHookMode_Post);
+
 }
 
 public void OnPluginEnd()
@@ -218,6 +223,8 @@ stock GiveGiantPyro(client)
 			
 			TF2Attrib_SetByName(Weapon1, "weapon burn dmg reduced", 1.0);
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.2);
+			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 200.0);
+			
 			
 		}
 		
@@ -226,12 +233,64 @@ stock GiveGiantPyro(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon2, "mod projectile heat seek power", 360.0);
+			TF2Attrib_SetByName(Weapon2, "extinguish restores health", 200.0);
 			
 		//	TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.75);
 		}
 
 		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=44 duration=5.0 addcond=52");
 	}
+}
+
+
+public Action Event_player_extinguished(Event event, const char[] name, bool dontBroadcast)
+{
+    int client = GetEventInt(event, "healer");
+    // PrintToChatAll("%N", client);
+    if (IsRobot(client, ROBOT_NAME))
+    {
+		// PrintToChatAll("DAH2");
+		AddPlayerHealth(client, 200-20, 260, false);
+        ShowHealthGain(client, 200, client);
+    }
+	return Plugin_Continue;
+}
+
+//Temporary Code that should be added as a native in dmg_handler
+void AddPlayerHealth(int iClient, int iAdd, int iOverheal = 0, bool bStaticMax = false)
+{
+    int iHealth = GetClientHealth(iClient);
+
+    
+    int iNewHealth = iHealth + iAdd;
+    int iMax = bStaticMax ? iOverheal : GetEntProp(iClient, Prop_Data, "m_iMaxHealth") + iOverheal;
+
+    // PrintToChatAll("Ihealth was: %i iAdd was: %i, iMax was: %i", iHealth, iAdd, iMax);
+    if (iNewHealth <= iMax)
+    {
+        //iNewHealth = min(iNewHealth, iMax);
+        SetEntityHealth(iClient, iNewHealth);
+    }else
+    {
+        SetEntityHealth(iClient, iMax);
+    }
+}
+
+void ShowHealthGain(int iPatient, int iHealth, int iHealer = -1)
+{
+    int iUserId = GetClientUserId(iPatient);
+    Handle hEvent = CreateEvent("player_healed", true);
+    SetEventBool(hEvent, "sourcemod", true);
+    SetEventInt(hEvent, "patient", iUserId);
+    SetEventInt(hEvent, "healer", IsValidClient(iHealer) ? GetClientUserId(iHealer) : iUserId);
+    SetEventInt(hEvent, "amount", iHealth);
+    FireEvent(hEvent);
+
+    hEvent = CreateEvent("player_healonhit", true);
+    SetEventBool(hEvent, "sourcemod", true);
+    SetEventInt(hEvent, "amount", iHealth);
+    SetEventInt(hEvent, "entindex", iPatient);
+    FireEvent(hEvent);
 }
 // public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
 // {

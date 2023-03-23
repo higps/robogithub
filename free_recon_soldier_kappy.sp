@@ -6,6 +6,7 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
+#include <sdkhooks>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Kappy"
@@ -13,12 +14,16 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Recon"
 #define ROBOT_DESCRIPTION "Recon Remote Rocket"
-#define ROBOT_TIPS "Activate Remote Control by pressing M2"
+#define ROBOT_TIPS "Activate Remote Control by pressing M2\nChange camera mode with +attack3 or +use"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
+
+
+#define RED_MODEL "models/workshop/player/items/soldier/taunt_rocket_jockey/taunt_rocket_jockey.mdl"
+// #define PMODEL "models/props_td/atom_bomb.mdl"
 
 #define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
@@ -137,7 +142,7 @@ public Action:BossHomer(clients[64], &numClients, String:sample[PLATFORM_MAX_PAT
 	}
 	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 }
-
+int g_iTeam;
 MakeGiantSoldier(client)
 {
 	SMLogTag(SML_VERBOSE, "Createing Homer");
@@ -156,7 +161,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 3800;		
+	int iHealth = 2000;		
 	int MaxHealth = 200;
 	int iAdditiveHP = iHealth - MaxHealth;
 	
@@ -166,7 +171,7 @@ MakeGiantSoldier(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
@@ -181,7 +186,7 @@ MakeGiantSoldier(client)
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	
+	g_iTeam = GetClientTeam(client);
 	PrintHintText(client, ROBOT_TIPS);
 	
 }
@@ -228,16 +233,15 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon1))
 		{
 			// TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 1.3);
+			TF2Attrib_SetByName(Weapon1, "damage penalty", 1.38);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
-			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.3);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.75);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 1.1);
+			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.5);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.7);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.2);
 			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			TF2CustAttr_SetString(Weapon1, "mouse-control-rocket", "turnspeed=100.0");
+			TF2CustAttr_SetString(Weapon1, "mouse-control-rocket", "aim-mode=0 turnspeed=250.0");
 			TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "4.0");
 			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		}
@@ -257,7 +261,7 @@ public OnMapStart()
 	PrecacheSound(GUNFIRE_CRIT);
 	PrecacheSound(GUNFIRE_EXPLOSION);
 
-	
+	PrecacheModel(RED_MODEL);
 }
 
 public void OnPluginStart()
@@ -280,5 +284,46 @@ public void OnPluginStart()
     robot.sounds.death = DEATH;
     AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
+
+}
+
+public void OnEntityCreated(int iEntity, const char[] sClassName) 
+{
+	if (StrContains(sClassName, "tf_projectile") == 0)
+	{
+		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+	}
+	
+}
+
+public void Hook_OnProjectileSpawn(iEntity) {
+	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+	//	SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+		RequestFrame(SetProjectileModel, iEntity);
+	}
+}
+// float g_fStockvecMin[3] = {-10.0, -10.0, -10.0};
+// float g_fStockvecMax[3] = {10.0, 10.0, 10.0};
+
+void SetProjectileModel (int iEntity)
+{
+	if(g_iTeam == 2)
+	{
+		SetEntityModel(iEntity, RED_MODEL);
+		
+	}else
+	{
+		SetEntityModel(iEntity, RED_MODEL);
+	}
+
+		float rotation[3];
+		GetEntPropVector(iEntity, Prop_Data, "m_angRotation", rotation);
+
+		rotation[0] += 90.0;
+
+		SetEntPropVector(iEntity, Prop_Data, "m_angRotation", rotation);
+	// SetEntPropVector(iEntity, Prop_Send, "m_vecMins", g_fStockvecMin);
+	// SetEntPropVector(iEntity, Prop_Send, "m_vecMaxs", g_fStockvecMax);
 
 }
