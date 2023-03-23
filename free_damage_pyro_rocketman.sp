@@ -221,7 +221,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
 			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 0.75);
-
+			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 175.0);
 			
 			
 			// TF2Attrib_SetByName(Weapon1, "airblast vertical pushback scale", 1.5);

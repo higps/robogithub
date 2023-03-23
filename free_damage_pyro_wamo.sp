@@ -65,6 +65,11 @@ public OnPluginStart()
 	robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
+
+
+
+//  HookEvent("player_extinguished", Event_player_extinguished, EventHookMode_Post);
+
 }
 
 public void OnPluginEnd()
@@ -218,6 +223,8 @@ stock GiveGiantPyro(client)
 			
 			TF2Attrib_SetByName(Weapon1, "weapon burn dmg reduced", 1.0);
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.2);
+			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 200.0);
+			
 			
 		}
 		
@@ -226,94 +233,13 @@ stock GiveGiantPyro(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon2, "mod projectile heat seek power", 360.0);
+			TF2Attrib_SetByName(Weapon2, "extinguish restores health", 200.0);
 			
+			TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=44 duration=5.0 addcond=52");
+			TF2CustAttr_SetString(Weapon2, "Extinguish-Health-Gain", "HealthGain=180 StaticMax=1 ShowGain=0");
 		//	TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.75);
 		}
 
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=44 duration=5.0 addcond=52");
+		// TF2CustAttr_SetString(client, "Extinguish-Health-Gain", "HealthGain=180 StaticMax=0 ShowGain=0");
 	}
 }
-// public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
-// {
-// 	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME) && IsPlayerAlive(iClient)) 
-// 	{	
-// 		new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-// 		// if (!IsValidEntity(weapon))return Plugin_Continue;
-		
-		
-
-
-// 		// if(IsValidEntity(weapon))
-// 		// {
-			
-// 			if (HasEntProp(weapon, Prop_Send, "m_iWeaponState"))
-// 			{
-// 		// 		if (iWeapon == 594)//594 == phlogistinator
-// 		// 		{
-// 				iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-// 				if(IsValidEntity(weapon) && iWeapon == 594)//215 == flamethrower
-// 				{
-
-
-// 				new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
-// 				if (iWeaponState == 1 && !Locked1[iClient])
-// 				{
-// 					EmitSoundToAll(SOUND_WINDUP, iClient);
-// 				//	PrintToChatAll("WeaponState = Windup");
-					
-// 					Locked1[iClient] = true;
-// 					Locked2[iClient] = false;
-// 					Locked3[iClient] = false;
-// 					CanWindDown[iClient] = true;
-					
-// 					StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-// 				}
-// 				else if (iWeaponState == 2 && !Locked2[iClient])
-// 				{
-// 					EmitSoundToAll(SOUND_GUNFIRE, iClient);
-// 				//	PrintToChatAll("WeaponState = Firing");
-					
-// 					Locked2[iClient] = true;
-// 					Locked1[iClient] = true;
-// 					Locked3[iClient] = false;
-// 					CanWindDown[iClient] = true;
-					
-// 					StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-// 				}
-// 				else if (iWeaponState == 3 && !Locked3[iClient])
-// 				{
-
-// 				//	PrintToChatAll("WeaponState = Spun Up");
-					
-// 					Locked3[iClient] = true;
-// 					Locked1[iClient] = true;
-// 					Locked2[iClient] = false;
-// 					CanWindDown[iClient] = true;
-					
-// 					StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-// 					StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-// 				}
-// 				else if (iWeaponState == 0)
-// 				{
-// 					if (CanWindDown[iClient])
-// 					{
-// 				//		PrintToChatAll("WeaponState = WindDown");
-
-// 						CanWindDown[iClient] = false;
-// 					}
-					
-// 					StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-					
-// 					Locked1[iClient] = false;
-// 					Locked2[iClient] = false;
-// 					Locked3[iClient] = false;
-
-// 				}
-				
-// 			}
-// 		}
-		
-// 	}
-// 	return Plugin_Continue;
-// }
-

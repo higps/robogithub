@@ -11,6 +11,9 @@
 //#define BOSSTUNE "music.mvm_end_mid_wave"
 #define BOSSTUNE "music/mvm_start_last_wave.wav"
 
+float g_spawn_sound_cd = 60.0;
+float SoundClamp[MAXPLAYERS+1] = {0.0,...};
+
 enum TFBossHealthState {
 	HealthState_Default = 0,
 	HealthState_Healing // displays a green health bar
@@ -252,14 +255,18 @@ public Action SetBossHealthTargetCommand(int client) {
 
 	// EmitSoundToAll(BOSSTUNE, _, SNDCHAN_USER_BASE); //Works for all, but cancels on bot change
 
-	// EmitSoundToClient(iTarget,BOSSTUNE);
+	// PrintToChatAll("SETTING");
 	for(int i = 1; i <= MAXPLAYERS+1; i++)
 	{
 
 		if (IsValidClient(i) && !IsFakeClient(i))
 		{
+			if (SoundClamp[i] < GetEngineTime())
+			{
 			EmitSoundToClient(i,BOSSTUNE);
-			// PrintToChatAll("Playing sound %s to %N ", BOSSTUNE, i);
+			SoundClamp[client] = GetEngineTime() + g_spawn_sound_cd;
+			}
+			// PrintToChat(i,"Playing sound %s to %N ", BOSSTUNE, i);
 		}
 	}
 	// PrintToChatAll("Emitting sound");

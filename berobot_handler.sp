@@ -345,6 +345,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("SetRobot", Native_SetRobot);
     CreateNative("ForceRobot", Native_ForceRobot);
     CreateNative("GetRobotTeam", Native_GetRobotTeam);
+    CreateNative("AddPlayerHealth", Native_AddPlayerHealth);
+
 
     return APLRes_Success;
 }
@@ -877,6 +879,56 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
 
     return Plugin_Continue;
+}
+
+
+public any Native_AddPlayerHealth(Handle plugin, int numParam)
+{
+
+    //int iClient, int iAdd, int iOverheal = 0, bool bStaticMax = false
+
+    int iClient = GetNativeCell(1);
+    int iAdd = GetNativeCell(2);
+    int iOverheal = GetNativeCell(3);
+    bool bStaticMax = GetNativeCell(4);
+    bool bShowHealthGain = GetNativeCell(5);
+    
+    int iHealth = GetClientHealth(iClient);
+
+    
+    int iNewHealth = iHealth + iAdd;
+    int iMax = bStaticMax ? iOverheal : GetEntProp(iClient, Prop_Data, "m_iMaxHealth") + iOverheal;
+
+    // PrintToChatAll("Ihealth was: %i iAdd was: %i, iMax was: %i", iHealth, iAdd, iMax);
+    if (iNewHealth <= iMax)
+    {
+        //iNewHealth = min(iNewHealth, iMax);
+        SetEntityHealth(iClient, iNewHealth);
+    }else
+    {
+        SetEntityHealth(iClient, iMax);
+    }
+    if (bShowHealthGain)
+    {
+        ShowHealthGain(iClient, iAdd, iClient);
+    }
+}
+
+void ShowHealthGain(int iPatient, int iHealth, int iHealer = -1)
+{
+    int iUserId = GetClientUserId(iPatient);
+    Handle hEvent = CreateEvent("player_healed", true);
+    SetEventBool(hEvent, "sourcemod", true);
+    SetEventInt(hEvent, "patient", iUserId);
+    SetEventInt(hEvent, "healer", IsValidClient(iHealer) ? GetClientUserId(iHealer) : iUserId);
+    SetEventInt(hEvent, "amount", iHealth);
+    FireEvent(hEvent);
+
+    hEvent = CreateEvent("player_healonhit", true);
+    SetEventBool(hEvent, "sourcemod", true);
+    SetEventInt(hEvent, "amount", iHealth);
+    SetEventInt(hEvent, "entindex", iPatient);
+    FireEvent(hEvent);
 }
 
 

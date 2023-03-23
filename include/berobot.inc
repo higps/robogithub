@@ -259,6 +259,24 @@ native int GetRobotTeam();
  * 
  * @noreturn
  */
+
+/**
+ * Sets the health and has a boolean to display the health on hud or not 
+ * 
+ * */
+native int AddPlayerHealth(int iClient, int iAdd, int iOverheal = 0, bool bStaticMax = false, bShowHealthGain = true);
+/**
+ * Adds health and shows it on the hud
+ *  @param iClient
+ *  @param iAdd amount of health to be added
+ *  @param iOverheal how much overheal
+ *  @param bStaticMax if the max health is static or not
+ *  @param bShowHealthGain show the health on the hud
+ * 
+ * @noreturn
+ */
+
+
 native void EquipWearable(int client, int item);
 
 /**

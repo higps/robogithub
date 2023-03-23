@@ -115,7 +115,6 @@ public void OnMapStart()
     PrecacheSound(SPY_ROBOT_STAB);
 }
 
-
 public Action Command_ToggleMMHumanDisplay(int client, int args)
 {
     if(b_Attribute_Display[client])
@@ -312,8 +311,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 if(IsPowerJack(weapon))
                 {
                 
-                AddPlayerHealth(attacker, 25, 260, true);
-                ShowHealthGain(attacker, 50, attacker);
+                AddPlayerHealth(attacker, 50, 260, true, true);
+                // ShowHealthGain(attacker, 50, attacker);
                 }
 
                 if(IsScorch(weapon) && damagecustom == 0)
@@ -330,8 +329,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
             {
                 if(IsWarriorSpirit(weapon))
                 {           
-                    AddPlayerHealth(attacker, 50, 450, true);
-                    ShowHealthGain(attacker, 50, attacker);
+                    AddPlayerHealth(attacker, 50, 450, true, true);
+                    // ShowHealthGain(attacker, 50, attacker);
                 }
 
                 if(IsKGB(weapon))
@@ -2456,41 +2455,41 @@ void IncrementHeadCount(int iClient)
     // }
 }
 
-void AddPlayerHealth(int iClient, int iAdd, int iOverheal = 0, bool bStaticMax = false)
-{
-    int iHealth = GetClientHealth(iClient);
+// void AddPlayerHealth(int iClient, int iAdd, int iOverheal = 0, bool bStaticMax = false)
+// {
+//     int iHealth = GetClientHealth(iClient);
 
     
-    int iNewHealth = iHealth + iAdd;
-    int iMax = bStaticMax ? iOverheal : GetEntProp(iClient, Prop_Data, "m_iMaxHealth") + iOverheal;
+//     int iNewHealth = iHealth + iAdd;
+//     int iMax = bStaticMax ? iOverheal : GetEntProp(iClient, Prop_Data, "m_iMaxHealth") + iOverheal;
 
-    // PrintToChatAll("Ihealth was: %i iAdd was: %i, iMax was: %i", iHealth, iAdd, iMax);
-    if (iNewHealth <= iMax)
-    {
-        //iNewHealth = min(iNewHealth, iMax);
-        SetEntityHealth(iClient, iNewHealth);
-    }else
-    {
-        SetEntityHealth(iClient, iMax);
-    }
-}
+//     // PrintToChatAll("Ihealth was: %i iAdd was: %i, iMax was: %i", iHealth, iAdd, iMax);
+//     if (iNewHealth <= iMax)
+//     {
+//         //iNewHealth = min(iNewHealth, iMax);
+//         SetEntityHealth(iClient, iNewHealth);
+//     }else
+//     {
+//         SetEntityHealth(iClient, iMax);
+//     }
+// }
 
-void ShowHealthGain(int iPatient, int iHealth, int iHealer = -1)
-{
-    int iUserId = GetClientUserId(iPatient);
-    Handle hEvent = CreateEvent("player_healed", true);
-    SetEventBool(hEvent, "sourcemod", true);
-    SetEventInt(hEvent, "patient", iUserId);
-    SetEventInt(hEvent, "healer", IsValidClient(iHealer) ? GetClientUserId(iHealer) : iUserId);
-    SetEventInt(hEvent, "amount", iHealth);
-    FireEvent(hEvent);
+// void ShowHealthGain(int iPatient, int iHealth, int iHealer = -1)
+// {
+//     int iUserId = GetClientUserId(iPatient);
+//     Handle hEvent = CreateEvent("player_healed", true);
+//     SetEventBool(hEvent, "sourcemod", true);
+//     SetEventInt(hEvent, "patient", iUserId);
+//     SetEventInt(hEvent, "healer", IsValidClient(iHealer) ? GetClientUserId(iHealer) : iUserId);
+//     SetEventInt(hEvent, "amount", iHealth);
+//     FireEvent(hEvent);
 
-    hEvent = CreateEvent("player_healonhit", true);
-    SetEventBool(hEvent, "sourcemod", true);
-    SetEventInt(hEvent, "amount", iHealth);
-    SetEventInt(hEvent, "entindex", iPatient);
-    FireEvent(hEvent);
-}
+//     hEvent = CreateEvent("player_healonhit", true);
+//     SetEventBool(hEvent, "sourcemod", true);
+//     SetEventInt(hEvent, "amount", iHealth);
+//     SetEventInt(hEvent, "entindex", iPatient);
+//     FireEvent(hEvent);
+// }
 
 public Action Combo_Check_Timer (Handle timer, int client)
 {	
