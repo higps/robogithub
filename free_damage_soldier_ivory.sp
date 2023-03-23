@@ -15,7 +15,7 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "MIRV Rocket Launcher"
-#define ROBOT_TIPS "Use M2 to trigger MIRV, use +use or +reload to change MIRV modes"
+#define ROBOT_TIPS "Use M2 to trigger MIRV, use +use or +attack3 to change MIRV modes"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
