@@ -21,7 +21,8 @@ enum(<<= 1)
 #pragma newdecls required
 #pragma semicolon 1
 
-#define WAVESTART "#*music/mvm_start_wave.wav"
+#define WAVESTART "music/mvm_start_wave.wav"
+
 
 public Plugin myinfo =
 {
@@ -142,8 +143,8 @@ public void OnMapStart()
     
     PrecacheSound(MVMSTART);
 
-    PrecacheSound("#*music/mvm_start_wave.wav");
-    PrecacheSound("#*music/mvm_end_tank_wave.wav");
+    PrecacheSound("music/mvm_start_wave.wav");
+    PrecacheSound("music/mvm_end_tank_wave.wav");
     PrecacheSound(ANNOUNCER_ENGINEER_BOT_SPAWN);
     
 }
@@ -345,7 +346,15 @@ public Action Event_teamplay_setup_finished(Event event, const char[] name, bool
     // EmitSoundToAll(MVMSTART);
     //EmitGameSoundToAll(MVMSTART, _, _, );
 
-    EmitSoundToAll(WAVESTART);
+    // EmitSoundToAll(WAVESTART);
+
+        for(int i = 1; i <= MAXPLAYERS+1; i++)
+        {
+            if (IsValidClient(i) && !IsFakeClient(i))
+            {
+                EmitSoundToClient(i,WAVESTART);
+            }
+        }
 
     CreateTimer(5.0, Event_teamplay_setup_finished_timer);
     
@@ -1100,7 +1109,18 @@ public Action Timer_TankCheck(Handle timer)
   
      if (TankCount == robotcount - 1)
     {
-        EmitSoundToAll("#*music/mvm_end_tank_wave.wav");
+        for(int i = 1; i <= MAXPLAYERS+1; i++)
+        {
+
+            if (IsValidClient(i) && !IsFakeClient(i))
+            {
+
+                // EmitSoundToClient(i,"#*music/mvm_end_tank_wave.wav");
+                EmitSoundToClient(i,"music/mvm_end_tank_wave.wav");
+
+                // PrintToChat(i,"Playing sound %s to %N ", BOSSTUNE, i);
+            }
+        }
     }
 
     // if(g_cv_bDebugMode)PrintToChatAll("Tank count was %i", TankCount);

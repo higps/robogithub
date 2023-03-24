@@ -114,7 +114,7 @@ float g_f_previous_dmg_bonus = -1.0;
 //bool g_IsAprilRTD[MAXPLAYERS + 1] = false;
 
 int g_RoundCount;
-int g_TankCount;
+// int g_TankCount;
 
 ArrayList g_Volunteers;
 
