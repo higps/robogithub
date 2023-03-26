@@ -11,7 +11,8 @@
 #define ROBOT_CLASS "Scout"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_SUBCLASS "Hitscan"
-#define ROBOT_DESCRIPTION "Scattergun"
+#define ROBOT_DESCRIPTION "Baby Face's Blaster"
+#define ROBOT_TIPS "Move speed increases from kills\nFaster fire rate"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -191,7 +192,7 @@ MakeGiantscout(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client, "You are %s/n %s,", ROBOT_NAME, ROBOT_DESCRIPTION);
+	PrintHintText(client, ROBOT_TIPS);
 	// SetEntProp(client, Prop_Send, "m_bForcedSkin", 1);
 	// SetEntProp(client, Prop_Send, "m_nForcedSkin", 0);
 
