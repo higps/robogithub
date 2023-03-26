@@ -7,12 +7,12 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Solar Light"
+#define ROBOT_NAME	"Solarlight"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Hybrid Knight"
-#define ROBOT_TIPS "Rapid Iron Bomber\nRapid on Hit charge refill"
+#define ROBOT_TIPS "Rapid Iron Bomber\nCharge longer while your sword is out"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
