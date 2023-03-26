@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Gas Passer, Sharpened Volcano Fragment"
-#define ROBOT_TIPS "\nThrow gas at them\nHit enemies with gas\nHit enemies in general"
+#define ROBOT_TIPS "Throw gas at enemies\nGas-covered enemies explode on ignite\nHit burning targets for an AOE explosion!"
 
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
