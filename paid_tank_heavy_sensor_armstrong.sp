@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Nanomachines"
-#define ROBOT_TIPS "Deal or take 4000 damage to fill meter, once activated become slower, ubered and repair yourself"
+#define ROBOT_TIPS "Deal or take 4000 damage to fill meter, once activated become slower, ubered and repair yourself\nYou can't contest objectives"
 #define ROBOT_COST 2.5
 
  
