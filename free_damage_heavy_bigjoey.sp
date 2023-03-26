@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Tomislav"
-#define ROBOT_TIPS "+15%%%% damage to players\nOverheat increases accuracy up to 75%%%%\nLess damage done to buildings"
+#define ROBOT_TIPS "Overheat increases accuracy up to 75%%%%\nDon't let overheat reach 100!\nLess damage done to buildings"
 
 
 //#define MODEL "models/weapons/shells/shell_minigun.mdl"
