@@ -11,7 +11,7 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Eyelander, Chargin' Targe"
-#define ROBOT_TIPS "Very Long Charge\n25% charge refill on kill\n3 second crit boost on kill\nHigh Jumps"
+#define ROBOT_TIPS "Longer charge\nBetter turn control\n20% charge refill on hit"
 
 #define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
