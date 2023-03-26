@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Gain buffs depending on who you punch"
-#define ROBOT_TIPS "Immune to tickles\nBecomes ubered briefly when hit by an ubercharged medic's ubersaw"
+#define ROBOT_TIPS "Immune to tickles\nBecomes ubered briefly when hit by an ubercharged medic's ubersaw\nYou can't contest objectives"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
