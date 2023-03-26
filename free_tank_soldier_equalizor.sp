@@ -12,8 +12,8 @@
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Equalizer, base jumper, speed battalion buff"
-#define ROBOT_TIPS "Taunt to get airborne to use the base jumper\nBuild meter and buff your team!"
+#define ROBOT_DESCRIPTION "Equalizer & Escape Plan fusion, Base Jumper"
+#define ROBOT_TIPS "Taunt to get airborne to use the base jumper\nSpeed and damage increase as health decreases\nYou can't contest objectives"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
