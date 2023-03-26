@@ -16,7 +16,7 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "SAXTRON HALE!"
-#define ROBOT_TIPS "Crouch and look up to super jump\nCrouch and look down while jumping to weight drop"
+#define ROBOT_TIPS "Crouch and look up to super jump\nCrouch and look down while jumping to weight drop\nUse rage to scare surrounding enemies!"
 
 #define GSOLDIER		"models/bots/saxtron/bot_saxtron_v2.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
