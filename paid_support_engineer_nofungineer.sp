@@ -20,7 +20,7 @@
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS ""
 #define ROBOT_DESCRIPTION "Ultra Drain Pomson, High Damage Short Circuit"
-#define ROBOT_TIPS "Be annoying"
+#define ROBOT_TIPS "Negate spam with Short Circuit\nPomson fully drains cloak and Uber\nBuild up to 3 normal sentries\nExtra dispenser"
 #define ROBOT_COST 2.0
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
