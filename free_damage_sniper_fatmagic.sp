@@ -13,8 +13,8 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Bushwacka Piss Bot"
-#define ROBOT_TIPS "Rapid swing Bushwacka, become ubered whenever jarated"
+#define ROBOT_DESCRIPTION "Bushwacka, Jarate"
+#define ROBOT_TIPS "Rapid swing Bushwacka\nBecome briefly ubered when jarate'd\nYou regenerate health over time!"
 
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
