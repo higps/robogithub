@@ -12,7 +12,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Power-Walk Charge"
 #define ROBOT_COST 1.0
-#define ROBOT_TIPS "Very Long & Slow Charge\nHeal + Charge refill on kill\n3 second speed boost on hit"
+#define ROBOT_TIPS "Extremely long but slow charge\nCharge refill on kill\nYou can't contest objectives"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/mvm_tank_horn.wav"
