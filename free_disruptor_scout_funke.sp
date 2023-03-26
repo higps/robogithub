@@ -12,7 +12,8 @@
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Disruptor"
-#define ROBOT_DESCRIPTION "Rapid Cleaver"
+#define ROBOT_DESCRIPTION "Rapid Flying Guillotine"
+#define ROBOT_TIPS "Cleavers mark for death\nFinish off enemies with your Batsaber!"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -187,7 +188,7 @@ MakeGiantscout(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Cleaver On Hit: Marks for Death!\nBat: Deals crits whenever it would mini-crit\nBat on Kill: Gain 10 second speed boost");
+	PrintHintText(client, ROBOT_TIPS);
 	
 }
 
