@@ -12,6 +12,7 @@
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Quickfix + MvM Shield"
+#define ROBOT_TIPS "Protect your team or help them push with your shield"
 #define ROBOT_COST 4.0
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
@@ -133,7 +134,7 @@ TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client , "You have %s", ROBOT_DESCRIPTION);
+	PrintHintText(client , ROBOT_TIPS);
 		
 
 
