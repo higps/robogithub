@@ -20,8 +20,8 @@
 #define ROBOT_ROLE "Builder"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS ""
-#define ROBOT_DESCRIPTION " Wrangler, +3 dispensers and minisentries, Teamporter"
-#define ROBOT_TIPS "Buildings build instantly when hit by a wrench\nBuild teamporters to easily teleport your team to the front lines\nPhase through buildings"
+#define ROBOT_DESCRIPTION "Wrangler, 5 mini-sentries, Teamporter"
+#define ROBOT_TIPS "Use your 5 mini-sentries to cover areas\nBuild teamporters to easily teleport your team to the front lines\nPhase through buildings"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -136,7 +136,7 @@ MakeBotSlinger(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Use build menu to build up to 5 sentries and 3 dispensers\nRemove all sappers at once!");
+	PrintHintText(client, ROBOT_TIPS);
 	
 }
 
