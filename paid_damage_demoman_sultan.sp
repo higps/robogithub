@@ -10,8 +10,8 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Eyelander, Chargin' Targe"
-#define ROBOT_TIPS "Short Charge Range\nRapid re-charge\nHigh Jumps"
+#define ROBOT_DESCRIPTION "Persian Persuader, Splendid Screen"
+#define ROBOT_TIPS "Short Charge Range\nRapid charge refill\nHigh Jumps"
 #define ROBOT_COST 2.0
 
 #define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
