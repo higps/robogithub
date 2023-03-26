@@ -14,7 +14,7 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Hitman's Heatmaker, Carbine"
-#define ROBOT_TIPS "Mini-crit becomes crits"
+#define ROBOT_TIPS "Mini-crit becomes crits\nYou can move while scoped!"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
