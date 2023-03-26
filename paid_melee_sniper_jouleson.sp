@@ -14,7 +14,7 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Invisible Spell Sniper"
-#define ROBOT_TIPS "Be invisible\nBe scary"
+#define ROBOT_TIPS "Use your spell to go invisible\nYour Shiv has longer bleed\nSpeed on hit"
 #define ROBOT_COST 1.0
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
