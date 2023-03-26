@@ -11,8 +11,8 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
-#define ROBOT_DESCRIPTION "Fast Airblast\nFaster Move Speed"
-#define ROBOT_TIPS "25%%%% Faster Airblast\n75%%%% more damage\n-35%%%%% Faster move speed\n15%%%% longer flame range"
+#define ROBOT_DESCRIPTION "Fast airblast, further flame range"
+#define ROBOT_TIPS "25%%%% Faster Airblast\n15%%%% longer flame range\nHeal 175 on extinguish"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
