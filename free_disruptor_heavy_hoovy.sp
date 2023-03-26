@@ -14,8 +14,8 @@
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Disruptor"
-#define ROBOT_DESCRIPTION "Robot Hoovy"
-#define ROBOT_TIPS "Tickle enemies\nTaunt kill to make them laugh so hard they explode"
+#define ROBOT_DESCRIPTION "Perma-crit mittens"
+#define ROBOT_TIPS "Tickle enemies\nTaunt kill enemies for an instakill AOE explosion!"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
