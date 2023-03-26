@@ -12,7 +12,8 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
-#define ROBOT_DESCRIPTION "Plhogistinator, Flaregun"
+#define ROBOT_DESCRIPTION "Plhogistinator, Manmelter"
+#define ROBOT_TIPS "Additional Uber after activating MMMPH\nFlares home on burning targets\nHeal 200 when extinguishing with the Manmelter"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -167,7 +168,7 @@ MakeGiantPyro(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Flaregun homes in on targets on fire");
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 
