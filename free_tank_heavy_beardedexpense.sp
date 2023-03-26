@@ -15,7 +15,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Taunt: Leap Ability"
-#define ROBOT_TIPS "You are a Tank!\nYou can't contest objectives\nUse taunt to leap. Land on players to kill everything!\nInfinite battalions backup buff!"
+#define ROBOT_TIPS "You can't contest objectives\nLeap launches based on where you were looking\nStomp an enemy for an instakill AOE explosion!\nLong time crits on glove kills"
  
 #define SHWC             "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
