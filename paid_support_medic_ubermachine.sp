@@ -13,8 +13,8 @@
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
-#define ROBOT_DESCRIPTION "Uber-Saw Healer"
-#define ROBOT_TIPS "Right Click to activate uber\n hit teammates to give them uber\nGetting hit by ubered players ubers you for 1 second" 
+#define ROBOT_DESCRIPTION "Stock Uber, Ubersaw"
+#define ROBOT_TIPS "Use Ubersaw on overextending enemies or for self defense\nUse Uber for stronger team pushes" 
 #define ROBOT_COST 1.0
 
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
