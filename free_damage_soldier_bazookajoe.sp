@@ -13,6 +13,7 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Rapid fire Bazooka"
+#define ROBOT_TIPS "Long reload\nReduced self damage\nShoot at your feet and jump to glide!"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -256,6 +257,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
+	PrintHintText(client, ROBOT_TIPS);
 
 	
 }
