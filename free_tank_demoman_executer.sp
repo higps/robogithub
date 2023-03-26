@@ -11,7 +11,7 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "SkullCutter"
-#define ROBOT_TIPS "High Damage Axe\nIncreased melee range"
+#define ROBOT_TIPS "High Damage Axe\nIncreased melee range\nYou can't contest objectives"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
