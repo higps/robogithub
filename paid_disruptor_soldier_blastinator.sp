@@ -14,6 +14,7 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "High Knock Back Rockets"
+#define ROBOT_TIPS "Shoot at crowds to break them up\nGenerate 3 coins on death"
 #define ROBOT_COST 3.0
 #define ROBOT_COIN_GENERATION 3
 
@@ -258,7 +259,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "You generate addotional resources on death for your team\nYou can rocket jump");
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 
