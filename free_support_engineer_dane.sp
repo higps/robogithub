@@ -16,7 +16,7 @@
 #define ROBOT_ROLE "Builder"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS ""
-#define ROBOT_DESCRIPTION " Widowmaker, Jag"
+#define ROBOT_DESCRIPTION "Widowmaker, Wrench"
 #define ROBOT_TIPS "Buildings build and upgrade instantly when hit by a wrench\nBuild teamporters to easily teleport your team to the front lines\nPhase through buildings"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
