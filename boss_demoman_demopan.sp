@@ -10,10 +10,10 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Demopan"
 #define ROBOT_ROLE "ZBOSS"
-#define ROBOT_DESCRIPTION "Crit Pan"
+#define ROBOT_DESCRIPTION "Crit Pan + Chargin' Targe"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_TIPS "Hit Enemies with your Pan\nYou can't cap or block captures"
+#define ROBOT_TIPS "Pan deals massive damage\nUse charges to rush the enemy\nFull turn control"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
