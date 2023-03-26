@@ -16,7 +16,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Knockback Fists of Steel"
-#define ROBOT_TIPS "Push enemies by punching them!\nYou have melee vulnerability"
+#define ROBOT_TIPS "Push enemies by punching them!\nYou have melee vulnerability\nYou can't contest objectives"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
