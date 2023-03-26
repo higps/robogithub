@@ -13,8 +13,8 @@
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
-#define ROBOT_DESCRIPTION "Sydney Sleeper"
-#define ROBOT_TIPS "Shoot piss"
+#define ROBOT_DESCRIPTION "Sydney Sleeper, Jarate"
+#define ROBOT_TIPS "Douse enemies with the Sleeper and Jarate\nQuicker Jarate recharge"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
