@@ -13,9 +13,9 @@
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Sentry Buster"
-#define ROBOT_DESCRIPTION "Anti-Wrangler"
+#define ROBOT_DESCRIPTION "Burstfire Direct Hit"
 #define ROBOT_COST 2.5
-#define ROBOT_STATS "Burst fire 3 rockets\nIgnores damage resistance buffs\n-35%%%% damage to players\n-40%%%% damage to buildings\nRocket Specialist"
+#define ROBOT_STATS "Burstfire 4 rockets\nPierces damage resistances\n-35%%%% damage to players\n-50%%%% damage to buildings"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
