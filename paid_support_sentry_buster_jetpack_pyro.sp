@@ -13,8 +13,8 @@
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_SUBCLASS "Sentry Buster"
-#define ROBOT_DESCRIPTION "Jetpack + Homewrecker"
-#define ROBOT_TIPS "Use your jetpack to smack"
+#define ROBOT_DESCRIPTION "Thermal Thruster + Homewrecker"
+#define ROBOT_TIPS "Infiltrate engi nests with the Thruster\nYour Homewrecker pierces resistances!"
 #define ROBOT_COST 1.0
 
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"
