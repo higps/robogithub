@@ -14,7 +14,7 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Crit Stickies"
-#define ROBOT_TIPS "Crit Stickies"
+#define ROBOT_TIPS "Faster stickybomb charge rate\nSlower stickybomb arm time"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
