@@ -12,6 +12,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Pushback rage"
+#define ROBOT_TIPS "Deal damage to build rage\nUse special attack or taunt to activate rage\nRage doesn't lower your DPS"
 #define ROBOT_COST 3.0
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
@@ -191,7 +192,7 @@ MakeGRageH(client)
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	PrintHintText(client , "You are %s\n %s,", ROBOT_NAME, ROBOT_DESCRIPTION);
+	PrintHintText(client , ROBOT_TIPS);
 
 }
  
@@ -247,7 +248,7 @@ stock GiveGRageH(client)
 
 		}
 		
-		PrintHintText(client, "Taunt To activate rage mode!");
+		// PrintHintText(client, ROBOT_TIPS);
 	}
 }
 
