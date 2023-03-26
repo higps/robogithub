@@ -12,6 +12,7 @@
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Kritzkrieg"
+#define ROBOT_TIPS "Increase your team's damage output with the Kritzkrieg\nDefend yourself with the Blutsauger"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -123,7 +124,7 @@ TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client, "%s", ROBOT_DESCRIPTION);
+	PrintHintText(client, ROBOT_TIPS);
 }
 
 // public TF2_OnConditionAdded(client, TFCond:condition)
