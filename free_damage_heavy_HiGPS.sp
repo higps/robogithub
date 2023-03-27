@@ -11,7 +11,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Deflector"
-#define ROBOT_TIPS "Shoot down projectiles\n+30%% damage done to players\nReduced damage to buildings"
+#define ROBOT_TIPS "You have the level 2 deflector upgrade!\nShoot down rockets, grenades, and other projectiles"
  
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
