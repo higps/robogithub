@@ -446,7 +446,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     if (!IsAnyRobot(client)){ 
         if (g_AprilEnable && g_BossMode && g_Enable)
         {
-            CreateTimer(0.1, SetRandomRobot_Timer, client);
+            RequestFrame(Internal_SetRandomRobot, client);
         }
     }
             // int Humans = GetTeamClientCount(g_HumanTeam);
@@ -606,14 +606,14 @@ public Action RemoveBody(Handle timer, any client)
 //     }
 // }
 
-public Action SetRandomRobot_Timer(Handle timer, any client)
-{
+// public Action SetRandomRobot_Timer(Handle timer, any client)
+// {
 
-    if (!IsAnyRobot(client))
-    {
-        Internal_SetRandomRobot(client);
-    }
-}
+//     if (!IsAnyRobot(client))
+//     {
+//         Internal_SetRandomRobot(client);
+//     }
+// }
 // 
 
 // 
@@ -721,10 +721,10 @@ public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dont
     
 }
 
-public Action MakeRobotsApril(Handle timer)
-{
-    Command_YT_Robot_Start(1, true);
-}
+// public Action MakeRobotsApril(Handle timer)
+// {
+//     Command_YT_Robot_Start(1, true);
+// }
 
 public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontBroadcast)
 {
@@ -1025,7 +1025,7 @@ public Action Command_Robot_Selection(int client, int args)
 {
 
     if (g_AprilEnable && g_Enable){
-        CreateTimer(0.5, MakeRobotsApril);     
+        Command_YT_Robot_Start(1, true);
            
     }
 
@@ -1174,11 +1174,11 @@ public Action Command_YT_Robot_Start(int client, int args)
     else if (g_Enable  && g_AprilEnable)
     {
         //ARPIL FOOLS CODE WHERE EVERYONE IS A ROBOT!
-        PrintCenterTextAll("Everyone can be a robot, who cares.");
+        // PrintCenterTextAll("Everyone can be a robot, who cares.");
         g_BossMode = true;
         for(int i = 0; i <= MaxClients; i++)
         {
-            //PrintToChatAll("Looping players %i", i);
+            // PrintToChatAll("Looping players %i", i);
             if(IsValidClient(i))
             {
                 if(IsClientInGame(i))
@@ -1426,7 +1426,7 @@ public Action MakeRobot(int client, bool volunteering)
         {
             SMLogTag(SML_VERBOSE, "volunteering during boss_mode => switch team & show menu");
             //int playerID = GetClientUserId(client);
-            MoveToRobots(client);
+            if(!g_AprilEnable)MoveToRobots(client);
         }
     }
     else if(!volunteering && g_cv_Volunteered[client]) //Remove from volunteer list
@@ -1480,7 +1480,8 @@ public Action MakeRobot(int client, bool volunteering)
 
 void MoveToRobots(int client)
 {    
-    TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
+    if(!g_AprilEnable)TF2_SwapTeamAndRespawnNoMsg(client, g_RoboTeam);
+    
     RequestFrame(Internal_SetRandomRobot,client);
     // CreateTimer(0.5, SetRandomRobot_Timer, client);
     // SetClientRepicking(client, false);
@@ -2055,7 +2056,7 @@ int Native_GetRobotCap(Handle plugin, int numParams)
 
 bool AddRandomVolunteer()
 {
-    if (!g_BossMode)
+    if (!g_BossMode || g_AprilEnable)
     {
         SMLogTag(SML_INFO, "will not add random volunteer, because g_BossMode is not enabled");
         return false;
