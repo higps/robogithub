@@ -7,13 +7,14 @@
 //#include <sendproxy>
 #include <dhooks>
 #include <sdktools>
+#include <tf2attributes>
 //#include <collisionhook>
 // #include <berobot_constants>
 // #include <berobot>
 
-float g_scale = 0.2;
+float g_scale = 0.35;
 
-bool isTinyDeskEngineer[MAXPLAYERS + 1] = false;
+bool isTinyDeskEngineer[MAXPLAYERS + 1] = {false,...};
 //#pragma newdecls required
 
 
@@ -26,8 +27,53 @@ public OnPluginStart()
 	HookEvent("player_upgradedobject", ObjectBuilt, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-	RegConsoleCmd("sm_tinydeskengineer", MakeTinyDeskEngineer, "Get the experimental medigun");
-	RegConsoleCmd("sm_tde", MakeTinyDeskEngineer, "Get the experimental medigun");
+	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
+
+	RegConsoleCmd("sm_tinydeskengineer", MakeTinyDeskEngineer, "Become tiny desk engineer");
+	RegConsoleCmd("sm_tde", MakeTinyDeskEngineer, "Become tiny desk engineer");
+}
+
+public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
+{
+
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+    if (IsValidClient(client) && IsPlayerAlive(client))
+    {
+		
+		bool IsSniper = false;
+	for(int i = 1; i <= MaxClients; i++)
+    {
+        if (IsValidClient(i) && TF2_GetPlayerClass(i) == TFClass_Sniper)
+        {
+            IsSniper = true;
+
+        }
+
+
+    }
+
+	// for(int i = 1; i <= MaxClients; i++)
+    // {
+    //     if (IsValidClient(i))
+    //     {
+		if(IsSniper)RequestFrame(SetTorsoStat, client);
+            
+
+    //     }
+
+
+    // }
+
+
+
+	}
+}
+
+void SetTorsoStat(int client)
+{
+	PrintCenterText(client, "Sniper detected, altering torso!");
+	TF2Attrib_SetByName(client, "torso scale", GetRandomFloat(0.25, 2.0));
 }
 
 public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
@@ -104,6 +150,11 @@ public Action MakeTinyDeskEngineer(int client, int args)
 
 	int clientid = GetClientUserId(client);
 
+
+	// PrintToChatAll("Float squared %f",SquareRoot(g_scale));
+
+	TF2Attrib_SetByName(client, "move speed penalty", SquareRoot(g_scale));
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	CreateTimer(0.5, CauseTaunt, clientid);    
 }
 
