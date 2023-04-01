@@ -446,7 +446,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     if (!IsAnyRobot(client)){ 
         if (g_AprilEnable && g_BossMode && g_Enable)
         {
-            RequestFrame(Internal_SetRandomRobot, client);
+            CreateTimer(0.1, SetRandomRobot_Timer, client);
         }
     }
             // int Humans = GetTeamClientCount(g_HumanTeam);
@@ -606,14 +606,14 @@ public Action RemoveBody(Handle timer, any client)
 //     }
 // }
 
-// public Action SetRandomRobot_Timer(Handle timer, any client)
-// {
+public Action SetRandomRobot_Timer(Handle timer, any client)
+{
 
-//     if (!IsAnyRobot(client))
-//     {
-//         Internal_SetRandomRobot(client);
-//     }
-// }
+    if (!IsAnyRobot(client))
+    {
+        Internal_SetRandomRobot(client);
+    }
+}
 // 
 
 // 
@@ -1178,7 +1178,7 @@ public Action Command_YT_Robot_Start(int client, int args)
         g_BossMode = true;
         for(int i = 0; i <= MaxClients; i++)
         {
-            // PrintToChatAll("Looping players %i", i);
+
             if(IsValidClient(i))
             {
                 if(IsClientInGame(i))
