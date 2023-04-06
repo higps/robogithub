@@ -305,9 +305,9 @@ public Action Command_Volunteer(int client, int args)
 {
     SMLogTag(SML_VERBOSE, "Command_Volunteer called for %L", client);
 
-    bool b_AprilEnabled = FindConVar("sm_mm_april_enable");
-
-    if (b_AprilEnabled)
+    ConVar b_AprilEnabled = FindConVar("sm_mm_april_enable");
+    
+    if (GetConVarBool(b_AprilEnabled))
     {
         PrintCenterText(client, "No need to volunteer");
         return Plugin_Handled;
