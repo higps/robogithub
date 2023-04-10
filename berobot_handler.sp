@@ -1319,19 +1319,19 @@ public Action Command_MountRobot(int client, int args)
     if (IsAnyRobot(client))
     {
         int playerID = GetClientUserId(client);
-        int taunt;
-        int random = GetRandomInt(1,2);
-        switch (random)
-        {
-            case 1:
-            {
-                taunt = 1172; //victory lap
-            }
-            case 2:
-            {
-                taunt = 30672; // zoomin broom
-            }
-        }
+        int taunt = 1172;
+        // int random = GetRandomInt(1,2);
+        // switch (random)
+        // {
+        //     case 1:
+        //     {
+        //         taunt = 1172; //victory lap
+        //     }
+        //     case 2:
+        //     {
+        //         taunt = 30672; // zoomin broom
+        //     }
+        // }
 
         ServerCommand("sm_tauntem #%d %i", playerID, taunt);
     }

@@ -232,7 +232,7 @@ stock GiveGiantDemoKnight(client)
 			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
 			TF2Attrib_SetByName(Weapon3, "single wep deploy time decreased", 0.01);
-			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=6 Cooldown=1.0 SpellOnCond=5 Cond=11");
+			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=6 Cooldown=1.0");
 		}
 	}
 

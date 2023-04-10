@@ -5,6 +5,7 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 //#include <sendproxy>
 #include <dhooks>
 
@@ -227,7 +228,7 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_SetByName(Huntsman, "heal on kill", 50.0);
 			// TF2Attrib_SetByName(Huntsman, "faster reload rate", 3.5);
 			
-
+TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
 		}
 
 		// 		if(IsValidEntity(Kukri))

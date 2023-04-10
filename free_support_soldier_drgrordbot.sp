@@ -244,7 +244,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.25);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);					
-
+			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=7 Cooldown=50.0");
 		}
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);

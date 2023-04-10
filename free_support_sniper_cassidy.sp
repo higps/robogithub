@@ -187,23 +187,8 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.65);
 		
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
-			// TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 10.0);
 			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 10.0);
-			TF2Attrib_SetByName(SniperRifle, "minicrits become crits", 1.0);
-			
-			// TF2Attrib_SetByName(SniperRifle, "projectile penetration", 1.0);
-			
-			//TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
-			// TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
-			//TF2Attrib_SetByName(SniperRifle, "apply z velocity on damage", 450.0);
-			// TF2Attrib_SetByName(SniperRifle, "critboost on kill", 3.0);
-			
-			// TF2Attrib_SetByName(SniperRifle, "heal on hit for rapidfire", 15.0);
-			// TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
-			// TF2CustAttr_SetString(SniperRifle, "knockback modifier", "4.0");
-			
-			
-			
+			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
 		}
 
 	if(IsValidEntity(SMG))

@@ -5,6 +5,7 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 //#include <sendproxy>
 #include <dhooks>
 
@@ -196,6 +197,7 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
 			TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 2.5);
 			TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
+			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
 			
 			
 			

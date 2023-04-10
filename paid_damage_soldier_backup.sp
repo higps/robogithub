@@ -254,7 +254,7 @@ stock GiveGiantSoldier(client)
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
-		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 
 		if(IsValidEntity(Weapon1))
 		{
@@ -270,6 +270,13 @@ stock GiveGiantSoldier(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+		}
+
+		if(IsValidEntity(Weapon2))
+		{						
+			TF2CustAttr_SetString(Weapon2, "custom buff type", "mvm-banner");
+			// TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
+			// TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
 		}
 
 		// if(IsValidEntity(Weapon2))
