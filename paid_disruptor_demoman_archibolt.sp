@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Archibolt"
@@ -48,17 +49,17 @@ public OnPluginStart()
 	robot.role = ROBOT_ROLE;
 	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
-    AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, restrictions, ROBOT_COIN_GENERATION);
+	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, restrictions, ROBOT_COIN_GENERATION);
 }
 
 public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -198,10 +199,10 @@ public Action:Timer_Switch(Handle:timer, any:client)
 #define GrayBans 30104
 #define SevenSees 30480
 
-bool g_button_held[MAXPLAYERS + 1] = {false, ...};
-float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-float g_RechargeCooldown = 1.0;
-float g_skill;
+// bool g_button_held[MAXPLAYERS + 1] = {false, ...};
+// float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
+// float g_RechargeCooldown = 1.0;
+// float g_skill;
 
 	
 stock GiveGiantDemoKnight(client)
@@ -231,6 +232,7 @@ stock GiveGiantDemoKnight(client)
 			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
 			TF2Attrib_SetByName(Weapon3, "single wep deploy time decreased", 0.01);
+			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=6 Cooldown=1.0");
 		}
 	}
 
@@ -270,120 +272,120 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	
 }
 
-#define PAGE_LENGTH 7
+// #define PAGE_LENGTH 7
 
-public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
-{
-	if (IsRobot(client, ROBOT_NAME))
-	{
+// public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+// {
+// 	if (IsRobot(client, ROBOT_NAME))
+// 	{
 
-		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE) ) 
-		{
-			//  PrintToChatAll("Press");
-            g_button_held[client] = true;
-		}
+// 		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE) ) 
+// 		{
+// 			//  PrintToChatAll("Press");
+//             g_button_held[client] = true;
+// 		}
 
 
 
-		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_USE) ) 
-		{
-			//  PrintToChatAll("Release");
-			g_button_held[client] = false;
+// 		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_USE) ) 
+// 		{
+// 			//  PrintToChatAll("Release");
+// 			g_button_held[client] = false;
             
-		}
-		//0 = Shadow Leap
-		//PrintToChat(client, "Throwing spell!");
-		// UpdateCharge(client);
-		g_skill = GetEngineTime();
-		DrawHUD(client);
+// 		}
+// 		//0 = Shadow Leap
+// 		//PrintToChat(client, "Throwing spell!");
+// 		// UpdateCharge(client);
+// 		g_skill = GetEngineTime();
+// 		DrawHUD(client);
 		
-	}
-	return Plugin_Continue;
-}
+// 	}
+// 	return Plugin_Continue;
+// }
 
 
-public void CastSpell(int client) {
+// public void CastSpell(int client) {
 
 
-	int	index = 6;
+// 	int	index = 6;
 	
 	
-	if (!IsPlayerAlive(client))ReplyToCommand(client, "[SM] You must be alive to use this command!");
-	else {
-		int ent = FindSpellbook(client);
-		if (!ent) {
-			ent = CreateEntityByName("tf_weapon_spellbook");
-			if (ent != -1) {
-				SetEntProp(ent, Prop_Send, "m_iItemDefinitionIndex", 1132);
-				SetEntProp(ent, Prop_Send, "m_bInitialized", 1);
-				SetEntProp(ent, Prop_Send, "m_iAccountID", GetSteamAccountID(client));
-				DispatchSpawn(ent);
-			}
-			else {
-				ReplyToCommand(client, "[SM] Could not create spellbook entity!");
-				return;
-			}
-		}
+// 	if (!IsPlayerAlive(client))ReplyToCommand(client, "[SM] You must be alive to use this command!");
+// 	else {
+// 		int ent = FindSpellbook(client);
+// 		if (!ent) {
+// 			ent = CreateEntityByName("tf_weapon_spellbook");
+// 			if (ent != -1) {
+// 				SetEntProp(ent, Prop_Send, "m_iItemDefinitionIndex", 1132);
+// 				SetEntProp(ent, Prop_Send, "m_bInitialized", 1);
+// 				SetEntProp(ent, Prop_Send, "m_iAccountID", GetSteamAccountID(client));
+// 				DispatchSpawn(ent);
+// 			}
+// 			else {
+// 				ReplyToCommand(client, "[SM] Could not create spellbook entity!");
+// 				return;
+// 			}
+// 		}
 		
-		int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if (active != ent) {
-			SetEntProp(ent, Prop_Send, "m_iSpellCharges", 1);
-			SetEntProp(ent, Prop_Send, "m_iSelectedSpellIndex", index);
+// 		int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+// 		if (active != ent) {
+// 			SetEntProp(ent, Prop_Send, "m_iSpellCharges", 1);
+// 			SetEntProp(ent, Prop_Send, "m_iSelectedSpellIndex", index);
 			
-			SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", active);
-			EquipPlayerWeapon(client, ent);
-			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", ent);
+// 			SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", active);
+// 			EquipPlayerWeapon(client, ent);
+// 			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", ent);
 			
 
-		}
-	}
-}
+// 		}
+// 	}
+// }
 
-public int FindSpellbook(int client) {
-	int i = -1;
-	while ((i = FindEntityByClassname(i, "tf_weapon_spellbook")) != -1) {
-		if (IsValidEntity(i) && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client && !GetEntProp(i, Prop_Send, "m_bDisguiseWeapon"))return i;
-	}
-	return 0;
-}
+// public int FindSpellbook(int client) {
+// 	int i = -1;
+// 	while ((i = FindEntityByClassname(i, "tf_weapon_spellbook")) != -1) {
+// 		if (IsValidEntity(i) && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client && !GetEntProp(i, Prop_Send, "m_bDisguiseWeapon"))return i;
+// 	}
+// 	return 0;
+// }
 
 
-bool isready;
-void DrawHUD(int client)
-{
-	char sHUDText[128];
-	int iCountDown = RoundToCeil(g_Recharge[client] - g_skill);
+// bool isready;
+// void DrawHUD(int client)
+// {
+// 	char sHUDText[128];
+// 	int iCountDown = RoundToCeil(g_Recharge[client] - g_skill);
 	
-	Format(sHUDText, sizeof(sHUDText), "Shadow Leap: %i   ", iCountDown);
+// 	Format(sHUDText, sizeof(sHUDText), "Shadow Leap: %i   ", iCountDown);
 	
-	if(iCountDown <= 0)
-	{
-	Format(sHUDText, sizeof(sHUDText), "Shadow Leap Ready!");
+// 	if(iCountDown <= 0)
+// 	{
+// 	Format(sHUDText, sizeof(sHUDText), "Shadow Leap Ready!");
 
-	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+// 	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
 
 
-	} else {
-		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
+// 	} else {
+// 		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
 		
 		
-	}
+// 	}
 	
-	ShowHudText(client, -2, sHUDText);
+// 	ShowHudText(client, -2, sHUDText);
 
 
-	if (!isready && iCountDown <= 0)
-	{
-	TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
-	// PrintToChatAll("Ready!");
-	isready = true;	
-	}
+// 	if (!isready && iCountDown <= 0)
+// 	{
+// 	TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
+// 	// PrintToChatAll("Ready!");
+// 	isready = true;	
+// 	}
 
-	if (g_button_held[client] && iCountDown <= 0 && IsPlayerAlive(client))
-	{
-	RequestFrame(CastSpell, client);
-	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-	isready = false;
+// 	if (g_button_held[client] && iCountDown <= 0 && IsPlayerAlive(client))
+// 	{
+// 	RequestFrame(CastSpell, client);
+// 	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+// 	isready = false;
 
-	}
-}
+// 	}
+// }

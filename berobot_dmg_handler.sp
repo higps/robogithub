@@ -481,7 +481,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                     if(IsKunai(weapon))
                     {
-                        AddPlayerHealth(attacker, 120, 210, true);
+                        AddPlayerHealth(attacker, 120, 275, true);
                     }
 
                     if (IsBigEarner(weapon))
@@ -491,8 +491,9 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                     if(IsSpycicle(weapon))
                     {
-                        
-                        TF2_StunPlayer(victim, 1.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
+                        TF2Attrib_AddCustomPlayerAttribute(victim, "damage penalty", 0.7, 3.0);
+                        TF2Attrib_AddCustomPlayerAttribute(attacker, "damage penalty", 0.7, 3.0);
+                        //TF2_StunPlayer(victim, 1.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
                     }
 
                     if (IsYer(weapon))
@@ -560,7 +561,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                     critType = CritType_Crit;
                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                    EmitSoundToAll(SPY_ROBOT_STAB, victim);
+                    TF2_AddCondition(attacker, TFCond_DefenseBuffNoCritBlock, 2.0);
+                    // EmitSoundToAll(SPY_ROBOT_STAB, victim);
                     // EmitSoundToClient(victim, SPY_ROBOT_STAB);
                     return Plugin_Changed;
                 }
@@ -886,6 +888,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
         int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+        int Weapon4 = GetPlayerWeaponSlot(client, 3);
         char chat_display[512];
 
         if (TF2_GetPlayerClass(client) == TFClass_Pyro)
@@ -1012,12 +1015,20 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Power: {orange}Greatly reduced respawn time",chat_display);
             if (IsStockOrAllClassWeapon(Weapon3) && Weapon1 != -1 &&  Weapon2 != -1)
             {
-                TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 1.5);
-                TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 1.5);
-                TF2Attrib_SetByName(Weapon2, "Reload time decreased", 0.6);
-                TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.6);
+                // TF2Attrib_SetByName(client, "maxammo primary increased", 1.5);
+                // // TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 1.5);
+                TF2Attrib_AddCustomPlayerAttribute(client, "maxammo primary increased", 1.5);
+                TF2Attrib_AddCustomPlayerAttribute(client, "maxammo secondary increased", 1.5);
+                TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.75);
+                TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.75);
+
+                // TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.6);
 
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: Provides all weapons with {orange}+50%% maxammo and +25%% faster reload",chat_display);
+            }else if (!IsStockOrAllClassWeapon(Weapon3) && Weapon1 != -1 &&  Weapon2 != -1)
+            {
+                TF2Attrib_RemoveByName(Weapon1, "faster reload rate");
+                TF2Attrib_RemoveByName(Weapon2, "faster reload rate");
             }
 
             if (IsAtomizer(Weapon3))
@@ -1376,8 +1387,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
             TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.15);
-            TF2CustAttr_SetString(Weapon3, "robot engineer", "sentries=2");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+1 Sentry build count and +15%% faster movement speed",chat_display);
+            TF2Attrib_SetByName(Weapon3, "engy disposable sentries", 2.0);
+            TF2Attrib_SetByName(client, "engy disposable sentries", 2.0);
+            TF2Attrib_SetByName(Weapon4, "engy disposable sentries", 2.0);
+            
+            // TF2CustAttr_SetString(Weapon3, "robot engineer", "sentries=2");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+1 Disposable Sentry and +15%% faster movement speed",chat_display);
             
         }
         // if (IsSapper(Weapon2))

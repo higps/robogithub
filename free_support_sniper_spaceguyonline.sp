@@ -100,7 +100,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 2000;
+	int iHealth = 1250;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -120,7 +120,7 @@ MakeSniper(client)
 
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "major increased jump height", 1.9);
+	// TF2Attrib_SetByName(client, "major increased jump height", 1.9);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	// TF2Attrib_SetByName(client, "health regen", 10.0);
@@ -199,7 +199,7 @@ stock GiveBigRoboJbird(client)
 			// TF2Attrib_SetByName(SniperRifle, "heal on hit for rapidfire", 15.0);
 			TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
 			// TF2CustAttr_SetString(SniperRifle, "knockback modifier", "4.0");
-			
+			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
 			
 			
 		}

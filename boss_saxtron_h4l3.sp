@@ -394,7 +394,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 6500;
+	int iHealth = 4500;
 		
 	int MaxHealth = 300;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);

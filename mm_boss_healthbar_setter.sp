@@ -256,17 +256,20 @@ public Action SetBossHealthTargetCommand(int client) {
 	// EmitSoundToAll(BOSSTUNE, _, SNDCHAN_USER_BASE); //Works for all, but cancels on bot change
 
 	// PrintToChatAll("SETTING");
-	for(int i = 1; i <= MAXPLAYERS+1; i++)
+	if (SoundClamp[client] < GetEngineTime())
 	{
-
-		if (IsValidClient(i) && !IsFakeClient(i))
+		for(int i = 1; i <= MAXPLAYERS+1; i++)
 		{
-			if (SoundClamp[i] < GetEngineTime())
+
+			if (IsValidClient(i) && !IsFakeClient(i))
 			{
-			EmitSoundToClient(i,BOSSTUNE);
-			SoundClamp[client] = GetEngineTime() + g_spawn_sound_cd;
+				if (SoundClamp[i] < GetEngineTime())
+				{
+				EmitSoundToClient(i,BOSSTUNE);
+				SoundClamp[client] = GetEngineTime() + g_spawn_sound_cd;
+				}
+				// PrintToChat(i,"Playing sound %s to %N ", BOSSTUNE, i);
 			}
-			// PrintToChat(i,"Playing sound %s to %N ", BOSSTUNE, i);
 		}
 	}
 	// PrintToChatAll("Emitting sound");

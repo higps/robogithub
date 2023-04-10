@@ -237,14 +237,14 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.85);
 			TF2Attrib_SetByName(Weapon1, "clip size bonus upgrade", 1.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.25);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);					
-
+			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=7 Cooldown=50.0");
 		}
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -278,7 +278,7 @@ public Native_SetGiantPyro(Handle:plugin, args)
 #define PAGE_LENGTH 7
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-float g_RechargeCooldown = 25.0;
+float g_RechargeCooldown = 45.0;
 float g_skill;
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
