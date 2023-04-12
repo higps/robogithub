@@ -193,7 +193,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 #define Executioner 921
-#define Tunic 30373
+#define DarkAgeDefender 30073
 // #define CoolBreeze 979
 
 stock GiveGiantDemoKnight(client)
@@ -210,7 +210,7 @@ stock GiveGiantDemoKnight(client)
 		CreateRoboWeapon(client, "tf_weapon_sword", 172, 6, 1, 2, 0);
 
 		CreateRoboHat(client, Executioner, 10, 6, 0.0, 0.75, 1.0); 
-		CreateRoboHat(client, Tunic, 10, 6, 0.0, 1.0, 1.0); 
+		CreateRoboHat(client, DarkAgeDefender, 10, 6, 0.0, 1.0, 1.0); 
 		// CreateRoboHat(client, CoolBreeze, 10, 6, 0.0, 1.0, 1.0); 
 
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);

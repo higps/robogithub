@@ -6,6 +6,7 @@
 #include <berobot_constants>
 #include <berobot>
 #include <sdkhooks>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Funke"
@@ -25,6 +26,8 @@
 #define RIGHTFOOT       ")mvm/giant_scout/giant_scout_step_02.wav"
 #define RIGHTFOOT1      ")mvm/giant_scout/giant_scout_step_04.wav"
 
+#define BLUE_MODEL "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl"
+
 public Plugin:myinfo = 
 {
 	name = "[TF2] Be the Giant <Someone> Scout",
@@ -34,6 +37,7 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
+int g_iTeam;
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
 enum(<<= 1)
 {
@@ -91,7 +95,7 @@ public OnMapStart()
 	
 	//PrecacheSound(SOUND_GUNFIRE);
 	//PrecacheSound(SOUND_WINDUP);
-	
+	PrecacheModel(BLUE_MODEL);
 }
 
 public Action:SetModel(client, const String:model[])
@@ -173,7 +177,7 @@ MakeGiantscout(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
 	TF2Attrib_SetByName(client, "damage force increase", 10.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 2.25);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 2.0);
@@ -219,7 +223,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_cleaver", 812, 6, 1, 1, 0);
+		CreateRoboWeapon(client, "tf_weapon_cleaver", 30667, 6, 1, 1, 0);
 		CreateRoboWeapon(client, "tf_weapon_bat", 30667, 6, 1, 2, 0);
 		
 		CreateRoboHat(client, CoPilot, 10, 6, 0.0, 1.0, -1.0); 
@@ -233,11 +237,12 @@ stock GiveGiantPyro(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);
-			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 0.05);
-			TF2Attrib_SetByName(Weapon1, "bleeding duration", -1.0);
-			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
-			TF2Attrib_SetByName(Weapon1, "mark for death", 10.0);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 2.0);
+			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 1.5);
+			// TF2Attrib_SetByName(Weapon1, "bleeding duration", 0.01);
+			
+			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
+			// TF2Attrib_SetByName(Weapon1, "mark for death", 10.0);
 			
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 		}
@@ -247,7 +252,7 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			
+			TF2CustAttr_SetString(Weapon2, "mod crit type on target condition", "condition=25 crit_type=1");
 			
 			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
@@ -256,6 +261,7 @@ stock GiveGiantPyro(client)
 			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 		}
+		g_iTeam = GetClientTeam(client);
 	}
 }
 
@@ -275,6 +281,32 @@ public void OnEntityCreated(int iEntity, const char[] sClassName)
 public void Hook_OnProjectileSpawn(iEntity) {
 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+
+		RequestFrame(SetProjectileModel, iEntity);
 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
 	}
+}
+
+
+		
+
+float g_fStockvecMin[3] = {-10.0, -10.0, -10.0};
+float g_fStockvecMax[3] = {10.0, 10.0, 10.0};
+
+void SetProjectileModel (int iEntity)
+{
+	if(g_iTeam == 2)
+	{
+		//Red
+		SetEntityModel(iEntity, BLUE_MODEL);
+		
+	}else
+	{
+		SetEntityModel(iEntity, BLUE_MODEL);
+	}
+
+
+	SetEntPropVector(iEntity, Prop_Send, "m_vecMins", g_fStockvecMin);
+	SetEntPropVector(iEntity, Prop_Send, "m_vecMaxs", g_fStockvecMax);
+
 }

@@ -1222,7 +1222,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsSpycicle(Weapon3))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spycicle:{orange}On Backstab: Slows robots for 1 second",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spycicle:{orange}On Backstab: Slows firing speed by 30% for 2 second",chat_display);
             }
 
             if (IsEnforcer(Weapon1))
@@ -1387,12 +1387,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
             TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", 1.15);
-            TF2Attrib_SetByName(Weapon3, "engy disposable sentries", 2.0);
-            TF2Attrib_SetByName(client, "engy disposable sentries", 2.0);
-            TF2Attrib_SetByName(Weapon4, "engy disposable sentries", 2.0);
+            // TF2Attrib_SetByName(Weapon3, "engy disposable sentries", 2.0);
+            // TF2Attrib_SetByName(client, "engy disposable sentries", 2.0);
+            // TF2Attrib_SetByName(Weapon4, "engy disposable sentries", 2.0);
             
             // TF2CustAttr_SetString(Weapon3, "robot engineer", "sentries=2");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+1 Disposable Sentry and +15%% faster movement speed",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+15%% faster movement speed",chat_display);
             
         }
         // if (IsSapper(Weapon2))

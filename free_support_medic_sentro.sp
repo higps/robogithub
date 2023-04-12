@@ -206,7 +206,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
 			TF2CustAttr_SetString(Weapon2,"medigun charge is group overheal", "range=600.0 heal_rate=75.0 overheal_ratio=1.05 overheal_duration_mult=0.25");
-			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=5.0 SpellOnCond=9 Cond=11");
+			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=25.0 SpellOnCond=9 Cond=11");
 			// 
 			
 			//  TF2Attrib_SetByName(Weapon2, "medigun charge is crit boost", 1.0);

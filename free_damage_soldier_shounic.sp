@@ -114,7 +114,7 @@ public OnPluginStart()
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
 	AutoAim = CreateConVar("shounic_rocket_launcher_auto_aim", "0", "Should a fired rocket launcher automatically target players", _, true, 0.0, true, 1.0);
-	AttackTime = CreateConVar("shounic_rocket_launcher_fire_delay", "0.9", "Attack delay for fired rocket launchers");
+	AttackTime = CreateConVar("shounic_rocket_launcher_fire_delay", "1.0", "Attack delay for fired rocket launchers");
 }
 
 public void OnPluginEnd()
@@ -349,17 +349,17 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-		//	TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 4.0);		
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.25);		
 			//TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.1);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);
+			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.1);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.25);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			//TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.4);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.25);
 			
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-
+			// TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			RoboCorrectClipSize(Weapon1);
 			//TF2Attrib_SetByName(Weapon1, "reload full clip at once", 1.0);
 			
 			

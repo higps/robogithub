@@ -275,14 +275,14 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 	}
 }
 
-stock void TF2_SetWeaponAmmo(int weapon, int amount) {
-	int ammoType = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
-	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
+// stock void TF2_SetWeaponAmmo(int weapon, int amount) {
+// 	int ammoType = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+// 	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
 	
-	if (client > 0 && client <= MaxClients && ammoType != -1) {
-		SetEntProp(client, Prop_Send, "m_iAmmo", amount, 4, ammoType);
-	}
-}
+// 	if (client > 0 && client <= MaxClients && ammoType != -1) {
+// 		SetEntProp(client, Prop_Send, "m_iAmmo", amount, 4, ammoType);
+// 	}
+// }
 
 // - Regular paints -
 //set item tint RGB

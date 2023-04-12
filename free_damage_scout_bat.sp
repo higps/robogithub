@@ -7,7 +7,7 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Gotham Attack Droid"
+#define ROBOT_NAME	"Battle Batter"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Melee"
@@ -23,10 +23,6 @@
 #define LEFTFOOT1       ")mvm/giant_scout/giant_scout_step_03.wav"
 #define RIGHTFOOT       ")mvm/giant_scout/giant_scout_step_02.wav"
 #define RIGHTFOOT1      ")mvm/giant_scout/giant_scout_step_04.wav"
-
-#define PRINNYPOUCH 30757
-#define GRAYBANNS 30104
-#define BROTHEROFARMS 30066
 
 public Plugin:myinfo = 
 {
@@ -159,7 +155,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 1250;
+	int iHealth = 1400;
 		
 	int MaxHealth = 125;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -214,9 +210,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define BattersBracers 30722
-#define CapedCrusader 30727
-#define TeufortKnight 30733
+#define DarkFalkirk 30357
+#define SoleSaviors 30358
+#define CourtierCollar 30574
 
 stock GiveGiantPyro(client)
 {
@@ -231,9 +227,10 @@ stock GiveGiantPyro(client)
 
 		CreateRoboWeapon(client, "tf_weapon_bat", 0, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, BattersBracers, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, CapedCrusader, 10, 6, 0.0, 1.0, 0.0);
-		CreateRoboHat(client, TeufortKnight, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, DarkFalkirk, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, SoleSaviors, 10, 6, 0.0, 1.0, 0.0);
+		CreateRoboHat(client, CourtierCollar, 10, 6, 0.0, 1.0, 0.0);
+
 		
 		int Threerune = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
