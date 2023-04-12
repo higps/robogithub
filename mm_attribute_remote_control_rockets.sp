@@ -293,7 +293,12 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 			case 1:
 			{
-				GetClientEyeAngles(client, rocketAngle);
+				float currentAngle[3], targetAngle[3];
+
+				currentAngle = rocketAngle;
+				GetClientEyeAngles(client, targetAngle);
+
+				rocketAngle = InterpRotation(currentAngle, targetAngle, GetGameFrameTime(), 20.0);
 			}
 		}
 		GetAngleVectors(rocketAngle, forwardVec, NULL_VECTOR, NULL_VECTOR);
@@ -312,4 +317,62 @@ bool IsValidRocket(int rocket)
 	return false;
 }
 
+/*
+* Interpolates from a starting angle to the given target angle in a smooth transition -- Ported from UE5, should work fine
+*
+* @param current          Starting angle
+* @param target           Angle to interpolate to
+* @param delta            The frame time for this interpolation, can usually just be GetGameFrameTime()
+* @param speed            How fast the interpolation should be (value of 0.0 = no interpolation).
+*
+* @return                 Angle between the current and target rotators based on the delta given        
+*/
+stock float[] InterpRotation(float current[3], float target[3], float delta, float speed)
+{
+	// if delta is 0, do not perform any interpolation (Location was already calculated for that frame)
+	if (delta == 0.0 || VectorEquals(current, target))
+		return current;
 
+	// If no interp speed, jump to target value
+	if (speed <= 0.0)
+	{
+		return target;
+	}
+
+	float deltaSpeed = speed * delta;
+	
+	float deltaRotation[3];
+	SubtractVectors(target, current, deltaRotation);
+	NormalizeAngle(deltaRotation);
+
+	float result[3];
+	result = current;
+
+	result[0] += ClampFloat(deltaRotation[0], -deltaSpeed, deltaSpeed);
+	result[1] += ClampFloat(deltaRotation[1], -deltaSpeed, deltaSpeed);
+	result[2] += ClampFloat(deltaRotation[2], -deltaSpeed, deltaSpeed);
+	
+	NormalizeAngle(result);
+	return result;
+}
+
+stock void NormalizeAngle(float angle[3])
+{
+	while (angle[0] > 89.0) angle[0] -= 180.0;
+	while (angle[0] < -89.0) angle[0] += 180.0;
+	while (angle[1] > 180.0) angle[1] -= 360.0;
+	while (angle[1] < -180.0) angle[1] += 360.0;
+}
+
+stock bool VectorEquals(float test[3], float target[3])
+{
+	if (test[0] == target[0] && test[1] == target[1] && test[2] == target[2])
+		return true;
+
+	return false;
+}
+
+stock float ClampFloat(const float value, const float min, const float max)
+{
+	return (value < min) ? min : (value < max) ? value : max;
+}
