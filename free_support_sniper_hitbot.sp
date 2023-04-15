@@ -9,12 +9,12 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Carbine Cassidy"
+#define ROBOT_NAME	"HitBot"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
-#define ROBOT_DESCRIPTION "Hitman's Heatmaker, Carbine"
-#define ROBOT_TIPS "Mini-crit becomes crits\nYou can move while scoped!"
+#define ROBOT_DESCRIPTION "No DMG penalty Hitman's Heatmaker"
+#define ROBOT_TIPS "You can move while scoped!"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -100,7 +100,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1250;
+	int iHealth = 1500;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -164,7 +164,7 @@ stock GiveBigRoboJbird(client)
 	TF2_RemoveWeaponSlot(client, 2); // kukri
 
 	CreateRoboWeapon(client, "tf_weapon_sniperrifle", 752, 6, 1, 0, 0);
-	CreateRoboWeapon(client, "tf_weapon_charged_smg", 751, 6, 1, 1, 13);
+	// CreateRoboWeapon(client, "tf_weapon_charged_smg", 751, 6, 1, 1, 13);
 	// CreateRoboWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
 
 
@@ -177,7 +177,7 @@ stock GiveBigRoboJbird(client)
 		
 	int SniperRifle = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //SniperRifle
 	// int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
-	int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
+	// int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
 
 
@@ -185,23 +185,24 @@ stock GiveBigRoboJbird(client)
 		{	
 			TF2Attrib_SetByName(SniperRifle, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.65);
+			TF2Attrib_SetByName(SniperRifle, "damage penalty on bodyshot", 1.0);
 		
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 10.0);
 			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
 		}
 
-	if(IsValidEntity(SMG))
-		{
-			// TF2Attrib_RemoveAll(SMG);
-			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(SMG, "clip size penalty", 1.25);
-			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(SMG, "minicrits become crits", 1.0);
-			TF2Attrib_SetByName(SMG, "weapon spread bonus", 0.75);
+	// if(IsValidEntity(SMG))
+	// 	{
+	// 		// TF2Attrib_RemoveAll(SMG);
+	// 		TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
+	// 		TF2Attrib_SetByName(SMG, "clip size penalty", 1.25);
+	// 		TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
+	// 		TF2Attrib_SetByName(SMG, "minicrits become crits", 1.0);
+	// 		TF2Attrib_SetByName(SMG, "weapon spread bonus", 0.75);
 			
 			
 			
-		}
+	// 	}
 	}
 }

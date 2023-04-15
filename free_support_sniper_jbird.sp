@@ -100,7 +100,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1250;
+	int iHealth = 1500;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -165,7 +165,7 @@ stock GiveBigRoboJbird(client)
 
 	CreateRoboWeapon(client, "tf_weapon_sniperrifle", 14, 6, 1, 0, 0);
 	//CreateRoboWeapon(client, "tf_weapon_smg", 16, 6, 1, 1, 0);
-	CreateRoboWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
+	// CreateRoboWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
 
 		
 	CreateRoboWeapon(client, "tf_wearable", 642, 6, 1, 3, 0); 
@@ -177,7 +177,7 @@ stock GiveBigRoboJbird(client)
 
 		
 	int SniperRifle = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //SniperRifle
-	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
+	// int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
 	// int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
 
@@ -187,7 +187,8 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_RemoveAll(SniperRifle);
 			
 			TF2Attrib_SetByName(SniperRifle, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.75);
+			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(SniperRifle, "damage bonus", 1.34);
 		
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
@@ -195,23 +196,24 @@ stock GiveBigRoboJbird(client)
 			
 			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
-			TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 2.5);
+			TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 1.0);
+			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs players", 0.75);
 			TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
 			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
 			
 			
 			
 		}
-	if(IsValidEntity(Kukri))
-		{
-			TF2Attrib_RemoveAll(Kukri);
+	// if(IsValidEntity(Kukri))
+	// 	{
+	// 		TF2Attrib_RemoveAll(Kukri);
 			
-			TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
-			TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
-			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
+	// 		TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
+	// 		// TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
+	// 		// TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.25);
+	// 		TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
 
-		}
+	// 	}
 	// if(IsValidEntity(SMG))
 	// 	{
 	// 		TF2Attrib_RemoveAll(SMG);

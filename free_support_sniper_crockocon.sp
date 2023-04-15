@@ -13,8 +13,8 @@
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
-#define ROBOT_DESCRIPTION "Sydney Sleeper, Jarate"
-#define ROBOT_TIPS "Douse enemies with the Sleeper and Jarate\nQuicker Jarate recharge"
+#define ROBOT_DESCRIPTION "Rapid Recharge Sydney Sleeper"
+#define ROBOT_TIPS "Rapid Recharge Sydney Sleeper"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -100,7 +100,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1250;
+	int iHealth = 1500;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -165,7 +165,7 @@ stock GiveBigRoboJbird(client)
 	TF2_RemoveWeaponSlot(client, 2); // kukri
 
 	CreateRoboWeapon(client, "tf_weapon_sniperrifle", 230, 6, 1, 0, 0);
-	CreateRoboWeapon(client, "tf_weapon_jar", 58, 6, 1, 1, 0);
+	// CreateRoboWeapon(client, "tf_weapon_jar", 58, 6, 1, 1, 0);
 	// CreateRoboWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
 
 
@@ -178,7 +178,7 @@ stock GiveBigRoboJbird(client)
 		
 	int SniperRifle = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //SniperRifle
 	// int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
-	int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
+	// int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
 
 
@@ -207,13 +207,13 @@ stock GiveBigRoboJbird(client)
 			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
 		}
 
-	if(IsValidEntity(SMG))
-		{
-			// TF2Attrib_RemoveAll(SMG);
-			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.25);
+	// if(IsValidEntity(SMG))
+	// 	{
+	// 		// TF2Attrib_RemoveAll(SMG);
+	// 		TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
+	// 		TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.25);
 			
 			
-		}
+	// 	}
 	}
 }

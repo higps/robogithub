@@ -100,7 +100,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1250;
+	int iHealth = 1500;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -194,7 +194,7 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
 			TF2Attrib_SetByName(SniperRifle, "apply z velocity on damage", 550.0);
-			TF2Attrib_SetByName(SniperRifle, "faster reload rate", 0.5);
+			TF2Attrib_SetByName(SniperRifle, "faster reload rate", 0.35);
 			
 			TF2Attrib_SetByName(SniperRifle, "heal on hit for rapidfire", 25.0);
 			// TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);

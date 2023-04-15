@@ -212,7 +212,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 #define DarkFalkirk 30357
 #define SoleSaviors 30358
-#define CourtierCollar 30574
+#define Cuirass  30770
 
 stock GiveGiantPyro(client)
 {
@@ -229,7 +229,7 @@ stock GiveGiantPyro(client)
 		
 		CreateRoboHat(client, DarkFalkirk, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, SoleSaviors, 10, 6, 0.0, 1.0, 0.0);
-		CreateRoboHat(client, CourtierCollar, 10, 6, 0.0, 1.0, 0.0);
+		CreateRoboHat(client, Cuirass , 10, 6, 0.0, 1.0, 0.0);
 
 		
 		int Threerune = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);

@@ -8,13 +8,12 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Archibolt"
-#define ROBOT_ROLE "Disruptor"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
-#define ROBOT_SUBCLASS "Disruptor"
+#define ROBOT_SUBCLASS "Wizard"
 #define ROBOT_DESCRIPTION "HYAH! I think that enemy got the point"
 #define ROBOT_TIPS "Use shadow leap to get close to enemies"
 #define ROBOT_COST 1.0
-#define ROBOT_COIN_GENERATION 3
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -59,7 +58,7 @@ public OnPluginStart()
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
-	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, restrictions, ROBOT_COIN_GENERATION);
+	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, restrictions);
 }
 
 public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
@@ -227,12 +226,12 @@ stock GiveGiantDemoKnight(client)
 		{
 			//TF2Attrib_RemoveAll(Weapon3);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);						
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.3);			
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.4);			
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 10.0);		
 			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.45);	
 			TF2Attrib_SetByName(Weapon3, "single wep deploy time decreased", 0.01);
-			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=6 Cooldown=1.0");
+			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=6 Cooldown=2.0");
 		}
 	}
 
