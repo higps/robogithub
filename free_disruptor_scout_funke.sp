@@ -13,8 +13,8 @@
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Disruptor"
-#define ROBOT_DESCRIPTION "Rapid Flying Guillotine"
-#define ROBOT_TIPS "Cleavers mark for death\nFinish off enemies with your Batsaber!"
+#define ROBOT_DESCRIPTION "Throwable Batsaber"
+#define ROBOT_TIPS "Batsaber minicrits bleeding enemies"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

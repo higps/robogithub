@@ -8,12 +8,12 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Fireballer"
+#define ROBOT_NAME	"Fire Wizard"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
-#define ROBOT_SUBCLASS "Wizard"
+#define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Throws Fireball, Crit on burning melee"
-#define ROBOT_TIPS "Throw fireball! Melle crits on burning"
+#define ROBOT_TIPS "Throw fireball! Meele crits on burning"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -132,7 +132,7 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "deploy time decreased", 0.05);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	// TF2Attrib_SetByName(client, "head scale", 0.8);
+	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
 	UpdatePlayerHitbox(client, 1.75);
 	
@@ -170,7 +170,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_fireaxe", 939, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_fireaxe", 880, 6, 1, 2, 0);
 
 		CreateRoboHat(client, SearedSourcerer, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, SengoguScourcer, 10, 6, 0.0, 1.0, -1.0); 
@@ -188,7 +188,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 1.0);
 			TF2Attrib_SetByName(Weapon3, "crit vs burning players", 1.0);
 
-			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=6.0 SpellOnCond=9 Cond=11");
+			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=7.0 SpellOnCond=9 Cond=11");
 			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
 			// TF2Attrib_SetByName(Weapon3, "damage bonus vs burning", 1.35);
 			// TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);

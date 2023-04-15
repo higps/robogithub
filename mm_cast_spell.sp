@@ -12,7 +12,7 @@ bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
 float g_RechargeCooldown = 1.0;
 float g_skill;
-int g_Spell;
+int g_Spell[MAXPLAYERS + 1] = {0,...};
 
 //Diefferent spell based on cond
 int g_SpellOnCond;
@@ -53,7 +53,7 @@ bool HasStat(int attacker)
 	if (!TF2CustAttr_GetString(attacker, "Spell-Caster", stat_buffer, sizeof(stat_buffer))) {
 		return false;
 	}
-	g_Spell = ReadIntVar(stat_buffer, "Spell", 0);
+	g_Spell[attacker] = ReadIntVar(stat_buffer, "Spell", 0);
 	g_RechargeCooldown = ReadFloatVar(stat_buffer, "Cooldown", 5.0);
     g_SpellOnCond = ReadIntVar(stat_buffer, "SpellOnCond", -1);
     g_Cond = ReadIntVar(stat_buffer, "Cond", -1);
@@ -91,7 +91,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 public void CastSpell(int client) {
 	// PrintToChatAll("castin spell");
 
-    int index = g_Spell;
+    int index = g_Spell[client];
     
 
 
@@ -146,7 +146,7 @@ public int FindSpellbook(int client) {
 }
 
 
-bool isready;
+bool isready[MAXPLAYERS + 1] = {false,...}; 
 void DrawHUD(int client)
 {
 	char sHUDText[128];
@@ -158,7 +158,7 @@ void DrawHUD(int client)
         Format(SpellText, sizeof(SpellText), "%s", Spell_String[g_SpellOnCond]);
     }else
     {
-       Format(SpellText, sizeof(SpellText), "%s", Spell_String[g_Spell]);
+       Format(SpellText, sizeof(SpellText), "%s", Spell_String[g_Spell[client]]);
     }
 
     if (g_Cond == 11 && IsKritzed(client))
@@ -184,18 +184,18 @@ void DrawHUD(int client)
 	ShowHudText(client, -2, sHUDText);
 
 
-	if (!isready && iCountDown <= 0)
+	if (!isready[client] && iCountDown <= 0)
 	{
 	TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
 	// PrintToChatAll("Ready!");
-	isready = true;	
+	isready[client] = true;	
 	}
 
 	if (g_button_held[client] && iCountDown <= 0 && IsPlayerAlive(client))
 	{
 	RequestFrame(CastSpell, client);
 	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-	isready = false;
+	isready[client] = false;
 
 	}
 }
