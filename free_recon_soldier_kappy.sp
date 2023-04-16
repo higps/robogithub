@@ -236,13 +236,13 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "damage penalty", 1.38);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
-			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.5);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
+			// TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.5);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.7);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.2);
 			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2CustAttr_SetString(Weapon1, "mouse-control-rocket", "aim-mode=0 turnspeed=250.0");
-			TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "4.0");
+			TF2CustAttr_SetString(Weapon1, "mouse-control-rocket", "aim-mode=1 turnspeed=125.0");
+			// TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "4.0");
 			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		}
 
@@ -300,7 +300,7 @@ public void Hook_OnProjectileSpawn(iEntity) {
 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
 	//	SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
-		RequestFrame(SetProjectileModel, iEntity);
+		// RequestFrame(SetProjectileModel, iEntity);
 	}
 }
 // float g_fStockvecMin[3] = {-10.0, -10.0, -10.0};

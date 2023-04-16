@@ -298,7 +298,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				currentAngle = rocketAngle;
 				GetClientEyeAngles(client, targetAngle);
 
-				rocketAngle = InterpRotation(currentAngle, targetAngle, GetGameFrameTime(), 20.0);
+				rocketAngle = InterpRotation(currentAngle, targetAngle, GetGameFrameTime(), g_rocketTurnRate);
 			}
 		}
 		GetAngleVectors(rocketAngle, forwardVec, NULL_VECTOR, NULL_VECTOR);
