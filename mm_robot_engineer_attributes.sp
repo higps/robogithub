@@ -650,8 +650,9 @@ public void function_AllowBuilding(int client){
 	if (!HasStat(client)) {
 		return;
 	}
-	int SentryLimit = g_SentryLimit;
-	int DispenserLimit = g_DispenserLimit;
+	// PrintToChatAll("%N has the stat, sentry limit is %i", client, g_SentryLimit);
+	// int SentryLimit = g_SentryLimit;
+	// int DispenserLimit = g_DispenserLimit;
 	// int DispenserLimit = GetConVarInt(sm_sentry_limit);
 	// int SentryLimit = GetConVarInt(sm_sentry_limit);
 	int DispenserCount = 0;
@@ -681,7 +682,7 @@ public void function_AllowBuilding(int client){
 		if(type==view_as<int>(TFObject_Dispenser)){
 			DispenserCount=DispenserCount+1;
 			SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
-			if(DispenserCount>=DispenserLimit){
+			if(DispenserCount>=g_DispenserLimit){
 				//if the limit is reached, disallow building
 				SetEntProp(i, Prop_Send, "m_iObjectType", type);
 
@@ -690,9 +691,10 @@ public void function_AllowBuilding(int client){
 		//not a dispenser,
 		}else if(type==view_as<int>(TFObject_Sentry)){
 			SentryCount++;
-		//	////PrintToChatAll("Sentry count is %i", SentryCount);
+			// PrintToChatAll("Sentry count is %i", SentryCount);
 			SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
-			if(SentryCount>=SentryLimit){
+
+			if(SentryCount>=g_SentryLimit){
 				//if the limit is reached, disallow building
 				SetEntProp(i, Prop_Send, "m_iObjectType", type);
 			}

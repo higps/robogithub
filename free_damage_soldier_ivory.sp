@@ -96,7 +96,7 @@ public OnPluginStart()
 
 
 	g_rocketDelay = CreateConVar("ivory_mirv_rocket_delay", "0.6", "Delay before a mirv rocket splits into other rockets");
-	g_rocketCount = CreateConVar("ivory_mirv_rocket_count", "3", "How many rockets a mirv rocket splits into", _, true, 2.0, true, 6.0);
+	g_rocketCount = CreateConVar("ivory_mirv_rocket_count", "4", "How many rockets a mirv rocket splits into", _, true, 2.0, true, 6.0);
 	g_rocketCurve = true;
 	//g_rocketCurve = CreateConVar("mirv_converge_rockets", "0", "Do rockets converge on a single point after splitting", _, true, 0.0, true, 1.0);
 	g_showDebug = CreateConVar("ivory_mirv_converge_debug", "0", "Show debug angles and trajectory for converging rockets", _, true, 0.0, true, 1.0);
@@ -344,9 +344,10 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.00);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);				
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);		
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.6);		
 			// TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.75);				
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 

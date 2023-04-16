@@ -22,7 +22,7 @@
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
 
 
-#define RED_MODEL "models/workshop/player/items/soldier/taunt_rocket_jockey/taunt_rocket_jockey.mdl"
+// #define RED_MODEL "models/workshop/player/items/soldier/taunt_rocket_jockey/taunt_rocket_jockey.mdl"
 // #define PMODEL "models/props_td/atom_bomb.mdl"
 
 #define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
@@ -241,7 +241,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.7);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.2);
 			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			TF2CustAttr_SetString(Weapon1, "mouse-control-rocket", "aim-mode=0 turnspeed=250.0");
+			TF2CustAttr_SetString(Weapon1, "mouse-control-rocket", "aim-mode=1 turnspeed=250.0");
 			TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "4.0");
 			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		}
@@ -261,7 +261,7 @@ public OnMapStart()
 	PrecacheSound(GUNFIRE_CRIT);
 	PrecacheSound(GUNFIRE_EXPLOSION);
 
-	PrecacheModel(RED_MODEL);
+	// PrecacheModel(RED_MODEL);
 }
 
 public void OnPluginStart()
@@ -287,43 +287,43 @@ public void OnPluginStart()
 
 }
 
-public void OnEntityCreated(int iEntity, const char[] sClassName) 
-{
-	if (StrContains(sClassName, "tf_projectile") == 0)
-	{
-		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-	}
+// public void OnEntityCreated(int iEntity, const char[] sClassName) 
+// {
+// 	if (StrContains(sClassName, "tf_projectile") == 0)
+// 	{
+// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+// 	}
 	
-}
+// }
 
-public void Hook_OnProjectileSpawn(iEntity) {
-	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-	//	SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
-		RequestFrame(SetProjectileModel, iEntity);
-	}
-}
-// float g_fStockvecMin[3] = {-10.0, -10.0, -10.0};
-// float g_fStockvecMax[3] = {10.0, 10.0, 10.0};
+// public void Hook_OnProjectileSpawn(iEntity) {
+// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+// 	//	SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+// 		RequestFrame(SetProjectileModel, iEntity);
+// 	}
+// }
+// // float g_fStockvecMin[3] = {-10.0, -10.0, -10.0};
+// // float g_fStockvecMax[3] = {10.0, 10.0, 10.0};
 
-void SetProjectileModel (int iEntity)
-{
-	if(g_iTeam == 2)
-	{
-		SetEntityModel(iEntity, RED_MODEL);
+// void SetProjectileModel (int iEntity)
+// {
+// 	if(g_iTeam == 2)
+// 	{
+// 		SetEntityModel(iEntity, RED_MODEL);
 		
-	}else
-	{
-		SetEntityModel(iEntity, RED_MODEL);
-	}
+// 	}else
+// 	{
+// 		SetEntityModel(iEntity, RED_MODEL);
+// 	}
 
-		float rotation[3];
-		GetEntPropVector(iEntity, Prop_Data, "m_angRotation", rotation);
+// 		float rotation[3];
+// 		GetEntPropVector(iEntity, Prop_Data, "m_angRotation", rotation);
 
-		rotation[0] += 90.0;
+// 		rotation[0] += 90.0;
 
-		SetEntPropVector(iEntity, Prop_Data, "m_angRotation", rotation);
-	// SetEntPropVector(iEntity, Prop_Send, "m_vecMins", g_fStockvecMin);
-	// SetEntPropVector(iEntity, Prop_Send, "m_vecMaxs", g_fStockvecMax);
+// 		SetEntPropVector(iEntity, Prop_Data, "m_angRotation", rotation);
+// 	// SetEntPropVector(iEntity, Prop_Send, "m_vecMins", g_fStockvecMin);
+// 	// SetEntPropVector(iEntity, Prop_Send, "m_vecMaxs", g_fStockvecMax);
 
-}
+// }
