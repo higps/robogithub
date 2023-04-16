@@ -78,7 +78,7 @@ public Action:Event_Charge_Deployed(Handle:event, const String:name[], bool:dont
 		// PrintToChatAll("%N was correct robot on uber deploy", client);
 		
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 0.1);
+		SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 0.2);
 	}
 	
 
