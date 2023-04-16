@@ -163,7 +163,7 @@ MakeGiantPyro(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Throw gas at enemies and hit them with your melee to go boom");
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 

@@ -10,7 +10,7 @@
 #define ROBOT_NAME	"Archibolt"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
-#define ROBOT_SUBCLASS "Wizard"
+#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "HYAH! I think that enemy got the point"
 #define ROBOT_TIPS "Use shadow leap to get close to enemies"
 #define ROBOT_COST 1.0

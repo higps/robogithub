@@ -9,12 +9,12 @@
 #include <sdkhooks>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"UberMachine"
+#define ROBOT_NAME	"Uber Flasher"
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
-#define ROBOT_DESCRIPTION "Stock Uber, Ubersaw"
-#define ROBOT_TIPS "Use Ubersaw on overextending enemies or for self defense\nUse Uber for stronger team pushes" 
+#define ROBOT_DESCRIPTION "Rapid Uber Build and Drain"
+#define ROBOT_TIPS "Heal teammates and pop ubers often to flash them off ailments" 
 #define ROBOT_COST 1.0
 
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
@@ -25,16 +25,9 @@
 #define DMG_TYPE_MELEE 134221952
 #define DMG_TYPE_MELEE_CRIT 135270528
  
-bool g_button_held[MAXPLAYERS + 1] = {false, ...};
-int g_healcount = 0;
-float g_duration = 1.0;
-float g_resethit = 0.0;
-float g_charge = 0.0;
-int g_release = 0;
-float g_teamduration = 0.0;
 public Plugin:myinfo =
 {
-	name = "[TF2] Be the Dr Livesey",
+	name = "[TF2] Be UberMachine",
 	author = "Heavy Is GPS | Bmod.TF",
 	description = "Be a chad bot",
 	version = PLUGIN_VERSION,
@@ -63,6 +56,8 @@ public OnPluginStart()
 
 	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION, restrictions);
 
+
+	HookEvent("player_chargedeployed", Event_Charge_Deployed); //to trigger a unique ubercharge type
 	// for(int client = 1 ; client <= MaxClients ; client++)
 	// {
 	// 	if(IsClientInGame(client))
@@ -73,6 +68,21 @@ public OnPluginStart()
 	// AddNormalSoundHook(BossIcebear);
 }
 
+public Action:Event_Charge_Deployed(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+	//LogPlayerEvent(client, "triggered", "a charge was deployed");
+	
+	if (IsRobot(client, ROBOT_NAME))
+	{
+		// PrintToChatAll("%N was correct robot on uber deploy", client);
+		
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 0.1);
+	}
+	
+
+}
 
 // public void OnClientPutInServer(int client)
 // {
@@ -137,9 +147,9 @@ MakeGiantMedic(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-TF2Attrib_SetByName(client, "move speed penalty", 0.9);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.8);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
@@ -219,6 +229,7 @@ stock GiveGiantMedic(client)
 		// CreateRoboHat(client, 30149, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		//SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 		 int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon2))
 		{
@@ -226,27 +237,26 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.5);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
-			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.5);
+			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 10.0);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 			
-			// TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
+			// TF2Attrib_SetByName(Weapon2, "uber duration bonus", -0.9);
 			//SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 			
 		}
-		if(IsValidEntity(Weapon3))
-		{
-			//TF2Attrib_RemoveAll(Weapon3);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.3);
-			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.25);
-			TF2Attrib_SetByName(Weapon3, "add uber charge on hit", 0.04);
-			TF2Attrib_SetByName(Weapon3, "special taunt", 0.0);
+		// if(IsValidEntity(Weapon3))
+		// {
+		// 	//TF2Attrib_RemoveAll(Weapon3);
+		// 	TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Weapon3, "damage bonus", 1.3);
+		// 	TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.25);
+		// 	// TF2Attrib_SetByName(Weapon3, "add uber charge on hit", 0.04);
+		// 	TF2Attrib_SetByName(Weapon3, "special taunt", 0.0);
 			
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
+		// 	TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 
 			
-		}
-		g_healcount = 0;
+		// }
 
 		// TF2_AddCondition(client, TFCond_RestrictToMelee);
 		// RequestFrame(MakeMediGun, client);
@@ -255,172 +265,3 @@ stock GiveGiantMedic(client)
 		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");
 	}
 }
-
-
-// public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
-// {
-// 	if (IsRobot(client, ROBOT_NAME))
-// 	{
-
-// 		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE|IN_ATTACK2) ) 
-// 		{
-// 			//  PrintToChatAll("Press");
-//             g_button_held[client] = true;
-// 		}
-
-
-
-// 		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_USE|IN_ATTACK2) ) 
-// 		{
-// 			//  PrintToChatAll("Release");
-// 			g_button_held[client] = false;
-            
-// 		}
-// 		//0 = fireball
-// 		//PrintToChat(client, "Throwing spell!");
-// 		// UpdateCharge(client);
-// 		DrawHUD(client);
-		
-// 	}
-// 	return Plugin_Continue;
-// }
-
-// bool isready;
-// #define CHAR_FULL "■"
-// #define CHAR_EMPTY "□"
-
-// void DrawHUD(int client)
-// {
-// 	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-// 	g_release = GetEntProp(Weapon2, Prop_Send, "m_bChargeRelease");
-
-// 	if (g_release == 1)
-// 	{
-// 		TF2_AddCondition(client, TFCond_UberchargedCanteen, 0.5);
-// 	}else
-// 	{
-// 		if (g_resethit < GetEngineTime())
-// 		{
-// 			TF2_RemoveCondition(client, TFCond_UberchargedCanteen);
-// 		}
-// 	}
-
-// 	if (g_charge == 1.0)
-// 	{
-// 		isready = true;	
-// 	}else
-// 	{
-// 		isready = false;
-// 	}
-
-// 	if (g_button_held[client] && isready)
-// 	{
-// 	isready = false;
-
-// 	SetEntProp(Weapon2, Prop_Send, "m_bChargeRelease", 1);
-	
-// 	}
-// }
-
-// // SetEntPropFloat(medigunlist[client], Prop_Send, "m_flChargeLevel", 0.00);
-
-// void GetChargeLevel(int client)
-// {
-
-// 	// int  organs = GetEntProp(client, Prop_Send, "m_iDecapitations");
-// 	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-// 	if (Weapon2 == -1)
-// 	{
-// 		g_charge = 0.0;
-// 	}
-
-// 	g_charge = GetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel");
-// 	// PrintToChatAll("Charge %f", g_charge);
-// 	// return (g_charge);	
-// }
-
-
-
-// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
-// {
-// 	if (IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
-// 	{
-// 		if(!TF2_IsPlayerInCondition(attacker, TFCond_UberchargedCanteen))
-// 		{
-// 			RequestFrame(GetChargeLevel, attacker);
-// 		}
-// 	}
-
-// 	// if (IsValidClient(attacker) && IsRobot(victim, ROBOT_NAME))
-// 	// {
-		
-
-// 	// 			if (TF2_IsPlayerInCondition(attacker, TFCond_Ubercharged))
-// 	// 			{
-					
-// 	// 				g_resethit = g_duration + GetEngineTime();
-// 	// 				TF2_AddCondition(victim, TFCond_UberchargedCanteen, g_duration);
-// 	// 			}
-// 	// }
-// 	return Plugin_Continue;
-// }
-
-// public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
-// {
-// 	//TraceAttack fires everytime hitscan is used and in some cases, for syringes and Dragon's fury fireballs etc.	
-// 	//Vita-saw code - start
-	
-// 	// PrintToChatAll("Tracking! 1");
-// 	if((IsValidEntity(victim) && IsValidEntity(attacker) && IsValidEntity(inflictor)) &&
-// 	(victim <= MaxClients && victim > 0) &&
-// 	(attacker <= MaxClients && attacker > 0) &&
-// 	(inflictor <= MaxClients && inflictor > 0)) //Validity checks
-// 	{
-
-// 	// PrintToChatAll("Tracking!2");
-// 	/*
-// 	Checks if: The weapon is the vita-saw, the medic is hitting a teammate, 
-// 	the inflictor is the medic and actually playing the class, 
-// 	damagetype is also checked to determine if the trace came from a melee weapon.
-// 	*/
-
-// 	// char stat_buffer[256];
-// 	// if (!TF2CustAttr_GetString(attacker, "vita-saw-heal", stat_buffer, sizeof(stat_buffer))) {
-// 	// 	return;
-// 	// }
-// 		if((IsClientInGame(victim) && IsClientInGame(attacker) && IsClientInGame(inflictor)) &&
-// 		(TF2_GetClientTeam(attacker) == TF2_GetClientTeam(victim))
-// 		&& IsRobot(attacker, ROBOT_NAME)
-// 		&& (inflictor == attacker) 
-// 		&& (damagetype == DMG_TYPE_MELEE || damagetype == DMG_TYPE_MELEE_CRIT))
-// 		{
-
-// 			int healer = attacker;
-// 			int target = victim;
-// 			RequestFrame(GetChargeLevel, attacker);
-
-// 			//PrintToChatAll("%N Healed %N, healcount was %i ", healer, target, g_healcount);
-
-// 			if (TF2_IsPlayerInCondition(healer, TFCond_UberchargedCanteen))
-// 			{
-// 			//PrintToChatAll("Target Duration %f", team_duration);
-// 			//TF2_AddCondition(target, TFCond_SpeedBuffAlly, team_duration);
-// 			//1.0 = 4.0
-// 			GetChargeLevel(healer);
-// 			float duration = (g_charge * 4.0);
-// 			// PrintToChatAll("Charge: %f", g_charge);
-// 			// PrintToChatAll("Duration: %f", duration);
-// 			TF2_AddCondition(target, TFCond_UberchargedCanteen, duration);
-			
-// 			}
-
-
-// 			// g_healcount++;
-// 			// int decap = GetEntProp(attacker, Prop_Send, "m_iDecapitations");
-// 			// PrintToChatAll("Decap: %i", decap);
-// 			 //SetEntProp(iClient, Prop_Send, "m_iDecapitations", GetEntProp(iClient, Prop_Send, "m_iDecapitations") + 1);
-// 		}
-// 	}
-// 	return Plugin_Continue;
-// }
-

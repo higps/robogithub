@@ -306,6 +306,9 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 {
                  //   PrintToChatAll("Target on fire");
                     TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 5.0);
+                    TF2_AddCondition(attacker, TFCond_DefenseBuffNoCritBlock, 5.0);
+                    // TF2_AddCondition(attacker, TFCond_CritCanteen, 3.0);
+                    
                 }
 
                 if(IsPowerJack(weapon))
@@ -903,7 +906,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 // TF2CustAttr_SetInt(Weapon3, "hitGroup", 1);
                 // TF2CustAttr_SetString(Weapon3, "third-degree", "critType=2 hitGroup=1")
             }
-            
+            if (IsAxtinguisher(Weapon3))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Axtinguisher: {orange}Provides 5 second speed boost and damage resist bonus",chat_display);
+
+            }
+
+
         }
         if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
         {

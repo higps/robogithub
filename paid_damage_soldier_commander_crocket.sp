@@ -14,7 +14,7 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rocket"
 #define ROBOT_DESCRIPTION "Crit-Banner"
-#define ROBOT_COST 8.0
+#define ROBOT_COST 9.0
 #define ROBOT_TIPS "Give your teammates critical buff!"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -208,7 +208,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 3800;		
+	int iHealth = 4000;		
 	int MaxHealth = 200;
 	int iAdditiveHP = iHealth - MaxHealth;
 	

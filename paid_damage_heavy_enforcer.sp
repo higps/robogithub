@@ -158,7 +158,7 @@ MakeGRageH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GRageH);
-	int iHealth = 5000;
+	int iHealth = 6000;
 	
 	
 	int MaxHealth = 300;
@@ -236,7 +236,7 @@ stock GiveGDeflectorH(client)
 		{
 			// TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 1.0);
-			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 40.0);
+			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 20.0);
 			TF2Attrib_SetByName(Weapon2, "damage penalty", 0.5);
 			// TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.3);
 			TF2Attrib_SetByName(Weapon2, "spread penalty", 1.2);

@@ -224,7 +224,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_handgun_scout_primary", 220, 6, 1, 1, 0);
+		CreateRoboWeapon(client, "tf_weapon_handgun_scout_primary", 220, 6, 1, 2, 217);
 		// CreateRoboWeapon(client, "tf_weapon_bat_wood", 44, 6, 1, 2, 0);
 		
 		CreateRoboHat(client, FortunateSon, 10, 6, 3329330.0, 1.0, -1.0); 

@@ -184,16 +184,12 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon3);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
-			// TF2Attrib_SetByName(Weapon3, "minicrits become crits", 1.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 1.0);
 			TF2Attrib_SetByName(Weapon3, "crit vs burning players", 1.0);
 
 			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=7.0 SpellOnCond=9 Cond=11");
-			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
-			// TF2Attrib_SetByName(Weapon3, "damage bonus vs burning", 1.35);
-			// TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", 0.35); 
-			// TF2CustAttr_SetString(Weapon3,"third-degree", "critType=2 hitGroup=1");
+
+
 		}	
 	}
 }
