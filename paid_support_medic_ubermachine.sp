@@ -25,13 +25,13 @@
 #define DMG_TYPE_MELEE 134221952
 #define DMG_TYPE_MELEE_CRIT 135270528
  
-bool g_button_held[MAXPLAYERS + 1] = {false, ...};
-int g_healcount = 0;
-float g_duration = 1.0;
-float g_resethit = 0.0;
-float g_charge = 0.0;
-int g_release = 0;
-float g_teamduration = 0.0;
+// bool g_button_held[MAXPLAYERS + 1] = {false, ...};
+// int g_healcount = 0;
+// float g_duration = 1.0;
+// float g_resethit = 0.0;
+// float g_charge = 0.0;
+// int g_release = 0;
+// float g_teamduration = 0.0;
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Dr Livesey",
@@ -73,8 +73,6 @@ public OnPluginStart()
 	// AddNormalSoundHook(BossIcebear);
 }
 
-<<<<<<< Updated upstream
-=======
 public Action:Event_Charge_Deployed(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
@@ -98,7 +96,6 @@ public Action:Event_Charge_Deployed(Handle:event, const String:name[], bool:dont
 	
 
 }
->>>>>>> Stashed changes
 
 // public void OnClientPutInServer(int client)
 // {
@@ -272,7 +269,7 @@ stock GiveGiantMedic(client)
 
 			
 		}
-		g_healcount = 0;
+		// g_healcount = 0;
 
 		// TF2_AddCondition(client, TFCond_RestrictToMelee);
 		// RequestFrame(MakeMediGun, client);
