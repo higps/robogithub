@@ -844,7 +844,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 }
             }
 
-
+        //Check for crit conditions to add more damage
 
 
     }
@@ -1106,7 +1106,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsAmputator(Weapon3) && Weapon1 != -1)
             {
-                TF2Attrib_SetByName(Weapon1, "dmg taken from crit reduced", 0.7);
+                TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", 0.7);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Amputator: Provides {orange}+30%%% Passive critical resistance",chat_display);
             }
 

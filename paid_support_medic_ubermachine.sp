@@ -73,6 +73,32 @@ public OnPluginStart()
 	// AddNormalSoundHook(BossIcebear);
 }
 
+<<<<<<< Updated upstream
+=======
+public Action:Event_Charge_Deployed(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+	int target = GetClientOfUserId(GetEventInt(event, "targetid"));
+	//LogPlayerEvent(client, "triggered", "a charge was deployed");
+	
+	if (IsRobot(client, ROBOT_NAME))
+	{
+		// PrintToChatAll("%N was correct robot on uber deploy", client);
+		
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 0.15);
+
+	if(IsValidClient(target))
+		TF2_RemoveCondition(target, TFCond_Jarated);
+		TF2_RemoveCondition(target, TFCond_Milked);
+		TF2_RemoveCondition(target, TFCond_MarkedForDeath);
+		TF2_RemoveCondition(target, TFCond_Bleeding);
+		TF2_RemoveCondition(target, TFCond_Gas);
+	}
+	
+
+}
+>>>>>>> Stashed changes
 
 // public void OnClientPutInServer(int client)
 // {
@@ -252,7 +278,7 @@ stock GiveGiantMedic(client)
 		// RequestFrame(MakeMediGun, client);
 
 		//Condition to add heal on taunting
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");
+		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=1.2 addcond=73");
 	}
 }
 
