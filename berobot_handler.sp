@@ -224,6 +224,7 @@ public void OnPluginStart()
 
     RegConsoleCmd("sm_mount", Command_MountRobot, "get a taunt mount for your robot");
     RegConsoleCmd("sm_mt", Command_MountRobot, "get a taunt mount for your robot");
+    RegConsoleCmd("sm_car", Command_MountRobot, "get a taunt mount for your robot");
 //April Fools
     //RegConsoleCmd("sm_rtd", Command_RTDRobot, "become random robot");
 

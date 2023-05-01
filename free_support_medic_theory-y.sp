@@ -95,7 +95,7 @@ MakeGiantMedic(client)
 	SetModel(client, GMEDIC);
    
 		
-	int iHealth = 2500;
+	int iHealth = 1500;
 	
 	
 	int MaxHealth = 150;

@@ -334,7 +334,9 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "self mark for death", 0.0);
 			//TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);
 
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);	
+			TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
+			TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");						
 		}
 
 

@@ -11,11 +11,11 @@
 #include <tf_ontakedamage.inc>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"GrappleHook"
+#define ROBOT_NAME	"Black Shiv"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Spy"
 #define ROBOT_SUBCLASS "Disruptor"
-#define ROBOT_DESCRIPTION "You have grappling hook"
+#define ROBOT_DESCRIPTION "Grappling hook"
 #define ROBOT_TIPS "No Revolver\nSharp Dresser\nCan only backstab\nUse grappling hook with reload or specialattack!"
 #define ROBOT_COST 1.0
 #define ROBOT_COIN_GENERATION 3
@@ -216,10 +216,10 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	// GiveBigRoboDane(client);
 // }
 
-#define BattersBracers 30722
-#define CapedCrusader 30727
-#define ArkhamCowl 30720
-#define WhitePaint 15132390.0
+#define DashinHashshashin 637
+#define TheRogueRobe 30389 
+// #define ArkhamCowl 637 
+// #define WhitePaint 15132390.0
 
 
 
@@ -246,9 +246,9 @@ stock GiveBigRoboDane(client)
 	//CreateRoboWeapon(client, "tf_weapon_invis", 59, 6, 1, 4, 0); 
 		
 
-	CreateRoboHat(client, BattersBracers, 10, 6, 0.0, 1.0, -1.0); 
-	CreateRoboHat(client, CapedCrusader, 10, 6, 0.0, 1.0, 1.0);
-	CreateRoboHat(client, ArkhamCowl, 10, 6, 0.0, 1.25, -1.0);
+	CreateRoboHat(client, DashinHashshashin, 10, 6, 0.0, 1.0, -1.0); 
+	CreateRoboHat(client, TheRogueRobe, 10, 6, 0.0, 1.0, 1.0);
+	// CreateRoboHat(client, ArkhamCowl, 10, 6, 0.0, 1.25, -1.0);
 	
 		
 //	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver

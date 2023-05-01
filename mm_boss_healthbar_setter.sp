@@ -234,7 +234,6 @@ public Action SetBossHealthTarget(int client, int argc) {
 	return Plugin_Handled;
 }
 
-
 public Action SetBossHealthTargetCommand(int client) {
 
 	int iTarget = client;

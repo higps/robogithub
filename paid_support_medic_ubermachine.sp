@@ -13,8 +13,8 @@
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
-#define ROBOT_DESCRIPTION "Rapid Uber Build and Drain"
-#define ROBOT_TIPS "Heal teammates and pop ubers often to flash them off ailments" 
+#define ROBOT_DESCRIPTION "Rapid Uber Build and Debuff remover"
+#define ROBOT_TIPS "Uber builds fasts, lasts short and removes all debuffs" 
 #define ROBOT_COST 1.0
 
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
@@ -71,6 +71,7 @@ public OnPluginStart()
 public Action:Event_Charge_Deployed(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+	int target = GetClientOfUserId(GetEventInt(event, "targetid"));
 	//LogPlayerEvent(client, "triggered", "a charge was deployed");
 	
 	if (IsRobot(client, ROBOT_NAME))
@@ -79,6 +80,13 @@ public Action:Event_Charge_Deployed(Handle:event, const String:name[], bool:dont
 		
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 0.2);
+
+	if(IsValidClient(target))
+		TF2_RemoveCondition(target, TFCond_Jarated);
+		TF2_RemoveCondition(target, TFCond_Milked);
+		TF2_RemoveCondition(target, TFCond_MarkedForDeath);
+		TF2_RemoveCondition(target, TFCond_Bleeding);
+		TF2_RemoveCondition(target, TFCond_Gas);
 	}
 	
 
@@ -237,7 +245,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.5);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
-			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 10.0);
+			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 4.0);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 			
 			// TF2Attrib_SetByName(Weapon2, "uber duration bonus", -0.9);

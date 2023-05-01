@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"EXEcutioner"
@@ -228,6 +229,8 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);	
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 			
+			TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
+			TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");
 			
 		}
 		

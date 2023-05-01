@@ -197,7 +197,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 #define ScotchBonnet 306
-
+#define DoubleDogDareDemoPants 30555
 stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
@@ -214,6 +214,7 @@ stock GiveGiantDemoKnight(client)
 		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
 
 		CreateRoboHat(client, ScotchBonnet, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, DoubleDogDareDemoPants, 10, 6, 3329330.0, 0.75, -1.0); 
 		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
 		//CreateHat(client, 30945, 10, 6, false);//blast locker
 
@@ -234,7 +235,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 8.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.4);
-			TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.75);
+			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.75);
 			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
 			// TF2Attrib_SetByName(Weapon1, "grenade no spin", 0.0);
 		}

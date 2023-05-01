@@ -10,7 +10,7 @@
 #define ROBOT_NAME	"Bumper"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Scout"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Drives around"
 #define ROBOT_TIPS "Bumper cars"
 
@@ -59,7 +59,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
-	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION);
+	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null, 2);
 }
 
 public void OnPluginEnd()
