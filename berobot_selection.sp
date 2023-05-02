@@ -922,6 +922,8 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
         return;
     }
 
+
+
     SMLogTag(SML_VERBOSE, "Restrictions handle %b for robot %s", item.restrictions, item.name);
     SMLogTag(SML_VERBOSE, "TimeLeft handle %b for robot %s", item.restrictions.TimeLeft, item.name);
     if (!item.restrictions.TimeLeft.Enabled)
@@ -959,7 +961,13 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
         return;
     }
 
-
+    // bool BossActive = true;
+    if (IsBossActive() && StrContains(notes,"B₡") != -1)
+    {
+        PrintToChatAll(notes);
+        draw = ITEMDRAW_DISABLED;
+        return;
+    }
     
 
     draw = ITEMDRAW_DEFAULT;
@@ -1025,4 +1033,17 @@ int RobotDefinitionComparision(int index1, int index2, Handle array, Handle hndl
 
     return strcmp(a.shortDescription, b.shortDescription);
 }
-//Some change
+
+bool IsBossActive(){
+
+    for(int i = 1; i <= MaxClients; i++)
+    {
+        if (IsBoss(i))
+        {
+            // PrintToChatAll("Boss found, %N was boss", i);
+            return true;
+        }
+    }
+    // PrintToChatAll("No Boss found");
+    return false;
+}
