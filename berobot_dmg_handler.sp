@@ -847,9 +847,40 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 }
             }
 
+        //Check for crit conditions to add more damage on minicrit conditions stacked against robots
+        int condcount = 0;
+        
+        if(TF2_IsPlayerInCondition(victim, TFCond_Jarated)) condcount++;
+        if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeath)) condcount++;
+        if(TF2_IsPlayerInCondition(attacker, TFCond_Buffed)) condcount++;
+        if(TF2_IsPlayerInCondition(attacker, TFCond_CritCola)) condcount++;
+        
 
+            if (condcount >= 2)
+            {
+            float condmodifier = 1.0;
+                switch(condcount)
+                {
+                    case 2: 
+                    {
+                        condmodifier = 1.15;
+                    }
+                    case 3: 
+                    {
+                        condmodifier = 1.2;
+                    }
+                    case 4: 
+                    {
+                        condmodifier = 1.25;
+                    }
+                }
 
+            // PrintToChatAll("Condcount was %i with %N and %N", condcount, victim, attacker);
+            /* if (critType != CritType_Crit) */ damage = damage*condmodifier;
+            return Plugin_Changed; 
+            }
 
+        
     }
     return Plugin_Continue;
 }
@@ -1115,7 +1146,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsAmputator(Weapon3) && Weapon1 != -1)
             {
-                TF2Attrib_SetByName(Weapon1, "dmg taken from crit reduced", 0.7);
+                TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", 0.7);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Amputator: Provides {orange}+30%%% Passive critical resistance",chat_display);
             }
 

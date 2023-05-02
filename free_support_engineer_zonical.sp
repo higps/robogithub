@@ -118,6 +118,7 @@ public void OnWeaponSwitch(int client, int weapon)
 		if (IsPistol(weapon))
 		{
 			TF2_AddCondition(client, TFCond_Buffed, 1.5);
+			TF2Attrib_AddCustomPlayerAttribute(client, "faster reload rate", 0.5, 1.5);
 		}
 	}
 }

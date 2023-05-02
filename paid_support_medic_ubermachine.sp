@@ -79,7 +79,7 @@ public Action:Event_Charge_Deployed(Handle:event, const String:name[], bool:dont
 		// PrintToChatAll("%N was correct robot on uber deploy", client);
 		
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 0.2);
+		SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 0.15);
 
 	if(IsValidClient(target))
 		TF2_RemoveCondition(target, TFCond_Jarated);
@@ -264,12 +264,13 @@ stock GiveGiantMedic(client)
 		// 	TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 
 			
-		// }
+		}
+		// g_healcount = 0;
 
 		// TF2_AddCondition(client, TFCond_RestrictToMelee);
 		// RequestFrame(MakeMediGun, client);
 
 		//Condition to add heal on taunting
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");
+		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=1.2 addcond=73");
 	}
 }

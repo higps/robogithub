@@ -107,7 +107,7 @@ MakeSniper(client)
 	int iHealth = 3500;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
-	float scale = 1.85;
+	float scale = 1.75;
 	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);

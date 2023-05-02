@@ -186,6 +186,6 @@ stock GiveGiantMedic(client)
 		}
 
 				//Condition to add heal on taunting
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=2.5 addcond=73");
+		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=1.2 addcond=73");
 	}
 }
