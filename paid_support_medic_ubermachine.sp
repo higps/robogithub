@@ -264,7 +264,7 @@ stock GiveGiantMedic(client)
 		// 	TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 
 			
-		}
+		
 		// g_healcount = 0;
 
 		// TF2_AddCondition(client, TFCond_RestrictToMelee);
