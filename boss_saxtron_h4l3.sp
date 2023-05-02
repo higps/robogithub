@@ -15,7 +15,7 @@
 #define ROBOT_ROLE "ZBOSS"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "SAXTRON HALE!"
+#define ROBOT_DESCRIPTION "Saxtron Hale: Gain +250 HP per human player"
 #define ROBOT_TIPS "Crouch and look up to super jump\nCrouch and look down while jumping to weight drop"
 
 #define GSOLDIER		"models/bots/saxtron/bot_saxtron_v2.mdl"
@@ -394,7 +394,23 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 4500;
+	int PlayerBonusHP = 0;
+	int PlayerPerPlayerHP = 250;
+	int PlayerCount = 0;
+
+    for(int i = 0; i <= MAXPLAYERS; i++)
+    {
+		if(IsValidClient(i) && !IsAnyRobot(i))
+		{
+			PlayerBonusHP+=PlayerPerPlayerHP;
+			PlayerCount++;
+		}
+
+    }
+
+	PrintToChatAll("Playercount was %i", PlayerCount);
+
+	int iHealth = 2046+PlayerBonusHP;
 		
 	int MaxHealth = 300;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -475,7 +491,7 @@ stock GiveGiantPyro(client)
 
 		if(IsValidEntity(Weapon3))
 		{
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.75);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 2.0);
 			// TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);					

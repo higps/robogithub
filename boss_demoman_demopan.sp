@@ -104,8 +104,8 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	float scale = 1.85;	
-	int iHealth = 8500;
+	float scale = 1.75;	
+	int iHealth = 7500;
 	
 	
 	int MaxHealth = 175;
@@ -126,19 +126,19 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.85);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	//TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "hand scale", 1.15);
 
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
+	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	
 	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
 	
@@ -194,7 +194,7 @@ stock GiveGiantDemoKnight(client)
 
 	if(IsValidEntity(Weapon3))
 	{
-	TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 2.5);
+	// TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
 	TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);
 	TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);
 	TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
@@ -208,13 +208,13 @@ stock GiveGiantDemoKnight(client)
 		//PrintToChatAll("going through entity");
 		TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.125);		
 		TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);		
-		TF2Attrib_SetByName(iEntity2, "charge recharge rate increased", 3.5);		
+		TF2Attrib_SetByName(iEntity2, "charge recharge rate increased", 4.0);		
 		TF2Attrib_SetByName(iEntity2, "charge impact damage increased", 2.0);		
 		TF2Attrib_SetByName(iEntity2, "no charge impact range", 1.0);	
 		TF2Attrib_SetByName(iEntity2, "mult charge turn control", 1000.0);	
 		TF2Attrib_SetByName(iEntity2, "dmg taken from blast reduced", 1.0);	
 		TF2Attrib_SetByName(iEntity2, "dmg taken from fire reduced", 1.0);	
-		TF2Attrib_SetByName(iEntity2, "SET BONUS: dmg from sentry reduced", 0.3);	
+		// TF2Attrib_SetByName(iEntity2, "SET BONUS: dmg from sentry reduced", 0.3);	
 
 		
 		
@@ -223,24 +223,6 @@ stock GiveGiantDemoKnight(client)
 	}	
 	}
 }
-
-public void OnEntityCreated(int iEntity, const char[] sClassName) 
-{
-	if (StrContains(sClassName, "tf_projectile") == 0)
-	{
-		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-	}
-	
-}
-
-public void Hook_OnProjectileSpawn(iEntity) {
-	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
-	}
-}
-
-
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {

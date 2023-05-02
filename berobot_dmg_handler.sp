@@ -873,7 +873,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 }
 
             // PrintToChatAll("Condcount was %i with %N and %N", condcount, victim, attacker);
-            damage = damage*condmodifier;
+            /* if (critType != CritType_Crit) */ damage = damage*condmodifier;
             return Plugin_Changed; 
             }
 
