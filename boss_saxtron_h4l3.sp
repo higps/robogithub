@@ -408,7 +408,7 @@ MakeGiantSoldier(client)
 
     }
 
-	PrintToChatAll("Playercount was %i", PlayerCount);
+	// PrintToChatAll("Playercount was %i", PlayerCount);
 
 	int iHealth = 2046+PlayerBonusHP;
 		
