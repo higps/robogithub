@@ -196,7 +196,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 #define Dictator 30306
 #define GrayBans 30104
-#define SevenSees 30480
+#define BankRoll 31342
 
 // bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 // float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
@@ -218,7 +218,7 @@ stock GiveGiantDemoKnight(client)
 
 		CreateRoboHat(client, Dictator, 10, 6, 1315860.0, 2.0, 1.0); 
 		CreateRoboHat(client, GrayBans, 10, 6, 0.0, 0.85, 2.0); 
-		CreateRoboHat(client, SevenSees, 10, 6, 0.0, 1.0, 1.0); 
+		CreateRoboHat(client, BankRoll, 10, 6, 0.0, 1.0, 1.0); 
 
 		
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);

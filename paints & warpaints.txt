@@ -171,6 +171,19 @@ Warpaints:
 309 Pina Polished
 310 Leopard Printed
 390 Dragon Slayer (only on some weapons)
+
+    "400"    "Ghoul Blaster"
+    "401"    "Cream Corned"
+    "402"    "Sunriser"
+    "403"    "Sacred Slayer"
+    "404"    "Metalized Soul"
+    "405"    "Bonzo Gnawed"
+    "406"    "Health And Hell"
+    "407"    "Health And Hell (Green)"
+    "408"    "Hypergon"
+    "409"    "Pumpkin Plastered"
+    "410"    "Chilly Autumn"
+	
 391 Smissmas Sweater
 15000-15158 These are decorated war hero collection weapon ids. Use the weaponid in place of paint id.
 
