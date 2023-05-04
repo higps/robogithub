@@ -15,7 +15,7 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
-#define ROBOT_DESCRIPTION "Cluster Bomb Grenade Loose Cannon"
+#define ROBOT_DESCRIPTION "Cluster Bomb Grenades"
 #define ROBOT_TIPS "Bombs explodes in to smaller bombs\nReduced damage vs buildings"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
@@ -96,7 +96,7 @@ public OnPluginStart()
 	PipeCount = CreateConVar("boss_clusterbomb_count", "4", "Number of child grenades to spawn from a clusterbomb");
 	PipeDamage = CreateConVar("boss_clusterbomb_damage", "200", "Percentage of parent grenade's damage that child grenades should deal");
 	PipeScale = CreateConVar("boss_clusterbomb_scale", "1.25", "Model scale for child grenades");
-	PipeModel = CreateConVar("boss_clusterbomb_iron_bomber", "1", "Should child grenades use the iron bomber projectile or derive the model from the parent");
+	PipeModel = CreateConVar("boss_clusterbomb_iron_bomber", "0", "Should child grenades use the iron bomber projectile or derive the model from the parent");
 	PipeSpeed = CreateConVar("boss_clusterbomb_speed", "300", "Max speed child grenades can be launched at");
 
 
@@ -275,45 +275,8 @@ stock GiveGiantDemoKnight(client)
 		CreateRoboHat(client, HighLandHighHeels, 10, 6, 15185211.0, 1.0, 1.0); 
 
 		
-		// int iEntity2 = -1;
-		// while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_wearable_demoshield")) != -1)
-		// {
-		// 	if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
-		// 	{				
-		// 		//PrintToChatAll("going through entity");
-		// 		TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.65);		
-		// 		TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);			
-		// 		TF2Attrib_SetByName(iEntity2, "dmg taken from fire reduced", 0.4);			
-		// 		TF2Attrib_SetByName(iEntity2, "dmg taken from blast reduced", 0.5);			
 
-		// 		break;
-		// 	}
-		// }
-		
-		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		// if(IsValidEntity(Weapon3))
-		// {
-		// 	//TF2Attrib_RemoveAll(Weapon3);
-			
-		// 	TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
-		// 	//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
-		// 	TF2Attrib_SetByName(Weapon3, "charge time increased", 10.0);		
-		// 	TF2Attrib_SetByName(Weapon3, "damage bonus", 1.75);			
-		// 	TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
-		// 	TF2Attrib_SetByName(Weapon3, "mult charge turn control", 2.0);		
-		// 	TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
-		// }
-
-		            //         "Paintkit 226"               "10"
-                    // "Paintkit 234"               "10"
-                    // "Paintkit 224"               "10"
-                    // "Paintkit 232"               "10"
-                    // "Paintkit 220"               "10"
-                    // "Paintkit 221"               "10"
-                    // "Paintkit 217"               "10"
-                    // "Paintkit 215"               "10"
-
-		CreateRoboWeapon(client, "tf_weapon_cannon", 996, 6, 1, 2, 226);
+		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 206, 6, 1, 2, 226);
 		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
 
 		//CreateRoboHat(client, ScotchBonnet, 10, 6, 0.0, 0.75, -1.0); 
@@ -326,14 +289,15 @@ stock GiveGiantDemoKnight(client)
 		{
 			//TF2Attrib_RemoveAll(Weapon1);
 			
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
-			// TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.75);
-			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 2.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.6);		
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
+			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.6);
-			TF2Attrib_SetByName(Weapon1, "fuse bonus", 0.75);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
+			// TF2Attrib_SetByName(Weapon1, "fuse bonus", 0.75);
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.5);
 			
 			// TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
@@ -370,7 +334,7 @@ void ForceCluster(int pipe, Pipe grenade)
 	grenade.mirv = false;
 
 	//Derive everything about the child grenades from the parent clusterbomb
-	float pos[3], vel[3];
+	float pos[3], vel[3], ang[3];
 	int children = PipeCount.IntValue;
 
 	float damage = GetEntPropFloat(pipe, Prop_Send, "m_flDamage") * (PipeDamage.FloatValue / 100.0);
@@ -390,7 +354,7 @@ void ForceCluster(int pipe, Pipe grenade)
 	{
 		int child = CreateEntityByName("tf_projectile_pipe");
 		float child_vel[3];
-
+		float child_ang[3];
 		//Prevent child grenades from detonating on contact
 		SetEntProp(child, Prop_Send, "m_bTouched", 1);
 
@@ -400,25 +364,61 @@ void ForceCluster(int pipe, Pipe grenade)
 		SetEntPropFloat(child, Prop_Send, "m_flDamage", damage);
 		SetEntPropFloat(child, Prop_Send, "m_flModelScale", scale);
 
-		for (int axis = 0; axis < 3; axis++)
+		// for (int axis = 0; axis < 3; axis++)
+		// 	child_vel[axis] = vel[axis] + GetRandomFloat(speed * -1.0, speed);
+
+
+		for (int axis = 0; axis < 3; axis++){
+
 			child_vel[axis] = vel[axis] + GetRandomFloat(speed * -1.0, speed);
+			child_ang[axis] = ang[axis] + GetRandomFloat(-360.0 , 360.0);
+		}
+
+		int Weapon1 = GetPlayerWeaponSlot(grenade.owner.get(), TFWeaponSlot_Primary);
 
 		SetEntProp(child, Prop_Send, "m_iTeamNum", team);
 		SetEntProp(child, Prop_Send, "m_bIsLive", 1);
 
+		// PrintToChatAll("Grenade owner was %N",grenade.owner.get() );
+
+		
+
 		DispatchSpawn(child);
 		SDKHook(child, SDKHook_Touch, OnMirvOverlap);
-		TeleportEntity(child, pos, NULL_VECTOR, child_vel);
+		TeleportEntity(child, pos, child_ang, child_vel);
 
 		//force iron bomber projectile model
 		if (iron)
 		{
-			PrecacheModel("models/0weapons/w_models/w_cannonball.mdl");
+			PrecacheModel("models/weapons/w_models/w_cannonball.mdl");
 			SetEntityModel(child, "models/weapons/w_models/w_cannonball.mdl");
 		}
-		else
+		else{
 			SetModelFromWeapon(child, grenade);
+		}
+
+		DataPack info = new DataPack();
+		info.Reset();
+		info.WriteCell(child);
+		info.WriteCell(Weapon1);
+		
+		RequestFrame(SetOwnerStats, info);
+		// PrintToChatAll("Owner was before %N", grenade.owner.get());
 	}
+}
+
+
+void SetOwnerStats(DataPack info)
+{
+	//Get our player indexes and free up the handle
+	info.Reset();
+	int child = info.ReadCell();
+	int owner = info.ReadCell();
+	delete info;
+	// PrintToChatAll("Owner was %N", owner);
+	//m_hLauncher or m_hThrower
+	// SetEntPropEnt(child, Prop_Send, "m_hOriginalLauncher", owner);
+	SetEntPropEnt(child, Prop_Send, "m_hLauncher", owner);
 }
 
 Action OnMirvOverlap(int mirv, int other) //Never detonate on impact

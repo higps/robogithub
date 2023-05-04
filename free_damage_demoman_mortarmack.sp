@@ -166,7 +166,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.3);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
@@ -226,14 +226,14 @@ stock GiveGiantDemoKnight(client)
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 3.5);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 4.0);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.7);
 			// TF2Attrib_SetByName(Weapon1, "projectile speed increased", 1.15);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.3);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.15);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
-			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 8.0);
+			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 10.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.4);
 			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.75);
 			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
