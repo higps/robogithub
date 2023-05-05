@@ -698,7 +698,7 @@ void UpdateQueuePoints(ArrayList volunteers, int neededVolunteers)
     SaveQueuePointsToFile();
 }
 
-//This updates all players QP except robots
+//This updates all players QP except those playing as robots
 
 void UpdateQueuePointsOnCap()
 {
@@ -716,8 +716,6 @@ void UpdateQueuePointsOnCap()
             _queuePoints.GetValue(steamId, queuePoints);
             
             newQueuepoints = queuePoints + 1;
-            
-            
             _queuePoints.SetValue(steamId, newQueuepoints);
             SMLogTag(SML_VERBOSE, "increasing Queuepoints for %L with steamid %s to %i mid round", i, steamId, newQueuepoints);
             //if (!IsFakeClient(i)) PrintToChatAll("QP for %N was %i steamID: %s\nNew QP %i", i, queuePoints, steamId, newQueuepoints);

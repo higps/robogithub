@@ -6,17 +6,18 @@
 #include <berobot>
 #include <tf_custom_attributes>
 #include <sdkhooks>
+#include <vphysics>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Quickler"
+#define ROBOT_NAME	"Zero G"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
-#define ROBOT_DESCRIPTION "Long Range Sticky Bombardment"
-#define ROBOT_STATS "Rapid Charge Quickiebombs"
-#define ROBOT_COST 2.5
+#define ROBOT_DESCRIPTION "No Gravity Stickies"
+#define ROBOT_STATS "No Gravity Sticky Bombs\n+75%%%% larger explosion radius\nLow Gravity"
+#define ROBOT_COST 0.75
 
-#define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
+#define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
@@ -169,7 +170,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
@@ -201,9 +202,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	GiveGiantDemoKnight(client);
 }
 
-#define BlastDefense 30863
-#define BlastBlocker 30945
-
+#define Specs 522
+#define SpaceMann 30646
+#define SubZeroSuit 30305
 stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
@@ -216,13 +217,12 @@ stock GiveGiantDemoKnight(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 
-		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 1150, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 207, 6, 1, 2, 241);
 
 
-		CreateRoboHat(client, BlastDefense, 10, 6, 3329330.0, 0.75, -1.0); 
-		CreateRoboHat(client, BlastBlocker, 10, 6, 3329330.0, 0.75, -1.0); 
-		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
-		//CreateHat(client, 30945, 10, 6, false);//blast locker
+		CreateRoboHat(client, Specs, 10, 6, 0.0, 1.25, -1.0); 
+		CreateRoboHat(client, SpaceMann, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, SubZeroSuit, 10, 6, 0.0, 0.75, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -232,19 +232,21 @@ stock GiveGiantDemoKnight(client)
 
 			
 			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.4);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
 			// TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
 			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.4);
-			TF2Attrib_SetByName(Weapon1, "stickybomb charge rate", 0.05);
+			TF2Attrib_SetByName(Weapon1, "stickybomb charge rate", 0.8);
+			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.75);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			
+			TF2CustAttr_SetString(client, "Player-Gravity", "amount=0.16");	
 			// SetEntityRenderColor(Weapon1, 50,205,50,155);
 			// //SetEntityRenderFx(Weapon1, RENDERFX_HOLOGRAM);
 			// SetEntityRenderMode(Weapon1, RENDER_TRANSTEXTURE);
+			
 		}
 	}
 }
@@ -261,8 +263,16 @@ public void OnEntityCreated(int iEntity, const char[] sClassName)
 public void Hook_OnProjectileSpawn(iEntity) {
 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.4);
 		
+		RequestFrame(SetGrav, iEntity);
 	}
 }
 
+void SetGrav(int iEntity)
+{
+	// PrintToChatAll("Setting grav");
+	// SetEntityGravity(iEntity, 0.1);
+	Phys_EnableGravity(iEntity, false);
+	Phys_EnableDrag(iEntity, true);
+	SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.4);
+}
