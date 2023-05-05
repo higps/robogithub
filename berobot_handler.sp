@@ -2212,9 +2212,9 @@ stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
     // RequestFrame(RespawnPlayer, client);
 }
 
-void RespawnPlayer (int client){
-    TF2_RespawnPlayer(client);
-}
+// void RespawnPlayer (int client){
+//     TF2_RespawnPlayer(client);
+// }
 
 stock void TF2_SetHealth(int client, int NewHealth)
 {
