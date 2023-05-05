@@ -259,7 +259,7 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "override projectile type", 12.0);
 			
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.25);
-			TF2Attrib_SetByName(Weapon1, "Projectile range increased", 0.1);
+			// TF2Attrib_SetByName(Weapon1, "Projectile range increased", 0.1);
 			
 			// TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 2.5);
