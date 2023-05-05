@@ -157,10 +157,20 @@ public void OnPluginStart()
     RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
     RegConsoleCmd("sm_join", Command_Volunteer, "Volunters you to be a giant robot");
 
+
+    HookEvent("teamplay_point_captured", Event_Teamplay_Point_Captured, EventHookMode_Post);
+
     LoadVipSteamIds();    
     LoadQueuePointsFromFile();    
 
     Reset();
+}
+
+public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontBroadcast)
+{
+
+UpdateQueuePointsOnCap();
+
 }
 
 public void OnConfigsExecuted()
@@ -686,6 +696,34 @@ void UpdateQueuePoints(ArrayList volunteers, int neededVolunteers)
         _queuePoints.SetValue(steamId, newQueuepoints);
     }
     SaveQueuePointsToFile();
+}
+
+//This updates all players QP except robots
+
+void UpdateQueuePointsOnCap()
+{
+	for(int i = 1; i <= MaxClients+1; i++)
+	{
+		if(IsValidClient(i) && !IsAnyRobot(i))
+		{
+
+
+            char steamId[64];
+            GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId));
+            // int clientId = GetClientOfUserId(i);
+            int queuePoints;
+            int newQueuepoints;
+            _queuePoints.GetValue(steamId, queuePoints);
+            
+            newQueuepoints = queuePoints + 1;
+            
+            
+            _queuePoints.SetValue(steamId, newQueuepoints);
+            SMLogTag(SML_VERBOSE, "increasing Queuepoints for %L with steamid %s to %i mid round", i, steamId, newQueuepoints);
+            //if (!IsFakeClient(i)) PrintToChatAll("QP for %N was %i steamID: %s\nNew QP %i", i, queuePoints, steamId, newQueuepoints);
+        }
+        SaveQueuePointsToFile();
+    }
 }
 
 int VolunteerStateComparision(int index1, int index2, Handle array, Handle hndl)
