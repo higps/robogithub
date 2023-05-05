@@ -964,7 +964,7 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
     // bool BossActive = true;
     if (IsBossActive() && StrContains(notes,"B₡") != -1)
     {
-        PrintToChatAll(notes);
+        // PrintToChatAll(notes);
         draw = ITEMDRAW_DISABLED;
         return;
     }
