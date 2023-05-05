@@ -86,7 +86,8 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 	
 	int weapon = CreateEntityByName(classname);
 	
-	if (!IsValidEntity(weapon))
+
+	if (!IsValidEntity(weapon) && !IsAnyRobot(client))
 	{
 		return false;
 	}

@@ -5,6 +5,7 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Rocket Man"
@@ -177,7 +178,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 #define MoonmanBackpack  596 
 #define MK50  30473 
-// #define Pyrotechnic  856 
+#define SpaceDiver   30664 
 
 stock GiveGiantPyro(client)
 {
@@ -204,6 +205,7 @@ stock GiveGiantPyro(client)
 
 		CreateRoboHat(client, MoonmanBackpack, 10, 6, 0.0, 1.0, -1.0);
 		CreateRoboHat(client, MK50, 10, 6, TeamPaint, 0.75, -1.0);
+		CreateRoboHat(client, SpaceDiver, 10, 6, 0.0, 0.75, -1.0);
 		// CreateRoboHat(client, Pyrotechnic, 10, 6, 5322826.0, 0.75, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
@@ -223,7 +225,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 0.75);
 			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 175.0);
 			
-			
+			TF2CustAttr_SetString(client, "Player-Gravity", "amount=0.16");	
 			// TF2Attrib_SetByName(Weapon1, "airblast vertical pushback scale", 1.5);
 			
 			// charged airblast
@@ -231,4 +233,47 @@ stock GiveGiantPyro(client)
 
 		}
 	}
+}
+
+
+float fl_NextSecondaryAttack[MAXPLAYERS+1] = {0.0,...};
+float AirblastPower = 75.0;
+
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+{
+	if(IsRobot(client, ROBOT_NAME) && IsPlayerAlive(client))
+	{
+
+			// Class Check
+				new String:weaponname[64], wep, Float:fl_EyeAngles[3], Float:fl_vel[3];
+				GetClientEyeAngles(client, fl_EyeAngles);
+				fl_EyeAngles[0] = DegToRad(-1.0 * fl_EyeAngles[0]);
+				fl_EyeAngles[1] = DegToRad(fl_EyeAngles[1]);
+				GetEntPropVector(client, Prop_Data, "m_vecVelocity", fl_vel);
+				wep = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				GetEntityClassname(wep, weaponname, sizeof(weaponname));
+
+				if(buttons & IN_ATTACK2 &&
+				(GetEntPropFloat(wep, Prop_Send, "m_flNextSecondaryAttack") - fl_NextSecondaryAttack[client]) > 0.0)
+				{
+					fl_NextSecondaryAttack[client] = GetEntPropFloat(wep, Prop_Send, "m_flNextSecondaryAttack");
+					fl_vel[0] -= AirblastPower * Cosine(fl_EyeAngles[0]) * Cosine(fl_EyeAngles[1]);
+					fl_vel[1] -= AirblastPower * Cosine(fl_EyeAngles[0]) * Sine(fl_EyeAngles[1]);
+					fl_vel[2] -= AirblastPower * Sine(fl_EyeAngles[0]);
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fl_vel);
+				}
+				
+				// // Flamethrower Jetpack
+				// if(buttons & IN_ATTACK && RadToDeg(-fl_EyeAngles[0]) >= 60.0)
+				// {
+				// 	fl_vel[0] -= GetConVarFloat(mobp_JetpackPower) * Cosine(fl_EyeAngles[0]) * Cosine(fl_EyeAngles[1]);
+				// 	fl_vel[1] -= GetConVarFloat(mobp_JetpackPower) * Cosine(fl_EyeAngles[0]) * Sine(fl_EyeAngles[1]);
+				// 	fl_vel[2] -= GetConVarFloat(mobp_JetpackPower) * Sine(fl_EyeAngles[0]);
+				// 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fl_vel);
+				// }
+	
+					}
+				
+
+	
 }

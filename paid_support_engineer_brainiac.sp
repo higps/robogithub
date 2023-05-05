@@ -19,8 +19,8 @@
 #define ROBOT_ROLE "Builder"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS ""
-#define ROBOT_DESCRIPTION "Ultra Drain Pomson, High Damage Short Circuit"
-#define ROBOT_TIPS "Negate spam with Short Circuit\nPomson fully drains cloak and Uber\nBuild up to 3 normal sentries\nExtra dispenser"
+#define ROBOT_DESCRIPTION "MatePorter ability, Upgrading Rescue Ranger, Eureka Effect"
+#define ROBOT_TIPS "Use +use or special attack to open MatePort menu to teleport to teammates"
 #define ROBOT_COST 2.0
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
@@ -137,6 +137,8 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 	TF2Attrib_SetByName(client, "metal regen", 200.0);
+
+	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	// TF2Attrib_SetByName(client, "building cost reduction", 2.5);
 	TF2Attrib_SetByName(client, "mod teleporter cost", 9.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
@@ -199,13 +201,15 @@ stock GiveBigRoboDane(client)
 
 		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 2.0);
+			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.75);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.25);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
 			
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
+			TF2CustAttr_SetString(Weapon1, "projectile upgrades buildings", "5");
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);		
 		}
 
 		if(IsValidEntity(Weapon3))
@@ -223,10 +227,12 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 3.0);
 			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 1.1);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
+			
+			
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 4.0);
 
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
-			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.15 dispenser_scale=1.15 infinite_ammo=1 sentries=1 dispensers=2 remove_all_sappers=1 yeet=0");
+			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.15 dispenser_scale=1.15 infinite_ammo=0 sentries=1 dispensers=2 remove_all_sappers=1 yeet=0");
 			
 		}
 		
@@ -260,9 +266,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			g_button_held[client] = false;
             
 		}
-		//0 = Shadow Leap
-		//PrintToChat(client, "Throwing spell!");
-		// UpdateCharge(client);
+
 		g_skill = GetEngineTime();
 		DrawHUD(client);
 		
@@ -271,37 +275,22 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 
 
-// public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
-// {
-// 	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_USE))
-// 	{
 
-
-// 			CreatePlayerMenu(client);
-
-// 	}
-// }
 
 bool isready;
 void DrawHUD(int client)
 {
 	char sHUDText[128];
-	// char sProgress[32];
-	//int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCooldown) * 100.0);
+
+
 	int iCountDown = RoundToCeil(g_Recharge[client] - g_skill);
 	
-	// for (int j = 1; j <= 10; j++)
-	// {
-	// 	if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
-	// 	else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
-	// }
-
 	Format(sHUDText, sizeof(sHUDText), "MatePort: %i   ", iCountDown);
 	
 
 	if(iCountDown <= 0)
 	{
-		Format(sHUDText, sizeof(sHUDText), "MatePort Ready!\nUse +use");
+		Format(sHUDText, sizeof(sHUDText), "MatePort Ready!");
 			
 		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
 
@@ -309,18 +298,16 @@ void DrawHUD(int client)
 	} else {
 		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
 		
-		// PrintToChatAll("Not Ready!");
+
 	}
-	// if (g_hud_post_time + g_hud_draw_delay <= GetEngineTime() || g_hud_post_time == 0.0)
-	// {
+
 		 ShowHudText(client, -2, sHUDText);
-	// 	 g_hud_post_time = GetEngineTime();
-	// }
+
 
 		if (!isready && iCountDown <= 0)
 		{
 			TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
-			// PrintToChatAll("Ready!");
+
 			isready = true;	
 		}
 
@@ -400,8 +387,6 @@ int SelectionCallback(Menu menu, MenuAction action, int client, int selection)
 				int attach = CreateEntityByName("trigger_push");
 				TeleportEntity(attach, PreTeleOrigin, NULL_VECTOR, NULL_VECTOR);
 				TE_Particle("drg_wrenchmotron_teleport", PreTeleOrigin, _, _, attach, 1,0);
-				// TeleportEntity(client, TeleportOrigin, NULL_VECTOR, NULL_VECTOR);
-				// TE_Particle("drg_wrenchmotron_impact", PlayerOrigin, _, _, client, 1,0);
 				int attach2 = CreateEntityByName("trigger_push");
 				TeleportEntity(attach2, PlayerOrigin, NULL_VECTOR, NULL_VECTOR);
 				TE_Particle("drg_wrenchmotron_teleport", PlayerOrigin, _, _, attach2, 1,0);
@@ -410,12 +395,7 @@ int SelectionCallback(Menu menu, MenuAction action, int client, int selection)
 				TF2_AddCondition(client, TFCond_TeleportedGlow, 5.0);
 				EmitSoundToAll(TELEPORTER_SPAWN, client);
 				EmitSoundToAll(TELEPORTER_SPAWN, client);
-				// TE_Particle("wrenchmotron_teleport_glow_big", PlayerOrigin, _, _, client, 1,0);
-				// TE_Particle("wrenchmotron_teleport_flash", PlayerOrigin, _, _, client, 1,0);
-				// TE_Particle("wrenchmotron_teleport_glow_big", PlayerOrigin, _, _, client, 1,0);
-				// TE_Particle("wrenchmotron_teleport_sparks", PlayerOrigin, _, _, client, 1,0);
-				// 				TE_Particle("wrenchmotron_teleport_glow_big", PlayerOrigin, _, _, client, 1,0);
-				// TE_Particle("wrenchmotron_teleport_flash", PlayerOrigin, _, _, client, 1,0);
+
 					DataPack info = new DataPack();
 				info.Reset();
 				info.WriteCell(client);

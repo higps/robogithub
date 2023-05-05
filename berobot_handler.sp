@@ -439,7 +439,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         //FakeClientCommand(client, "tf_respawn_on_loadoutchanges 0");
         if (g_PlayerHealth[client] > 0){
             //PrintToChatAll("Player didn't die, setting health!");
-           CreateTimer(0.5, Timer_SetHealth, client);
+           CreateTimer(1.0, Timer_SetHealth, client);
         } 
 
     }
@@ -1296,7 +1296,7 @@ public Action Command_ChangeRobot(int client, int args)
     if (iTeam == g_RoboTeam || g_AprilEnable){
     if (g_cv_bDebugMode)PrintToChatAll("Attempting to allow menu selection for %N", client);
     
-    g_PlayerHealth[client] = -1;
+    // g_PlayerHealth[client] = -1;
 
     SetClientRepicking(client, true);
     ChooseRobot(client);
@@ -2209,6 +2209,10 @@ stock void TF2_SwapTeamAndRespawnNoMsg(int client, int team)
     AcceptEntityInput(client, "SetCustomModel");
     SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
 
+    // RequestFrame(RespawnPlayer, client);
+}
+
+void RespawnPlayer (int client){
     TF2_RespawnPlayer(client);
 }
 
