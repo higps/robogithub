@@ -12,7 +12,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Rage + Shield"
-#define ROBOT_COST 4.0
+#define ROBOT_COST 5.0
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -223,7 +223,7 @@ stock GiveGRageH(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_minigun", 41, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_minigun", 202, 6, 15, 0, 279);
 
 
 		CreateRoboHat(client, Starboard, 10, 6, 0.0, 0.75, -1.0); 
@@ -236,13 +236,13 @@ stock GiveGRageH(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.75);
 			TF2Attrib_SetByName(Weapon1, "generate rage on damage", 1.0);
-			TF2Attrib_SetByName(Weapon1, "increase buff duration", 0.5);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
-			TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 1.0);
+			TF2Attrib_SetByName(Weapon1, "increase buff duration", 0.8);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
+			//TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 1.0);
 			
-			TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
+			TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.");
 
 			TF2CustAttr_SetString(Weapon1, "generate rage on damage patch", "disable_knockback=1.0 disable_rage_damage_penalty=1.0");
 			TF2CustAttr_SetString(Weapon1, "minigun rage creates shield on deploy", "level=1.0 min_rage=1.1 rage_cancelable=0.0 rage_redeployable=1.0");
