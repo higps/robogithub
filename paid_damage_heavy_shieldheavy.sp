@@ -29,7 +29,7 @@
 #define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
 
-float scale = 1.75;
+float = 1.75;
 
 public Plugin:myinfo =
 {
@@ -172,7 +172,7 @@ MakeGRageH(client)
 	
 	
    
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
+	SetEntPropFloat(client, Prop_Send, "m_flModel", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
@@ -184,7 +184,7 @@ MakeGRageH(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "rage giving scale", 1.0);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.75);
 	//TF2Attrib_SetByName(client, "head scale", 0.75);
 
 	UpdatePlayerHitbox(client, scale);
