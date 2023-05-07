@@ -289,7 +289,7 @@ stock GiveGiantDemoKnight(client)
 		{
 			//TF2Attrib_RemoveAll(Weapon1);
 			
-			// TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.6);		
+			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.3);		
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
 			TF2Attrib_SetByName(Weapon1, "projectile speed increased", 2.5);
