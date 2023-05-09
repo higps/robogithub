@@ -55,7 +55,7 @@ public OnPluginStart()
 	restrictions.TeamCoins.Overall = 2;
 
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = 3.0;
+	restrictions.RobotCoins.PerRobot = 4.0;
 	AddRobot(robot, MakeToofty, PLUGIN_VERSION, restrictions);
 
 	AddNormalSoundHook(BossMortar);

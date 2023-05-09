@@ -13,7 +13,7 @@
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "High Pushback"
 #define ROBOT_COST 1.0
-#define ROBOT_COIN_GENERATION 3
+#define ROBOT_COIN_GENERATION 2
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

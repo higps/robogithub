@@ -213,7 +213,7 @@ MakeDemoKnight(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Long Charge\nHigh Impact Damage\n3 second crit boost on kill\nHigh Jumps");
+	PrintHintText(client , ROBOT_TIPS);
 
 }
 

@@ -16,7 +16,7 @@
 #define ROBOT_DESCRIPTION "High Knock Back Rockets"
 #define ROBOT_TIPS "Shoot at crowds to break them up\nGenerate 3 coins on death"
 #define ROBOT_COST 3.0
-#define ROBOT_COIN_GENERATION 3
+#define ROBOT_COIN_GENERATION 2
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

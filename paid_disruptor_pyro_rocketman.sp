@@ -9,11 +9,13 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Rocket Man"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Pyro"
-#define ROBOT_SUBCLASS "Flames"
+#define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Fast airblast, further flame range"
-#define ROBOT_TIPS "25%%%% Faster Airblast\n15%%%% longer flame range\nHeal 175 on extinguish"
+#define ROBOT_TIPS "25%%%% Faster Airblast\nAirblasts Propel you in the air\nHeal 175 on extinguish"
+#define ROBOT_COST 0.75
+#define ROBOT_COIN_GENERATION 2
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -61,11 +63,13 @@ public OnPluginStart()
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
-	robot.sounds.gunfire = SOUND_GUNFIRE;
-	robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 
-	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+
+	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions, ROBOT_COIN_GENERATION);
 }
 
 public void OnPluginEnd()
@@ -214,14 +218,14 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon1))
 		{
 			//TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
+			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			// TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.6);		
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);			
-			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
-			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
-			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);			
+			// TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
+			// TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
+			// TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 0.75);
 			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 175.0);
 			
