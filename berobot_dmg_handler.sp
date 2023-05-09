@@ -305,7 +305,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 {
                  //   PrintToChatAll("Target on fire");
                     TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 5.0);
-                    TF2_AddCondition(attacker, TFCond_DefenseBuffNoCritBlock, 5.0);
+                    TF2_AddCondition(attacker, TFCond_DefenseBuffed, 5.0);
                     // TF2_AddCondition(attacker, TFCond_CritCanteen, 3.0);
                     
                 }
@@ -321,7 +321,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 {
                     
                     // PrintToChatAll("Hit with Scorch %i",damagecustom);
-                    ChangeKnockBack(victim);
+                    RequestFrame(ChangeKnockBack,victim);
 
                 }
 
@@ -363,7 +363,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			
 			//PrintToChatAll("Creating timer");
 			
-			CreateTimer(1.0, Combo_Check_Timer, attacker);
+			CreateTimer(2.0, Combo_Check_Timer, attacker);
 			Timer_Punch_Count[attacker] = Punch_Count[attacker];
 			
 			g_Timer[attacker] = true;
@@ -944,7 +944,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
             if (IsAxtinguisher(Weapon3))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Axtinguisher: {orange}Provides 5 second speed boost and damage resist bonus",chat_display);
+                
+                // TF2Attrib_SetByName(Weapon3, "crit vs burning players", 1.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Axtinguisher: {orange}Provides 5 second speed boost{teamcolor}and{orange}5 seconds of Battalion Backup buff",chat_display);
 
             }
 
@@ -1034,6 +1036,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tomislav: {orange}+Mini-crits targets when fired at their back from close range. +60%% faster {teamcolor}rev up speed",chat_display);
                 
+            }
+
+            if(IsStockOrAllClassWeapon(Weapon3))
+            {
+                TF2Attrib_SetByName(Weapon3, "maxammo primary increased", 1.5);
+                TF2Attrib_SetByName(Weapon3, "maxammo secondary increased", 1.5);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+50%% maxammo on all weapons",chat_display);
             }
 
         }
@@ -1132,11 +1141,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
             //     //Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}",chat_display);
             // }
-            // if(IsBlutsauger(Weapon1))
-            // {
-            //     TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.0);
-            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}",chat_display);
-            // }
+            if(IsBlutsauger(Weapon1))
+            {
+                TF2Attrib_SetByName(Weapon1, "max health additive bonus", 20.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}+20 max health{teamcolor}",chat_display);
+            }
 
             if(IsOverdose(Weapon1) && Weapon2 != -1)
             {
@@ -1156,8 +1165,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsAmputator(Weapon3) && Weapon1 != -1)
             {
-                TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", 0.7);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Amputator: Provides {orange}+30%%% Passive critical resistance",chat_display);
+                TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", 0.3);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Amputator: Provides {orange}+50%%% Passive critical resistance",chat_display);
             }
 
             if(IsSolemnVow(Weapon3))
@@ -1341,7 +1350,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 3.0);
             // TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.4);
             // TF2Attrib_SetByName(Weapon1, "Reload time decreased", 0.8);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Beggars Bazooka: {orange}+2 clip size",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Beggars Bazooka: {orange}+3 clip size",chat_display);
         }
 
         if (isLibertyLauncher(Weapon1))
@@ -1395,8 +1404,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsReserveShooter(Weapon2))
         {
             TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
-            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.5 critType=1");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter: {orange}Minicrits become crits, {orange}+50%% damage bonus vs jumping robots",chat_display);
+            TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", 0.6);
+            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=2.0 critType=0");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter: {orange}Minicrits become crits, {orange}+100%% damage bonus vs jumping robots.{orange}+40%% faster deploy speed",chat_display);
         }
 
         if(IsSandman(Weapon3))
@@ -2002,7 +2012,7 @@ bool IsStockOrAllClassWeapon(int weapon){
 	{
 		//If other allclass are added, add here
         
-	case 0,1,3,8,190,191,193,198,154,609,264,423,474,880,939,954,1013,1071,1123,1127,30758,660,30667: 
+	case 0,1,3,5,8,190,191,193,195,198,154,609,264,423,474,880,939,954,1013,1071,1123,1127,30758,660,30667: 
 		{
 			return true;
 		}
@@ -2062,7 +2072,7 @@ bool IsShotGun(int weapon){
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 		//If other shotguns are added, add here
-	case 9,10,11,12,199,415,425,1141,1153,15003,15016,15044,15047,15085,15109,15132,15133,15152: 
+	case 9,10,11,12,199,425,1141,1153,15003,15016,15044,15047,15085,15109,15132,15133,15152: 
 		{
 			return true;
 		}
