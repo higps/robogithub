@@ -75,7 +75,7 @@ public OnPluginStart()
 	restrictions.TeamCoins.Overall = 2;
 
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = 2.0;
+	restrictions.RobotCoins.PerRobot = 3.0;
 
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 }

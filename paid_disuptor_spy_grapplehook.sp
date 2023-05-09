@@ -18,7 +18,7 @@
 #define ROBOT_DESCRIPTION "Grappling hook"
 #define ROBOT_TIPS "No Revolver\nSharp Dresser\nCan only backstab\nUse grappling hook with reload or specialattack!"
 #define ROBOT_COST 1.0
-#define ROBOT_COIN_GENERATION 3
+#define ROBOT_COIN_GENERATION 2
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

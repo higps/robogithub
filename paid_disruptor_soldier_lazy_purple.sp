@@ -17,7 +17,7 @@
 #define ROBOT_DESCRIPTION "Fast Direct hit, Market Garden"
 #define ROBOT_TIPS "Direct Hit deals normal damage to buildings"
 #define ROBOT_COST 3.0
-#define ROBOT_COIN_GENERATION 3
+#define ROBOT_COIN_GENERATION 2
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
