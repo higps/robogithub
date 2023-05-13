@@ -13,8 +13,8 @@
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
-#define ROBOT_DESCRIPTION "Rapid Recharge Sydney Sleeper"
-#define ROBOT_TIPS "Rapid Recharge Sydney Sleeper"
+#define ROBOT_DESCRIPTION "Sydney Sleeper, Danger Shield"
+#define ROBOT_TIPS "Immune to afterburn\nUse blast jump to get to high ground"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
