@@ -14,7 +14,7 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Knockback Sniper"
-#define ROBOT_TIPS "Your shots deal increased knockback on target"
+#define ROBOT_TIPS "Your shots deal increased knockback on target\nUse blast jump to get to high ground"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
