@@ -14,7 +14,7 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "No DMG penalty Hitman's Heatmaker"
-#define ROBOT_TIPS "You can move while scoped!"
+#define ROBOT_TIPS "You can move while scoped!\Use blast jump to get to high ground"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
