@@ -13,8 +13,8 @@
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
-#define ROBOT_DESCRIPTION "Bullet Penetration"
-#define ROBOT_TIPS "Crit On Kill Shooting Star\nSMG"
+#define ROBOT_DESCRIPTION "Crit Boost On Kill"
+#define ROBOT_TIPS "Crit On Kill Shooting Star\nYour bullets always penetrate\nUse blast jump to get to high ground"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
