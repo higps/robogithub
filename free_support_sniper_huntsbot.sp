@@ -15,7 +15,7 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Penetrating Huntsman"
-#define ROBOT_TIPS "Arrows penetrate enemies!"
+#define ROBOT_TIPS "Arrows penetrate enemies!\nUse blast jump to get to high ground"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
