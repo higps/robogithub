@@ -130,7 +130,7 @@ MakeSniper(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client , "You have explosive headshots");
+	PrintHintText(client , "You have explosive headshots\nUse blast jump to get to high ground");
 
 }
 
