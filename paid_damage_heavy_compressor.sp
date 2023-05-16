@@ -14,7 +14,7 @@
 #define ROBOT_DESCRIPTION "Resistance Piercing + Penetrating Bullets"
 #define ROBOT_COST 0.75
 #define ROBOT_TIPS "Bullets pierce resistances and Penetrate through targets\nTaunt to minicrit"
-#define ROBOT_ON_DEATH "Compressor's shotgun pierces damage resistances\nThis includes Battalion's Backup and Dead Ringer"
+#define ROBOT_ON_DEATH "Compressor's shotgun pierces damage resistances\nThis includes Battalion's Backup and cloak resistances"
  
 #define GRageH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
