@@ -12,6 +12,7 @@
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Fire Shotgun"
+#define ROBOT_ON_DEATH "Spitfire's Shotgun can ignite from any range\nSpitfire deals mini-crits to burning targets\nKeep yourself extinguished"
 #define ROBOT_COST 1.5
 
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"
