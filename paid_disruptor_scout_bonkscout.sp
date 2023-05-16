@@ -11,8 +11,8 @@
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Disruptor"
-#define ROBOT_DESCRIPTION "Bonk+Rapid Sandman"
-#define ROBOT_DETAILS "Use bonk to take sentry fire\nShoot a ball to begin generating more\n+3 Coins on death"
+#define ROBOT_DESCRIPTION "Bonk + Rapid Sandman"
+#define ROBOT_DETAILS "Use bonk to take sentry fire\nShoot a ball to begin generating more"
 #define ROBOT_COST 2.0
 #define ROBOT_COIN_GENERATION 2
 
