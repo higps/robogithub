@@ -15,6 +15,7 @@
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Electro Ball, Cow Mangler"
 #define ROBOT_TIPS "You have rapid reload Cow Mangler & Electroball"
+#define ROBOT_ON_DEATH "Look out for GrordBot's Electroball\nElectroball has a long cooldown"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
