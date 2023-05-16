@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Equalizer & Escape Plan fusion, Base Jumper"
 #define ROBOT_TIPS "Taunt to get airborne to use the base jumper\nSpeed and damage increase as health decreases\nYou can't contest objectives"
+#define ROBOT_ON_DEATH "Equalizor becomes more mobile and damaging as health decreases\nTanks can be stunned by shield bashes and stomp damage\nTanks take double melee damage"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
