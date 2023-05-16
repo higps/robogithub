@@ -16,6 +16,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Killing Gloves of Boxing"
 #define ROBOT_TIPS "Kill enemies to get long time crits!\nYou have melee resist"
+#define ROBOT_ON_DEATH "Boxing Champ is extremely resistant to melee damage\nBoxing Champ is crit boosted while crouch sliding\nKeep your distance"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
