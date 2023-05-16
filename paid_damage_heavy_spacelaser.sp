@@ -14,6 +14,7 @@
 #define ROBOT_DESCRIPTION "Low Gravity Laser Heavy"
 #define ROBOT_COST 0.75
 #define ROBOT_TIPS "Low Gravity and Shooting Space Lasers"
+#define ROBOT_ON_DEATH "Low gravity robots are open for fire while jumping\nForce them away with knockback"
  
 #define GRageH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
