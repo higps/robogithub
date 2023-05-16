@@ -21,6 +21,7 @@
 #define ROBOT_SUBCLASS ""
 #define ROBOT_DESCRIPTION "MatePorter ability, Upgrading Rescue Ranger, Eureka Effect"
 #define ROBOT_TIPS "Use +use or special attack to open MatePort menu to teleport to teammates"
+#define ROBOT_ON_DEATH "Brainiac can warp to any of his teammates\nHarass buildings to keep engi bots busy\nDisrupt TeamPorters when possible"
 #define ROBOT_COST 2.0
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
