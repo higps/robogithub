@@ -16,6 +16,7 @@
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Fast Direct hit, Market Garden"
 #define ROBOT_TIPS "Direct Hit deals normal damage to buildings"
+#define ROBOT_ON_DEATH "Blast jumpers can be countered heavily by the Reserve Shooter"
 #define ROBOT_COST 3.0
 #define ROBOT_COIN_GENERATION 2
 
