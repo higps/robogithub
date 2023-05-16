@@ -13,6 +13,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Rapid Heal on hit."
 #define ROBOT_TIPS "You are a Tank!\nYou can't contest objectives\nEat steak to heal and run fast and deal minicrits!"
+#define ROBOT_ON_DEATH "Pancop heals each time he hits someone\nTanks can be stunned by shield bashes and stomp damage\nTanks take double melee damage"
 #define ROBOT_COST 2.5
 
  
