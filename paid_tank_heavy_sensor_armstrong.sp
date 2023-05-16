@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Nanomachines"
 #define ROBOT_TIPS "Deal or take 4000 damage to fill meter, once activated become slower, ubered and repair yourself\nYou can't contest objectives"
+#define ROBOT_ON_DEATH "Armstrong is quick, but slow enough to be Uberchained\nTanks can be stunned by shield bashes and stomp damage\nTanks take double melee damage"
 #define ROBOT_COST 2.5
 
  
@@ -351,16 +352,16 @@ void DrawHUD(int client)
 	// int iCountDown = RoundToCeil(g_skill_time - g_skill);
 	int iCountDownFiring = RoundToCeil(FireModeTimer - g_skill);
 	
-	Format(sHUDText, sizeof(sHUDText), "Nanobots: %i %%%%\n    %s",iPercents, sProgress);
+	Format(sHUDText, sizeof(sHUDText), "Nanomachines: %i %%%%\n    %s",iPercents, sProgress);
 
 	if(iPercents >= 100)
 	{
 
 			if (g_Nanomode){
-				Format(sHUDText, sizeof(sHUDText), "Nanobots! %i", iCountDownFiring);
+				Format(sHUDText, sizeof(sHUDText), "Nanomachines! %i", iCountDownFiring);
 				SetHudTextParams(0.85, 0.6, 0.1, 255, 255, 0, 255);
 			}else{
-				Format(sHUDText, sizeof(sHUDText), "Nanobots Ready!\nUse Special Attack to Activate!");
+				Format(sHUDText, sizeof(sHUDText), "Nanomachines Ready!\nUse Special Attack to Activate!");
 				SetHudTextParams(0.85, 0.6, 0.1, 0, 255, 0, 255);	
 				}
 
