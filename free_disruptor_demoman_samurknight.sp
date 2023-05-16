@@ -11,7 +11,8 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Half-Zatoichi, Splendid Screen"
-#define ROBOT_TIPS "Samurai Anti Mann"
+#define ROBOT_TIPS "Samurai Anti Mann\nCharge refill on hit"
+#define ROBOT_ON_DEATH "S.A.M. can still be one-shot by the Half Zatoichi"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
