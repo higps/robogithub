@@ -15,7 +15,8 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Taunt: Leap Ability"
-#define ROBOT_TIPS "You can't contest objectives\nLeap launches based on where you were looking\nStomp an enemy for an instakill AOE explosion!\nLong time crits on glove kills"
+#define ROBOT_TIPS "You can't contest objectives\nLeap launches based on where you were looking\nStomp an enemy for an AOE explosion!\nLong time crits on glove kills"
+#define ROBOT_ON_DEATH "You can bodyblock Bearded's leap\nTanks can be stunned by shield bashes and stomp damage\nTanks take double melee damage"
  
 #define SHWC             "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
