@@ -13,6 +13,7 @@
 #define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Degreaser, Scorch shot, Maul"
 #define ROBOT_TIPS "You have 3 weapons\nScorch shot homes in on burning players\nHeal 200 on extinguish"
+#define ROBOT_ON_DEATH "Agro's Scorch Shot homes in on burning players"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
