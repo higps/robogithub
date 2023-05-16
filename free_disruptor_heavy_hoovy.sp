@@ -15,7 +15,8 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Perma-crit mittens"
-#define ROBOT_TIPS "Tickle enemies\nTaunt kill enemies for an instakill AOE explosion!"
+#define ROBOT_TIPS "Tickle enemies\nTaunt kill enemies for an AOE explosion!"
+#define ROBOT_ON_DEATH "Hoovy can be knocked out of the tauntkill animation\nHoovy creates an explosion upon successful tauntkills"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
