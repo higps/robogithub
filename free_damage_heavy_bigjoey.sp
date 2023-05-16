@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Tomislav"
 #define ROBOT_TIPS "Overheat increases accuracy up to 75%%%%\nDon't let overheat reach 100!\nLess damage done to buildings"
+#define ROBOT_ON_DEATH "Big Joey's Tomislav increases in accuracy the longer it is fired"
 
 
 //#define MODEL "models/weapons/shells/shell_minigun.mdl"
