@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Critical Chain Third Degree"
 #define ROBOT_TIPS "Rush down medics and kill who ever they are healing"
+#define ROBOT_ON_DEATH "Centurion deals crits to anyone who is attached to a heal beam (dispensers included)
 
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
