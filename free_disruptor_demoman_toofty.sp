@@ -15,6 +15,7 @@
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Iron Bomber, Sticky jumper"
 #define ROBOT_TIPS "Land on enemies to deal stomp damage"
+#define ROBOT_ON_DEATH "Blast jumpers can be countered heavily by the Reserve Shooter"
 
 #define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
