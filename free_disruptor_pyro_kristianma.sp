@@ -12,6 +12,7 @@
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Detonator, Axtinguisher"
+#define ROBOT_ON_DEATH "Blast jumpers can be countered heavily by the Reserve Shooter"
 
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
