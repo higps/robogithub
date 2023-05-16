@@ -16,6 +16,7 @@
 #define ROBOT_DESCRIPTION "Crit-Banner"
 #define ROBOT_COST 9.0
 #define ROBOT_TIPS "Give your teammates critical buff!"
+#define ROBOT_ON_DEATH "Commander Crocket's banner gives his team full crits"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
