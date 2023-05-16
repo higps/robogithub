@@ -13,6 +13,7 @@
 #define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "AOE scare ability"
 #define ROBOT_TIPS "Kill 5 enemies to charge your scare!\nSlower airblast\nHeal 250 on extinguish"
+#define ROBOT_ON_DEATH "Laugh Extractor can AOE scare after getting 5 kills\nDon't stay too close"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
