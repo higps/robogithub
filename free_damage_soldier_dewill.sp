@@ -15,6 +15,7 @@
 #define ROBOT_DESCRIPTION "Ground Striker"
 #define ROBOT_COST 2.5
 #define ROBOT_TIPS "Rapid Airstrike\nPress Special Attack to enter stationary rapid fire mode\nReduced damage to buildings"
+#define ROBOT_ON_DEATH "Dewill can't move while in rapid fire mode, leaving him open for damage"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
