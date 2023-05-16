@@ -1166,7 +1166,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if(IsAmputator(Weapon3) && Weapon1 != -1)
             {
                 TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", 0.3);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Amputator: Provides {orange}+50%%% Passive critical resistance",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Amputator: Provides {orange}+70%%% Passive critical resistance",chat_display);
             }
 
             if(IsSolemnVow(Weapon3))
