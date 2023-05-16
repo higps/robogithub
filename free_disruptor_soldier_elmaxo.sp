@@ -13,7 +13,8 @@
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Disruptor"
-#define ROBOT_DESCRIPTION "Rocket Launcher, Market Gardner"
+#define ROBOT_DESCRIPTION "The Original, Market Gardner"
+#define ROBOT_ON_DEATH "Blast jumpers can be countered heavily by the Reserve Shooter"
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
