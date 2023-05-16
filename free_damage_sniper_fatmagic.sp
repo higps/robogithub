@@ -15,6 +15,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Bushwacka, Jarate"
 #define ROBOT_TIPS "Rapid swing Bushwacka\nBecome briefly ubered when jarate'd\nYou regenerate health over time!"
+#define ROBOT_ON_DEATH "Fatmagic becomes briefly Ubered when covered in Jarate\Fatmagic can Uber himself with his own Jarate"
 
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
