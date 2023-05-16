@@ -15,6 +15,7 @@
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "No Gravity Stickies"
 #define ROBOT_STATS "No Gravity Sticky Bombs\n+75%%%% larger explosion radius\nLow Gravity"
+#define ROBOT_ON_DEATH "Low gravity robots are open for fire while jumping\nForce them away with knockback"
 #define ROBOT_COST 0.75
 
 #define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
