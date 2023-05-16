@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Plhogistinator, Manmelter"
 #define ROBOT_TIPS "Additional Uber after activating MMMPH\nFlares home on burning targets\nHeal 200 when extinguishing with the Manmelter"
+#define ROBOT_ON_DEATH "Wamo has additional Uber after activating MMMPH"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
