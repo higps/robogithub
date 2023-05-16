@@ -14,7 +14,8 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "High Knock Back Rockets"
-#define ROBOT_TIPS "Shoot at crowds to break them up\nGenerate 3 coins on death"
+#define ROBOT_TIPS "Shoot at crowds to break them up"
+#define ROBOT_ON_DEATH "Blastinator's rockets have extremely high knockback"
 #define ROBOT_COST 3.0
 #define ROBOT_COIN_GENERATION 2
 
