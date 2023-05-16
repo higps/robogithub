@@ -13,7 +13,8 @@
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Overheating Heavy"
 #define ROBOT_COST 3.0
-#define ROBOT_TIPS "Overheat % = damage bonus\nDon't let it  fully overheat!"
+#define ROBOT_TIPS "Overheat % = damage bonus\nDon't let it fully overheat!"
+#define ROBOT_ON_DEATH "Firewall deals more damage the longer he has been firing"
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
