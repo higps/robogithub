@@ -16,6 +16,7 @@
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "MIRV Rocket Launcher"
 #define ROBOT_TIPS "Use M2 to trigger MIRV, use +use or +attack3 to change MIRV modes"
+#define ROBOT_ON_DEATH "Ivory's rockets split in different ways depending on the current mode\nMortar rockets split downward\nConverge rockets split wide & converge"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
