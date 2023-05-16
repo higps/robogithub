@@ -13,6 +13,7 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rocket"
 #define ROBOT_DESCRIPTION "Cloaker"
+#define ROBOT_ON_DEATH "Coaker's banner turns his teammates invisible in a radius\nUse fire and liquids to track the location of cloaked bots"
 //#define GSOLDIER             "models/bots/spy/bot_spy.mdl"
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
