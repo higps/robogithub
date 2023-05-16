@@ -17,6 +17,7 @@
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Cluster Bomb Grenades"
 #define ROBOT_TIPS "Bombs explodes in to smaller bombs\nReduced damage vs buildings"
+#define ROBOT_ON_DEATH "Cluster grenades split into smaller grenades after exploding"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
