@@ -22,6 +22,7 @@
 #define ROBOT_SUBCLASS ""
 #define ROBOT_DESCRIPTION "Wrangler, 5 mini-sentries, Teamporter"
 #define ROBOT_TIPS "Use your 5 mini-sentries to cover areas\nBuild teamporters to easily teleport your team to the front lines\nPhase through buildings"
+#define ROBOT_ON_DEATH "Bill can build up to 5 mini-sentries\nHarass buildings to keep engi bots busy\nDisrupt TeamPorters when possible"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
