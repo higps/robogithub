@@ -15,6 +15,7 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Explosive headshot, Cozy Camper"
+#define ROBOT_ON_DEATH "Jbird has explosive headshots\nCounter-snipe or backstab sniper bots while they are distracted"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
