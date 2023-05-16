@@ -17,6 +17,7 @@
 #define ROBOT_DESCRIPTION "BotZip Shrink Powers"
 #define ROBOT_COST 1.5
 #define ROBOT_TIPS "Infinite cloak\nStab enemies to gain shrink ability\nGain size back on kill"
+#define ROBOT_ON_DEATH "Trickster instantly disguises on stabs\nTrickster can shrink after getting 3 kills, keep your eyes peeled\nUse fire and liquids to track a spy's location"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
