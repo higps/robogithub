@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Nuke Shot"
 #define ROBOT_TIPS "You shoot payload bombs\nLarge explosion radius\nYou have crit melee weapon"
+#define ROBOT_ON_DEATH "Nuker's bombs can be reflected and deleted"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
