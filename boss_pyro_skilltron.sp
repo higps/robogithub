@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Rapid Fire Airblast"
 #define ROBOT_TIPS "Use rapid airblast to shut down the enemy"
+#define ROBOT_ON_DEATH "SkillTron specializes in projectile denial and close quarters combat\nUse hitscan weapons to outrange him"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
