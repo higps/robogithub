@@ -13,6 +13,7 @@
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Slow Crit Minigun"
 #define ROBOT_TIPS "Crit Minign"
+#define ROBOT_ON_DEATH "Kommisar Krit's walk speed is very slow, so use corners and range to your advantage"
 
 
 //#define MODEL "models/weapons/shells/shell_minigun.mdl"
