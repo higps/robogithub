@@ -14,6 +14,7 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_TIPS "Pan deals massive damage\nUse charges to rush the enemy\nFull turn control"
+#define ROBOT_ON_DEATH "Demopan is a master of horizontal movement\nUse high ground to your advantage"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
