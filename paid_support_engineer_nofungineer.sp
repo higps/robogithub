@@ -21,7 +21,7 @@
 #define ROBOT_SUBCLASS ""
 #define ROBOT_DESCRIPTION "Ultra Drain Pomson, High Damage Short Circuit"
 #define ROBOT_TIPS "Negate spam with Short Circuit\nPomson fully drains cloak and Uber\nBuild up to 3 normal sentries\nExtra dispenser"
-#define ROBOT_ON_DEATH "NoFun's Pomson completely drains Uber & Cloak\nNoFun has 3 sentries and 2 dispensers\nHarass buildings to keep engi bots busy\nDisrupt TeamPorters when possible"
+#define ROBOT_ON_DEATH "NoFun's Pomson completely drains Uber & Cloak\nNoFun has 3 sentries and 2 dispensers\nUse explosive weapons to damage both engineers and their buildings at once"
 #define ROBOT_COST 2.0
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
