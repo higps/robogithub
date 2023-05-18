@@ -13,6 +13,7 @@
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Baby Face's Blaster"
 #define ROBOT_TIPS "Move speed increases from kills\nFaster fire rate"
+#define ROBOT_ON_DEATH "Mecha Face's speed increases on kill\nCounter him with sentries"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
