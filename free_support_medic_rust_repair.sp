@@ -14,7 +14,7 @@
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Vita-Saw Medic Healer"
-#define ROBOT_TIPS "Each organ gives 0.5 additional self-buff duration" 
+#define ROBOT_TIPS "Each organ gives 0.5 additional self-buff duration\nMini-Crit Injection grants speed and mini-crits"
 
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
