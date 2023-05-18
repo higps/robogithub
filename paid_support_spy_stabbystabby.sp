@@ -16,7 +16,7 @@
 #define ROBOT_SUBCLASS "Support"
 #define ROBOT_DESCRIPTION "Rapid fire kunai"
 #define ROBOT_TIPS "Infinite Cloak\nRapid stabs\nInstant decloak!\nHeal from sapping buildings"
-#define ROBOT_ON_DEATH "StabbyStabby has instant decloak\nStabby can quickly kill crowds with his faster swing speed\nUse fire and liquids to track a spy's location"
+#define ROBOT_ON_DEATH "StabbyStabby has instant decloak\nPyro's flames & airblast can shut down spies"
 #define ROBOT_COST 1.5
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
