@@ -15,6 +15,7 @@
 #define ROBOT_SUBCLASS "Recon"
 #define ROBOT_DESCRIPTION "Recon Remote Rocket"
 #define ROBOT_TIPS "Activate Remote Control by pressing M2\nChange camera mode with +attack3 or +use"
+#define ROBOT_ON_DEATH "Kappy's rockets take a while to travel\nOut-heal his damage to make him less effective"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
