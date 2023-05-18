@@ -14,7 +14,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Gain buffs depending on who you punch"
 #define ROBOT_TIPS "Immune to tickles\nBecomes ubered briefly when hit by an ubercharged medic's ubersaw\nYou can't contest objectives"
-#define ROBOT_ON_DEATH "GP is immune to Holliday Punch and Uberchaining\nTanks can be stunned by shield bashes and stomp damage\nTanks take double melee damage"
+#define ROBOT_ON_DEATH "GP cannot be tickled or Uberchained\nTanks can be stunned by shields and stomps\nTanks take double melee damage"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
