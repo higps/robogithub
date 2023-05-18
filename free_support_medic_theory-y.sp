@@ -11,8 +11,8 @@
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
-#define ROBOT_DESCRIPTION "Vac-eliminator"
-#define ROBOT_TIPS "Vaccinator is weaker, but gives additional buffs:\nBullet resist = mini-crit\nExplosive = Conch buff\nFire = Battalion Backup Buff"
+#define ROBOT_DESCRIPTION "Multi-Banner Vaccinator"
+#define ROBOT_TIPS "Weaker passive resistances\nBullet charge = mini-crits\nExplosive charge = Conch buff\nFire charge = Battalions Buff"
 
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
