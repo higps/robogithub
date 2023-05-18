@@ -14,7 +14,7 @@
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Dragon's Fury, Powerjack"
-#define ROBOT_TIPS "Dragon's Fury deals increased damage\nRun much faster while the Powerjack is deployed\nHeal 175 on extinguish & Powerjack kills"
+#define ROBOT_TIPS "Dragon's Fury deals increased damage\nRun faster with the Powerjack\nHeal 175 on extinguish & Powerjack kills"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
