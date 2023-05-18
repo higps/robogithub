@@ -14,7 +14,7 @@
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Scatter Scout"
 #define ROBOT_TIPS "Rapid reload scattergun\nDeal damage to increase damage bonus\nDamage bonus is lost on kill"
-#define ROBOT_ON_DEATH "B4nny's damage bonus increases as he deals damage\nThe damage bonus resets to 0 on kill"
+#define ROBOT_ON_DEATH "B4nny's damage bonus increases as he deals damage\nB4nny is countered by sentries"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
