@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Rapid fire Bazooka"
 #define ROBOT_TIPS "Long reload\nReduced self damage\nShoot at your feet and jump to glide!"
+#define ROBOT_ON_DEATH "Attack BazookaJoe during his long reload"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
