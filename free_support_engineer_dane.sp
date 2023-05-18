@@ -17,7 +17,7 @@
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS ""
 #define ROBOT_DESCRIPTION "Widowmaker, Wrench"
-#define ROBOT_TIPS "Buildings build and upgrade instantly when hit by a wrench\nBuild teamporters to easily teleport your team to the front lines\nPhase through buildings"
+#define ROBOT_TIPS "Buildings build and upgrade instantly when hit by a wrench\nBuild teamporters to teleport your team to the front lines"
 #define ROBOT_ON_DEATH "Use explosive weapons to damage both engineers and their buildings at once"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
