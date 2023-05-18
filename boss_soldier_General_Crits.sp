@@ -15,6 +15,7 @@
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Rapid Critical Rockets"
 #define ROBOT_TIPS "Firing speed increases as health decreases"
+#define ROBOT_ON_DEATH "General Crits's firing speed increases as health decreases\nAttack him during his reload"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
