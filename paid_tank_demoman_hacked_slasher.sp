@@ -14,7 +14,7 @@
 #define ROBOT_DESCRIPTION "Power-Walk Charge"
 #define ROBOT_COST 1.0
 #define ROBOT_TIPS "Extremely long but slow charge\nCharge refill on kill\nYou can't contest objectives"
-#define ROBOT_ON_DEATH "Use knockback weapons to disrupt the charge\nTanks can be stunned by shield bashes and stomp damage\nTanks take double melee damage"
+#define ROBOT_ON_DEATH "Knockback can disrupt the charge\nTanks can be stunned by shields and stomps\nTanks take double melee damage"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/mvm_tank_horn.wav"
