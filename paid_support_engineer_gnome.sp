@@ -21,7 +21,7 @@
 #define ROBOT_SUBCLASS ""
 #define ROBOT_DESCRIPTION "Throw your buildings, Frontier Justice"
 #define ROBOT_TIPS "Reload to throw buildings\nBuild teamporters to easily teleport your team to the front lines"
-#define ROBOT_ON_DEATH "Gnome can throw his buildings on each other, counter this with splash damage\nHarass buildings to keep engi bots busy\nDisrupt TeamPorters when possible"
+#define ROBOT_ON_DEATH "Use explosive weapons to damage both engineers and their buildings at once"
 #define ROBOT_COST 1.0
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
