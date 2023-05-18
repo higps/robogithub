@@ -14,7 +14,7 @@
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Banana Brass Beast"
 #define ROBOT_TIPS "Can't move while spun up\nFast spin up time\nBanana Powers"
-#define ROBOT_ON_DEATH "Samwiz can't move while revved\nSamwiz puts on the Potassium Bonnet while in banana mode\nBanana mode spawns banana bombs on hit"
+#define ROBOT_ON_DEATH "Samwiz can't move while revved\nSamwiz's Banana mode spawns banana bombs above you on hit"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
