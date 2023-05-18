@@ -13,6 +13,7 @@
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Multi-Shot"
 #define ROBOT_TIPS "Fire and reload the entire clip at once!"
+#define ROBOT_ON_DEATH "Attack Mortar Mack during his long reload\nAirblast grenades at close range for massive damage"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
