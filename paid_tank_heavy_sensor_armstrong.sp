@@ -14,7 +14,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Nanomachines"
 #define ROBOT_TIPS "Deal or take 4000 damage to fill meter, once activated become slower, ubered and repair yourself\nYou can't contest objectives"
-#define ROBOT_ON_DEATH "Armstrong is quick, but slow enough to be Uberchained\nTanks can be stunned by shield bashes and stomp damage\nTanks take double melee damage"
+#define ROBOT_ON_DEATH "Armstrong is slower in Nanomode\nTanks can be stunned by shields and stomps\nTanks take double melee damage"
 #define ROBOT_COST 2.5
 
  
