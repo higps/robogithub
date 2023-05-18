@@ -17,7 +17,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Saxtron Hale: Gain +250 HP per human player"
 #define ROBOT_TIPS "Crouch and look up to super jump\nCrouch and look down while jumping to weight drop"
-#define ROBOT_ON_DEATH "Saxtron is very flexible, having great horizontal and vertical movement\nBeware of his AOE scare rage\nUse knockback to your advantage"
+#define ROBOT_ON_DEATH "Saxtron has great horizontal & vertical movement\nBeware of his AOE scare rage\nUse knockback to your advantage"
 
 #define GSOLDIER		"models/bots/saxtron/bot_saxtron_v2.mdl"
 #define SPAWN   "mvm/ambient_mp3/mvm_siren.mp3"
