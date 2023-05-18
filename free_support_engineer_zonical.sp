@@ -20,7 +20,7 @@
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS ""
 #define ROBOT_DESCRIPTION "Quick-draw Pistol, Gunslinger"
-#define ROBOT_TIPS "Gain Minicrits by switching to your pistol\nBuildings build instantly when hit by a wrench\nBuild teamporters to easily teleport your team to the front lines"
+#define ROBOT_TIPS "Gain Minicrits by switching to your pistol\nBuild teamporters to easily teleport your team to the front lines"
 #define ROBOT_ON_DEATH "Zonical's pistol mini-crits when pulled out\nUse explosive weapons to damage both engineers and their buildings at once"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
