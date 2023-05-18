@@ -15,7 +15,7 @@
 #define ROBOT_CLASS "Spy"
 #define ROBOT_SUBCLASS "Support"
 #define ROBOT_DESCRIPTION "Turn invis on backstab"
-#define ROBOT_ON_DEATH "MrPaladin becomes invisible on backstab\nUse fire and liquids to track a spy's location"
+#define ROBOT_ON_DEATH "MrPaladin becomes invisible on backstab\nPyro's flames & airblast can shut down spies"
 #define ROBOT_COST 1.5
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
