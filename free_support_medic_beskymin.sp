@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Dmg Reflect Vaccinator"
-#define ROBOT_TIPS "Vaccinator: 15 percent passive resist\n 10 percent resistance when deployed\nGet the Reflect Damage rune when deploying uber on teammate"
+#define ROBOT_TIPS "15 percent passive resist\n10 percent resistance when deployed\nUber gives you and your patient the reflect rune"
  
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
