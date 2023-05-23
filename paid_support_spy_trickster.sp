@@ -319,8 +319,8 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_RemoveAll(Sapper);
 			
 		//	TF2Attrib_SetByName(Sapper, "mult cloak meter consume rate", 0.0);
-			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 50.0);
-			TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
+			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 58.0);
+			TF2Attrib_SetByName(Sapper, "robo sapper", 100.0);
 			// TF2Attrib_SetByName(Sapper, "mod weapon blocks healing", 1.0);
 			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
 		}	

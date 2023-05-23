@@ -1364,6 +1364,15 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}equip a banner to get the buff!",chat_display);
             }
+        }else
+        {
+            //To avoid keeping the buff when switching banners
+            if (IsAnyBanner(Weapon2))
+            {
+                
+                TF2Attrib_RemoveByName(Weapon2, "increase buff duration");
+                
+            }
         }
 
         if (IsAnyRocketLauncher(Weapon1))

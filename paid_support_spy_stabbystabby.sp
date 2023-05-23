@@ -241,7 +241,7 @@ stock GiveBigRoboDane(client)
 	TF2_RemoveWeaponSlot(client, 4);// inviswatch
 
 	
-	CreateRoboWeapon(client, "tf_weapon_revolver", 224, 6, 1, 0, 0);
+	// CreateRoboWeapon(client, "tf_weapon_revolver", 224, 6, 1, 0, 0);
 	CreateRoboWeapon(client, "tf_weapon_knife", 356, 6, 1, 2, 0); //kunai
 	CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 	CreateRoboWeapon(client, "tf_weapon_sapper", 1102, 6, 1, 1, 0);//snack attack
@@ -251,25 +251,25 @@ stock GiveBigRoboDane(client)
 	CreateRoboHat(client, Rogue, 10, 6, BlackPaint, 1.0, -1.0);
 	
 		
-	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
+	// int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
 	int Knife = GetPlayerWeaponSlot(client, 2); //Knife
 	int Cloak = GetPlayerWeaponSlot(client, 4); //Invis watch
 	int Sapper = GetPlayerWeaponSlot(client, 1); //Sapper
 
-	if(IsValidEntity(Revolver)) //Revovler
-		{
-			TF2Attrib_RemoveAll(Revolver);
+	// if(IsValidEntity(Revolver)) //Revovler
+	// 	{
+	// 		TF2Attrib_RemoveAll(Revolver);
 			
-			TF2Attrib_SetByName(Revolver, "fire rate bonus", 0.8);
-			TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
+	// 		TF2Attrib_SetByName(Revolver, "fire rate bonus", 0.8);
+	// 		TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
 						
-		}
+	// 	}
 
 	if(IsValidEntity(Knife)) //
 		{
 			TF2Attrib_RemoveAll(Knife);
 			
-			TF2Attrib_SetByName(Knife, "fire rate bonus", 0.20);
+			TF2Attrib_SetByName(Knife, "fire rate bonus", 0.40);
 			TF2Attrib_SetByName(Knife, "damage bonus", 0.35);
 			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
@@ -284,7 +284,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Cloak);
 			
 			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
-			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.01);
+			// TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.01);
 
 			
 						
@@ -294,8 +294,8 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Sapper);
 			
 		//	TF2Attrib_SetByName(Sapper, "mult cloak meter consume rate", 0.0);
-			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 50.0);
-			TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
+			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 25.0);
+			TF2Attrib_SetByName(Sapper, "robo sapper", 100.0);
 			
 			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
 		}	
