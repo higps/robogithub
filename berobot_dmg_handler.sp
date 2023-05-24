@@ -862,15 +862,15 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 {
                     case 2: 
                     {
-                        condmodifier = 1.15;
+                        condmodifier = 1.05;
                     }
                     case 3: 
                     {
-                        condmodifier = 1.2;
+                        condmodifier = 1.1;
                     }
                     case 4: 
                     {
-                        condmodifier = 1.25;
+                        condmodifier = 1.15;
                     }
                 }
 

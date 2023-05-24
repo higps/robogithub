@@ -266,10 +266,10 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define Balaclava 521
-#define Cape 30727
+#define HeadHedge 30978
+#define  KillersKit 30339
 
-// 
+// Head Hedge (30978), Killer's Kit (30339), Geometrical Teams Rocket Launcher
 
 stock GiveGiantPyro(client)
 {
@@ -284,12 +284,12 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 3);
 		TF2_RemoveWeaponSlot(client, 4);
 
-		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 205, 6, 1, 2, 215);
 		CreateRoboWeapon(client, "tf_weapon_buff_item", 226, 6, 1, 2, 0);
 		// CreateRoboWeapon(client, "tf_weapon_shovel", 775, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, Balaclava, 10, 6, 0.0, 1.0, -1.0);
-		CreateRoboHat(client, Cape, 10, 6, 0.0, 1.0, 1.0);
+		CreateRoboHat(client, HeadHedge, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, KillersKit, 10, 6, 0.0, 1.0, 1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
