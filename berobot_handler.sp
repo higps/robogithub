@@ -2005,7 +2005,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         int TargetRobots = RoundToFloor(float(CurrentRobots+CurrentHumans) / drobotcount.FloatValue);
         // int RobotSurplus = CurrentRobots-TargetRobots;
 
-        int TargetHumans = RoundToFloor(float(CurrentRobots+1) * drobotcount.FloatValue) - CurrentRobots;
+        int TargetHumans = RoundToFloor(float(CurrentRobots) * drobotcount.FloatValue) - CurrentRobots;
 
         int MissingHumans = TargetHumans-CurrentHumans;
         // int RobotOverflow = CurrentRobots-g_RoboCapTeam;
@@ -2015,7 +2015,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         // {
         //     TargetRobots = 1;
         // }
-        // PrintToChatAll("Current Robots: %i\nTarget Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", CurrentRobots, TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
+        //PrintToChatAll("Current Robots: %i\nTarget Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", CurrentRobots, TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
         // PrintCenterTextAll("Target Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
 
 
