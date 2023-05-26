@@ -62,6 +62,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
@@ -269,7 +270,7 @@ stock GiveGRageH(client)
 			// TF2CustAttr_SetString(Weapon1, "weapon overheat sound", "weapons/bumper_car_decelerate.wav");
 			TF2CustAttr_SetString(client, "Player-Gravity", "amount=0.16");			
 			// TF2CustAttr_SetString(client, "Player-Gravity", "amount=0.16");	
-			// TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=1.2 addcond=73");
+			// 
 			
 		}
 		

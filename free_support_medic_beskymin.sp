@@ -14,7 +14,8 @@
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Dmg Reflect Vaccinator"
 #define ROBOT_TIPS "15 percent passive resist\n10 percent resistance when deployed\nUber gives you and your patient the reflect rune"
- 
+#define ROBOT_ON_DEATH "Be mindful when shooting while the reflect is active\nWait for the reflect to be over to continue shooting"
+
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -42,6 +43,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
 }
 
@@ -198,12 +200,12 @@ stock GiveGiantMedic(client)
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
+			// TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.25);
 		}
 		
-				//Condition to add heal on taunting
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=1.2 addcond=73");
+				
+		
 	}
 }
 

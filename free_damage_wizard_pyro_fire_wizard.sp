@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Throws Fireball, Crit on burning melee"
 #define ROBOT_TIPS "Throw fireball! Meele crits on burning"
+#define ROBOT_ON_DEATH "Airblast the robot away\nLook out for the signal when the spell has recharged"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -59,6 +60,7 @@ public OnPluginStart()
 	// robot.sounds.gunfire = SOUND_GUNFIRE;
 	// robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 }
 

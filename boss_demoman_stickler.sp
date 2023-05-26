@@ -49,6 +49,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
 	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;

@@ -16,7 +16,7 @@
 #define ROBOT_DESCRIPTION "Rapid Uber Build and Debuff remover"
 #define ROBOT_TIPS "Uber builds fasts, lasts short and removes all debuffs" 
 #define ROBOT_COST 1.0
-
+#define ROBOT_ON_DEATH "Separate this robot from his team and rush him down"
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -47,6 +47,7 @@ public OnPluginStart()
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
@@ -270,7 +271,7 @@ stock GiveGiantMedic(client)
 		// TF2_AddCondition(client, TFCond_RestrictToMelee);
 		// RequestFrame(MakeMediGun, client);
 
-		//Condition to add heal on taunting
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=1.2 addcond=73");
+		
+		
 	}
 }

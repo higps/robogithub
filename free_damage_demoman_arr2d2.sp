@@ -13,6 +13,7 @@
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Loose Cannon"
 #define ROBOT_TIPS "+75%%%% explosion radius\n+250%%%% projectile speed\n-70%%%% dmg vs buildings"
+#define ROBOT_ON_DEATH "Reflect the bombs to counter attack!"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -50,6 +51,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 
 

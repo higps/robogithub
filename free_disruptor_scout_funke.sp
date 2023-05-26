@@ -15,6 +15,7 @@
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Throwable Batsaber"
 #define ROBOT_TIPS "Batsaber minicrits bleeding enemies"
+#define ROBOT_ON_DEATH "Try to use environment to kill this robot"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -64,6 +65,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null, 2);
 }

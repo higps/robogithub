@@ -12,6 +12,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Eyelander, Chargin' Targe"
 #define ROBOT_TIPS "Longer charge\nBetter turn control\n20% charge refill on hit"
+#define ROBOT_ON_DEATH "This robot is weak to airblast"
 
 #define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -46,6 +47,7 @@ public OnPluginStart()
 	robot.role = ROBOT_ROLE;
 	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
+	robot.deathtip = ROBOT_ON_DEATH;
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;

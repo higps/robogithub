@@ -17,7 +17,7 @@
 #define ROBOT_STATS "No Gravity Sticky Bombs\n+75%%%% larger explosion radius\nLow Gravity"
 #define ROBOT_ON_DEATH "Low gravity robots are open for fire while jumping\nForce them away with knockback"
 #define ROBOT_COST 0.75
-
+#define ROBOT_ON_DEATH "This robot is weak up close"
 #define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -54,6 +54,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();

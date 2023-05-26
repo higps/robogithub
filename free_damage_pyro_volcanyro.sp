@@ -14,6 +14,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Gas Passer, Sharpened Volcano Fragment"
 #define ROBOT_TIPS "Throw gas at enemies\nGas-covered enemies explode on ignite\nHit burning targets for an AOE explosion!"
+#define ROBOT_ON_DEATH "Airblast and Shortcircuit are good vs this robot"
 
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -62,6 +63,7 @@ public OnPluginStart()
 	robot.sounds.gunfire = SOUND_GUNFIRE;
 	robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 }
 

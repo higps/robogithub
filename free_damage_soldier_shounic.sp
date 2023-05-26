@@ -112,6 +112,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
 	AutoAim = CreateConVar("shounic_rocket_launcher_auto_aim", "0", "Should a fired rocket launcher automatically target players", _, true, 0.0, true, 1.0);

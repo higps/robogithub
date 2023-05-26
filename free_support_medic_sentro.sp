@@ -15,7 +15,9 @@
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "AOE Heal uber + Fireball"
- 
+#define ROBOT_TIPS "Fireball gets stronger when kritze\nYour uber AOE heals all teammes in close proximity"
+#define ROBOT_ON_DEATH "This robot's fireball gets stronger when kritzkrieged"
+
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -49,6 +51,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
 }
 
@@ -133,7 +136,7 @@ TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "You are %s\n %s with special attack (+attack3)\nTaunt to self heal", ROBOT_NAME, ROBOT_DESCRIPTION);
+	PrintHintText(client , ROBOT_TIPS);
 
 
 }
@@ -218,8 +221,8 @@ stock GiveGiantMedic(client)
 		//	SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 			
 		}
-		//Condition to add heal on taunting
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=1.2 addcond=73");
+		
+		
 	}
 }
 

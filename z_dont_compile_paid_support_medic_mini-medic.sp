@@ -46,6 +46,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
@@ -180,8 +181,8 @@ stock GiveGiantMedic(client)
 			g_spawn_uber[client] = false;
 		}
 
-		//Condition to add heal on taunting
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=1.2 addcond=73");
+		
+		
 	}
 }
 

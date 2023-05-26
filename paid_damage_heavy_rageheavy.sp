@@ -14,7 +14,7 @@
 #define ROBOT_DESCRIPTION "Pushback rage"
 #define ROBOT_TIPS "Deal damage to build rage\nUse special attack or taunt to activate rage\nRage doesn't lower your DPS"
 #define ROBOT_COST 3.0
- 
+#define ROBOT_ON_DEATH "Stay on the ground to avoid getting rage pushed far away"
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -61,6 +61,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();

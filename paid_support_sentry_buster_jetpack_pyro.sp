@@ -16,7 +16,7 @@
 #define ROBOT_DESCRIPTION "Thermal Thruster + Homewrecker"
 #define ROBOT_TIPS "Infiltrate engi nests with the Thruster\nYour Homewrecker pierces resistances!"
 #define ROBOT_COST 1.0
-
+#define ROBOT_ON_DEATH "Airblast stops this robot from landing on sentry nests"
 #define GPYRO		"models/bots/pyro/bot_pyro.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -56,9 +56,11 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	// robot.sounds.gunfire = SOUND_GUNFIRE;
 	// robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
