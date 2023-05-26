@@ -15,6 +15,7 @@
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Mass Scottish Resistance"
 #define ROBOT_TIPS "Set up multiple traps!"
+#define ROBOT_ON_DEATH "Short circuit, quickie bomb launcher, scorch shot and detonator counters this robot"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -49,6 +50,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	AddRobot(robot, MakeToofty, PLUGIN_VERSION);
 
 	AddNormalSoundHook(BossMortar);

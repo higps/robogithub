@@ -15,7 +15,7 @@
 #define ROBOT_DESCRIPTION "Rapid Long Range Artillery"
 #define ROBOT_COST 2.5
 #define ROBOT_TIPS "Rockets travel in an arc\n45%%%% larger explosion radius\nRapid fire"
-
+#define ROBOT_ON_DEATH "Use battalions backup, vaccinator or short circuit to limit this robots damage"
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
@@ -89,6 +89,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 
 

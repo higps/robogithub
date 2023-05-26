@@ -13,7 +13,8 @@
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Kritzkrieg"
 #define ROBOT_TIPS "Increase your team's damage output with the Kritzkrieg\nDefend yourself with the Blutsauger"
- 
+#define ROBOT_ON_DEATH "Battalion Backup and Vaccinator are great counters towards kritzkrieg"
+
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -45,6 +46,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
 }
 
@@ -189,8 +191,8 @@ stock GiveGiantMedic(client)
 			
 		}
 
-		//Condition to add heal on taunting
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=1.2 addcond=73");
+		
+		
 	}
 }
   

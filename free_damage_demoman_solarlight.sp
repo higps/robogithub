@@ -13,6 +13,7 @@
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Hybrid Knight"
 #define ROBOT_TIPS "Rapid Iron Bomber\nCharge longer while your sword is out"
+#define ROBOT_ON_DEATH "Short Circuit and Airblast are good ways to deal with this robot"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -46,6 +47,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	AddRobot(robot, MakeSolar, PLUGIN_VERSION);
 
 	AddNormalSoundHook(BossMortar);

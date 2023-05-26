@@ -13,6 +13,7 @@
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Fast movespeed, High Damage Melee swings"
 #define ROBOT_TIPS "You are fast and deal increased damage"
+#define ROBOT_ON_DEATH "Airblast the fast scout away"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -59,6 +60,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION);
 }
 

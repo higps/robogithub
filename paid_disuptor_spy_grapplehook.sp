@@ -19,7 +19,7 @@
 #define ROBOT_TIPS "No Revolver\nSharp Dresser\nCan only backstab\nUse grappling hook with reload or specialattack!"
 #define ROBOT_COST 1.0
 #define ROBOT_COIN_GENERATION 2
-
+#define ROBOT_ON_DEATH "Keeping this robot on fire is key to getting it destroyed"
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -65,6 +65,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();

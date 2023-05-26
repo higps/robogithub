@@ -14,7 +14,7 @@
 #define ROBOT_DESCRIPTION "Quickfix + MvM Shield"
 #define ROBOT_TIPS "Protect your team or help them push with your shield"
 #define ROBOT_COST 4.0
- 
+#define ROBOT_ON_DEATH "This robot has no other way to defend itself than with the shield\nSeparate this robot from his team and rush him down"
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -42,6 +42,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
@@ -185,7 +186,7 @@ stock GiveGiantMedic(client)
 			
 		}
 
-				//Condition to add heal on taunting
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=1.2 addcond=73");
+				
+		
 	}
 }

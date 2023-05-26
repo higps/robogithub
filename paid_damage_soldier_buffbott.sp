@@ -14,7 +14,7 @@
 #define ROBOT_SUBCLASS "Rocket"
 #define ROBOT_DESCRIPTION "Buff-Banner"
 #define ROBOT_COST 2.0
-
+#define ROBOT_ON_DEATH "Use Battalions Backup or Vaccinator to negate the mini-crit damage"
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
@@ -61,6 +61,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();

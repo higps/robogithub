@@ -14,7 +14,7 @@
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Strength Buff Crossbow"
 #define ROBOT_TIPS "Strong Heal Bolts\nActivate Strength Bolts with M2\nProvide special buffs to other Cop bots"
- 
+#define ROBOT_ON_DEATH "This robot is weak up close"
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -42,6 +42,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 	AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
 
 	HookEvent("crossbow_heal", Event_Crossbow_Heal, EventHookMode_Post);
@@ -196,8 +197,8 @@ stock GiveGiantMedic(client)
 		// 	TF2Attrib_SetByName(Weapon2, "heal on hit for slowfire", 50.0);
 		// }
 		
-				//Condition to add heal on taunting
-		TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=7 duration=1.2 addcond=73");
+				
+		
 	}
 }
 

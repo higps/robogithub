@@ -67,6 +67,7 @@ public OnPluginStart()
 	robot.sounds.gunfire = SOUND_GUNFIRE;
 	robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();

@@ -68,14 +68,29 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
     
     int victimUserId = event.GetInt("userid", -1);
     int victimClientId = GetClientOfUserId(victimUserId);
+
+    int attackerUserId = event.GetInt("attacker", -1);
+    int attackerClientId = GetClientOfUserId(attackerUserId);
+
+    
+
+    // if (IsAnyRobot(attackerUserId) && IsValidClient(victimClientId))
+    // {
+    //     PrintToChatAll("Victim was %N and death by robot %N", victimClientId, attackerClientId);
+    //     char robotName[NAMELENGTH];
+    //     GetRobot(attackerUserId, robotName, NAMELENGTH);
+    //     Robot robot;
+    //     GetRobotDefinition(robotName, robot);
+    //     PrintHintText(victimClientId, "%s:%s:%s", robot.name, robot.subclass, robot.deathtip);
+    // }
+
     if (!IsValidClient(victimClientId))
     {
         SMLogTag(SML_VERBOSE, "OnDeath canceled, because victim %i is invalid", victimClientId);
         return;
     }
 
-    int attackerUserId = event.GetInt("attacker", -1);
-    int attackerClientId = GetClientOfUserId(attackerUserId);
+
     if (!IsValidClient(attackerClientId))
     {
         SMLogTag(SML_VERBOSE, "OnDeath canceled, because attacker %i is invalid", attackerClientId);
@@ -117,4 +132,8 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
     int rewardedTeamCoins = robot.teamCoinsOnDeath;
     SMLogTag(SML_VERBOSE, "adding %i TeamCoins, because robot %L died", rewardedTeamCoins, victimClientId);
     AddTeamCoinsFor(victimClientId, rewardedTeamCoins);
+
+    
+
+
 }
