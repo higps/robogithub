@@ -11,7 +11,7 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
-#define ROBOT_DESCRIPTION "Rage + Shield"
+#define ROBOT_DESCRIPTION "Shield"
 #define ROBOT_COST 5.0
 #define ROBOT_ON_DEATH "Boxing Champ is extremely resistant to melee damage\nBoxing Champ becomes crit boosted when crouch sliding"
 
