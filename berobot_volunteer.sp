@@ -684,7 +684,8 @@ void UpdateQueuePoints(ArrayList volunteers, int neededVolunteers)
         int newQueuepoints;
         if (volunteerIndex < neededVolunteers)
         {
-            newQueuepoints = 0;
+            if (IsAnyRobot(clientId))newQueuepoints = 0;
+            // PrintToChatAll("%N was robot and got points set to 0!", clientId);
             SMLogTag(SML_VERBOSE, "resetting Queuepoints for %L with steamid %s", clientId, steamId);
         }
         else
