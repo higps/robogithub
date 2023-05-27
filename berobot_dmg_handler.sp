@@ -928,7 +928,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
 
 
-    if (!IsAnyRobot(client) && IsValidClient(client) && IsPlayerAlive(client))
+    if (!IsAnyRobot(client) && IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) != GetRobotTeam())
     {
         int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
         int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -1432,7 +1432,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
             TF2Attrib_SetByName(Weapon2, "Reload time decreased", 0.8);
             TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.8);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates through enemies{teamcolor} abd {orange}+20%%% faster firing and reload speed",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates through enemies{teamcolor} and {orange}+20%%% faster firing and reload speed",chat_display);
         }
 
         if (IsReserveShooter(Weapon2))
@@ -1506,13 +1506,28 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         //     // Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sapper: {orange}Stuns robots{teamcolor} or some shit",chat_display);
         //     // TF2Attrib_SetByName(Weapon2, "robo sapper", 4.0);
             
-        // }
+        // }                        
+        // DataPack info = new DataPack();
+        // info.Reset();
+        // info.WriteCell(client);
+        // info.WriteCell(chat_display);
+        
+
+        // RequestFrame(FrameDelayedStatDisplay, info);        
         if(!IsAnyRobot(client))DisplayMMStats(client, chat_display);
 
     }
 }
     
-    
+// void FrameDelayedStatDisplay (DataPack info)
+// {
+//     info.Reset();
+
+// 	int client = info.ReadCell();
+//     char chat_display[512] = info.ReadCell();
+// 	delete info;
+//     if(!IsAnyRobot(client))DisplayMMStats(client, chat_display);
+// }
 
 void SetDemoDamageBuff(int weapon)
 {
