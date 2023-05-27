@@ -57,7 +57,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     if (!IsAnyRobot(client))
     {
 
-        CreateTimer(0.2, Tip_Timer, client);
+        CreateTimer(0.5, Tip_Timer, client);
     }
 
 }
