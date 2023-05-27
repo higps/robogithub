@@ -1061,6 +1061,43 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (TF2_GetPlayerClass(client) == TFClass_Sniper)
         {
+
+        if (Weapon1 != -1)
+        {
+            TF2Attrib_RemoveByName(Weapon1, "maxammo primary reduced");
+            
+        }
+        
+        if (IsHuntsMan(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 1.93);
+            TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
+            TF2Attrib_SetByName(Weapon1, "bleeding duration", g__bleed_duration_bonus);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade, {orange}Bleed on hit,{orange}n93%% more {teamcolor}max ammo",chat_display);
+        }
+
+        if (IsSniperRifle(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "explosive sniper shot", 1.0);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Rifle: {orange}Explosive headshots {teamcolor}upgrade",chat_display);
+           
+        }
+
+        if (IsBazaar(Weapon1))
+        {
+
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bragin: {orange}Gain head on headshot{teamcolor}, but {darkred}Lose 2 heads{teamcolor} on bodyshot",chat_display);
+           
+        }
+
+        if (IsClassic(Weapon1))
+        {
+            TF2Attrib_SetByName(Weapon1, "sniper no headshot without full charge", 0.0);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Classic: {orange}Headshot anytime",chat_display);
+           
+        }
+
+
             if(IsStockOrAllClassWeapon(Weapon3))
             {
                 
@@ -1247,26 +1284,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains 35 HP on hit",chat_display);
         }
 
-        if (IsSniperRifle(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "explosive sniper shot", 1.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Rifle: {orange}Explosive headshots {teamcolor}upgrade",chat_display);
-           
-        }
 
-        if (IsBazaar(Weapon1))
-        {
-
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bragin: {orange}Gain head on headshot{teamcolor}, but {darkred}Lose 2 heads{teamcolor} on bodyshot",chat_display);
-           
-        }
-
-        if (IsClassic(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "sniper no headshot without full charge", 0.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Classic: {orange}Headshot anytime",chat_display);
-           
-        }
         if (TF2_GetPlayerClass(client) == TFClass_Spy)
         {
 
@@ -1310,12 +1328,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
         }
 
-        if (IsHuntsMan(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            TF2Attrib_SetByName(Weapon1, "bleeding duration", g__bleed_duration_bonus);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade",chat_display);
-        }
+
 
         if (IsCandyCane(Weapon3))
         {
@@ -1494,7 +1507,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         //     // TF2Attrib_SetByName(Weapon2, "robo sapper", 4.0);
             
         // }
-        DisplayMMStats(client, chat_display);
+        if(!IsAnyRobot(client))DisplayMMStats(client, chat_display);
 
     }
 }

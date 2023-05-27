@@ -14,7 +14,7 @@
 #define ROBOT_DESCRIPTION "Shield"
 #define ROBOT_COST 5.0
 #define ROBOT_ON_DEATH "Use arrows or fire to shoot through the shield"
-
+#define ROBOT_TIPS "Use taunt to activate the shield"
 
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -241,7 +241,7 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
 			TF2Attrib_SetByName(Weapon1, "generate rage on damage", 1.0);
 			TF2Attrib_SetByName(Weapon1, "increase buff duration", 0.5);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.65);
+			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.65);
 			TF2Attrib_SetByName(Weapon1, "slow enemy on hit", 0.0);
 			// TF2Attrib_SetByName(Weapon1, "damage penalty", 1.0);
 			
@@ -255,61 +255,6 @@ stock GiveGRageH(client)
 
 		}
 		
-		PrintHintText(client, "Taunt To activate rage mode!");
+		PrintHintText(client, ROBOT_TIPS);
 	}
 }
-
-// - Regular paints -
-//set item tint RGB
-// A Color Similar to Slate					3100495
-// A Deep Commitment to Purple					8208497
-// A Distinctive Lack of Hue					1315860
-// A Mann's Mint								12377523
-// After Eight									2960676
-// Aged Moustache Grey							8289918
-// An Extraordinary Abundance of Tinge			15132390
-// Australium Gold								15185211	
-// Color No. 216-190-216						14204632
-// Dark Salmon Injustice						15308410
-// Drably Olive								8421376
-// Indubitably Green							7511618
-// Mann Co. Orange								13595446
-// Muskelmannbraun								10843461
-// Noble Hatter's Violet						5322826
-// Peculiarly Drab Tincture					12955537
-// Pink as Hell								16738740
-// Radigan Conagher Brown						6901050
-// The Bitter Taste of Defeat and Lime			3329330
-// The Color of a Gentlemann's Business Pants	15787660
-// Ye Olde Rustic Colour						8154199
-// Zepheniah's Greed							4345659
-
-// - Team colors -
-
-// An Air of Debonair:
-// set item tint RGB : 6637376
-// set item tint RGB 2 : 2636109
-
-// Balaclavas Are Forever
-// set item tint RGB : 3874595
-// set item tint RGB 2 : 1581885
-
-// Cream Spirit
-// set item tint RGB : 12807213
-// set item tint RGB 2 : 12091445
-
-// Operator's Overalls
-// set item tint RGB : 4732984
-// set item tint RGB 2 : 3686984
-
-// Team Spirit
-// set item tint RGB : 12073019
-// set item tint RGB 2 : 5801378
-
-// The Value of Teamwork
-// set item tint RGB : 8400928
-// set item tint RGB 2 : 2452877
-
-// Waterlogged Lab Coat
-// set item tint RGB : 11049612
-// set item tint RGB 2 : 8626083

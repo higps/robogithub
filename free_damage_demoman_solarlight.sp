@@ -246,9 +246,9 @@ stock GiveGiantDemoKnight(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.8);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
-			TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
+			// TF2Attrib_SetByName(Weapon1, "damage penalty", 0.8);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
+			TF2Attrib_SetByName(Weapon1, "clip size bonus", 1.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);

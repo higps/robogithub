@@ -221,7 +221,7 @@ stock GiveGiantDemoKnight(client)
 		CreateRoboHat(client, Dustcatcher, 10, 6, 15185211.0, 0.75, -1.0); 
 		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
 		//CreateHat(client, 30945, 10, 6, false);//blast locker
-		TF2CustAttr_SetString(client, "projectile-size", "size=1.75 update-hitbox=1");
+		TF2CustAttr_SetString(client, "projectile-size", "size=1.35 update-hitbox=1");
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
@@ -229,10 +229,10 @@ stock GiveGiantDemoKnight(client)
 			//TF2Attrib_RemoveAll(Weapon1);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.75);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 3.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.0);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.75);
+			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.35);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 2.0);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.35);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.4);
