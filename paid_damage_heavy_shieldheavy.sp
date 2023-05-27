@@ -12,7 +12,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Shield"
-#define ROBOT_COST 5.0
+#define ROBOT_COST 6.0
 #define ROBOT_ON_DEATH "Use arrows or fire to shoot through the shield"
 #define ROBOT_TIPS "Use taunt to activate the shield"
 
