@@ -72,17 +72,19 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
     int attackerUserId = event.GetInt("attacker", -1);
     int attackerClientId = GetClientOfUserId(attackerUserId);
 
-    
 
-    // if (IsAnyRobot(attackerUserId) && IsValidClient(victimClientId))
-    // {
-    //     PrintToChatAll("Victim was %N and death by robot %N", victimClientId, attackerClientId);
-    //     char robotName[NAMELENGTH];
-    //     GetRobot(attackerUserId, robotName, NAMELENGTH);
-    //     Robot robot;
-    //     GetRobotDefinition(robotName, robot);
-    //     PrintHintText(victimClientId, "%s:%s:%s", robot.name, robot.subclass, robot.deathtip);
-    // }
+
+    if (IsAnyRobot(attackerClientId) && IsValidClient(victimClientId))
+    {
+        
+        // int iattackerUserId = event.GetInt("attacker");
+        // int iattackerClientId = GetClientOfUserId(attackerUserId);
+        char robotName[NAMELENGTH];
+        GetRobot(attackerClientId, robotName, NAMELENGTH);
+        Robot robot;
+        GetRobotDefinition(robotName, robot);
+        PrintHintText(victimClientId,"Tip: %s", robot.deathtip);
+    }
 
     if (!IsValidClient(victimClientId))
     {

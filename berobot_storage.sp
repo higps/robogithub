@@ -132,6 +132,7 @@ public any Native_AddRobot(Handle plugin, int numParams)
     robot.subclass = robotDefinition.subclass;
     robot.shortDescription = robotDefinition.shortDescription;
     robot.sounds = robotDefinition.sounds;
+    robot.deathtip = robotDefinition.deathtip;
 
     PrivateForward privateForward = new PrivateForward(ET_Single, Param_Cell);
     privateForward.AddFunction(plugin, callback);

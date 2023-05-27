@@ -272,7 +272,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
-			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 3.0);
+			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 2.0);
 			TF2Attrib_SetByName(Weapon3, "single wep deploy time increased", 1.6);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);

@@ -14,10 +14,9 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "No Gravity Stickies"
-#define ROBOT_STATS "No Gravity Sticky Bombs\n+75%%%% larger explosion radius\nLow Gravity"
+#define ROBOT_STATS "No Gravity Sticky Bombs\n+25%%%% larger explosion radius\nLow Gravity"
 #define ROBOT_ON_DEATH "Low gravity robots are open for fire while jumping\nForce them away with knockback"
-#define ROBOT_COST 0.75
-#define ROBOT_ON_DEATH "This robot is weak up close"
+#define ROBOT_COST 2.0
 #define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -234,15 +233,15 @@ stock GiveGiantDemoKnight(client)
 
 			
 			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.4);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
-			// TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
-			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.0);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.2);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.1);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.75);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.1);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.4);
 			TF2Attrib_SetByName(Weapon1, "stickybomb charge rate", 0.8);
-			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.75);
+			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.25);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2CustAttr_SetString(client, "Player-Gravity", "amount=0.16");	
 			// SetEntityRenderColor(Weapon1, 50,205,50,155);
@@ -275,6 +274,12 @@ void SetGrav(int iEntity)
 	// PrintToChatAll("Setting grav");
 	// SetEntityGravity(iEntity, 0.1);
 	Phys_EnableGravity(iEntity, false);
-	Phys_EnableDrag(iEntity, true);
-	SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.4);
+	// Phys_SetMass(iEntity, 10.01);
+	// Phys_EnableDrag(iEntity, false);
+	// float velocity[2];
+	// velocity[0] = 100.0;
+	// velocity[1] = 100.0;
+	// velocity[2] = 100.0;
+	// Phys_AddVelocity(iEntity, velocity[2], velocity[2]);
+	SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.25);
 }
