@@ -486,6 +486,14 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         AddPlayerHealth(attacker, 120, 275, true);
                     }
 
+                    if (HasDiamondback(attacker)) //Diamondback gives 2, has to be+2 for some reason crits on backstab
+                    {
+                    int iCrits = GetEntProp(attacker, Prop_Send, "m_iRevengeCrits");
+
+                    SetEntProp(attacker, Prop_Send, "m_iRevengeCrits", iCrits+2);
+                        
+                    }
+
                     if (IsBigEarner(weapon))
                     {
                         TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 3.0);
@@ -493,8 +501,11 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                     if(IsSpycicle(weapon))
                     {
-                        TF2Attrib_AddCustomPlayerAttribute(victim, "damage penalty", 0.7, 3.0);
-                        TF2Attrib_AddCustomPlayerAttribute(attacker, "damage penalty", 0.7, 3.0);
+                        // float i_amount = 6.0;
+                        TF2Attrib_AddCustomPlayerAttribute(victim, "damage penalty", 0.7, 6.0);
+                        // PrintCenterText(attacker,"-30%% damage penalty applied to %N", victim);
+                        // PrintCenterText()
+                        // TF2Attrib_AddCustomPlayerAttribute(attacker, "damage penalty", 0.7, 6.0);
                         //TF2_StunPlayer(victim, 1.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
                     }
 
@@ -521,11 +532,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     
                     
 
-                    if (HasDiamondback(attacker)) //Diamondback gives 1 crits on backstab
-                    {
-                        int iCrits = GetEntProp(attacker, Prop_Send, "m_iRevengeCrits");
-                        SetEntProp(attacker, Prop_Send, "m_iRevengeCrits", iCrits+1);
-                    }
+
 
                     //Do backstab modifying
                     if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
@@ -906,6 +913,11 @@ void DisplayMMStats(int client, char[] chat_display)
         g_Attribute_Display[client] = GetEngineTime() + g_Attribute_Display_CollDown;
     }
 }
+
+// void AddBonusCrit(int attacker)
+// {
+ 
+// }
 //Functions to handle attributes for humans
 public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
 {

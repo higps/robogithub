@@ -263,8 +263,8 @@ stock GiveGRageH(client)
 			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.35);
 			// TF2Attrib_SetByName(Weapon1, "Projectile speed decreased", 0.1);
 			
-			// TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
-			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 4.0);
+			// TF2CustAttr_SetString(Weapon1, "spread penalty", 33.0);
+			// TF2Attrib_SetByName(Weapon1, "override projectile type", 13.0);
 
 			// TF2CustAttr_SetString(Weapon1, "weapon overheat", "heat_rate=0.0200 heat_rate_alt=0.020 cooldown=4.0 decay_time=0.1 decay_rate=0.2");
 			// TF2CustAttr_SetString(Weapon1, "weapon overheat sound", "weapons/bumper_car_decelerate.wav");

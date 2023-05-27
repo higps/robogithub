@@ -13,7 +13,7 @@
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Shield"
 #define ROBOT_COST 5.0
-#define ROBOT_ON_DEATH "Use Arrows and flames go through the shield"
+#define ROBOT_ON_DEATH "Use arrows or fire to shoot through the shield"
 
 
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
@@ -238,10 +238,14 @@ stock GiveGRageH(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
 			TF2Attrib_SetByName(Weapon1, "generate rage on damage", 1.0);
 			TF2Attrib_SetByName(Weapon1, "increase buff duration", 0.5);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.65);
+			TF2Attrib_SetByName(Weapon1, "slow enemy on hit", 0.0);
+			// TF2Attrib_SetByName(Weapon1, "damage penalty", 1.0);
+			
+			
 			TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 1.0);
 			
 			TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
@@ -252,28 +256,6 @@ stock GiveGRageH(client)
 		}
 		
 		PrintHintText(client, "Taunt To activate rage mode!");
-	}
-}
-
-public TF2_OnConditionAdded(client, TFCond:condition)
-{
-    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-    {	
-        int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-
-        if (tauntid == -1)
-        {
-           	 CreateTimer(1.2, Timer_Taunt_Cancel, client);
-        }	  
-
-	}
-}
-
-public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
-{
-	if (IsValidClient(client)){
-		TF2_RemoveCondition(client, TFCond_Taunting);
-		
 	}
 }
 
