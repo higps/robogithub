@@ -54,7 +54,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     int client = GetClientOfUserId(GetEventInt(event, "userid"));
     
     //For Humans
-    if (!IsAnyRobot(client))
+    if (!IsAnyRobot(client) && GetRobotTeam() != GetClientTeam(client))
     {
 
         CreateTimer(0.5, Tip_Timer, client);
@@ -95,7 +95,8 @@ public Action Tip_Timer(Handle timer, any client)
 
         }
         
-        
+        if (CurrentRobots != 0)
+        {
         char chat_display[512];
         
         
@@ -158,5 +159,5 @@ public Action Tip_Timer(Handle timer, any client)
 
 //PrintToChatAll("You had %i medics on your team.\nRecommend Medic ratio %.0f\nCurrent Medic Ratio: %0.f", MedicCount, recommended_medics, medic_ratio);
         // PrintToChatAll("You had %i medics on your team.\nTarget Medics %.0f\nCurrent Medic Ratio: %0.f", MedicCount, target_medics, medic_ratio);
-    
+        }
 }

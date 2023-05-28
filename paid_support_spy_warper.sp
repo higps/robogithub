@@ -7,17 +7,19 @@
 #include <berobot>
 //#include <sendproxy>
 #include <dhooks>
+#include <tf_ontakedamage>
+#include <tf2_isPlayerInSpawn>
 //#include <tf2items_giveweapon>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Trickster"
+#define ROBOT_NAME	"Warper"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Spy"
 #define ROBOT_SUBCLASS "Support"
-#define ROBOT_DESCRIPTION "BotZip Shrink Powers"
-#define ROBOT_COST 1.5
+#define ROBOT_DESCRIPTION "Warp to last target hit"
+#define ROBOT_COST 1.0
 #define ROBOT_TIPS "Infinite cloak\nStab enemies to gain shrink ability\nGain size back on kill"
-#define ROBOT_ON_DEATH "Trickster disguises on stabs\nTrickster can shrink after getting 3 kills\nPyro's flames & airblast can shut down spies"
+#define ROBOT_ON_DEATH "Warper warps wherever Warper wants"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -31,13 +33,18 @@
 #define SPY_SPAWN_SOUND3		"vo/mvm_spy_spawn03.mp3"
 #define SPY_SPAWN_SOUND4		"vo/mvm_spy_spawn04.mp3"
 
+#define TELEPORTER_SPAWN		"weapons/teleporter_ready.wav"
+
 #define CHAR_FULL "■"
 #define CHAR_EMPTY "□"
 
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-float g_RechargeCooldown = 25.0;
+float g_RechargeCooldown = 10.0;
 float g_skill;
+int g_target = -1;
+float g_target_coords[3] = {0.0, ...};
+float g_scale = 1.75;
 // #define SPY_DEATH_SOUND1		"vo/mvm_spybot_death01.mp3"
 // #define SPY_DEATH_SOUND2		"vo/mvm_spybot_death02.mp3"
 // #define SPY_DEATH_SOUND3		"vo/mvm_spybot_death03.mp3"
@@ -61,8 +68,6 @@ public Plugin:myinfo =
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -120,38 +125,8 @@ public OnMapStart()
 	// PrecacheModel(MODEL);
 	PrecacheSound(SHRINK, true);
 	PrecacheSound(SIZE_RESTORED, true);
-
+	PrecacheSound(TELEPORTER_SPAWN, true);
 }
-int g_souls = 0;
-int g_soul_required = 3;
-float g_scale = 1.75;
-public Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-	int victim = GetClientOfUserId(GetEventInt(event, "victim"));
-
-	if (IsRobot(attacker, ROBOT_NAME) && !IsAnyRobot(victim) && g_souls < g_soul_required)
-	{
-		g_souls++;
-		SetEntPropFloat(attacker, Prop_Send, "m_flModelScale", g_scale);
-		UpdatePlayerHitbox(attacker, g_scale);
-		// EmitGameSoundToAll(SHRINK,attacker);
-		// PrintToChatAll("Souls needed: %i/%i", g_souls, g_soul_required);
-	}
-
-	// if (IsRobot(attacker, ROBOT_NAME))
-	// {
-		
-	// }
-	// return Plugin_Continue;
-}
-
-void SetSpeed(int client)
-{
-	
-	SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 320.0);
-}
-
 
 public Action:SetModel(client, const String:model[])
 {
@@ -225,6 +200,7 @@ MakeSpy(client)
 	EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
 	} 
 
+	g_target = -1;
 
 }
 
@@ -247,9 +223,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	// GiveBigRoboDane(client);
 // }
 
-#define BigTopper 30798
-// #define VoodoVizier 31072
-#define ShowStopper 30797
+#define RoBro 733
+#define Gawkers 31279
+#define TacticalTurtleneck 31278
 // #define Spek 343
 // #define WhitePaint 15132390.0
 
@@ -269,13 +245,13 @@ stock GiveBigRoboDane(client)
 
 	
 	// CreateRoboWeapon(client, "tf_weapon_revolver", 224, 6, 1, 0, 0);
-	CreateRoboWeapon(client, "tf_weapon_knife", 574, 6, 1, 2, 0); //kunai
+	CreateRoboWeapon(client, "tf_weapon_knife", 194, 6, 1, 2, 241); //kunai
 	CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 	CreateRoboWeapon(client, "tf_weapon_sapper", 735, 6, 1, 1, 0);//snack attack
 
-	CreateRoboHat(client, BigTopper, 10, 6, 0.0, 1.0, -1.0); 
-	// CreateRoboHat(client, VoodoVizier, 10, 6, 8208497.0, 1.0, -1.0); 
-	CreateRoboHat(client, ShowStopper, 10, 6, 0.0, 1.0, -1.0); 
+	CreateRoboHat(client, RoBro, 10, 6, 0.0, 1.0, -1.0); 
+	CreateRoboHat(client, Gawkers, 10, 6, 0.0, 1.0, -1.0); 
+	CreateRoboHat(client, TacticalTurtleneck, 10, 6, 15132390.0, 1.0, -1.0); 
 	// CreateRoboHat(client, LadyKiller, 10, 6, 0.0, 1.0, -1.0);
 	// CreateRoboHat(client, Spek, 10, 6, 0.0, 1.0, -1.0);
 	
@@ -302,7 +278,7 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_SetByName(Knife, "fire rate bonus", 0.8);
 			TF2Attrib_SetByName(Knife, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Knife, "mod_disguise_consumes_cloak", 0.0);
+			// TF2Attrib_SetByName(Knife, "mod_disguise_consumes_cloak", 0.0);
 			// TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
 			// TF2Attrib_SetByName(Knife, "restore health on kill", 10.0);
 			
@@ -330,16 +306,10 @@ stock GiveBigRoboDane(client)
 	}
 }
 
-//Fireball code
-
-
-#define PAGE_LENGTH 7
-
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if (IsRobot(client, ROBOT_NAME))
 	{
-		SetSpeed(client);
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE) ) 
 		{
@@ -355,77 +325,212 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			g_button_held[client] = false;
             
 		}
-		//0 = fireball
-		//PrintToChat(client, "Throwing spell!");
-		// UpdateCharge(client);
+
 		g_skill = GetEngineTime();
 		DrawHUD(client);
 		
 	}
-	return Plugin_Continue;
 }
 
-public void CastSpell(int client) {
 
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.15);
-	UpdatePlayerHitbox(client, 1.15);
-	EmitSoundToAll(SHRINK,client);
-}
 
-// float g_hud_draw_delay = 0.1;
-// float g_hud_post_time = 0.0;
+
+
 bool isready;
+
 void DrawHUD(int client)
 {
 	char sHUDText[128];
-	// char sProgress[32];
-	//int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCooldown) * 100.0);
+
+
 	int iCountDown = RoundToCeil(g_Recharge[client] - g_skill);
-
-	// for (int j = 1; j <= 10; j++)
-	// {
-	// 	if (iPercents >= j * 10)StrCat(sProgress, sizeof(sProgress), CHAR_FULL);
-	// 	else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
-	// }
-
-
-	Format(sHUDText, sizeof(sHUDText), "Shrink: %i/%i", g_souls, g_soul_required);
+	
+	Format(sHUDText, sizeof(sHUDText), "Warp: %i", iCountDown);
 	
 
-	if(g_souls >= g_soul_required)
+	if(iCountDown <= 0 && g_target == -1)
 	{
 
-	Format(sHUDText, sizeof(sHUDText), "Shrink: %i/%i\nReady!",g_souls, g_soul_required);
+		Format(sHUDText, sizeof(sHUDText), "Warp Ready!\nNeeds Target!");
+			
+		SetHudTextParams(1.0, 0.8, 0.5, 255, 0, 0, 255);
+		
 
-	
-	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
-
-
-	} else {
-	SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
-
-	// PrintToChatAll("Not Ready!");
-	}
-	// if (g_hud_post_time + g_hud_draw_delay <= GetEngineTime() || g_hud_post_time == 0.0)
-	// {
-	ShowHudText(client, -2, sHUDText);
-	// 	 g_hud_post_time = GetEngineTime();
-	// }
-
-	if (!isready && iCountDown <= 0)
+		
+	}else if(iCountDown <= 0 && g_target != -1)
 	{
-	TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
-	// PrintToChatAll("Ready!");
-	isready = true;	
+		Format(sHUDText, sizeof(sHUDText), "Warp Ready!");
+			
+		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+	}else
+	{
+		SetHudTextParams(1.0, 0.8, 0.5, 255, 0, 0, 255);
 	}
 
-	if (g_button_held[client] && g_souls >= 3 && !TF2_IsPlayerInCondition(client, TFCond_Cloaked) && !TF2_IsPlayerInCondition(client, TFCond_CloakFlicker))
+		 ShowHudText(client, -2, sHUDText);
+
+
+		if (!isready && iCountDown <= 0)
+		{
+			TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
+
+			isready = true;	
+		}
+
+	if (g_button_held[client] && iCountDown <= 0 && g_target != -1)
+	{
+		RequestFrame(Teleport, client);
+		
+		
+	}
+}
+
+void Teleport (int client)
+{
+	if(IsPlayerAlive(client) && !TF2Spawn_IsClientInSpawn(client))
 	{
 
-	RequestFrame(CastSpell, client);
-	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-	isready = false;
-	g_souls = 0;
 
+			// PrintToChat(client, "You selected %i which was %N", SelectedIndex[client], SelectedIndex[client]);
+
+			float PreTeleOrigin[3];
+			GetClientAbsOrigin(client, PreTeleOrigin);
+			
+			
+			//Teleport
+				int attach = CreateEntityByName("trigger_push");
+				TeleportEntity(attach, PreTeleOrigin, NULL_VECTOR, NULL_VECTOR);
+				TE_Particle("drg_wrenchmotron_teleport", PreTeleOrigin, _, _, attach, 1,0);
+				int attach2 = CreateEntityByName("trigger_push");
+				TeleportEntity(attach2, g_target_coords, NULL_VECTOR, NULL_VECTOR);
+				TE_Particle("drg_wrenchmotron_teleport", g_target_coords, _, _, attach2, 1,0);
+
+				// FakeClientCommand(client, "eureka_teleport");
+				TF2_AddCondition(client, TFCond_TeleportedGlow, 5.0);
+				EmitSoundToAll(TELEPORTER_SPAWN, client);
+				EmitSoundToAll(TELEPORTER_SPAWN, client);
+
+
+				CreateTimer(0.5, Teleport_Player, client);
+
+				g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+				isready = false;
+				g_target = -1;
+			
+
+		// TeleportEntity(client, g_target_coords, NULL_VECTOR, NULL_VECTOR);
+		// g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+		// isready= false;
+		
 	}
+}
+
+public Action Teleport_Player(Handle timer, int client)
+{
+	if(IsRobot(client, ROBOT_NAME) && IsPlayerAlive(client))TeleportEntity(client, g_target_coords, NULL_VECTOR, NULL_VECTOR);
+}
+
+
+
+void GetCoordinates (int victim)
+{
+	GetClientAbsOrigin(victim, g_target_coords);
+}
+
+/* Plugin Exclusive Functions */
+//Code that Gets the one to teleport to
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+	// if (!g_Enable)
+	//     return Plugin_Continue;
+	if(!IsValidClient(victim))
+	return Plugin_Continue;    
+	if(!IsValidClient(attacker))
+	return Plugin_Continue;
+
+
+	if(IsRobot(attacker, ROBOT_NAME) && !TF2Spawn_IsClientInSpawn(victim))
+	{
+		g_target = victim;
+		RequestFrame(GetCoordinates, victim);	
+		
+	}  
+
+	return Plugin_Continue;
+}
+
+stock void TE_Particle(char[] Name, float origin[3] = NULL_VECTOR, float start[3] = NULL_VECTOR, float angles[3] = NULL_VECTOR, entindex=-1, attachtype=-1, attachpoint=-1, bool resetParticles=true, customcolors = 0, float color1[3] = NULL_VECTOR, float color2[3] = NULL_VECTOR, controlpoint = -1, controlpointattachment = -1, float controlpointoffset[3] = NULL_VECTOR)
+{
+    // find string table
+    int tblidx = FindStringTable("ParticleEffectNames");
+    if (tblidx == INVALID_STRING_TABLE)
+    {
+        LogError("Could not find string table: ParticleEffectNames");
+        return;
+    }
+    float delay = 3.0;
+    // find particle index
+    char tmp[256];
+    int count = GetStringTableNumStrings(tblidx);
+    int stridx = INVALID_STRING_INDEX;
+
+    for (int i = 0; i < count; i++)
+    {
+        ReadStringTable(tblidx, i, tmp, sizeof(tmp));
+        if (StrEqual(tmp, Name, false))
+        {
+            stridx = i;
+            break;
+        }
+    }
+    if (stridx == INVALID_STRING_INDEX)
+    {
+        LogError("Could not find particle: %s", Name);
+        return;
+    }
+
+    TE_Start("TFParticleEffect");
+    TE_WriteFloat("m_vecOrigin[0]", origin[0]);
+    TE_WriteFloat("m_vecOrigin[1]", origin[1]);
+    TE_WriteFloat("m_vecOrigin[2]", origin[2]);
+    TE_WriteFloat("m_vecStart[0]", start[0]);
+    TE_WriteFloat("m_vecStart[1]", start[1]);
+    TE_WriteFloat("m_vecStart[2]", start[2]);
+    TE_WriteVector("m_vecAngles", angles);
+    TE_WriteNum("m_iParticleSystemIndex", stridx);
+    if (entindex !=- 1)
+    {
+        TE_WriteNum("entindex", entindex);
+    }
+    if (attachtype != -1)
+    {
+        TE_WriteNum("m_iAttachType", attachtype);
+    }
+    if (attachpoint != -1)
+    {
+        TE_WriteNum("m_iAttachmentPointIndex", attachpoint);
+    }
+    TE_WriteNum("m_bResetParticles", resetParticles ? 1 : 0);
+
+    if(customcolors)
+    {
+        TE_WriteNum("m_bCustomColors", customcolors);
+        TE_WriteVector("m_CustomColors.m_vecColor1", color1);
+        if(customcolors == 2)
+        {
+            TE_WriteVector("m_CustomColors.m_vecColor2", color2);
+        }
+    }
+    if(controlpoint != -1)
+    {
+        TE_WriteNum("m_bControlPoint1", controlpoint);
+        if(controlpointattachment != -1)
+        {
+            TE_WriteNum("m_ControlPoint1.m_eParticleAttachment", controlpointattachment);
+            TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", controlpointoffset[0]);
+            TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", controlpointoffset[1]);
+            TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", controlpointoffset[2]);
+        }
+    }
+    TE_SendToAll(delay);
 }
