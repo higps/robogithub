@@ -63,7 +63,7 @@ public OnPluginStart()
 	// robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-
+	// robot.weaponsound = ROBOT_WEAPON_SOUND_FLAMETHROWER;
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);

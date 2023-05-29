@@ -20,12 +20,6 @@
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
-
-#define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
-
 #define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
 #define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
 #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
@@ -56,8 +50,6 @@ public OnPluginStart()
 	LoadTranslations("common.phrases");
 
 	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-	AddNormalSoundHook(BossIcebear);
-
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
@@ -140,72 +132,6 @@ public Action:SetModel(client, const String:model[])
 
 		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
 	}
-}
-
-public Action:BossIcebear(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), LEFTFOOT);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), LEFTFOOT1);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), RIGHTFOOT);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), RIGHTFOOT1);
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
-	}
-
-	
-	if (strncmp(sample, ")weapons/", 9, false) == 0)
-	{
-		if (StrContains(sample, "rocket_shoot.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE);
-			EmitSoundToAll(sample, entity);
-			
-		}
-		else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_CRIT);
-			EmitSoundToAll(sample, entity);
-		}
-		
-		//Explosion doesnæt quite work
-		/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "explode2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "explode3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
-			EmitSoundToAll(sample, entity);
-		} */
-		return Plugin_Changed;
-	}
-	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
 }
 
 MakeGiantSoldier(client)

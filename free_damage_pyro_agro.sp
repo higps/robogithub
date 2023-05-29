@@ -20,8 +20,8 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_pyro/giant_pyro_loop.wav"
 
-// #define SOUND_GUNFIRE	")mvm/giant_pyro/giant_pyro_flamethrower_loop.wav"
-// #define SOUND_WINDUP	")mvm/giant_pyro/giant_pyro_flamethrower_start.wav"
+#define SOUND_GUNFIRE	")mvm/giant_pyro/giant_pyro_flamethrower_loop.wav"
+#define SOUND_WINDUP	")mvm/giant_pyro/giant_pyro_flamethrower_start.wav"
 
 #define LOFILONGWAVE 470
 #define HANDSOMEDEVIL 31135
@@ -64,10 +64,11 @@ public OnPluginStart()
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
-	// robot.sounds.gunfire = SOUND_GUNFIRE;
-	// robot.sounds.windup = SOUND_WINDUP;
+	robot.sounds.gunfire = SOUND_GUNFIRE;
+	robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
+	// robot.weaponsound = ROBOT_WEAPON_SOUND_FLAMETHROWER;
 
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 }

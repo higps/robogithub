@@ -620,4 +620,5 @@ enum struct Robot {
   Restrictions restrictions;
   int robotCoinsOnDeath;
   int teamCoinsOnDeath;
+  int weaponsound;
 }

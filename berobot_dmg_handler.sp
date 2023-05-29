@@ -1512,11 +1512,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         // info.WriteCell(client);
         // info.WriteCell(chat_display);
         
-
+        RemoveJingle(client);
         // RequestFrame(FrameDelayedStatDisplay, info);        
         if(!IsAnyRobot(client))DisplayMMStats(client, chat_display);
 
     }
+    //Jingle Sounds sometimes causes crash with the soundhooks somehow
+    
 }
     
 // void FrameDelayedStatDisplay (DataPack info)
@@ -1528,6 +1530,23 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 // 	delete info;
 //     if(!IsAnyRobot(client))DisplayMMStats(client, chat_display);
 // }
+
+void RemoveJingle(int iClient)
+{
+	int iWearableItem = -1;
+	// PrintToServer("LOOKING HAT 1 !");
+	while ((iWearableItem = FindEntityByClassname(iWearableItem, "tf_wearable*")) != -1) // Regular hats.
+	{	
+		// We check for the wearable's item def index and its owner.
+		// int iWearableIndex = GetEntProp(iWearableItem, Prop_Send, "m_iItemDefinitionIndex");
+		int iWearableOwner = GetEntPropEnt(iWearableItem, Prop_Send, "m_hOwnerEntity");
+
+		if (iWearableOwner == iClient)
+		{
+            TF2Attrib_SetByName(iWearableItem, "add jingle to footsteps", 0.0);
+		}
+	}
+}
 
 void SetDemoDamageBuff(int weapon)
 {
