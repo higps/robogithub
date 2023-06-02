@@ -46,6 +46,8 @@ public void OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 
+	//Must create include for this
+	// robot.issentrybuster = true;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
 	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;

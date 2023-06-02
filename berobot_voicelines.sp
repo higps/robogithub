@@ -131,7 +131,7 @@ static const char ScoutBotSteps[][256] =
         ")mvm/giant_scout/giant_scout_step_04.wav"
 };
 
-static const char SoldierBotSteps[][256] =
+static const char SoldierBotSteps2[][256] =
 {
     ")mvm/giant_soldier/giant_soldier_step01.wav",
     ")mvm/giant_soldier/giant_soldier_step03.wav",
@@ -139,6 +139,63 @@ static const char SoldierBotSteps[][256] =
     ")mvm/giant_soldier/giant_soldier_step04.wav"
 };
 
+static const char RegularBotSteps[][256] =
+{
+    "mvm/player/robostep_01.wav",
+    "mvm/player/robostep_02.wav",
+    "mvm/player/robostep_03.wav",
+    "mvm/player/robostep_04.wav",
+    "mvm/player/robostep_05.wav",
+    "mvm/player/robostep_06.wav",
+    "mvm/player/robostep_07.wav",
+    "mvm/player/robostep_08.wav",
+    "mvm/player/robostep_09.wav",
+    "mvm/player/robostep_10.wav",
+    "mvm/player/robostep_11.wav",
+    "mvm/player/robostep_12.wav",
+    "mvm/player/robostep_13.wav",
+    "mvm/player/robostep_14.wav",
+    "mvm/player/robostep_15.wav",
+    "mvm/player/robostep_16.wav",
+    "mvm/player/robostep_17.wav",
+    "mvm/player/robostep_18.wav"
+   
+};
+
+static const char SoldierBotSteps[][256] =
+{
+    ")mvm/player/robostep_01.wav",
+    ")mvm/player/robostep_02.wav",
+    ")mvm/player/robostep_03.wav",
+    ")mvm/player/robostep_04.wav",
+    ")mvm/player/robostep_05.wav",
+    ")mvm/player/robostep_06.wav",
+    ")mvm/player/robostep_07.wav",
+    ")mvm/player/robostep_08.wav",
+    ")mvm/player/robostep_09.wav",
+    ")mvm/player/robostep_10.wav",
+    ")mvm/player/robostep_11.wav",
+    ")mvm/player/robostep_12.wav",
+    ")mvm/player/robostep_13.wav",
+    ")mvm/player/robostep_14.wav",
+    ")mvm/player/robostep_15.wav",
+    ")mvm/player/robostep_16.wav",
+    ")mvm/player/robostep_17.wav",
+    ")mvm/player/robostep_18.wav"
+   
+};
+
+static const char GiantCommonBotSteps[][256] =
+{
+    "mvm/giant_common/giant_common_step01.wav",
+    "mvm/giant_common/giant_common_step02.wav",
+    "mvm/giant_common/giant_common_step03.wav",
+    "mvm/giant_common/giant_common_step04.wav",
+    "mvm/giant_common/giant_common_step05.wav",
+    "mvm/giant_common/giant_common_step06.wav",
+    "mvm/giant_common/giant_common_step07.wav",
+    "mvm/giant_common/giant_common_step08.wav"
+};
 
 
 
@@ -181,11 +238,14 @@ public void OnMapStart()
     size = sizeof ScoutBotSteps;
 	for (int i = 0; i < size; i++)
 		PrecacheSound(ScoutBotSteps[i], true);
-
-    size = sizeof SoldierBotSteps;
+ 
+    size = sizeof RegularBotSteps;
 	for (int i = 0; i < size; i++)
-		PrecacheSound(SoldierBotSteps[i], true);
+		PrecacheSound(RegularBotSteps[i], true);
 
+    size = sizeof GiantCommonBotSteps;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(GiantCommonBotSteps[i], true);
 
 	PrecacheSound(GUNFIRE);
 	PrecacheSound(GUNFIRE_CRIT);
@@ -304,7 +364,7 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
     if (strncmp(sample, "player/footsteps/", 17, false) == 0)
 	{
 		
-        //PrintToChatAll("FOOTSTEPPING")
+        PrintToChatAll("FOOTSTEPPING");
         
 		if (StrContains(sample, "1.wav", false) != -1)
 		{
@@ -324,6 +384,7 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
                 }
                 case TFClass_Soldier:
                 {
+                    PrintToChatAll(SoldierBotSteps[0]);
                     EmitSoundToAll(SoldierBotSteps[0], entity);
                 }
             }

@@ -55,7 +55,7 @@ public OnPluginStart()
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-	AddNormalSoundHook(BossGPS);
+
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -76,38 +76,6 @@ public OnPluginStart()
 
 
 	FormatTime(sTime, sizeof sTime, "%m", GetTime());
-}
-
-public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step01.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step03.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step02.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step04.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
-	}
-	return Plugin_Continue;
 }
 
 public void OnPluginEnd()

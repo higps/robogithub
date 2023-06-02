@@ -19,12 +19,6 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
-#define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
-#define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
-#define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
-
-
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Demoknight",
@@ -38,7 +32,6 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	AddNormalSoundHook(BossMortar);
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -52,36 +45,7 @@ public OnPluginStart()
 	robot.deathtip = ROBOT_ON_DEATH;
 	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 2);
 
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
-}
-
-public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT1, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT1, entity);
-		}
-		return Plugin_Changed;
-	}
-
-	return Plugin_Continue;
+	// HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
 public void OnPluginEnd()
@@ -96,57 +60,48 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
-	
+// public Event_Death(Event event, const char[] name, bool dontBroadcast)
+// {
+// 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
+// 	if (IsRobotWhenDead(victim, ROBOT_NAME))
+// 	{
+// 		char weaponName[32];
+// 		GetEventString(event, "weapon", weaponName, sizeof(weaponName));
 
 
-
-
-}
-
-public Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if (IsRobotWhenDead(victim, ROBOT_NAME))
-	{
-		char weaponName[32];
-		GetEventString(event, "weapon", weaponName, sizeof(weaponName));
-
-
-		// int weaponid = GetEventInt(event, "weaponid");
-	//	PrintToChatAll("%i a ", weaponid);
-			//PrintToChatAll("%i", GetEventInt(event, "weaponid"));
-			// if (weaponid == -1) return;
+// 		// int weaponid = GetEventInt(event, "weaponid");
+// 	//	PrintToChatAll("%i a ", weaponid);
+// 			//PrintToChatAll("%i", GetEventInt(event, "weaponid"));
+// 			// if (weaponid == -1) return;
 			
-			//int weapondef = GetEntProp(weaponid, Prop_Send, "m_iItemDefinitionIndex");	
+// 			//int weapondef = GetEntProp(weaponid, Prop_Send, "m_iItemDefinitionIndex");	
 			
-		if (StrEqual(weaponName, "demokatana"))//If killed by katana you respawn faster
-		{
-		//PrintToChatAll("%N was killed by weapon id %i which was named %s", victim, weaponid, weaponName);
+// 		if (StrEqual(weaponName, "demokatana"))//If killed by katana you respawn faster
+// 		{
+// 		//PrintToChatAll("%N was killed by weapon id %i which was named %s", victim, weaponid, weaponName);
 		
-		CreateTimer(4.0, Timer_Respawn, victim);
-		}
+// 		CreateTimer(4.0, Timer_Respawn, victim);
+// 		}
 			
 		
 		 
 		
-	}
+// 	}
 
 
-}
+// }
 
-public Action Timer_Respawn(Handle timer, any client)
-{
-    //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
-	if (IsValidClient(client) && !IsPlayerAlive(client))
-    {
-        TF2_RespawnPlayer(client);
-        //PrintToChat(client,"You have instant respawn as scout");
-    }
-	return Plugin_Continue;
-}
+// public Action Timer_Respawn(Handle timer, any client)
+// {
+//     //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
+// 	if (IsValidClient(client) && !IsPlayerAlive(client))
+//     {
+//         TF2_RespawnPlayer(client);
+//         //PrintToChat(client,"You have instant respawn as scout");
+//     }
+// 	return Plugin_Continue;
+// }
 
 public Action:SetModel(client, const String:model[])
 {

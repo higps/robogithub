@@ -58,8 +58,6 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	AddNormalSoundHook(BossBearded);
-
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 
 	// g_hGameConf = LoadGameConfigFile("bm_charge_airblast_immunity_data");
