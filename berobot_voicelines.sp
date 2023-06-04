@@ -50,7 +50,7 @@ public void OnPluginStart()
     // HookEvent("teamplay_round_win", Event_Teamplay_Round_Win, EventHookMode_Post);
 }
 
-int EveryOtherStep[MAXPLAYERS + 1] = {0,...};
+// int EveryOtherStep[MAXPLAYERS + 1] = {0,...};
 
 #define MVMSTART "vo/mvm_wave_start01.mp3"
 #define ANNOUNCERWAVESTART "Announcer.MVM_Wave_Start"
