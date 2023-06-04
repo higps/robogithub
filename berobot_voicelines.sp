@@ -50,6 +50,8 @@ public void OnPluginStart()
     // HookEvent("teamplay_round_win", Event_Teamplay_Round_Win, EventHookMode_Post);
 }
 
+int EveryOtherStep[MAXPLAYERS + 1] = {0,...};
+
 #define MVMSTART "vo/mvm_wave_start01.mp3"
 #define ANNOUNCERWAVESTART "Announcer.MVM_Wave_Start"
 #define ANNOUNCER_ALL_DEAD "Announcer.MVM_All_Dead"
@@ -141,60 +143,60 @@ static const char SoldierBotSteps2[][256] =
 
 static const char RegularBotSteps[][256] =
 {
-    "mvm/player/robostep_01.wav",
-    "mvm/player/robostep_02.wav",
-    "mvm/player/robostep_03.wav",
-    "mvm/player/robostep_04.wav",
-    "mvm/player/robostep_05.wav",
-    "mvm/player/robostep_06.wav",
-    "mvm/player/robostep_07.wav",
-    "mvm/player/robostep_08.wav",
-    "mvm/player/robostep_09.wav",
-    "mvm/player/robostep_10.wav",
-    "mvm/player/robostep_11.wav",
-    "mvm/player/robostep_12.wav",
-    "mvm/player/robostep_13.wav",
-    "mvm/player/robostep_14.wav",
-    "mvm/player/robostep_15.wav",
-    "mvm/player/robostep_16.wav",
-    "mvm/player/robostep_17.wav",
-    "mvm/player/robostep_18.wav"
+    "mvm/player/footsteps/robostep_01.wav",
+    "mvm/player/footsteps/robostep_02.wav",
+    "mvm/player/footsteps/robostep_03.wav",
+    "mvm/player/footsteps/robostep_04.wav",
+    "mvm/player/footsteps/robostep_05.wav",
+    "mvm/player/footsteps/robostep_06.wav",
+    "mvm/player/footsteps/robostep_07.wav",
+    "mvm/player/footsteps/robostep_08.wav",
+    "mvm/player/footsteps/robostep_09.wav",
+    "mvm/player/footsteps/robostep_10.wav",
+    "mvm/player/footsteps/robostep_11.wav",
+    "mvm/player/footsteps/robostep_12.wav",
+    "mvm/player/footsteps/robostep_13.wav",
+    "mvm/player/footsteps/robostep_14.wav",
+    "mvm/player/footsteps/robostep_15.wav",
+    "mvm/player/footsteps/robostep_16.wav",
+    "mvm/player/footsteps/robostep_17.wav",
+    "mvm/player/footsteps/robostep_18.wav"
    
 };
 
 static const char SoldierBotSteps[][256] =
 {
-    ")mvm/player/robostep_01.wav",
-    ")mvm/player/robostep_02.wav",
-    ")mvm/player/robostep_03.wav",
-    ")mvm/player/robostep_04.wav",
-    ")mvm/player/robostep_05.wav",
-    ")mvm/player/robostep_06.wav",
-    ")mvm/player/robostep_07.wav",
-    ")mvm/player/robostep_08.wav",
-    ")mvm/player/robostep_09.wav",
-    ")mvm/player/robostep_10.wav",
-    ")mvm/player/robostep_11.wav",
-    ")mvm/player/robostep_12.wav",
-    ")mvm/player/robostep_13.wav",
-    ")mvm/player/robostep_14.wav",
-    ")mvm/player/robostep_15.wav",
-    ")mvm/player/robostep_16.wav",
-    ")mvm/player/robostep_17.wav",
-    ")mvm/player/robostep_18.wav"
+    ")mvm/player/footsteps/robostep_01.wav",
+    ")mvm/player/footsteps/robostep_02.wav",
+    ")mvm/player/footsteps/robostep_03.wav",
+    ")mvm/player/footsteps/robostep_04.wav",
+    ")mvm/player/footsteps/robostep_05.wav",
+    ")mvm/player/footsteps/robostep_06.wav",
+    ")mvm/player/footsteps/robostep_07.wav",
+    ")mvm/player/footsteps/robostep_08.wav",
+    ")mvm/player/footsteps/robostep_09.wav",
+    ")mvm/player/footsteps/robostep_10.wav",
+    ")mvm/player/footsteps/robostep_11.wav",
+    ")mvm/player/footsteps/robostep_12.wav",
+    ")mvm/player/footsteps/robostep_13.wav",
+    ")mvm/player/footsteps/robostep_14.wav",
+    ")mvm/player/footsteps/robostep_15.wav",
+    ")mvm/player/footsteps/robostep_16.wav",
+    ")mvm/player/footsteps/robostep_17.wav",
+    ")mvm/player/footsteps/robostep_18.wav"
    
 };
 
 static const char GiantCommonBotSteps[][256] =
 {
-    "mvm/giant_common/giant_common_step01.wav",
-    "mvm/giant_common/giant_common_step02.wav",
-    "mvm/giant_common/giant_common_step03.wav",
-    "mvm/giant_common/giant_common_step04.wav",
-    "mvm/giant_common/giant_common_step05.wav",
-    "mvm/giant_common/giant_common_step06.wav",
-    "mvm/giant_common/giant_common_step07.wav",
-    "mvm/giant_common/giant_common_step08.wav"
+    "mvm/giant_common/giant_common_step_01.wav",
+    "mvm/giant_common/giant_common_step_02.wav",
+    "mvm/giant_common/giant_common_step_03.wav",
+    "mvm/giant_common/giant_common_step_04.wav",
+    "mvm/giant_common/giant_common_step_05.wav",
+    "mvm/giant_common/giant_common_step_06.wav",
+    "mvm/giant_common/giant_common_step_07.wav",
+    "mvm/giant_common/giant_common_step_08.wav"
 };
 
 
@@ -296,14 +298,14 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 	}
 	TFClassType class = TF2_GetPlayerClass(entity);
 
-
-
-    if (strncmp(sample, ")weapons/", 9, false) == 0) 
-	{
         char robotName[NAMELENGTH];
         GetRobot(entity, robotName, NAMELENGTH);
         Robot robot;
         GetRobotDefinition(robotName, robot);
+
+    if (strncmp(sample, ")weapons/", 9, false) == 0) 
+	{
+
         
 //        PrintToChatAll("WEAPON SHOOTING! Robot was %s %s for %N",robot.name, robot.sounds.gunfire, GetClientOfUserId(entity));
 
@@ -362,100 +364,139 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 	}
 
     if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		
-        PrintToChatAll("FOOTSTEPPING");
+	{       
+        if (robot.footstep == ROBOT_FOOTSTEPS_CLASS)
+        {        
+            if (StrContains(sample, "1.wav", false) != -1)
+            {
+                switch(class)
+                {
+                    case TFClass_DemoMan:
+                    {
+                        EmitSoundToAll(DemoBotSteps[0], entity);
+                    }
+                    case TFClass_Heavy:
+                    {
+                        EmitSoundToAll(HeavyBotSteps[0], entity);
+                    }
+                    case TFClass_Scout:
+                    {
+                        EmitSoundToAll(ScoutBotSteps[0], entity);
+                    }
+                    case TFClass_Soldier:
+                    {
+                        EmitSoundToAll(SoldierBotSteps[0], entity);
+                    }
+                }
+                
+            }
+            else if (StrContains(sample, "3.wav", false) != -1)
+            {
+                switch(class)
+                {
+                    case TFClass_DemoMan:
+                    {
+                        EmitSoundToAll(DemoBotSteps[1], entity);
+                    }
+                    case TFClass_Heavy:
+                    {
+                        EmitSoundToAll(HeavyBotSteps[1], entity);
+                    }
+                    case TFClass_Scout:
+                    {
+                        EmitSoundToAll(ScoutBotSteps[1], entity);
+                    }
+                    case TFClass_Soldier:
+                    {
+                        EmitSoundToAll(SoldierBotSteps[1], entity);
+                    }
+                }
+            }
+            else if (StrContains(sample, "2.wav", false) != -1)
+            {
+                switch(class)
+                {
+                    case TFClass_DemoMan:
+                    {
+                        EmitSoundToAll(DemoBotSteps[2], entity);
+                    }
+                    case TFClass_Heavy:
+                    {
+                        EmitSoundToAll(HeavyBotSteps[2], entity);
+                    }
+                    case TFClass_Scout:
+                    {
+                        EmitSoundToAll(ScoutBotSteps[2], entity);
+                    }
+                    case TFClass_Soldier:
+                    {
+                        EmitSoundToAll(SoldierBotSteps[2], entity);
+                    }
+                }
+            }
+            else if (StrContains(sample, "4.wav", false) != -1)
+            {
+                switch(class)
+                {
+                    case TFClass_DemoMan:
+                    {
+                        EmitSoundToAll(DemoBotSteps[3], entity);
+                    }
+                    case TFClass_Heavy:
+                    {
+                        EmitSoundToAll(HeavyBotSteps[3], entity);
+                    }
+                    case TFClass_Scout:
+                    {
+                        EmitSoundToAll(ScoutBotSteps[3], entity);
+                    }
+                    case TFClass_Soldier:
+                    {
+                        EmitSoundToAll(SoldierBotSteps[3], entity);
+                    }
+                }
+            }
+        }
+        else if (robot.footstep == ROBOT_FOOTSTEP_NORMAL)
+        { 
+            int rand = GetRandomInt(1,18);
+            Format(sample, sizeof(sample), "mvm/player/footsteps/robostep_%s%i.wav", (rand < 10) ? "0" : "", rand);
+			pitch = GetRandomInt(95, 100);
+			EmitSoundToAll(sample, entity, _, _, _, 1.0, pitch);
+			return Plugin_Changed;
+        }
+        else if (robot.footstep == ROBOT_FOOTSTEP_GIANTCOMMON)
+        {   
+            // int iActiveWeapon = GetEntPropEnt(entity, Prop_Send, "m_hActiveWeapon");
+            // int Weapon1 = GetPlayerWeaponSlot(entity, TFWeaponSlot_Primary);
+
+            // if (iActiveWeapon == Weapon1 && !EveryOtherStep[entity])
+            // { 
+            //         EveryOtherStep[entity] = 1;
+            // }else if(iActiveWeapon == Weapon1 && EveryOtherStep[entity])
+            // {
+            //     EveryOtherStep[entity] = 0;
+            // }
         
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-            switch(class)
-            {
-                case TFClass_DemoMan:
-                {
-                    EmitSoundToAll(DemoBotSteps[0], entity);
-                }
-                case TFClass_Heavy:
-                {
-                    EmitSoundToAll(HeavyBotSteps[0], entity);
-                }
-                case TFClass_Scout:
-                {
-                    EmitSoundToAll(ScoutBotSteps[0], entity);
-                }
-                case TFClass_Soldier:
-                {
-                    PrintToChatAll(SoldierBotSteps[0]);
-                    EmitSoundToAll(SoldierBotSteps[0], entity);
-                }
-            }
-			
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			switch(class)
-            {
-                case TFClass_DemoMan:
-                {
-                    EmitSoundToAll(DemoBotSteps[1], entity);
-                }
-                case TFClass_Heavy:
-                {
-                    EmitSoundToAll(HeavyBotSteps[1], entity);
-                }
-                case TFClass_Scout:
-                {
-                    EmitSoundToAll(ScoutBotSteps[1], entity);
-                }
-                case TFClass_Soldier:
-                {
-                    EmitSoundToAll(SoldierBotSteps[1], entity);
-                }
-            }
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			switch(class)
-            {
-                case TFClass_DemoMan:
-                {
-                    EmitSoundToAll(DemoBotSteps[2], entity);
-                }
-                case TFClass_Heavy:
-                {
-                    EmitSoundToAll(HeavyBotSteps[2], entity);
-                }
-                case TFClass_Scout:
-                {
-                    EmitSoundToAll(ScoutBotSteps[2], entity);
-                }
-                case TFClass_Soldier:
-                {
-                    EmitSoundToAll(SoldierBotSteps[2], entity);
-                }
-            }
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			switch(class)
-            {
-                case TFClass_DemoMan:
-                {
-                    EmitSoundToAll(DemoBotSteps[3], entity);
-                }
-                case TFClass_Heavy:
-                {
-                    EmitSoundToAll(HeavyBotSteps[3], entity);
-                }
-                case TFClass_Scout:
-                {
-                    EmitSoundToAll(ScoutBotSteps[3], entity);
-                }
-                case TFClass_Soldier:
-                {
-                    EmitSoundToAll(SoldierBotSteps[3], entity);
-                }
-            }
-		}
+
+            // if (iActiveWeapon != Weapon1)
+            // {
+            //     EveryOtherStep[entity] = 0;
+            // }
+
+            // if (!EveryOtherStep[entity])
+            // {
+                // PrintToChatAll("HOLDING PRIMARY");
+                
+                int rand = GetRandomInt(1,8);
+                Format(sample, sizeof(sample), "mvm/giant_common/giant_common_step_%s%i.wav", (rand < 10) ? "0" : "", rand);
+                pitch = GetRandomInt(70, 85);
+                EmitSoundToAll(sample, entity, _, _, _, 1.0, pitch);
+                return Plugin_Changed;
+            // }
+
+        }
+
         
 		return Plugin_Changed;
 	}
@@ -525,8 +566,6 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 		ReplaceString(sample, sizeof(sample), "vo/", "vo/mvm/norm/", false);
 	}
     
-
-
 
 	ReplaceString(sample, sizeof(sample), ".wav", ".mp3", false);
 	char classname[10]; 

@@ -79,7 +79,7 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-
+	robot.footstep = ROBOT_FOOTSTEP_NORMAL;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST;
@@ -174,7 +174,7 @@ MakeSpy(client)
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
+
 	
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -249,8 +249,8 @@ stock GiveBigRoboDane(client)
 	CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 	CreateRoboWeapon(client, "tf_weapon_sapper", 735, 6, 1, 1, 0);//snack attack
 
-	CreateRoboHat(client, RoBro, 10, 6, 0.0, 1.0, -1.0); 
-	CreateRoboHat(client, Gawkers, 10, 6, 0.0, 1.0, -1.0); 
+	CreateRoboHat(client, RoBro, 10, 6, 15132390.0, 1.0, -1.0); 
+	CreateRoboHat(client, Gawkers, 10, 6, 15132390.0, 1.0, -1.0); 
 	CreateRoboHat(client, TacticalTurtleneck, 10, 6, 15132390.0, 1.0, -1.0); 
 	// CreateRoboHat(client, LadyKiller, 10, 6, 0.0, 1.0, -1.0);
 	// CreateRoboHat(client, Spek, 10, 6, 0.0, 1.0, -1.0);

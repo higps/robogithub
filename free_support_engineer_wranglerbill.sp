@@ -125,8 +125,8 @@ MakeBotSlinger(client)
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 	TF2Attrib_SetByName(client, "metal regen", 200.0);
-	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
-	TF2Attrib_SetByName(client, "mod teleporter cost", 4.0);
+	// TF2Attrib_SetByName(client, "building cost reduction", 2.5);
+	TF2Attrib_SetByName(client, "mod teleporter cost", 10.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "deploy time decreased", 0.25);

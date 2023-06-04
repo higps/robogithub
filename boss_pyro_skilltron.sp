@@ -69,7 +69,7 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.weaponsound = ROBOT_WEAPON_SOUND_FLAMETHROWER;
-
+	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
 	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
@@ -161,7 +161,7 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	//
 	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
-	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
+	// TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);

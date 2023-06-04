@@ -134,6 +134,7 @@ public any Native_AddRobot(Handle plugin, int numParams)
     robot.sounds = robotDefinition.sounds;
     robot.deathtip = robotDefinition.deathtip;
     robot.weaponsound = robotDefinition.weaponsound;
+    robot.footstep = robotDefinition.footstep;
 
     PrivateForward privateForward = new PrivateForward(ET_Single, Param_Cell);
     privateForward.AddFunction(plugin, callback);

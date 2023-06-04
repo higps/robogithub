@@ -21,16 +21,6 @@
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-// #define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
-// #define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
-// #define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
-// #define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
-
-#define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
-
 float scale = 1.75;
 
 public Plugin:myinfo =
@@ -51,7 +41,7 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	AddNormalSoundHook(BossGPS);
+
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -70,38 +60,6 @@ public OnPluginStart()
 	AddRobot(robot, MakeGRageH, PLUGIN_VERSION, restrictions);
 }
 
-public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step01.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step03.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step02.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step04.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
-	}
-	return Plugin_Continue;
-}
-
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
@@ -114,23 +72,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
  
-public OnMapStart()
-{
-	
-
-
-
-	
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
-
-	// PrecacheSound(SOUND_GUNFIRE);
-	// PrecacheSound(SOUND_GUNSPIN);
-	// PrecacheSound(SOUND_WINDUP);
-	// PrecacheSound(SOUND_WINDDOWN);
-}
  
 public Action:SetModel(client, const String:model[])
 {
@@ -210,11 +151,13 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGRageH(client);
 }
 
-#define Starboard 30981
-#define Tsar 30980
+// #define Starboard 30981
+// #define Tsar 30980
 //#define Madmask 30815
 
- 
+#define YuleHog 31087 
+#define DeadofNight 30309
+#define TheDictator 30306 
 stock GiveGRageH(client)
 {
 	if (IsValidClient(client))
@@ -226,11 +169,20 @@ stock GiveGRageH(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		CreateRoboWeapon(client, "tf_weapon_minigun", 41, 6, 1, 2, 0);
+		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		float TeamPaint = 0.0;
+
+		if (iTeam == TFTeam_Red){
+			TeamPaint = 12073019.0;
+		}
+		if (iTeam == TFTeam_Blue){
+			TeamPaint = 5801378.0;
+		}
 
 
-		CreateRoboHat(client, Starboard, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, Tsar, 10, 6, 0.0, 1.0, -1.0); 
-		//CreateRoboHat(client, Madmask, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, YuleHog, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, DeadofNight, 10, 6, TeamPaint, 1.0, -1.0); 
+		CreateRoboHat(client, TheDictator, 10, 6, TeamPaint, 0.75, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))

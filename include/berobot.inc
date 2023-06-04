@@ -102,6 +102,7 @@ enum struct RobotDefinition {
   RobotSounds sounds;
   char deatheffect[64];
   int weaponsound;
+  int footstep;
 }
 typedef RobotCallback = function void (int client);
 
