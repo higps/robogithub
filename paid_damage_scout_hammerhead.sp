@@ -44,8 +44,6 @@ public OnPluginStart()
 
 	LoadTranslations("common.phrases");
 
-
-
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;

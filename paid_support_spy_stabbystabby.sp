@@ -197,9 +197,9 @@ MakeSpy(client)
 
 	PrintHintText(client, ROBOT_TIPS);
 
-	if (IsPlayerAlive(client)){
-	EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
-	} 
+	// if (IsPlayerAlive(client)){
+	// EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
+	// } 
 
 
 }

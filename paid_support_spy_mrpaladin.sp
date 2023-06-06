@@ -198,9 +198,7 @@ MakeSpy(client)
 	PrintToChat(client, "1. You are now Giant Mr Paladin robot!");
 	PrintHintText(client, "Infinite Cloak\nStab enemies to gain buff to kill while stealthed!\nHeal from sapping buildings");
 
-	if (IsPlayerAlive(client)){
-	EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
-	} 
+
 
 
 }

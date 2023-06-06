@@ -103,7 +103,9 @@ public void OnPluginStart()
 
     HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+    HookEvent("crossbow_heal", Event_Crossbow_Heal, EventHookMode_Post);
     RegConsoleCmd("sm_mminfo", Command_ToggleMMHumanDisplay, "Toggle Manned Machines Stats Display for humans");
+    
 //     HookEvent("object_destroyed", Event_Object_Destroyed, EventHookMode_Post);
 //     HookEvent("object_detonated", Event_Object_Detonated, EventHookMode_Post);
 
@@ -246,6 +248,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     // int Detonated = GetEntProp(weapon, Prop_Send, "m_iDetonated");// PrintToChatAll("Removing Bonus"); //Removes the damage bonus from caber after use, in case of ubered players
                     // PrintToChatAll("Detonated %i", Detonated);
                     TF2Attrib_RemoveByName(weapon, "damage bonus");
+                }
+            }
+
+            if (TF2_GetPlayerClass(attacker) == TFClass_Medic)
+            {
+                if (IsBlutsauger(weapon))
+                {
+                    // int Detonated = GetEntProp(weapon, Prop_Send, "m_iDetonated");// PrintToChatAll("Removing Bonus"); //Removes the damage bonus from caber after use, in case of ubered players
+                    // PrintToChatAll("Detonated %i", Detonated);
+                    TF2Attrib_AddCustomPlayerAttribute(victim, "reduced_healing_from_medics", 0.25, 1.0);
                 }
             }
         }
@@ -1184,16 +1196,18 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             //     TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0");
             // }
 
-            //  if(IsSyringeGun(Weapon1))
-            // {
-            //     TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
-                
-            //     //Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}",chat_display);
-            // }
+             if(IsSyringeGun(Weapon1))
+            {
+                //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
+                TF2Attrib_SetByName(Weapon1, "ubercharge rate bonus", 1.15);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}+10%% faster uber build rate{teamcolor}",chat_display);
+            }
             if(IsBlutsauger(Weapon1))
             {
                 TF2Attrib_SetByName(Weapon1, "max health additive bonus", 20.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}+20 max health{teamcolor}",chat_display);
+                // TF2Attrib_SetByName(Weapon1, "mod see enemy health", 1.0);
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: On Hit: {orange}Reduce enemy healing by -75%{teamcolor} for 1 second.{orange}+20 max health{teamcolor}",chat_display);
             }
 
             if(IsOverdose(Weapon1) && Weapon2 != -1)
@@ -1235,6 +1249,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }else
             {
                 TF2Attrib_RemoveByName(Weapon1, "damage penalty");
+            }
+
+            if(IsCrossbow(Weapon1))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Crossbow: On Teammate hit:{orange}Hasete rune{teamcolor}teammate for 3 seconds. {orange}King Rune{teamcolor} yourself for 3 seconds.",chat_display);
             }
 
             if(IsStockOrAllClassWeapon(Weapon3))
@@ -2341,20 +2360,20 @@ bool IsTomiSlav(int weapon)
 // 	return false;
 // }
 
-// bool IsSyringeGun(int weapon)
-// {
-//     if(weapon == -1 && weapon <= MaxClients) return false;
+bool IsSyringeGun(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
 	
-// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-// 	{
-// 		//If others are added, add them here
-// 	case 17,204: 
-// 		{
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 17,204: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 bool IsOverdose(int weapon)
 {
@@ -2758,8 +2777,19 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
             // PrintToChatAll("%N WAS DONE SPUN UP", client);
             TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.0);
 		}
+}
 
+public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroadcast)
+{
+	int healer = GetClientOfUserId(GetEventInt(event, "healer"));
+	int target = GetClientOfUserId(GetEventInt(event, "target"));
 
-
-	
+	if (!IsAnyRobot(healer))
+	{
+        // TF2_AddCondition(target, TFCond_SpeedBuffAlly, 2.0);
+        TF2_AddCondition(target, TFCond_RuneHaste, 3.0);
+        TF2_AddCondition(healer, TFCond_KingRune, 3.0);
+        TF2_AddCondition(healer, TFCond_KingAura, 3.0);
+	}
+	return Plugin_Continue;
 }

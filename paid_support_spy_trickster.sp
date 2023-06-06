@@ -220,9 +220,9 @@ MakeSpy(client)
 	// PrintToChat(client, "1. You are now Giant Mr Paladin robot!");
 	PrintHintText(client, ROBOT_TIPS);
 
-	if (IsPlayerAlive(client)){
-	EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
-	} 
+	// if (IsPlayerAlive(client)){
+	// EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
+	// } 
 
 
 }

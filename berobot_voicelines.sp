@@ -77,6 +77,16 @@ public void OnPluginStart()
 //     "vo/mvm_wave_start12.mp3"
 // };
 
+bool b_AnnounceClamp = false;
+
+static const char Spy_Spawn[][256] =
+{
+    "vo/mvm_spy_spawn01.mp3",
+    "vo/mvm_spy_spawn02.mp3",
+    "vo/mvm_spy_spawn03.mp3",
+    "vo/mvm_spy_spawn04.mp3"
+};
+
 static const char One_Engineer_Spawn[][256] =
 {
     "vo/announcer_mvm_engbot_arrive01.mp3",
@@ -209,7 +219,11 @@ public void OnMapStart()
 	// for (int i = 0; i < size; i++)
 	// 	PrecacheSound(WaveVoiceLineStartSounds[i], true);
    
-   	int size = sizeof One_Engineer_Spawn;
+   	int size = sizeof Spy_Spawn;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(Spy_Spawn[i], true);
+
+   	size = sizeof One_Engineer_Spawn;
 	for (int i = 0; i < size; i++)
 		PrecacheSound(One_Engineer_Spawn[i], true);
 
@@ -317,14 +331,14 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
             {
                 Format(sample, sizeof(sample), robot.sounds.gunfire);
                 EmitSoundToAll(sample, entity);
-                PrintToChatAll("EMITTED ROCKETSHOOT");
+              //  PrintToChatAll("EMITTED ROCKETSHOOT");
                 
             }
             else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
             {
                 Format(sample, sizeof(sample), robot.sounds.gunfire_crit);
                 EmitSoundToAll(sample, entity);
-                PrintToChatAll("EMITTED ROCKETSHOOT CRIT");
+             //   PrintToChatAll("EMITTED ROCKETSHOOT CRIT");
             }
         }
         case ROBOT_WEAPON_SOUND_GRENADELAUNCHER:
@@ -790,9 +804,11 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     }
 
     //Plays spy alert when the spy dies
-	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Spy)
+	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Spy && !b_AnnounceClamp)
 	{
 	    EmitGameSoundToAll("Announcer.mvm_spybot_death");
+
+        // EmitGameSoundToAll();
 	}
 
     //teamwipe logic
@@ -819,7 +835,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 		// if (!g_bDoTeamWipe) CreateTimer(5.0, Timer_TeamWipeCooldown, _, TIMER_FLAG_NO_MAPCHANGE); // put a cooldown on this just in case it somehow gets spammed
 	}
 
-    if (IsRobotEngineer(victim))
+    if (IsRobotEngineer(victim) && !b_AnnounceClamp)
     {
         //PrintToChatAll("ROBOT ENGI DEAD!");
         if(HasTeleporter(victim))
@@ -1342,42 +1358,73 @@ public Action calltimer_reset (Handle timer, int client)
 }
 
 
-bool b_TankCheckClamp = false;
-bool b_EngineerCheckClamp = false;
+
 
 public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
 {
 
     int client = GetClientOfUserId(GetEventInt(event, "userid"));
-    if (IsTank(client) && !b_TankCheckClamp)
-    {
-        CreateTimer(5.0, Timer_TankCheck);
-        b_TankCheckClamp = true;
-    }
 
-    if(IsRobotEngineer(client) && !b_EngineerCheckClamp)
+    CreateTimer(1.0, Timer_CheckSpawnAnnouncement, client);
+
+}
+
+public Action Timer_CheckSpawnAnnouncement(Handle timer, int client)
+{
+    if(IsPlayerAlive(client) && !b_AnnounceClamp)
     {
-        CreateTimer(4.0, Timer_EngiCheck, GetRobotEngineerCount());
-        b_EngineerCheckClamp = true;
+
+        if (IsAnyRobot(client) && !b_AnnounceClamp)
+        {
+            switch(TF2_GetPlayerClass(client))
+            {
+                case TFClass_Engineer:
+                {
+                    CreateTimer(3.0, Timer_EngiCheck, GetClassCount(TFClass_Engineer));
+                    b_AnnounceClamp = true;
+                }
+                case TFClass_Spy:
+                {
+                    CreateTimer(3.0, Timer_SpyCheck, GetClassCount(TFClass_Spy));
+                    b_AnnounceClamp = true;
+                }
+            }
+        }
+
+        if (IsTank(client) && !b_AnnounceClamp)
+        {
+            CreateTimer(3.0, Timer_TankCheck);
+            b_AnnounceClamp = true;
+        }
     }
 }
 
-int GetRobotEngineerCount()
+int GetClassCount(int class)
 {
-    int engineercount = 0;
+    int classcount = 0;
 
     for(int i = 1; i <= MaxClients; i++)
     {
         if (IsAnyRobot(i))
         {                        
-            if (TF2_GetPlayerClass(i) == TFClass_Engineer)
+            if (TF2_GetPlayerClass(i) == class)
             {
-                engineercount++;
+                classcount++;
                
             }
         }
     }
-    return engineercount;
+    return classcount;
+}
+
+public Action Timer_SpyCheck(Handle timer, int spycount)
+{
+	int size = sizeof Spy_Spawn;
+    int soundswitch = GetRandomInt(0, size - 1);
+    // PrintToChatAll("Emitting %s", Spy_Spawn[soundswitch]);
+	EmitSoundToAll(Spy_Spawn[soundswitch]);
+    b_AnnounceClamp = false;
+	
 }
 
 public Action Timer_EngiCheck(Handle timer, int engineercount)
@@ -1405,7 +1452,7 @@ public Action Timer_EngiCheck(Handle timer, int engineercount)
     }
 
      //PrintToChatAll("Engineer count was: %i", engineercount);
-    b_EngineerCheckClamp = false;
+    b_AnnounceClamp = false;
 }
 
 public Action Timer_TankCheck(Handle timer)
@@ -1463,7 +1510,7 @@ public Action Timer_TankCheck(Handle timer)
     }
 
     // if(g_cv_bDebugMode)PrintToChatAll("Tank count was %i", TankCount);
-    b_TankCheckClamp = false;
+    b_AnnounceClamp = false;
 }
 
 // bool g_bDoTeamWipe = true;
@@ -1476,6 +1523,15 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 bool IsRobotEngineer(int client)
 {
     if (TF2_GetPlayerClass(client) == TFClass_Engineer && IsAnyRobot(client))
+    {
+        return true;
+    }
+    return false;
+}
+
+bool IsRobotSpy(int client)
+{
+    if (TF2_GetPlayerClass(client) == TFClass_Spy && IsAnyRobot(client))
     {
         return true;
     }
