@@ -257,7 +257,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 {
                     // int Detonated = GetEntProp(weapon, Prop_Send, "m_iDetonated");// PrintToChatAll("Removing Bonus"); //Removes the damage bonus from caber after use, in case of ubered players
                     // PrintToChatAll("Detonated %i", Detonated);
-                    TF2Attrib_AddCustomPlayerAttribute(victim, "reduced_healing_from_medics", 0.25, 1.0);
+                    TF2Attrib_AddCustomPlayerAttribute(victim, "reduced_healing_from_medics", 0.65, 1.0);
                 }
             }
         }
@@ -398,17 +398,17 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
             }
 
-            if (iClassAttacker == TFClass_Medic)
-            {
-                int Weapon3 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee);
+            // if (iClassAttacker == TFClass_Medic)
+            // {
+            //     int Weapon3 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee);
 
-                if(IsSolemnVow(Weapon3))
-                {
-                    damage = 0.0;
-                    return Plugin_Handled;
-                }
+            //     if(IsSolemnVow(Weapon3))
+            //     {
+            //         damage = 0.0;
+            //         return Plugin_Handled;
+            //     }
                 
-            }
+            // }
 
             if (iClassAttacker == TFClass_Soldier)
             {
@@ -1207,7 +1207,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "max health additive bonus", 20.0);
                 // TF2Attrib_SetByName(Weapon1, "mod see enemy health", 1.0);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: On Hit: {orange}Reduce enemy healing by -75%{teamcolor} for 1 second.{orange}+20 max health{teamcolor}",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: On Hit: {orange}Reduce enemy healing by -35%{teamcolor} for 0.35 seconds.{orange}+20 max health{teamcolor}",chat_display);
             }
 
             if(IsOverdose(Weapon1) && Weapon2 != -1)
@@ -1235,11 +1235,14 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if(IsSolemnVow(Weapon3))
             {
                 TF2Attrib_SetByName(Weapon2, "healing mastery", 4.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Solemn Vow: All weapons deal {darkred}no damage!{teamcolor} But you have the{orange}Healing Mastery upgrade",chat_display);    
+                TF2Attrib_SetByName(Weapon2, "mod see enemy health", 1.0);
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Solemn Vow: {orange}Healing Mastery upgrade",chat_display);    
  
             }else
             {
                 TF2Attrib_RemoveByName(Weapon2, "healing mastery");
+                TF2Attrib_RemoveByName(Weapon2, "mod see enemy health");
             }
 
             if(IsSolemnVow(Weapon3) && IsCrossbow(Weapon1))
@@ -2777,6 +2780,12 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
             // PrintToChatAll("%N WAS DONE SPUN UP", client);
             TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.0);
 		}
+
+        if(condition == TFCond_RuneHaste)
+        {
+            // PrintToChatAll("RUNE HASTE ENDED ON %N, FIXING SPEED", client);
+            TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+        }
 }
 
 public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroadcast)
@@ -2786,10 +2795,10 @@ public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroad
 
 	if (!IsAnyRobot(healer))
 	{
-        // TF2_AddCondition(target, TFCond_SpeedBuffAlly, 2.0);
-        TF2_AddCondition(target, TFCond_RuneHaste, 3.0);
-        TF2_AddCondition(healer, TFCond_KingRune, 3.0);
-        TF2_AddCondition(healer, TFCond_KingAura, 3.0);
+        // TF2_AddCondition(target, TFCond_SpeedBuffAlly, 1.1);
+        TF2_AddCondition(target, TFCond_RuneResist, 1.5);
+        // TF2_AddCondition(healer, TFCond_KingRune, 3.0);
+        // TF2_AddCondition(healer, TFCond_KingAura, 3.0);
 	}
 	return Plugin_Continue;
 }

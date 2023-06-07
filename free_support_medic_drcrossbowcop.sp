@@ -117,7 +117,7 @@ TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "maxammo primary increased", 2.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	
+	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);

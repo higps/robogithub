@@ -161,7 +161,7 @@ static const char ScoutBotSteps[][256] =
         ")mvm/giant_scout/giant_scout_step_04.wav"
 };
 
-static const char SoldierBotSteps2[][256] =
+static const char SoldierBotSteps[][256] =
 {
     ")mvm/giant_soldier/giant_soldier_step01.wav",
     ")mvm/giant_soldier/giant_soldier_step03.wav",
@@ -189,29 +189,6 @@ static const char RegularBotSteps[][256] =
     "mvm/player/footsteps/robostep_16.wav",
     "mvm/player/footsteps/robostep_17.wav",
     "mvm/player/footsteps/robostep_18.wav"
-   
-};
-
-static const char SoldierBotSteps[][256] =
-{
-    ")mvm/player/footsteps/robostep_01.wav",
-    ")mvm/player/footsteps/robostep_02.wav",
-    ")mvm/player/footsteps/robostep_03.wav",
-    ")mvm/player/footsteps/robostep_04.wav",
-    ")mvm/player/footsteps/robostep_05.wav",
-    ")mvm/player/footsteps/robostep_06.wav",
-    ")mvm/player/footsteps/robostep_07.wav",
-    ")mvm/player/footsteps/robostep_08.wav",
-    ")mvm/player/footsteps/robostep_09.wav",
-    ")mvm/player/footsteps/robostep_10.wav",
-    ")mvm/player/footsteps/robostep_11.wav",
-    ")mvm/player/footsteps/robostep_12.wav",
-    ")mvm/player/footsteps/robostep_13.wav",
-    ")mvm/player/footsteps/robostep_14.wav",
-    ")mvm/player/footsteps/robostep_15.wav",
-    ")mvm/player/footsteps/robostep_16.wav",
-    ")mvm/player/footsteps/robostep_17.wav",
-    ")mvm/player/footsteps/robostep_18.wav"
    
 };
 
@@ -842,7 +819,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Spy/*  && !b_AnnounceClamp */)
 	{
         int iSpyCount = GetRobotClassCount(TFClass_Spy);
-        PrintToChatAll("EMITTING SPY DEATH. There was %i spies on death",iSpyCount);
+        // PrintToChatAll("EMITTING SPY DEATH. There was %i spies on death",iSpyCount);
         int size = sizeof One_Spy_Death;
         int soundswitch;
 
