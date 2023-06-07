@@ -796,7 +796,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     int assister = GetClientOfUserId(GetEventInt(event, "assister"));
 
    // SMLogTag(SML_VERBOSE, "Event_Death triggerd with attacker %L, assister %L and victim %L", attacker, assister, victim);
-    PrintToChatAll("Pre Class was: %i,", TF2_GetPlayerClass(victim));
+    // PrintToChatAll("Pre Class was: %i,", TF2_GetPlayerClass(victim));
     //Robot died
     if (IsAnyRobot(victim)){
         

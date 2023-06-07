@@ -333,7 +333,7 @@ public void Event_Death(Handle event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
     int deathflags = GetEventInt(event, "death_flags");
 
-        PrintToChatAll("Factory Pre Class was: %i,", TF2_GetPlayerClass(client));
+        // PrintToChatAll("Factory Pre Class was: %i,", TF2_GetPlayerClass(client));
 
     	if (!(deathflags & TF_DEATHFLAG_DEADRINGER))
 	{
