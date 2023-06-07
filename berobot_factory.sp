@@ -160,7 +160,7 @@ public void Init()
     g_Allow_Human_Robot_Creation = GetConVarInt(g_cvCvarList[CV_g_Allow_Human_Robot_Creation]);
     g_cvCvarList[CV_g_Allow_Human_Robot_Creation].AddChangeHook(CvarChangeHook);
 
-    HookEvent("player_death", Event_Death, EventHookMode_Post);
+    HookEvent("player_death", Event_Death, EventHookMode_Pre);
     HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 
     for(int i = 0; i <= MaxClients; i++)
@@ -332,6 +332,9 @@ public void Event_Death(Handle event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
     int deathflags = GetEventInt(event, "death_flags");
+
+        PrintToChatAll("Factory Pre Class was: %i,", TF2_GetPlayerClass(client));
+
     	if (!(deathflags & TF_DEATHFLAG_DEADRINGER))
 	{
         if(!IsValidClient(client))
@@ -391,9 +394,9 @@ void ResetOnDeath(int client, Robot item)
     StopSounds(client, item);
     
     TF2Attrib_RemoveAll(client);
-    if (IsPlayerAlive(client)){
-        EmitSoundToAll(item.sounds.death, client);
-    }
+    // if (IsPlayerAlive(client)){
+    //     EmitSoundToAll(item.sounds.death, client);
+    // }
     TrackRobotCreation(client, false);
 }
 
@@ -676,7 +679,7 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
 {
     if (!IsValidClient(clientId) || !IsClientInGame(clientId))
         return 2;
-        
+    // PrintToChatAll("TRASHING %N", clientId);
     char robotName[NAMELENGTH];
     GetRobot(clientId, robotName, NAMELENGTH);
     strcopy(wasRobot, NAMELENGTH, robotName);

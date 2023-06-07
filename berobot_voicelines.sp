@@ -41,7 +41,7 @@ public void OnPluginStart()
     SMLogTag(SML_INFO, "berobot_voicelines started at %i", GetTime());
 
     AddNormalSoundHook(NormalSoundHook);
-    HookEvent("player_death", Event_Death, EventHookMode_Post);
+    HookEvent("player_death", Event_Death, EventHookMode_Pre);
     HookEvent("player_escort_score", Event_player_escort_score, EventHookMode_Post);
     HookEvent("teamplay_setup_finished", Event_teamplay_setup_finished, EventHookMode_Post);
     HookEvent("teamplay_round_win", Event_teamplay_round_win, EventHookMode_Post);
@@ -85,6 +85,24 @@ static const char Spy_Spawn[][256] =
     "vo/mvm_spy_spawn02.mp3",
     "vo/mvm_spy_spawn03.mp3",
     "vo/mvm_spy_spawn04.mp3"
+};
+
+static const char One_Spy_Death[][256]=
+{
+    "vo/mvm_spybot_death01.mp3", //SINGLE SPYBOT
+    "vo/mvm_spybot_death02.mp3",
+    "vo/mvm_spybot_death03.mp3",
+    "vo/mvm_spybot_death04.mp3", //ALL SPYBOTS DESTROYED
+    "vo/mvm_spybot_death05.mp3",
+    "vo/mvm_spybot_death06.mp3",
+    "vo/mvm_spybot_death07.mp3",
+    "vo/mvm_spybot_death08.mp3", //6 SPYBOTS REMAIN
+    "vo/mvm_spybot_death09.mp3", //5 SPYBOT REMAIN
+    "vo/mvm_spybot_death10.mp3", //4
+    "vo/mvm_spybot_death11.mp3", //3
+    "vo/mvm_spybot_death12.mp3", //2
+    "vo/mvm_spybot_death13.mp3" //1
+
 };
 
 static const char One_Engineer_Spawn[][256] =
@@ -222,6 +240,10 @@ public void OnMapStart()
    	int size = sizeof Spy_Spawn;
 	for (int i = 0; i < size; i++)
 		PrecacheSound(Spy_Spawn[i], true);
+
+   	size = sizeof One_Spy_Death;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(One_Spy_Death[i], true);
 
    	size = sizeof One_Engineer_Spawn;
 	for (int i = 0; i < size; i++)
@@ -774,9 +796,22 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     int assister = GetClientOfUserId(GetEventInt(event, "assister"));
 
    // SMLogTag(SML_VERBOSE, "Event_Death triggerd with attacker %L, assister %L and victim %L", attacker, assister, victim);
-
+    PrintToChatAll("Pre Class was: %i,", TF2_GetPlayerClass(victim));
     //Robot died
+    if (IsAnyRobot(victim)){
+        
+        char robotName[NAMELENGTH];
+        GetRobot(victim, robotName, NAMELENGTH);
+        if(robotName[0] == '\0')
+        {
+            SMLogTag(SML_VERBOSE, "skipped Event_Death, because %L is no robot in voicelines", victim);
+            return;
+        }
 
+        Robot item;
+        GetRobotDefinition(robotName, item);
+        EmitSoundToAll(item.sounds.death, victim);
+    }
     if (IsAnyRobot(victim))
 	{
         //On the first kill
@@ -804,10 +839,43 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     }
 
     //Plays spy alert when the spy dies
-	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Spy && !b_AnnounceClamp)
+	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Spy/*  && !b_AnnounceClamp */)
 	{
-	    EmitGameSoundToAll("Announcer.mvm_spybot_death");
+        int iSpyCount = GetRobotClassCount(TFClass_Spy);
+        PrintToChatAll("EMITTING SPY DEATH. There was %i spies on death",iSpyCount);
+        int size = sizeof One_Spy_Death;
+        int soundswitch;
 
+        //Spycount offset by +1 since change happens on the frame after
+        if (iSpyCount == 1)
+        {
+            soundswitch = GetRandomInt(0, 6);
+            EmitSoundToAll(One_Spy_Death[soundswitch]);
+        }
+        if (iSpyCount == 2)
+        {
+            EmitSoundToAll(One_Spy_Death[12]);
+        }
+        if (iSpyCount == 3)
+        {
+            EmitSoundToAll(One_Spy_Death[11]);
+        }
+        if (iSpyCount == 4)
+        {
+            EmitSoundToAll(One_Spy_Death[10]);
+        }
+        if (iSpyCount == 5)
+        {
+            EmitSoundToAll(One_Spy_Death[9]);
+        }
+        if (iSpyCount == 6)
+        {
+            EmitSoundToAll(One_Spy_Death[8]);
+        }
+        if (iSpyCount == 7)
+        {
+            EmitSoundToAll(One_Spy_Death[7]);
+        }
         // EmitGameSoundToAll();
 	}
 
@@ -1380,12 +1448,12 @@ public Action Timer_CheckSpawnAnnouncement(Handle timer, int client)
             {
                 case TFClass_Engineer:
                 {
-                    CreateTimer(3.0, Timer_EngiCheck, GetClassCount(TFClass_Engineer));
+                    CreateTimer(3.0, Timer_EngiCheck, GetRobotClassCount(TFClass_Engineer));
                     b_AnnounceClamp = true;
                 }
                 case TFClass_Spy:
                 {
-                    CreateTimer(3.0, Timer_SpyCheck, GetClassCount(TFClass_Spy));
+                    CreateTimer(3.0, Timer_SpyCheck, GetRobotClassCount(TFClass_Spy));
                     b_AnnounceClamp = true;
                 }
             }
@@ -1399,7 +1467,7 @@ public Action Timer_CheckSpawnAnnouncement(Handle timer, int client)
     }
 }
 
-int GetClassCount(int class)
+int GetRobotClassCount(int class)
 {
     int classcount = 0;
 
