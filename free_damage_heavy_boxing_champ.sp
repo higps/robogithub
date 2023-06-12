@@ -8,6 +8,7 @@
 #include <tf_custom_attributes>
 #include <dhooks>
 #include <tf_ontakedamage>
+#include <tf2_isPlayerInSpawn>
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Boxing Champ"
@@ -242,6 +243,8 @@ float g_RechargeCooldown = 5.0;
 float g_skill;
 
 bool isready;
+bool setspeed;
+
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
@@ -271,7 +274,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 // && !GetEntProp(client, Prop_Send, "m_bJumping")
 			// int IsJumping = GetEntProp(client, Prop_Send, "m_bJumping");
 
-			if (g_Recharge[client] <= GetEngineTime() && isready) 
+			if (g_Recharge[client] <= GetEngineTime() && isready && !TF2Spawn_IsClientInSpawn(client) && !setspeed) 
 			{
 			SetSpeed(client);
 			g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
@@ -297,13 +300,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 void SetSpeed(int client)
 {
 	// TF2Attrib_AddCustomPlayerAttribute(client, "increased jump height", 0.01, 1.0);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
 	TF2_AddCondition(client, TFCond_CritCanteen, 1.0);
 	SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 520.0);
+	setspeed = true;
 }
 
 void ResetSpeed(int client)
 {
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.0);
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SLOWDOWN);
+	setspeed = false;
 }
 
 

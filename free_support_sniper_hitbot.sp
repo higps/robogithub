@@ -188,9 +188,11 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(SniperRifle, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.65);
 			TF2Attrib_SetByName(SniperRifle, "damage penalty on bodyshot", 1.0);
-		
+			TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
-			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 10.0);
+			TF2Attrib_SetByName(SniperRifle, "faster reload rate", 0.75);
+			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 3.0);
+			
 			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
 		}
 

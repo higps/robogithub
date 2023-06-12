@@ -126,8 +126,6 @@ MakeGDeflectorH(client)
 
 	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
 	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
-	
-   
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
@@ -200,7 +198,7 @@ stock GiveGDeflectorH(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "attack projectiles", 2.0);
+			TF2Attrib_SetByName(Weapon1, "attack projectiles", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.45);

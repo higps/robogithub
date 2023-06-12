@@ -7,15 +7,16 @@
 #include <berobot>
 //#include <sendproxy>
 #include <tf_custom_attributes>
+#include <tf_ontakedamage>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Crockotron"
+#define ROBOT_NAME	"Crocotron"
 #define ROBOT_ROLE "Support"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Sydney Sleeper, Danger Shield"
 #define ROBOT_TIPS "Immune to afterburn\nUse blast jump to get to high ground"
-#define ROBOT_ON_DEATH "Crockotron is immune to afterburn\nCounter-snipe or backstab sniper bots while they are distracted"
+#define ROBOT_ON_DEATH "Crocotron is immune to afterburn\nCounter-snipe or backstab sniper bots while they are distracted"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -191,19 +192,12 @@ stock GiveBigRoboJbird(client)
 		
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
-			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 10.0);
-			// TF2Attrib_SetByName(SniperRifle, "minicrits become crits", 1.0);
-			
-			// TF2Attrib_SetByName(SniperRifle, "projectile penetration", 1.0);
-			
-			//TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
-			// TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
-			//TF2Attrib_SetByName(SniperRifle, "apply z velocity on damage", 450.0);
-			// TF2Attrib_SetByName(SniperRifle, "critboost on kill", 3.0);
-			
-			// TF2Attrib_SetByName(SniperRifle, "heal on hit for rapidfire", 15.0);
-			// TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
-			// TF2CustAttr_SetString(SniperRifle, "knockback modifier", "4.0");
+			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 3.0);
+			TF2Attrib_SetByName(SniperRifle, "sniper no headshots", 3.0);
+			TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 0.666);
+			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
+
+
 			
 			
 			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
@@ -218,4 +212,76 @@ stock GiveBigRoboJbird(client)
 			
 	// 	}
 	}
+}
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+	// if (!g_Enable)
+	//     return Plugin_Continue;
+	if(!IsValidClient(victim))
+		return Plugin_Continue;    
+	if(!IsValidClient(attacker))
+		return Plugin_Continue;
+
+	if (IsRobot(attacker, ROBOT_NAME))
+	{
+
+		SpawnBombs(victim, attacker);
+		// BreadBoom(attacker, victim);
+
+
+	}
+
+
+	return Plugin_Continue;
+}
+
+void SpawnBombs(int client, int attacker)
+{
+    
+    int team = GetClientTeam(attacker);
+    float pos[3], vel[3];// ang[3];
+    int children = 1;
+    float speed = 250.0;
+
+
+    GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+    GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
+    
+
+    pos[2] += 80.0;
+    for (int i = 1; i <= children; i++)
+    {
+        int child = CreateEntityByName("tf_projectile_jar");
+        
+        
+        float child_vel[3];
+        float child_ang[3];
+
+        //Prevent child grenades from detonating on contact
+        SetEntProp(child, Prop_Send, "m_bTouched", 1);
+
+        //Set properties
+        //SetEntProp(child, Prop_Send, "m_bCritical", view_as<int>(crit));
+        SetEntPropEnt(child, Prop_Data, "m_hOwnerEntity", attacker);
+        SetEntPropEnt(child, Prop_Data, "m_hThrower", attacker);
+
+        
+        // SetEntPropFloat(child, Prop_Send, "m_flDamage", 100.0);
+        // SetEntPropFloat(child, Prop_Send, "m_flModelScale", 1.2);
+        
+        GetClientEyeAngles(client, child_ang);
+        
+        GetAngleVectors(child_ang, child_vel, NULL_VECTOR, NULL_VECTOR);
+        
+        ScaleVector(child_vel, speed);
+            
+        //child_vel[2] = FloatAbs(child_vel[2]);
+
+        SetEntProp(child, Prop_Send, "m_iTeamNum", team);
+        SetEntProp(child, Prop_Send, "m_bIsLive", 1);
+
+        TeleportEntity(child, pos, child_ang, child_vel);
+        DispatchSpawn(child);
+        //SDKHook(child, SDKHook_Touch, OnMirvOverlap);
+    }
 }

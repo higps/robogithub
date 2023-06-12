@@ -2796,7 +2796,7 @@ public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroad
 	if (!IsAnyRobot(healer))
 	{
         // TF2_AddCondition(target, TFCond_SpeedBuffAlly, 1.1);
-        TF2_AddCondition(target, TFCond_RuneResist, 1.5);
+        TF2_AddCondition(target, TFCond_RuneResist, 1.0);
         // TF2_AddCondition(healer, TFCond_KingRune, 3.0);
         // TF2_AddCondition(healer, TFCond_KingAura, 3.0);
 	}
