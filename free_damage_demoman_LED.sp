@@ -12,8 +12,8 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Increased Knockback + Larger Grenades"
-#define ROBOT_TIPS "Grenades have 75%%%% faster projectile speed, larger explosion and knockback"
-#define ROBOT_ON_DEATH "Subscribe to LED on youtube"
+#define ROBOT_TIPS "Grenades have 35%%%% faster projectile speed, larger explosion and knockback"
+#define ROBOT_ON_DEATH "LED's grenades have more knockback & bigger blast\nDelete them with short circuit or airblast them back"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
