@@ -15,8 +15,8 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Sydney Sleeper, Danger Shield"
-#define ROBOT_TIPS "Immune to afterburn\nUse blast jump to get to high ground"
-#define ROBOT_ON_DEATH "Crocotron is immune to afterburn\nCounter-snipe or backstab sniper bots while they are distracted"
+#define ROBOT_TIPS "Immune to afterburn\nJarate splash on hit\nUse blast jump to get to high ground"
+#define ROBOT_ON_DEATH "Crocotron causes Jarate splash on hit\nCounter-snipe or backstab sniper bots while they are distracted"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
