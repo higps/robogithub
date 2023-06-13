@@ -64,6 +64,7 @@ public OnPluginStart()
 	robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
+	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 }
 
@@ -77,27 +78,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 //	CreateNative("BeGiantPyro_MakeGiantPyro", Native_SetGiantPyro);
 //	CreateNative("BeGiantPyro_IsGiantPyro", Native_IsGiantPyro);
 	return APLRes_Success;
-}
-
-public OnMapStart()
-{
-//
-
-
-
-	
-	// PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_04.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_05.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
-	
-	// PrecacheSound(SOUND_GUNFIRE);
-	// PrecacheSound(SOUND_WINDUP);
-	
 }
 
 public Action:SetModel(client, const String:model[])
@@ -154,7 +134,7 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
-	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
+	// TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	TF2Attrib_SetByName(client, "deploy time decreased", 0.05);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);

@@ -45,8 +45,6 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	AddNormalSoundHook(BossGPS);
-
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
@@ -66,37 +64,6 @@ public OnPluginStart()
 
 
 	AddRobot(robot, MakePanCop, PLUGIN_VERSION, restrictions);
-}
-
-public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), LEFTFOOT1);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), LEFTFOOT1);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), RIGHTFOOT);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), RIGHTFOOT1);
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
-	}
 }
 
 public void OnPluginEnd()
@@ -140,7 +107,7 @@ MakePanCop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 9500;
+	int iHealth = 10500;
 	
 	
 	int MaxHealth = 300;
@@ -300,7 +267,7 @@ bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_duration = 5.0;
 float FireModeTimer = -1.0;
 float g_skill; 
-float g_skill_cooldown = 4000.0;
+float g_skill_cooldown = 3000.0;
 // float g_skill_time;
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])

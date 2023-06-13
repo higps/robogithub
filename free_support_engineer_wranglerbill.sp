@@ -125,8 +125,8 @@ MakeBotSlinger(client)
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 	TF2Attrib_SetByName(client, "metal regen", 200.0);
-	TF2Attrib_SetByName(client, "building cost reduction", 2.5);
-	TF2Attrib_SetByName(client, "mod teleporter cost", 4.0);
+	// TF2Attrib_SetByName(client, "building cost reduction", 2.5);
+	TF2Attrib_SetByName(client, "mod teleporter cost", 10.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "deploy time decreased", 0.25);
@@ -206,7 +206,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 8.0);
 			// TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.8);
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
-			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.25 dispenser_scale=1.25 infinite_ammo=1 sentries=5 dispensers=1 remove_all_sappers=1 yeet=0");
+			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.25 dispenser_scale=1.25 infinite_ammo=1 sentries=4 dispensers=1 remove_all_sappers=1 yeet=0");
 			
 		}
 	

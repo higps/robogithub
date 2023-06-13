@@ -20,8 +20,8 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_pyro/giant_pyro_loop.wav"
 
-// #define SOUND_GUNFIRE	")mvm/giant_pyro/giant_pyro_flamethrower_loop.wav"
-// #define SOUND_WINDUP	")mvm/giant_pyro/giant_pyro_flamethrower_start.wav"
+#define SOUND_GUNFIRE	")mvm/giant_pyro/giant_pyro_flamethrower_loop.wav"
+#define SOUND_WINDUP	")mvm/giant_pyro/giant_pyro_flamethrower_start.wav"
 
 #define LOFILONGWAVE 470
 #define HANDSOMEDEVIL 31135
@@ -64,10 +64,12 @@ public OnPluginStart()
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
-	// robot.sounds.gunfire = SOUND_GUNFIRE;
-	// robot.sounds.windup = SOUND_WINDUP;
+	robot.sounds.gunfire = SOUND_GUNFIRE;
+	robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
+	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
+	// robot.weaponsound = ROBOT_WEAPON_SOUND_FLAMETHROWER;
 
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 }
@@ -150,7 +152,7 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
-	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
+	// TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.75);

@@ -21,11 +21,6 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_scout/giant_scout_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_scout/giant_scout_step_01.wav"
-#define LEFTFOOT1       ")mvm/giant_scout/giant_scout_step_03.wav"
-#define RIGHTFOOT       ")mvm/giant_scout/giant_scout_step_02.wav"
-#define RIGHTFOOT1      ")mvm/giant_scout/giant_scout_step_04.wav"
-
 public Plugin:myinfo = 
 {
 	name = "[TF2] Be the Giant <Someone> Scout",
@@ -48,9 +43,6 @@ public OnPluginStart()
 	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
-
-	AddNormalSoundHook(BossScout);
-
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -109,40 +101,6 @@ public Action:SetModel(client, const String:model[])
 
 		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
 	}
-}
-
-public Action:BossScout(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_01.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_03.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_02.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_scout/giant_scout_step_04.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
-	}
-	if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
-
-	return Plugin_Continue;
 }
 
 MakeGiantscout(client)

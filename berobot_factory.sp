@@ -160,7 +160,7 @@ public void Init()
     g_Allow_Human_Robot_Creation = GetConVarInt(g_cvCvarList[CV_g_Allow_Human_Robot_Creation]);
     g_cvCvarList[CV_g_Allow_Human_Robot_Creation].AddChangeHook(CvarChangeHook);
 
-    HookEvent("player_death", Event_Death, EventHookMode_Post);
+    HookEvent("player_death", Event_Death, EventHookMode_Pre);
     HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 
     for(int i = 0; i <= MaxClients; i++)
@@ -331,10 +331,11 @@ public Action Timer_Locker(Handle timer, any client)
 public void Event_Death(Handle event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-	int deathflags = GetEventInt(event, "death_flags");
-	SMLogTag(SML_VERBOSE, "Event_Death for %L received with name %s, dontBroadcast %b and deathflags %i", client, name, dontBroadcast, deathflags);
+    int deathflags = GetEventInt(event, "death_flags");
 
-	if (!(deathflags & TF_DEATHFLAG_DEADRINGER))
+        // PrintToChatAll("Factory Pre Class was: %i,", TF2_GetPlayerClass(client));
+
+    	if (!(deathflags & TF_DEATHFLAG_DEADRINGER))
 	{
         if(!IsValidClient(client))
         {
@@ -357,17 +358,45 @@ public void Event_Death(Handle event, const char[] name, bool dontBroadcast)
         }
 
         ResetOnDeath(client, item);
+        // CreateTimer(0.5,ResetOnDeath_Timer, info);
 	}
+
 }
+
+// public Action ResetOnDeath_Timer(Handle Timer, int client)
+// {
+
+//     if(!IsValidClient(client))
+//     {
+//         SMLogTag(SML_VERBOSE, "skipped Event_Death, because %i is not a valid client", client);
+//         return;
+//     }
+//     char robotName[NAMELENGTH];
+//     GetRobot(client, robotName, NAMELENGTH);
+//     if(robotName[0] == '\0')
+//     {
+//         SMLogTag(SML_VERBOSE, "skipped Event_Death, because %L is no robot", client);
+//         return;
+//     }
+
+//     Robot item;
+//     if (GetRobotDefinition(robotName, item) != 0)
+//     {
+//         SMLogTag(SML_ERROR, "skipped Event_Death, because no robot with name '%s' found for %L", robotName, client);
+//         return;
+//     }
+//     ResetOnDeath(client, item);
+
+// }
 
 void ResetOnDeath(int client, Robot item)
 {
     StopSounds(client, item);
     
     TF2Attrib_RemoveAll(client);
-    if (IsPlayerAlive(client)){
-        EmitSoundToAll(item.sounds.death, client);
-    }
+    // if (IsPlayerAlive(client)){
+    //     EmitSoundToAll(item.sounds.death, client);
+    // }
     TrackRobotCreation(client, false);
 }
 
@@ -510,7 +539,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 	{
 		SMLogTag(SML_VERBOSE, "playing robot spawn sound %s to all for call by client %i for target %s", item.sounds.spawn, client, target);
 
-        if (IsPlayerAlive(client))
+        if (IsPlayerAlive(client) && TF2Spawn_IsClientInSpawn(client))
         { 
             // PrintToChatAll("PLAYER %N WAS ALIVE", client);
             EmitSoundToAll(item.sounds.spawn);
@@ -650,7 +679,7 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
 {
     if (!IsValidClient(clientId) || !IsClientInGame(clientId))
         return 2;
-        
+    // PrintToChatAll("TRASHING %N", clientId);
     char robotName[NAMELENGTH];
     GetRobot(clientId, robotName, NAMELENGTH);
     strcopy(wasRobot, NAMELENGTH, robotName);

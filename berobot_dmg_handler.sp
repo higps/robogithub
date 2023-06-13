@@ -103,7 +103,9 @@ public void OnPluginStart()
 
     HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+    HookEvent("crossbow_heal", Event_Crossbow_Heal, EventHookMode_Post);
     RegConsoleCmd("sm_mminfo", Command_ToggleMMHumanDisplay, "Toggle Manned Machines Stats Display for humans");
+    
 //     HookEvent("object_destroyed", Event_Object_Destroyed, EventHookMode_Post);
 //     HookEvent("object_detonated", Event_Object_Detonated, EventHookMode_Post);
 
@@ -248,6 +250,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     TF2Attrib_RemoveByName(weapon, "damage bonus");
                 }
             }
+
+            if (TF2_GetPlayerClass(attacker) == TFClass_Medic)
+            {
+                if (IsBlutsauger(weapon))
+                {
+                    // int Detonated = GetEntProp(weapon, Prop_Send, "m_iDetonated");// PrintToChatAll("Removing Bonus"); //Removes the damage bonus from caber after use, in case of ubered players
+                    // PrintToChatAll("Detonated %i", Detonated);
+                    TF2Attrib_AddCustomPlayerAttribute(victim, "reduced_healing_from_medics", 0.65, 1.0);
+                }
+            }
         }
 
     
@@ -386,17 +398,17 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
             }
 
-            if (iClassAttacker == TFClass_Medic)
-            {
-                int Weapon3 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee);
+            // if (iClassAttacker == TFClass_Medic)
+            // {
+            //     int Weapon3 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee);
 
-                if(IsSolemnVow(Weapon3))
-                {
-                    damage = 0.0;
-                    return Plugin_Handled;
-                }
+            //     if(IsSolemnVow(Weapon3))
+            //     {
+            //         damage = 0.0;
+            //         return Plugin_Handled;
+            //     }
                 
-            }
+            // }
 
             if (iClassAttacker == TFClass_Soldier)
             {
@@ -1184,16 +1196,18 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             //     TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0");
             // }
 
-            //  if(IsSyringeGun(Weapon1))
-            // {
-            //     TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
-                
-            //     //Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}Mad milk syringes{teamcolor}",chat_display);
-            // }
+             if(IsSyringeGun(Weapon1))
+            {
+                //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
+                TF2Attrib_SetByName(Weapon1, "ubercharge rate bonus", 1.15);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}+10%% faster uber build rate{teamcolor}",chat_display);
+            }
             if(IsBlutsauger(Weapon1))
             {
                 TF2Attrib_SetByName(Weapon1, "max health additive bonus", 20.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: {orange}+20 max health{teamcolor}",chat_display);
+                // TF2Attrib_SetByName(Weapon1, "mod see enemy health", 1.0);
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: On Hit: {orange}Reduce enemy healing by -35%{teamcolor} for 0.35 seconds.{orange}+20 max health{teamcolor}",chat_display);
             }
 
             if(IsOverdose(Weapon1) && Weapon2 != -1)
@@ -1221,11 +1235,14 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if(IsSolemnVow(Weapon3))
             {
                 TF2Attrib_SetByName(Weapon2, "healing mastery", 4.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Solemn Vow: All weapons deal {darkred}no damage!{teamcolor} But you have the{orange}Healing Mastery upgrade",chat_display);    
+                TF2Attrib_SetByName(Weapon2, "mod see enemy health", 1.0);
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Solemn Vow: {orange}Healing Mastery upgrade",chat_display);    
  
             }else
             {
                 TF2Attrib_RemoveByName(Weapon2, "healing mastery");
+                TF2Attrib_RemoveByName(Weapon2, "mod see enemy health");
             }
 
             if(IsSolemnVow(Weapon3) && IsCrossbow(Weapon1))
@@ -1235,6 +1252,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }else
             {
                 TF2Attrib_RemoveByName(Weapon1, "damage penalty");
+            }
+
+            if(IsCrossbow(Weapon1))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Crossbow: On Teammate hit:{orange}Hasete rune{teamcolor}teammate for 3 seconds. {orange}King Rune{teamcolor} yourself for 3 seconds.",chat_display);
             }
 
             if(IsStockOrAllClassWeapon(Weapon3))
@@ -1512,11 +1534,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         // info.WriteCell(client);
         // info.WriteCell(chat_display);
         
-
+        RemoveJingle(client);
         // RequestFrame(FrameDelayedStatDisplay, info);        
         if(!IsAnyRobot(client))DisplayMMStats(client, chat_display);
 
     }
+    //Jingle Sounds sometimes causes crash with the soundhooks somehow
+    
 }
     
 // void FrameDelayedStatDisplay (DataPack info)
@@ -1528,6 +1552,23 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 // 	delete info;
 //     if(!IsAnyRobot(client))DisplayMMStats(client, chat_display);
 // }
+
+void RemoveJingle(int iClient)
+{
+	int iWearableItem = -1;
+	// PrintToServer("LOOKING HAT 1 !");
+	while ((iWearableItem = FindEntityByClassname(iWearableItem, "tf_wearable*")) != -1) // Regular hats.
+	{	
+		// We check for the wearable's item def index and its owner.
+		// int iWearableIndex = GetEntProp(iWearableItem, Prop_Send, "m_iItemDefinitionIndex");
+		int iWearableOwner = GetEntPropEnt(iWearableItem, Prop_Send, "m_hOwnerEntity");
+
+		if (iWearableOwner == iClient)
+		{
+            TF2Attrib_SetByName(iWearableItem, "add jingle to footsteps", 0.0);
+		}
+	}
+}
 
 void SetDemoDamageBuff(int weapon)
 {
@@ -2322,20 +2363,20 @@ bool IsTomiSlav(int weapon)
 // 	return false;
 // }
 
-// bool IsSyringeGun(int weapon)
-// {
-//     if(weapon == -1 && weapon <= MaxClients) return false;
+bool IsSyringeGun(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
 	
-// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-// 	{
-// 		//If others are added, add them here
-// 	case 17,204: 
-// 		{
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 17,204: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 bool IsOverdose(int weapon)
 {
@@ -2740,7 +2781,24 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
             TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.0);
 		}
 
+        if(condition == TFCond_RuneHaste)
+        {
+            // PrintToChatAll("RUNE HASTE ENDED ON %N, FIXING SPEED", client);
+            TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+        }
+}
 
+public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroadcast)
+{
+	int healer = GetClientOfUserId(GetEventInt(event, "healer"));
+	int target = GetClientOfUserId(GetEventInt(event, "target"));
 
-	
+	if (!IsAnyRobot(healer))
+	{
+        // TF2_AddCondition(target, TFCond_SpeedBuffAlly, 1.1);
+        TF2_AddCondition(target, TFCond_RuneResist, 1.0);
+        // TF2_AddCondition(healer, TFCond_KingRune, 3.0);
+        // TF2_AddCondition(healer, TFCond_KingAura, 3.0);
+	}
+	return Plugin_Continue;
 }

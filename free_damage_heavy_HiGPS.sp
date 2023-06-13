@@ -24,11 +24,6 @@
 #define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
 #define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
 
-#define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
-
 #define ROTATIONSENSATION 30623
 #define SUMMERSHADES 486
 #define WEIGHTROOMWARMER 30178
@@ -43,17 +38,10 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-
-new bool:Locked1[MAXPLAYERS+1];
-new bool:Locked2[MAXPLAYERS+1];
-new bool:Locked3[MAXPLAYERS+1];
-new bool:CanWindDown[MAXPLAYERS+1];
  
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-
-	AddNormalSoundHook(BossGPS);
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -69,37 +57,10 @@ public OnPluginStart()
 	robot.sounds.winddown = SOUND_WINDDOWN;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-
+	robot.weaponsound = ROBOT_WEAPON_SOUND_MINIGUN;
 	AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION);
 }
 
-public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT1, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT1, entity);
-		}
-		return Plugin_Changed;
-	}
-	return Plugin_Continue;
-}
 
 public void OnPluginEnd()
 {
@@ -165,8 +126,6 @@ MakeGDeflectorH(client)
 
 	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
 	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
-	
-   
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
@@ -239,7 +198,7 @@ stock GiveGDeflectorH(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "attack projectiles", 2.0);
+			TF2Attrib_SetByName(Weapon1, "attack projectiles", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.45);
@@ -247,78 +206,4 @@ stock GiveGDeflectorH(client)
 			
 		}
 	}
-}
-
-public Action:OnPlayerRunCmd(iClient, &iButtons, &iImpulse, Float:fVel[3], Float:fAng[3], &iWeapon) 
-{
-	if (IsValidClient(iClient) && IsRobot(iClient, ROBOT_NAME) && IsPlayerAlive(iClient))
-	{	
-
-	new weapon = GetPlayerWeaponSlot(iClient, TFWeaponSlot_Primary);
-	iWeapon = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-	if (HasEntProp(weapon, Prop_Send, "m_iWeaponState"))
-	{
-	if(IsValidEntity(weapon) && iWeapon == 850)//850 == deflector
-	{
-		new iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
-		if (iWeaponState == 1 && !Locked1[iClient])
-		{
-			EmitSoundToAll(SOUND_WINDUP, iClient);
-		//	PrintToChatAll("WeaponState = Windup");
-			
-			Locked1[iClient] = true;
-			Locked2[iClient] = false;
-			Locked3[iClient] = false;
-			CanWindDown[iClient] = true;
-			
-			StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
-			StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-		}
-		else if (iWeaponState == 2 && !Locked2[iClient])
-		{
-			EmitSoundToAll(SOUND_GUNFIRE, iClient);
-		//	PrintToChatAll("WeaponState = Firing");
-			
-			Locked2[iClient] = true;
-			Locked1[iClient] = true;
-			Locked3[iClient] = false;
-			CanWindDown[iClient] = true;
-			
-			StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
-			StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-		}
-		else if (iWeaponState == 3 && !Locked3[iClient])
-		{
-			EmitSoundToAll(SOUND_GUNSPIN, iClient);
-		//	PrintToChatAll("WeaponState = Spun Up");
-			
-			Locked3[iClient] = true;
-			Locked1[iClient] = true;
-			Locked2[iClient] = false;
-			CanWindDown[iClient] = true;
-			
-			StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-			StopSound(iClient, SNDCHAN_AUTO, SOUND_WINDUP);
-		}
-		else if (iWeaponState == 0)
-		{
-			if (CanWindDown[iClient])
-			{
-		//		PrintToChatAll("WeaponState = WindDown");
-				EmitSoundToAll(SOUND_WINDDOWN, iClient);
-				CanWindDown[iClient] = false;
-			}
-			
-			StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNSPIN);
-			StopSound(iClient, SNDCHAN_AUTO, SOUND_GUNFIRE);
-			
-			Locked1[iClient] = false;
-			Locked2[iClient] = false;
-			Locked3[iClient] = false;
-		}
-	}
-	}
-
-	}
-	return Plugin_Continue;
 }

@@ -190,17 +190,16 @@ stock GiveBigRoboJbird(client)
 			
 			TF2Attrib_SetByName(SniperRifle, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(SniperRifle, "damage bonus", 1.34);
+			TF2Attrib_SetByName(SniperRifle, "damage bonus", 1.33);
 		
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
-			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 10.0);
+			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 3.0);
 			
 			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
 			TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs players", 0.75);
-			TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
 			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
 			
 			

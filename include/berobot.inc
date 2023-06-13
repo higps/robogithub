@@ -8,6 +8,7 @@ enum struct RobotSounds {
   char spawn[PLATFORM_MAX_PATH];
   char loop[PLATFORM_MAX_PATH];
   char gunfire[PLATFORM_MAX_PATH];
+  char gunfire_crit[PLATFORM_MAX_PATH];
   char gunspin[PLATFORM_MAX_PATH];
   char windup[PLATFORM_MAX_PATH];
   char winddown[PLATFORM_MAX_PATH];
@@ -100,6 +101,8 @@ enum struct RobotDefinition {
   char deathtip[512];
   RobotSounds sounds;
   char deatheffect[64];
+  int weaponsound;
+  int footstep;
 }
 typedef RobotCallback = function void (int client);
 

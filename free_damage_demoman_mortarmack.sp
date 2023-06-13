@@ -40,7 +40,7 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	AddNormalSoundHook(BossMortar);
+	// AddNormalSoundHook(BossMortar);
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -51,52 +51,54 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.sounds.gunfire = GUNFIRE;
 	robot.deathtip = ROBOT_ON_DEATH;
+	robot.weaponsound = ROBOT_WEAPON_SOUND_GRENADELAUNCHER;
 
 
 
 	AddRobot(robot, MakeSolar, PLUGIN_VERSION);
 }
 
-public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
+// public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
+// {
+// 	if (!IsValidClient(entity)) return Plugin_Continue;
+// 	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
 
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT1, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT1, entity);
-		}
-		return Plugin_Changed;
-	}
+// 	// if (strncmp(sample, "player/footsteps/", 17, false) == 0)
+// 	// {
+// 	// 	if (StrContains(sample, "1.wav", false) != -1)
+// 	// 	{
+// 	// 		EmitSoundToAll(LEFTFOOT, entity);
+// 	// 	}
+// 	// 	else if (StrContains(sample, "3.wav", false) != -1)
+// 	// 	{
+// 	// 		EmitSoundToAll(LEFTFOOT1, entity);
+// 	// 	}
+// 	// 	else if (StrContains(sample, "2.wav", false) != -1)
+// 	// 	{
+// 	// 		EmitSoundToAll(RIGHTFOOT, entity);
+// 	// 	}
+// 	// 	else if (StrContains(sample, "4.wav", false) != -1)
+// 	// 	{
+// 	// 		EmitSoundToAll(RIGHTFOOT1, entity);
+// 	// 	}
+// 	// 	return Plugin_Changed;
+// 	// }
 
-	if (strncmp(sample, ")weapons/", 9, false) == 0)
-	{
-		if (StrContains(sample, "grenade_launcher_shoot.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), GUNFIRE);
-			EmitSoundToAll(sample, entity,_,_,_, 0.07);	
-		//	PrintToChatAll("SOUND!--");
-			return Plugin_Changed;	
-		}
+// 	if (strncmp(sample, ")weapons/", 9, false) == 0)
+// 	{
+// 		if (StrContains(sample, "grenade_launcher_shoot.wav", false) != -1)
+// 		{
+// 			Format(sample, sizeof(sample), GUNFIRE);
+// 			EmitSoundToAll(sample, entity,_,_,_, 0.07);	
+// 		//	PrintToChatAll("SOUND!--");
+// 			return Plugin_Changed;	
+// 		}
 		
-	}
-	return Plugin_Continue;
-}
+// 	}
+// 	return Plugin_Continue;
+// }
 
 public void OnPluginEnd()
 {

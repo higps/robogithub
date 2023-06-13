@@ -41,7 +41,7 @@ public void OnPluginStart()
     SMLogTag(SML_INFO, "berobot_voicelines started at %i", GetTime());
 
     AddNormalSoundHook(NormalSoundHook);
-    HookEvent("player_death", Event_Death, EventHookMode_Post);
+    HookEvent("player_death", Event_Death, EventHookMode_Pre);
     HookEvent("player_escort_score", Event_player_escort_score, EventHookMode_Post);
     HookEvent("teamplay_setup_finished", Event_teamplay_setup_finished, EventHookMode_Post);
     HookEvent("teamplay_round_win", Event_teamplay_round_win, EventHookMode_Post);
@@ -50,11 +50,16 @@ public void OnPluginStart()
     // HookEvent("teamplay_round_win", Event_Teamplay_Round_Win, EventHookMode_Post);
 }
 
+// int EveryOtherStep[MAXPLAYERS + 1] = {0,...};
+
 #define MVMSTART "vo/mvm_wave_start01.mp3"
 #define ANNOUNCERWAVESTART "Announcer.MVM_Wave_Start"
 #define ANNOUNCER_ALL_DEAD "Announcer.MVM_All_Dead"
 #define ANNOUNCER_ENGINEER_BOT_SPAWN "Announcer.MVM_First_Engineer_Teleport_Spawned"
 
+#define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
+#define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
+#define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 // Easier to have all the sounds we want in a single variable array for better access
 // static const char WaveVoiceLineStartSounds[][256] =
 // {
@@ -71,6 +76,34 @@ public void OnPluginStart()
 //     "vo/mvm_wave_start11.mp3",
 //     "vo/mvm_wave_start12.mp3"
 // };
+
+bool b_AnnounceClamp = false;
+
+static const char Spy_Spawn[][256] =
+{
+    "vo/mvm_spy_spawn01.mp3",
+    "vo/mvm_spy_spawn02.mp3",
+    "vo/mvm_spy_spawn03.mp3",
+    "vo/mvm_spy_spawn04.mp3"
+};
+
+static const char One_Spy_Death[][256]=
+{
+    "vo/mvm_spybot_death01.mp3", //SINGLE SPYBOT
+    "vo/mvm_spybot_death02.mp3",
+    "vo/mvm_spybot_death03.mp3",
+    "vo/mvm_spybot_death04.mp3", //ALL SPYBOTS DESTROYED
+    "vo/mvm_spybot_death05.mp3",
+    "vo/mvm_spybot_death06.mp3",
+    "vo/mvm_spybot_death07.mp3",
+    "vo/mvm_spybot_death08.mp3", //6 SPYBOTS REMAIN
+    "vo/mvm_spybot_death09.mp3", //5 SPYBOT REMAIN
+    "vo/mvm_spybot_death10.mp3", //4
+    "vo/mvm_spybot_death11.mp3", //3
+    "vo/mvm_spybot_death12.mp3", //2
+    "vo/mvm_spybot_death13.mp3" //1
+
+};
 
 static const char One_Engineer_Spawn[][256] =
 {
@@ -104,6 +137,75 @@ static const char EngBotDead_Tele[][256] =
 		"vo/announcer_mvm_engbot_dead_tele02.mp3"
 };
 
+static const char HeavyBotSteps[][256] =
+{
+        ")mvm/giant_heavy/giant_heavy_step01.wav",
+        ")mvm/giant_heavy/giant_heavy_step03.wav",
+        ")mvm/giant_heavy/giant_heavy_step02.wav",
+        ")mvm/giant_heavy/giant_heavy_step04.wav"
+};
+
+static const char DemoBotSteps[][256] =
+{
+        ")mvm/giant_demoman/giant_demoman_step_01.wav",
+        ")mvm/giant_demoman/giant_demoman_step_03.wav",
+        ")mvm/giant_demoman/giant_demoman_step_02.wav",
+        ")mvm/giant_demoman/giant_demoman_step_04.wav"
+};
+
+static const char ScoutBotSteps[][256] =
+{
+        ")mvm/giant_scout/giant_scout_step_01.wav",
+        ")mvm/giant_scout/giant_scout_step_03.wav",
+        ")mvm/giant_scout/giant_scout_step_02.wav",
+        ")mvm/giant_scout/giant_scout_step_04.wav"
+};
+
+static const char SoldierBotSteps[][256] =
+{
+    ")mvm/giant_soldier/giant_soldier_step01.wav",
+    ")mvm/giant_soldier/giant_soldier_step03.wav",
+    ")mvm/giant_soldier/giant_soldier_step02.wav",
+    ")mvm/giant_soldier/giant_soldier_step04.wav"
+};
+
+static const char RegularBotSteps[][256] =
+{
+    "mvm/player/footsteps/robostep_01.wav",
+    "mvm/player/footsteps/robostep_02.wav",
+    "mvm/player/footsteps/robostep_03.wav",
+    "mvm/player/footsteps/robostep_04.wav",
+    "mvm/player/footsteps/robostep_05.wav",
+    "mvm/player/footsteps/robostep_06.wav",
+    "mvm/player/footsteps/robostep_07.wav",
+    "mvm/player/footsteps/robostep_08.wav",
+    "mvm/player/footsteps/robostep_09.wav",
+    "mvm/player/footsteps/robostep_10.wav",
+    "mvm/player/footsteps/robostep_11.wav",
+    "mvm/player/footsteps/robostep_12.wav",
+    "mvm/player/footsteps/robostep_13.wav",
+    "mvm/player/footsteps/robostep_14.wav",
+    "mvm/player/footsteps/robostep_15.wav",
+    "mvm/player/footsteps/robostep_16.wav",
+    "mvm/player/footsteps/robostep_17.wav",
+    "mvm/player/footsteps/robostep_18.wav"
+   
+};
+
+static const char GiantCommonBotSteps[][256] =
+{
+    "mvm/giant_common/giant_common_step_01.wav",
+    "mvm/giant_common/giant_common_step_02.wav",
+    "mvm/giant_common/giant_common_step_03.wav",
+    "mvm/giant_common/giant_common_step_04.wav",
+    "mvm/giant_common/giant_common_step_05.wav",
+    "mvm/giant_common/giant_common_step_06.wav",
+    "mvm/giant_common/giant_common_step_07.wav",
+    "mvm/giant_common/giant_common_step_08.wav"
+};
+
+
+
 public void OnMapStart()
 {
     
@@ -112,7 +214,15 @@ public void OnMapStart()
 	// for (int i = 0; i < size; i++)
 	// 	PrecacheSound(WaveVoiceLineStartSounds[i], true);
    
-   	int size = sizeof One_Engineer_Spawn;
+   	int size = sizeof Spy_Spawn;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(Spy_Spawn[i], true);
+
+   	size = sizeof One_Spy_Death;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(One_Spy_Death[i], true);
+
+   	size = sizeof One_Engineer_Spawn;
 	for (int i = 0; i < size; i++)
 		PrecacheSound(One_Engineer_Spawn[i], true);
 
@@ -132,8 +242,30 @@ public void OnMapStart()
 	for (int i = 0; i < size; i++)
 		PrecacheSound(EngBotDead_Tele[i], true);
 
+    size = sizeof HeavyBotSteps;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(HeavyBotSteps[i], true);
 
+    size = sizeof DemoBotSteps;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(DemoBotSteps[i], true);
 
+    size = sizeof ScoutBotSteps;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(ScoutBotSteps[i], true);
+ 
+    size = sizeof RegularBotSteps;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(RegularBotSteps[i], true);
+
+    size = sizeof GiantCommonBotSteps;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(GiantCommonBotSteps[i], true);
+
+	PrecacheSound(GUNFIRE);
+	PrecacheSound(GUNFIRE_CRIT);
+	PrecacheSound(GUNFIRE_EXPLOSION);
+	
 
 
     PrecacheScriptSound(ANNOUNCERWAVESTART);
@@ -165,7 +297,7 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 		return Plugin_Continue;
 	}
 
-	if (IsRobot(entity, "Saxtron")) //skip if no robot is picked
+	if (IsRobot(entity, "Saxtron")) //skip if saxtron
 	{
 		SMLogTag(SML_NormalSoundHook, "skipping SoundHook because %L is not a robot", entity);
 		return Plugin_Continue;
@@ -178,6 +310,224 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 		return Plugin_Continue;
 	}
 	TFClassType class = TF2_GetPlayerClass(entity);
+
+        char robotName[NAMELENGTH];
+        GetRobot(entity, robotName, NAMELENGTH);
+        Robot robot;
+        GetRobotDefinition(robotName, robot);
+
+    if (strncmp(sample, ")weapons/", 9, false) == 0) 
+	{
+
+        
+//        PrintToChatAll("WEAPON SHOOTING! Robot was %s %s for %N",robot.name, robot.sounds.gunfire, GetClientOfUserId(entity));
+
+    switch(robot.weaponsound)
+    {
+        case ROBOT_WEAPON_SOUND_ROCKETLAUNCHER:
+        {
+            if (StrContains(sample, "rocket_shoot.wav", false) != -1)
+            {
+                Format(sample, sizeof(sample), robot.sounds.gunfire);
+                EmitSoundToAll(sample, entity);
+              //  PrintToChatAll("EMITTED ROCKETSHOOT");
+                
+            }
+            else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
+            {
+                Format(sample, sizeof(sample), robot.sounds.gunfire_crit);
+                EmitSoundToAll(sample, entity);
+             //   PrintToChatAll("EMITTED ROCKETSHOOT CRIT");
+            }
+        }
+        case ROBOT_WEAPON_SOUND_GRENADELAUNCHER:
+        {
+            if (strncmp(sample, ")weapons/", 9, false) == 0)
+            {
+                if (StrContains(sample, "grenade_launcher_shoot.wav", false) != -1)
+                {
+                    Format(sample, sizeof(sample), robot.sounds.gunfire);
+                    // PrintToChatAll("EMITTED GRENADE SHOOT");
+                    EmitSoundToAll(sample, entity,_,_,_, 0.07);	
+			        return Plugin_Changed;	
+                }
+                
+            }
+        }
+    }
+
+		
+		//Explosion doesnæt quite work
+		/* 		else if (StrContains(sample, "explode1.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "explode2.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+			EmitSoundToAll(sample, entity);
+		}
+		else if (StrContains(sample, "explode3.wav", false) != -1)
+		{
+			Format(sample, sizeof(sample), GUNFIRE_EXPLOSION);
+			EmitSoundToAll(sample, entity);
+		} */
+		return Plugin_Changed;
+	}
+
+    if (strncmp(sample, "player/footsteps/", 17, false) == 0)
+	{       
+        if (robot.footstep == ROBOT_FOOTSTEPS_CLASS)
+        {        
+            if (StrContains(sample, "1.wav", false) != -1)
+            {
+                switch(class)
+                {
+                    case TFClass_DemoMan:
+                    {
+                        EmitSoundToAll(DemoBotSteps[0], entity);
+                    }
+                    case TFClass_Heavy:
+                    {
+                        EmitSoundToAll(HeavyBotSteps[0], entity);
+                    }
+                    case TFClass_Scout:
+                    {
+                        EmitSoundToAll(ScoutBotSteps[0], entity);
+                    }
+                    case TFClass_Soldier:
+                    {
+                        EmitSoundToAll(SoldierBotSteps[0], entity);
+                    }
+                }
+                
+            }
+            else if (StrContains(sample, "3.wav", false) != -1)
+            {
+                switch(class)
+                {
+                    case TFClass_DemoMan:
+                    {
+                        EmitSoundToAll(DemoBotSteps[1], entity);
+                    }
+                    case TFClass_Heavy:
+                    {
+                        EmitSoundToAll(HeavyBotSteps[1], entity);
+                    }
+                    case TFClass_Scout:
+                    {
+                        EmitSoundToAll(ScoutBotSteps[1], entity);
+                    }
+                    case TFClass_Soldier:
+                    {
+                        EmitSoundToAll(SoldierBotSteps[1], entity);
+                    }
+                }
+            }
+            else if (StrContains(sample, "2.wav", false) != -1)
+            {
+                switch(class)
+                {
+                    case TFClass_DemoMan:
+                    {
+                        EmitSoundToAll(DemoBotSteps[2], entity);
+                    }
+                    case TFClass_Heavy:
+                    {
+                        EmitSoundToAll(HeavyBotSteps[2], entity);
+                    }
+                    case TFClass_Scout:
+                    {
+                        EmitSoundToAll(ScoutBotSteps[2], entity);
+                    }
+                    case TFClass_Soldier:
+                    {
+                        EmitSoundToAll(SoldierBotSteps[2], entity);
+                    }
+                }
+            }
+            else if (StrContains(sample, "4.wav", false) != -1)
+            {
+                switch(class)
+                {
+                    case TFClass_DemoMan:
+                    {
+                        EmitSoundToAll(DemoBotSteps[3], entity);
+                    }
+                    case TFClass_Heavy:
+                    {
+                        EmitSoundToAll(HeavyBotSteps[3], entity);
+                    }
+                    case TFClass_Scout:
+                    {
+                        EmitSoundToAll(ScoutBotSteps[3], entity);
+                    }
+                    case TFClass_Soldier:
+                    {
+                        EmitSoundToAll(SoldierBotSteps[3], entity);
+                    }
+                }
+            }
+        }
+        else if (robot.footstep == ROBOT_FOOTSTEP_NORMAL)
+        { 
+            int rand = GetRandomInt(1,18);
+            Format(sample, sizeof(sample), "mvm/player/footsteps/robostep_%s%i.wav", (rand < 10) ? "0" : "", rand);
+			pitch = GetRandomInt(95, 100);
+			EmitSoundToAll(sample, entity, _, _, _, 1.0, pitch);
+			return Plugin_Changed;
+        }
+        else if (robot.footstep == ROBOT_FOOTSTEP_GIANTCOMMON)
+        {   
+            // int iActiveWeapon = GetEntPropEnt(entity, Prop_Send, "m_hActiveWeapon");
+            // int Weapon1 = GetPlayerWeaponSlot(entity, TFWeaponSlot_Primary);
+
+            // if (iActiveWeapon == Weapon1 && !EveryOtherStep[entity])
+            // { 
+            //         EveryOtherStep[entity] = 1;
+            // }else if(iActiveWeapon == Weapon1 && EveryOtherStep[entity])
+            // {
+            //     EveryOtherStep[entity] = 0;
+            // }
+        
+
+            // if (iActiveWeapon != Weapon1)
+            // {
+            //     EveryOtherStep[entity] = 0;
+            // }
+
+            // if (!EveryOtherStep[entity])
+            // {
+                // PrintToChatAll("HOLDING PRIMARY");
+                
+                int rand = GetRandomInt(1,8);
+                Format(sample, sizeof(sample), "mvm/giant_common/giant_common_step_%s%i.wav", (rand < 10) ? "0" : "", rand);
+                pitch = GetRandomInt(70, 85);
+                EmitSoundToAll(sample, entity, _, _, _, 1.0, pitch);
+                return Plugin_Changed;
+            // }
+
+        }
+
+        
+		return Plugin_Changed;
+	}
+// if (volume == 0.0 || volume == 0.9997) return Plugin_Continue;
+    // if (strncmp(sample, ")weapons/", 9, false) == 0)
+    // {
+    //     if (StrContains(sample, "rocket_shoot.wav", false) != -1)
+    //     {
+    //         Format(sample, sizeof(sample), GUNFIRE);
+    //         EmitSoundToAll(sample, entity);
+            
+    //     }
+    //     else if (StrContains(sample, "rocket_shoot_crit.wav", false) != -1)
+    //     {
+    //         Format(sample, sizeof(sample), GUNFIRE_CRIT);
+    //         EmitSoundToAll(sample, entity);
+    //     }
+    // }
 
 	if (StrContains(sample, "vo/", false) == -1)
 	{
@@ -228,6 +578,8 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 	{
 		ReplaceString(sample, sizeof(sample), "vo/", "vo/mvm/norm/", false);
 	}
+    
+
 	ReplaceString(sample, sizeof(sample), ".wav", ".mp3", false);
 	char classname[10]; 
 	char classname_mvm[15];
@@ -421,9 +773,22 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     int assister = GetClientOfUserId(GetEventInt(event, "assister"));
 
    // SMLogTag(SML_VERBOSE, "Event_Death triggerd with attacker %L, assister %L and victim %L", attacker, assister, victim);
-
+    // PrintToChatAll("Pre Class was: %i,", TF2_GetPlayerClass(victim));
     //Robot died
+    if (IsAnyRobot(victim)){
+        
+        char robotName[NAMELENGTH];
+        GetRobot(victim, robotName, NAMELENGTH);
+        if(robotName[0] == '\0')
+        {
+            SMLogTag(SML_VERBOSE, "skipped Event_Death, because %L is no robot in voicelines", victim);
+            return;
+        }
 
+        Robot item;
+        GetRobotDefinition(robotName, item);
+        EmitSoundToAll(item.sounds.death, victim);
+    }
     if (IsAnyRobot(victim))
 	{
         //On the first kill
@@ -451,9 +816,44 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     }
 
     //Plays spy alert when the spy dies
-	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Spy)
+	if (IsAnyRobot(victim) && TF2_GetPlayerClass(victim) == TFClass_Spy/*  && !b_AnnounceClamp */)
 	{
-	    EmitGameSoundToAll("Announcer.mvm_spybot_death");
+        int iSpyCount = GetRobotClassCount(TFClass_Spy);
+        // PrintToChatAll("EMITTING SPY DEATH. There was %i spies on death",iSpyCount);
+        int size = sizeof One_Spy_Death;
+        int soundswitch;
+
+        //Spycount offset by +1 since change happens on the frame after
+        if (iSpyCount == 1)
+        {
+            soundswitch = GetRandomInt(0, 6);
+            EmitSoundToAll(One_Spy_Death[soundswitch]);
+        }
+        if (iSpyCount == 2)
+        {
+            EmitSoundToAll(One_Spy_Death[12]);
+        }
+        if (iSpyCount == 3)
+        {
+            EmitSoundToAll(One_Spy_Death[11]);
+        }
+        if (iSpyCount == 4)
+        {
+            EmitSoundToAll(One_Spy_Death[10]);
+        }
+        if (iSpyCount == 5)
+        {
+            EmitSoundToAll(One_Spy_Death[9]);
+        }
+        if (iSpyCount == 6)
+        {
+            EmitSoundToAll(One_Spy_Death[8]);
+        }
+        if (iSpyCount == 7)
+        {
+            EmitSoundToAll(One_Spy_Death[7]);
+        }
+        // EmitGameSoundToAll();
 	}
 
     //teamwipe logic
@@ -480,7 +880,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 		// if (!g_bDoTeamWipe) CreateTimer(5.0, Timer_TeamWipeCooldown, _, TIMER_FLAG_NO_MAPCHANGE); // put a cooldown on this just in case it somehow gets spammed
 	}
 
-    if (IsRobotEngineer(victim))
+    if (IsRobotEngineer(victim) && !b_AnnounceClamp)
     {
         //PrintToChatAll("ROBOT ENGI DEAD!");
         if(HasTeleporter(victim))
@@ -1003,42 +1403,73 @@ public Action calltimer_reset (Handle timer, int client)
 }
 
 
-bool b_TankCheckClamp = false;
-bool b_EngineerCheckClamp = false;
+
 
 public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
 {
 
     int client = GetClientOfUserId(GetEventInt(event, "userid"));
-    if (IsTank(client) && !b_TankCheckClamp)
-    {
-        CreateTimer(5.0, Timer_TankCheck);
-        b_TankCheckClamp = true;
-    }
 
-    if(IsRobotEngineer(client) && !b_EngineerCheckClamp)
+    CreateTimer(1.0, Timer_CheckSpawnAnnouncement, client);
+
+}
+
+public Action Timer_CheckSpawnAnnouncement(Handle timer, int client)
+{
+    if(IsPlayerAlive(client) && !b_AnnounceClamp)
     {
-        CreateTimer(4.0, Timer_EngiCheck, GetRobotEngineerCount());
-        b_EngineerCheckClamp = true;
+
+        if (IsAnyRobot(client) && !b_AnnounceClamp)
+        {
+            switch(TF2_GetPlayerClass(client))
+            {
+                case TFClass_Engineer:
+                {
+                    CreateTimer(3.0, Timer_EngiCheck, GetRobotClassCount(TFClass_Engineer));
+                    b_AnnounceClamp = true;
+                }
+                case TFClass_Spy:
+                {
+                    CreateTimer(3.0, Timer_SpyCheck, GetRobotClassCount(TFClass_Spy));
+                    b_AnnounceClamp = true;
+                }
+            }
+        }
+
+        if (IsTank(client) && !b_AnnounceClamp)
+        {
+            CreateTimer(3.0, Timer_TankCheck);
+            b_AnnounceClamp = true;
+        }
     }
 }
 
-int GetRobotEngineerCount()
+int GetRobotClassCount(int class)
 {
-    int engineercount = 0;
+    int classcount = 0;
 
     for(int i = 1; i <= MaxClients; i++)
     {
         if (IsAnyRobot(i))
         {                        
-            if (TF2_GetPlayerClass(i) == TFClass_Engineer)
+            if (TF2_GetPlayerClass(i) == class)
             {
-                engineercount++;
+                classcount++;
                
             }
         }
     }
-    return engineercount;
+    return classcount;
+}
+
+public Action Timer_SpyCheck(Handle timer, int spycount)
+{
+	int size = sizeof Spy_Spawn;
+    int soundswitch = GetRandomInt(0, size - 1);
+    // PrintToChatAll("Emitting %s", Spy_Spawn[soundswitch]);
+	EmitSoundToAll(Spy_Spawn[soundswitch]);
+    b_AnnounceClamp = false;
+	
 }
 
 public Action Timer_EngiCheck(Handle timer, int engineercount)
@@ -1066,7 +1497,7 @@ public Action Timer_EngiCheck(Handle timer, int engineercount)
     }
 
      //PrintToChatAll("Engineer count was: %i", engineercount);
-    b_EngineerCheckClamp = false;
+    b_AnnounceClamp = false;
 }
 
 public Action Timer_TankCheck(Handle timer)
@@ -1124,7 +1555,7 @@ public Action Timer_TankCheck(Handle timer)
     }
 
     // if(g_cv_bDebugMode)PrintToChatAll("Tank count was %i", TankCount);
-    b_TankCheckClamp = false;
+    b_AnnounceClamp = false;
 }
 
 // bool g_bDoTeamWipe = true;
@@ -1137,6 +1568,15 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 bool IsRobotEngineer(int client)
 {
     if (TF2_GetPlayerClass(client) == TFClass_Engineer && IsAnyRobot(client))
+    {
+        return true;
+    }
+    return false;
+}
+
+bool IsRobotSpy(int client)
+{
+    if (TF2_GetPlayerClass(client) == TFClass_Spy && IsAnyRobot(client))
     {
         return true;
     }
@@ -1185,4 +1625,158 @@ stock int GetTeamMateDeadCount(int team)
 	}
     //PrintToChatAll("player teamz %i", players_team);
 	return players_team;
+}
+
+bool Locked1[MAXPLAYERS+1];
+bool Locked2[MAXPLAYERS+1];
+bool Locked3[MAXPLAYERS+1];
+bool CanWindDown[MAXPLAYERS+1];
+
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+{
+    if (IsValidClient(client) && IsAnyRobot(client) && IsPlayerAlive(client) && GetPlayerWeaponSlot(client, TFWeaponSlot_Primary) != -1 && (TF2_GetPlayerClass(client) == TFClass_Heavy || TF2_GetPlayerClass(client) == TFClass_Pyro))
+	{	
+
+        char robotName[NAMELENGTH];
+        GetRobot(client, robotName, NAMELENGTH);
+        Robot robot;
+        GetRobotDefinition(robotName, robot);
+        int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+        
+        // PrintToChatAll("WEAPON SHOOTING! %i for %N\nRobot Sounds %s",robot.weaponsound, client, robot.sounds.gunfire);
+// PrintToChatAll("WEAPON SHOOTING! %i for %N",robot.weaponsound, client);
+    //MINIGUN 
+    if (robot.weaponsound == ROBOT_WEAPON_SOUND_MINIGUN)
+    {
+        
+        
+        if (HasEntProp(weapon, Prop_Send, "m_iWeaponState"))
+        {
+            if(IsValidEntity(weapon))//850 == deflector
+            {
+                int iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
+                if (iWeaponState == 1 && !Locked1[client])
+                {
+                    EmitSoundToAll(robot.sounds.windup, client);
+                //	PrintToChatAll("WeaponState = Windup");
+                    
+                    Locked1[client] = true;
+                    Locked2[client] = false;
+                    Locked3[client] = false;
+                    CanWindDown[client] = true;
+                    
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.gunspin);
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.gunfire);
+                }
+                else if (iWeaponState == 2 && !Locked2[client])
+                {
+                    EmitSoundToAll(robot.sounds.gunfire, client);
+                //	PrintToChatAll("WeaponState = Firing");
+                    
+                    Locked2[client] = true;
+                    Locked1[client] = true;
+                    Locked3[client] = false;
+                    CanWindDown[client] = true;
+                    
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.gunspin);
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.windup);
+                }
+                else if (iWeaponState == 3 && !Locked3[client])
+                {
+                    EmitSoundToAll(robot.sounds.gunspin, client);
+                //	PrintToChatAll("WeaponState = Spun Up");
+                    
+                    Locked3[client] = true;
+                    Locked1[client] = true;
+                    Locked2[client] = false;
+                    CanWindDown[client] = true;
+                    
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.gunfire);
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.windup);
+                }
+                else if (iWeaponState == 0)
+                {
+                    if (CanWindDown[client])
+                    {
+                //		PrintToChatAll("WeaponState = WindDown");
+                        EmitSoundToAll(robot.sounds.winddown, client);
+                        CanWindDown[client] = false;
+                    }
+                    
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.gunspin);
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.gunfire);
+                    
+                    Locked1[client] = false;
+                    Locked2[client] = false;
+                    Locked3[client] = false;
+                }
+            }
+        }
+	}
+
+
+    //Flamethrower
+    if (robot.weaponsound == ROBOT_WEAPON_SOUND_FLAMETHROWER)
+    {
+        if(IsValidEntity(weapon))
+            {
+                int iWeaponState = GetEntProp(weapon, Prop_Send, "m_iWeaponState");
+                if (iWeaponState == 1 && !Locked1[client])
+                {
+                    EmitSoundToAll(robot.sounds.windup, client);
+                //	PrintToChatAll("WeaponState = Windup");
+                    
+                    Locked1[client] = true;
+                    Locked2[client] = false;
+                    Locked3[client] = false;
+                    CanWindDown[client] = true;
+                    
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.gunfire);
+                }
+                else if (iWeaponState == 2 && !Locked2[client])
+                {
+                    EmitSoundToAll(robot.sounds.gunfire, client);
+                //	PrintToChatAll("WeaponState = Firing");
+                    
+                    Locked2[client] = true;
+                    Locked1[client] = true;
+                    Locked3[client] = false;
+                    CanWindDown[client] = true;
+                    
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.windup);
+                }
+                else if (iWeaponState == 3 && !Locked3[client])
+                {
+
+                //	PrintToChatAll("WeaponState = Spun Up");
+                    
+                    Locked3[client] = true;
+                    Locked1[client] = true;
+                    Locked2[client] = false;
+                    CanWindDown[client] = true;
+                    
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.gunfire);
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.windup);
+                }
+                else if (iWeaponState == 0)
+                {
+                    if (CanWindDown[client])
+                    {
+                //		PrintToChatAll("WeaponState = WindDown");
+
+                        CanWindDown[client] = false;
+                    }
+                    
+                    StopSound(client, SNDCHAN_AUTO, robot.sounds.gunfire);
+                    
+                    Locked1[client] = false;
+                    Locked2[client] = false;
+                    Locked3[client] = false;
+                }
+            }
+        }
+
+
+	}
+	return Plugin_Continue;
 }

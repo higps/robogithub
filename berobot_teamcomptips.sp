@@ -128,7 +128,7 @@ public Action Tip_Timer(Handle timer, any client)
         float medic_ratio = float(MedicCount)/float(CurrentRobots);
         bool multimedics = false;
         int needed_medics = RoundToNearest(target_medics)-MedicCount;
-        if (needed_medics != 0){
+        if (needed_medics > 0){
             
             
 

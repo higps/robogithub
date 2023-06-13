@@ -59,6 +59,7 @@ public OnPluginStart()
 	robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
+	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
 
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null, 2);
 }
@@ -141,7 +142,6 @@ MakeGiantPyro(client)
 	// TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
-	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	TF2Attrib_SetByName(client, "deploy time decreased", 0.05);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	

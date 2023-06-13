@@ -121,6 +121,7 @@ public void OnWeaponSwitch(int client, int weapon)
 		{
 			TF2_AddCondition(client, TFCond_Buffed, 1.5);
 			TF2Attrib_AddCustomPlayerAttribute(client, "faster reload rate", 0.5, 1.5);
+			TF2Attrib_AddCustomPlayerAttribute(client, "fire rate bonus", 0.75, 1.5);
 		}
 	}
 }
@@ -143,15 +144,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 	return APLRes_Success;
 }
-
-public OnMapStart()
-{
-	// PrecacheModel(ChangeDane);
-
-
-
-}
-
 
 public Action:SetModel(client, const String:model[])
 {
@@ -213,8 +205,8 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "metal regen", 200.0);
-	// TF2Attrib_SetByName(client, "building cost reduction", 2.5);
-	TF2Attrib_SetByName(client, "mod teleporter cost", 9.0);
+	TF2Attrib_SetByName(client, "building cost reduction", 0.5);
+	TF2Attrib_SetByName(client, "mod teleporter cost", 18.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
@@ -293,10 +285,10 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", 0.5);
-			TF2Attrib_SetByName(Weapon2, "damage bonus", 1.5);			
+			TF2Attrib_SetByName(Weapon2, "damage bonus", 1.75);			
 			// TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.5);
-			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 1.5);
-			TF2Attrib_SetByName(Weapon2, "weapon spread bonus",	0.25);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.0);
+			TF2Attrib_SetByName(Weapon2, "weapon spread bonus",	0.15);
 			TF2Attrib_SetByName(Weapon2, "engineer building teleporting pickup", 10.0);
 			// TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
 			

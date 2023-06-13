@@ -816,7 +816,7 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
     if(convar == g_cvCvarList[CV_g_RoboCapTeam])
     {   
         g_RoboCapTeam = StringToInt(sNewValue);
-        if (g_Enable) PrintHintTextToAll("Current Robots: %i", g_RoboCapTeam);
+        if (g_Enable) PrintToChatAll("Current Robots: %i", g_RoboCapTeam);
     }
 
     if(convar == g_cvCvarList[CV_g_RoboTeamMode])

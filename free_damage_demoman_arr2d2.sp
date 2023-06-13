@@ -12,7 +12,7 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Loose Cannon"
-#define ROBOT_TIPS "+75%%%% explosion radius\n+250%%%% projectile speed\n-70%%%% dmg vs buildings"
+#define ROBOT_TIPS "Increased Self Push Force\n+75%%%% explosion radius\n+250%%%% projectile speed\n-70%%%% dmg vs buildings"
 #define ROBOT_ON_DEATH "Reflect the bombs to counter attack!"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
@@ -171,7 +171,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	// TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "self dmg push force increased", 8.0);
+	TF2Attrib_SetByName(client, "self dmg push force increased", 14.0);
 	TF2Attrib_SetByName(client, "blast dmg to self increased", 3.0);
 	
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
