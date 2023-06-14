@@ -89,7 +89,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if (!(StrContains(classname, "tf_projectile_"))) // Any spawned projectile
 	{
-		RequestFrame(ProjectileSpawned, ConstructObject(entity));
+		RequestFrame(ProjectileSpawned, ConstructObject(entity).ref);
 	}
 }
 
@@ -102,9 +102,11 @@ public void OnEntityDestroyed(int entity)
 	}
 }
 
-void ProjectileSpawned(FObject proj)
+void ProjectileSpawned(int projRef)
 {
 	// If our projectile is somehow removed by this time, abort the function
+	FObject proj;
+	proj.ref = projRef;
 	if (!proj.Valid())
 		return;
 
