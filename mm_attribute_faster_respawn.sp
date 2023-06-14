@@ -12,7 +12,7 @@
 #include <stocksoup/var_strings>
 #include <berobot_constants>
 #include <berobot>
-
+#include <tf2utils>
 
 #if defined __stocksoup_tf_tempents_stocks_included
 #endinput
@@ -25,18 +25,35 @@
 
 public void OnPluginStart()
 {	
-	HookEvent("player_death", Event_Death, EventHookMode_Pre);
+
+	HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
 }
 
 
-float g_respawn_time = 0.0;
+float g_respawn_time;
 // int g_weapon_id = -1
+public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
+{
 
-// enum
-// {
-// 	NotWeaponSpecific,
-// 	WeaponSpecific
-// }
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	RequestFrame(CheckStat, client);
+
+
+	return Plugin_Continue;
+}
+
+
+void CheckStat(int client)
+{
+	if(HasStat(client))
+	{
+		TF2Util_GetPlayerRespawnTimeOverride(client);		
+		TF2Util_SetPlayerRespawnTimeOverride(client, g_respawn_time);
+	}else{
+		TF2Util_SetPlayerRespawnTimeOverride(client, -1.0);
+	}
+}
 
 bool HasStat(int client)
 {
@@ -46,35 +63,6 @@ bool HasStat(int client)
 	}
 	g_respawn_time = ReadFloatVar(stat_buffer, "respawn", 5.0);
 
-    //If killed by specific weapon ID
-    // g_weapon_id = ReadIntVar(stat_buffer, "weapon_id", -1);
-	// g_bmod_disciplinary = ReadIntVar(stat_buffer, "bmod-disciplinary", 0);
 	return true;
 	
-}
-
-public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-	// PrintToChat(victim,"You died as sentry buster");
-	if (HasStat(victim))
-	{
-		// PrintToChatAll("preparing respawn");
-		CreateTimer(g_respawn_time, Timer_Respawn, victim);
-	}
-	// int weaponid = GetEventInt(event, "weaponid");
-
-	// // int wepindex = GetEntProp(weaponid, Prop_Send, "m_iItemDefinitionIndex");
-	// PrintToChatAll("Weapon ID was %i", weaponid);
-	return Plugin_Continue;
-}
-
-public Action Timer_Respawn(Handle timer, any client)
-{
-	if (IsValidClient(client) && !IsPlayerAlive(client) && IsClientInGame(client))
-    {
-		// PrintToChatAll("Respawning");
-        TF2_RespawnPlayer(client);
-    }
-	return Plugin_Continue;
 }

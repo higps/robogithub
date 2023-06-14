@@ -4,8 +4,8 @@
 #define PLUGIN_VERSION "1.0.0"
 #define PLUGIN_URL "bmod.tf"
 
-#define RED 2
-#define BLUE 3
+#define RED 3
+#define BLUE 2
 #define SPECTATE 1
 #define UNASSIGNED 0
 

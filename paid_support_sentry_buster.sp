@@ -77,11 +77,11 @@ public OnMapStart()
 
 
 
-	// PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_01.wav");
-	// PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_02.wav");
-	// PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_03.wav");
-	// PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_04.wav");
-	// PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
+	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_01.wav");
+	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_02.wav");
+	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_03.wav");
+	PrecacheSound("^mvm/sentrybuster/mvm_sentrybuster_step_04.wav");
+	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 
 }
 
@@ -129,6 +129,8 @@ void MakeBuster(client)
 	int iAdditiveHP = iHealth - MaxHealth;
 	TF2_SetHealth(client, iHealth);
 
+	TF2CustAttr_SetString(client, "faster-respawn", "respawn=4.0");
+
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -153,8 +155,8 @@ void MakeBuster(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 
-	PrintToChat(client, "1. You are now Giant Sentry Buster!");
-	PrintHintText(client , "Touch sentries, taunt or hit enemies with the caber to explode");
+
+	PrintHintText(client , ROBOT_TIPS);
 
 	EmitGameSoundToAll("Announcer.MVM_Sentry_Buster_Alert");
 
@@ -219,6 +221,6 @@ stock void GiveGiantDemoKnight(int client)
 		}
 		TF2CustAttr_SetString(client, "Sentry Buster", "damage=2500.0 radius=250.0 lineofsight=1 timer=1.25");
 		
-		TF2CustAttr_SetString(client, "faster-respawn", "4.0");
+		
 	}
 }

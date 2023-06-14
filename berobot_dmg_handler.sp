@@ -201,7 +201,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 
         if(TF2_GetPlayerClass(client) == TFClass_Scout)
         {
-            TF2CustAttr_SetString(client, "faster-respawn", "4.0");
+            TF2CustAttr_SetString(client, "faster-respawn", "respawn=4.0");
         }
 
         // if(TF2_GetPlayerClass(client) == TFClass_Engineer)
@@ -1128,8 +1128,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (TF2_GetPlayerClass(client) == TFClass_Scout)
         {
 
-           
-            
+            // PrintToChatAll("Setting respawn stat");
+            TF2CustAttr_SetString(client, "faster-respawn", "respawn=4.0");
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Power: {orange}Greatly reduced respawn time\nAll weapons {orange}penetrate robots",chat_display);
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
             TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
