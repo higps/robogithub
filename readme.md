@@ -15,3 +15,5 @@ Vphysics: https://builds.limetech.io/?project=vphysics
 smlib: https://github.com/bcserv/smlib
 
 Toss buildings: https://github.com/DosMike/TF2-TossBuildings
+
+Ivory Library for attribute: https://github.com/Ivory42/ilib
