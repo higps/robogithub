@@ -18,8 +18,8 @@
 #define ROBOT_SUBCLASS "Support"
 #define ROBOT_DESCRIPTION "Warp to last target hit"
 #define ROBOT_COST 1.0
-#define ROBOT_TIPS "Infinite cloak\nStab enemies to gain shrink ability\nGain size back on kill"
-#define ROBOT_ON_DEATH "Warper warps wherever Warper wants"
+#define ROBOT_TIPS "Infinite cloak\nStore the location of a stabbed enemy to warp there later\nWarp with Special Attack key"
+#define ROBOT_ON_DEATH "Keep track of the location of Warper's last kill to ambush him after he warps\nPyros & liquids counter spies"
 
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
