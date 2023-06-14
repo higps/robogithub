@@ -56,6 +56,7 @@ enum //Convar names
     CV_g_RoboCap,
     CV_g_RoboTeamMode,
     CV_g_RoboMode,
+    CV_g_RoboStartTeam,
     CV_g_Enable,
     CV_g_AprilEnable,
     CV_PluginVersion
@@ -104,6 +105,7 @@ int g_RoboTeam;
 int g_HumanTeam;
 int g_RoboCap;
 int g_RoboTeamMode;
+int g_RoboStartTeam;
 int g_RoboMode;
 int g_iVotes;
 int g_iVotesNeeded;
@@ -161,6 +163,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
     g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
     g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Starts the mode when waiting for players is over, 1 = Start game by reaching enough volunteers");
+    g_cvCvarList[CV_g_RoboStartTeam] = CreateConVar("sm_robot_random_start_team", "1", "0 = Robots always start on blue, 1 = Robot team is randomly picked RED or BLUE, 2 = Robots Always starts on red");
 
     g_cvCvarList[CV_g_Rtr_precent] = CreateConVar("sm_mm_needed_rtr_ratio", "0.5", "The ratio of votes needed to start the mode with !rtr 1.0 = 100% 0.0 = 0%");
 
@@ -181,6 +184,7 @@ public void OnPluginStart()
     g_RoboCapTeam = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
     g_RoboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
     g_RoboTeamMode = GetConVarInt(g_cvCvarList[CV_g_RoboTeamMode]);
+    g_RoboStartTeam = GetConVarInt(g_cvCvarList[CV_g_RoboStartTeam]);
     g_RoboMode = GetConVarInt(g_cvCvarList[CV_g_RoboMode]);
     g_CV_flYoutuberMode = GetConVarInt(g_cvCvarList[CV_flYoutuberMode]);
     
@@ -196,6 +200,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboCapTeam].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboCap].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboTeamMode].AddChangeHook(CvarChangeHook);
+    g_cvCvarList[CV_g_RoboStartTeam].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboMode].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_Rtr_precent].AddChangeHook(CvarChangeHook);
 
@@ -1080,19 +1085,35 @@ public Action Command_YT_Robot_Start(int client, int args)
             
 
             //Randomly set which team is roboteam and humanteam
-            int RandomTeam = GetRandomInt(1, 2);
-        // PrintToChatAll("Randomteam was %i", RandomTeam);
-            if(RandomTeam == 1)
+            switch(g_RoboStartTeam)
             {
+                case 0://Robots starts as blue
+                {
+                    g_RoboTeam = BLUE;
+                    g_HumanTeam = RED;
+                }
+                case 1://Robots starts as random
+                {
+                    int RandomTeam = GetRandomInt(1, 2);
+                // PrintToChatAll("Randomteam was %i", RandomTeam);
+                    if(RandomTeam == 1)
+                    {
 
-                g_RoboTeam = BLUE;
-                g_HumanTeam = RED;
-            }
-            else
-            {
+                        g_RoboTeam = BLUE;
+                        g_HumanTeam = RED;
+                    }
+                    else
+                    {
 
-                g_RoboTeam = RED;
-                g_HumanTeam = BLUE;
+                        g_RoboTeam = RED;
+                        g_HumanTeam = BLUE;
+                    }
+                }
+                case 2://Robots starts as red
+                {
+                        g_RoboTeam = RED;
+                        g_HumanTeam = BLUE;
+                }
             }
 
 
@@ -2007,7 +2028,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
         int TargetHumans = RoundToFloor(float(CurrentRobots) * drobotcount.FloatValue) - CurrentRobots;
 
-        int MissingHumans = TargetHumans-CurrentHumans;
+        // int MissingHumans = TargetHumans-CurrentHumans;
         // int RobotOverflow = CurrentRobots-g_RoboCapTeam;
 
 //24 - 18 - 6 
