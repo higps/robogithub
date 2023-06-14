@@ -311,6 +311,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 bool IsValidRocket(int rocket)
 {
+	if (rocket == -1) return false;
+	
 	if (RocketOverride[rocket] && IsValidEntity(rocket) && rocket > MaxClients)
 		return true;
 

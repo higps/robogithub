@@ -62,16 +62,6 @@ stock float GetAngle(FRotator origin, FRotator target)
 	return RadToDeg(ArcCosine(Vector_DotProduct(aim, ang) / aim.Length(true)));
 }
 
-stock FVector operator+(FVector vec1, FVector vec2)
-{
-	FVector result;
-	result.x = vec1.x + vec2.x;
-	result.y = vec1.y + vec2.y;
-	result.z = vec1.z + vec2.z;
-
-	return result;
-}
-
 /*
 * Offsets the input vector by the given offset vector based on the given angle
 *

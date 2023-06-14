@@ -58,8 +58,8 @@ bool HasStat(int client, int weapon)
 	}
 
 	ReadStringVar(stat_buffer, "projectile-model", ProjectileModel[client], sizeof ProjectileModel[]);
-	FireDelay[client] = ReadFloatVar(stat_buffer, "projectile-firedelay");
-	ProjSpeed[client] = ReadFloatVar(stat_buffer, "projectile-speed");
+	FireDelay[client] = ReadFloatVar(stat_buffer, "projectile-firedelay", 1.0);
+	ProjSpeed[client] = ReadFloatVar(stat_buffer, "projectile-speed", 1110.0);
 
 	return true;
 }
