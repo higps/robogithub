@@ -8,6 +8,15 @@
 #define _ilib_entity_included
 
 /*
+* Entity class type
+*/
+enum EClassType
+{
+	ClassType_Name,			// Entity's internal classname		i.e - tf_projectile_rocket
+	ClassType_Networked		// Entity's networkable classname	i.e - CTFProjectile_Rocket
+};
+
+/*
 * Struct for storing entity references.
 * Can be used to perform most actions you would normally perform on entities.
 */
