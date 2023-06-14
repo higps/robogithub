@@ -231,7 +231,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if(damagecustom == TF_CUSTOM_SPELL_LIGHTNING)
 		{
 		// PrintToChatAll("damage before change %f", damage);	
-		// damage *= 0.1;
+		damage *= 0.1;
 		// PrintToChatAll("damage after change %f", damage);	
 		//critType = CritType_None;
 		// damageForce[0] == -10.0;
