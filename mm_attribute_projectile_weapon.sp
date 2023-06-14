@@ -7,6 +7,7 @@
 		Model = "projectile-model" - string
 		Fire rate = "projectile-firedelay" - float
 		Projectile speed = "projectile-speed" - float
+		Fire Sound - "projectile-firesound" - string
 */
 
 #pragma semicolon 1
@@ -39,6 +40,7 @@ FProjectile Projectile[2049];
 
 bool ProjectileLauncher[2049]; // Tags projectile as one that should fire more projectiles
 char ProjectileModel[MAXPLAYERS+1][128]; // Model to use for the projectile which will fire itself
+char ProjectileFireSound[MAXPLAYERS+1][128]; // Sound to use for projectiles being fired
 
 float FireDelay[MAXPLAYERS+1]; // Actual delay for the timer
 float ProjSpeed[MAXPLAYERS+1]; // Speed that projectiles should be fired at
@@ -58,8 +60,9 @@ bool HasStat(int client, int weapon)
 	}
 
 	ReadStringVar(stat_buffer, "projectile-model", ProjectileModel[client], sizeof ProjectileModel[]);
+	ReadStringVar(stat_buffer, "projectile-firesound", ProjectileFireSound[client], sizeof ProjectileFireSound[]);
 	FireDelay[client] = ReadFloatVar(stat_buffer, "projectile-firedelay", 1.0);
-	ProjSpeed[client] = ReadFloatVar(stat_buffer, "projectile-speed", 1110.0);
+	ProjSpeed[client] = ReadFloatVar(stat_buffer, "projectile-speed", 1100.0);
 
 	return true;
 }
@@ -79,13 +82,14 @@ public void OnClientPostAdminCheck(int client)
 {
 	//clear variables
 	FormatEx(ProjectileModel[client], sizeof ProjectileModel[], ""); // reset
+	FormatEx(ProjectileFireSound[client], sizeof ProjectileFireSound[], "");
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	if (!(StrContains(classname, "tf_projectile_"))) // Any spawned projectile
 	{
-		RequestFrame(ProjectileSpawned, entity);
+		RequestFrame(ProjectileSpawned, ConstructObject(entity));
 	}
 }
 
@@ -98,18 +102,17 @@ public void OnEntityDestroyed(int entity)
 	}
 }
 
-void ProjectileSpawned(int projId)
+void ProjectileSpawned(FObject proj)
 {
+	// If our projectile is somehow removed by this time, abort the function
+	if (!proj.Valid())
+		return;
+
 	FClient owner;
-	FObject proj, launcher;
-	proj = ConstructObject(projId);
+	FObject launcher;
+	int projId = proj.Get();
 	owner = CastToClient(proj.GetOwner());
 	launcher = proj.GetPropEnt(Prop_Send, "m_hLauncher");
-
-	// Let's check if this was launched by a launcher
-	//FProjectileLauncher launcher;
-	//if (ProjectileLaunched(proj, launcher))
-	//	SetProjectileProperties(proj, launcher);
 
 	if (owner.Valid())
 	{
@@ -136,35 +139,6 @@ void SetupProjectile(FObject entity, FProjectile proj, FClient owner)
 	ProjectileLauncher[projId] = true;
 	proj.NextFireTimer.Set(FireDelay[ownerId], false, true);
 
-	// Spawn our launcher to fire grenades from
-	/* Can't seem to get projectiles launched by a weapon mimic, so this won't work
-	proj.Launcher = FProjectileLauncher();
-	if (proj.Launcher.Valid())
-	{
-		// Set our parameters
-		proj.Launcher.Type = WeaponType_Grenade;
-		proj.Launcher.BaseSpeed = 1600.0;
-		proj.Launcher.Damage = 100.0;
-
-		// Let's setup the spawn parameters so it follows this grenade
-		FTransform spawn;
-
-		spawn.rotation = entity.GetAngles();
-		spawn.position = entity.GetPosition();
-
-		spawn.position.z += 5.0; // Shift slightly upwards
-
-		FinishSpawn(proj.Launcher.GetObject(), spawn);
-
-		// Now attach to this grenade
-		proj.Launcher.GetObject().SetParent(entity);
-
-		// Set the owner
-		proj.Launcher.GetObject().SetOwner(owner.GetObject());
-		proj.Launcher.GetObject().SetProp(Prop_Data, "m_iTeamNum", owner.GetTeam());
-	}
-	*/
-
 	// Cache the classname here so we don't have to call this every time we fire the projectiles
 	char classname[64];
 	entity.GetClassname(classname, sizeof classname);
@@ -186,11 +160,11 @@ public void OnGameFrame()
 	while ((entityId = FindEntityByClassname(entityId, "tf_projectile*")) != -1)
 	{
 		if (ProjectileLauncher[entityId])
-			OnProjectileTick(ConstructObject(entityId), Projectile[entityId]);
+			OnProjectileTick(ConstructObject(entityId), Projectile[entityId], CastToClient(ConstructObject(entityId).GetOwner()));
 	}
 }
 
-void OnProjectileTick(FObject entity, FProjectile proj)
+void OnProjectileTick(FObject entity, FProjectile proj, FClient owner)
 {
 	if (entity.Valid() && proj.NextFireTimer.Expired())
 	{
@@ -213,24 +187,20 @@ void OnProjectileTick(FObject entity, FProjectile proj)
 		spawn.velocity.Scale(proj.Speed);
 		FinishSpawn(child, spawn);
 
-		FObject launcher;
-		launcher = entity.GetPropEnt(Prop_Send, "m_hLauncher");
-		child.SetPropEnt(Prop_Send, "m_hLauncher", launcher);
-
-		child.SetProp(Prop_Send, "m_bCritical", entity.GetProp(Prop_Send, "m_bCritical"));
-
-		if (child.Cast("tf_projectile_pipe")) // Settings for pipes
+		// Play our fire sound
+		if (owner.Valid())
 		{
-			child.SetProp(Prop_Send, "m_bTouched", 1); // Don't detonate on impact
-			child.SetPropFloat(Prop_Send, "m_flDamage", entity.GetPropFloat(Prop_Send, "m_flDamage"));
-			child.SetPropFloat(Prop_Send, "m_DmgRadius", entity.GetPropFloat(Prop_Send, "m_DmgRadius"));
+			if (strlen(ProjectileFireSound[owner.Get()]) > 3)
+			{
+				EmitSoundToAll(ProjectileFireSound[owner.Get()], entity.Get());
+			}
 		}
-		else if (child.Cast("tf_projectile_rocket") || child.Cast("tf_projectile_energy_ball"))
-		{
-			// Damage on rockets is an unnamed property
-			int offset = FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected") + 4;
-			SetEntDataFloat(child.Get(), offset, GetEntDataFloat(entity.Get(), offset));
-		}
+
+		// Sets the launcher for this child projectile
+		SetProjectileLauncher(entity, child);
+
+		// Using safer methods for setting properties, also much cleaner than before
+		SetProjectileProperties(ABaseProjectile(entity), ABaseProjectile(child));
 
 		// Now let's set our owner, we do this after spawning to ensure we don't end up spawning an infinite amount of projectiles
 		DataPack pack = new DataPack();
@@ -239,6 +209,32 @@ void OnProjectileTick(FObject entity, FProjectile proj)
 		pack.WriteCellArray(child, sizeof FObject);
 		RequestFrame(OnChildPost, pack);
 	}
+}
+
+void SetProjectileProperties(ABaseProjectile parent, ABaseProjectile child)
+{
+	// If one of these casts fail, abort
+	if (!parent.Valid() || !child.Valid())
+		return;
+
+	// Set our properties for the newly spawned projectile
+	child.Critical = parent.Critical;
+	child.Damage = parent.Damage;
+	child.Team = parent.Team;
+}
+
+void SetProjectileLauncher(FObject entity, FObject child)
+{
+	FObject launcher;
+	launcher = entity.GetPropEnt(Prop_Send, "m_hLauncher");
+	// If this is invalid, try checking the original launcher in case of an airblast
+	if (!launcher.Valid())
+	{
+		launcher = entity.GetPropEnt(Prop_Send, "m_hOriginalLauncher");
+		child.SetPropEnt(Prop_Send, "m_hOriginalLauncher", launcher);
+	}
+	else // otherwise set our launcher
+		child.SetPropEnt(Prop_Send, "m_hLauncher", launcher);
 }
 
 void OnChildPost(DataPack pack)
