@@ -450,7 +450,7 @@ TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "head scale", 0.5);
 	UpdatePlayerHitbox(client,scale);
-	
+	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=1.0 stomp-damage=500");
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
@@ -507,33 +507,33 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	
 //VSH CODE
 
-public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor,
-		float &damage, int &damagetype, int &weapon, float damageForce[3],
-		float damagePosition[3], int damagecustom, CritType &critType)
-{
-	if(!IsValidClient(victim))
-	return Plugin_Continue;    
+// public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor,
+// 		float &damage, int &damagetype, int &weapon, float damageForce[3],
+// 		float damagePosition[3], int damagecustom, CritType &critType)
+// {
+// 	if(!IsValidClient(victim))
+// 	return Plugin_Continue;    
 
-	if(!IsValidClient(attacker))
-	{
+// 	if(!IsValidClient(attacker))
+// 	{
 
-		if(IsRobot(victim, ROBOT_NAME) && damagetype == DMG_FALL)
-		{
-			// PrintToChatAll("Taking regular fall damage %N", victim);
-			damage *= 0.0;
-			return Plugin_Changed;
-		}
-	}else
-	{
-		if(IsRobot(attacker, ROBOT_NAME) && damagetype == DMG_FALL)
-		{
-			// PrintToChatAll("Else attacker was %N", attacker);
-			// PrintToChatAll("Else vicitm was %N", victim);
-			damage *= 0.25;
-			return Plugin_Changed;
-		}
-	}
-}
+// 		if(IsRobot(victim, ROBOT_NAME) && damagetype == DMG_FALL)
+// 		{
+// 			// PrintToChatAll("Taking regular fall damage %N", victim);
+// 			damage *= 0.0;
+// 			return Plugin_Changed;
+// 		}
+// 	}else
+// 	{
+// 		if(IsRobot(attacker, ROBOT_NAME) && damagetype == DMG_FALL)
+// 		{
+// 			// PrintToChatAll("Else attacker was %N", attacker);
+// 			// PrintToChatAll("Else vicitm was %N", victim);
+// 			damage *= 0.25;
+// 			return Plugin_Changed;
+// 		}
+// 	}
+// }
 
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {

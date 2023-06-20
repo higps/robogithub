@@ -195,7 +195,7 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "increase buff duration", 0.5);
 			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.65);
 			TF2Attrib_SetByName(Weapon1, "slow enemy on hit", 0.0);
-			// TF2Attrib_SetByName(Weapon1, "damage penalty", 1.0);
+			TF2Attrib_SetByName(Weapon1, "damage penalty", 1.0);
 			
 			
 			TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 1.0);

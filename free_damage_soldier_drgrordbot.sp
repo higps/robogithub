@@ -228,7 +228,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		// PrintToChatAll("Attacker was %N , victim was %N weapon was %i", attacker, victim, weapon);
 		// PrintToChatAll("damagecustom was %i , damage type was %i", damagecustom, damagetype);
 
-		if(damagecustom == TF_CUSTOM_SPELL_LIGHTNING)
+		if(IsRobot(attacker,ROBOT_NAME) && damagecustom == TF_CUSTOM_SPELL_LIGHTNING)
 		{
 		// PrintToChatAll("damage before change %f", damage);	
 		damage *= 0.1;

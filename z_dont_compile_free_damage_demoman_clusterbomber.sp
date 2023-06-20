@@ -11,7 +11,7 @@
 #include <sdktools>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Carpet Bomber"
+#define ROBOT_NAME	"Cluster Bomber"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
@@ -158,12 +158,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	//	CreateNative("BeGiantDemoKnight_MakeDemoKnight", Native_SetGiantDemoKnight);
 	//	CreateNative("BeGiantDemoKnight_IsGiantDemoKnight", Native_IsGiantDemoKnight);
 	return APLRes_Success;
-}
-
-public OnMapStart()
-{
-
-
 }
 
 public Action:SetModel(client, const String:model[])

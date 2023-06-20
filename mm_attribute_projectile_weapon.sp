@@ -194,6 +194,7 @@ void OnProjectileTick(FObject entity, FProjectile proj, FClient owner)
 		{
 			if (strlen(ProjectileFireSound[owner.Get()]) > 3)
 			{
+				PrecacheSound(ProjectileFireSound[owner.Get()]);
 				EmitSoundToAll(ProjectileFireSound[owner.Get()], entity.Get());
 			}
 		}

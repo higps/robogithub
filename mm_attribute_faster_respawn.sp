@@ -60,6 +60,7 @@ bool HasStat(int client)
 	char stat_buffer[256];
 	if (!TF2CustAttr_GetString(client, "faster-respawn", stat_buffer, sizeof(stat_buffer))) {
 		return false;
+
 	}
 	g_respawn_time = ReadFloatVar(stat_buffer, "respawn", 5.0);
 

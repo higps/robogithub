@@ -9,15 +9,15 @@
 #include <vphysics>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Grenadier"
+#define ROBOT_NAME	"MacBlaster"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Grenade Launcher Launcher"
-#define ROBOT_STATS "Shoots grenade launchers"
+#define ROBOT_STATS "Shoots Grenade launchers"
 #define ROBOT_ON_DEATH "Don't get hit"
 #define ROBOT_COST 2.0
-#define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
+#define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
@@ -120,7 +120,6 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -143,9 +142,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	GiveGiantDemoKnight(client);
 }
 
-#define Specs 522
-#define SpaceMann 30646
-#define SubZeroSuit 30305
+#define Valhalla 30586
+#define BlindJustice 1019
+
 stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
@@ -161,8 +160,8 @@ stock GiveGiantDemoKnight(client)
 		// CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 207, 6, 1, 2, 241);
 
 
-		// CreateRoboHat(client, Specs, 10, 6, 0.0, 1.25, -1.0); 
-		// CreateRoboHat(client, SpaceMann, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, Valhalla, 10, 6, 0.0, 0.75, -1.0); 
+		CreateRoboHat(client, BlindJustice, 10, 6, 0.0, 0.8, -1.0); 
 		// CreateRoboHat(client, SubZeroSuit, 10, 6, 0.0, 0.75, -1.0); 
 
 		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 206, 6, 1, 2, 0);
@@ -171,9 +170,19 @@ stock GiveGiantDemoKnight(client)
 		if(IsValidEntity(Weapon1))
 		{
 			
-			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
+			// TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.25);		
+			//TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.25);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
+			//TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 1.5);
+			
+			// TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2CustAttr_SetString(Weapon1, "projectile-fire-self", "projectile-firedelay=0.2 projectile-speed=1110.0 projectile-model=models/weapons/c_models/c_grenadelauncher/c_grenadelauncher.mdl");
+			TF2CustAttr_SetString(Weapon1, "projectile-fire-self", "projectile-firedelay=0.1 projectile-speed=1110.0 projectile-model=models/weapons/c_models/c_grenadelauncher/c_grenadelauncher.mdl projectile-firesound=weapons/grenade_launcher_shoot.wav");
 			// SetEntityRenderColor(Weapon1, 50,205,50,155);
 			// //SetEntityRenderFx(Weapon1, RENDERFX_HOLOGRAM);
 			// SetEntityRenderMode(Weapon1, RENDER_TRANSTEXTURE);
