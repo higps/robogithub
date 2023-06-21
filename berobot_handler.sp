@@ -2039,9 +2039,9 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         //PrintToChatAll("Current Robots: %i\nTarget Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", CurrentRobots, TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
         // PrintCenterTextAll("Target Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
 
-
-        //g_f_Damage_Bonus = float(TargetHumans)/float(CurrentHumans);
-        g_f_Damage_Bonus = Logarithm(float(TargetHumans)/float(CurrentHumans), float(CurrentHumans));
+        // PrintToChatAll("Missing humans: %i", MissingHumans);
+        g_f_Damage_Bonus = float(TargetHumans)/float(CurrentHumans);
+        // g_f_Damage_Bonus = Logarithm(float(TargetHumans)/float(CurrentHumans), float(CurrentHumans)) + 1.0;
         
         if (g_f_previous_dmg_bonus != g_f_Damage_Bonus)
         {

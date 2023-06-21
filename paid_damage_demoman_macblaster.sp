@@ -16,7 +16,7 @@
 #define ROBOT_DESCRIPTION "Grenade Launcher Launcher"
 #define ROBOT_STATS "Shoots Grenade launchers"
 #define ROBOT_ON_DEATH "Reflect or shortcircuit the grenade launchers"
-#define ROBOT_COST 2.0
+#define ROBOT_COST 1.0
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -172,17 +172,17 @@ stock GiveGiantDemoKnight(client)
 			
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			// TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.25);		
-			//TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.25);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);
+			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 1.35);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "fuse bonus", 2.5);
+			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.9);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 1.5);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 1.25);
 			
 			// TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2CustAttr_SetString(Weapon1, "projectile-fire-self", "projectile-firedelay=0.4 projectile-speed=1110.0 projectile-model=models/weapons/c_models/c_grenadelauncher/c_grenadelauncher.mdl projectile-firesound=weapons/grenade_launcher_shoot.wav");
+			TF2CustAttr_SetString(Weapon1, "projectile-fire-self", "projectile-firedelay=0.6 projectile-speed=1110.0 projectile-model=models/weapons/c_models/c_grenadelauncher/c_grenadelauncher.mdl projectile-firesound=weapons/grenade_launcher_shoot.wav");
 			// SetEntityRenderColor(Weapon1, 50,205,50,155);
 			// //SetEntityRenderFx(Weapon1, RENDERFX_HOLOGRAM);
 			// SetEntityRenderMode(Weapon1, RENDER_TRANSTEXTURE);

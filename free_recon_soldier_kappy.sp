@@ -10,11 +10,11 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Kappy"
-#define ROBOT_ROLE "Support"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Recon"
-#define ROBOT_DESCRIPTION "Recon Remote Rocket"
-#define ROBOT_TIPS "Activate Remote Control by pressing M2\nChange camera mode with +attack3 or +use"
+#define ROBOT_SUBCLASS "Rocket"
+#define ROBOT_DESCRIPTION "Remote Rocket"
+#define ROBOT_TIPS "Activate Remote Control by pressing M2\nChange camera mode with +attack3 or +use\nBuff Banner allows you to control more than one rockets at a time."
 #define ROBOT_ON_DEATH "Kappy's rockets take a while to travel\nOut-heal his damage to make him less effective"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -184,13 +184,14 @@ stock GiveGiantPyro(client)
 		}
 
 		CreateRoboWeapon(client, "tf_weapon_buff_item", 129, 6, 1, 1, 0);
-				int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "increase buff duration", 2.0);
 			TF2CustAttr_SetString(Weapon2, "custom buff type", "rocket-aiming-control");
-			TF2CustAttr_SetString(Weapon2, "rocket control buff turn rate", "0.9");
+			TF2CustAttr_SetString(Weapon2, "rocket control buff turn rate", "0.045");
 		}
 
 
