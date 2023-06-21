@@ -16,6 +16,7 @@
 #define ROBOT_DESCRIPTION "Remote Rocket"
 #define ROBOT_TIPS "Activate Remote Control by pressing M2\nChange camera mode with +attack3 or +use\nBuff Banner allows you to control more than one rockets at a time."
 #define ROBOT_ON_DEATH "Kappy's rockets take a while to travel\nOut-heal his damage to make him less effective"
+#define ROBOT_COST 1.25
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -221,20 +222,22 @@ public void OnPluginStart()
 
     //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 
-    RobotDefinition robot;
-    robot.name = ROBOT_NAME;
-    robot.role = ROBOT_ROLE;
-    robot.class = ROBOT_CLASS;
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
 	robot.subclass = ROBOT_SUBCLASS;
-    robot.shortDescription = ROBOT_DESCRIPTION;
-    robot.sounds.spawn = SPAWN;
-    robot.sounds.loop = LOOP;
-    robot.sounds.death = DEATH;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-	robot.sounds.gunfire = GUNFIRE;
-	robot.sounds.gunfire_crit = GUNFIRE_CRIT;
-	robot.weaponsound = ROBOT_WEAPON_SOUND_ROCKETLAUNCHER;
-    AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
+
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
+
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
 
 
 }

@@ -184,7 +184,7 @@ stock GiveGRageH(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-				CreateRoboWeapon(client, "tf_weapon_minigun", 850, 6, 1, 0, 0);
+		CreateRoboWeapon(client, "tf_weapon_minigun", 850, 6, 1, 0, 0);
 		
 		// CreateRoboHat(client, Hat1, 10, 6, 0.75, 1.0, -1.0); 
 		CreateRoboHat(client, Starboard, 10, 6, 0.0, 0.75, -1.0); 

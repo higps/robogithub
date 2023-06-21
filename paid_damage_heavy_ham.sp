@@ -7,11 +7,11 @@
 #include <tf_custom_attributes>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Shield-Heavy"
+#define ROBOT_NAME	"Ham"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
-#define ROBOT_DESCRIPTION "Shield"
+#define ROBOT_DESCRIPTION "MvM Shield"
 #define ROBOT_COST 6.0
 #define ROBOT_ON_DEATH "Use arrows or fire to shoot through the shield"
 #define ROBOT_TIPS "Use taunt to activate the shield"

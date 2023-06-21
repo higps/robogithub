@@ -100,7 +100,7 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 3000;
+	int iHealth = 3500;
 	int MaxHealth = 175;
 	
 	int iAdditiveHP = iHealth - MaxHealth;

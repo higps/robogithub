@@ -16,7 +16,7 @@
 #define ROBOT_DESCRIPTION "Grenade Launcher Launcher"
 #define ROBOT_STATS "Shoots Grenade launchers"
 #define ROBOT_ON_DEATH "Reflect or shortcircuit the grenade launchers"
-#define ROBOT_COST 1.0
+#define ROBOT_COST 4.0
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -98,7 +98,7 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 3000;
+	int iHealth = 4000;
 	int MaxHealth = 175;
 	
 	int iAdditiveHP = iHealth - MaxHealth;
@@ -111,7 +111,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
