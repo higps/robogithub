@@ -146,7 +146,7 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 
-	
+	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=50.0 stomp-damage=500");
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	//
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);

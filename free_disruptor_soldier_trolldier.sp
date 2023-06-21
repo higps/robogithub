@@ -6,7 +6,6 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
-//#include <tf_ontakedamage>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Tone Technician"
@@ -15,6 +14,7 @@
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Rocket Jumper, Market Gardner"
 #define ROBOT_ON_DEATH "Blast jumpers can be countered heavily by the Reserve Shooter"
+#define ROBOT_TIPS "Market gardening sends you flying in reverse\nYou generate addotional resources on death for your team\nYou can rocket jump"
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -161,9 +161,9 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=0.0 stomp-damage=500");
+	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=10.0 stomp-damage=500");
 
-	PrintHintText(client , "You generate addotional resources on death for your team\nYou can rocket jump");
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 
@@ -218,11 +218,11 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon1))
 		{
 			// TF2Attrib_SetByName(Weapon1, "damage penalty", 0.75);
-			TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.5);
+			TF2Attrib_SetByName(Weapon1, "clip size bonus", 3.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 5.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);			
-			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);	
+			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 2.0);	
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 		// if(IsValidEntity(Weapon2))

@@ -34,9 +34,9 @@ int damagecustom, CritType &critType)
 	{
 		if(IsValidClient(attacker))
 		{
-			if(ActiveHasStatWeapon(weapon))
+			if(ActiveHasStatWeapon(weapon) && TF2_IsPlayerInCondition(attacker, TFCond_BlastJumping))
 			{
-				PrintToChatAll("HIT!");
+				// PrintToChatAll("HIT!");
 				int client = attacker;
 				float vOrigin[3], vAngles[3], vForward[3], vVelocity[3];
 				GetClientEyePosition(client, vOrigin);
@@ -46,9 +46,10 @@ int damagecustom, CritType &critType)
 				GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
 				
 				// make it usable
-				float flDistance = -800.0;
-
+				float flDistance = -1000.0;
+				// PrintToChatAll("0: %f1: %f 2: %f",vForward[0],vForward[1],vForward[2]);
 				ScaleVector(vForward, flDistance);	
+				// PrintToChatAll("0: %f1: %f 2: %f",vForward[0],vForward[1],vForward[2]);
 				
 				// add it to the current velocity to avoid just being able to do full 180s
 				GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVelocity);

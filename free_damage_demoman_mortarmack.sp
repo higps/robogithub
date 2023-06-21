@@ -173,7 +173,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
+	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -230,7 +230,7 @@ stock GiveGiantDemoKnight(client)
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 3.5);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 4.5);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.7);
 			// TF2Attrib_SetByName(Weapon1, "projectile speed increased", 1.15);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
@@ -239,6 +239,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 10.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.4);
+			TF2Attrib_SetByName(Weapon1, "rocket jump damage reduction", 0.05);
 			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.75);
 			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
 			// TF2Attrib_SetByName(Weapon1, "grenade no spin", 0.0);

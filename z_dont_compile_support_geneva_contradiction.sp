@@ -10,7 +10,7 @@
 #define ROBOT_NAME	"Geneva Contradiction"
 #define ROBOT_ROLE "Support"
 #define ROBOT_DESCRIPTION "Syringe Gun AOE Heal"
- 
+#define ROBOT_ON_DEATH "BLAH BLAH"
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -105,16 +105,16 @@ MakeGiantMedic(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.75);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	
-	TF2Attrib_SetByName(client, "health regen", 20.0);
+	TF2Attrib_SetByName(client, "ammo regen", 100.0);
+	TF2Attrib_SetByName(client, "heal rate bonus", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.75);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
@@ -123,7 +123,7 @@ MakeGiantMedic(client)
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	TF2_AddCondition(client, TFCond_RadiusHealOnDamage);
+
 	PrintHintText(client, "%s", ROBOT_DESCRIPTION);
 }
 
@@ -154,7 +154,11 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	if (IsValidClient(client))
 			GiveGiantMedic(client);
 }
- 
+
+#define QuadWrangler 769
+#define ScrapPack 754
+#define VictorianVillany 31300
+
 stock GiveGiantMedic(client)
 {
 	if (IsValidClient(client))
@@ -165,13 +169,24 @@ stock GiveGiantMedic(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		CreateRoboWeapon(client, "tf_weapon_syringegun_medic", 17, 6, 1, 0, 0);
+		CreateRoboWeapon(client, "tf_weapon_syringegun_medic", 412, 6, 1, 0, 0);
 		//CreateRoboWeapon(client, "tf_wearable_demoshield", 131, 6, 1, 1, 0);
 		// CreateRoboWeapon(client, "tf_weapon_bonesaw", 8, 6, 1, 2, 0);
+		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		float TeamPaint = 0.0;
 
-		CreateRoboHat(client, 30109, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, 30098, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, 30149, 10, 6, 0.0, 1.0, -1.0);
+		if (iTeam == TFTeam_Blue){
+			TeamPaint = 5801378.0;
+			
+		}
+		if (iTeam == TFTeam_Red){
+			
+			TeamPaint = 12073019.0;
+		}
+
+		CreateRoboHat(client, QuadWrangler, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, ScrapPack, 10, 6, 0.0, 10.0, -1.0); 
+		CreateRoboHat(client, VictorianVillany, 10, 6, TeamPaint, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -180,14 +195,13 @@ stock GiveGiantMedic(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.25);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
 			TF2Attrib_SetByName(Weapon1, "clip size bonus upgrade", 2.0);
-			TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.0);
+			// TF2Attrib_SetByName(Weapon1, "mad milk syringes", 1.0);
 			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.75);	
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);	
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);	
 			
 			
 			//TF2Attrib_SetByName(Weapon1, "heal on kill", 200.0);
@@ -275,10 +289,10 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
 if (IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
 	{
-		if (IsSyringeGun(weapon))
+		if (IsRobot(attacker, ROBOT_NAME))
 		{
-			TF2_AddCondition(attacker, TFCond_RadiusHealOnDamage);
-			TF2_AddCondition(victim, TFCond_Milked, 15.0);
+			TF2_AddCondition(attacker, TFCond_RadiusHealOnDamage, 10.0);
+			// TF2_AddCondition(victim, TFCond_Milked, 15.0);
 		}
 	}
 }

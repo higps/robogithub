@@ -176,7 +176,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
+	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 3.0);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -226,14 +226,14 @@ stock GiveGiantSoldier(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 37.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.4);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.35);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 5.5);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.7);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 6.0);
 			TF2Attrib_SetByName(Weapon1, "auto fires when full", 1.0);
-			TF2Attrib_SetByName(Weapon1, "rocket jump damage reduction", 0.2);
+			TF2Attrib_SetByName(Weapon1, "rocket jump damage reduction", 0.05);
 			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}

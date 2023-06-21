@@ -221,7 +221,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);	
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
-			TF2CustAttr_SetString(Weapon1, "knockback modifier", "3.0");
+			TF2CustAttr_SetString(Weapon1, "knockback modifier", "5.0");
 			
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}

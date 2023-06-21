@@ -115,7 +115,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
+	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
@@ -175,13 +175,24 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.5);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.7);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.2);
-			TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-
+			// TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.2);
+			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2CustAttr_SetString(Weapon1, "mouse-control-rocket", "aim-mode=1 turnspeed=125.0");
 			// TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "4.0");
 			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		}
+
+		CreateRoboWeapon(client, "tf_weapon_buff_item", 129, 6, 1, 1, 0);
+				int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		if(IsValidEntity(Weapon2))
+		{
+			TF2Attrib_RemoveAll(Weapon2);
+			TF2Attrib_SetByName(Weapon2, "increase buff duration", 2.0);
+			TF2CustAttr_SetString(Weapon2, "custom buff type", "rocket-aiming-control");
+			TF2CustAttr_SetString(Weapon2, "rocket control buff turn rate", "0.9");
+		}
+
 
 		RoboCorrectClipSize(Weapon1);
 

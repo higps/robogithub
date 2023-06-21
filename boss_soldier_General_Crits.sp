@@ -208,7 +208,8 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.65);
 	TF2Attrib_SetByName(client, "hand scale", 1.3);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
+	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
+	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	// TF2Attrib_SetByName(client, "head scale", 0.75);
 	UpdatePlayerHitbox(client, scale);
 	

@@ -225,7 +225,7 @@ MakeDemoKnight(client)
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
-	
+	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
 	

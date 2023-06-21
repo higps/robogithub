@@ -267,7 +267,7 @@ bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_duration = 5.0;
 float FireModeTimer = -1.0;
 float g_skill; 
-float g_skill_cooldown = 3000.0;
+float g_skill_cooldown = 2000.0;
 // float g_skill_time;
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -348,7 +348,7 @@ void DrawHUD(int client)
 				TF2_AddCondition(client, TFCond_HalloweenQuickHeal, g_duration);
 				TF2Attrib_AddCustomPlayerAttribute(client, "healing received bonus", 4.0, g_duration);
 				TF2Attrib_AddCustomPlayerAttribute(client, "mod weapon blocks healing", 1.0, g_duration);
-				TF2Attrib_AddCustomPlayerAttribute(client, "move speed penalty", 0.75);
+				TF2Attrib_AddCustomPlayerAttribute(client, "move speed penalty", 0.9);
 				g_DamageDone = 0.0;
 			}
 		}

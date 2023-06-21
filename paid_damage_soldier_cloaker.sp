@@ -200,7 +200,7 @@ MakeGiantSoldier(client)
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "increased air control", 2.0);
-	
+	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 
 	//TF2Attrib_SetByName(client, "blast_dmg_to_self", 0.1);

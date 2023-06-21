@@ -6,8 +6,8 @@
 #include <tf_ontakedamage>
 
 
-float g_fall_damage_taken = 1.0;
-float g_stomp_damage_given = 1.0;
+float g_fall_damage_taken;
+float g_stomp_damage_given;
 int g_use_static_value_on_dmg;
 int g_use_static_value_on_stomp_dmg;
 

@@ -171,7 +171,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
+	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	TF2Attrib_SetByName(client, "increase buff duration", 2.5);

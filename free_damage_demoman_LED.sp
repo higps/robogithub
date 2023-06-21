@@ -11,8 +11,8 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
-#define ROBOT_DESCRIPTION "Increased Knockback + Larger blast"
-#define ROBOT_TIPS "Grenades have 35%%%% faster projectile speed, larger explosion and knockback"
+#define ROBOT_DESCRIPTION "Rapid Grenade Launcher"
+#define ROBOT_TIPS "Grenades have 40%%%% faster projectile speed, 25%%%% faster firing speed"
 #define ROBOT_ON_DEATH "LED's grenades have more knockback & bigger blast\nDelete them with Short Circuit or airblast them back"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
@@ -171,7 +171,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
+	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -229,17 +229,17 @@ stock GiveGiantDemoKnight(client)
 			//TF2Attrib_RemoveAll(Weapon1);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
-			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.35);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 2.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);
-			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.35);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
+			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 6.0);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
+			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.4);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.4);
-			// TF2Attrib_SetByName(Weapon1, "mod max primary clip override", 10.0);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
+			
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
 			// TF2Attrib_SetByName(Weapon1, "mod use metal ammo type", 1.0);
 			
-			TF2CustAttr_SetString(Weapon1, "knockback modifier", "2.5");
 			// TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=1500.0 homing_mode=0 projectilename=tf_projectile_pipe");
 
 			

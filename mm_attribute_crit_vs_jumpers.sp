@@ -4,10 +4,14 @@
 #include <berobot>
 #include <sdkhooks>
 #include <tf_ontakedamage>
+#include <tf2_stocks>
 
+float g_dmg;
+int g_critType;
 
-float g_dmg = 1.0;
-int g_critType = 2;
+#define NOCRIT 538968064
+#define IS_CRIT 540016640
+
 
 bool ActiveHasStatWeapon(int iActiveWeapon)
 {
@@ -18,7 +22,7 @@ bool ActiveHasStatWeapon(int iActiveWeapon)
 	if (!TF2CustAttr_GetString(iActiveWeapon, "dmg-crit-vs-jumping-robots", stat_buffer, sizeof(stat_buffer))) {
 		return false;
 	}
-	g_dmg = ReadFloatVar(stat_buffer, "damage", 1.0);
+	g_dmg = ReadFloatVar(stat_buffer, "damage", 1.15);
 	g_critType = ReadIntVar(stat_buffer, "critType", 1);
 	// PrintToChatAll("HAS STATS");
 	return true;
@@ -37,12 +41,26 @@ int damagecustom, CritType &critType)
 			{
 				int IsJumping = GetEntProp(victim, Prop_Send, "m_bJumping");
 
-				if (IsJumping)
+				// PrintToChatAll("critype: %i g_crittype: %i damagetype: %i", critType, view_as<CritType>(g_critType), damagetype);
+				if (IsJumping || TF2_IsPlayerInCondition(victim, TFCond_BlastJumping))
 				{
-				// PrintToChatAll("CORRECT WEP");
-				damage *= g_dmg;
-				if(g_critType != 0)critType = g_critType;
-				return Plugin_Changed;
+					damage *= g_dmg;
+					if (g_critType > 0)
+					{
+					switch(damagetype)
+						{
+							case NOCRIT:
+							{
+								critType = view_as<CritType>(g_critType);
+							}
+							case IS_CRIT:
+							{
+								critType = CritType_Crit;
+							}
+
+						}
+					}				
+					return Plugin_Changed;
 				}
 			}
 		}

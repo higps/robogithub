@@ -119,6 +119,8 @@ MakeToofty(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
+
+	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=50.0 stomp-damage=500");
 	
 	UpdatePlayerHitbox(client, 1.75);
 
@@ -170,11 +172,11 @@ stock GiveGiantToofty(client)
 		if(IsValidEntity(Weapon1))
 		{
 
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.85);
+			// TF2Attrib_SetByName(Weapon1, "damage penalty", 0.85);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.35);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);			
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.65);			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);	
 		
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);

@@ -169,7 +169,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-
+	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -247,7 +247,7 @@ stock GiveGiantDemoKnight(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			// TF2Attrib_SetByName(Weapon1, "damage penalty", 0.8);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);
 			TF2Attrib_SetByName(Weapon1, "clip size bonus", 1.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
