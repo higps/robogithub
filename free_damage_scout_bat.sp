@@ -130,7 +130,7 @@ MakeGiantscout(client)
 	// PrintToChatAll("iHealth %i", iHealth);
 	
 	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	float scale = 1.75
+	float scale = 1.75;
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
