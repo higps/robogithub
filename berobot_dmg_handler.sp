@@ -802,7 +802,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                         {
                             // PrintToChatAll("RAGE %f: Draining %i", rage, ragedraining);
 
-                            SetEntPropFloat(victim, Prop_Send, "m_flRageMeter", currentrage - electric_rage_reduction);
+                            SetEntPropFloat(victim, Prop_Send, "m_flRageMeter", currentrage - g_electric_rage_reduction);
                         }
                         
                     }

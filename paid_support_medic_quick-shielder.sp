@@ -14,7 +14,7 @@
 #define ROBOT_DESCRIPTION "Quickfix + MvM Shield"
 #define ROBOT_TIPS "Protect your team or help them push with your shield"
 #define ROBOT_COST 6.0
-#define ROBOT_ON_DEATH "This robot has no other way to defend itself than with the shield\nSeparate this robot from his team and rush him down"
+#define ROBOT_ON_DEATH "This robot has no other way to defend itself than with the shield\nElectric weapons shortens the shield duration"
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"

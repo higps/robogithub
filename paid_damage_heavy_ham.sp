@@ -13,7 +13,7 @@
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "MvM Shield"
 #define ROBOT_COST 6.0
-#define ROBOT_ON_DEATH "Use arrows or fire to shoot through the shield"
+#define ROBOT_ON_DEATH "Use arrows or fire to shoot through the shield\nElectric weapons shortens the shield duration"
 #define ROBOT_TIPS "Use taunt to activate the shield"
 
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"

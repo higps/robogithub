@@ -176,13 +176,13 @@ stock GiveGiantToofty(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.35);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.65);			
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);			
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);	
 		
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
 						
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2CustAttr_SetString(client, "projectile-size", "size=1.75 update-hitbox=1");
+			// TF2CustAttr_SetString(client, "projectile-size", "size=1.75 update-hitbox=1");
 		}
 		
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
