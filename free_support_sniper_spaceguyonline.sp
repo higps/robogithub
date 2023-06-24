@@ -201,7 +201,7 @@ stock GiveBigRoboJbird(client)
 			// TF2Attrib_SetByName(SniperRifle, "heal on hit for rapidfire", 15.0);
 			TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
 			// TF2CustAttr_SetString(SniperRifle, "knockback modifier", "4.0");
-			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
+			
 			
 			
 		}

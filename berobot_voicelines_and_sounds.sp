@@ -194,14 +194,14 @@ static const char RegularBotSteps[][256] =
 
 static const char GiantCommonBotSteps[][256] =
 {
-    "mvm/giant_common/giant_common_step_01.wav",
-    "mvm/giant_common/giant_common_step_02.wav",
-    "mvm/giant_common/giant_common_step_03.wav",
-    "mvm/giant_common/giant_common_step_04.wav",
-    "mvm/giant_common/giant_common_step_05.wav",
-    "mvm/giant_common/giant_common_step_06.wav",
-    "mvm/giant_common/giant_common_step_07.wav",
-    "mvm/giant_common/giant_common_step_08.wav"
+    ")mvm/giant_common/giant_common_step_01.wav",
+    ")mvm/giant_common/giant_common_step_02.wav",
+    ")mvm/giant_common/giant_common_step_03.wav",
+    ")mvm/giant_common/giant_common_step_04.wav",
+    ")mvm/giant_common/giant_common_step_05.wav",
+    ")mvm/giant_common/giant_common_step_06.wav",
+    ")mvm/giant_common/giant_common_step_07.wav",
+    ")mvm/giant_common/giant_common_step_08.wav"
 };
 
 
@@ -475,7 +475,7 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
             int rand = GetRandomInt(1,18);
             Format(sample, sizeof(sample), "mvm/player/footsteps/robostep_%s%i.wav", (rand < 10) ? "0" : "", rand);
 			pitch = GetRandomInt(95, 100);
-			EmitSoundToAll(sample, entity, _, _, _, 1.0, pitch);
+			EmitSoundToAll(sample, entity, _, _, _, 0.5, pitch);
 			return Plugin_Changed;
         }
         else if (robot.footstep == ROBOT_FOOTSTEP_GIANTCOMMON)
@@ -504,8 +504,9 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
                 int rand = GetRandomInt(1,8);
                 Format(sample, sizeof(sample), "mvm/giant_common/giant_common_step_%s%i.wav", (rand < 10) ? "0" : "", rand);
                 pitch = GetRandomInt(70, 85);
-                EmitSoundToAll(sample, entity, _, _, _, 1.0, pitch);
+                EmitSoundToAll(sample, entity, _, _, _, 0.3, pitch);
                 return Plugin_Changed;
+                
             // }
 
         }

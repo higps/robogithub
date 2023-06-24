@@ -200,7 +200,7 @@ stock GiveBigRoboJbird(client)
 
 			
 			
-			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
+			
 		}
 
 	// if(IsValidEntity(SMG))

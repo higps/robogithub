@@ -93,6 +93,8 @@ float g_kgb_crit_combo_duration = 6.0;
 
 float g_protection_rune_duration = 1.0;
 
+float g_electric_rage_reduction = 5.0;
+
 float g_HumanMiniGunDmGPenalty = 0.8;
 
 #define SPY_ROBOT_STAB	"weapons/saxxy_impact_gen_01.wav"
@@ -214,6 +216,24 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     //     }
     //     return Plugin_Continue;
     // }
+        if (damagecustom == TF_CUSTOM_PLASMA)
+        {
+            // PrintToChatAll("PLASMA");
+            if(TF2_GetPlayerClass(attacker) == TFClass_Heavy || TF2_GetPlayerClass(attacker) == TFClass_Medic){
+                // PrintToChatAll("For heavy or medic TF_CUSTOM_PLASMA dmg was %f", damage);
+                damage = 0.0;
+                
+                // PrintToChatAll("%f", GetEntPropFloat(attacker, Prop_Send, "m_flRageMeter"));
+                return Plugin_Changed;
+                
+                
+            }
+        }
+
+        // if (IsElectric(weapon))
+        // {
+        //     PrintToChatAll("WAS ELECTRIC");
+        // }
 
         if(IsAnyRobot(victim))
         {
@@ -246,7 +266,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
             //     //m_flItemChargeMeter
             // float data = GetEntPropFloat(victim, Prop_Send, "m_flItemChargeMeter");
             // PrintToChatAll("Data %f", data);
-              
+            // PrintToChatAll("Damagetype was %i\nWeapon was %i\n Damagecustom was %i", damagetype, weapon, damagecustom);
              switch (damagecustom)
                 {
                     case TF_CUSTOM_BACKSTAB:
@@ -280,6 +300,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                             // TF2Attrib_AddCustomPlayerAttribute(victim, "item_meter_charge_rate", 0.1, 5.0);
                         }
                     }
+
                 }
           }
 
@@ -557,7 +578,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                     critType = CritType_Crit;
                     if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                    TF2_AddCondition(attacker, TFCond_RuneResist, 2.0);
+                    TF2_AddCondition(attacker, TFCond_RuneResist, g_protection_rune_duration);
                     // EmitSoundToAll(SPY_ROBOT_STAB, victim);
                     // EmitSoundToClient(victim, SPY_ROBOT_STAB);
                     return Plugin_Changed;
@@ -762,11 +783,30 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                     
             }
 
-            if (IsElectric(weapon) && IsAnyRobot(victim))
+            if (IsElectric(weapon))
             {
                 TF2_AddCondition(victim, TFCond_HealingDebuff, g_ElectricStunDuration, attacker);
 
                 SetHealingDebuff(victim, g_HealDebuff, g_ElectricStunDuration, attacker);
+
+                if(TF2_GetPlayerClass(victim) == TFClass_Heavy || TF2_GetPlayerClass(victim) == TFClass_Medic)
+                {
+                    // PrintToChatAll("WAS HEAVY OR MEDIC");
+                    if(HasEntProp(victim, Prop_Send, "m_flRageMeter"))
+                    {
+                        
+
+                        float currentrage = GetEntPropFloat(victim, Prop_Send, "m_flRageMeter");
+                        
+                        if (GetEntProp(victim, Prop_Send, "m_bRageDraining"))
+                        {
+                            // PrintToChatAll("RAGE %f: Draining %i", rage, ragedraining);
+
+                            SetEntPropFloat(victim, Prop_Send, "m_flRageMeter", currentrage - electric_rage_reduction);
+                        }
+                        
+                    }
+                }
             }
             
             if (iClassAttacker == TFClass_DemoMan && !IsAnyRobot(attacker))
@@ -1258,15 +1298,15 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_RemoveByName(Weapon2, "mod see enemy health");
             }
 
-            if(IsSolemnVow(Weapon3) && IsCrossbow(Weapon1))
-            {
-                stat1 = 1.4;
-                TF2Attrib_SetByName(Weapon1, "damage penalty", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Solemn Vow: Crossbow heals {orange}+%0.0f%%%% more",chat_display, MoreIsMore(stat1));
-            }else
-            {
-                TF2Attrib_RemoveByName(Weapon1, "damage penalty");
-            }
+            // if(IsSolemnVow(Weapon3) && IsCrossbow(Weapon1))
+            // {
+            //     stat1 = 1.4;
+            //     TF2Attrib_SetByName(Weapon1, "damage penalty", stat1);
+            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Solemn Vow: Crossbow heals {orange}+%0.0f%%%% more",chat_display, MoreIsMore(stat1));
+            // }else
+            // {
+            //     TF2Attrib_RemoveByName(Weapon1, "damage penalty");
+            // }
 
             if(IsCrossbow(Weapon1))
             {
@@ -1384,7 +1424,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsElectric(Weapon1) || IsElectric(Weapon2))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons {orange}reduce robot heal rate{teamcolor} for %0.1f seconds on hit",chat_display, g_ElectricStunDuration);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons {orange}reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
         }
 
         if (IsWarriorSpirit(Weapon3))

@@ -193,7 +193,7 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(SniperRifle, "faster reload rate", 0.75);
 			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 3.0);
 			
-			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
+			
 		}
 
 	// if(IsValidEntity(SMG))

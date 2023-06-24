@@ -200,7 +200,7 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
 			TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs players", 0.75);
-			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=4 Cooldown=50.0");
+			
 			
 			
 			

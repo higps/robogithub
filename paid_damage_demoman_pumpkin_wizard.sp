@@ -198,7 +198,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 1.0);
 
-			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=3 Cooldown=10.0");
+			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=3 Cooldown=3.0");
 		}
 	}
 }

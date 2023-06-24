@@ -163,7 +163,7 @@ public void OnPluginStart()
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
     g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
     g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Starts the mode when waiting for players is over, 1 = Start game by reaching enough volunteers");
-    g_cvCvarList[CV_g_RoboStartTeam] = CreateConVar("sm_robot_random_start_team", "1", "0 = Robots always start on blue, 1 = Robot team is randomly picked RED or BLUE, 2 = Robots Always starts on red");
+    g_cvCvarList[CV_g_RoboStartTeam] = CreateConVar("sm_robot_random_start_team", "1", "0 = Robots always start on red, 1 = Robot team is randomly picked RED or BLUE, 2 = Robots Always starts on blue");
 
     g_cvCvarList[CV_g_Rtr_precent] = CreateConVar("sm_mm_needed_rtr_ratio", "0.5", "The ratio of votes needed to start the mode with !rtr 1.0 = 100% 0.0 = 0%");
 
