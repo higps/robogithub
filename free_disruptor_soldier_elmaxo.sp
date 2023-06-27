@@ -205,7 +205,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 
-
+#define TyrantHelm 99
+#define MistakenMovember 30554
+#define Gunboats 133
 
 stock GiveGiantPyro(client)
 {
@@ -225,9 +227,7 @@ stock GiveGiantPyro(client)
 		//CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
 
 		
-		#define TyrantHelm 99
-		#define MistakenMovember 30554
-		#define Gunboats 133
+
 
 		CreateRoboHat(client, TyrantHelm, 10, 6, 1315860.0, 1.2, -1.0);
 		CreateRoboHat(client, MistakenMovember, 10, 6, 0.0, 1.265, -1.0);

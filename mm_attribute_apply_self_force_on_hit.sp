@@ -7,9 +7,10 @@
 #include <tf2_stocks>
 
 
-float g_dmg = 1.0;
-int g_critType = 2;
-
+// float g_dmg = 1.0;
+int g_requiredcond = -1;
+float flDistance;
+float flDistanceVertical;
 bool ActiveHasStatWeapon(int iActiveWeapon)
 {
 	//int iActiveWeapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
@@ -19,9 +20,10 @@ bool ActiveHasStatWeapon(int iActiveWeapon)
 	if (!TF2CustAttr_GetString(iActiveWeapon, "pushforce-on-hit", stat_buffer, sizeof(stat_buffer))) {
 		return false;
 	}
-	g_dmg = ReadFloatVar(stat_buffer, "damage", 1.0);
-	g_critType = ReadIntVar(stat_buffer, "critType", 1);
-	// PrintToChatAll("HAS STATS");
+	// g_dmg = ReadFloatVar(stat_buffer, "damage", 1.0);
+	g_requiredcond = ReadIntVar(stat_buffer, "cond", -1);
+	flDistance = ReadFloatVar(stat_buffer, "flDist", 500.0);
+	flDistanceVertical = ReadFloatVar(stat_buffer, "flDistVert", 100.0);
 	return true;
 }
 
@@ -34,38 +36,48 @@ int damagecustom, CritType &critType)
 	{
 		if(IsValidClient(attacker))
 		{
-			if(ActiveHasStatWeapon(weapon) && TF2_IsPlayerInCondition(attacker, TFCond_BlastJumping))
+			if(ActiveHasStatWeapon(weapon))
 			{
-				// PrintToChatAll("HIT!");
-				int client = attacker;
-				float vOrigin[3], vAngles[3], vForward[3], vVelocity[3];
-				GetClientEyePosition(client, vOrigin);
-				GetClientEyeAngles(client, vAngles);
-				
-				// Get the direction we want to go
-				GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
-				
-				// make it usable
-				float flDistance = -1000.0;
-				// PrintToChatAll("0: %f1: %f 2: %f",vForward[0],vForward[1],vForward[2]);
-				ScaleVector(vForward, flDistance);	
-				// PrintToChatAll("0: %f1: %f 2: %f",vForward[0],vForward[1],vForward[2]);
-				
-				// add it to the current velocity to avoid just being able to do full 180s
-				GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVelocity);
-				AddVectors(vVelocity, vForward, vVelocity);
-				
-				float flDistanceVertical = 800.0;
-					
-				vVelocity[2] += flDistanceVertical; // we always want to go a bit up
-				
-				// And set it
 
+			if(g_requiredcond == -1){
 
-				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vVelocity);
+				DoTeleport(attacker);
+			}else if (TF2_IsPlayerInCondition(attacker, view_as<TFCond>(g_requiredcond)))
+
+				DoTeleport(attacker);
 			}
 		}
 	}
 
 	return Plugin_Continue;
+}
+
+void DoTeleport(int client)
+{
+
+	float vOrigin[3], vAngles[3], vForward[3], vVelocity[3];
+	GetClientEyePosition(client, vOrigin);
+	GetClientEyeAngles(client, vAngles);
+	
+	// Get the direction we want to go
+	GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
+	
+	// make it usable
+	// flDistance = -1000.0;
+	// PrintToChatAll("0: %f1: %f 2: %f",vForward[0],vForward[1],vForward[2]);
+	ScaleVector(vForward, flDistance);	
+	// PrintToChatAll("0: %f1: %f 2: %f",vForward[0],vForward[1],vForward[2]);
+	
+	// add it to the current velocity to avoid just being able to do full 180s
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vVelocity);
+	AddVectors(vVelocity, vForward, vVelocity);
+	
+	// flDistanceVertical = 800.0;
+		
+	vVelocity[2] += flDistanceVertical; // we always want to go a bit up
+	
+	// And set it
+
+
+	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vVelocity);
 }

@@ -119,7 +119,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 1400;
+	int iHealth = 1250;
 		
 	int MaxHealth = 125;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -203,7 +203,7 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Threerune);
 			TF2Attrib_SetByName(Threerune, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Threerune, "dmg penalty vs players", 1.75);
+			TF2Attrib_SetByName(Threerune, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Threerune, "dmg penalty vs buildings", 0.25);
 			 
 		}

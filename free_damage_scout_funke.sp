@@ -10,9 +10,9 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Funke"
-#define ROBOT_ROLE "Disruptor"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Scout"
-#define ROBOT_SUBCLASS "Disruptor"
+#define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Throwable Batsaber"
 #define ROBOT_TIPS "Batsaber minicrits bleeding enemies"
 #define ROBOT_ON_DEATH "Try to use environment to kill this robot"
@@ -62,7 +62,7 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 
-	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -204,13 +204,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2CustAttr_SetString(Weapon2, "mod crit type on target condition", "condition=25 crit_type=1");
-			
-			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
-			// TF2Attrib_SetByName(Weapon2, "speed_boost_on_kill", 10.0);
-			
-			// TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.8);
-			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
-			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.25);
 		}
 		g_iTeam = GetClientTeam(client);
 	}

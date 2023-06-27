@@ -216,6 +216,20 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     //     }
     //     return Plugin_Continue;
     // }
+
+		if(damagecustom == TF_CUSTOM_RUNE_REFLECT)
+		{
+		// PrintToChatAll("damage before change %f", damage);	
+		damage *= 0.4;
+		// PrintToChatAll("damage after change %f", damage);	
+		//critType = CritType_None;
+		damageForce[0] == -10.0;
+		damageForce[1] == -10.0;
+		damageForce[2] == -10.0;
+		return Plugin_Handled;
+		}
+	
+
         if (damagecustom == TF_CUSTOM_PLASMA)
         {
             // PrintToChatAll("PLASMA");
@@ -1177,9 +1191,10 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsShahanshah(Weapon3))
             {
-                stat1 = 3.0;
-                TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shahansah: {orange}+%0.0f%% damage{teamcolor} while half dead",chat_display, MoreIsMore(stat1));
+                // stat1 = 3.0;
+                // TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", stat1);
+                TF2CustAttr_SetString(Weapon3, "pushforce-on-hit", "cond=-1 flDist=-500.0 flDistVert=400");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shahansah: {orange}On Hit:{teamcolor} Self Knockback",chat_display, MoreIsMore(stat1));
             }
             
         }
@@ -1413,8 +1428,10 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsCandyCane(Weapon3))
         {   
             stat1 = 1.33;
+            stat2 = 4.0;
             TF2Attrib_SetByName(Weapon3, "health from packs increased", stat1);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Candy Cane:  {orange}+%0.0f%%%% more health{teamcolor} from healthpacks",chat_display, MoreIsMore(stat1));
+            TF2Attrib_SetByName(Weapon3, "health regen", stat2);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Candy Cane:  {orange}+%0.0f%%%% more health{teamcolor} from healthpacks. {orange}+%0.0f health{teamcolor} regenerated per second",chat_display, MoreIsMore(stat1), stat2);
         }
 
         if (IsMarketGardner(Weapon3))

@@ -5,6 +5,7 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Bonk Scout"
@@ -198,7 +199,7 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.0);
 			//TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 10.0);
 			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
-
+			TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=14 duration=8.0 addcond=95");
 					// new iOffset = GetEntProp(Weapon2, Prop_Send, "m_iPrimaryAmmoType", 1)*4;
 					// new iAmmoTable = FindSendPropInfo("CTFPlayer", "m_iAmmo");
 					// SetEntData(client, iAmmoTable+iOffset, 23, 0, true);
