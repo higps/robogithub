@@ -1046,7 +1046,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                     
                 }
                 stat1 = 1.0-stat1;
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoman: All of projectile weapons {orange}Reload %0.0f%%% faster\n{teamcolor}All weapons deal {orange}more damage{teamcolor} the more damage you do",chat_display, OneIs100(stat1));
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoman: All of projectile weapons {orange}Reload %0.0f%%%% faster\n{teamcolor}All weapons deal {orange}more damage{teamcolor} the more damage you do",chat_display, OneIs100(stat1));
             }
 
             if (Weapon3 != -1)
@@ -1078,7 +1078,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (TF2_GetPlayerClass(client) == TFClass_Heavy)
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your minigun deals {orange}-%0.00f %% damage{teamcolor} vs robots",chat_display, LessIsMore(g_HumanMiniGunDmGPenalty));
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your minigun deals {orange}-%0.00f %%%% damage{teamcolor} vs robots",chat_display, LessIsMore(g_HumanMiniGunDmGPenalty));
 
             if(IsNatascha(Weapon1))
             {
@@ -1087,7 +1087,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "speed_boost_on_hit", stat1);
                 TF2Attrib_SetByName(Weapon1, "aiming movespeed increased", stat2);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Heavy Natascha: {orange}+%0.0f second speed boost on hit +%0.0f %% faster movespeed while spun up{teamcolor}",chat_display, stat1, MoreIsMore(stat2));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Heavy Natascha: {orange}+%0.0f second speed boost on hit +%0.0f %%%% faster movespeed while spun up{teamcolor}",chat_display, stat1, MoreIsMore(stat2));
             }
 
             if(IsTomiSlav(Weapon1))
@@ -1097,7 +1097,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "minigun spinup time decreased", stat1);
                 TF2Attrib_SetByName(Weapon1, "closerange backattack minicrits", stat2);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tomislav: {orange}Mini-crits from behind. +%0.0f%% faster {teamcolor}rev up speed",chat_display, OneIs100(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tomislav: {orange}Mini-crits from behind. +%0.0f%%%% faster {teamcolor}rev up speed",chat_display, OneIs100(stat1));
                 
             }
 
@@ -1203,7 +1203,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "faster reload rate", stat2);
                 TF2Attrib_SetByName(Weapon2, "faster reload rate", stat2);
 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: All weapons gain {orange}+%0.0f%% maxammo and +%0.0f%% faster reload",chat_display, MoreIsMore(stat1), LessIsMore(stat2));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: All weapons gain {orange}+%0.0f%% maxammo and +%0.0f%%%% faster reload",chat_display, MoreIsMore(stat1), LessIsMore(stat2));
             }else if (!IsStockOrAllClassWeapon(Weapon3) && Weapon1 != -1 &&  Weapon2 != -1)
             {
                 TF2Attrib_RemoveByName(Weapon1, "faster reload rate");
@@ -1250,7 +1250,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
                 stat1 = 1.15;
                 TF2Attrib_SetByName(Weapon1, "ubercharge rate bonus", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.0f%% faster uber build rate{teamcolor}",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.0f%%%% faster uber build rate{teamcolor}",chat_display, MoreIsMore(stat1));
             }
             if(IsBlutsauger(Weapon1))
             {
