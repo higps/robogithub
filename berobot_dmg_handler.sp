@@ -1068,8 +1068,20 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 SetDemoDamageBuff(Weapon3);
             }
 
+            if (IsQuickieBombLauncher(Weapon2))
+            {
+                stat1 = 1.65;
+                TF2Attrib_SetByName(Weapon2, "stickybomb_charge_damage_increase", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}QuickeBomb: {orange}+%0.0f%%%% {teamcolor}charge damage increase",chat_display, OffBy100(stat1));
+            }
             
-
+            if (IsClaid(Weapon3))
+            {
+                stat1 = 2.0;
+                TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", stat1);
+                TF2Attrib_SetByName(Weapon3, "charge time increased", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Claid: {orange}+%0.0f%%%% {teamcolor}charge time increase, {orange}+%0.0f second speed boost {teamcolor}on hit",chat_display, stat1, stat1);
+            }
             if (IsStockOrAllClassWeapon(Weapon3))
             {
                 stat1 = 20.0;
@@ -1227,7 +1239,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsAtomizer(Weapon3))
             {
-                stat1 = 6.0;
+                stat1 = 3.0;
                 TF2Attrib_SetByName(Weapon3, "air dash count", stat1);
                 TF2Attrib_SetByName(Weapon3, "minicrits become crits", 1.0);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Atomizer: {orange}%0.0f% Bonus Jumps. {orange}Crits when it would mini-crit",chat_display, stat1);
@@ -2181,6 +2193,40 @@ bool IsCaber(int weapon)
 		//If other bottles
         
 	case 307:
+		{
+			return true;
+		}
+	}
+	return false;
+    
+}
+
+bool IsQuickieBombLauncher(int weapon)
+{
+    	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other bottles
+        
+	case 1150:
+		{
+			return true;
+		}
+	}
+	return false;
+    
+}
+
+bool IsClaid(int weapon)
+{
+    	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other bottles
+        
+	case 327:
 		{
 			return true;
 		}

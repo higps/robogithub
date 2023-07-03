@@ -1822,7 +1822,7 @@ public Action Block_Kill(int client, const char[] command, int args){
         if(!g_GoingToDie[client]){
 
         //PrintCenterText(client, "You will die in 10 seconds");
-        g_TimeBombTime[client] = 11;
+        g_TimeBombTime[client] = 5;
         CreateTimer(1.0, Timer_Kill, client, TIMER_REPEAT);
         
         g_GoingToDie[client] = true;
