@@ -10,7 +10,7 @@
 #define ROBOT_NAME	"Zoomer"
 #define ROBOT_ROLE "Zoomer"
 #define ROBOT_DESCRIPTION "Map testing."
- 
+#define ROBOT_ON_DEATH "TEST" 
 #define GDEFLECTORH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
