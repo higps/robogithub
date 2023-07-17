@@ -15,7 +15,7 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Penetrating Huntsman"
-#define ROBOT_TIPS "Arrows penetrate enemies!\nUse blast jump to get to high ground"
+#define ROBOT_TIPS "Arrows penetrate enemies!\nArrows reload faster"
 #define ROBOT_ON_DEATH "Huntsbot's arrows penetrate multiple targets\nCounter-snipe or backstab sniper bots while they are distracted"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
