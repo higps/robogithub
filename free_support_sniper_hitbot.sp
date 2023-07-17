@@ -14,8 +14,8 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "No DMG penalty Hitman's Heatmaker"
-#define ROBOT_TIPS "You have faster reload speed!\nUse blast jump to get to high ground"
-#define ROBOT_ON_DEATH "HitBot's Heatmaker has no bodyshot penalty and reloads faster\nSnipe or backstab sniper bots while they are distracted"
+#define ROBOT_TIPS "You have faster reload speed!\nYour rifle has no bodyshot penalty"
+#define ROBOT_ON_DEATH "HitBot's Heatmaker has no bodyshot penalty & reloads faster\nSnipe or backstab sniper bots while they are distracted"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
