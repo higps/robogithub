@@ -17,5 +17,3 @@ smlib: https://github.com/bcserv/smlib
 Toss buildings: https://github.com/DosMike/TF2-TossBuildings
 
 Ivory Library for attribute: https://github.com/Ivory42/ilib
-
-[TF2] Respawn System API! https://forums.alliedmods.net/showthread.php?t=282172
