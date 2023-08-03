@@ -14,7 +14,7 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Knockback Sniper"
-#define ROBOT_TIPS "Your shots deal increased knockback on target\nUse blast jump to get to high ground"
+#define ROBOT_TIPS "Your shots deal increased knockback on target\nCharge rifle for greater knockback"
 #define ROBOT_ON_DEATH "Skeeter's shots knock you back depending on damage\nCounter-snipe or backstab sniper bots while they are distracted"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
