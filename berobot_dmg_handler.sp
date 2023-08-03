@@ -16,7 +16,7 @@
 // #include <berobot_constants>
 // #include <berobot>
 // #include <berobot_core_restrictions>
-// #include <morecolors_newsyntax>
+// #include <morecolors>
 // #include <sdkhooks>
 // #include <sdktools>
 // #include <sm_logger>

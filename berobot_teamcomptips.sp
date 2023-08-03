@@ -2,7 +2,7 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
-#include <morecolors_newsyntax>
+#include <morecolors>
 #include <tf2>
 #include <tf2_stocks>
 

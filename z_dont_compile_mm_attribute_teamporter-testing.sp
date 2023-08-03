@@ -9,7 +9,7 @@
 #include <sdktools>
 //#include <collisionhook>
 #include <tf2_isPlayerInSpawn>
-#include <morecolors_newsyntax>
+#include <morecolors>
 #include <tfobjects>
 
 //#pragma newdecls required

@@ -3,7 +3,7 @@
 #include <sdktools>
 #include <sdkhooks>
 #include <sm_logger>
-#include <morecolors_newsyntax>
+#include <morecolors>
 #include <berobot_constants>
 #include <berobot_core_restrictions>
 #include <berobot>

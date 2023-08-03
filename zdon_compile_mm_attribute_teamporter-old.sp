@@ -10,7 +10,7 @@
 #include <sdktools>
 //#include <collisionhook>
 #include <tf2_isPlayerInSpawn>
-#include <morecolors_newsyntax>
+#include <morecolors>
 
 #pragma semicolon 1
 //#pragma newdecls required

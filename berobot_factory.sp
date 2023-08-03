@@ -3,7 +3,7 @@
 #include <sdkhooks>
 #include <tf2>
 #include <tf2_stocks>
-#include <morecolors_newsyntax>
+#include <morecolors>
 #include <sm_logger>
 #include <tf2attributes>
 #include <tf2_isPlayerInSpawn>
