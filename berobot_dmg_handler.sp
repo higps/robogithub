@@ -8,7 +8,7 @@
 #include <berobot>
 #include <tf_ontakedamage>
 #include <tf2attributes>
-#include <morecolors_newsyntax>
+#include <morecolors>
 #include <tf_custom_attributes>
 // #include <addplayerhealth>
 
