@@ -184,6 +184,21 @@ Warpaints:
     "409"    "Pumpkin Plastered"
     "410"    "Chilly Autumn"
 	
+
+	Yes.
+
+"411" - Secretly Serviced 
+"412" - Steeled Brushed
+"413" - Sky Stallion
+"414" - Bomb Carrier
+"415" - Business class
+"416" - Deadly Dragon
+"417" - Team Serviced
+"418" - War Room
+"419" - Pacific Peacemaker
+"420" - Mechanized Monster
+
+
 391 Smissmas Sweater
 15000-15158 These are decorated war hero collection weapon ids. Use the weaponid in place of paint id.
 
