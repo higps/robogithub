@@ -193,7 +193,7 @@ stock GiveGiantDemoKnight(client)
 
 	CreateRoboWeapon(client, "tf_weapon_cannon", 996, 6, 1, 0, 0);
 	// CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 19, 6, 1, 1, 0);
-	CreateRoboWeapon(client, "tf_weapon_bottle", 609, 6, 1, 2, 0);
+	// CreateRoboWeapon(client, "tf_weapon_bottle", 609, 6, 1, 2, 0);
 
 	CreateRoboHat(client, TheFragProofFragger, 10, 6, 0.0, 0.75, -1.0); 
 

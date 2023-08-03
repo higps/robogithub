@@ -298,6 +298,23 @@ native void EquipWearable(int client, int item);
 native bool CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, int paint);
 
 /**
+ * Creates a weapon with attributes
+ * 
+ * @param client     the client who should wear the equipment/item
+ * @param classname  the class name of the weapon like "tf_weapon_minigun"
+ * @param itemindex  the item index of the weapon to be used, doesn't have to match classname
+ * @param quality    the quality of the item, 6 is unique, 9 is australium and so on.
+ * @param level       the level of the item
+ * @param visible      if the weapon is visible
+ * @param preserve      if attributes should be preserved
+ * @param attribute     attributes for the item created
+ * @noreturn
+ */
+ //CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
+native bool CreateRoboWeaponWithAttributes(int client, char[] classname, int itemindex, int quality, int level, bool visible, bool preserve, char[] attribute);
+
+
+/**
  * Creates a hat with with paint and scale
  * 
  * @param client     the client who should wear the equipment/item

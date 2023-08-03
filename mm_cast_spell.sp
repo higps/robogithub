@@ -153,6 +153,7 @@ void DrawHUD(int client)
 	int iCountDown = RoundToCeil(g_Recharge[client] - g_skill);
 	char SpellText[64];
 
+	// PrintToChatAll("Gcond %i", g_Cond);
     if (TF2_IsPlayerInCondition(client, g_Cond))
     {
         Format(SpellText, sizeof(SpellText), "%s", Spell_String[g_SpellOnCond]);

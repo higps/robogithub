@@ -162,12 +162,12 @@ stock GiveGiantToofty(client)
 		
 		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 1151, 8, 1, 0, 213);
 		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 265, 6, 1, 1, 0);
-		CreateRoboWeapon(client, "tf_weapon_parachute", 1101, 6, 1, 2, 0);
 		
 		CreateRoboHat(client, BEARDEDBOMBARDIER, 10, 6, 0.0, 1.0, -1.0); //Bearded Bombardier
 		CreateRoboHat(client, WELLROUNDEDRIFLEMAN, 10, 6, 0.0, 1.0, -1.0); //well rounded rifle man
 		CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
-
+		CreateRoboWeaponWithAttributes(client, "tf_weapon_parachute", 1101, 6, 77, true, true, "");
+		
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
 		{
@@ -195,34 +195,6 @@ stock GiveGiantToofty(client)
 			TF2CustAttr_SetString(Weapon3, "reload full clip at once", "1.0");
 		}
 
-		// int iEntity2 = -1;
-		// while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_weapon_parachute")) != -1)
-		// {
-		// 	if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
-		// 	{				
-		// 		//PrintToChatAll("going through entity");
-		// 		TF2Attrib_SetByName(iEntity2, "major increased jump height", 2.75);		
-				
-		// 		break;
-		// 	}
-		// }
+
 	}
 }
-
-// public void OnEntityCreated(int iEntity, const char[] sClassName) 
-// {
-// 	if (StrContains(sClassName, "tf_projectile_pipe") == 0)
-// 	{
-// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-// 	}
-	
-// }
-
-// public void Hook_OnProjectileSpawn(iEntity) {
-// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-
-// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
-		
-// 	}
-// }

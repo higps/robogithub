@@ -6,20 +6,23 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
+#include <tf_econ_data>
+#include <tf2items>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Equalizor"
-#define ROBOT_ROLE "Tank"
+#define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Equalizer & Escape Plan fusion, Base Jumper"
-#define ROBOT_TIPS "Taunt to get airborne to use the base jumper\nSpeed & damage increase as health decreases\nYou can't contest objectives"
-#define ROBOT_ON_DEATH "Equalizor becomes buffed as health decreases\nTanks can be stunned by sheilds and stomps\nTanks take double melee damage"
+#define ROBOT_TIPS "Taunt to get airborne to use the base jumper\nSpeed & damage increase as health decreases"
+#define ROBOT_ON_DEATH "Equalizor becomes buffed as health decreases"
+#define ROBOT_COST 1.0
 
-#define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
-#define SPAWN	"mvm/mvm_tank_horn.wav"
+#define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
+#define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
-#define LOOP	"mvm/mvm_tank_loop.wav"
+#define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
 
 
 #define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
@@ -67,9 +70,18 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
 
-	// HookEvent("player_death", Event_Death, EventHookMode_Post);
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
+
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
+
+
+
+
 }
 
 public void OnPluginEnd()
@@ -171,7 +183,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 9000;
+	int iHealth = 3500;
 		
 	int MaxHealth = 200;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -193,8 +205,8 @@ MakeGiantSoldier(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.25);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.75);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "increased air control", 2.0);
@@ -210,6 +222,7 @@ MakeGiantSoldier(client)
 	//
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.75);
+	// TF2Attrib_SetByName(client, "gesture speed increase", 2.33);
 
 
 	UpdatePlayerHitbox(client,scale);
@@ -220,9 +233,10 @@ MakeGiantSoldier(client)
 	PrintHintText(client , ROBOT_TIPS);
 		//Tank stats
     // TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
-    TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
-	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
+	TF2Attrib_SetByName(client, "rocket jump damage reduction", 0.0);
+	TF2Attrib_SetByName(client, "no self blast dmg", 0.0);
+	
+	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=50.0 stomp-damage=500");
 	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 }
 
@@ -259,14 +273,19 @@ stock GiveGiantPyro(client)
 	//	CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 18, 6, 1, 2, 0);
 		// CreateRoboWeapon(client, "tf_weapon_buff_item", 226, 6, 1, 2, 0);
 		CreateRoboWeapon(client, "tf_weapon_shovel", 775, 6, 1, 2, 0);
+		// CreateRoboWeapon(client, "tf_weapon_parachute", 1101, 6, 6, 0, 0);
+		// CreateRoboHat(client, 1101, 10, 6, 0.0, 1.0, -1.0); //parachute
+// SpawnClientWeapon(client, "tf_weapon_parachute", 1101, "");
+
+		CreateRoboWeaponWithAttributes(client, "tf_weapon_parachute", 1101, 6, 77, true, true, "");
+		// CreateHat(client,775);
 		
 		CreateRoboHat(client, DoeBoy, 10, 6, 0.0, 1.0, -1.0);
 		CreateRoboHat(client, FlakCatcher, 10, 6, 0.0, 1.0, -1.0);
 		CreateRoboHat(client, VeteranAttire, 10, 6, 0.0, 1.0, -1.0);
-
-
+		CreateRoboHat(client, 444, 10, 6, 0.0, 1.0, -1.0); //Mantreads
 	//	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		// if(IsValidEntity(Weapon1))
@@ -292,37 +311,37 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon3, "mod shovel damage boost", 0.0);
 
 			//TF2Attrib_SetByDefIndex(Weapon3, 115, 2.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.15);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", 1.5);
 			TF2Attrib_SetByName(Weapon3, "reduced_healing_from_medics", 1.0);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.3);
+			TF2Attrib_SetByName(Weapon3, "rocket jump damage reduction", 0.0);
 			
 			
-			// TF2Attrib_SetByName(Weapon3, "mod shovel speed boost", 2.0);
+			TF2Attrib_SetByName(Weapon3, "fire rate bonus with reduced health", 0.2);
 			
 			TF2Attrib_SetByName(Weapon3, "self mark for death", 0.0);
 			//TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);
 
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);	
-			TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
-			TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");						
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);		
+			TF2Attrib_SetByName(Weapon3, "major increased jump height", 2.7);						
 		}
 
 
-		CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
 
-		int iEntity2 = -1;
-		while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_weapon_parachute")) != -1)
-		{
-			if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
-			{				
-				//PrintToChatAll("going through entity");
-				TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.75);		
+		// int iEntity2 = -1;
+		// while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_weapon_parachute")) != -1)
+		// {
+		// 	PrintToChatAll("Looking for parachute");
+		// 	if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
+		// 	{				
+		// 		PrintToChatAll("found parachute");
 				
-				break;
-			}
-		}
+				
+		// 		break;
+		// 	}
+		// }
 		
 
 	}
@@ -330,4 +349,3 @@ stock GiveGiantPyro(client)
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
-	

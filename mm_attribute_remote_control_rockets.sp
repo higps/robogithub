@@ -28,6 +28,10 @@ int g_rocketAimType;
 
 bool HasStat(int client)
 {
+	if(!IsValidClient(client))
+	{
+		return false;
+	}
 
 	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 	if (Weapon1 == -1)

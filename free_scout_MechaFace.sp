@@ -49,7 +49,7 @@ public OnPluginStart()
 	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
+	// HookEvent("player_death", Event_Death, EventHookMode_Post);
 
 
 	RobotDefinition robot;
@@ -214,15 +214,15 @@ stock GiveGiantPyro(client)
                         
 			// TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.35);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);
-			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.75);
+			// TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.75);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.1);
+			// TF2Attrib_SetByName(Weapon1, "speed_boost_on_hit", 2.0);
 			TF2Attrib_SetByName(Weapon1, "hype resets on jump", 0.0);
-			TF2Attrib_SetByName(Weapon1, "lose hype on take damage", 0.0);
-			TF2Attrib_SetByName(Weapon1, "boost on damage", 0.0);
+			TF2Attrib_SetByName(Weapon1, "lose hype on take damage", 1.0);
+			TF2Attrib_SetByName(Weapon1, "boost on damage", 1.0);
+			TF2Attrib_SetByName(Weapon1, "clip size bonus", 1.4);
 			
-			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
                         
 		}
 	}
@@ -231,31 +231,31 @@ stock GiveGiantPyro(client)
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 
-public Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+// public Event_Death(Event event, const char[] name, bool dontBroadcast)
+// {
+// 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+// 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 
-	if (!IsAnyRobot(victim) && IsRobot(attacker, ROBOT_NAME))
-	{
-		int Weapon1 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
+// 	if (!IsAnyRobot(victim) && IsRobot(attacker, ROBOT_NAME))
+// 	{
+// 		int Weapon1 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
 
-		if(Weapon1 != -1)
-		{
-			float Hypemeter = GetEntPropFloat(attacker, Prop_Send, "m_flHypeMeter");
-			SetEntPropFloat(attacker, Prop_Send, "m_flHypeMeter", Hypemeter+10.0);
+// 		if(Weapon1 != -1)
+// 		{
+// 			float Hypemeter = GetEntPropFloat(attacker, Prop_Send, "m_flHypeMeter");
+// 			SetEntPropFloat(attacker, Prop_Send, "m_flHypeMeter", Hypemeter+30.0);
 
-			float Speed = GetEntPropFloat(attacker, Prop_Send, "m_flMaxspeed");
-			if (Speed*1.05 >= 520.0){
+// 			float Speed = GetEntPropFloat(attacker, Prop_Send, "m_flMaxspeed");
+// 			if (Speed*1.05 >= 520.0){
 
-				SetEntPropFloat(attacker, Prop_Send, "m_flMaxspeed", 520.0);
-			}else
-			{
-				SetEntPropFloat(attacker, Prop_Send, "m_flMaxspeed", Speed+26.8);
-			}
+// 				SetEntPropFloat(attacker, Prop_Send, "m_flMaxspeed", 520.0);
+// 			}else
+// 			{
+// 				SetEntPropFloat(attacker, Prop_Send, "m_flMaxspeed", Speed+26.8);
+// 			}
 			
-			// PrintToChatAll("Speed set to %f", Speed+26.8);
-		}
-	}
+// 			// PrintToChatAll("Speed set to %f", Speed+26.8);
+// 		}
+// 	}
 
-}
+// }

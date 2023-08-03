@@ -22,7 +22,7 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_scout/giant_scout_loop.wav"
 
-#define BLUE_MODEL "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl"
+// #define BLUE_MODEL "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl"
 
 public Plugin:myinfo = 
 {
@@ -77,11 +77,11 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
+// public OnMapStart()
+// {
 
-	PrecacheModel(BLUE_MODEL);
-}
+// 	PrecacheModel(BLUE_MODEL);
+// }
 
 public Action:SetModel(client, const String:model[])
 {
@@ -174,7 +174,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_cleaver", 30667, 6, 1, 1, 0);
+		CreateRoboWeapon(client, "tf_weapon_cleaver", 812, 6, 1, 1, 0);
 		CreateRoboWeapon(client, "tf_weapon_bat", 30667, 6, 1, 2, 0);
 		
 		CreateRoboHat(client, CoPilot, 10, 6, 0.0, 1.0, -1.0); 
@@ -207,7 +207,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.25);
 		}
-		g_iTeam = GetClientTeam(client);
+		// g_iTeam = GetClientTeam(client);
 	}
 }
 
@@ -215,44 +215,44 @@ public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 
 
-public void OnEntityCreated(int iEntity, const char[] sClassName) 
-{
-	if (StrContains(sClassName, "tf_projectile") == 0)
-	{
-		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-	}
+// public void OnEntityCreated(int iEntity, const char[] sClassName) 
+// {
+// 	if (StrContains(sClassName, "tf_projectile") == 0)
+// 	{
+// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
+// 	}
 	
-}
+// }
 
-public void Hook_OnProjectileSpawn(iEntity) {
-	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
+// public void Hook_OnProjectileSpawn(iEntity) {
+// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
+// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
 
-		RequestFrame(SetProjectileModel, iEntity);
-		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
-	}
-}
+// 		RequestFrame(SetProjectileModel, iEntity);
+// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
+// 	}
+// }
 
 
 		
 
-float g_fStockvecMin[3] = {-10.0, -10.0, -10.0};
-float g_fStockvecMax[3] = {10.0, 10.0, 10.0};
+// float g_fStockvecMin[3] = {-10.0, -10.0, -10.0};
+// float g_fStockvecMax[3] = {10.0, 10.0, 10.0};
 
-void SetProjectileModel (int iEntity)
-{
-	if(g_iTeam == 2)
-	{
-		//Red
-		SetEntityModel(iEntity, BLUE_MODEL);
+// void SetProjectileModel (int iEntity)
+// {
+// 	if(g_iTeam == 2)
+// 	{
+// 		//Red
+// 		SetEntityModel(iEntity, BLUE_MODEL);
 		
-	}else
-	{
-		SetEntityModel(iEntity, BLUE_MODEL);
-	}
+// 	}else
+// 	{
+// 		SetEntityModel(iEntity, BLUE_MODEL);
+// 	}
 
 
-	SetEntPropVector(iEntity, Prop_Send, "m_vecMins", g_fStockvecMin);
-	SetEntPropVector(iEntity, Prop_Send, "m_vecMaxs", g_fStockvecMax);
+// 	SetEntPropVector(iEntity, Prop_Send, "m_vecMins", g_fStockvecMin);
+// 	SetEntPropVector(iEntity, Prop_Send, "m_vecMaxs", g_fStockvecMax);
 
-}
+// }

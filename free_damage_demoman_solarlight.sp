@@ -231,7 +231,7 @@ stock GiveGiantDemoKnight(client)
 		{
 			if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
 			{				
-				//PrintToChatAll("going through entity");
+				// PrintToChatAll("Found demo shield");
 				TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.5);		
 				TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);		
 				

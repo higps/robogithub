@@ -155,7 +155,7 @@ MakeGRageH(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "head scale", 0.75);
+	// TF2Attrib_SetByName(client, "head scale", 0.75);
 
 	UpdatePlayerHitbox(client, scale);
    
@@ -178,9 +178,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 // #define Hat1 30397
-#define WarGoggles 30368
-#define HorrorShawl 31304
-#define RoadBlock 31306
+#define KapitanKaftan 31053
+#define LuchaDor 585
+#define Aztec 30914
 //War Goggles 30368
 
 stock GiveGRageH(client)
@@ -199,22 +199,23 @@ stock GiveGRageH(client)
 		// Cream Spirit
 // set item tint RGB : 12807213
 // set item tint RGB 2 : 12091445
-		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
-		float TeamPaint = 0.0;
+		// TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		// float TeamPaint = 0.0;
 
-		if (iTeam == TFTeam_Blue){
-			TeamPaint = 12807213.0;
+		// if (iTeam == TFTeam_Blue){
+		// 	TeamPaint = 12807213.0;
 			
-		}
-		if (iTeam == TFTeam_Red){
+		// }
+		// if (iTeam == TFTeam_Red){
 			
-			TeamPaint = 12091445.0;
-		}
+		// 	TeamPaint = 12091445.0;
+		// }
 
 		// CreateRoboHat(client, Hat1, 10, 6, 0.75, 1.0, -1.0); 
-		CreateRoboHat(client, WarGoggles, 10, 6, 1.75, 1.0, -1.0); 
-		CreateRoboHat(client, HorrorShawl, 10, 6, TeamPaint, 1.0, -1.0); 
-		CreateRoboHat(client, RoadBlock, 10, 6, TeamPaint, 1.0, -1.0); 
+		CreateRoboHat(client, KapitanKaftan, 10, 6, 13595446.0, 1.0, -1.0); 
+		CreateRoboHat(client, LuchaDor, 10, 6, 135954460.0, 1.0, -1.0); 
+
+		CreateRoboHat(client, Aztec, 10, 6, 13595446.0, 0.75, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))

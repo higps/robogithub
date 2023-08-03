@@ -8,7 +8,7 @@
 
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Dr Crossbow Cop"
+#define ROBOT_NAME	"Dr. Crossbow Cop"
 #define ROBOT_ROLE "Healer"
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"

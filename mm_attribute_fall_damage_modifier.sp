@@ -66,4 +66,5 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 			return Plugin_Changed;
 		}
 	}
+	return Plugin_Continue;
 }

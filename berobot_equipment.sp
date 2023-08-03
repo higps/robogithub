@@ -7,6 +7,7 @@
 #include <tf2_stocks>
 #include <tf2attributes>
 #include <tf2utils>
+#include <tf2items>
 
 #pragma newdecls required
 #pragma semicolon 1
@@ -56,6 +57,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	CreateNative("EquipWearable", Native_EquipWearable);
 	CreateNative("CreateRoboWeapon", Native_CreateRoboWeapon);
+	CreateNative("CreateRoboWeaponWithAttributes", Native_CreateRoboWeaponWithAttributes);
 	CreateNative("CreateRoboHat", Native_CreateRoboHat);
 	CreateNative("RoboRemoveAllWearables", Native_RoboRemoveAllWearables);
 	CreateNative("RoboCorrectClipSize", Native_RoboCorrectClipSize);
@@ -69,6 +71,120 @@ public any Native_EquipWearable(Handle plugin, int numParams)
 	int item = GetNativeCell(2);
 	SDKCall(g_hEquipWearable, client, item);
 	return Plugin_Continue;
+}
+
+// public any Native_CreateRoboWeapon(Handle plugin, int numParams)
+// {
+// 	int client = GetNativeCell(1);
+// 	char classname[64];
+// 	GetNativeString(2, classname, sizeof(classname));
+// 	int itemindex = GetNativeCell(3);
+// 	int quality = GetNativeCell(4);
+// 	int level = GetNativeCell(5);
+// 	int slot = GetNativeCell(6);
+// 	int paint = GetNativeCell(7);
+// }
+public any Native_CreateRoboWeaponWithAttributes(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	char name[64];
+	GetNativeString(2, name, sizeof(name));
+	int index = GetNativeCell(3);
+	int quality = GetNativeCell(5);
+	int level = GetNativeCell(4);
+	bool visible = GetNativeCell(6);
+	bool preserve = GetNativeCell(7);
+	char attribute[NAMELENGTH];
+	GetNativeString(8, attribute, sizeof(attribute));
+	// const char[] attribute = GetNativeCell(8);
+
+    if (client > MaxClients || client == 0 || !IsClientInGame(client))
+    {
+        LogMessage("Passed client reference is invalid! Make sure you are passing through a client that is valid and in-game!");
+        return -1;
+    }
+
+    if (StrEqual(name, "saxxy", false)) // if "saxxy" is specified as the name, replace with appropiate name
+    {
+        switch (TF2_GetPlayerClass(client))
+        {
+            case TFClass_Scout: ReplaceString(name, 64, "saxxy", "tf_weapon_bat", false);
+            case TFClass_Soldier: ReplaceString(name, 64, "saxxy", "tf_weapon_shovel", false);
+            case TFClass_Pyro: ReplaceString(name, 64, "saxxy", "tf_weapon_fireaxe", false);
+            case TFClass_DemoMan: ReplaceString(name, 64, "saxxy", "tf_weapon_bottle", false);
+            case TFClass_Heavy: ReplaceString(name, 64, "saxxy", "tf_weapon_fists", false);
+            case TFClass_Engineer: ReplaceString(name, 64, "saxxy", "tf_weapon_wrench", false);
+            case TFClass_Medic: ReplaceString(name, 64, "saxxy", "tf_weapon_bonesaw", false);
+            case TFClass_Sniper: ReplaceString(name, 64, "saxxy", "tf_weapon_club", false);
+            case TFClass_Spy: ReplaceString(name, 64, "saxxy", "tf_weapon_knife", false);
+        }
+    }
+
+    // tf_weapon_shotgun isn't an actual internal name for any weapons, so replace with the appropriate class appended
+    if (StrEqual(name, "tf_weapon_shotgun", false)) 
+    {
+        switch (TF2_GetPlayerClass(client))
+        {
+            case TFClass_Soldier:    ReplaceString(name, 64, "tf_weapon_shotgun", "tf_weapon_shotgun_soldier", false);
+            case TFClass_Pyro:    ReplaceString(name, 64, "tf_weapon_shotgun", "tf_weapon_shotgun_pyro", false);
+            case TFClass_Heavy:    ReplaceString(name, 64, "tf_weapon_shotgun", "tf_weapon_shotgun_hwg", false);
+            case TFClass_Engineer:    ReplaceString(name, 64, "tf_weapon_shotgun", "tf_weapon_shotgun_primary", false);
+        }
+    }
+
+    // Spawn the actual weapon and apply properties
+    Handle weapon = TF2Items_CreateItem((preserve ? PRESERVE_ATTRIBUTES : OVERRIDE_ALL));
+    TF2Items_SetClassname(weapon, name);
+    TF2Items_SetItemIndex(weapon, index);
+    TF2Items_SetLevel(weapon, level);
+    TF2Items_SetQuality(weapon, quality);
+
+    // Attribute processing
+    char attributes[32][32];
+    int count = ExplodeString(attribute, ";", attributes, 32, 32); // Find all attributes separated by semicolon
+    if (count%2!=0) // make sure we don't have any extra entries, each attribute should have a value, so if we have any extra entries then an attribute is missing a value
+    {
+        count--;
+    }
+
+    // If we have any actual attributes, let's set them here
+    if (count > 0)
+    {
+        TF2Items_SetNumAttributes(weapon, count/2);
+        int i2 = 0;
+        for (int i = 0; i < count; i += 2)
+        {
+            int attrib = StringToInt(attributes[i]);
+            if (attrib == 0)
+            {
+                LogError("Bad weapon attribute passed: %s ; %s", attributes[i], attributes[i+1]);
+                return -1;
+            }
+            TF2Items_SetAttribute(weapon, i2, attrib, StringToFloat(attributes[i+1]));
+            i2++;
+        }
+    }
+    else
+    {
+        TF2Items_SetNumAttributes(weapon, 0);
+    }
+
+    if (weapon == INVALID_HANDLE)
+    {
+        LogMessage("Error: Invalid weapon spawned. client = %d name = %s idx = %d attr = %s", client, name, index/* , attribute */);
+        return -1;
+    }
+
+    int wep = TF2Items_GiveNamedItem(client, weapon);
+    delete weapon;
+
+    // Allows weapon to be seen
+    if (visible)
+        SetEntProp(wep, Prop_Send, "m_bValidatedAttachedEntity", 1);
+
+    EquipPlayerWeapon(client, wep);
+
+    return wep;
 }
 
 public any Native_CreateRoboWeapon(Handle plugin, int numParams)
@@ -96,10 +212,9 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 	GetEntityNetClass(weapon, entclass, sizeof(entclass));
 	SetEntData(weapon, FindSendPropInfo(entclass, "m_iItemDefinitionIndex"), itemindex);	 
 	SetEntData(weapon, FindSendPropInfo(entclass, "m_bInitialized"), 1);
-	SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);
 	SetEntProp(weapon, Prop_Send, "m_bValidatedAttachedEntity", 1); 
 	
-	if (level)
+	if (level > 0)
 	{
 		SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityLevel"), level);
 	}
@@ -108,6 +223,15 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 		SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityLevel"), GetRandomInt(1,99));
 	}
 
+	if (quality > 0)
+	{
+		SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);
+	}
+	else
+	{
+		SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityQuality"), 6);
+	}	
+	DispatchSpawn(weapon);
 	switch (itemindex)
     {
     case 25, 26:
@@ -139,10 +263,10 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 		TF2Attrib_SetByName(weapon, "item style override", 1.0);
 		SetEntData(weapon, FindSendPropInfo(entclass, "m_iEntityQuality"), 11);
 	}
-	//if (paint)
-	//{
+	if (paint > 0)
+	{
 		TF2Attrib_SetByDefIndex(weapon, 834, view_as<float>(paint));	//Set Warpaint
-	//}
+	}
 
 	//Check if wearable, dispatch it.
 	if (itemindex == 405 || itemindex == 608 || itemindex == 1101 || itemindex == 133 || itemindex == 444 || itemindex == 57 || itemindex == 231 || itemindex == 642 || itemindex == 131 || itemindex == 406 || itemindex == 1099 || itemindex == 1144)
@@ -156,6 +280,13 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 		EquipPlayerWeapon(client, weapon);
 	}
 
+	// if (StrContains(entclass, "tf_wearable", false) !=-1)
+	// {
+	// 	PrintToChatAll("WAS WEARABLE");
+	// }else
+	// {
+	// 	PrintToChatAll("NOT WEARABLE");
+	// }
 
 	return true;
 }
