@@ -140,7 +140,7 @@ Action OnTouch(int client, int ent)
 
 void GetReadyToExplode(int client)
 {
-	TF2_AddCondition(client, TFCond_MegaHeal);
+	TF2_AddCondition(client, 130);
 	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav", client);
 	StopSound(client, SNDCHAN_AUTO, "mvm/sentrybuster/mvm_sentrybuster_loop.wav");
 	

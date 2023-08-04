@@ -263,7 +263,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(buttons & IN_DUCK) 
 		{
 			buttons &= ~IN_JUMP;
-
+			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
+			
 			// if(GetEntProp( client, Prop_Data, "m_afButtonPressed" ) & IN_JUMP){
 			// 	return Plugin_Changed;
 			// }
@@ -274,12 +275,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 // && !GetEntProp(client, Prop_Send, "m_bJumping")
 			// int IsJumping = GetEntProp(client, Prop_Send, "m_bJumping");
 
-			if (g_Recharge[client] <= GetEngineTime() && isready && !TF2Spawn_IsClientInSpawn(client) && !setspeed) 
-			{
-			SetSpeed(client);
-			g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-			
-			}
 			
 		}
 			
@@ -288,6 +283,15 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			// PrintToChatAll("Release");
 			// g_button_held[client] = false;
+
+			if (g_Recharge[client] <= GetEngineTime() && isready && !TF2Spawn_IsClientInSpawn(client) && !setspeed) 
+			{
+			SetSpeed(client);
+			g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+			
+			}
+
+
 			ResetSpeed(client);
             
 		}
@@ -302,6 +306,7 @@ void SetSpeed(int client)
 	// TF2Attrib_AddCustomPlayerAttribute(client, "increased jump height", 0.01, 1.0);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
 	TF2_AddCondition(client, TFCond_CritCanteen, 1.0);
+	// TF2_AddCondition(client, 130, 0.5);
 	SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 520.0);
 	setspeed = true;
 }

@@ -230,6 +230,8 @@ public void OnPluginStart()
     RegConsoleCmd("sm_mount", Command_MountRobot, "get a taunt mount for your robot");
     RegConsoleCmd("sm_mt", Command_MountRobot, "get a taunt mount for your robot");
     RegConsoleCmd("sm_car", Command_MountRobot, "get a taunt mount for your robot");
+
+    RegConsoleCmd("sm_w", Command_TauntHuman, "get a taunt mount for your robot");
 //April Fools
     //RegConsoleCmd("sm_rtd", Command_RTDRobot, "become random robot");
 
@@ -1353,6 +1355,36 @@ public Action Command_ChangeRobot(int client, int args)
     }
 
     return Plugin_Handled;
+}
+
+public Action Command_TauntHuman(int client, int args)
+{
+
+    if (!g_Enable)
+    {
+        return Plugin_Handled;
+    }
+
+    if (!IsAnyRobot(client))
+    {
+        int playerID = GetClientUserId(client);
+        int taunt = 1157;
+        // int random = GetRandomInt(1,2);
+        // switch (random)
+        // {
+        //     case 1:
+        //     {
+        //         taunt = 1172; //victory lap
+        //     }
+        //     case 2:
+        //     {
+        //         taunt = 30672; // zoomin broom
+        //     }
+        // }
+
+        ServerCommand("sm_tauntem #%d %i", playerID, taunt);
+    }
+
 }
 
 public Action Command_MountRobot(int client, int args)

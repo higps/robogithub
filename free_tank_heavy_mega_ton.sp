@@ -217,5 +217,7 @@ stock GiveGDeflectorH(client)
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 			//TF2Attrib_SetByName(Weapon1, "dmg from melee increased", 0.25);
 		}
+				CreateRoboHat(client, 111, 10, 6, 0.0, 1.0, 1.0); 
+		TF2Attrib_SetByName(client, "attach particle effect", 35.0);
 	}
 }

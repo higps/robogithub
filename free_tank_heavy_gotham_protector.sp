@@ -315,7 +315,8 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "move speed penalty", 0.9);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
 		}
-
+		CreateRoboHat(client, 111, 10, 6, 0.0, 1.0, 1.0); 
+		TF2Attrib_SetByName(client, "attach particle effect", 35.0);
 	}
 }
 

@@ -179,6 +179,7 @@ MakeSpy(client)
 	
 	// TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	
+	TF2Attrib_SetByName(client, "voice pitch scale", 0.9);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	// TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 	// TF2Attrib_SetByName(client, "engy building health bonus", 2.0);

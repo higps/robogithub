@@ -215,6 +215,9 @@ stock GiveGDeflectorH(client)
 
 
 		}
+
+				CreateRoboHat(client, 111, 10, 6, 0.0, 1.0, 1.0); 
+		TF2Attrib_SetByName(client, "attach particle effect", 35.0);
 	}
 }
 

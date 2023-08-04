@@ -407,7 +407,8 @@ stock GiveBearded(client)
 		}
 
 
-		
+		CreateRoboHat(client, 111, 10, 6, 0.0, 1.0, 1.0); 
+		TF2Attrib_SetByName(client, "attach particle effect", 35.0);
 		
 		
 	}
@@ -424,7 +425,7 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 	if (tauntid == -1)
 	{
 //	 TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
-	TF2_AddCondition(client, TFCond_MegaHeal);
+	TF2_AddCondition(client, 130, 6.0);
 
 
 

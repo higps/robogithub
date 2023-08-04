@@ -239,6 +239,8 @@ stock GiveGiantDemoKnight(client)
 			TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");	
 		}
+				CreateRoboHat(client, 111, 10, 6, 0.0, 1.0, 1.0); 
+		TF2Attrib_SetByName(client, "attach particle effect", 35.0);
 	}
 }
 

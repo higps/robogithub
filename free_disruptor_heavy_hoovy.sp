@@ -16,7 +16,7 @@
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "Perma-crit mittens"
 #define ROBOT_TIPS "Tickle enemies\nTaunt kill enemies for an AOE explosion!"
-#define ROBOT_ON_DEATH "Hoovy can be knocked out of the tauntkill animation\nHoovy creates an explosion upon successful tauntkills"
+#define ROBOT_ON_DEATH "Hoovy can be knocked out of the tauntkill animation\nHoovy creates an explosion upon successful tauntkills\nUse !w in chat or sm_w in console to start a taunt to counter this"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -339,6 +339,13 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(IsRobot(attacker, ROBOT_NAME))
 	{
 		
+	if(TF2_IsPlayerInCondition(victim, TFCond_Taunting) && !IsAnyRobot(victim))
+	{
+		int tauntid = GetEntProp(victim, Prop_Send, "m_iTauntItemDefIndex");
+		// PrintToChatAll("Taunt ID %i", tauntid);
+		if (tauntid != -1)SendVictimToSpace(victim);
+	}
+
 	RequestFrame(StunPlayer, victim);	
 
 
@@ -349,13 +356,43 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 void StunPlayer (int victim)
 {
-		if (!TF2_IsPlayerInCondition(victim, TFCond_Taunting) && !IsAnyRobot(victim)){
+	if (!TF2_IsPlayerInCondition(victim, TFCond_Taunting) && !IsAnyRobot(victim)){
 	
 		TF2_StunPlayer(victim, 3.5, 0.0, TF_STUNFLAG_BONKSTUCK);
 		//return Plugin_Changed;
 	}
+
+
 		
 		
+}
+
+void SendVictimToSpace(int victim)
+{
+		float vOrigin[3], vAngles[3], vForward[3], vVelocity[3];
+	GetClientEyePosition(victim, vOrigin);
+	GetClientEyeAngles(victim, vAngles);
+	
+	// Get the direction we want to go
+	GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
+	
+	// make it usable
+	float flDistance = -380.0;
+
+	ScaleVector(vForward, flDistance);	
+	
+	// add it to the current velocity to avoid just being able to do full 180s
+	GetEntPropVector(victim, Prop_Data, "m_vecVelocity", vVelocity);
+	AddVectors(vVelocity, vForward, vVelocity);
+	
+	float flDistanceVertical = 250.0;
+		
+	vVelocity[2] += flDistanceVertical; // we always want to go a bit up
+	
+	// And set it
+
+
+	TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, vVelocity);
 }
 
 // public TF2_OnConditionAdded(client, TFCond:condition)

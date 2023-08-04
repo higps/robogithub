@@ -174,8 +174,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 #define Minnesotaslick 30315
 #define ReaderChoice 30831 
-#define SiberianSophisticate 946 
- 
+#define MannOfTheHouse  30319
+#define MannDatoryAttire 31184
+
 stock GiveGDeflectorH(client)
 {
 	if (IsValidClient(client))
@@ -206,7 +207,8 @@ stock GiveGDeflectorH(client)
 // set item tint RGB 2 : 1581885
 		CreateRoboHat(client, Minnesotaslick, 10, 6, TeamPaint, 0.75, -1.0); 
 		CreateRoboHat(client, ReaderChoice, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, SiberianSophisticate, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, MannOfTheHouse, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, MannDatoryAttire, 10, 6, 15787660.0, 1.0, 2.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
@@ -220,7 +222,8 @@ stock GiveGDeflectorH(client)
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 
 		}
-
+		CreateRoboHat(client, 111, 10, 6, 0.0, 1.0, 1.0); 
+		TF2Attrib_SetByName(client, "attach particle effect", 35.0);
 	}
 }
 
