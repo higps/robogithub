@@ -706,7 +706,7 @@ void FastDisguise(int iClient, TFTeam iTeam, TFClassType iClass, int iTarget)
     SetEntProp(iClient, Prop_Send, "m_nMaskClass", _:iClass);
     SetEntProp(iClient, Prop_Send, "m_nDisguiseClass", _:iClass);
     SetEntProp(iClient, Prop_Send, "m_nDesiredDisguiseClass", _:iClass);
-    SetEntProp(iClient, Prop_Send, "m_iDisguiseTargetIndex", iTarget);
+    // SetEntProp(iClient, Prop_Send, "m_iDisguiseTargetIndex", iTarget);
 
    SetEntProp(iClient, Prop_Send, "m_iDisguiseHealth", IsPlayerAlive(iTarget) ? GetClientHealth(iTarget) : GetClassBaseHP(iTarget));
 

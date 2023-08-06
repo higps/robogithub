@@ -194,14 +194,14 @@ static const char RegularBotSteps[][256] =
 
 static const char GiantCommonBotSteps[][256] =
 {
-    ")mvm/giant_common/giant_common_step_01.wav",
-    ")mvm/giant_common/giant_common_step_02.wav",
-    ")mvm/giant_common/giant_common_step_03.wav",
-    ")mvm/giant_common/giant_common_step_04.wav",
-    ")mvm/giant_common/giant_common_step_05.wav",
-    ")mvm/giant_common/giant_common_step_06.wav",
-    ")mvm/giant_common/giant_common_step_07.wav",
-    ")mvm/giant_common/giant_common_step_08.wav"
+    "mvm/giant_common/giant_common_step_01.wav",
+    "mvm/giant_common/giant_common_step_02.wav",
+    "mvm/giant_common/giant_common_step_03.wav",
+    "mvm/giant_common/giant_common_step_04.wav",
+    "mvm/giant_common/giant_common_step_05.wav",
+    "mvm/giant_common/giant_common_step_06.wav",
+    "mvm/giant_common/giant_common_step_07.wav",
+    "mvm/giant_common/giant_common_step_08.wav"
 };
 
 

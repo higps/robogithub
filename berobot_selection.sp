@@ -553,13 +553,16 @@ any Native_Menu_RobotSelection(Handle plugin, int numParams)
 
 void Menu_TopLevel(int clientId)
 {
-    g_menu.Hydrate();
+    PrintToChatAll("MENU TOP LEVEL TRIGGERED FOR %N", clientId);
+    
 
     if (g_selections[clientId][0][0] != '\0')
     {
         Menu_SecondLevel(clientId, g_selections[clientId][0]);
         return;
     }
+
+    g_menu.Hydrate();
 
     Menu menu = new Menu(Menu_TopLevel_Handler);
 
@@ -580,8 +583,16 @@ void Menu_TopLevel(int clientId)
 public int Menu_TopLevel_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
     /* If an option was selected, tell the client about the item. */
+
+    if(param2 == -2)
+    {
+        return;
+    }
+
+
     if(action == MenuAction_Select)
     {
+        PrintToChatAll("MENU SELECT 1 FOR %N", param1);
         if (g_chooseRobotMenus[param1] == null)
             return;
         g_chooseRobotMenus[param1] = null;
@@ -597,6 +608,7 @@ public int Menu_TopLevel_Handler(Menu menu, MenuAction action, int param1, int p
     else if(action == MenuAction_Cancel)
     {
         g_chooseRobotMenus[param1] = null;
+        PrintToChatAll("RESETTING 2");
         ResetSelection(param1);
 
         switch (param2)
@@ -612,6 +624,7 @@ public int Menu_TopLevel_Handler(Menu menu, MenuAction action, int param1, int p
     /* If the menu has ended, destroy it */
     else if(action == MenuAction_End)
     {
+        PrintToChatAll("MENU END FOR %N", param1);
         for(int i = 0; i <= MaxClients; i++)
         {
             if (g_chooseRobotMenus[i] == menu)
@@ -630,28 +643,42 @@ void Menu_SecondLevel(int clientId, char key[NAMELENGTH])
         {
             RobotCategory category = g_menu.Get(true);
             Menu_RobotCategory(clientId, category);
+            
         }
         case 'P':   //Paid
         {
             RobotCategory category = g_menu.Get(false);
             Menu_RobotCategory(clientId, category);
+            
         }
         case 'Z':   //ZBOSS
         {
             RobotSubclass robotRole = g_menu.GetBosses();
             Menu_RobotSubclass(clientId, robotRole);
+            
         }
     }
 }
 
 void Menu_RobotCategory(int clientId, RobotCategory category)
 {
-    if (g_selections[clientId][1][0] != '\0')
-    {
-        Menu_ThirdLevel(clientId, g_selections[clientId][1]);
-        return;
-    }
 
+PrintToChatAll("RobotCategory FOR %N", clientId);
+
+    // if (g_selections[clientId][1][0] != '\0')
+    // {
+    //     Menu_ThirdLevel(clientId, g_selections[clientId][1]);
+    //     PrintToChatAll("Thirdlevel exit FOR %N", clientId);
+    //     return;
+    // }
+
+    // if (g_selections[clientId][2][0] != '\0')
+    // {
+    //     Menu_ForthLevel(clientId, g_selections[clientId][2]);
+    //     PrintToChatAll("Forthlevel exit FOR %N", clientId);
+    //     return;
+    // }
+    
     Menu menu = new Menu(Menu_RobotCategory_Handler);
 
     menu.SetTitle("Select Your Robot Type");
@@ -660,19 +687,34 @@ void Menu_RobotCategory(int clientId, RobotCategory category)
     category.AddMenuItem(menu);
     
     if (g_chooseRobotMenus[clientId] != null)
-        g_chooseRobotMenus[clientId].Cancel();
+    {   
+        PrintToChatAll("CANCELLING FOR %N", clientId);
+       g_chooseRobotMenus[clientId].Cancel();
+    }
+        
     g_chooseRobotMenus[clientId] = menu;
 
     int timeout = MENU_TIME_FOREVER;
     menu.Display(clientId, timeout);
     SMLogTag(SML_VERBOSE, "menu displayed to %L for %i seconds", clientId, timeout);
-
+    // PrintToChatAll("GOT TO CATEGORY END");
 }
 public int Menu_RobotCategory_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
-    /* If an option was selected, tell the client about the item. */
+    
+    if (!IsValidClient(param1))
+    {
+        return;
+    }
+    //This code prevents the player to reset if it's another player selecting a robot for some reason
+    if (param2 == -2)
+    {
+        return;
+    }
+
     if(action == MenuAction_Select)
     {
+        PrintToChatAll("MENU SELECT 2 FOR %N", param1);
         if (g_chooseRobotMenus[param1] == null)
             return;
         g_chooseRobotMenus[param1] = null;
@@ -689,7 +731,9 @@ public int Menu_RobotCategory_Handler(Menu menu, MenuAction action, int param1, 
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
     {
+        // PrintToChatAll("Action was Cancelled for Param1 %N Param2 %i", param1, param2);
         g_chooseRobotMenus[param1] = null;
+        PrintToChatAll("RESETTING 1");
         ResetSelection(param1);
 
         switch (param2)
@@ -710,6 +754,8 @@ public int Menu_RobotCategory_Handler(Menu menu, MenuAction action, int param1, 
             if (g_chooseRobotMenus[i] == menu)
                 g_chooseRobotMenus[i] = null;
         }
+
+        // PrintToChatAll("Menu cancelled for %N", param1);
         delete menu;
     }
 }
@@ -771,8 +817,21 @@ void Menu_RobotRole(int client, RobotRole robotRole)
 public int Menu_RobotRole_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
     /* If an option was selected, tell the client about the item. */
+
+    if (!IsValidClient(param1))
+    {
+        return;
+    }
+
+     //Prevents menu from resetting
+    if(param2 == -2)
+    {
+        return;
+    }
+
     if(action == MenuAction_Select)
     {
+        PrintToChatAll("MENU SELECT 3 FOR %N", param1);
         if (g_chooseRobotMenus[param1] == null)
             return;
         g_chooseRobotMenus[param1] = null;
@@ -782,13 +841,14 @@ public int Menu_RobotRole_Handler(Menu menu, MenuAction action, int param1, int 
         PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
 
         g_selections[param1][2] = info;
-
+        
         Menu_ForthLevel(param1, info);
     }
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
     {
         g_chooseRobotMenus[param1] = null;
+        PrintToChatAll("RESETTING 3");
         ResetSelection(param1);
 
         switch (param2)
@@ -871,8 +931,20 @@ void Menu_RobotSubclass(int client, RobotSubclass robotSubclass)
 public int Menu_RobotSubclass_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
     /* If an option was selected, tell the client about the item. */
+    if (!IsValidClient(param1))
+    {
+        return;
+    }
+    PrintToChatAll("SUBCLASS TRIGGERED PARAM2 %i for %N", param2, param1);
+
+    if (param2 == -2)
+    {
+        return;
+    }
+
     if(action == MenuAction_Select)
     {
+        PrintToChatAll("MENU SELECT 4 FOR %N", param1);
         if (g_chooseRobotMenus[param1] == null)
             return;
         g_chooseRobotMenus[param1] = null;
@@ -887,6 +959,7 @@ public int Menu_RobotSubclass_Handler(Menu menu, MenuAction action, int param1, 
     else if(action == MenuAction_Cancel)
     {
         g_chooseRobotMenus[param1] = null;
+        PrintToChatAll("RESETTING 4");
         ResetSelection(param1);
 
         switch (param2)
@@ -902,6 +975,7 @@ public int Menu_RobotSubclass_Handler(Menu menu, MenuAction action, int param1, 
     /* If the menu has ended, destroy it */
     else if(action == MenuAction_End)
     {
+        PrintToChatAll("MENU ACTION END FOR %N", param1);
         for(int i = 0; i <= MaxClients; i++)
         {
             if (g_chooseRobotMenus[i] == menu)
@@ -1001,6 +1075,7 @@ void GenerateCoinNotes(char notes[15], int teamCost, int robotCost, int count, i
 
 void ResetSelection(int clientId)
 {
+    PrintToChatAll("RESETT VOID");
     for(int i = MAX_SELECTIONS; i >= 0; --i)
     {
         if (g_selections[clientId][i][0] != '\0')
