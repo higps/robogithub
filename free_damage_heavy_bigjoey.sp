@@ -254,12 +254,10 @@ stock GiveBigJoey(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);
-			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.15);
+			TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.65);
 
 			// TF2CustAttr_SetString(Weapon1, "weapon overheat", "heat_rate=0.0035 heat_rate_alt=0.0015 cooldown=0.0 decay_time=0.0 decay_rate=0.2 overheat_spread_scale=0.5");
 			// TF2CustAttr_SetString(Weapon1, "weapon overheat sound", "weapons/bumper_car_decelerate.wav");
-			TF2CustAttr_SetString(Weapon1, "weapon overheat", "heat_rate=0.01 heat_rate_alt=0.0 decay_time=0.1 decay_rate=0.2 overheat_spread_scale=0.25 cooldown=4.0");
-			TF2CustAttr_SetString(Weapon1, "weapon overheat sound", "weapons/bumper_car_decelerate.wav");
 		}
 	}
 }

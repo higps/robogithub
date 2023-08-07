@@ -16,7 +16,7 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Melee"
 #define ROBOT_DESCRIPTION "Killing Gloves of Boxing"
-#define ROBOT_TIPS "Kill enemies to get long time crits!\nYou have melee resist"
+#define ROBOT_TIPS "Kill enemies to get long time crits!\nYou have melee resist\nCrit boosts activates when you let go of crouch"
 #define ROBOT_ON_DEATH "Boxing Champ is extremely resistant to melee damage\nBoxing Champ becomes crit boosted when crouch sliding"
  
 #define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
@@ -258,25 +258,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
         //     // g_button_held[client] = true;
 		// 	GetEntProp(client, Prop_Data, "m_bDucking")) 
 		// }
-
-
-		if(buttons & IN_DUCK) 
-		{
-			buttons &= ~IN_JUMP;
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
-			
-			// if(GetEntProp( client, Prop_Data, "m_afButtonPressed" ) & IN_JUMP){
-			// 	return Plugin_Changed;
-			// }
-			// PrintToChatAll("Release");
-			// // g_button_held[client] = tr;
-			// if(GetEntProp(client, Prop_Data, "m_flDucktime")) 
-			// PrintToChatAll("Ducktime %f", GetEntPropFloat(client, Prop_Data, "m_flDucktime"));
-// && !GetEntProp(client, Prop_Send, "m_bJumping")
-			// int IsJumping = GetEntProp(client, Prop_Send, "m_bJumping");
-
-			
-		}
 			
 
 		if( GetEntProp( client, Prop_Data, "m_afButtonReleased" )  & IN_DUCK) 
