@@ -596,6 +596,7 @@ public int Menu_TopLevel_Handler(Menu menu, MenuAction action, int param1, int p
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
     {
+        if (param2 == MenuCancel_Interrupted)return;
         g_chooseRobotMenus[param1] = null;
         ResetSelection(param1);
 
@@ -652,6 +653,9 @@ void Menu_RobotCategory(int clientId, RobotCategory category)
         return;
     }
 
+
+
+
     Menu menu = new Menu(Menu_RobotCategory_Handler);
 
     menu.SetTitle("Select Your Robot Type");
@@ -689,6 +693,7 @@ public int Menu_RobotCategory_Handler(Menu menu, MenuAction action, int param1, 
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
     {
+        if (param2 == MenuCancel_Interrupted)return;
         g_chooseRobotMenus[param1] = null;
         ResetSelection(param1);
 
@@ -716,6 +721,7 @@ public int Menu_RobotCategory_Handler(Menu menu, MenuAction action, int param1, 
 
 void Menu_ThirdLevel(int clientId, char key[NAMELENGTH])
 {
+    PrintToChatAll("Third level triggered for %N", clientId);
     RobotCategory category;
     switch(g_selections[clientId][0][0])
     {
@@ -747,6 +753,12 @@ void Menu_RobotRole(int client, RobotRole robotRole)
 
         SMLogTag(SML_ERROR, "skipping subclasses-menu for %L since only one was defined. selecting %s automatically", client, key);
         Menu_ForthLevel(client, key);
+        return;
+    }
+
+    if (g_selections[client][2][0] != '\0')
+    {
+        Menu_ForthLevel(client, g_selections[client][2]);
         return;
     }
 
@@ -788,6 +800,7 @@ public int Menu_RobotRole_Handler(Menu menu, MenuAction action, int param1, int 
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
     {
+        if (param2 == MenuCancel_Interrupted)return;
         g_chooseRobotMenus[param1] = null;
         ResetSelection(param1);
 
@@ -886,6 +899,7 @@ public int Menu_RobotSubclass_Handler(Menu menu, MenuAction action, int param1, 
     /* If the menu was cancelled, print a message to the server about it. */
     else if(action == MenuAction_Cancel)
     {
+        if (param2 == MenuCancel_Interrupted)return;
         g_chooseRobotMenus[param1] = null;
         ResetSelection(param1);
 
