@@ -583,7 +583,7 @@ void Menu_TopLevel(int clientId)
 public int Menu_TopLevel_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
     /* If an option was selected, tell the client about the item. */
-
+    PrintToChatAll("Menu_TopLevel_Handler MenuAction action %i for %i", action, param1);
     if(param2 == -2)
     {
         return;
@@ -702,6 +702,9 @@ PrintToChatAll("RobotCategory FOR %N", clientId);
 public int Menu_RobotCategory_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
     
+    PrintToChatAll("Menu_RobotCategory_Handler MenuAction action %i for %i", action, param1);
+
+
     if (!IsValidClient(param1))
     {
         return;
@@ -816,6 +819,8 @@ void Menu_RobotRole(int client, RobotRole robotRole)
 
 public int Menu_RobotRole_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
+
+    PrintToChatAll("Menu_RobotRole_Handler MenuAction action %i for %i", action, param1);
     /* If an option was selected, tell the client about the item. */
 
     if (!IsValidClient(param1))
@@ -930,6 +935,8 @@ void Menu_RobotSubclass(int client, RobotSubclass robotSubclass)
 
 public int Menu_RobotSubclass_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
+
+    PrintToChatAll("Menu_RobotSubclass_Handler MenuAction action %i for %i", action, param1);
     /* If an option was selected, tell the client about the item. */
     if (!IsValidClient(param1))
     {
