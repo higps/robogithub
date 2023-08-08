@@ -11,9 +11,9 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Trickster"
-#define ROBOT_ROLE "Support"
+#define ROBOT_ROLE "Spy"
 #define ROBOT_CLASS "Spy"
-#define ROBOT_SUBCLASS "Support"
+#define ROBOT_SUBCLASS "Spy"
 #define ROBOT_DESCRIPTION "BotZip Shrink Powers"
 #define ROBOT_COST 1.5
 #define ROBOT_TIPS "Infinite cloak\nStab enemies to gain shrink ability\nGain size back on kill"
@@ -312,7 +312,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Cloak);
 			// TF2Attrib_SetByName(Cloak, "mod weapon blocks healing", 1.0);
 			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
-			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.5);
+			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.3);
 		}
 	if(IsValidEntity(Sapper)) //
 		{
@@ -325,7 +325,7 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
 		}	
 	// }
-	// TF2_AddCondition(client, TFCond_CritCanteen);
+	TF2_AddCondition(client, TFCond_Cloaked);
 	}
 }
 

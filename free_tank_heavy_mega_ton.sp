@@ -14,7 +14,7 @@
 #define ROBOT_NAME	"Megaton"
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Heavy"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_SUBCLASS "Tank"
 #define ROBOT_DESCRIPTION "Knockback Fists of Steel"
 #define ROBOT_TIPS "Push enemies by punching them!\nYou have melee vulnerability\nYou can't contest objectives"
 #define ROBOT_ON_DEATH "Tanks can be stunned by shields and stomps\nMegaton has severe melee damage vulnerability"

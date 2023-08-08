@@ -16,27 +16,16 @@
 #define ROBOT_NAME	"Terminator"
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Heavy"
-#define ROBOT_SUBCLASS "Hitscan"
+#define ROBOT_SUBCLASS "Tank"
 #define ROBOT_DESCRIPTION "Terminate specific target for buffs"
 #define ROBOT_COST 2.0
 #define ROBOT_TIPS "HiNet: Terminate your target"
-#define ROBOT_ON_DEATH "Terminator has 90% resistance to bullets and 50% to explosives."
+#define ROBOT_ON_DEATH "Terminator has 90%%%% resistance to bullets & 50%%%% to explosives."
  
 #define GRageH      "models/bots/heavy/bot_heavy.mdl"
-#define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
+#define SPAWN	"mvm/mvm_tank_horn.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
-#define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
-
-	
-#define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
-#define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
-#define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
-#define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
-
-#define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
+#define LOOP	"mvm/mvm_tank_loop.wav"
 
 #define TARGET_SEARCH "ui/quest_decode.wav"
 #define TARGET_LOST "ui/cyoa_node_absent.wav"
@@ -47,11 +36,11 @@ float scale = 1.15;
 
 enum
 {
+target_valid,
 target_in_spawn,
 target_no_valid_target,
 target_lost,
-target_valid,
-target_terminated,
+target_terminated
 }
 public OnMapStart()
 {
@@ -92,11 +81,6 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
-	robot.sounds.gunfire = SOUND_GUNFIRE;
-	robot.sounds.gunspin = SOUND_GUNSPIN;
-	robot.sounds.windup = SOUND_WINDUP;
-	robot.sounds.winddown = SOUND_WINDDOWN;
-	robot.weaponsound = ROBOT_WEAPON_SOUND_MINIGUN;
 	robot.deathtip = ROBOT_ON_DEATH;
 
 	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
@@ -229,6 +213,12 @@ public FindTerminator()
 			}
 		}
 		g_isTerminator = false;
+		for (int i; i < sizeof(g_iGlowEnt); i++) {
+		if (IsValidEntity(g_iGlowEnt[i])) {
+			RemoveEntity(g_iGlowEnt[i]);
+		}
+		}
+		
 }
 
 void FindTerminationTarget(){
@@ -285,12 +275,18 @@ void FindTerminationTarget(){
 	//Remove Outline if no terminator
 	if(!g_isTerminator)
 	{
-		PrintToChatAll("No terminator, removing glow");
-			if (IsValidEntity(g_iGlowEnt[g_target]))
+		// PrintToChatAll("No terminator, removing glow");
+				for (int i = 1; i <= MaxClients; i++) {
+			if(!IsAnyRobot(i))
 			{
-			RemoveEntity(g_iGlowEnt[g_target]);
-			g_target = -1;
+				if (IsValidEntity(g_iGlowEnt[i]))
+				{
+				RemoveEntity(g_iGlowEnt[i]);
+				g_target = -1;
+				}
 			}
+		}
+			
 	}
 }
 
@@ -305,25 +301,26 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	{
 		if(IsRobot(attacker, ROBOT_NAME))
 		{
-			PrintToChatAll("Target killed correctly");
+			// PrintToChatAll("Target killed correctly");
 			TF2_SetHealth(attacker, iHealth);
 			TF2_AddCondition(attacker, TFCond_UberchargedCanteen, 1.0);
-			SetGameTime();
+			// SetGameTime();
 
 		}else if(IsRobot(assister, ROBOT_NAME))
-		{PrintToChatAll("Target killed assist correctly");
+		{
+		// {PrintToChatAll("Target killed assist correctly");
 			TF2_SetHealth(assister, iHealth);
 			TF2_AddCondition(assister, TFCond_UberchargedCanteen, 1.0);
-			SetGameTime();
+			// SetGameTime();
 
-		}else
+		}/* else
 		{
 			PrintToChatAll("You failed to kill your target");
-			SetGameTime();
+			// SetGameTime();
 
 			int Terminator = FindTerminator();
 			TF2_StunPlayer(Terminator, 3.0, 0.0, TF_STUNFLAGS_BIGBONK, Terminator);
-		}
+		} */
 	}
 	FindTerminator();
 }
@@ -359,7 +356,7 @@ stock GiveGRageH(client)
 		}
 		
 		PrintHintText(client, ROBOT_TIPS);
-		// RequestFrame(FindTerminationTarget, client);
+		FindTerminationTarget();
 	}
 }
 
@@ -386,8 +383,7 @@ Action OnGlowShouldTransmit(int glow, int client) {
 	return Plugin_Continue;
 }
 
-float g_search = 2.2;
-float g_skill;
+
 int g_loadingDots = 1;
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -403,6 +399,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 }
 int g_targetstatus;
+
 public void OnClientDisconnect(int client)
 {
 	if(g_target == client)
@@ -412,72 +409,78 @@ public void OnClientDisconnect(int client)
 	}
 }
 
-
+float g_search = 4.0;
 void SetGameTime()
 {
 	if (gametime < 0.0){
 		gametime = GetEngineTime() + g_search;
-		
+		// PrintToChatAll("Setting gametime to %f", gametime);
 	} 
 }
+
+
 float g_dottime = 0.0;
 float g_dot_interval = 0.25;
-float g_sound_alert_clamp = 0.0;
-bool g_found_target_clamp = false;
-
+int g_previous_state = -2;
 void DrawHUD(int client)
 {
-	char sHUDText[128];
+	
 
 	//	if(IsValidClient(g_target))if(!IsPlayerAlive(g_target))PrintToChatAll("Target alive %i",IsPlayerAlive(g_target));
 
 
+	//Sets the status of targets
+		if(IsValidClient(g_target) && !IsPlayerAlive(g_target) && g_targetstatus != target_terminated)
+		{
+			// PrintToChatAll("Target Terminated!");
+			SetGameTime();
+			g_targetstatus = target_terminated;
+			
 
+		}else if(IsValidClient(g_target) && TF2Spawn_IsClientInSpawn(g_target) && g_targetstatus != target_in_spawn)
+		{
+			SetGameTime();
+			g_targetstatus = target_in_spawn;
+			
+
+		}else if (!IsValidClient(g_target) || TF2_IsPlayerInCondition(g_target, TFCond_Cloaked) || !IsClientInGame(g_target) && g_targetstatus != target_lost)
+		{
+			SetGameTime();
+			g_targetstatus = target_lost;
+			
+
+		}else if (IsValidClient(g_target) && IsPlayerAlive(g_target) && !TF2Spawn_IsClientInSpawn(g_target) && g_targetstatus != target_valid)
+		{
+			// SetGameTime();
+			g_targetstatus = target_valid;
+			
+		}
 	
-	if(IsValidClient(g_target) && !IsPlayerAlive(g_target))
-	{
-		// PrintToChatAll("Target Terminated!");
-		g_targetstatus = target_terminated;
-		SetGameTime();
 
-	}else if(IsValidClient(g_target) && TF2Spawn_IsClientInSpawn(g_target))
-	{
-		g_targetstatus = target_in_spawn;
-		SetGameTime();
-
-	}else if (!IsValidClient(g_target) || TF2_IsPlayerInCondition(g_target, TFCond_Cloaked) || !IsClientInGame(g_target))
-	{
-		g_targetstatus = target_lost;
-		SetGameTime();
-
-	}else if (IsValidClient(g_target) && IsPlayerAlive(g_target) && !TF2Spawn_IsClientInSpawn(g_target))
-	{
-		g_targetstatus = target_valid;
-		SetGameTime();
-	}
-
-
+	char sHUDText[128];
+	//Changes the HUD depending on status
 	switch(g_targetstatus)
 	{
 		case target_terminated:
 		{
-			Format(sHUDText, sizeof(sHUDText), "Target terminated\nAquiring new target%s", GenerateDots());
-			g_found_target_clamp = false;
+			Format(sHUDText, sizeof(sHUDText), "Target terminated\nAquiring target%s", GenerateDots());
+			
+			
 		}
 		case target_in_spawn:
 		{
-			Format(sHUDText, sizeof(sHUDText), "Target in spawn\nLocating new target%s",GenerateDots());
-			g_found_target_clamp = false;
+			Format(sHUDText, sizeof(sHUDText), "Target unreachable\nRerouting%s",GenerateDots());
+			
 		}
 		case target_no_valid_target:
 		{
 			Format(sHUDText, sizeof(sHUDText), "No target found\nSearching%s",GenerateDots());
-			g_found_target_clamp = false;
+			
 		}
 		case target_lost:
 		{
-			Format(sHUDText, sizeof(sHUDText), "Target lost\nFinding new target%s",GenerateDots());
-			g_found_target_clamp = false;
+			Format(sHUDText, sizeof(sHUDText), "Target lost\nScanning%s",GenerateDots());
+			
 		}
 		case target_valid:
 		{
@@ -486,8 +489,10 @@ void DrawHUD(int client)
 		}
 
 	}
-	EmitHudSound(client);
+	
 
+
+	//Code for the loading dots
 	if(GetEngineTime() > g_dottime)
 	{
 		g_dottime = GetEngineTime() + g_dot_interval;
@@ -502,27 +507,26 @@ void DrawHUD(int client)
 	SetHudTextParams(0.35, 0.40, 0.5, 255, 0, 0, 255);
 	ShowHudText(client, -2, sHUDText);
 
-	if(g_targetstatus != target_valid && GetEngineTime() > gametime)
+	//Search for new target after cool down period is over
+	// PrintToChatAll("Enginetime %f, gametime %f", GetEngineTime(), gametime);
+	// PrintCenterTextAll("Time %0.0f", GetEngineTime() - gametime);
+
+	if(GetEngineTime() > gametime && g_targetstatus != target_valid) 
 	{
-		// PrintToChatAll("Finding new termination target");
-		if(GetEngineTime() > gametime + g_search)FindTerminationTarget();
+		FindTerminationTarget();
+		// SetGameTime();
 	}
-			
+	EmitHudSound(client);
 	// 	 g_hud_post_time = GetEngineTime();
 }
-int g_previous_state = -2;
 
-// PrintToChatAll("Loadingdots %i",g_loadingDots);
-// #define TARGET_SEARCH "ui/cyoa_objective_panel_collapse.wav"
-// #define TARGET_LOST "ui/cyoa_node_absent.wav"
-// #define TARGET_FOUND "ui/cyoa_objective_panel_expand.wav"
-// #define TARGET_TERMINATED "ui/cyoa_map_open.wav.wav"
-bool b_clamp_sound = false;
-float g_soundclamp = 0.0;
+
+float g_sound_time = 0.0;
+float g_sound_duration = 2.0;
 void EmitHudSound(int client)
 {
 
-	if (g_previous_state != g_targetstatus)
+	if (g_previous_state != g_targetstatus /* || g_previous_state == g_targetstatus && g_targetstatus != target_valid && g_sound_time < GetEngineTime() */)
 	{
 		switch(g_targetstatus)
 		{
@@ -546,17 +550,21 @@ void EmitHudSound(int client)
 			// }
 			case target_valid:
 			{
-				EmitSoundToClient(client, TARGET_FOUND);
-				EmitSoundToClient(client, TARGET_FOUND);
-				EmitSoundToClient(client, TARGET_FOUND);
+				EmitSoundToClient(client, TARGET_FOUND, client, SNDCHAN_AUTO);
+				EmitSoundToClient(client, TARGET_FOUND, client, SNDCHAN_AUTO);
+				EmitSoundToClient(client, TARGET_FOUND, client, SNDCHAN_AUTO);
+				g_sound_time = GetEngineTime() + g_sound_duration;
 			}
 			default:
 			{
+				StopSound(client, SNDCHAN_AUTO, TARGET_FOUND);
+				StopSound(client, SNDCHAN_AUTO, TARGET_FOUND);
 				StopSound(client, SNDCHAN_AUTO, TARGET_FOUND);
 
 				EmitSoundToClient(client, TARGET_SEARCH);
 				EmitSoundToClient(client, TARGET_SEARCH);
 				EmitSoundToClient(client, TARGET_SEARCH);
+				g_sound_time = GetEngineTime() + g_sound_duration;
 			}
 
 		}

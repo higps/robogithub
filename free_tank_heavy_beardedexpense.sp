@@ -13,7 +13,7 @@
 #define ROBOT_NAME	"Bearded Expense"
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Heavy"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_SUBCLASS "Tank"
 #define ROBOT_DESCRIPTION "Taunt: Leap Ability"
 #define ROBOT_TIPS "You can't contest objectives\nTaunt to leap!\nDeal stomp damage to make an explosion\nLong time crits on glove kills"
 #define ROBOT_ON_DEATH "You can bodyblock Bearded's leap\nTanks can be stunned by shields and stomps\nTanks take double melee damage"

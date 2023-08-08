@@ -12,11 +12,11 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Black Shiv"
-#define ROBOT_ROLE "Disruptor"
+#define ROBOT_ROLE "Spy"
 #define ROBOT_CLASS "Spy"
-#define ROBOT_SUBCLASS "Disruptor"
+#define ROBOT_SUBCLASS "Spy"
 #define ROBOT_DESCRIPTION "Grappling hook"
-#define ROBOT_TIPS "No Revolver\nSharp Dresser\nCan only backstab\nUse grappling hook with reload or specialattack!"
+#define ROBOT_TIPS "No Revolver\nSharp Dresser\nDead Ringer\nUse grappling hook with reload or specialattack!"
 #define ROBOT_COST 1.0
 #define ROBOT_COIN_GENERATION 2
 #define ROBOT_ON_DEATH "Keeping this robot on fire is key to getting it destroyed"
@@ -244,7 +244,7 @@ stock GiveBigRoboDane(client)
 	CreateRoboWeapon(client, "tf_weapon_knife", 638, 6, 1, 2, 0); //sharp dresser
 	CreateRoboWeapon(client, "tf_weapon_grapplinghook", 1152, 6, 1, 3, 0);
 	CreateRoboWeapon(client, "tf_weapon_sapper", 735, 6, 1, 1, 0); 
-	//CreateRoboWeapon(client, "tf_weapon_invis", 59, 6, 1, 4, 0); 
+	CreateRoboWeapon(client, "tf_weapon_invis", 59, 6, 1, 4, 0); 
 		
 
 	CreateRoboHat(client, DashinHashshashin, 10, 6, 0.0, 1.0, -1.0); 

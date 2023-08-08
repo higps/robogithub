@@ -10,7 +10,7 @@
 #define ROBOT_NAME	"Hacked Slasher"
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Demoman"
-#define ROBOT_SUBCLASS "Melee"
+#define ROBOT_SUBCLASS "Tank"
 #define ROBOT_DESCRIPTION "Power-Walk Charge"
 #define ROBOT_COST 1.0
 #define ROBOT_TIPS "Extremely long but slow charge\nCharge refill on kill\nYou can't contest objectives"

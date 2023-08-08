@@ -11,9 +11,9 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"StabbyStabby"
-#define ROBOT_ROLE "Support"
+#define ROBOT_ROLE "Spy"
 #define ROBOT_CLASS "Spy"
-#define ROBOT_SUBCLASS "Support"
+#define ROBOT_SUBCLASS "Spy"
 #define ROBOT_DESCRIPTION "Rapid fire kunai"
 #define ROBOT_TIPS "Infinite Cloak\nRapid swings\nHeal from sapping buildings"
 #define ROBOT_ON_DEATH "StabbyStabby's knife has rapid swings\nPyro's flames & airblast can shut down spies"
@@ -286,8 +286,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Cloak);
 			
 			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
-			// TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.01);
-
+			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.3);
 			
 						
 		}
@@ -302,4 +301,5 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
 		}	
 	}
+	TF2_AddCondition(client, TFCond_Cloaked);
 }

@@ -11,9 +11,9 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"MrPaladin"
-#define ROBOT_ROLE "Support"
+#define ROBOT_ROLE "Spy"
 #define ROBOT_CLASS "Spy"
-#define ROBOT_SUBCLASS "Support"
+#define ROBOT_SUBCLASS "Spy"
 #define ROBOT_DESCRIPTION "Turn invis on backstab"
 #define ROBOT_ON_DEATH "MrPaladin becomes invisible on backstab\nPyro's flames & airblast can shut down spies"
 #define ROBOT_COST 1.5
@@ -23,10 +23,10 @@
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-#define SPY_SPAWN_SOUND1		"vo/mvm_spy_spawn01.mp3"
-#define SPY_SPAWN_SOUND2		"vo/mvm_spy_spawn02.mp3"
-#define SPY_SPAWN_SOUND3		"vo/mvm_spy_spawn03.mp3"
-#define SPY_SPAWN_SOUND4		"vo/mvm_spy_spawn04.mp3"
+// #define SPY_SPAWN_SOUND1		"vo/mvm_spy_spawn01.mp3"
+// #define SPY_SPAWN_SOUND2		"vo/mvm_spy_spawn02.mp3"
+// #define SPY_SPAWN_SOUND3		"vo/mvm_spy_spawn03.mp3"
+// #define SPY_SPAWN_SOUND4		"vo/mvm_spy_spawn04.mp3"
 
 // #define SPY_DEATH_SOUND1		"vo/mvm_spybot_death01.mp3"
 // #define SPY_DEATH_SOUND2		"vo/mvm_spybot_death02.mp3"
@@ -121,7 +121,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 356 && customkill == 2)
 	{
-		TF2_AddCondition(attacker, TFCond_Stealthed, 5.0);
+		TF2_AddCondition(attacker, TFCond_Stealthed, 10.0);
 	}
 
 }
@@ -194,14 +194,19 @@ MakeSpy(client)
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-
 	
-	PrintToChat(client, "1. You are now Giant Mr Paladin robot!");
+	Addcond(client);
+	
 	PrintHintText(client, "Infinite Cloak\nStab enemies to gain buff to kill while stealthed!\nHeal from sapping buildings");
 
+	RequestFrame(Addcond, client);
 
 
+}
 
+void Addcond(int client)
+{
+	
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -285,7 +290,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_RemoveAll(Cloak);
 			
 			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
-			// TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.4);
+			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.3);
 
 			
 						
@@ -301,4 +306,6 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
 		}	
 	}
+
+	TF2_AddCondition(client, TFCond_Cloaked);
 }

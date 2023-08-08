@@ -35,6 +35,7 @@ public Plugin myinfo =
 };
 
 bool g_VoiceCalloutClamp[MAXPLAYERS + 1];
+bool AnnounceWhenDecloak[MAXPLAYERS + 1] = {true,...};
 
 public void OnPluginStart()
 {
@@ -594,6 +595,23 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
 	return Plugin_Changed;
 }
 
+public void TF2_OnConditionRemoved(int client, TFCond condition)
+{
+    if (IsValidClient(client) && IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Spy && condition == TFCond_Cloaked)
+    {
+        if(AnnounceWhenDecloak[client])
+        {
+        // PrintToChatAll("Spy Decloaked it was %N",client);
+        int size = sizeof Spy_Spawn;
+        int soundswitch = GetRandomInt(0, size - 1);
+        // PrintToChatAll("Emitting %s", Spy_Spawn[soundswitch]);
+	    EmitSoundToAll(Spy_Spawn[soundswitch]);
+        AnnounceWhenDecloak[client] = false;
+        }
+    
+    }
+}
+
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
     if (IsValidClient(client) && condition == TFCond_Healing)
@@ -799,8 +817,9 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
             g_robot_deathtime = GetEngineTime() + g_robot_death_timer;
         }
 
-	    g_robot_kill_count++;
-        
+        g_robot_kill_count++;
+
+        AnnounceWhenDecloak[victim] = true;
 	}
 
     if (IsAnyRobot(victim) && attacker != victim)
@@ -1407,6 +1426,7 @@ public Action calltimer_reset (Handle timer, int client)
 
 
 
+
 public Action Event_post_inventory_application(Event event, const char[] name, bool dontBroadcast)
 {
 
@@ -1417,6 +1437,15 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
     if(IsAnyRobot(client))
     {
         RequestFrame(SetSpawnPitchSound,client);
+        RequestFrame(TrackRobotSpies, client);
+    }
+}
+
+void TrackRobotSpies(int client)
+{
+    if(TF2_GetPlayerClass(client) == TFClass_Spy)
+    {
+        PrintToChatAll("Spy Spawn it was %N", client);
     }
 }
 
@@ -1449,11 +1478,11 @@ public Action Timer_CheckSpawnAnnouncement(Handle timer, int client)
                     CreateTimer(3.0, Timer_EngiCheck, GetRobotClassCount(TFClass_Engineer));
                     b_AnnounceClamp = true;
                 }
-                case TFClass_Spy:
-                {
-                    CreateTimer(3.0, Timer_SpyCheck, GetRobotClassCount(TFClass_Spy));
-                    b_AnnounceClamp = true;
-                }
+                // case TFClass_Spy:
+                // {
+                //     CreateTimer(3.0, Timer_SpyCheck, GetRobotClassCount(TFClass_Spy));
+                //     b_AnnounceClamp = true;
+                // }
             }
         }
 

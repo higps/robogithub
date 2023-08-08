@@ -61,13 +61,13 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
-	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = ROBOT_COST;
+	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	// // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+	// // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	// restrictions.RobotCoins.PerRobot = ROBOT_COST;
 
-	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions);
+	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null);
 }
 
 public void OnPluginEnd()
@@ -233,8 +233,8 @@ stock GiveGiantPyro(client)
 			//TF2Attrib_SetByName(Weapon2, "self dmg push force increased", 12.0);
 			//TF2Attrib_SetByName(Weapon2, "Blast radius increased", 1.75);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.85);
-			TF2Attrib_SetByName(Weapon2, "projectile penetration heavy", 1.0);
+			// TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.85);
+			// TF2Attrib_SetByName(Weapon2, "projectile penetration heavy", 1.0);
 			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.8);
 			TF2Attrib_SetByName(Weapon2, "weapon spread bonus", 0.75);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.2);
