@@ -8,6 +8,7 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <tf2attributes>
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR", "NormalSoundHook"};
 enum(<<= 1)
@@ -1413,6 +1414,25 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
     CreateTimer(1.0, Timer_CheckSpawnAnnouncement, client);
 
+    if(IsAnyRobot(client))
+    {
+        RequestFrame(SetSpawnPitchSound,client);
+    }
+}
+
+void SetSpawnPitchSound(int client)
+{
+    if(IsAnyRobot(client))
+    {
+        if(TF2_GetPlayerClass(client) == TFClass_Engineer || TF2_GetPlayerClass(client) == TFClass_Sniper || TF2_GetPlayerClass(client) == TFClass_Medic || TF2_GetPlayerClass(client) == TFClass_Spy)
+        {
+            TF2Attrib_SetByName(client, "voice pitch scale", 0.9);
+        }else
+        {
+            TF2Attrib_SetByName(client, "voice pitch scale", 1.0);
+        }
+        
+    }
 }
 
 public Action Timer_CheckSpawnAnnouncement(Handle timer, int client)
