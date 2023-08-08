@@ -8,6 +8,7 @@
 #include <berobot_constants>
 #include <berobot_core_restrictions>
 #include <berobot>
+#include <tf2_stocks>
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
 enum(<<= 1)
@@ -293,6 +294,12 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
 {
     int victimUserId = event.GetInt("userid", -1);
     int victimClientId = GetClientOfUserId(victimUserId);
+
+        int deathflags = GetEventInt(event, "death_flags");
+
+    
+
+    if (!(deathflags & TF_DEATHFLAG_DEADRINGER)){
     SMLogTag(SML_VERBOSE, "OnDeath called at %i for %L with last unresticted robot %s", GetTime(), victimClientId, _lastUnrestrictedRobot[victimClientId]);
 
     if (_lastUnrestrictedRobot[victimClientId][0] == '\0')
@@ -313,6 +320,7 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
     SMLogTag(SML_VERBOSE, "resetting %L's bought robot to %s after death", victimClientId, _lastUnrestrictedRobot[victimClientId]);
     CreateRobot(_lastUnrestrictedRobot[victimClientId], victimClientId, "");
     _lastUnrestrictedRobot[victimClientId] = "";
+    }
 }
 
 void OnRoundFinished(const char[] output, int caller, int activator, float delay)
