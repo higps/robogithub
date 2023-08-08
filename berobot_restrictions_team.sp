@@ -295,7 +295,7 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
     int victimUserId = event.GetInt("userid", -1);
     int victimClientId = GetClientOfUserId(victimUserId);
 
-        int deathflags = GetEventInt(event, "death_flags");
+    int deathflags = GetEventInt(event, "death_flags");
 
     
 

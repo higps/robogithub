@@ -15,28 +15,16 @@
 #define ROBOT_ROLE "Spy"
 #define ROBOT_CLASS "Spy"
 #define ROBOT_SUBCLASS "Spy"
-#define ROBOT_DESCRIPTION "Grappling hook"
+#define ROBOT_DESCRIPTION "Grappling hook, Silent Killer"
 #define ROBOT_TIPS "No Revolver\nSharp Dresser\nDead Ringer\nUse grappling hook with reload or specialattack!"
 #define ROBOT_COST 1.0
-#define ROBOT_COIN_GENERATION 2
+#define ROBOT_COIN_GENERATION 1
 #define ROBOT_ON_DEATH "Keeping this robot on fire is key to getting it destroyed"
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-#define SPY_SPAWN_SOUND1		"vo/mvm_spy_spawn01.mp3"
-#define SPY_SPAWN_SOUND2		"vo/mvm_spy_spawn02.mp3"
-#define SPY_SPAWN_SOUND3		"vo/mvm_spy_spawn03.mp3"
-#define SPY_SPAWN_SOUND4		"vo/mvm_spy_spawn04.mp3"
-
-// #define SPY_DEATH_SOUND1		"vo/mvm_spybot_death01.mp3"
-// #define SPY_DEATH_SOUND2		"vo/mvm_spybot_death02.mp3"
-// #define SPY_DEATH_SOUND3		"vo/mvm_spybot_death03.mp3"
-// #define SPY_DEATH_SOUND4		"vo/mvm_spybot_death04.mp3"
-// #define SPY_DEATH_SOUND5		"vo/mvm_spybot_death05.mp3"
-// #define SPY_DEATH_SOUND6		"vo/mvm_spybot_death06.mp3"
-// #define SPY_DEATH_SOUND7		"vo/mvm_spybot_death07.mp3"
 bool g_PressedButton[MAXPLAYERS + 1] = {false, ...};
 
 public Plugin:myinfo =
@@ -75,20 +63,6 @@ public OnPluginStart()
 	PrecacheModel(MODEL);
 
 
-
-
-	// PrecacheSound(SPY_SPAWN_SOUND1, true);
-	// PrecacheSound(SPY_SPAWN_SOUND2, true);
-	// PrecacheSound(SPY_SPAWN_SOUND3, true);
-	// PrecacheSound(SPY_SPAWN_SOUND4, true);
-	// PrecacheSound(SPY_DEATH_SOUND1, true);
-	// PrecacheSound(SPY_DEATH_SOUND2, true);
-	// PrecacheSound(SPY_DEATH_SOUND3, true);
-	// PrecacheSound(SPY_DEATH_SOUND4, true);
-	// PrecacheSound(SPY_DEATH_SOUND5, true);
-	// PrecacheSound(SPY_DEATH_SOUND6, true);
-	// PrecacheSound(SPY_DEATH_SOUND7, true);
-
 	
 }
 
@@ -99,20 +73,9 @@ public void OnPluginEnd()
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-	//	CreateNative("BeSuperHeavyweightChamp_MakeSpy", Native_SetSuperHeavyweightChamp);
-	//	CreateNative("BeSuperHeavyweightChamp_IsSuperHeavyweightChamp", Native_IsSuperHeavyweightChamp);
 	return APLRes_Success;
 }
 
-// public OnMapStart()
-// {
-// 	PrecacheModel(MODEL);
-// 
-// 
-// 
-
-
-// }
 
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
@@ -169,8 +132,6 @@ MakeSpy(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	//TF2Attrib_SetByName(client, "move speed penalty", 0.8);
-	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
@@ -193,9 +154,6 @@ MakeSpy(client)
 
 	
 	PrintHintText(client, ROBOT_TIPS);
-
-	//EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
-
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -211,18 +169,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	GiveBigRoboDane(client);
 }
 
-// public Action:Timer_Resize(Handle:timer, any:hat)
-// {
-	// if (IsValidClient(client))
-	// GiveBigRoboDane(client);
-// }
-
 #define DashinHashshashin 637
 #define TheRogueRobe 30389 
-// #define ArkhamCowl 637 
-// #define WhitePaint 15132390.0
-
-
 
 stock GiveBigRoboDane(client)
 {
@@ -254,18 +202,16 @@ stock GiveBigRoboDane(client)
 		
 //	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
 	int Knife = GetPlayerWeaponSlot(client, 2); //Knife
-	// int Cloak = GetPlayerWeaponSlot(client, 4); //Invis watch
+	int Cloak = GetPlayerWeaponSlot(client, 4); //Invis watch
 	int Sapper = GetPlayerWeaponSlot(client, 1); //Sapper
 
-	// if(IsValidEntity(Revolver)) //Revovler
-	// 	{
-	// 		TF2Attrib_RemoveAll(Revolver);
+	if(IsValidEntity(Cloak)) //
+		{
+			// TF2Attrib_RemoveAll(Cloak);
 			
-	// 		TF2Attrib_SetByName(Revolver, "fire rate bonus", 2.5);
-	// 		TF2Attrib_SetByName(Revolver, "damage bonus", 2.0);
-	// 		TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
-						
-	// 	}
+			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
+			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.36);
+		}
 
 	if(IsValidEntity(Knife)) //
 		{
@@ -274,6 +220,7 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
 			
 			
+			TF2Attrib_SetByName(Knife, "silent killer", 1.0);
 			TF2Attrib_SetByName(Knife, "damage penalty", 0.75);
 			TF2Attrib_SetByName(Knife, "fire rate bonus", 0.55);
 			TF2Attrib_SetByName(Knife, "dmg penalty vs buildings", 0.0);
@@ -289,33 +236,9 @@ stock GiveBigRoboDane(client)
 			
 			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
 		}	
+		TF2_AddCondition(client, TFCond_Cloaked);
 	}
 }
-
-/* Plugin Exclusive Functions */
-//Code that stuns players
-// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
-// {
-//     // if (!g_Enable)
-//     //     return Plugin_Continue;
-//     if(!IsValidClient(victim))
-//         return Plugin_Continue;    
-//     if(!IsValidClient(attacker))
-//         return Plugin_Continue;
-
-
-// 	if(IsRobot(attacker, ROBOT_NAME))
-//     {
-// 		if(damagecustom != TF_CUSTOM_BACKSTAB)
-// 		{
-			
-// 			damage = 0.0;
-// 			return Plugin_Changed;
-// 		}
-// 	}  
-    
-    
-// }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {

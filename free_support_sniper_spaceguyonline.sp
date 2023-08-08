@@ -10,7 +10,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"SpaceGuyOnline"
-#define ROBOT_ROLE "Support"
+#define ROBOT_ROLE "Sniper"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Crit Boost On Kill"
