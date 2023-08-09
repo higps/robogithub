@@ -186,9 +186,9 @@ stock GiveGiantPyro(client)
 		CreateRoboWeapon(client, "tf_weapon_handgun_scout_primary", 220, 6, 1, 2, 217);
 		// CreateRoboWeapon(client, "tf_weapon_bat_wood", 44, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, FortunateSon, 10, 6, 3329330.0, 1.0, -1.0); 
-		CreateRoboHat(client, ImpImprint, 10, 6, 3329330.0, 1.0, -1.0); 
-		CreateRoboHat(client, ForestFootWear, 10, 6, 3329330.0, 1.0, -1.0); 
+		CreateRoboHat(client, FortunateSon, 10, 6, 7511618.0, 1.0, -1.0); 
+		CreateRoboHat(client, ImpImprint, 10, 6, 7511618.0, 1.0, -1.0); 
+		CreateRoboHat(client, ForestFootWear, 10, 6, 7511618.0, 1.0, -1.0); 
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 

@@ -180,8 +180,8 @@ stock GiveGiantDemoKnight(client)
 		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 1150, 6, 1, 2, 0);
 
 
-		CreateRoboHat(client, BlastDefense, 10, 6, 3329330.0, 0.75, -1.0); 
-		CreateRoboHat(client, BlastBlocker, 10, 6, 3329330.0, 0.75, -1.0); 
+		CreateRoboHat(client, BlastDefense, 10, 6, 7511618.0, 0.75, -1.0); 
+		CreateRoboHat(client, BlastBlocker, 10, 6, 7511618.0, 0.75, -1.0); 
 		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
 		//CreateHat(client, 30945, 10, 6, false);//blast locker
 

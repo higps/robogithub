@@ -201,7 +201,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 #define ScotchBonnet 306
-#define DoubleDogDareDemoPants 30555
+#define ShrapnellShell 31372
 stock GiveGiantDemoKnight(client)
 {
 	if (IsValidClient(client))
@@ -218,7 +218,7 @@ stock GiveGiantDemoKnight(client)
 		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
 
 		CreateRoboHat(client, ScotchBonnet, 10, 6, 0.0, 0.75, -1.0); 
-		CreateRoboHat(client, DoubleDogDareDemoPants, 10, 6, 3329330.0, 0.75, -1.0); 
+		CreateRoboHat(client, ShrapnellShell, 10, 6, 7511618.0, 0.75, -1.0); 
 		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
 		//CreateHat(client, 30945, 10, 6, false);//blast locker
 

@@ -217,9 +217,9 @@ stock GiveGiantPyro(client)
 		// 	TeamPaint = 5801378.0;
 		// }
 
-		CreateRoboHat(client, Skullbrero, 10, 6, 3329330.0, 1.0, -1.0);
-		CreateRoboHat(client, Muchacho, 10, 6, 3329330.0, 1.0, -1.0);
-		CreateRoboHat(client, HeadoftheDead, 10, 6, 3329330.0, 1.0, -1.0);
+		CreateRoboHat(client, Skullbrero, 10, 6, 7511618.0, 1.0, -1.0);
+		CreateRoboHat(client, Muchacho, 10, 6, 7511618.0, 1.0, -1.0);
+		CreateRoboHat(client, HeadoftheDead, 10, 6, 7511618.0, 1.0, -1.0);
 
 	//	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);

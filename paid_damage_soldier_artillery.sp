@@ -242,6 +242,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 // 
 #define peacebreaker 31044
 #define AttackPacks 30896
+#define StealthBomber 31379
 
 stock GiveGiantPyro(client)
 {
@@ -258,8 +259,9 @@ stock GiveGiantPyro(client)
 		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
 		//CreateRoboWeapon(client, "tf_weapon_shovel", 416, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, peacebreaker, 10, 6, 3329330.0, 0.75, -1.0);
-		CreateRoboHat(client, AttackPacks, 10, 6, 3329330.0, 0.75, -1.0);
+		CreateRoboHat(client, peacebreaker, 10, 6, 7511618.0, 0.75, -1.0);
+		CreateRoboHat(client, AttackPacks, 10, 6, 7511618.0, 0.75, -1.0);
+		CreateRoboHat(client, StealthBomber, 10, 6, 7511618.0, 0.75, -1.0);
 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);

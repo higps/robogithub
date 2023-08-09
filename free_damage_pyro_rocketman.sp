@@ -190,7 +190,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		CreateRoboWeapon(client, "tf_weapon_flamethrower", 30474, 6, 1, 2, 0);	
+		CreateRoboWeapon(client, "tf_weapon_flamethrower", 21, 6, 1, 2, 0);	
 
 		
 		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
@@ -206,7 +206,7 @@ stock GiveGiantPyro(client)
 
 		CreateRoboHat(client, Bubble, 10, 6, 0.0, 1.0, -1.0);
 		CreateRoboHat(client, Filamental, 10, 6, TeamPaint, 0.75, -1.0);
-		CreateRoboHat(client, Pyrotechnic, 10, 6, 0.0, 0.75, -1.0);
+		CreateRoboHat(client, Pyrotechnic, 10, 6, 5322826.0, 0.75, -1.0);
 		// CreateRoboHat(client, Pyrotechnic, 10, 6, 5322826.0, 0.75, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);

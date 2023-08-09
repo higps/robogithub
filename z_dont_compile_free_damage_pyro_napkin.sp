@@ -193,8 +193,8 @@ stock GiveGiantPyro(client)
 
 		//CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 1151, 8, 1, 0, 213);
 
-		CreateRoboHat(client, MISHAPMERC, 10, 6, 3329330.0, 1.0, -1.0);
-		CreateRoboHat(client, TRICKSTER, 10, 6, 3329330.0, 0.75, -1.0);
+		CreateRoboHat(client, MISHAPMERC, 10, 6, 7511618.0, 1.0, -1.0);
+		CreateRoboHat(client, TRICKSTER, 10, 6, 7511618.0, 0.75, -1.0);
 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
