@@ -349,7 +349,7 @@ stock GiveGRageH(client)
 		if(IsValidEntity(Weapon2))
 		{
 
-			TF2Attrib_SetByName(Weapon2, "attack projectiles", 2.0);
+			// TF2Attrib_SetByName(Weapon2, "attack projectiles", 2.0);
 			TF2Attrib_SetByName(Weapon2, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.10);
