@@ -721,7 +721,7 @@ public int Menu_RobotCategory_Handler(Menu menu, MenuAction action, int param1, 
 
 void Menu_ThirdLevel(int clientId, char key[NAMELENGTH])
 {
-    PrintToChatAll("Third level triggered for %N", clientId);
+    // PrintToChatAll("Third level triggered for %N", clientId);
     RobotCategory category;
     switch(g_selections[clientId][0][0])
     {
