@@ -406,7 +406,7 @@ void StopSounds(int client, Robot item)
     SMLogTag(SML_VERBOSE, "stopping sounds for %L as %s", client, item.name);
 
     if (item.sounds.loop[0] != '\0')
-        StopSound(client, SNDCHAN_AUTO, item.sounds.loop);    
+        StopSound(client, 134, item.sounds.loop);    
     if (item.sounds.gunfire[0] != '\0')
         StopSound(client, SNDCHAN_AUTO, item.sounds.gunfire);
     if (item.sounds.gunspin[0] != '\0')
@@ -796,7 +796,8 @@ void CallCreate(int client, Robot item)
     SMLogTag(SML_VERBOSE, "starting loop-sound %s for %L as %s", item.sounds.loop, client, item.name);
 
     if (IsPlayerAlive(client)){
-        EmitSoundToAll(item.sounds.loop, client, SNDCHAN_REPLACE,_,_, 0.25);
+        //SNDCHAN_REPLACE WAS OLD, but tank alert kills the sound
+        EmitSoundToAll(item.sounds.loop, client, 134,_,_, 0.25);
     }
     TrackRobot(client, item.name);
     TrackRobotCreation(client, true);
