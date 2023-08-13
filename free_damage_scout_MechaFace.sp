@@ -12,7 +12,7 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Baby Face's Blaster"
-#define ROBOT_TIPS "Move speed increases from damage dealt\nNormal clip size"
+#define ROBOT_TIPS "Move speed increases from damage dealt\n30%%%% damage bonus"
 #define ROBOT_ON_DEATH "Mecha Face's speed decreases when damaged\nCounter him with sentries"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
