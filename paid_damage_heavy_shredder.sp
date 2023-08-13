@@ -14,7 +14,7 @@
 #define ROBOT_DESCRIPTION "Resistance Piercing + Penetrating Bullets"
 #define ROBOT_COST 3.0
 #define ROBOT_TIPS "Bullets pierce resistances and Penetrate through targets"
-#define ROBOT_ON_DEATH "Compressor's shotgun pierces damage resistances\nThis includes Battalion's Backup and cloak resistances"
+#define ROBOT_ON_DEATH "Shredder's bullets pierce damage resistances\nBullets also penetrate through multiple targets"
  
 #define GRageH      "models/bots/heavy_boss/bot_heavy_boss.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
