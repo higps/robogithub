@@ -13,8 +13,8 @@
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Tomislav"
-#define ROBOT_TIPS "Your Tomislav is 35%% more accurate!\nLess damage done to buildings"
-#define ROBOT_ON_DEATH "Big Joey's Tomislav is 35%% more accurate"
+#define ROBOT_TIPS "Your Tomislav is 35%%%% more accurate!\nLess damage done to buildings"
+#define ROBOT_ON_DEATH "Big Joey's Tomislav is 35%%%% more accurate"
 
 
 //#define MODEL "models/weapons/shells/shell_minigun.mdl"
