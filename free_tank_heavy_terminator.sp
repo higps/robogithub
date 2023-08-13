@@ -20,7 +20,7 @@
 #define ROBOT_DESCRIPTION "Terminate specific target for buffs"
 #define ROBOT_COST 2.0
 #define ROBOT_TIPS "HiNet: Terminate your target"
-#define ROBOT_ON_DEATH "Terminator has 90%%%% resistance to bullets & 50%%%% to explosives."
+#define ROBOT_ON_DEATH "Terminator has 90%% resistance to bullets & 50%% to explosives."
  
 #define GRageH      "models/bots/heavy/bot_heavy.mdl"
 #define SPAWN	"mvm/mvm_tank_horn.wav"
@@ -31,7 +31,7 @@
 #define TARGET_LOST "ui/cyoa_node_absent.wav"
 #define TARGET_FOUND "ui/cyoa_objective_panel_expand.wav"
 #define TARGET_TERMINATED "ui/cyoa_map_open.wav.wav"
-
+#define TARGET_CANCEL "ui/cyoa_map_close.wav"
 float scale = 1.15;
 
 enum
@@ -40,7 +40,8 @@ target_valid,
 target_in_spawn,
 target_no_valid_target,
 target_lost,
-target_terminated
+target_terminated,
+target_cancelled
 }
 public OnMapStart()
 {
@@ -48,10 +49,17 @@ public OnMapStart()
 	PrecacheSound(TARGET_LOST);
 	PrecacheSound(TARGET_FOUND);
 	PrecacheSound(TARGET_TERMINATED);
+	PrecacheSound(TARGET_CANCEL);
 }
+
 float g_flTagEndTime[MAXPLAYERS + 1];
 int g_iGlowEnt[MAXPLAYERS + 1] = { INVALID_ENT_REFERENCE, ... };
 float flDuration = 5.0;
+float g_dottime = 0.0;
+float g_dot_interval = 0.25;
+int g_previous_state = -2;
+
+bool g_switch_available = false;
 
 public Plugin:myinfo =
 {
@@ -201,6 +209,7 @@ int g_target = -1;
 int g_previous_target = -2;
 bool g_isTerminator = false;
 float gametime = -1.0;
+float gametime_retarget = -1.0;
 public FindTerminator()
 {
 	
@@ -353,20 +362,24 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon2, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.10);
+			TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
+			TF2Attrib_SetByName(Weapon2, "dmg pierces resists absorbs", 1.0);
 		}
 		
 		PrintHintText(client, ROBOT_TIPS);
-		FindTerminationTarget();
+		// FindTerminationTarget();
 	}
 }
-
+int g_loadingDots = 1;
+int g_targetstatus;
 Action OnGlowShouldTransmit(int glow, int client) {
 	int glowTarget = GetEntPropEnt(glow, Prop_Data, "m_hParent");
-	if (!g_isTerminator) return Plugin_Stop;
+	if (!g_isTerminator || g_targetstatus != target_valid) return Plugin_Stop;
 
 	if (!IsValidEntity(glowTarget)) {
 		return Plugin_Stop;
 	}
+
 	
 	// if (TF2_IsPlayerInCondition(glowTarget, TFCond_Cloaked)
 	// 		|| TF2_IsPlayerInCondition(glowTarget, TFCond_Disguised)) {
@@ -384,7 +397,6 @@ Action OnGlowShouldTransmit(int glow, int client) {
 }
 
 
-int g_loadingDots = 1;
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
@@ -396,9 +408,21 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		{
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.33);
 		}
+
+		//Manually Finding New Target
+		if(g_targetstatus == target_valid && GetEngineTime() > gametime_retarget && buttons & (IN_ATTACK2|IN_ATTACK3|IN_USE)) 
+		{
+			g_targetstatus = target_cancelled;
+			SetGameTime();
+			SetGameTimeReTarget();
+			PrintToChatAll("Did the button");
+			// FindTerminationTarget();
+		}
+
+		// g_switch_available = (gametime_retarget - GetEngineTime() == 0.0) ? true : false;
 	}
 }
-int g_targetstatus;
+
 
 public void OnClientDisconnect(int client)
 {
@@ -418,18 +442,29 @@ void SetGameTime()
 	} 
 }
 
+float g_retarget_timer = 6.0;
+void SetGameTimeReTarget()
+{
 
-float g_dottime = 0.0;
-float g_dot_interval = 0.25;
-int g_previous_state = -2;
+		gametime_retarget = GetEngineTime() + g_retarget_timer;
+		// PrintToChatAll("Setting gametime to %f", gametime);
+	
+}
+
+
+
 void DrawHUD(int client)
 {
 	
 
-	//	if(IsValidClient(g_target))if(!IsPlayerAlive(g_target))PrintToChatAll("Target alive %i",IsPlayerAlive(g_target));
-
-
 	//Sets the status of targets
+	PrintCenterTextAll("Target Status %i", g_targetstatus);
+
+	// if (g_targetstatus == target_cancelled && GetEngineTime() > gametime)
+	// {
+	
+	//Write some code to properly exit the cancelled state after SetGameTime();
+
 		if(IsValidClient(g_target) && !IsPlayerAlive(g_target) && g_targetstatus != target_terminated)
 		{
 			// PrintToChatAll("Target Terminated!");
@@ -453,43 +488,58 @@ void DrawHUD(int client)
 		{
 			// SetGameTime();
 			g_targetstatus = target_valid;
-			
+			SetGameTimeReTarget();
 		}
-	
+	// }
+
 
 	char sHUDText[128];
 	//Changes the HUD depending on status
-	switch(g_targetstatus)
-	{
-		case target_terminated:
-		{
-			Format(sHUDText, sizeof(sHUDText), "Target terminated\nAquiring target%s", GenerateDots());
-			
-			
-		}
-		case target_in_spawn:
-		{
-			Format(sHUDText, sizeof(sHUDText), "Target unreachable\nRerouting%s",GenerateDots());
-			
-		}
-		case target_no_valid_target:
-		{
-			Format(sHUDText, sizeof(sHUDText), "No target found\nSearching%s",GenerateDots());
-			
-		}
-		case target_lost:
-		{
-			Format(sHUDText, sizeof(sHUDText), "Target lost\nScanning%s",GenerateDots());
-			
-		}
-		case target_valid:
-		{
-			Format(sHUDText, sizeof(sHUDText), "Action:Terminate\nID: %N\nLife:%i\nClass:%s\nThreat level: %s", g_target, GetClientHealth(g_target), ClassString(g_target),AssessThreatLevel(g_target));
-			
-		}
 
+
+	if(GameRules_GetProp("m_bInSetup"))
+	{
+		Format(sHUDText, sizeof(sHUDText), "HiNet Offline\nConnecting%s", GenerateDots());
+	}else
+	{
+
+		switch(g_targetstatus)
+		{
+			case target_cancelled:
+			{
+				Format(sHUDText, sizeof(sHUDText), "Target aborted\nRecalibrating%s",GenerateDots());
+			}
+			case target_terminated:
+			{
+				Format(sHUDText, sizeof(sHUDText), "Target terminated\nAquiring target%s", GenerateDots());
+			}
+			case target_in_spawn:
+			{
+				Format(sHUDText, sizeof(sHUDText), "Target unreachable\nRerouting%s",GenerateDots());
+				
+			}
+			case target_no_valid_target:
+			{
+				Format(sHUDText, sizeof(sHUDText), "No target found\nSearching%s",GenerateDots());
+				
+			}
+			case target_lost:
+			{
+				Format(sHUDText, sizeof(sHUDText), "Target lost\nScanning%s",GenerateDots());
+				
+			}
+			case target_valid:
+			{
+				Format(sHUDText, sizeof(sHUDText), "Action:Terminate\nID: %N\nLife:%i\nClass:%s\nThreat level: %s\nRecalibrate: %0.f", g_target, GetClientHealth(g_target), ClassString(g_target),AssessThreatLevel(g_target), gametime_retarget - GetEngineTime());
+				if(gametime_retarget - GetEngineTime() < 0.0)
+				{
+					Format(sHUDText, sizeof(sHUDText), "Action:Terminate\nID: %N\nLife:%i\nClass:%s\nThreat level: %s\nRecalibrate Target (M2)", g_target, GetClientHealth(g_target), ClassString(g_target),AssessThreatLevel(g_target));
+					
+				}
+			}
+
+		}
 	}
-	
 
 
 	//Code for the loading dots
@@ -511,43 +561,44 @@ void DrawHUD(int client)
 	// PrintToChatAll("Enginetime %f, gametime %f", GetEngineTime(), gametime);
 	// PrintCenterTextAll("Time %0.0f", GetEngineTime() - gametime);
 
-	if(GetEngineTime() > gametime && g_targetstatus != target_valid) 
+	if(g_targetstatus != target_cancelled)
 	{
-		FindTerminationTarget();
-		// SetGameTime();
+		if(GetEngineTime() > gametime && g_targetstatus != target_valid /* || g_targetstatus == target_cancelled && GetEngineTime() > gametime */) 
+		{
+			PrintToChatAll("B");
+			FindTerminationTarget();
+			// SetGameTimeReTarget();
+			// SetGameTime();
+			
+		}
 	}
+
+
+
 	EmitHudSound(client);
+	
 	// 	 g_hud_post_time = GetEngineTime();
 }
 
 
 float g_sound_time = 0.0;
 float g_sound_duration = 2.0;
+
 void EmitHudSound(int client)
 {
 
-	if (g_previous_state != g_targetstatus /* || g_previous_state == g_targetstatus && g_targetstatus != target_valid && g_sound_time < GetEngineTime() */)
+	if (g_sound_time < GetEngineTime() && (g_previous_state != g_targetstatus))
 	{
 		switch(g_targetstatus)
 		{
-			// case target_terminated:
-			// {
-			// 	EmitSoundToClient(client, TARGET_TERMINATED);
-			// 	EmitSoundToClient(client, TARGET_TERMINATED);
-			// 	EmitSoundToClient(client, TARGET_TERMINATED);
-			// }
-			// case target_in_spawn:
-			// {
-			// 	EmitSoundToClient(client, TARGET_SEARCH);
-			// 	EmitSoundToClient(client, TARGET_SEARCH);
-			// 	EmitSoundToClient(client, TARGET_SEARCH);
-			// }
-			// case target_no_valid_target:
-			// {		
-			// 	EmitSoundToClient(client, TARGET_SEARCH);
-			// 	EmitSoundToClient(client, TARGET_SEARCH);
-			// 	EmitSoundToClient(client, TARGET_SEARCH);
-			// }
+			case target_cancelled:
+			{
+				
+				EmitSoundToClient(client, TARGET_CANCEL, client, SNDCHAN_AUTO);
+				EmitSoundToClient(client, TARGET_CANCEL, client, SNDCHAN_AUTO);
+				EmitSoundToClient(client, TARGET_CANCEL, client, SNDCHAN_AUTO);
+				g_sound_time = GetEngineTime() + g_sound_duration;
+			}
 			case target_valid:
 			{
 				EmitSoundToClient(client, TARGET_FOUND, client, SNDCHAN_AUTO);
