@@ -17,7 +17,7 @@
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Tank"
-#define ROBOT_DESCRIPTION "Terminate specific target for buffs"
+#define ROBOT_DESCRIPTION "Terminate specific to restore health"
 #define ROBOT_COST 2.0
 #define ROBOT_TIPS "HiNet: Terminate your target"
 #define ROBOT_ON_DEATH "Terminator has 90%% resistance to bullets & 50%% to explosives."
@@ -59,8 +59,12 @@ float g_dottime = 0.0;
 float g_dot_interval = 0.25;
 int g_previous_state = -2;
 
-bool g_switch_available = false;
+// bool g_switch_available = false;
 float g_retarget_timer = 25.0;
+
+int g_loadingDots = 1;
+int g_targetstatus;
+
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Terminator",
@@ -225,6 +229,7 @@ public FindTerminator()
 		for (int i; i < sizeof(g_iGlowEnt); i++) {
 		if (IsValidEntity(g_iGlowEnt[i])) {
 			RemoveEntity(g_iGlowEnt[i]);
+			g_target = -1;
 		}
 		}
 		
@@ -331,6 +336,14 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 			TF2_StunPlayer(Terminator, 3.0, 0.0, TF_STUNFLAGS_BIGBONK, Terminator);
 		} */
 	}
+
+	// if(IsRobot(victim, ROBOT_NAME))
+	// {
+	// 	g_targetstatus = target_lost;
+	// 	SetGameTime();
+	// 	PrintToChatAll("DEAD, TARGET LOST");
+	// 	// FindTerminationTarget();
+	// }
 	FindTerminator();
 }
 #define HeavyMetal 31369
@@ -370,8 +383,7 @@ stock GiveGRageH(client)
 		// FindTerminationTarget();
 	}
 }
-int g_loadingDots = 1;
-int g_targetstatus;
+
 Action OnGlowShouldTransmit(int glow, int client) {
 	int glowTarget = GetEntPropEnt(glow, Prop_Data, "m_hParent");
 	if (!g_isTerminator || g_targetstatus != target_valid) return Plugin_Stop;
@@ -400,7 +412,7 @@ Action OnGlowShouldTransmit(int glow, int client) {
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if (IsRobot(client, ROBOT_NAME))
+	if (IsRobot(client, ROBOT_NAME) /* && IsPlayerAlive(client) */)
 	{
 		DrawHUD(client);	
 		int aimtarget = GetClientAimTarget(client);
@@ -416,7 +428,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			g_target = -1;
 			SetGameTime();
 			SetGameTimeReTarget();
-			PrintToChatAll("Did the button");
+			// PrintToChatAll("Did the button");
 			// FindTerminationTarget();
 		}
 
@@ -430,7 +442,8 @@ public void OnClientDisconnect(int client)
 	if(g_target == client)
 	{
 		g_targetstatus = target_lost;
-		FindTerminationTarget();
+		SetGameTime();
+		// FindTerminationTarget();
 	}
 }
 
@@ -459,7 +472,7 @@ void DrawHUD(int client)
 	
 
 	//Sets the status of targets
-	PrintCenterTextAll("Target Status %i", g_targetstatus);
+	// PrintCenterTextAll("Target Status %i", g_targetstatus);
 
 	// if (g_targetstatus == target_cancelled && GetEngineTime() > gametime)
 	// {
