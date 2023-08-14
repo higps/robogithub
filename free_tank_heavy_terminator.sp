@@ -60,7 +60,7 @@ float g_dot_interval = 0.25;
 int g_previous_state = -2;
 
 bool g_switch_available = false;
-
+float g_retarget_timer = 25.0;
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Terminator",
@@ -244,7 +244,7 @@ void FindTerminationTarget(){
 		int numValidPlayers = 0;
 		for (int i = 1; i <= MaxClients; i++) {
 
-			if(IsValidClient(i) && IsClientInGame(i) && IsPlayerAlive(i))
+			if(IsValidClient(i) && IsClientInGame(i) && IsPlayerAlive(i) && !TF2Spawn_IsClientInSpawn(i))
 			{
 				TFTeam iTeam = TF2_GetClientTeam(i);
 				if (clientTeam != iTeam && iTeam != TFTeam_Spectator && iTeam != TFTeam_Unassigned && i != g_previous_target)
@@ -413,6 +413,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		if(g_targetstatus == target_valid && GetEngineTime() > gametime_retarget && buttons & (IN_ATTACK2|IN_ATTACK3|IN_USE)) 
 		{
 			g_targetstatus = target_cancelled;
+			g_target = -1;
 			SetGameTime();
 			SetGameTimeReTarget();
 			PrintToChatAll("Did the button");
@@ -442,7 +443,7 @@ void SetGameTime()
 	} 
 }
 
-float g_retarget_timer = 6.0;
+
 void SetGameTimeReTarget()
 {
 
@@ -451,7 +452,7 @@ void SetGameTimeReTarget()
 	
 }
 
-
+bool abort_state = false;
 
 void DrawHUD(int client)
 {
@@ -465,6 +466,8 @@ void DrawHUD(int client)
 	
 	//Write some code to properly exit the cancelled state after SetGameTime();
 
+	if (GetEngineTime() > gametime)
+	{
 		if(IsValidClient(g_target) && !IsPlayerAlive(g_target) && g_targetstatus != target_terminated)
 		{
 			// PrintToChatAll("Target Terminated!");
@@ -490,7 +493,7 @@ void DrawHUD(int client)
 			g_targetstatus = target_valid;
 			SetGameTimeReTarget();
 		}
-	// }
+	}
 
 
 	char sHUDText[128];
@@ -530,11 +533,14 @@ void DrawHUD(int client)
 			}
 			case target_valid:
 			{
-				Format(sHUDText, sizeof(sHUDText), "Action:Terminate\nID: %N\nLife:%i\nClass:%s\nThreat level: %s\nRecalibrate: %0.f", g_target, GetClientHealth(g_target), ClassString(g_target),AssessThreatLevel(g_target), gametime_retarget - GetEngineTime());
+				Format(sHUDText, sizeof(sHUDText), "Action:Terminate\nID: %N\nLife:%i\nClass:%s\nThreat level: %s\nOptional:Abort in %0.f", g_target, GetClientHealth(g_target), ClassString(g_target),AssessThreatLevel(g_target), gametime_retarget - GetEngineTime() + 1.0);
 				if(gametime_retarget - GetEngineTime() < 0.0)
 				{
-					Format(sHUDText, sizeof(sHUDText), "Action:Terminate\nID: %N\nLife:%i\nClass:%s\nThreat level: %s\nRecalibrate Target (M2)", g_target, GetClientHealth(g_target), ClassString(g_target),AssessThreatLevel(g_target));
-					
+					Format(sHUDText, sizeof(sHUDText), "Action:Terminate\nID: %N\nLife:%i\nClass:%s\nThreat level: %s\nOptional:Abort ID (M2)", g_target, GetClientHealth(g_target), ClassString(g_target),AssessThreatLevel(g_target));
+					abort_state = true;
+				}else
+				{
+					abort_state = false;
 				}
 			}
 
@@ -565,7 +571,7 @@ void DrawHUD(int client)
 	{
 		if(GetEngineTime() > gametime && g_targetstatus != target_valid /* || g_targetstatus == target_cancelled && GetEngineTime() > gametime */) 
 		{
-			PrintToChatAll("B");
+			// PrintToChatAll("B");
 			FindTerminationTarget();
 			// SetGameTimeReTarget();
 			// SetGameTime();
@@ -583,7 +589,7 @@ void DrawHUD(int client)
 
 float g_sound_time = 0.0;
 float g_sound_duration = 2.0;
-
+bool g_previous_abort_state = false;
 void EmitHudSound(int client)
 {
 
@@ -619,8 +625,19 @@ void EmitHudSound(int client)
 			}
 
 		}
+
+
 	}
-	
+
+	if (abort_state && abort_state != g_previous_abort_state && g_sound_time < GetEngineTime())
+	{
+		EmitSoundToClient(client, TARGET_FOUND, client, SNDCHAN_AUTO);
+		EmitSoundToClient(client, TARGET_FOUND, client, SNDCHAN_AUTO);
+		EmitSoundToClient(client, TARGET_FOUND, client, SNDCHAN_AUTO);
+		// g_sound_time = GetEngineTime() + g_sound_duration;
+	}
+
+	g_previous_abort_state = abort_state;
 	g_previous_state = g_targetstatus;
 }
 
