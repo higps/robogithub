@@ -10,6 +10,7 @@
 #include <tf2attributes>
 #include <morecolors>
 #include <tf_custom_attributes>
+#include <sdktools>
 // #include <addplayerhealth>
 
 
@@ -96,6 +97,8 @@ float g_protection_rune_duration = 1.0;
 float g_electric_rage_reduction = 5.0;
 
 float g_HumanMiniGunDmGPenalty = 0.8;
+
+float g_wrap_duration = 5.0;
 
 #define SPY_ROBOT_STAB	"weapons/saxxy_impact_gen_01.wav"
 // #define SPY_ROBOT_STAB	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
@@ -627,24 +630,29 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     {
                         case TF_CUSTOM_CHARGE_IMPACT, TF_CUSTOM_BOOTS_STOMP:
                         {
-                            //damage *= 1.5;
+                            damage *= 2.0;
                             if (IsTank(victim))
                             {
                                 TF2_StunPlayer(victim, 0.5, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
-                                SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
+                                // SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
                             }
+                            DizzyTarget(victim);
                             return Plugin_Changed;
                         }
                         case TF_CUSTOM_BASEBALL:
                         {
                             if(IsSandman(weapon))
                             {
-                                SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
+                                // SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
+                                DizzyTarget(victim);
+
                             }
 
                             if(IsWrap(weapon)){
-                                SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
+                                SetHealingDebuff(victim, g_HealDebuff, g_wrap_duration, attacker);  
                             }
+
+
                             
                             return Plugin_Changed;
                         }
@@ -656,6 +664,53 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 
     return Plugin_Continue;
+}
+
+void DizzyTarget (int victim)
+{
+     float angles[3];
+                            GetClientEyeAngles(victim, angles);
+
+    // Generate a random value
+    float randomAngleSideways = GetRandomFloat(20.0, 30.0);
+    float randomAngleUpDown = GetRandomFloat(10.0,20.0);
+
+    // Make the value either positive or negative
+    if (GetRandomInt(0,1) == 1)
+    {
+        randomAngleSideways *= -1.0;
+    }
+
+    if (GetRandomInt(0,1) == 1)
+    {
+        randomAngleUpDown *= -1.0;
+    }
+    
+    // Apply the random adjustment to the yaw angle
+    angles[1] += randomAngleSideways;
+    angles[0] += randomAngleUpDown;
+
+    // Ensure the yaw angle stays within the valid range
+    // while (angles[1] >= 360.0)
+    // {
+    // angles[1] -= 360.0;
+    // }
+    // while (angles[1] < 0.0)
+    // {
+    // angles[1] += 360.0;
+    // }
+
+    // while (angles[0] >= 360.0)
+    // {
+    // angles[0] -= 360.0;
+    // }
+    // while (angles[0] < 0.0)
+    // {
+    // angles[0] += 360.0;
+    // }
+
+
+    TeleportEntity(victim, NULL_VECTOR, angles, NULL_VECTOR);
 }
 
 void ChangeKnockBack (int victim)
@@ -1561,11 +1616,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if(IsSandman(Weapon3))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Baseball: {orange}Reduce robots heal rate",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Baseball: {orange}Knock robots dizzy",chat_display);
         }
         if(IsWrap(Weapon3))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots heal rate",chat_display);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots heal rate for %0.0f seconds",chat_display, g_wrap_duration);
         }
 
         if(IsCleaver(Weapon2))
