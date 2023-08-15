@@ -57,6 +57,9 @@ bool HasStat(int attacker)
 	g_RechargeCooldown = ReadFloatVar(stat_buffer, "Cooldown", 5.0);
     g_SpellOnCond = ReadIntVar(stat_buffer, "SpellOnCond", -1);
     g_Cond = ReadIntVar(stat_buffer, "Cond", -1);
+
+	if(g_Spell[attacker] == -1) return false;
+
 	return true;
 }
 
@@ -71,7 +74,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
             g_button_held[client] = true;
 		}
 
-		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & buttons & (IN_ATTACK3|IN_USE) ) 
+		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_USE) ) 
 		{
 			//  PrintToChatAll("Release");
 			g_button_held[client] = false;
