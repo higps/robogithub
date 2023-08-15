@@ -22,7 +22,6 @@
 //#pragma newdecls required
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME "A"
 //new g_offsCollisionGroup;
 
 int EngieTeam = 2;
@@ -237,6 +236,7 @@ float g_dispenser_scale;
 
 bool HasStat(int client)
 {
+	// PrintToChatAll("%N had stat",client);
  	int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 	if(Weapon3 == -1)
 	{
@@ -650,7 +650,7 @@ public void function_AllowBuilding(int client){
 	if (!HasStat(client)) {
 		return;
 	}
-	// PrintToChatAll("%N has the stat, sentry limit is %i", client, g_SentryLimit);
+	PrintToChatAll("%N has the stat, sentry limit is %i", client, g_SentryLimit);
 	// int SentryLimit = g_SentryLimit;
 	// int DispenserLimit = g_DispenserLimit;
 	// int DispenserLimit = GetConVarInt(sm_sentry_limit);
@@ -691,12 +691,16 @@ public void function_AllowBuilding(int client){
 		//not a dispenser,
 		}else if(type==view_as<int>(TFObject_Sentry)){
 			SentryCount++;
-			// PrintToChatAll("Sentry count is %i", SentryCount);
+			PrintToChatAll("Sentry count is %i", SentryCount);
 			SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
 
 			if(SentryCount>=g_SentryLimit){
 				//if the limit is reached, disallow building
+				// PrintToChatAll("Sentry count reached for %N", client);
 				SetEntProp(i, Prop_Send, "m_iObjectType", type);
+			}else
+			{
+				SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sentry);
 			}
 		}
 	}
