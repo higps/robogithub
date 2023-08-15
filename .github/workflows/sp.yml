@@ -82,17 +82,12 @@ jobs:
           tag: '1.2.0'
           path: './lib-include'
           file: tf_ontakedamage.inc
-        # morecolors_newsyntax.inc
-      - name: Download morecolors_newsyntax.inc
+        # morecolors.inc
+      - name: Download morecolors.inc
         uses: carlosperate/download-file-action@v1
         with:
           file-url: 'https://raw.githubusercontent.com/JoinedSenses/SourceMod-IncludeLibrary/master/include/morecolors.inc'
-          location: './lib-download'
-      - name: copy morecolors_newsyntax.inc       
-        uses: canastro/copy-file-action@master
-        with:
-          source: "./lib-download/morecolors.inc"
-          target: "./lib-include/morecolors_newsyntax.inc"
+          location: './lib-include'
         # peace-maker/DHooks2
       - name: Download peace-maker/DHooks2
         uses: Legion2/download-release-action@v2.1.0
@@ -110,7 +105,6 @@ jobs:
         with:
           source: "lib-zips/dhooks-2.2.0-detours17-sm110/addons/sourcemod/scripting/include/dhooks.inc"
           target: "./lib-include/dhooks.inc"
-        # morecolors.inc
       - name: Download particle.inc
         uses: carlosperate/download-file-action@v1
         with:
