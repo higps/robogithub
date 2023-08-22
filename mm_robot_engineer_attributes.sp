@@ -18,6 +18,9 @@
 #include <tf2utils>
 #tryinclude <tf2hudmsg>
 
+// #include <smmem>
+// #include <sourcescramble>
+
 #pragma semicolon 1
 //#pragma newdecls required
 
@@ -228,9 +231,9 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 }
 
 int g_infinite_ammo;
-int g_SentryLimit;
-int g_DispenserLimit;
-int g_yeet;
+// int g_SentryLimit;
+// int g_DispenserLimit;
+int g_yeet[MAXPLAYERS + 1] = {0,...};
 float g_sentry_scale;
 float g_dispenser_scale;
 
@@ -251,15 +254,15 @@ bool HasStat(int client)
 	}
 
 	//PrintToChatAll("Has Stat Found for %N, setting variables", client);
-	g_SentryLimit = ReadIntVar(stat_buffer, "sentries", 1);
+	// g_SentryLimit = ReadIntVar(stat_buffer, "sentries", 1);
 	g_sentry_scale = ReadFloatVar(stat_buffer, "sentry_scale", 0.0);
-	g_DispenserLimit = ReadIntVar(stat_buffer, "dispensers", 1);
+	// g_DispenserLimit = ReadIntVar(stat_buffer, "dispensers", 1);
 	g_dispenser_scale = ReadFloatVar(stat_buffer, "dispenser_scale", 0.0);
 	g_infinite_ammo = ReadIntVar(stat_buffer, "infinite_ammo", 0);
 
-	g_yeet = ReadIntVar(stat_buffer, "yeet", 0);
+	g_yeet[client] = ReadIntVar(stat_buffer, "yeet", 0);
 
-//PrintToChatAll("SG Limit: %i, SG Scale: %f, Disp Limit: %i, Disp Scale: %f, infinite ammo: %i, Yeet: %i for %N",g_SentryLimit, g_sentry_scale, g_DispenserLimit, g_dispenser_scale, g_infinite_ammo, g_yeet, client);
+//PrintToChatAll("SG Limit: %i, SG Scale: %f, Disp Limit: %i, Disp Scale: %f, infinite ammo: %i, Yeet: %i for %N",g_SentryLimit, g_sentry_scale, g_DispenserLimit, g_dispenser_scale, g_infinite_ammo, g_yeet[owner], client);
 // PrintToChatAll("Has Stat Found for %N, dispenser count was %i", client, g_DispenserLimit);
 
 	// g_bmod_disciplinary = ReadIntVar(stat_buffer, "bmod-disciplinary", 0);
@@ -583,10 +586,10 @@ public Action WeaponSwitch(client, weapon){
 		function_AllowBuilding(client);
 		return Plugin_Continue;
 	}//else if the client is not holding the building tool
-	else if(GetEntProp(weapon,Prop_Send,"m_iItemDefinitionIndex")!=28){
+	/* else if(GetEntProp(weapon,Prop_Send,"m_iItemDefinitionIndex")!=28){
 		function_AllowDestroying(client);
 		return Plugin_Continue;
-	}
+	} */
 	}
 	return Plugin_Continue;
 
@@ -655,94 +658,94 @@ public void function_AllowBuilding(int client){
 	// int DispenserLimit = g_DispenserLimit;
 	// int DispenserLimit = GetConVarInt(sm_sentry_limit);
 	// int SentryLimit = GetConVarInt(sm_sentry_limit);
-	int DispenserCount = 0;
-	int SentryCount = 0;
+	// int DispenserCount = 0;
+	// int SentryCount = 0;
 	// if(IsRobot(client, ROBOT_NAME))
 	// {
-	for(int i=0;i<2048;i++){
+	// for(int i=0;i<2048;i++){
 
-		if(!IsValidEntity(i)){
-			continue;
-		}
+	// 	if(!IsValidEntity(i)){
+	// 		continue;
+	// 	}
 
-		decl String:netclass[32];
-		GetEntityNetClass(i, netclass, sizeof(netclass));
-		if ( !(strcmp(netclass, "CObjectSentrygun") == 0 || strcmp(netclass, "CObjectDispenser") == 0) ){
-			continue;
-		}
+	// 	decl String:netclass[32];
+	// 	GetEntityNetClass(i, netclass, sizeof(netclass));
+	// 	if ( !(strcmp(netclass, "CObjectSentrygun") == 0 || strcmp(netclass, "CObjectDispenser") == 0) ){
+	// 		continue;
+	// 	}
 
-		if(GetEntDataEnt2(i, OwnerOffset) != client && HasStat(client)){
-			continue;
-		}
+	// 	if(GetEntDataEnt2(i, OwnerOffset) != client && HasStat(client)){
+	// 		continue;
+	// 	}
 
 
-		int type=view_as<int>(function_GetBuildingType(i));
+	// 	int type=view_as<int>(function_GetBuildingType(i));
 
-		//Switching the dispenser to a sapper type
-		if(type==view_as<int>(TFObject_Dispenser)){
-			DispenserCount=DispenserCount+1;
-			SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
-			if(DispenserCount>=g_DispenserLimit){
-				//if the limit is reached, disallow building
-				SetEntProp(i, Prop_Send, "m_iObjectType", type);
+	// 	//Switching the dispenser to a sapper type
+	// 	if(type==view_as<int>(TFObject_Dispenser)){
+	// 		DispenserCount=DispenserCount+1;
+	// 		SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
+	// 		if(DispenserCount>=g_DispenserLimit){
+	// 			//if the limit is reached, disallow building
+	// 			SetEntProp(i, Prop_Send, "m_iObjectType", type);
 
-			}
+	// 		}
 
-		//not a dispenser,
-		}else if(type==view_as<int>(TFObject_Sentry)){
-			SentryCount++;
-			PrintToChatAll("Sentry count is %i", SentryCount);
-			SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
+	// 	//not a dispenser,
+	// 	}else if(type==view_as<int>(TFObject_Sentry)){
+	// 		SentryCount++;
+	// 		PrintToChatAll("Sentry count is %i", SentryCount);
+	// 		SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sapper);
 
-			if(SentryCount>=g_SentryLimit){
-				//if the limit is reached, disallow building
-				// PrintToChatAll("Sentry count reached for %N", client);
-				SetEntProp(i, Prop_Send, "m_iObjectType", type);
-			}else
-			{
-				SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sentry);
-			}
-		}
-	}
+	// 		if(SentryCount>=g_SentryLimit){
+	// 			//if the limit is reached, disallow building
+	// 			// PrintToChatAll("Sentry count reached for %N", client);
+	// 			SetEntProp(i, Prop_Send, "m_iObjectType", type);
+	// 		}else
+	// 		{
+	// 			SetEntProp(i, Prop_Send, "m_iObjectType", TFObject_Sentry);
+	// 		}
+	// 	}
+	// }
 }
 
-public void function_AllowDestroying(int client){
-	for(int i=1;i<2048;i++){
+// public void function_AllowDestroying(int client){
+// 	for(int i=1;i<2048;i++){
 
-		if(!IsValidEntity(i)){
-			continue;
-		}
+// 		if(!IsValidEntity(i)){
+// 			continue;
+// 		}
 
-		decl String:netclass[32];
-		GetEntityNetClass(i, netclass, sizeof(netclass));
+// 		decl String:netclass[32];
+// 		GetEntityNetClass(i, netclass, sizeof(netclass));
 
-		if ( !(strcmp(netclass, "CObjectSentrygun") == 0 || strcmp(netclass, "CObjectDispenser") == 0) ){
-			continue;
-		}
+// 		if ( !(strcmp(netclass, "CObjectSentrygun") == 0 || strcmp(netclass, "CObjectDispenser") == 0) ){
+// 			continue;
+// 		}
 
-		if(GetEntDataEnt2(i, OwnerOffset)!=client){
-			continue;
-		}
+// 		if(GetEntDataEnt2(i, OwnerOffset)!=client){
+// 			continue;
+// 		}
 
-		SetEntProp(i, Prop_Send, "m_iObjectType", function_GetBuildingType(i));
-	}
+// 		SetEntProp(i, Prop_Send, "m_iObjectType", function_GetBuildingType(i));
+// 	}
 
-}
+// }
 
-public TFObjectType function_GetBuildingType(int entIndex){
-	//This function relies on Netclass rather than building type since building type
-	//gets changed
-	decl String:netclass[32];
-	GetEntityNetClass(entIndex, netclass, sizeof(netclass));
+// public TFObjectType function_GetBuildingType(int entIndex){
+// 	//This function relies on Netclass rather than building type since building type
+// 	//gets changed
+// 	decl String:netclass[32];
+// 	GetEntityNetClass(entIndex, netclass, sizeof(netclass));
 
-	if(strcmp(netclass, "CObjectSentrygun") == 0){
-		return TFObject_Sentry;
-	}
-	if(strcmp(netclass, "CObjectDispenser") == 0){
-		return TFObject_Dispenser;
-	}
-	return TFObject_Sapper;
-}
+// 	if(strcmp(netclass, "CObjectSentrygun") == 0){
+// 		return TFObject_Sentry;
+// 	}
+// 	if(strcmp(netclass, "CObjectDispenser") == 0){
+// 		return TFObject_Dispenser;
+// 	}
+// 	return TFObject_Sapper;
+// }
 
 public MRESReturn UpdateOnRemove(int pThis)
 {
@@ -895,7 +898,7 @@ public void OnLibraryRemoved(const char[] name) {
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2]) {
 	if (!(1<=client<=MaxClients) || !IsClientInGame(client) || IsFakeClient(client)) return Plugin_Continue;
-	if ((buttons & IN_RELOAD)!=0 && !g_bPlayerThrow[client] && g_yeet == 1) {
+	if ((buttons & IN_RELOAD)!=0 && !g_bPlayerThrow[client] && g_yeet[client] == 1) {
 		if ( IsThrowBlocked(client) ) {
 			if (GetClientTime(client) - g_flClientLastNotif[client] >= 1.0) {
 				g_flClientLastNotif[client] = GetClientTime(client);
@@ -915,7 +918,7 @@ public void OnPlayerCarryObject(Event event, const char[] name, bool dontBroadca
 	int owner = GetClientOfUserId(event.GetInt("userid"));
 	int objecttype = event.GetInt("object");
 	int building = event.GetInt("index");
-	if ((g_yeet == 1 && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && ( g_iAllowTypes&(1<<objecttype) )!=0) {
+	if ((g_yeet[owner] == 1 && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && ( g_iAllowTypes&(1<<objecttype) )!=0) {
 		//small sanity check: was this building picked up while flagged as thrown?
 		if (g_aAirbornObjects.FindValue(EntIndexToEntRef(building), AirbornData::building) != -1) {
 			//visually destory the building, the check timer will clean up the phys prop later
@@ -930,7 +933,7 @@ public void OnPlayerBuiltObject(Event event, const char[] name, bool dontBroadca
 	int objecttype = event.GetInt("object");
 	int building = event.GetInt("index");
 	
-	if ((g_yeet == 1 && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && g_bPlayerThrow[owner]) {
+	if ((g_yeet[owner] == 1 && BUILDING_DISPENSER <= objecttype <= BUILDING_SENTRYGUN) && IsClientInGame(owner) && IsValidEdict(building) && g_bPlayerThrow[owner]) {
 		g_bPlayerThrow[owner] = false;
 		RequestFrame(ThrowBuilding,EntIndexToEntRef(building));
 	}
