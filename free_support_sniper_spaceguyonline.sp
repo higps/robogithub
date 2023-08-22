@@ -166,7 +166,7 @@ stock GiveBigRoboJbird(client)
 	TF2_RemoveWeaponSlot(client, 2); // kukri
 
 	CreateRoboWeapon(client, "tf_weapon_sniperrifle", 30665, 6, 1, 0, 0);
-	// CreateRoboWeapon(client, "tf_weapon_smg", 15001, 6, 1, 1, 13);
+	CreateRoboWeapon(client, "tf_weapon_smg", 15001, 6, 1, 1, 13);
 	// CreateRoboWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
 
 
@@ -179,7 +179,7 @@ stock GiveBigRoboJbird(client)
 		
 	int SniperRifle = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //SniperRifle
 	// int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
-	// int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
+	int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
 
 
@@ -196,7 +196,7 @@ stock GiveBigRoboJbird(client)
 			//TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
 			// TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
 			//TF2Attrib_SetByName(SniperRifle, "apply z velocity on damage", 450.0);
-			TF2Attrib_SetByName(SniperRifle, "critboost on kill", 3.0);
+			TF2Attrib_SetByName(SniperRifle, "minicritboost on kill", 4.0);
 			
 			// TF2Attrib_SetByName(SniperRifle, "heal on hit for rapidfire", 15.0);
 			TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
@@ -206,13 +206,13 @@ stock GiveBigRoboJbird(client)
 			
 		}
 
-	// if(IsValidEntity(SMG))
-	// 	{
-	// 		// TF2Attrib_RemoveAll(SMG);
-	// 		TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
-	// 		TF2Attrib_SetByName(SMG, "dmg penalty vs players", 1.25);
-	// 		TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
+	if(IsValidEntity(SMG))
+		{
+			// TF2Attrib_RemoveAll(SMG);
+			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
+			// TF2Attrib_SetByName(SMG, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
 			
-	// 	}
+		}
 	}
 }

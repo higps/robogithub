@@ -650,7 +650,7 @@ public void function_AllowBuilding(int client){
 	if (!HasStat(client)) {
 		return;
 	}
-	PrintToChatAll("%N has the stat, sentry limit is %i", client, g_SentryLimit);
+	// PrintToChatAll("%N has the stat, sentry limit is %i", client, g_SentryLimit);
 	// int SentryLimit = g_SentryLimit;
 	// int DispenserLimit = g_DispenserLimit;
 	// int DispenserLimit = GetConVarInt(sm_sentry_limit);

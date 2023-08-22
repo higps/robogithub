@@ -100,6 +100,8 @@ float g_HumanMiniGunDmGPenalty = 0.8;
 
 float g_wrap_duration = 5.0;
 
+float g_crit_a_cola_duration = 2.0;
+
 #define SPY_ROBOT_STAB	"weapons/saxxy_impact_gen_01.wav"
 // #define SPY_ROBOT_STAB	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 
@@ -188,10 +190,10 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
         if (IsSunOnAStick(Weapon3))
         {
-            TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=30.0");
+            TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=40.0");
         }else
         {
-            TF2CustAttr_SetString(client, "Spell-Caster", "Spell=-1 Cooldown=25.0 SpellOnCond=9 Cond=11");
+            TF2CustAttr_SetString(client, "Spell-Caster", "Spell=-1 Cooldown=40.0");
         }
 
         if(HasFrontierJustice(client))
@@ -202,7 +204,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 
         if(TF2_GetPlayerClass(client) == TFClass_Scout)
         {
-            TF2CustAttr_SetString(client, "faster-respawn", "respawn=4.0");
+            TF2CustAttr_SetString(client, "faster-respawn", "respawn=8.0");
         }
     }
 }
@@ -1278,7 +1280,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
 
             // PrintToChatAll("Setting respawn stat");
-            TF2CustAttr_SetString(client, "faster-respawn", "respawn=4.0");
+            TF2CustAttr_SetString(client, "faster-respawn", "respawn=8.0");
 
             stat1 = 0.80;
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Power: {orange}Greatly reduced respawn time\nAll weapons {orange}penetrate robots, +%0.f%%% faster reload",chat_display, LessIsMore(stat1));
@@ -1328,12 +1330,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsSunOnAStick(Weapon3))
             {
-                TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=30.0");
+                TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=40.0");
                 // TF2_RegeneratePlayer(client);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display, MoreIsMore(stat1), stat2);
             }else
             {
-                TF2CustAttr_SetString(client, "Spell-Caster", "Spell=-1 Cooldown=25.0 SpellOnCond=9 Cond=11");
+                TF2CustAttr_SetString(client, "Spell-Caster", "Spell=-1 Cooldown=40.0");
             }
 
             if (IsCandyCane(Weapon3))
@@ -1344,6 +1346,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon3, "health regen", stat2);
                 // TF2CustAttr_SetString(Weapon3, "spawn-healthpack-on-dmg", "damage=500 levels=3");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Candy Cane: {orange}+%0.0f%%%% more health{teamcolor} from healthpacks. {orange}+%0.0f health{teamcolor} regenerated per second",chat_display, MoreIsMore(stat1), stat2);
+            }
+
+            if (IsMadMilk(Weapon2))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Milk: {orange}Mad milk has less duration vs robots",chat_display);
+            }
+
+            if (IsCritACola(Weapon2))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Crit-a-Cola: {orange}Applies %0.f second crits when used",chat_display, g_crit_a_cola_duration);
             }
 
         }
@@ -2370,19 +2382,19 @@ bool IsThirdDegree(int weapon)
 	return false;
 }
 
-// bool IsBat(int weapon){
-// 	if(weapon == -1 && weapon <= MaxClients) return false;
+bool IsCritACola(int weapon){
+	if(weapon == -1 && weapon <= MaxClients) return false;
 	
-// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-// 	{
-// 		//If other allclass are added, add here
-// 	case 0, 190, 660, 30667: 
-// 		{
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other allclass are added, add here
+	case 163: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 bool IsShotGun(int weapon){
 	if(weapon == -1 && weapon <= MaxClients) return false;
@@ -2935,16 +2947,49 @@ void SetHealingDebuff(int victim, float value, float duration, int attacker)
     TF2Attrib_AddCustomPlayerAttribute(victim, "mult_health_fromhealers_penalty_active", value, duration);
 
 }
+// int g_attacker[MAXPLAYERS + 1];
+float milk_time[MAXPLAYERS + 1] = {0.0,...};
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
 	
         //Code To Handle Sentry Vuln on spun up heavies
-		if (IsAnyRobot(client) && condition == TFCond_Slowed && TF2_GetPlayerClass(client) == TFClass_Heavy)
+		if (IsAnyRobot(client))
 		{	
             // PrintToChatAll("%N WAS SPUN UP", client);
-            TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.25);
+            if (condition == TFCond_Slowed && TF2_GetPlayerClass(client) == TFClass_Heavy)TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.25);
+
+            if (condition == TFCond_Milked && milk_time[client] < GetEngineTime())
+            {
+                // PrintToChatAll("%N was milked", client);
+                
+                TF2_AddCondition(client, TFCond_Milked, 4.0);
+
+                milk_time[client] = GetEngineTime() + 0.2;
+
+                // RequestFrame(RemoveMilk, client);
+            }
+
+            
+            if (condition == TFCond_MarkedForDeath && milk_time[client] < GetEngineTime())
+            {
+                // PrintToChatAll("%N was marked", client);
+                TF2_RemoveCondition(client, TFCond_MarkedForDeath);
+                TF2_AddCondition(client, TFCond_MarkedForDeath, 4.0);
+
+                milk_time[client] = GetEngineTime() + 0.2;
+
+                // RequestFrame(RemoveMilk, client);
+            }
 		}
+
+        if (!IsAnyRobot(client))
+        {
+            if (condition == TFCond_CritCola)
+            {
+                TF2_AddCondition(client, TFCond_CritCanteen, g_crit_a_cola_duration);
+            }
+        }
 
 
         // if(!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_DemoMan && condition == TFCond_Taunting)
@@ -2962,6 +3007,12 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
         // }
 	
 }
+
+// void RemoveMilk (int client)
+// {
+    
+//     // TF2_AddCondition(client, TFCond_Milked, 1.0 , g_attacker);
+// }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
 {
