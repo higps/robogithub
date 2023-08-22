@@ -28,7 +28,7 @@ public void OnCritBannerPulse(int owner, int target, const char[] name, int buff
 	// TF2_AddCondition(target, TFCond_SpeedBuffAlly, BUFF_PULSE_CONDITION_DURATION, owner);
 	TF2_AddCondition(target, TFCond_RegenBuffed, BUFF_PULSE_CONDITION_DURATION, owner);
 	// TF2_AddCondition(target, TFCond_RuneRegen, BUFF_PULSE_CONDITION_DURATION, owner);
-	TF2Attrib_AddCustomPlayerAttribute(target, "health regen", 25.0, BUFF_PULSE_CONDITION_DURATION);
+	TF2Attrib_AddCustomPlayerAttribute(target, "health regen", 40.0, BUFF_PULSE_CONDITION_DURATION);
 
 }
 

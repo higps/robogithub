@@ -7,12 +7,12 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Fan Scout"
+#define ROBOT_NAME	"Hype Scout"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Disruptor"
 #define ROBOT_DESCRIPTION "High Pushback"
-#define ROBOT_COST 1.0
+#define ROBOT_COST 0.75
 #define ROBOT_COIN_GENERATION 2
 #define ROBOT_ON_DEATH "Focus fire this robot before he causes too much disruption"
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
@@ -22,7 +22,7 @@
 
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant <Someone> Scout",
+	name = "[TF2] Be the Giant Hype Scout",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
 	description = "Play as the Giant Scout",
 	version = PLUGIN_VERSION,
@@ -152,8 +152,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	if (IsValidClient(client))
 		GiveGiantPyro(client);
 }
-#define TheFedFightinFedora 780
-#define TheBoltBoy 30027
+#define LightningLid 30867
+// #define TheBoltBoy 30027
+#define SpeedsterSpandex  30875
 stock GiveGiantPyro(client)
 {
 	if (IsValidClient(client))
@@ -164,26 +165,21 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_scattergun", 45, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_soda_popper", 448, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, TheFedFightinFedora, 10, 6, 0.0, 1.0, -1.0);
-		CreateRoboHat(client, TheBoltBoy, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, LightningLid, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, SpeedsterSpandex, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 
 		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_RemoveAll(Weapon1);
-			
-			TF2Attrib_SetByName(Weapon1, "bullets per shot bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
-			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.5);
-			TF2Attrib_SetByName(Weapon1, "scattergun knockback mult", 6.0);
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.5);
-			TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.3);
+			// TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.65);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);	
+			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
 			// TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			
 			

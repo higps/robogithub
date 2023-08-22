@@ -12,7 +12,7 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rocket"
-#define ROBOT_DESCRIPTION "Conch"
+#define ROBOT_DESCRIPTION "Increased Healing Concheror"
 #define ROBOT_COST 2.0
 #define ROBOT_TIPS "You have extended banner duration"
 #define ROBOT_ON_DEATH "Avoid getting or place yourself far away to negate or reduce the healing on damage done."
@@ -171,7 +171,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "health regen", 12.0);
+
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	TF2Attrib_SetByName(client, "increase buff duration", 2.5);
@@ -266,6 +266,7 @@ stock GiveGiantSoldier(client)
 			TF2CustAttr_SetString(Weapon2, "custom buff type", "concho-banner");
 			// TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
 			// TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
+			TF2Attrib_SetByName(Weapon2, "health regen", 12.0);
 		}
 		
 		// if(IsValidEntity(Weapon3))

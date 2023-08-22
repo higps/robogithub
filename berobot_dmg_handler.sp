@@ -1164,6 +1164,14 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 // TF2Attrib_SetByName(Weapon3, "blast dmg to self increased", 1000.0);
             }
 
+            if (IsSkullCutter(Weapon3))
+            {
+                stat1 = 1.35;
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Skullcutter: {orange}%0.0f% increased damage bonus{teamcolor}",chat_display, OneIs100(stat1));
+                TF2Attrib_SetByName(Weapon3, "damage bonus", stat1);
+            }
+
             
         }
 
@@ -2173,6 +2181,21 @@ bool IsSunOnAStick(int weapon)
 	{
 		//Sun-on-a-stick
 	case 349: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsSkullCutter(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+
+	case 172: 
 		{
 			return true;
 		}
