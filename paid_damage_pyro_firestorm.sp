@@ -14,8 +14,8 @@
 #define ROBOT_SUBCLASS "Flames"
 #define ROBOT_DESCRIPTION "Wide Fire"
 #define ROBOT_TIPS "Heal 175 on extinguish"
-#define ROBOT_ON_DEATH ""
-#define ROBOT_COST 0.75
+#define ROBOT_ON_DEATH "Stay out of Fire Storms Range"
+#define ROBOT_COST 3.0
 #define ROBOT_COIN_GENERATION 1
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
@@ -60,6 +60,8 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.sounds.gunfire = SOUND_GUNFIRE;
+	robot.sounds.windup = SOUND_WINDUP;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
