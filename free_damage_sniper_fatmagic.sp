@@ -200,7 +200,7 @@ stock GiveBigRoboHuntsbot(client)
 	CreateRoboWeapon(client, "tf_weapon_club", 232, 6, 1, 2, 0); //shahansah
 
 	CreateRoboHat(client, KingTavish, 10, 6, 0.0, 1.25, 1.0); 
-	CreateRoboHat(client, 30817, 10, 6, 0.0, 1.25, 1.0); 
+	CreateRoboHat(client, 31037, 10, 6, 0.0, 1.25, 1.0); 
 
 
 	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah

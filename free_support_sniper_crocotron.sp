@@ -169,7 +169,7 @@ stock GiveBigRoboJbird(client)
 
 	CreateRoboWeapon(client, "tf_weapon_sniperrifle", 230, 6, 1, 0, 0);
 	// CreateRoboWeapon(client, "tf_weapon_jar", 58, 6, 1, 1, 0);
-	// CreateRoboWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
+	CreateRoboWeapon(client, "tf_weapon_club", 232, 6, 1, 2, 0); //shahansah
 
 
 	CreateRoboHat(client, Snaggle, 10, 6, 0.0, 1.25, -1.0); 
@@ -180,7 +180,7 @@ stock GiveBigRoboJbird(client)
 
 		
 	int SniperRifle = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //SniperRifle
-	// int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
+	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
 	// int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
 
@@ -203,14 +203,16 @@ stock GiveBigRoboJbird(client)
 			
 		}
 
-	// if(IsValidEntity(SMG))
-	// 	{
-	// 		// TF2Attrib_RemoveAll(SMG);
-	// 		TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
-	// 		TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.25);
+		if(IsValidEntity(Kukri))
+		{
+			TF2Attrib_RemoveAll(Kukri);
 			
-			
-	// 	}
+			TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
+			// TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
+			// TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
+			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
+
+		}
 	}
 }
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
@@ -222,9 +224,9 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(!IsValidClient(attacker))
 		return Plugin_Continue;
 
-	if (IsRobot(attacker, ROBOT_NAME))
+	if (IsRobot(attacker, ROBOT_NAME) && damagecustom != 0)
 	{
-
+		// PrintToChatAll("damagecustom %i", damagecustom);
 		SpawnBombs(victim, attacker);
 		// BreadBoom(attacker, victim);
 

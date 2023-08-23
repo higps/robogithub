@@ -5,17 +5,13 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
-#include <tf_custom_attributes>
 //#include <sendproxy>
 #include <dhooks>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Jbird"
-#define ROBOT_ROLE "Sniper"
-#define ROBOT_CLASS "Sniper"
-#define ROBOT_SUBCLASS "Sniper"
-#define ROBOT_DESCRIPTION "Explosive headshot, Cozy Camper"
-#define ROBOT_ON_DEATH "Jbird has explosive headshots\nCounter-snipe or backstab sniper bots while they are distracted"
+#define ROBOT_NAME	"Carbine Cassidy"
+#define ROBOT_ROLE "Damage"
+#define ROBOT_DESCRIPTION "Headshot Carbine"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -34,21 +30,20 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	LoadTranslations("common.phrases");
+    LoadTranslations("common.phrases");
 
-	//HookEvent("player_death", Event_Death, EventHookMode_Post);
+    //HookEvent("player_death", Event_Death, EventHookMode_Post);
 
-	RobotDefinition robot;
-	robot.name = ROBOT_NAME;
-	robot.role = ROBOT_ROLE;
-	robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
-	robot.shortDescription = ROBOT_DESCRIPTION;
-	robot.sounds.spawn = SPAWN;
-	robot.sounds.loop = LOOP;
-	robot.sounds.death = DEATH;
+    RobotDefinition robot;
+    robot.name = ROBOT_NAME;
+    robot.role = ROBOT_ROLE;
+    robot.class = "Sniper";
+    robot.shortDescription = ROBOT_DESCRIPTION;
+    robot.sounds.spawn = SPAWN;
+    robot.sounds.loop = LOOP;
+    robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-	AddRobot(robot, MakeSniper, PLUGIN_VERSION);
+    AddRobot(robot, MakeSniper, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -65,7 +60,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnMapStart()
 {
-	// PrecacheModel(ChangeDane);
+	PrecacheModel(ChangeDane);
 
 
 
@@ -102,7 +97,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1500;
+	int iHealth = 1250;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
 
@@ -110,30 +105,32 @@ MakeSniper(client)
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-
-	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
+	
+	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
+TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-
+	
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "major increased jump height", 1.9);
+	// TF2Attrib_SetByName(client, "major increased jump height", 0.8);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "health regen", 10.0);
+	// TF2Attrib_SetByName(client, "health regen", 10.0);
+	TF2Attrib_SetByName(client, "deploy time decreased", 0.01);
+	
 
 	UpdatePlayerHitbox(client, 1.65);
-
+	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-
-	PrintHintText(client , "You have explosive headshots\nYou regenerate health over time");
-
+	
+	// PrintHintText(client , "You have explosive headshots");
+	
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -150,9 +147,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 
-#define Panama 109
-#define OutbackIntellectial 645
-#define Veil 393
+// #define Panama 109
+// #define OutbackIntellectial 645
+// #define Veil 393
 
 stock GiveBigRoboJbird(client)
 {
@@ -165,63 +162,33 @@ stock GiveBigRoboJbird(client)
 	TF2_RemoveWeaponSlot(client, 1); //Smg
 	TF2_RemoveWeaponSlot(client, 2); // kukri
 
-	CreateRoboWeapon(client, "tf_weapon_sniperrifle", 14, 6, 1, 0, 0);
-	//CreateRoboWeapon(client, "tf_weapon_smg", 16, 6, 1, 1, 0);
-	CreateRoboWeapon(client, "tf_weapon_club", 401, 6, 1, 2, 0); //shahansah
+	CreateRoboWeapon(client, "tf_weapon_charged_smg", 751, 6, 1, 1, 0);
+	CreateRoboWeapon(client, "tf_weapon_club", 232, 6, 1, 2, 0); //shahansah
 
-		
-	CreateRoboWeapon(client, "tf_wearable", 642, 6, 1, 3, 0); 
+	int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //Carbine
+	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Bushwacka
 
-	CreateRoboHat(client, Panama, 10, 6, 0.0, 1.3, -1.0); 
-	CreateRoboHat(client, OutbackIntellectial, 10, 6, 7511618.0, 1.3, -1.0); 
-	CreateRoboHat(client, Veil, 10, 6, 7511618.0, 1.3, -1.0); 
-
-
-		
-	int SniperRifle = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //SniperRifle
-	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
-	// int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
-
-
-
-	if(IsValidEntity(SniperRifle))
+	if(IsValidEntity(SMG))
 		{
-			TF2Attrib_RemoveAll(SniperRifle);
-			
-			TF2Attrib_SetByName(SniperRifle, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(SniperRifle, "damage bonus", 1.33);
-		
-			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
-			TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
-			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 3.0);
-			
-			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
-			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
-			TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 1.0);
-			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs players", 0.75);
-			
-			
-			
-			
+			TF2Attrib_RemoveAll(SMG);
+			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
+			// TF2Attrib_SetByName(SMG, "dmg penalty vs players", 1.5);
+			// TF2Attrib_SetByName(SMG, "fire rate penalty", 1.25);
+			//TF2Attrib_SetByName(SMG, "clip size bonus", 2.0);
+			TF2Attrib_SetByName(SMG, "hidden secondary max ammo penalty", 2.0);
+			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
 		}
-	if(IsValidEntity(Kukri))
+	
+
+		if(IsValidEntity(Kukri))
 		{
 			TF2Attrib_RemoveAll(Kukri);
 			
 			TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
-			// TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.25);
-			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
+			TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Kukri, "melee range multiplier", 1.2);
 
 		}
-	// if(IsValidEntity(SMG))
-	// 	{
-	// 		TF2Attrib_RemoveAll(SMG);
-	// 		TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
-	// 		TF2Attrib_SetByName(SMG, "dmg penalty vs players", 1.25);
-	// 		TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
-			
-	// 	}
 	}
 }

@@ -189,18 +189,6 @@ int damagecustom, CritType &critType)
 	return Plugin_Continue;
 }
 
-
-public Action:SpawnAndDropSmallHealthpack(int client, float position, float velocity) {
-
-    entity healthPackEntity = CreateEntity("item_healthkit_small");
-    if (healthPackEntity != null) {
-        healthPackEntity.SetOrigin(position);
-        healthPackEntity.SetAbsVelocity(velocity);
-        DispatchSpawn(healthPackEntity);
-        ActivateEntity(healthPackEntity);
-    }
-}
-
 // stock TF_SpawnMedipack(client, String:name[], bool:cmd)
 // {
 //     new Float:PlayerPosition[3];
