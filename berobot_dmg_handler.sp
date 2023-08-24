@@ -1395,7 +1395,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
             if(IsBlutsauger(Weapon1))
             {
-                stat1 = 20.0;
+                stat1 = 10.0;
                 TF2Attrib_SetByName(Weapon1, "max health additive bonus", stat1);
                 // TF2Attrib_SetByName(Weapon1, "mod see enemy health", 1.0);
                 
@@ -1456,16 +1456,18 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsStockOrAllClassWeapon(Weapon3))
             {
-                stat1 = 1.25;
-                TF2Attrib_SetByName(Weapon3, "ubercharge rate bonus", 1.25);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+%0.0f%%%% faster build rate",chat_display, MoreIsMore(stat1));
+                stat1 = 2.0;
+                stat2 = 10.0;
+                TF2Attrib_SetByName(Weapon3, "uber duration bonus", stat1);
+                TF2Attrib_SetByName(Weapon1, "max health additive bonus", stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+%0.0f {teamcolor}seconds longer uber duration. +{orange}%0.0f{teamcolor} max HP",chat_display,(stat1), stat2);
             }
 
             if (IsQuickfix(Weapon2))
             {
                 TF2Attrib_SetByName(Weapon2, "generate rage on heal", 1.0);
                 TF2Attrib_SetByName(Weapon2, "increase buff duration", 0.8);
-			    TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.7");
+			    TF2CustAttr_SetString(Weapon2, "rage fill multiplier", "0.5");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Quickfix: {orange}Medic MvM Shield",chat_display);
             }
 
@@ -2985,9 +2987,9 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
             if (condition == TFCond_Milked && milk_time[client] < GetEngineTime())
             {
                 // PrintToChatAll("%N was milked", client);
-                
+                TF2_RemoveCondition(client, TFCond_Milked);
                 TF2_AddCondition(client, TFCond_Milked, 4.0);
-
+                TF2_AddCondition(client, 71, 4.0);
                 milk_time[client] = GetEngineTime() + 0.2;
 
                 // RequestFrame(RemoveMilk, client);

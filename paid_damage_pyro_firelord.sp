@@ -8,7 +8,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"FireStorm"
+#define ROBOT_NAME	"FireLord"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
@@ -227,8 +227,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
 			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
 			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 175.0);
-			TF2CustAttr_SetString(Weapon1,"spawn-fireballs", "damage=50.0 range=350.0 projectiles=1 firetime=5.0 angle=0 only-yaw=1 random-spread=0");
-			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=9 Cooldown=40.0");
+			TF2CustAttr_SetString(Weapon1,"spawn-fireballs", "damage=5.0 range=350.0 projectiles=1 firetime=5.0 angle=0 only-yaw=1 random-spread=0");
+			// TF2CustAttr_SetString(client, "Spell-Caster", "Spell=9 Cooldown=40.0");
 			// TF2CustAttr_SetString(Weapon1, "fire ring attribute", "max_rage=1000.0 damage=70.0 radius=150.0 duration=10.0");
 			// TF2Attrib_SetByName(Weapon1, "airblast vertical pushback scale", 1.5);
 			
