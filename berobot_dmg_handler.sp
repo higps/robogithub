@@ -1071,7 +1071,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 
                 // TF2Attrib_SetByName(Weapon3, "crit vs burning players", 1.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Axtinguisher: {orange}Provides %0.0f second speed boost{teamcolor}and{orange}%0.0f seconds of Battalion Backup buff",chat_display, g_axtinguisherspeedboost, g_axtinguisherbuffduration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Axtinguisher: {orange}Provides %0.0f second speed boost{teamcolor} and{orange}%0.0f seconds of Battalion Backup buff",chat_display, g_axtinguisherspeedboost, g_axtinguisherbuffduration);
 
             }
 
