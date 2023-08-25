@@ -208,13 +208,8 @@ stock GiveBigRoboJbird(client)
 
 	if(IsValidEntity(SMG))
 		{
-			// TF2Attrib_RemoveAll(SMG);
 			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(SMG, "sniper fires tracer", -1.0);
-			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
-			// TF2Attrib_SetByName(SMG, "lunchbox adds minicrits", 3.0);
-			// TF2Attrib_SetByName(SMG, "clip size bonus", 0.0);
-			
+			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);	
 		}
 	}
 }

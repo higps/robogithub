@@ -249,6 +249,7 @@ bool HasStat(int client)
 	char stat_buffer[256];
 	if (!TF2CustAttr_GetString(Weapon3, "robot engineer", stat_buffer, sizeof(stat_buffer))) {
 		//PrintToChatAll("Has Stat Not Found for %N", client);
+		g_yeet[client] = 0;
 		return false;
 		
 	}

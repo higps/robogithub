@@ -10,6 +10,7 @@
 #include <tf_ontakedamage>
 #include <tf2_isPlayerInSpawn>
 //#include <tf2items_giveweapon>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Warper"
@@ -244,7 +245,7 @@ stock GiveBigRoboDane(client)
 	TF2_RemoveWeaponSlot(client, 4);// inviswatch
 
 	
-	// CreateRoboWeapon(client, "tf_weapon_revolver", 224, 6, 1, 0, 0);
+	CreateRoboWeapon(client, "tf_weapon_revolver", 525, 6, 1, 0, 0); //Diamondback
 	CreateRoboWeapon(client, "tf_weapon_knife", 194, 6, 1, 2, 241); //kunai
 	CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 	CreateRoboWeapon(client, "tf_weapon_sapper", 735, 6, 1, 1, 0);//snack attack
@@ -256,20 +257,20 @@ stock GiveBigRoboDane(client)
 	// CreateRoboHat(client, Spek, 10, 6, 0.0, 1.0, -1.0);
 	
 		
-	// int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
+	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
 	int Knife = GetPlayerWeaponSlot(client, 2); //Knife
 	int Cloak = GetPlayerWeaponSlot(client, 4); //Invis watch
 	int Sapper = GetPlayerWeaponSlot(client, 1); //Sapper
 
-	// if(IsValidEntity(Revolver)) //Revovler
-	// 	{
-	// 		TF2Attrib_RemoveAll(Revolver);
+	if(IsValidEntity(Revolver)) //Revovler
+		{
+			TF2Attrib_RemoveAll(Revolver);
 			
-	// 		TF2Attrib_SetByName(Revolver, "fire rate bonus", 2.5);
-	// 		TF2Attrib_SetByName(Revolver, "damage bonus", 2.0);
-	// 		TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
+			// TF2Attrib_SetByName(Revolver, "fire rate bonus", 2.5);
+			// TF2Attrib_SetByName(Revolver, "damage bonus", 2.0);
+			TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
 						
-	// 	}
+		}
 
 	if(IsValidEntity(Knife)) //
 		{
@@ -281,7 +282,6 @@ stock GiveBigRoboDane(client)
 			// TF2Attrib_SetByName(Knife, "mod_disguise_consumes_cloak", 0.0);
 			// TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
 			// TF2Attrib_SetByName(Knife, "restore health on kill", 10.0);
-			
 						
 		}
 	if(IsValidEntity(Cloak)) //

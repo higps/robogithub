@@ -208,9 +208,7 @@ stock GiveBigRoboJbird(client)
 
 	if(IsValidEntity(SMG))
 		{
-			// TF2Attrib_RemoveAll(SMG);
 			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(SMG, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
 			
 		}
