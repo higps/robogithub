@@ -11,10 +11,10 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Hitscan"
-#define ROBOT_DESCRIPTION "Long Range Shortstop"
-#define ROBOT_DETAILS "Your shortstop has long range"
-#define ROBOT_COST 1.5
-#define ROBOT_COIN_GENERATION 2
+#define ROBOT_DESCRIPTION "Rapid Fire Backscatter"
+#define ROBOT_DETAILS "Faster firing & reload speed, 200 heal on kill"
+#define ROBOT_COST 2.0
+#define ROBOT_COIN_GENERATION 1
 #define ROBOT_ON_DEATH "Vaccinator and Battalions Backup counters this robot"
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -147,6 +147,7 @@ MakeGiantscout(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	TF2Attrib_SetByName(client, "head scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -169,8 +170,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define CrossCom 765
-#define FuelInjector 31081
+#define BedouinBandana 30768
+#define GoalKeeper 31217
 #define Rippedrider 31281
 
 stock GiveGiantPyro(client)
@@ -185,9 +186,21 @@ stock GiveGiantPyro(client)
 
 		CreateRoboWeapon(client, "tf_weapon_scattergun", 1103, 6, 1, 2, 217);
 		// CreateRoboWeapon(client, "tf_weapon_bat_wood", 44, 6, 1, 2, 0);
-		
-		CreateRoboHat(client, CrossCom, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, FuelInjector, 10, 6, 0.0, 1.0, -1.0); 
+
+		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		float TeamPaint = 0.0;
+
+		if (iTeam == TFTeam_Blue){
+			TeamPaint = 5801378.0;
+			
+		}
+		if (iTeam == TFTeam_Red){
+			
+			TeamPaint = 12073019.0;
+		}
+
+		CreateRoboHat(client, BedouinBandana, 10, 6, TeamPaint, 1.0, -1.0); 
+		CreateRoboHat(client, GoalKeeper, 10, 6, TeamPaint, 1.0, 1.0); 
 		CreateRoboHat(client, Rippedrider, 10, 6, 0.0, 1.0, -1.0); 
 		
 

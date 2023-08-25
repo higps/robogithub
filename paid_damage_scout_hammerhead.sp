@@ -14,7 +14,7 @@
 #define ROBOT_DESCRIPTION "Long Range Shortstop"
 #define ROBOT_DETAILS "Your shortstop has long range"
 #define ROBOT_COST 1.5
-#define ROBOT_COIN_GENERATION 2
+#define ROBOT_COIN_GENERATION 1
 #define ROBOT_ON_DEATH "Vaccinator and Battalions Backup counters this robot"
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
