@@ -13,9 +13,9 @@
 #define ROBOT_ROLE "Sniper"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
-#define ROBOT_DESCRIPTION "Crit Boost On Kill"
-#define ROBOT_TIPS "Crit On Kill Shooting Star\nYour bullets always penetrate enemies"
-#define ROBOT_ON_DEATH "SpaceGuyOnline gains a critboost on kill\nCounter-snipe or backstab sniper bots while they are distracted"
+#define ROBOT_DESCRIPTION "Mini-Crit Boost On Kill"
+#define ROBOT_TIPS "Mini-Crit On Kill Shooting Star\nYour bullets always penetrate enemies\nDefend yourself with your SMG"
+#define ROBOT_ON_DEATH "SpaceGuyOnline gains a mini-crit boost on kill\nCounter-snipe or backstab sniper bots while they are distracted"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
