@@ -7,15 +7,14 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Hammerhead"
-#define ROBOT_ROLE "Damage"
+#define ROBOT_NAME	"Hype Scout"
+#define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Scout"
-#define ROBOT_SUBCLASS "Hitscan"
-#define ROBOT_DESCRIPTION "Long Range Shortstop"
-#define ROBOT_DETAILS "Your shortstop has long range"
-#define ROBOT_COST 1.5
-#define ROBOT_COIN_GENERATION 1
-#define ROBOT_ON_DEATH "Vaccinator and Battalions Backup counters this robot"
+#define ROBOT_SUBCLASS "Disruptor"
+#define ROBOT_DESCRIPTION "High Pushback"
+#define ROBOT_COST 0.75
+#define ROBOT_COIN_GENERATION 2
+#define ROBOT_ON_DEATH "Focus fire this robot before he causes too much disruption"
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -23,7 +22,7 @@
 
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant <Someone> Scout",
+	name = "[TF2] Be the Giant Hype Scout",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
 	description = "Play as the Giant Scout",
 	version = PLUGIN_VERSION,
@@ -43,6 +42,7 @@ public OnPluginStart()
 	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
+
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -74,24 +74,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
-	
-
-
-
-	
-
-	PrecacheSound("mvm/giant_scout/giant_scout_step_01.wav");
-	PrecacheSound("mvm/giant_scout/giant_scout_step_03.wav");
-	PrecacheSound("mvm/giant_scout/giant_scout_step_02.wav");
-	PrecacheSound("mvm/giant_scout/giant_scout_step_04.wav");
-	
-	//PrecacheSound(SOUND_GUNFIRE);
-	//PrecacheSound(SOUND_WINDUP);
-	
-}
-
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -121,7 +103,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 2000;
+	int iHealth = 2150;
 		
 	int MaxHealth = 125;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -137,14 +119,16 @@ MakeGiantscout(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
-	//TF2Attrib_SetByName(client, "damage force increase", 10.0);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.5);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
+	TF2Attrib_SetByName(client, "damage force reduction", 2.0);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 2.0);
+	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
+	
+	
 	TF2Attrib_SetByName(client, "increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
@@ -152,7 +136,7 @@ MakeGiantscout(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , ROBOT_DETAILS);
+	PrintHintText(client , "Force'A'Nature: Extreme knockback");
 	
 }
 
@@ -168,11 +152,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	if (IsValidClient(client))
 		GiveGiantPyro(client);
 }
-
-#define FortunateSon 30636
-#define ImpImprint 31302
-#define ForestFootWear 30890
-
+#define LightningLid 30867
+// #define TheBoltBoy 30027
+#define SpeedsterSpandex  30875
 stock GiveGiantPyro(client)
 {
 	if (IsValidClient(client))
@@ -183,42 +165,30 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_handgun_scout_primary", 220, 6, 1, 2, 217);
-		// CreateRoboWeapon(client, "tf_weapon_bat_wood", 44, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_soda_popper", 448, 6, 1, 2, 0);
 		
-		CreateRoboHat(client, FortunateSon, 10, 6, 7511618.0, 1.0, -1.0); 
-		CreateRoboHat(client, ImpImprint, 10, 6, 7511618.0, 1.0, -1.0); 
-		CreateRoboHat(client, ForestFootWear, 10, 6, 7511618.0, 1.0, -1.0); 
+		CreateRoboHat(client, LightningLid, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, SpeedsterSpandex, 10, 6, 0.0, 1.0, -1.0);
 
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 
-		if(IsValidEntity(Weapon2))
+		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "reload time increased hidden", 0.75);
-			TF2Attrib_SetByName(Weapon2, "weapon spread bonus", 0.6);
-
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 2.0);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 0.8);
-
+			// TF2Attrib_RemoveAll(Weapon1);
+			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.65);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);	
+			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
+			// TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+			
 			
 		}
-
-		
 	}
 }
+ 
+
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 
-
-stock void TF2_SetWeaponAmmo(int weapon, int amount) {
-	int ammoType = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
-	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
-	
-	if (client > 0 && client <= MaxClients && ammoType != -1) {
-		SetEntProp(client, Prop_Send, "m_iAmmo", amount, 4, ammoType);
-	}
-}

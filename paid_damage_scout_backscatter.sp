@@ -7,13 +7,13 @@
 #include <berobot>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Hammerhead"
+#define ROBOT_NAME	"Backscatter"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Hitscan"
-#define ROBOT_DESCRIPTION "Long Range Shortstop"
-#define ROBOT_DETAILS "Your shortstop has long range"
-#define ROBOT_COST 1.5
+#define ROBOT_DESCRIPTION "Rapid Fire Backscatter"
+#define ROBOT_DETAILS "Faster firing & reload speed, 200 heal on kill"
+#define ROBOT_COST 2.0
 #define ROBOT_COIN_GENERATION 1
 #define ROBOT_ON_DEATH "Vaccinator and Battalions Backup counters this robot"
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
@@ -137,7 +137,7 @@ MakeGiantscout(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
 	//TF2Attrib_SetByName(client, "damage force increase", 10.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.5);
@@ -147,6 +147,7 @@ MakeGiantscout(client)
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	TF2Attrib_SetByName(client, "head scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -169,9 +170,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 
-#define FortunateSon 30636
-#define ImpImprint 31302
-#define ForestFootWear 30890
+#define BedouinBandana 30768
+#define GoalKeeper 31217
+#define Rippedrider 31281
 
 stock GiveGiantPyro(client)
 {
@@ -183,12 +184,25 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_handgun_scout_primary", 220, 6, 1, 2, 217);
+		CreateRoboWeapon(client, "tf_weapon_scattergun", 1103, 6, 1, 2, 217);
 		// CreateRoboWeapon(client, "tf_weapon_bat_wood", 44, 6, 1, 2, 0);
+
+		TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		float TeamPaint = 0.0;
+
+		if (iTeam == TFTeam_Blue){
+			TeamPaint = 5801378.0;
+			
+		}
+		if (iTeam == TFTeam_Red){
+			
+			TeamPaint = 12073019.0;
+		}
+
+		CreateRoboHat(client, BedouinBandana, 10, 6, TeamPaint, 1.0, -1.0); 
+		CreateRoboHat(client, GoalKeeper, 10, 6, TeamPaint, 1.0, 1.0); 
+		CreateRoboHat(client, Rippedrider, 10, 6, 0.0, 1.0, -1.0); 
 		
-		CreateRoboHat(client, FortunateSon, 10, 6, 7511618.0, 1.0, -1.0); 
-		CreateRoboHat(client, ImpImprint, 10, 6, 7511618.0, 1.0, -1.0); 
-		CreateRoboHat(client, ForestFootWear, 10, 6, 7511618.0, 1.0, -1.0); 
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 
@@ -196,12 +210,12 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "reload time increased hidden", 0.75);
-			TF2Attrib_SetByName(Weapon2, "weapon spread bonus", 0.6);
+			TF2Attrib_SetByName(Weapon2, "weapon spread bonus", 0.7);
 
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 2.0);
+			TF2Attrib_SetByName(Weapon2, "heal on kill", 200.0);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 0.8);
+			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.8);
 
 			
 		}

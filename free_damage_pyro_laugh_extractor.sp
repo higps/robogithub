@@ -22,6 +22,12 @@
 
 #define SCREAM	"ambient/halloween/male_scream_10.wav"
 
+bool g_button_held[MAXPLAYERS + 1] = false;
+// float g_Recharge[MAXPLAYERS + 1] = 0.0;
+// float g_RechargeCooldown = 5.0;
+float g_skill;
+int g_KillCount = 0;
+int g_KillsNeeded = 5;
 
 public Plugin:myinfo = 
 {
@@ -39,11 +45,6 @@ enum(<<= 1)
     SML_INFO,
     SML_ERROR,
 }
-
-// new bool:Locked1[MAXPLAYERS+1];
-// new bool:Locked2[MAXPLAYERS+1];
-// new bool:Locked3[MAXPLAYERS+1];
-// new bool:CanWindDown[MAXPLAYERS+1];
 
 public OnPluginStart()
 {
@@ -219,16 +220,13 @@ stock GiveGiantPyro(client)
 
 
 		}
+
+		g_KillCount = 5;
 	}
 }
 
 
-bool g_button_held[MAXPLAYERS + 1] = false;
-float g_Recharge[MAXPLAYERS + 1] = 0.0;
-float g_RechargeCooldown = 5.0;
-float g_skill;
-int g_KillCount = 0;
-int g_KillsNeeded = 5;
+
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
@@ -279,7 +277,7 @@ void DrawHUD(int client)
 
 	if(iCountDown <= 0)
 	{
-		Format(sHUDText, sizeof(sHUDText), "Laugh Extraction Ready!\nReload to use!");
+		Format(sHUDText, sizeof(sHUDText), "Laugh Extraction Ready!\nSpecial Attack to use!");
 			
 		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
 
@@ -312,13 +310,13 @@ void DrawHUD(int client)
 	}
 }
 
-void LaughExtract(int client)
-{
+// void LaughExtract(int client)
+// {
 
-	// TFTeam iTeam = TF2_GetClientTeam(client);
+// 	// TFTeam iTeam = TF2_GetClientTeam(client);
 	
 	
-}
+// }
 
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {

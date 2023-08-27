@@ -11,7 +11,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Huntsbot"
-#define ROBOT_ROLE "Support"
+#define ROBOT_ROLE "Sniper"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Penetrating Huntsman"
@@ -198,7 +198,7 @@ stock GiveBigRoboHuntsbot(client)
 
 	CreateRoboWeapon(client, "tf_weapon_compound_bow", 56, 6, 1, 0, 0);
 
-	// CreateRoboWeapon(client, "tf_weapon_club", 3, 6, 1, 2, 0); //shahansah
+	CreateRoboWeapon(client, "tf_weapon_club", 3, 6, 1, 2, 0); //shahansah
 		
 	//CreateWeapon(client, "tf_wearable", 642, 6, 1, 3, 0); 
 
@@ -212,7 +212,7 @@ stock GiveBigRoboHuntsbot(client)
 
 		
 	int Huntsman = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //Huntsman
-	// int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
+	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
 	// int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
 
@@ -233,16 +233,16 @@ stock GiveBigRoboHuntsbot(client)
 			
 		}
 
-		// 		if(IsValidEntity(Kukri))
-		// {
-		// 	TF2Attrib_RemoveAll(Kukri);
+		if(IsValidEntity(Kukri))
+		{
+			TF2Attrib_RemoveAll(Kukri);
 			
-		// 	TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
-		// 	TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
-		// 	TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
-		// 	TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
+			// TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
+			// TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
+			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
 
-		// }
+		}
 	}
 
 

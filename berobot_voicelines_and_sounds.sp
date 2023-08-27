@@ -1437,17 +1437,17 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
     if(IsAnyRobot(client))
     {
         RequestFrame(SetSpawnPitchSound,client);
-        RequestFrame(TrackRobotSpies, client);
+        // RequestFrame(TrackRobotSpies, client);
     }
 }
 
-void TrackRobotSpies(int client)
-{
-    if(TF2_GetPlayerClass(client) == TFClass_Spy)
-    {
-        PrintToChatAll("Spy Spawn it was %N", client);
-    }
-}
+// void TrackRobotSpies(int client)
+// {
+//     if(TF2_GetPlayerClass(client) == TFClass_Spy)
+//     {
+//         // PrintToChatAll("Spy Spawn it was %N", client);
+//     }
+// }
 
 void SetSpawnPitchSound(int client)
 {

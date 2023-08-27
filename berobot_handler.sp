@@ -2133,11 +2133,11 @@ bool AddRandomVolunteer()
     }
 
     if (!IsClientInGame(newVolunteer)){
-        PrintToChatAll("%N is not ingame", newVolunteer);
+        // PrintToChatAll("%N is not ingame", newVolunteer);
         return false;
     }else
     {
-        PrintToChatAll("%N is ingame", newVolunteer);
+        // PrintToChatAll("%N is ingame", newVolunteer);
     }
 
     SMLogTag(SML_VERBOSE, "turning %L into a robot", newVolunteer);

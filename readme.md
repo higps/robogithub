@@ -21,3 +21,7 @@ Toss buildings: https://github.com/DosMike/TF2-TossBuildings
 Ivory Library for attribute: https://github.com/Ivory42/ilib
 
 tf2items: https://github.com/asherkin/TF2Items
+
+SM Memory: https://github.com/Scags/SM-Memory
+
+SoureScramble: https://github.com/nosoop/SMExt-SourceScramble

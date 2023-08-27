@@ -12,8 +12,9 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rocket"
-#define ROBOT_DESCRIPTION "Conch"
+#define ROBOT_DESCRIPTION "Increased Healing Concheror"
 #define ROBOT_COST 2.0
+#define ROBOT_TIPS "You have extended banner duration"
 #define ROBOT_ON_DEATH "Avoid getting or place yourself far away to negate or reduce the healing on damage done."
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -170,7 +171,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	TF2Attrib_SetByName(client, "health regen", 12.0);
+
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
 	TF2Attrib_SetByName(client, "increase buff duration", 2.5);
@@ -181,7 +182,7 @@ MakeGiantSoldier(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintToChat(client, "1. You are now %s!", ROBOT_NAME);
-	PrintHintText(client , "You have extended banner duration");
+	PrintHintText(client , ROBOT_TIPS);
 }
 
 stock TF2_SetHealth(client, NewHealth)
@@ -220,7 +221,7 @@ stock GiveGiantSoldier(client)
 		CreateRoboHat(client, Poncho, 10, 6, 0.0, 0.75, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
 		
@@ -260,7 +261,13 @@ stock GiveGiantSoldier(client)
 		// 	TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
 			
 		// }
-
+		if(IsValidEntity(Weapon2))
+		{						
+			TF2CustAttr_SetString(Weapon2, "custom buff type", "concho-banner");
+			// TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
+			// TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
+			TF2Attrib_SetByName(Weapon2, "health regen", 12.0);
+		}
 		
 		// if(IsValidEntity(Weapon3))
 		// {

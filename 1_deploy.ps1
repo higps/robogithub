@@ -11,8 +11,7 @@ foreach ($spFile in $spFiles) {
         $spFile.FullName -like "*dont_compile*" -or
         $spFile.FullName -like "*don_compile*" -or
         $spFile.FullName -like "*changeteam.sp" -or
-        $spFile.FullName -like "*enablemvm.sp" -or
-        $spFile.FullName -like "*tank_heavy_gotham_protector.sp"){
+        $spFile.FullName -like "*enablemvm.sp"){
         continue;
     }
 

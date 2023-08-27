@@ -167,6 +167,7 @@ stock GiveGiantMedic(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		
 		CreateRoboWeapon(client, "tf_weapon_medigun", 411, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_bonesaw", 198, 6, 1, 3, 0);
 		CreateRoboHat(client, StahlHelm, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
