@@ -1396,7 +1396,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
              if(IsSyringeGun(Weapon1))
             {
                 //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
-                stat1 = 1.15;
+                stat1 = 1.10;
                 TF2Attrib_SetByName(Weapon1, "ubercharge rate bonus", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.0f%%%% faster uber build rate{teamcolor}",chat_display, MoreIsMore(stat1));
             }
@@ -1434,16 +1434,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsSolemnVow(Weapon3))
             {
-                stat1 = 4.0;
+                stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon2, "healing mastery", stat1);
-                TF2Attrib_SetByName(Weapon2, "mod see enemy health", 1.0);
+                TF2Attrib_SetByName(Weapon3, "mod see enemy health", 1.0);
                 
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Solemn Vow: {orange}Healing Mastery %i",chat_display, RoundToNearest(stat1));    
  
             }else
             {
                 TF2Attrib_RemoveByName(Weapon2, "healing mastery");
-                TF2Attrib_RemoveByName(Weapon2, "mod see enemy health");
+                TF2Attrib_RemoveByName(Weapon3, "mod see enemy health");
             }
 
             if(IsCrossbow(Weapon1))
@@ -1456,7 +1456,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 2.0;
                 stat2 = 10.0;
                 TF2Attrib_SetByName(Weapon3, "uber duration bonus", stat1);
-                TF2Attrib_SetByName(Weapon1, "max health additive bonus", stat2);
+                TF2Attrib_SetByName(Weapon3, "max health additive bonus", stat2);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+%0.0f {teamcolor}seconds longer uber duration. +{orange}%0.0f{teamcolor} max HP",chat_display,(stat1), stat2);
             }
 
