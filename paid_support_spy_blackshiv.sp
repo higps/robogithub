@@ -16,10 +16,10 @@
 #define ROBOT_CLASS "Spy"
 #define ROBOT_SUBCLASS "Spy"
 #define ROBOT_DESCRIPTION "Grappling hook, Silent Killer"
-#define ROBOT_TIPS "No Revolver\nSharp Dresser\nDead Ringer\nUse grappling hook with reload or specialattack!"
+#define ROBOT_TIPS "Sharp Dresser\nDead Ringer\nUse grappling hook with reload or specialattack!"
 #define ROBOT_COST 1.0
 #define ROBOT_COIN_GENERATION 1
-#define ROBOT_ON_DEATH "Keeping this robot on fire is key to getting it destroyed"
+#define ROBOT_ON_DEATH "Keeping this robot on fire is key to getting it destroyed\nReserve Shooter crits grappling targets"
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"

@@ -13,9 +13,9 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Melee"
-#define ROBOT_DESCRIPTION "Throwable Batsaber"
-#define ROBOT_TIPS "Batsaber minicrits bleeding enemies"
-#define ROBOT_ON_DEATH "Try to use environment to kill this robot"
+#define ROBOT_DESCRIPTION "Cleaver + Batsaber Combo"
+#define ROBOT_TIPS "Batsaber deals minicrits to bleeding enemies\nYour cleavers recharge faster"
+#define ROBOT_ON_DEATH "This robot takes extreme knockback from pushforces and damage"
 
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

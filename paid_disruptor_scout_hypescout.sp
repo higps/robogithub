@@ -11,7 +11,7 @@
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Disruptor"
-#define ROBOT_DESCRIPTION "High Pushback"
+#define ROBOT_DESCRIPTION "Soda Popper"
 #define ROBOT_COST 0.75
 #define ROBOT_COIN_GENERATION 2
 #define ROBOT_ON_DEATH "Focus fire this robot before he causes too much disruption"
@@ -136,7 +136,7 @@ MakeGiantscout(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Force'A'Nature: Extreme knockback");
+	PrintHintText(client , "Use the Soda Popper hype to evade your enemies");
 	
 }
 

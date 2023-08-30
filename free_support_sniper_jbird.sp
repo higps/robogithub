@@ -14,7 +14,7 @@
 #define ROBOT_ROLE "Sniper"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
-#define ROBOT_DESCRIPTION "Explosive headshot, Cozy Camper"
+#define ROBOT_DESCRIPTION "Explosive HS, Cozy Camper, Shahanshah"
 #define ROBOT_ON_DEATH "Jbird has explosive headshots\nCounter-snipe or backstab sniper bots while they are distracted"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
@@ -132,7 +132,7 @@ MakeSniper(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	PrintHintText(client , "You have explosive headshots\nYou regenerate health over time");
+	PrintHintText(client , "You have explosive headshots\nYou regenerate health over time\nUse Shahanshah for self-defense");
 
 }
 

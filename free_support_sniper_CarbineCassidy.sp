@@ -13,9 +13,9 @@
 #define ROBOT_ROLE "Sniper"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
-#define ROBOT_DESCRIPTION "Crit Boost On Headshot, Cloak on Crickey"
-#define ROBOT_TIPS "Crit Headshots on Carbine"
-#define ROBOT_ON_DEATH "Carbine Cassidy is weak to any kind of flinching"
+#define ROBOT_DESCRIPTION "Headshotting Carbine, Cloak on Crickey"
+#define ROBOT_TIPS "Carbine crits on headshot\nUse Crikey cloak to sneak around"
+#define ROBOT_ON_DEATH "Carbine Cassidy is weak to any kind of flinching\nCassidy's Crikey grants him cloak"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

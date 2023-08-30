@@ -14,8 +14,8 @@
 #define ROBOT_ROLE "Sniper"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
-#define ROBOT_DESCRIPTION "Sydney Sleeper, Danger Shield"
-#define ROBOT_TIPS "Immune to afterburn\nYour rifle causes Jarate splash on hit"
+#define ROBOT_DESCRIPTION "Sydney Sleeper, Danger Shield, Bushwacka"
+#define ROBOT_TIPS "Immune to afterburn\nYour rifle causes Jarate splash on hit\nDefend yourself with your Bushwacka"
 #define ROBOT_ON_DEATH "Crocotron causes Jarate splash on hit\nCounter-snipe or backstab sniper bots while they are distracted"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"

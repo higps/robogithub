@@ -164,7 +164,7 @@ MakeGiantPyro(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	
-	PrintHintText(client , "Ignite enemies from a distance w/ your shotgun");
+	PrintHintText(client , "Ignite enemies from a distance w/ your shotgun\nDeal mini-crits to burning targets");
 	
 	
 }

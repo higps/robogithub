@@ -12,9 +12,9 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
-#define ROBOT_DESCRIPTION "Fast airblast"
+#define ROBOT_DESCRIPTION "Faster airblast"
 #define ROBOT_TIPS "25%%%% Faster Airblast\nHeal 175 on extinguish"
-#define ROBOT_ON_DEATH "Stay out of this robot's flamethrower range"
+#define ROBOT_ON_DEATH "Rocket Man's airblast is 25%%%% faster\nAvoid firing projectiles in his line of sight"
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
