@@ -12,9 +12,9 @@
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Quickfix + MvM Shield"
-#define ROBOT_TIPS "Protect your team or help them push with your shield\nDefend yourself with your Bonesaw"
-#define ROBOT_COST 6.0
-#define ROBOT_ON_DEATH "This robot has no other way to defend itself than with the Bonesaw\nElectric weapons shorten the shield duration"
+#define ROBOT_TIPS "Protect your team or help them push with your shield"
+#define ROBOT_COST 3.0
+#define ROBOT_ON_DEATH "This robot has no other way to defend itself than with the shield\nElectric weapons shortens the shield duration"
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"

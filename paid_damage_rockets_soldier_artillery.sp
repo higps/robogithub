@@ -11,7 +11,7 @@
 #define ROBOT_NAME	"Artillery"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Rocket"
+#define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Rapid Long Range Artillery"
 #define ROBOT_COST 2.5
 #define ROBOT_TIPS "Rockets travel in an arc\n45%%%% larger explosion radius\nRapid fire"

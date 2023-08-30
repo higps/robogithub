@@ -12,7 +12,7 @@
 #define ROBOT_NAME	"Commander Crocket"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
-#define ROBOT_SUBCLASS "Rocket"
+#define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Crit-Banner"
 #define ROBOT_COST 9.0
 #define ROBOT_TIPS "Give your teammates critical buff!"

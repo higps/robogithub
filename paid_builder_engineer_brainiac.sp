@@ -16,7 +16,7 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Brainiac"
-#define ROBOT_ROLE "Builder"
+#define ROBOT_ROLE "Engineer"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS ""
 #define ROBOT_DESCRIPTION "MatePorter ability, Upgrading Rescue Ranger, Eureka Effect"

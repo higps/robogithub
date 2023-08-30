@@ -195,12 +195,12 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
 			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 10.0);		
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 2.5);			
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 2.5);			
 			// TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
 			// TF2Attrib_SetByName(Weapon3, "mult charge turn control", 2.0);		
 			// TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);	
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);	
 			
 			TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");
