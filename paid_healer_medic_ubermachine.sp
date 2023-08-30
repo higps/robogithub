@@ -15,7 +15,7 @@
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Rapid Uber Build and Debuff remover"
 #define ROBOT_TIPS "Uber builds fasts, lasts short and removes all debuffs" 
-#define ROBOT_COST 1.0
+#define ROBOT_COST 2.0
 #define ROBOT_ON_DEATH "Separate this robot from his team and rush him down"
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"

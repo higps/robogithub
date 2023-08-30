@@ -161,7 +161,7 @@ MakeGDeflectorH(client)
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.5);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
+	TF2Attrib_SetByName(client, "move speed penalty", 1.15);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -286,7 +286,7 @@ void SetSpeed(int client)
 {
 	// TF2Attrib_AddCustomPlayerAttribute(client, "increased jump height", 0.01, 1.0);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
-	TF2_AddCondition(client, TFCond_CritCanteen, 1.0);
+	TF2_AddCondition(client, TFCond_Buffed, 1.0);
 	// TF2_AddCondition(client, 130, 0.5);
 	SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 520.0);
 	setspeed = true;

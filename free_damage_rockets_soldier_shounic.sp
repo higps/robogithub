@@ -305,8 +305,7 @@ stock GiveGiantPyro(client)
 		//	SetEntProp(Weapon1, Prop_Send, "m_bInReload", 1.0);
 			
 		//	TF2Attrib_SetByName(Weapon1, "disable fancy class select anim", 1.0);
-						
-\			
+								
 		}
 		
 

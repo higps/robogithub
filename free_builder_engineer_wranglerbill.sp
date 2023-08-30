@@ -1,5 +1,6 @@
 #pragma semicolon 1
 #include <sourcemod>
+#include <tf2>
 #include <tf2_stocks>
 #include <tf2attributes>
 #include <sdkhooks>
@@ -15,26 +16,24 @@
 //#pragma newdecls required
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"NoFungineer"
-#define ROBOT_ROLE "Builder"
+#define ROBOT_NAME	"Wrangler Bill"
+#define ROBOT_ROLE "Engineer"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS ""
-#define ROBOT_DESCRIPTION "Ultra Drain Pomson, High Damage Short Circuit"
-#define ROBOT_TIPS "Negate spam with Short Circuit\nPomson fully drains cloak and Uber\nBuild up to 3 normal sentries\nExtra dispenser"
-#define ROBOT_ON_DEATH "NoFungineer has 3 sentries and 2 dispensers\nNofun counters projectiles, use other forms of damage on his buildings"
-#define ROBOT_COST 2.0
+#define ROBOT_DESCRIPTION "Wrangler, 4 mini-sentries, Teamporter"
+#define ROBOT_TIPS "Use your 4 mini-sentries to cover areas\nBuild teamporters to teleport your team to the front lines"
+#define ROBOT_ON_DEATH "Bill can build up to 4 mini-sentries\nUse explosive weapons to damage both engineers and their buildings at once"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-
 public Plugin:myinfo =
 {
-	name = "[TF2] Be Big Robot Uncle Dane",
+	name = "[TF2] Be Big Robot Bot Slinger",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Uncle Dane Bot from MvM",
+	description = "Play as the Giant Bot Slinger Bot from MvM",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -42,7 +41,6 @@ public Plugin:myinfo =
 public OnPluginStart()
 {
     LoadTranslations("common.phrases");
-
     RobotDefinition robot;
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
@@ -53,13 +51,7 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-
-	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-    restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-    restrictions.RobotCoins.PerRobot = ROBOT_COST;
-
-    AddRobot(robot, MakeUncleDane, PLUGIN_VERSION, restrictions);
-
+    AddRobot(robot, MakeBotSlinger, PLUGIN_VERSION);
 }
 
 public void OnPluginEnd()
@@ -69,13 +61,19 @@ public void OnPluginEnd()
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
+	//	CreateNative("BeSuperHeavyweightChamp_MakeBotSlinger", Native_SetSuperHeavyweightChamp);
+	//	CreateNative("BeSuperHeavyweightChamp_IsSuperHeavyweightChamp", Native_IsSuperHeavyweightChamp);
 	return APLRes_Success;
 }
 
 public OnMapStart()
 {
+	// PrecacheModel(ChangeDane);
+
+
 
 }
+
 
 public Action:SetModel(client, const String:model[])
 {
@@ -83,16 +81,11 @@ public Action:SetModel(client, const String:model[])
 	{
 		SetVariantString(model);
 		AcceptEntityInput(client, "SetCustomModel");
-
-
-
 		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
-		
-		
 	}
 }
 
-MakeUncleDane(client)
+MakeBotSlinger(client)
 {
 	
 	TF2_SetPlayerClass(client, TFClass_Engineer);
@@ -110,20 +103,14 @@ MakeUncleDane(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, ChangeDane);
 
-	int iHealth = 2000;
-	int MaxHealth = 125;
+
+	int iHealth = 1250;
+	int MaxHealth = 150;
 	int iAdditiveHP = iHealth - MaxHealth;
-	float OverHealRate = 1.5;
 
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
-	float scale = 1.65;
-	
 	TF2_SetHealth(client, iHealth);
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
 	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
@@ -133,26 +120,33 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
+	
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 	TF2Attrib_SetByName(client, "metal regen", 200.0);
 	// TF2Attrib_SetByName(client, "building cost reduction", 2.5);
-	TF2Attrib_SetByName(client, "mod teleporter cost", 9.0);
+	TF2Attrib_SetByName(client, "mod teleporter cost", 10.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	TF2Attrib_SetByName(client, "head scale", 0.85);
-
-	UpdatePlayerHitbox(client, scale);
+	TF2Attrib_SetByName(client, "deploy time decreased", 0.25);
+ 
+	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
+	
+	UpdatePlayerHitbox(client, 1.65);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client, ROBOT_TIPS);
-	//PrintCenterText(client, "Use !stuck if you get stuck in buildings");
-	
-	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
 	
 }
+
+// public Action Spawn_Clamp(Handle timer, any client)
+// {
+// 	g_Announcerquiet = false;
+// }
+	
 
 
 stock TF2_SetHealth(client, NewHealth)
@@ -168,9 +162,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	GiveBigRoboDane(client);
 }
 
-#define THELAW 30362
-#define MACHOMANN 30085
-#define WILDWEST 30635
+#define CUTESUIT 30367
+#define ANTLERS 993
+#define MARXMAN 816
 
 stock GiveBigRoboDane(client)
 {
@@ -182,64 +176,43 @@ stock GiveBigRoboDane(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_drg_pomson", 588, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_mechanical_arm", 528, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_laser_pointer", 30668, 6, 1, 1, 0);
 		CreateRoboWeapon(client, "tf_weapon_robot_arm", 142, 6, 1, 2, 0);
 
+ 		CreateRoboHat(client, CUTESUIT, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, ANTLERS, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, MARXMAN, 10, 6, 0.0, 1.0, -1.0);
 
-		//CreateWeapon(client, "tf_weapon_wrench", 7, 9, 69, 2, 0);
-
-
-		CreateRoboHat(client, THELAW, 10, 6, 0.0, 1.5, 2.0);
-		CreateRoboHat(client, MACHOMANN, 10, 6, 0.0, 1.25, -1.0);
-		CreateRoboHat(client, WILDWEST, 10, 6, 0.0, 1.0, -1.0);
-
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		// CreateHat(client, 993, 10, 6, 0.0); //Cute suit
+		// CreateHat(client, 816, 10, 6, 0.0); //Cute suit
+		// CreateHat(client, 30367, 10, 6, 0.0); //Cute suit
+		
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-
-		if(IsValidEntity(Weapon1))
-		{
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.25);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
-			
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-			
-			TF2Attrib_SetByName(Weapon1, "subtract victim medigun charge on hit", 100.0);
-			TF2Attrib_SetByName(Weapon1, "subtract victim cloak on hit", 100.0);
-			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
-		}
-
-		if(IsValidEntity(Weapon2))
-		{
-			TF2Attrib_SetByName(Weapon2, "damage bonus", 3.0);
-			TF2Attrib_SetByName(Weapon2, "clip size penalty", 1.0);
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-		}
 
 		if(IsValidEntity(Weapon3))
 		{
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
+			TF2Attrib_RemoveAll(Weapon3);
+			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.85);
+			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.65);
-			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 3.0);
-			
-			TF2Attrib_SetByName(Weapon3, "mod wrench builds minisentry", 0.0);
+			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 2.0);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.75);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
-			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
-			// TF2Attrib_SetByName(Weapon3, "engy sentry radius increased", 100.0);
+			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 1.75);
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 3.0);
-			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 1.1);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
-			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 4.0);
-
+			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 8.0);
+			// TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.8);
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
-			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.15 dispenser_scale=1.15 infinite_ammo=1remove_all_sappers=1 yeet=0");
-			TF2CustAttr_SetString(Weapon3, "multi-building", "sentries=3 dispensers=1");
+			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.25 dispenser_scale=1.25 infinite_ammo=1 remove_all_sappers=1 yeet=0");
+			TF2CustAttr_SetString(Weapon3, "multi-building", "sentries=4 dispensers=1");
+			
 		}
+	
+		//CreateTimer(0.4, Particle_Teleporter);
+		
 		
 	}
 }

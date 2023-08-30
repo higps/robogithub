@@ -1240,6 +1240,15 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_RemoveByName(Weapon1, "dmg from melee increased");
                 TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
             }
+
+            int cozycamper = FindTFWearable(client, 642);
+            if (IsValidEntity(cozycamper) && Weapon1 != -1 && Weapon3 != -1)
+            {
+                stat1 = 3.0;
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cozy Camper: {orange}+%0.0f%% {teamcolor}Max Ammo",chat_display, MoreIsMore(stat1));
+                TF2Attrib_SetByName(cozycamper, "maxammo primary increased", stat1);
+                
+            }
         }
         
         if (IsHuntsMan(Weapon1))
