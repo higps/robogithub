@@ -18,7 +18,7 @@
 #define ROBOT_NAME	"Brainiac"
 #define ROBOT_ROLE "Engineer"
 #define ROBOT_CLASS "Engineer"
-#define ROBOT_SUBCLASS ""
+#define ROBOT_SUBCLASS "SingleClass"
 #define ROBOT_DESCRIPTION "MatePorter ability, Upgrading Rescue Ranger, Eureka Effect"
 #define ROBOT_TIPS "Use +use or special attack to open MatePort menu to teleport to teammates"
 #define ROBOT_ON_DEATH "Brainiac can warp to any of his teammates\nUse explosive weapons to damage both engineers and their buildings at once"

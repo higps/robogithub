@@ -19,7 +19,7 @@
 #define ROBOT_NAME	"Wrangler Bill"
 #define ROBOT_ROLE "Engineer"
 #define ROBOT_CLASS "Engineer"
-#define ROBOT_SUBCLASS ""
+#define ROBOT_SUBCLASS "SingleClass"
 #define ROBOT_DESCRIPTION "Wrangler, 4 mini-sentries, Teamporter"
 #define ROBOT_TIPS "Use your 4 mini-sentries to cover areas\nBuild teamporters to teleport your team to the front lines"
 #define ROBOT_ON_DEATH "Bill can build up to 4 mini-sentries\nUse explosive weapons to damage both engineers and their buildings at once"

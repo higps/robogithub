@@ -18,7 +18,7 @@
 #define ROBOT_NAME	"Gnome"
 #define ROBOT_ROLE "Engineer"
 #define ROBOT_CLASS "Engineer"
-#define ROBOT_SUBCLASS ""
+#define ROBOT_SUBCLASS "SingleClass"
 #define ROBOT_DESCRIPTION "Throw your buildings, Frontier Justice"
 #define ROBOT_TIPS "Reload to throw buildings\nBuild teamporters to easily teleport your team to the front lines"
 #define ROBOT_ON_DEATH "Use explosive weapons to damage both engineers and their buildings at once"

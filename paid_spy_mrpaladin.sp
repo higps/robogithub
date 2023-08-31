@@ -121,7 +121,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 	if (IsRobot(attacker, ROBOT_NAME) && weaponID == 356 && customkill == 2)
 	{
-		TF2_AddCondition(attacker, TFCond_Stealthed, 10.0);
+		TF2_AddCondition(attacker, TFCond_Stealthed, 5.0);
 	}
 
 }

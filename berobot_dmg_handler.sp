@@ -11,6 +11,9 @@
 #include <morecolors>
 #include <tf_custom_attributes>
 #include <sdktools>
+#include <stocksoup/tf/tempents_stocks>
+#include <stocksoup/datapack>
+#include <smlib>
 // #include <addplayerhealth>
 
 
@@ -105,6 +108,8 @@ float g_crit_a_cola_duration = 2.0;
 #define SPY_ROBOT_STAB	"weapons/saxxy_impact_gen_01.wav"
 // #define SPY_ROBOT_STAB	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 
+int ParticleStorage[MAXPLAYERS + 1] = {0, ...};
+
 public Plugin myinfo =
 {
 	name = "berobot_dmg_handler",
@@ -133,6 +138,7 @@ public void OnPluginStart()
 
     HookEvent("post_inventory_application", Event_post_inventory_application, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+    HookEvent("player_death", Event_PlayerDeath, EventHookMode_Post);
     HookEvent("crossbow_heal", Event_Crossbow_Heal, EventHookMode_Post);
     RegConsoleCmd("sm_mminfo", Command_ToggleMMHumanDisplay, "Toggle Manned Machines Stats Display for humans");
     
@@ -141,6 +147,16 @@ public void OnPluginStart()
 
 
 }
+
+public Action Event_PlayerDeath(Event event, char[] name, bool dontBroadcast){
+
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	if(IsValidClient(client)){ 
+		DeleteParticle(0.1, ParticleStorage[client]);
+	}
+	return Plugin_Continue;
+}
+
 public void OnMapStart()
 {
     PrecacheSound(SPY_ROBOT_STAB);
@@ -643,8 +659,32 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                             damage *= 2.0;
                             if (IsTank(victim))
                             {
-                                TF2_StunPlayer(victim, 0.5, 0.0, TF_STUNFLAG_BONKSTUCK, attacker);
-                                // SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
+                                float stun_duration = 0.6;
+                                TF2_StunPlayer(victim, stun_duration, 0.0, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_BONKSTUCK, attacker);
+                                // TE_TFParticleEffectAttachment("bot_radio_waves", victim, PATTACH_POINT_FOLLOW, "head");
+                                // SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);                                  
+                                
+                                // if (TF2_GetClientTeam(iBuilder) == TFTeam_Blue)
+                                // {
+                                
+                                
+                                
+                                // int attachHead = LookupEntityAttachment(victim, "head");
+                                
+                                // if (attachHead) {
+                                //     int particle = TE_SetupTFParticleEffect("bot_radio_waves", NULL_VECTOR, .entity = victim,
+                                //     .attachType = PATTACH_POINT_FOLLOW, .attachPoint = attachHead);
+                                //     TE_SendToAll();
+                                    
+                                    // PrintToChatAll("Particle Was %i", particle);
+                                    
+                                    CreateParticle(victim, "bot_radio_waves", 6.0);
+                                    // DataPack data;
+                                    // CreateDataTimer(stun_duration, RemoveStunEffect, data, TIMER_FLAG_NO_MAPCHANGE);
+                                    // data.WriteCell(particle);
+                                    // data.WriteCell("bot_radio_waves");
+                                    
+                                 
                             }
                             DizzyTarget(victim);
                             return Plugin_Changed;
@@ -670,11 +710,209 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
     }
 
-
-
-
     return Plugin_Continue;
 }
+
+// int GetParticleSystemIndex(const char[] szParticleSystemName)
+// {
+//     if (szParticleSystemName[0])
+//     {
+//         int iStringTableParticleEffectNamesIndex = FindStringTable("ParticleEffectNames");
+//         if (iStringTableParticleEffectNamesIndex == INVALID_STRING_TABLE)
+//         {
+//             LogError("Missing string table 'ParticleEffectNames'");
+//             return 0;
+//         }
+        
+//         int nIndex = FindStringIndex(iStringTableParticleEffectNamesIndex, szParticleSystemName);
+//         if (nIndex == INVALID_STRING_INDEX)
+//         {
+//             LogError("Missing precache for particle system '%s'", szParticleSystemName);
+//             return 0;
+//         }
+        
+//         return nIndex;
+        
+//     }
+    
+//     return 0;
+// }
+
+// void TE_TFParticleEffectAttachment(const char[] szParticleName, int entity = -1, ParticleAttachment_t eAttachType = PATTACH_CUSTOMORIGIN, const char[] szAttachmentName, bool bResetAllParticlesOnEntity = false)
+// {
+//     int iAttachmentPoint = -1;
+//     if (IsValidEntity(entity))
+//     {
+//         iAttachmentPoint = LookupEntityAttachment(entity, szAttachmentName);
+//         if (iAttachmentPoint <= 0)
+//         {
+//             char szModelName[PLATFORM_MAX_PATH];
+//             GetEntPropString(entity, Prop_Data, "m_ModelName", szModelName, sizeof(szModelName));
+            
+//             LogError("Model '%s' does not have attachment '%s' to attach particle system '%s' to", szModelName, szAttachmentName, szParticleName);
+//             return;
+//         }
+//     }
+    
+//     TE_Start("TFParticleEffect");
+    
+//     TE_WriteNum("m_iParticleSystemIndex", GetParticleSystemIndex(szParticleName));
+    
+//     if (IsValidEntity(entity))
+//     {
+//         TE_WriteNum("entindex", entity);
+//     }
+    
+//     TE_WriteNum("m_iAttachType", view_as<int>(eAttachType));
+//     TE_WriteNum("m_iAttachmentPointIndex", iAttachmentPoint);
+    
+//     if (bResetAllParticlesOnEntity)
+//     {
+//         TE_WriteNum("m_bResetParticles", true);
+//     }
+    
+//     TE_SendToAll();
+// }
+
+
+stock void CreateParticle(int ent, char[] particleType, float time)
+{
+
+	//int iWeapon = GetPlayerWeaponSlot(ent, TFWeaponSlot_Secondary);
+	int particle = CreateEntityByName("info_particle_system");
+
+	char name[64];
+
+	if (IsValidEdict(particle))
+	{
+	
+		//Delete existing particle if it's already there
+		//CreateTimer(0.0, DeleteParticle, particle);
+		
+		float position[3];
+		GetEntPropVector(ent, Prop_Send, "m_vecOrigin", position);
+		
+		position[0] += 0.0;
+		position[1] += 0.0;
+		position[2] += 0.0; //z
+		
+		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
+		GetEntPropString(ent, Prop_Data, "m_iName", name, sizeof(name));
+		DispatchKeyValue(particle, "targetname", "tf2particle");
+		DispatchKeyValue(particle, "parentname", name);
+		DispatchKeyValue(particle, "effect_name", particleType);
+		
+		
+		//DispatchKeyValue(particle, "angles", "90.0 90.0 0.0"); 
+		DispatchSpawn(particle);
+		// SetVariantString(name);
+		
+		// AcceptEntityInput(particle, "SetParent", ent, particle, 0);
+		//if team blue - use player_glowblue
+		//if team red use - player_glowred
+		
+		SetVariantString("!activator");
+		AcceptEntityInput(particle, "SetParent", ent, particle, 0);
+		
+		
+		SetVariantString("head");
+		AcceptEntityInput(particle, "SetParentAttachmentMaintainOffset", particle, particle, 0);
+		
+		DispatchKeyValue(particle, "targetname", "present");
+		ActivateEntity(particle);
+		AcceptEntityInput(particle, "start");
+		CreateTimer(time, DeleteParticle, particle);
+		ParticleStorage[ent] = particle;
+	}
+}
+
+public Action DeleteParticle(Handle timer, any particle)
+{
+	if (IsValidEntity(particle))
+	{
+		char classN[64];
+		GetEdictClassname(particle, classN, sizeof(classN));
+		if (StrEqual(classN, "info_particle_system", false))
+		{
+			RemoveEdict(particle);
+		}
+	}
+}
+
+// Action RemoveStunEffect(Handle timer, DataPack data) {
+	
+//     data.Reset();
+// 	int particle = data.ReadCell();
+
+//     TE_SetupStopParticleEffect(particle, "bot_radio_waves");
+
+//     // AcceptEntityInput(particle, "Stop");
+//     // AcceptEntityInput(particle, "Kill");
+
+// 	if (!IsValidEntity(particle)) {
+// 		PrintToChatAll("Not valid");
+// 		return Plugin_Handled;
+// 	}
+
+	
+	
+// 	return Plugin_Handled;
+// }
+
+// stock void TE_SetupStopParticleEffect(int entity, const char[] sParticleName)
+// {
+// 	TE_Start("EffectDispatch");
+	
+// 	if(entity > 0)
+// 		TE_WriteNum("entindex", entity);
+	
+// 	TE_WriteNum("m_nHitBox", GetParticleEffectIndex(sParticleName));
+// 	TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+// }
+
+// // stock void TE_SetupStopParticleEffects(int entity)
+// // {
+// //     TE_Start("EffectDispatch");
+    
+// //     if(entity > 0)
+// //         TE_WriteNum("entindex", entity);
+    
+// //     TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+// // }
+
+// stock int GetParticleEffectIndex(const char[] sEffectName)
+// {
+// 	int table = INVALID_STRING_TABLE;
+	
+// 	if (table == INVALID_STRING_TABLE)
+// 	{
+// 		table = FindStringTable("ParticleEffectNames");
+// 	}
+	
+// 	int iIndex = FindStringIndex(table, sEffectName);
+// 	if(iIndex != INVALID_STRING_INDEX)
+// 		return iIndex;
+	
+// 	// This is the invalid string index
+// 	return 0;
+// }
+
+// stock int GetEffectIndex(const char[] sEffectName)
+// {
+// 	int table = INVALID_STRING_TABLE;
+	
+// 	if (table == INVALID_STRING_TABLE)
+// 	{
+// 		table = FindStringTable("EffectDispatch");
+// 	}
+	
+// 	int iIndex = FindStringIndex(table, sEffectName);
+// 	if(iIndex != INVALID_STRING_INDEX)
+// 		return iIndex;
+	
+// 	// This is the invalid string index
+// 	return 0;
+// }
 
 void DizzyTarget (int victim)
 {
@@ -1167,7 +1405,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.35;
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Skullcutter: {orange}%0.0f%%%% increased damage bonus{teamcolor}",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Skullcutter: {orange}%0.0f%%%% increased damage bonus{teamcolor}",chat_display, HundredIsOne(stat1));
                 TF2Attrib_SetByName(Weapon3, "damage bonus", stat1);
             }
 
@@ -1193,7 +1431,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "speed_boost_on_hit", stat1);
                 TF2Attrib_SetByName(Weapon1, "aiming movespeed increased", stat2);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Heavy Natascha: {orange}+%0.0f second speed boost on hit +%0.0f %%%% faster movespeed while spun up{teamcolor}",chat_display, stat1, MoreIsMore(stat2));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Heavy Natascha: {orange}+%0.0f second speed boost on hit +%0.0f %%%% faster movespeed while spun up{teamcolor}",chat_display, stat1, HundredIsOne(stat2));
             }
 
             if(IsTomiSlav(Weapon1))
@@ -1245,7 +1483,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsValidEntity(cozycamper) && Weapon1 != -1 && Weapon3 != -1)
             {
                 stat1 = 3.0;
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cozy Camper: {orange}+%0.0f%% {teamcolor}Max Ammo",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cozy Camper: {orange}+%0.0f%% {teamcolor}Max Ammo",chat_display, HundredIsOne(stat1));
                 TF2Attrib_SetByName(cozycamper, "maxammo primary increased", stat1);
                 
             }
@@ -1257,8 +1495,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             TF2Attrib_SetByName(Weapon1, "maxammo primary increased", stat1);
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            TF2Attrib_SetByName(Weapon1, "bleeding duration", g_bleed_duration_bonus);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade, {orange}Bleed on hit,{orange} +%0.0f%% {teamcolor}max ammo",chat_display, MoreIsMore(stat1));
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade, +%0.0f%% {teamcolor}max ammo",chat_display, HundredIsOne(stat1));
         }
 
         if (IsSniperRifle(Weapon1))
@@ -1270,9 +1507,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsBazaar(Weapon1))
         {
-
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bragin: {orange}Gain head on headshot{teamcolor}, but {darkred}Lose 2 heads{teamcolor} on bodyshot",chat_display);
-           
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bragin: {orange}Gain head on headshot{teamcolor}, but {darkred}Lose 2 heads{teamcolor} on bodyshot",chat_display);  
         }
 
         if (IsClassic(Weapon1))
@@ -1287,7 +1522,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.15;
                 TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Stock Melee: {orange}+%0.0f%% move speed{teamcolor} while active",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Stock Melee: {orange}+%0.0f%% move speed{teamcolor} while active",chat_display, HundredIsOne(stat1));
             }
 
             if(IsShahanshah(Weapon3))
@@ -1295,7 +1530,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 // stat1 = 3.0;
                 // TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", stat1);
                 TF2CustAttr_SetString(Weapon3, "pushforce-on-hit", "cond=-1 flDist=-500.0 flDistVert=400");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shahansah: {orange}On Hit:{teamcolor} Self Knockback",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shahansah: {orange}On Hit:{teamcolor} Self Knockback",chat_display, HundredIsOne(stat1));
             }
             
         }
@@ -1334,7 +1569,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat3 = 20.0;
                 TF2Attrib_SetByName(Weapon3, "max health additive bonus", stat3);
 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: All weapons gain {orange}+%0.0f%% maxammo and +%0.0f%%% faster reload",chat_display, MoreIsMore(stat1), LessIsMore(stat2));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: All weapons gain {orange}+%0.0f%% maxammo and +%0.0f%%% faster reload",chat_display, HundredIsOne(stat1), LessIsMore(stat2));
             }
 
             if (IsAtomizer(Weapon3))
@@ -1356,7 +1591,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=40.0");
                 // TF2_RegeneratePlayer(client);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display, MoreIsMore(stat1), stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display, HundredIsOne(stat1), stat2);
             }else
             {
                 TF2CustAttr_SetString(client, "Spell-Caster", "Spell=-1 Cooldown=40.0");
@@ -1369,7 +1604,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon3, "health from packs increased", stat1);
                 TF2Attrib_SetByName(Weapon3, "health regen", stat2);
                 // TF2CustAttr_SetString(Weapon3, "spawn-healthpack-on-dmg", "damage=500 levels=3");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Candy Cane: {orange}+%0.0f%%%% more health{teamcolor} from healthpacks. {orange}+%0.0f health{teamcolor} regenerated per second",chat_display, MoreIsMore(stat1), stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Candy Cane: {orange}+%0.0f%%%% more health{teamcolor} from healthpacks. {orange}+%0.0f health{teamcolor} regenerated per second",chat_display, HundredIsOne(stat1), stat2);
             }
 
             if (IsMadMilk(Weapon2))
@@ -1391,7 +1626,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon2, "clip size bonus", 2.0);
                 // TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.5);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: {orange}+%0.0f%% clip size",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: {orange}+%0.0f%% clip size",chat_display, HundredIsOne(stat1));
             }
         }
 
@@ -1407,7 +1642,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
                 stat1 = 1.10;
                 TF2Attrib_SetByName(Weapon1, "ubercharge rate bonus", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.0f%%%% faster uber build rate{teamcolor}",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.0f%%%% faster uber build rate{teamcolor}",chat_display, HundredIsOne(stat1));
             }
             if(IsBlutsauger(Weapon1))
             {
@@ -1532,7 +1767,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.15;
                 TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants %0.0f%%%% movespeed while actove",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants %0.0f%%%% movespeed while actove",chat_display, HundredIsOne(stat1));
             }
 
             if(IsSpycicle(Weapon3))
@@ -1556,7 +1791,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsMarketGardner(Weapon3))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Market Gardner: {orange}+%0.0f%%%% damage bonus while rocket jumping{teamcolor}",chat_display, MoreIsMore(g_market_gardner_dmg_bonus));
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Market Gardner: {orange}+%0.0f%%%% damage bonus while rocket jumping{teamcolor}",chat_display, HundredIsOne(g_market_gardner_dmg_bonus));
         }
 
         if (IsElectric(Weapon1) || IsElectric(Weapon2))
@@ -1601,19 +1836,25 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (isLibertyLauncher(Weapon1))
             {
+
+                stat1 = 1.6;
+                TF2Attrib_SetByName(Weapon1, "clip size bonus", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: +{orange}+%0.0f%%%% clip size{teamcolor}",chat_display, HundredIsOne(stat1));
                 if (IsAnyBanner(Weapon2))
                 {
-                    stat1 = 3.0;
+                    stat1 = 2.0;
                     TF2Attrib_SetByName(Weapon2, "increase buff duration", stat1);
                     
                     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+%0.0f%%%% longer buff duration{teamcolor}",chat_display, OffBy100(stat1));
                 }else
                 {
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}equip a banner to get the buff!",chat_display);
+                    stat1 = 1.5;
+                    TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, HundredIsOne(stat1));
                 }
             }else
             {
-                //To avoid keeping the buff when switching banners
+                //To avoid keeping the buff when switching weapons
                 if (IsAnyBanner(Weapon2))
                 {
                     
@@ -1633,7 +1874,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.5;
                 TF2Attrib_SetByName(Weapon1, "Blast radius increased", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+%0.0f%%%% larger explosion radius",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+%0.0f%%%% larger explosion radius",chat_display, HundredIsOne(stat1));
             }
             if (IsWearable(Weapon2))
             {
@@ -1714,7 +1955,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if(IsGunSlinger(Weapon3))
         {
             TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", stat1 = 1.15);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+15%%%% faster movement speed",chat_display, MoreIsMore(stat1));
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+15%%%% faster movement speed",chat_display, HundredIsOne(stat1));
             
         }
         // if (IsSapper(Weapon2))
@@ -2986,6 +3227,11 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
                 // RequestFrame(RemoveMilk, client);
             }
+            //Code to remove stealthed from burning and bleeding
+            if (condition == TFCond_Bleeding || condition == TFCond_BurningPyro)
+            {
+                TF2_RemoveCondition(client, TFCond_Stealthed);
+            }
 
             
             if (condition == TFCond_MarkedForDeath && milk_time[client] < GetEngineTime())
@@ -3067,7 +3313,7 @@ public float LessIsMore(float value)
 }
 
 //Values where 1.2 is 20%  more
-public float MoreIsMore(float value)
+public float HundredIsOne(float value)
 {
     return (value*100.0)-100.0;
 }
@@ -3082,4 +3328,81 @@ public float OffBy100(float value)
 public float OneIs100(float value)
 {
     return value*100.0;
+}
+
+stock void TE_Particle(const char[] Name, float origin[3] = NULL_VECTOR, float start[3] = NULL_VECTOR, float angles[3] = NULL_VECTOR, int entindex = -1, int attachtype = -1, int attachpoint = -1, bool resetParticles = true, int customcolors = 0, float color1[3] = NULL_VECTOR, float color2[3] = NULL_VECTOR, int controlpoint = -1, int controlpointattachment = -1, float controlpointoffset[3] = NULL_VECTOR)
+{
+    // Function implementation goes here
+    // find string table
+    int tblidx = FindStringTable("ParticleEffectNames");
+    if (tblidx == INVALID_STRING_TABLE)
+    {
+        LogError("Could not find string table: ParticleEffectNames");
+        return;
+    }
+    float delay = 3.0;
+    // find particle index
+    char tmp[256];
+    int count = GetStringTableNumStrings(tblidx);
+    int stridx = INVALID_STRING_INDEX;
+
+    for (int i = 0; i < count; i++)
+    {
+        ReadStringTable(tblidx, i, tmp, sizeof(tmp));
+        if (StrEqual(tmp, Name, false))
+        {
+            stridx = i;
+            break;
+        }
+    }
+    if (stridx == INVALID_STRING_INDEX)
+    {
+        LogError("Could not find particle: %s", Name);
+        return;
+    }
+
+    TE_Start("TFParticleEffect");
+    TE_WriteFloat("m_vecOrigin[0]", origin[0]);
+    TE_WriteFloat("m_vecOrigin[1]", origin[1]);
+    TE_WriteFloat("m_vecOrigin[2]", origin[2]);
+    TE_WriteFloat("m_vecStart[0]", start[0]);
+    TE_WriteFloat("m_vecStart[1]", start[1]);
+    TE_WriteFloat("m_vecStart[2]", start[2]);
+    TE_WriteVector("m_vecAngles", angles);
+    TE_WriteNum("m_iParticleSystemIndex", stridx);
+    if (entindex !=- 1)
+    {
+        TE_WriteNum("entindex", entindex);
+    }
+    if (attachtype != -1)
+    {
+        TE_WriteNum("m_iAttachType", attachtype);
+    }
+    if (attachpoint != -1)
+    {
+        TE_WriteNum("m_iAttachmentPointIndex", attachpoint);
+    }
+    TE_WriteNum("m_bResetParticles", resetParticles ? 1 : 0);
+
+    if(customcolors)
+    {
+        TE_WriteNum("m_bCustomColors", customcolors);
+        TE_WriteVector("m_CustomColors.m_vecColor1", color1);
+        if(customcolors == 2)
+        {
+            TE_WriteVector("m_CustomColors.m_vecColor2", color2);
+        }
+    }
+    if(controlpoint != -1)
+    {
+        TE_WriteNum("m_bControlPoint1", controlpoint);
+        if(controlpointattachment != -1)
+        {
+            TE_WriteNum("m_ControlPoint1.m_eParticleAttachment", controlpointattachment);
+            TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", controlpointoffset[0]);
+            TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", controlpointoffset[1]);
+            TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", controlpointoffset[2]);
+        }
+    }
+    TE_SendToAll(delay);
 }

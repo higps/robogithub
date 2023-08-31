@@ -101,7 +101,8 @@ enum // Return values for tele check
 	TELE_SAPPER,
 	TELE_NOT_BOSS,
 	TELE_RECHARGING,
- 	TELE_READY
+ 	TELE_READY,
+	TELE_NO_TELE
 }
 
 enum struct ObjectPointer
@@ -713,15 +714,17 @@ public Action DrawHUD(int client)
 	// int team = GetClientTeam(client);
 
 	// float angles[3], pos[3];
-	Format(sHUDText, sizeof(sHUDText), "Charging Teamporter: %d%%%%   \n%s   ", iPercents, sProgress);
-	SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
+	// Format(sHUDText, sizeof(sHUDText), "Charging Teamporter: %d%%%%   \n%s   ", iPercents, sProgress);
+	// SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
+
+	ObjectPointer teleporters[32];
+	ObjectPointer farthest;
+	GetFarthestTele(client, farthest, teleporters);
 
 	if(iPercents >= 100)
 	{
 		//Charge is 100% check for teleporters
-		ObjectPointer teleporters[32];
-		ObjectPointer farthest;
-		GetFarthestTele(client, farthest, teleporters);
+
 
 		// CreateTeleMenu(client, teleporters);
 
@@ -731,13 +734,13 @@ public Action DrawHUD(int client)
 		// tele = PlayerTele[client];
 
 		// char description[256];
-		Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nNo active Teleporter");
-		SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+		
 		
 		if (farthest.valid())
 		{
 			//Check if teleporters are in the correct status
 			int teleporter = farthest.get();
+			
 
 			switch(GetTeleporterStatus(teleporter))
 			{
@@ -790,7 +793,8 @@ public Action DrawHUD(int client)
 		// return Plugin_Continue;	
 		}else
 		{
-			//PrintToConsole(client, "NOT VALID TELE FOUND!");
+		Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nNo active Teleporter");
+		SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
 		}
 
 	
@@ -830,7 +834,65 @@ public Action DrawHUD(int client)
 	}else
 	{	
 	Format(sHUDText, sizeof(sHUDText), "Charging Teamporter: %d%%%%   \n%s   ", iPercents, sProgress);
+	
 	SetHudTextParams(-1.0, -0.2, 0.1, 255, 255, 255, 255);
+
+	if (farthest.valid())
+		{
+			//Check if teleporters are in the correct status
+			int teleporter = farthest.get();
+
+			switch(GetTeleporterStatus(teleporter))
+			{
+				case TELE_IS_BUILDING:
+				{
+					Format(sHUDText, sizeof(sHUDText), "%s\nTeamporter is building", sHUDText);
+					SetHudTextParams(-1.0, -0.2, 0.1, 0, 130, 130, 255);
+				}
+				case TELE_CARRIED:
+				{
+					Format(sHUDText, sizeof(sHUDText), "%s\nTeamporter is being carried", sHUDText);
+					SetHudTextParams(-1.0, -0.2, 0.1, 130, 130, 0, 255);
+				}
+				case TELE_SAPPER:
+				{
+					Format(sHUDText, sizeof(sHUDText), "%s\nnTeamporter is Disabled / Sapped", sHUDText);
+					SetHudTextParams(-1.0, -0.2, 0.1, 133, 0, 130, 255);
+				}
+				case TELE_RECHARGING:
+				{
+				Format(sHUDText, sizeof(sHUDText), "%s\nEngipad Teamporter is Recharging...", sHUDText);
+					SetHudTextParams(-1.0, -0.2, 0.1, 50, 50, 100, 255);
+				}
+				case TELE_READY:
+				{
+					Format(sHUDText, sizeof(sHUDText), "%s\nTeamporter ready!", sHUDText);
+					SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
+				}
+				// case TELE_WRONGTEAM:
+				// {
+				// //	PrintCenterTextAll("Ready");
+				// 	Format(sHUDText, sizeof(sHUDText), "Wrong Team!\nCrouch to Teleport!");
+				// 	TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
+				// 	SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
+				// }
+				// default:
+				// {
+				// 	Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nNo active Teleporter");
+				// 	SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+				// }
+
+			}
+		//PrintCenterText(client, description);
+		// return Plugin_Continue;	
+		}else
+		{
+			Format(sHUDText, sizeof(sHUDText), "%s\nNo active Teleporter",sHUDText);
+			SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+		}
+
+
+
 	}
 	ShowHudText(client, -2, sHUDText);
 	b_hud_clamp[client] = false;

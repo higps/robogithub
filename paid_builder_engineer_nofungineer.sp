@@ -18,7 +18,7 @@
 #define ROBOT_NAME	"NoFungineer"
 #define ROBOT_ROLE "Engineer"
 #define ROBOT_CLASS "Engineer"
-#define ROBOT_SUBCLASS ""
+#define ROBOT_SUBCLASS "SingleClass"
 #define ROBOT_DESCRIPTION "Ultra Drain Pomson, High Damage Short Circuit"
 #define ROBOT_TIPS "Negate spam with Short Circuit\nPomson fully drains cloak and Uber\nBuild up to 3 normal sentries\nExtra dispenser"
 #define ROBOT_ON_DEATH "NoFungineer has 3 sentries and 2 dispensers\nNofun counters projectiles, use other forms of damage on his buildings"
