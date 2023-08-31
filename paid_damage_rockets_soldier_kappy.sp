@@ -13,28 +13,15 @@
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
-#define ROBOT_DESCRIPTION "Remote Rocket"
+#define ROBOT_DESCRIPTION "Remote Control Rocket"
 #define ROBOT_TIPS "Activate Remote Control by pressing M2\nChange camera mode with +attack3 or +use\nBuff Banner allows you to control more than one rockets at a time."
-#define ROBOT_ON_DEATH "Kappy's rockets take a while to travel\nOut-heal his damage to make him less effective"
+#define ROBOT_ON_DEATH "Kappy's rockets take a while to travel\nAvoid or Out-heal his damage to make him less effective"
 #define ROBOT_COST 1.25
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
-
-
-// #define RED_MODEL "models/workshop/player/items/soldier/taunt_rocket_jockey/taunt_rocket_jockey.mdl"
-// #define PMODEL "models/props_td/atom_bomb.mdl"
-
-#define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
-
-#define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
-#define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
-#define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
 
 public Plugin:myinfo = 
 {
@@ -170,16 +157,18 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon1))
 		{
 			// TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 1.38);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
+
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			// TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.5);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
-			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.7);
-			// TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.2);
+			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.65);
+			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.6);
 			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			TF2CustAttr_SetString(Weapon1, "mouse-control-rocket", "aim-mode=1 turnspeed=125.0");
+			TF2CustAttr_SetString(Weapon1, "mouse-control-rocket", "aim-mode=1 turnspeed=225.0");
 			// TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "4.0");
 			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		}
@@ -203,16 +192,6 @@ stock GiveGiantPyro(client)
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
-
-public OnMapStart()
-{
-	
-	PrecacheSound(GUNFIRE);
-	PrecacheSound(GUNFIRE_CRIT);
-	PrecacheSound(GUNFIRE_EXPLOSION);
-
-	// PrecacheModel(RED_MODEL);
-}
 
 public void OnPluginStart()
 {
