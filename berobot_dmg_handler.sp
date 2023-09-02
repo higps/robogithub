@@ -1054,7 +1054,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             stat1 = 0.5;
             TF2Attrib_SetByName(Weapon1, "dmg taken from fire reduced", stat1);
             
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pyro: {orange}+%0.0f %% fire resistance",chat_display, OneIs100(stat1));
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pyro: {orange}+%0.0f%%%% fire resistance",chat_display, OneIs100(stat1));
             }
             
             if(IsThirdDegree(Weapon3))
@@ -1405,27 +1405,26 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
              if(IsSyringeGun(Weapon1))
             {
                 //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
-                stat1 = 1.15;
+                stat1 = 1.051;
                 TF2Attrib_SetByName(Weapon1, "ubercharge rate bonus", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.0f%%%% faster uber build rate{teamcolor}",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.00f%%%% faster uber build rate{teamcolor}",chat_display, HundredIsOne(stat1));
             }
             if(IsBlutsauger(Weapon1))
             {
-                stat1 = 10.0;
-                TF2Attrib_SetByName(Weapon1, "max health additive bonus", stat1);
-                // TF2Attrib_SetByName(Weapon1, "mod see enemy health", 1.0);
-                
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: On Hit: {orange}Reduce Enemy healing by -%0.0f%%%%{teamcolor} for %0.0f seconds.{orange}+%0.0f max health{teamcolor}",chat_display, LessIsMore(g_blutsauger_heal_reduction), g_blutsauger_heal_reduction_duration, stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: On Hit: {orange}Reduce Enemy healing by -%0.0f%%%%{teamcolor} for %0.0f second.",chat_display, LessIsMore(g_blutsauger_heal_reduction), g_blutsauger_heal_reduction_duration);
             }
 
             if(IsOverdose(Weapon1) && Weapon2 != -1)
             {
                 TF2Attrib_SetByName(Weapon2, "overheal decay disabled", 1000.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Overdose: {orange}No Overheal decay",chat_display);
+                stat1 = 1.6;
+                TF2Attrib_SetByName(Weapon1, "increased jump height from weapon", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Overdose: {orange}No Overheal decay. {teamcolor}While Active: {orange}+%0.0f%%%% {teamcolor}greater jump height bonus",chat_display, HundredIsOne(stat1));
             }else
             {
                 //Remove the attribute if overdose is not present, as it remains on loadout switch
                 TF2Attrib_RemoveByName(Weapon2, "overheal decay disabled");
+                TF2Attrib_RemoveByName(Weapon1, "increased jump height");
             }
 
             if(!IsOverdose(Weapon1) && Weapon2 != -1)
@@ -1436,7 +1435,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsAmputator(Weapon3) && Weapon1 != -1)
             {
-                stat1 = 0.3;
+                stat1 = 0.4;
                 TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Amputator: Provides {orange}+%0.0f%%%% Passive critical resistance",chat_display, LessIsMore(stat1));
             }
@@ -1452,7 +1451,17 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }else
             {
                 TF2Attrib_RemoveByName(Weapon2, "healing mastery");
-                TF2Attrib_RemoveByName(Weapon2, "mod see enemy health");
+                TF2Attrib_RemoveByName(Weapon3, "mod see enemy health");
+            }
+
+            if(IsVitaSaw(Weapon3) && Weapon2 != -1)
+            {
+                stat1 = 0.4;
+                TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vita-Saw: {orange}While Active: {orange}+%0.0f%%%% {teamcolor}Passive melee resistance",chat_display, LessIsMore(stat1));    
+            }else
+            {
+                TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
             }
 
             if(IsCrossbow(Weapon1))
@@ -1462,11 +1471,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsStockOrAllClassWeapon(Weapon3))
             {
-                stat1 = 2.0;
-                stat2 = 10.0;
+                stat1 = 1.0;
                 TF2Attrib_SetByName(Weapon3, "uber duration bonus", stat1);
-                TF2Attrib_SetByName(Weapon1, "max health additive bonus", stat2);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+%0.0f {teamcolor}seconds longer uber duration. +{orange}%0.0f{teamcolor} max HP",chat_display,(stat1), stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+%0.0f {teamcolor}second longer uber duration.",chat_display,stat1);
             }
 
             if (IsQuickfix(Weapon2))
@@ -1479,22 +1486,19 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsVaccinator(Weapon2))
             {
-                TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.2);
 			    TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.85);
-			    TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.2);
 			    TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.85);
-			    TF2Attrib_SetByName(Weapon2, "medigun fire resist passive", 0.2);
 			    TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.85);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vaccinator: {orange}+10%%%% higher resistances",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vaccinator: {orange}+10%%%% higher deployed resistances",chat_display);
             }
 
-            if(Weapon2 != -1)
-            {
-                stat1 = 0.5;
-                TF2Attrib_SetByName(Weapon3, "ubercharge_preserved_on_spawn_max", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Organs: {orange}Up to %0.0f%%%% uber saved on death",chat_display, OneIs100(stat1));
+            // if(Weapon2 != -1)
+            // {
+            //     stat1 = 0.5;
+            //     TF2Attrib_SetByName(Weapon3, "ubercharge_preserved_on_spawn_max", stat1);
+            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Organs: {orange}Up to %0.0f%%%% uber saved on death",chat_display, OneIs100(stat1));
                 
-            }
+            // }
         }
         
 
@@ -1619,6 +1623,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                     
                     TF2Attrib_RemoveByName(Weapon2, "increase buff duration");
                     
+                }else
+                {
+                    TF2Attrib_RemoveByName(Weapon2, "clip size bonus");
                 }
             }
 
@@ -2605,20 +2612,20 @@ bool IsTomiSlav(int weapon)
 	}
 	return false;
 }
-// bool IsVitaSaw(int weapon)
-// {
-//     if(weapon == -1 && weapon <= MaxClients) return false;
+bool IsVitaSaw(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
 	
-// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-// 	{
-// 		//If others are added, add them here
-// 	case 173: 
-// 		{
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 173: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 bool IsSyringeGun(int weapon)
 {

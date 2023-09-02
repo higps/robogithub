@@ -240,12 +240,11 @@ stock GiveGiantPyro(client)
 		
 		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.75);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.35);
-			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);	
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.9);			
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);	
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 		// if(IsValidEntity(Weapon2))
