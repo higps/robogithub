@@ -223,7 +223,7 @@ stock GiveBigRoboHuntsbot(client)
 
 		TF2Attrib_SetByName(SMG, "provide on active", 1.0);
 		// TF2Attrib_SetByName(SMG, "move speed penalty", 0.5);
-		TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.25);
+		TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.4);
 		}
 
 
@@ -249,8 +249,9 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	
 	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Jarated)
 	{	
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-		// TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
+		// TF2_AddCondition(client, TFCond_CritCanteen, 3.0);
+		// TF2_AddCondition(client, TFCond_DefenseBuffNoCritBlock, 3.0);
+		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 4.0);
 		
 	}
 	

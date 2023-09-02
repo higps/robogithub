@@ -1402,13 +1402,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (TF2_GetPlayerClass(client) == TFClass_Medic)
         {
-             if(IsSyringeGun(Weapon1))
-            {
-                //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
-                stat1 = 1.051;
-                TF2Attrib_SetByName(Weapon1, "ubercharge rate bonus", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.00f%%%% faster uber build rate{teamcolor}",chat_display, HundredIsOne(stat1));
-            }
+            //  if(IsSyringeGun(Weapon1))
+            // {
+            //     //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
+            //     stat1 = 1.051;
+            //     TF2Attrib_SetByName(Weapon1, "ubercharge rate bonus", stat1);
+            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.00f%%%% faster uber build rate{teamcolor}",chat_display, HundredIsOne(stat1));
+            // }
             if(IsBlutsauger(Weapon1))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: On Hit: {orange}Reduce Enemy healing by -%0.0f%%%%{teamcolor} for %0.0f second.",chat_display, LessIsMore(g_blutsauger_heal_reduction), g_blutsauger_heal_reduction_duration);
@@ -1442,7 +1442,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsSolemnVow(Weapon3))
             {
-                stat1 = 4.0;
+                stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon2, "healing mastery", stat1);
                 TF2Attrib_SetByName(Weapon2, "mod see enemy health", 1.0);
                 

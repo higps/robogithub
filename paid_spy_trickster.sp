@@ -124,7 +124,8 @@ public OnMapStart()
 }
 int g_souls = 0;
 int g_soul_required = 3;
-float g_scale = 1.75;
+float g_scale = 1.5;
+float g_mini_scale = 0.9;
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
@@ -194,7 +195,7 @@ MakeSpy(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
 	//TF2Attrib_SetByName(client, "move speed penalty", 0.8);
-	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.85);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
@@ -366,8 +367,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 public void CastSpell(int client) {
 
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.15);
-	UpdatePlayerHitbox(client, 1.15);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", g_mini_scale);
+	UpdatePlayerHitbox(client, g_mini_scale);
 	EmitSoundToAll(SHRINK,client);
 }
 

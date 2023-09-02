@@ -147,7 +147,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-int g_Heal_Bolts_Hits_Needed = 12;
+int g_Heal_Bolts_Hits_Needed = 10;
 int g_healcount = 0;
 float g_duration = 8.0;
 

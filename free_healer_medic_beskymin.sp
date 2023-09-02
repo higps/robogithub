@@ -13,7 +13,7 @@
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Dmg Reflect Vaccinator"
-#define ROBOT_TIPS "15 percent passive resist\n10 percent resistance when deployed\nUber gives you and your patient the reflect rune"
+#define ROBOT_TIPS "15%%%% passive resist\n35%%%% resistance when deployed\nUber provides the reflect rune"
 #define ROBOT_ON_DEATH "Be mindful when shooting while the reflect is active\nWait for the reflect to be over to continue shooting"
 
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
@@ -184,15 +184,15 @@ stock GiveGiantMedic(client)
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
-			TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.1);
+			// TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.1);
 			TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.15);
-			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.10);
+			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.35);
 			TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.15);
-			TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.10);
+			TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.35);
 			TF2Attrib_SetByName(Weapon2, "medigun fire resist passive", 0.15);
-			TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.10);
+			TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.35);
 			TF2Attrib_SetByName(Weapon2, "ubercharge overheal rate penalty", 1.0);
-			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.75);
+			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.85);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 		}
