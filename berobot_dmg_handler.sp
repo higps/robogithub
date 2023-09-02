@@ -1136,7 +1136,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.65;
                 TF2Attrib_SetByName(Weapon2, "stickybomb_charge_damage_increase", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}QuickeBomb: {orange}+%0.0f%%%% {teamcolor}charge damage increase",chat_display, OffBy100(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}QuickeBomb: {orange}+%0.0f%%%% {teamcolor}charge damage increase",chat_display, MoreIsMore(stat1));
             }
             
             if (IsClaid(Weapon3))
@@ -1212,7 +1212,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 1.5;
                 TF2Attrib_SetByName(Weapon3, "maxammo primary increased", stat1);
                 TF2Attrib_SetByName(Weapon3, "maxammo secondary increased", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+%0.00f%% maxammo on all weapons",chat_display, OffBy100(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+%0.00f%% maxammo on all weapons",chat_display, MoreIsMore(stat1));
             }
 
         }
@@ -1391,7 +1391,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon2, "clip size bonus", 2.0);
                 // TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.5);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: {orange}+%0.0f%% clip size",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: {orange}+%0.0f%%%% clip size",chat_display, MoreIsMore(stat1));
             }
         }
 
@@ -1419,7 +1419,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon2, "overheal decay disabled", 1000.0);
                 stat1 = 1.6;
                 TF2Attrib_SetByName(Weapon1, "increased jump height from weapon", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Overdose: {orange}No Overheal decay. {teamcolor}While Active: {orange}+%0.0f%%%% {teamcolor}greater jump height bonus",chat_display, HundredIsOne(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Overdose: {orange}No Overheal decay. {teamcolor}While Active: {orange}+%0.0f%%%% {teamcolor}greater jump height bonus",chat_display, MoreIsMore(stat1));
             }else
             {
                 //Remove the attribute if overdose is not present, as it remains on loadout switch
@@ -1610,7 +1610,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                     stat1 = 3.0;
                     TF2Attrib_SetByName(Weapon2, "increase buff duration", stat1);
                     
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+%0.0f%%%% longer buff duration{teamcolor}",chat_display, OffBy100(stat1));
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+%0.0f%%%% longer buff duration{teamcolor}",chat_display, MoreIsMore(stat1));
                 }else
                 {
                     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}equip a banner to get the buff!",chat_display);
@@ -1720,8 +1720,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         }
         if(IsGunSlinger(Weapon3))
         {
-            TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", stat1 = 1.15);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+15%%%% faster movement speed",chat_display, MoreIsMore(stat1));
+            TF2Attrib_SetByName(Weapon3, "engineer sentry build rate multiplier", stat1 = 8.0);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+%0.0f%%%% faster sentry build",chat_display, MoreIsMore(stat1));
             
         }
         // if (IsSapper(Weapon2))
@@ -3080,10 +3080,10 @@ public float MoreIsMore(float value)
 }
 
 //Values where 2.0 is 100% more
-public float OffBy100(float value)
-{
-    return (value*100.0)-100.0;
-}
+// public float OffBy100(float value)
+// {
+//     return (value*100.0)-100.0;
+// }
 
 // Where 1.0 is 100%
 public float OneIs100(float value)
