@@ -1072,11 +1072,23 @@ void PlayRobotDeathVoiceOver(int client, int victim)
             char voiceline[][] = {"heavy_mvm_taunt01", "heavy_mvm_taunt02", "heavy_mvm_giant_robot02"}; 
             digit = GetRandomInt(0,2);
             Format(szVO, sizeof(szVO), "%s", voiceline[digit]);
-            }  
+            } 
+
+            if(IsSentryBuster(victim))
+            {
+
+                Format(szVO, sizeof(szVO), "%s", "heavy_mvm_sentry_buster02");
+            } 
         }
         case TFClass_Medic:
         {
             Format(szVO, sizeof(szVO), "medic_mvm_giant_robot02");
+
+            if(IsSentryBuster(victim))
+            {
+
+                Format(szVO, sizeof(szVO), "%s", "medic_mvm_sentry_buster02");
+            } 
         }
         case TFClass_Soldier:
         {
@@ -1094,6 +1106,12 @@ void PlayRobotDeathVoiceOver(int client, int victim)
                 iNumber = GetRandomInt(1,2);
                 Format(szVO, sizeof(szVO), "soldier_mvm_tank_dead0%i", iNumber);
             }
+
+            if(IsSentryBuster(victim))
+            {
+
+                Format(szVO, sizeof(szVO), "%s", "soldier_mvm_sentry_buster02");
+            } 
         }
         case TFClass_Engineer:
         {
@@ -1104,6 +1122,10 @@ void PlayRobotDeathVoiceOver(int client, int victim)
             int Random = GetRandomInt(1,2);             
             Format(szVO, sizeof(szVO), "engineer_mvm_taunt0%i", Random);
             }
+            if(IsSentryBuster(victim))
+            {
+                Format(szVO, sizeof(szVO), "%s", "engineer_mvm_sentry_buster02");
+            } 
         }
         case TFClass_Scout:
         {
@@ -1380,6 +1402,11 @@ void PlayRobotTakeDamageVoiceOver(int attackerClientId, TFClassType attackerClas
             {
                 Format(szVO, sizeof(szVO), "medic_mvm_taunt01");
             }
+
+            if (IsSentryBuster(victimClientId))
+            {
+                Format(szVO, sizeof(szVO), "%s", "medic_mvm_sentry_buster01");
+            }
             
         }
         case TFClass_Soldier:
@@ -1397,9 +1424,14 @@ void PlayRobotTakeDamageVoiceOver(int attackerClientId, TFClassType attackerClas
             Format(szVO, sizeof(szVO), "%s", voiceline[digit]);
             
             }
+
+            if (IsSentryBuster(victimClientId))
+            {
+                Format(szVO, sizeof(szVO), "%s", "soldier_mvm_sentry_buster01");
+            }
         }
         case TFClass_Engineer:
-
+        {
             if(IsTank(victimClientId))
             {           
             char voiceline[][] = {"engineer_mvm_tank_alert01", "engineer_mvm_tank_shooting01"}; 
@@ -1410,6 +1442,13 @@ void PlayRobotTakeDamageVoiceOver(int attackerClientId, TFClassType attackerClas
             digit = GetRandomInt(1,2);
             Format(szVO, sizeof(szVO), "engineer_mvm_giant_robot0%i", digit);
             }
+
+            if (IsSentryBuster(victimClientId))
+            {
+                Format(szVO, sizeof(szVO), "%s", "engineer_mvm_sentry_buster01");
+            }
+        
+        }
 
         default:
             return;
