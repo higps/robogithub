@@ -119,9 +119,9 @@ public void OnWeaponSwitch(int client, int weapon)
 		//PrintToChatAll("Weapon was %i", weapon);
 		if (IsPistol(weapon))
 		{
-			TF2_AddCondition(client, TFCond_Buffed, 1.5);
+			TF2_AddCondition(client, TFCond_CritHype, 1.5);
 			TF2Attrib_AddCustomPlayerAttribute(client, "faster reload rate", 0.5, 1.5);
-			TF2Attrib_AddCustomPlayerAttribute(client, "fire rate bonus", 0.75, 1.5);
+			TF2Attrib_AddCustomPlayerAttribute(client, "fire rate bonus", 0.5, 1.5);
 		}
 	}
 }
