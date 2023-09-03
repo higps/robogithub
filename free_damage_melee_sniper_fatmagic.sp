@@ -133,7 +133,7 @@ MakeSniper(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	// TF2Attrib_SetByName(client, "move speed penalty", 1.1);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -223,7 +223,7 @@ stock GiveBigRoboHuntsbot(client)
 
 		TF2Attrib_SetByName(SMG, "provide on active", 1.0);
 		// TF2Attrib_SetByName(SMG, "move speed penalty", 0.5);
-		TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.25);
+		TF2Attrib_SetByName(SMG, "effect bar recharge rate increased", 0.4);
 		}
 
 
@@ -233,7 +233,7 @@ stock GiveBigRoboHuntsbot(client)
 			
 			TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Kukri, "fire rate bonus", 0.8);
-			TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
+			// TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.25);
 			// TF2Attrib_SetByName(Kukri, "speed_boost_on_kill", 2.0);
 			TF2Attrib_SetByName(Kukri, "dmg taken increased", 1.0);
@@ -249,8 +249,9 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	
 	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Jarated)
 	{	
-		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
-		// TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
+		// TF2_AddCondition(client, TFCond_CritCanteen, 3.0);
+		// TF2_AddCondition(client, TFCond_DefenseBuffNoCritBlock, 3.0);
+		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 4.0);
 		
 	}
 	

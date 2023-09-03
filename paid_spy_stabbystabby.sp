@@ -169,7 +169,7 @@ MakeSpy(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	//TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.95);
 	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);

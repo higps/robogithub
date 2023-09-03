@@ -162,13 +162,13 @@ MakeSpy(client)
 	int iHealth = 1200;
 	int MaxHealth = 125;
 	int iAdditiveHP = iHealth - MaxHealth;
-
+	float scale = 1.5;
 	TF2_SetHealth(client, iHealth);
 
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	//TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.95);
 	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
@@ -190,7 +190,7 @@ MakeSpy(client)
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
 	
-	UpdatePlayerHitbox(client, 1.65);
+	UpdatePlayerHitbox(client, scale);
 	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);

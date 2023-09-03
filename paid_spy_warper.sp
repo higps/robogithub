@@ -45,7 +45,7 @@ float g_RechargeCooldown = 10.0;
 float g_skill;
 int g_target = -1;
 float g_target_coords[3] = {0.0, ...};
-float g_scale = 1.75;
+float g_scale = 1.5;
 // #define SPY_DEATH_SOUND1		"vo/mvm_spybot_death01.mp3"
 // #define SPY_DEATH_SOUND2		"vo/mvm_spybot_death02.mp3"
 // #define SPY_DEATH_SOUND3		"vo/mvm_spybot_death03.mp3"
@@ -169,7 +169,7 @@ MakeSpy(client)
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", g_scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	//TF2Attrib_SetByName(client, "move speed penalty", 0.8);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.95);
 	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));

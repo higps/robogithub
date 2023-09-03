@@ -12,7 +12,7 @@
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Multi-Banner Vaccinator"
-#define ROBOT_TIPS "Weaker passive resistances\nBullet charge = mini-crits\nExplosive charge = Conch buff\nFire charge = Battalions Buff"
+#define ROBOT_TIPS "15%%%% passive resistances, 35%%%% deployed resistance\nBullet charge = mini-crits\nExplosive charge = Conch buff\nFire charge = Battalions Buff"
 #define ROBOT_ON_DEATH "Use Airblast to separate from the rest of his team"
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -206,15 +206,15 @@ stock GiveGiantMedic(client)
 			// TF2Attrib_SetByName(Weapon2, "lunchbox adds minicrits", 1.0);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
-			TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.5);
-			TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.10);
-			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.25);
-			TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.10);
-			TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.25);
-			TF2Attrib_SetByName(Weapon2, "medigun fire resist passive", 0.10);
-			TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.25);
+			// TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.1);
+			TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.15);
+			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.35);
+			TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.15);
+			TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.35);
+			TF2Attrib_SetByName(Weapon2, "medigun fire resist passive", 0.15);
+			TF2Attrib_SetByName(Weapon2, "medigun fire resist deployed", 0.35);
 			TF2Attrib_SetByName(Weapon2, "ubercharge overheal rate penalty", 1.0);
-			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.75);
+			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.85);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
 			//TF2CustAttr_SetString(Weapon2,"medigun charge is group overheal", "range=500.0 heal_rate=80.0 overheal_ratio=1.05 overheal_duration_mult=0.25");
