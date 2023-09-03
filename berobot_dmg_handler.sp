@@ -1270,7 +1270,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.35;
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Skullcutter: {orange}%0.0f%%%% increased damage bonus{teamcolor}",chat_display, HundredIsOne(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Skullcutter: {orange}%0.0f%%%% increased damage bonus{teamcolor}",chat_display, MoreIsMore(stat1));
                 TF2Attrib_SetByName(Weapon3, "damage bonus", stat1);
             }
 
@@ -1296,7 +1296,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "speed_boost_on_hit", stat1);
                 TF2Attrib_SetByName(Weapon1, "aiming movespeed increased", stat2);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Heavy Natascha: {orange}+%0.0f second speed boost on hit +%0.0f %%%% faster movespeed while spun up{teamcolor}",chat_display, stat1, HundredIsOne(stat2));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Heavy Natascha: {orange}+%0.0f second speed boost on hit +%0.0f %%%% faster movespeed while spun up{teamcolor}",chat_display, stat1, MoreIsMore(stat2));
             }
 
             if(IsTomiSlav(Weapon1))
@@ -1348,7 +1348,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsValidEntity(cozycamper) && Weapon1 != -1 && Weapon3 != -1)
             {
                 stat1 = 3.0;
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cozy Camper: {orange}+%0.0f%% {teamcolor}Max Ammo",chat_display, HundredIsOne(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cozy Camper: {orange}+%0.0f%% {teamcolor}Max Ammo",chat_display, MoreIsMore(stat1));
                 TF2Attrib_SetByName(cozycamper, "maxammo primary increased", stat1);
                 
             }
@@ -1360,7 +1360,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             TF2Attrib_SetByName(Weapon1, "maxammo primary increased", stat1);
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade, +%0.0f%% {teamcolor}max ammo",chat_display, HundredIsOne(stat1));
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade, +%0.0f%% {teamcolor}max ammo",chat_display, MoreIsMore(stat1));
         }
 
         if (IsSniperRifle(Weapon1))
@@ -1387,7 +1387,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.15;
                 TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Stock Melee: {orange}+%0.0f%% move speed{teamcolor} while active",chat_display, HundredIsOne(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Stock Melee: {orange}+%0.0f%% move speed{teamcolor} while active",chat_display, MoreIsMore(stat1));
             }
 
             if(IsShahanshah(Weapon3))
@@ -1395,7 +1395,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 // stat1 = 3.0;
                 // TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", stat1);
                 TF2CustAttr_SetString(Weapon3, "pushforce-on-hit", "cond=-1 flDist=-500.0 flDistVert=400");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shahansah: {orange}On Hit:{teamcolor} Self Knockback",chat_display, HundredIsOne(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shahansah: {orange}On Hit:{teamcolor} Self Knockback",chat_display, MoreIsMore(stat1));
             }
             
         }
@@ -1434,7 +1434,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat3 = 20.0;
                 TF2Attrib_SetByName(Weapon3, "max health additive bonus", stat3);
 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: All weapons gain {orange}+%0.0f%% maxammo and +%0.0f%%% faster reload",chat_display, HundredIsOne(stat1), LessIsMore(stat2));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: All weapons gain {orange}+%0.0f%% maxammo and +%0.0f%%% faster reload",chat_display, MoreIsMore(stat1), LessIsMore(stat2));
             }
 
             if (IsAtomizer(Weapon3))
@@ -1456,7 +1456,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=40.0");
                 // TF2_RegeneratePlayer(client);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display, HundredIsOne(stat1), stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display, MoreIsMore(stat1), stat2);
             }else
             {
                 TF2CustAttr_SetString(client, "Spell-Caster", "Spell=-1 Cooldown=40.0");
@@ -1469,7 +1469,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon3, "health from packs increased", stat1);
                 TF2Attrib_SetByName(Weapon3, "health regen", stat2);
                 // TF2CustAttr_SetString(Weapon3, "spawn-healthpack-on-dmg", "damage=500 levels=3");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Candy Cane: {orange}+%0.0f%%%% more health{teamcolor} from healthpacks. {orange}+%0.0f health{teamcolor} regenerated per second",chat_display, HundredIsOne(stat1), stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Candy Cane: {orange}+%0.0f%%%% more health{teamcolor} from healthpacks. {orange}+%0.0f health{teamcolor} regenerated per second",chat_display, MoreIsMore(stat1), stat2);
             }
 
             if (IsMadMilk(Weapon2))
@@ -1507,7 +1507,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             //     //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
             //     stat1 = 1.051;
             //     TF2Attrib_SetByName(Weapon1, "ubercharge rate bonus", stat1);
-            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.00f%%%% faster uber build rate{teamcolor}",chat_display, HundredIsOne(stat1));
+            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.00f%%%% faster uber build rate{teamcolor}",chat_display, MoreIsMore(stat1));
             // }
             if(IsBlutsauger(Weapon1))
             {
@@ -1636,7 +1636,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.15;
                 TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants %0.0f%%%% movespeed while actove",chat_display, HundredIsOne(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants %0.0f%%%% movespeed while actove",chat_display, MoreIsMore(stat1));
             }
 
             if(IsSpycicle(Weapon3))
@@ -1660,7 +1660,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsMarketGardner(Weapon3))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Market Gardner: {orange}+%0.0f%%%% damage bonus while rocket jumping{teamcolor}",chat_display, HundredIsOne(g_market_gardner_dmg_bonus));
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Market Gardner: {orange}+%0.0f%%%% damage bonus while rocket jumping{teamcolor}",chat_display, MoreIsMore(g_market_gardner_dmg_bonus));
         }
 
         if (IsElectric(Weapon1) || IsElectric(Weapon2))
@@ -1708,7 +1708,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
                 stat1 = 1.6;
                 TF2Attrib_SetByName(Weapon1, "clip size bonus", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: +{orange}+%0.0f%%%% clip size{teamcolor}",chat_display, HundredIsOne(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: +{orange}+%0.0f%%%% clip size{teamcolor}",chat_display, MoreIsMore(stat1));
                 if (IsAnyBanner(Weapon2))
                 {
                     stat1 = 2.0;
@@ -1719,7 +1719,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 {
                     stat1 = 1.5;
                     TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, HundredIsOne(stat1));
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
                 }
             }else
             {
@@ -1746,7 +1746,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.5;
                 TF2Attrib_SetByName(Weapon1, "Blast radius increased", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+%0.0f%%%% larger explosion radius",chat_display, HundredIsOne(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+%0.0f%%%% larger explosion radius",chat_display, MoreIsMore(stat1));
             }
             if (IsWearable(Weapon2))
             {
@@ -3185,7 +3185,7 @@ public float LessIsMore(float value)
 }
 
 //Values where 1.2 is 20%  more
-public float HundredIsOne(float value)
+public float MoreIsMore(float value)
 {
     return (value*100.0)-100.0;
 }
