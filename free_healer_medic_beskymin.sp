@@ -195,6 +195,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.85);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
+			TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.0);
 		}
 
 		if(IsValidEntity(Weapon3))
@@ -230,8 +231,8 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	if(condition == TFCond_UberBulletResist || condition == TFCond_UberBlastResist || condition == TFCond_UberFireResist){
 
 	//TF2_AddCondition(healtarget,TFCond_CritCola, 3.5);
-	TF2_AddCondition(client, TFCond_RuneWarlock, 3.5);
-	TF2_AddCondition(healtarget, TFCond_RuneWarlock, 3.5);
+	TF2_AddCondition(client, TFCond_RuneWarlock, 4.0);
+	TF2_AddCondition(healtarget, TFCond_RuneWarlock, 4.0);
 	}
 	}
 	}

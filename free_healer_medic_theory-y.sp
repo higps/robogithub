@@ -12,7 +12,7 @@
 #define ROBOT_CLASS "Medic"
 #define ROBOT_SUBCLASS "Healer"
 #define ROBOT_DESCRIPTION "Multi-Banner Vaccinator"
-#define ROBOT_TIPS "15%%%% passive resistances, 35%%%% deployed resistance\nBullet charge = mini-crits\nExplosive charge = Conch buff\nFire charge = Battalions Buff"
+#define ROBOT_TIPS "Bullet charge = mini-crits\nExplosive charge = Conch buff\nFire charge = Battalions Buff"
 #define ROBOT_ON_DEATH "Use Airblast to separate from the rest of his team"
 #define GMEDIC             "models/bots/medic/bot_medic.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -194,7 +194,6 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.5);
 			
 		}
 
@@ -217,6 +216,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.85);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
+			TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.0);
 			//TF2CustAttr_SetString(Weapon2,"medigun charge is group overheal", "range=500.0 heal_rate=80.0 overheal_ratio=1.05 overheal_duration_mult=0.25");
 
 			
@@ -248,20 +248,20 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 	if(condition == TFCond_UberBulletResist){
 
-	TF2_AddCondition(healtarget,TFCond_CritCola, 3.5);
-	TF2_AddCondition(client, TFCond_CritCola, 3.5);
+	TF2_AddCondition(healtarget,TFCond_CritCola, 4.0);
+	TF2_AddCondition(client, TFCond_CritCola, 4.0);
 	}
 
 	if(condition == TFCond_UberBlastResist){
 
-	TF2_AddCondition(healtarget,TFCond_RegenBuffed, 3.5);
-	TF2_AddCondition(client,TFCond_RegenBuffed, 3.5);
+	TF2_AddCondition(healtarget,TFCond_RegenBuffed, 4.0);
+	TF2_AddCondition(client,TFCond_RegenBuffed, 4.0);
 	}
 
 	if(condition == TFCond_UberFireResist){
 
-	TF2_AddCondition(healtarget,TFCond_DefenseBuffed, 3.5);
-	TF2_AddCondition(client,TFCond_DefenseBuffed, 3.5);
+	TF2_AddCondition(healtarget,TFCond_DefenseBuffed, 4.0);
+	TF2_AddCondition(client,TFCond_DefenseBuffed, 4.0);
 	}
 
 	}
