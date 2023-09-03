@@ -526,61 +526,61 @@ public MRESReturn CTFPlayer_RemoveAllObjects(int pThis, DHookParam hParams)
 // Match newly built teleporters with a teleporter with the smallest build number
 public MRESReturn CObjectTeleporter_FindMatch(int pThis, DHookReturn hReturn)
 {
-	int builder = GetBuilder(pThis);
-	if (!(0 < builder <= MaxClients) || !HasStat(builder))
-	{
-		hReturn.Value = -1;
-		return MRES_Supercede;
-	}
+	// int builder = GetBuilder(pThis);
+	// if (!(0 < builder <= MaxClients) || !HasStat(builder))
+	// {
+	// 	hReturn.Value = -1;
+	// 	return MRES_Supercede;
+	// }
 
-	ObjectInfo info;
-	TFObjectType iObjType = TF2_GetObjectType(pThis);
-	int match = -1;
-	int idx = g_ActualObjects[builder].FindValue(EntIndexToEntRef(pThis));
-	// Fricking impossible
-	if (idx == -1)
-		return MRES_Ignored;
+	// ObjectInfo info;
+	// TFObjectType iObjType = TF2_GetObjectType(pThis);
+	// int match = -1;
+	// int idx = g_ActualObjects[builder].FindValue(EntIndexToEntRef(pThis));
+	// // Fricking impossible
+	// if (idx == -1)
+	// 	return MRES_Ignored;
 
-	g_ActualObjects[builder].GetArray(idx, info);
-	int mybuildnumber = info.buildnumber;
-	float mybuildtime = info.buildtime;
+	// g_ActualObjects[builder].GetArray(idx, info);
+	// int mybuildnumber = info.buildnumber;
+	// float mybuildtime = info.buildtime;
 
-	for (int i = 0; i < g_ActualObjects[builder].Length; i++)
-	{
-		g_ActualObjects[builder].GetArray(i, info);
-		if (!IsValidEntity(info.ref))
-			continue;
+	// for (int i = 0; i < g_ActualObjects[builder].Length; i++)
+	// {
+	// 	g_ActualObjects[builder].GetArray(i, info);
+	// 	if (!IsValidEntity(info.ref))
+	// 		continue;
 
-		if ((info.ref & 0xFFF != pThis) && (iObjType == info.GetType()) && mybuildnumber == info.buildnumber)
-		{
-			if (HasEntProp(info.ref, Prop_Send, "m_bMatchBuilding") && 
-				((IsEntrance(pThis) && IsExit(info.ref)) || (IsExit(pThis) && IsEntrance(info.ref))))
-			{
-				int other = GetEntDataEnt2(info.ref, FindSendPropInfo("CObjectTeleporter", "m_bMatchBuilding") + 4);
-				if (other != -1 && other != pThis)
-				{
-					match = -1;
-					continue;
-				}
-				// This is to align teleporter destruction
-				// E.g. if a teleporter is broken, and u replace that teleporter, 
-				// its match should not be destroyed at a different position than
-				// the one that you just built
-				info.buildtime = mybuildtime;
-				match = info.ref;
-				break;
-			}
-		}
-	}
+	// 	if ((info.ref & 0xFFF != pThis) && (iObjType == info.GetType()) && mybuildnumber == info.buildnumber)
+	// 	{
+	// 		if (HasEntProp(info.ref, Prop_Send, "m_bMatchBuilding") && 
+	// 			((IsEntrance(pThis) && IsExit(info.ref)) || (IsExit(pThis) && IsEntrance(info.ref))))
+	// 		{
+	// 			int other = GetEntDataEnt2(info.ref, FindSendPropInfo("CObjectTeleporter", "m_bMatchBuilding") + 4);
+	// 			if (other != -1 && other != pThis)
+	// 			{
+	// 				match = -1;
+	// 				continue;
+	// 			}
+	// 			// This is to align teleporter destruction
+	// 			// E.g. if a teleporter is broken, and u replace that teleporter, 
+	// 			// its match should not be destroyed at a different position than
+	// 			// the one that you just built
+	// 			info.buildtime = mybuildtime;
+	// 			match = info.ref;
+	// 			break;
+	// 		}
+	// 	}
+	// }
 
-	if (match != -1)
-	{
-		bool bFrom = (GetUpgradeLevel(match) > GetUpgradeLevel(pThis) || GetUpgradeMetal(match) > GetUpgradeMetal(pThis));
-		CopyUpgradeStateToMatch(pThis, match, bFrom);
-	}
+	// if (match != -1)
+	// {
+	// 	bool bFrom = (GetUpgradeLevel(match) > GetUpgradeLevel(pThis) || GetUpgradeMetal(match) > GetUpgradeMetal(pThis));
+	// 	CopyUpgradeStateToMatch(pThis, match, bFrom);
+	// }
 
-	hReturn.Value = match;
-	return MRES_Supercede;
+	// hReturn.Value = match;
+	// return MRES_Supercede;
 }
 // AddObject is inlined on windows ;-;
 // We need to skip over the actual vector if this is a multiple
