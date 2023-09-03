@@ -66,6 +66,7 @@ public OnPluginStart()
 	robot.deathtip = ROBOT_ON_DEATH;
 	// robot.weaponsound = ROBOT_WEAPON_SOUND_FLAMETHROWER;
 	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
+	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);

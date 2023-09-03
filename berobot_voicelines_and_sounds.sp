@@ -206,6 +206,18 @@ static const char GiantCommonBotSteps[][256] =
     "mvm/giant_common/giant_common_step_08.wav"
 };
 
+static const char SentryBusterCallOut[][256] =
+{
+    "vo/heavy_mvm_sentry_buster01.mp3",//SB ALERT
+    "vo/heavy_mvm_sentry_buster02.mp3",//SB DOWN
+    "vo/soldier_mvm_sentry_buster01.mp3",
+    "vo/soldier_mvm_sentry_buster02.mp3",
+    "vo/medic_mvm_sentry_buster01.mp3",
+    "vo/medic_mvm_sentry_buster02.mp3",
+    "vo/engineer_mvm_sentry_buster01.mp3",
+    "vo/engineer_mvm_sentry_buster02.mp3"
+};
+
 
 
 public void OnMapStart()
@@ -261,6 +273,10 @@ public void OnMapStart()
 		PrecacheSound(RegularBotSteps[i], true);
 
     size = sizeof GiantCommonBotSteps;
+	for (int i = 0; i < size; i++)
+		PrecacheSound(GiantCommonBotSteps[i], true);
+
+    size = sizeof SentryBusterCallOut;
 	for (int i = 0; i < size; i++)
 		PrecacheSound(GiantCommonBotSteps[i], true);
 
@@ -1340,7 +1356,11 @@ void PlayRobotTakeDamageVoiceOver(int attackerClientId, TFClassType attackerClas
             
             }
 
+            if(IsSentryBuster(victimClientId))
+            {
 
+                Format(szVO, sizeof(szVO), "%s", "heavy_mvm_sentry_buster01");
+            }
                 
         }
         case TFClass_Medic:

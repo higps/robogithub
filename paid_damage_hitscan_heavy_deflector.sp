@@ -68,7 +68,7 @@ public OnPluginStart()
 	robot.sounds.winddown = SOUND_WINDDOWN;
 	robot.weaponsound = ROBOT_WEAPON_SOUND_MINIGUN;
 	robot.deathtip = ROBOT_ON_DEATH;
-
+	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST; 

@@ -75,6 +75,7 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
+	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
     AddRobot(robot, MakeUncleDane, PLUGIN_VERSION);
 	
 

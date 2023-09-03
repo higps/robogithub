@@ -55,7 +55,7 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.footstep = ROBOT_FOOTSTEP_NORMAL;
-
+	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST; 

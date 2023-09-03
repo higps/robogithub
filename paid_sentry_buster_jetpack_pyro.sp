@@ -61,7 +61,7 @@ public OnPluginStart()
 	// robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-
+	robot.difficulty = ROBOT_DIFFICULTY_HARD;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
 	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;

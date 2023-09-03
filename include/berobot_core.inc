@@ -622,4 +622,5 @@ enum struct Robot {
   int teamCoinsOnDeath;
   int weaponsound;
   int footstep;
+  int difficulty;
 }

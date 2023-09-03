@@ -84,7 +84,7 @@ public OnPluginStart()
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST;
-
+	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
 	// restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
 	// restrictions.TeamCoins.Overall = 2;
 

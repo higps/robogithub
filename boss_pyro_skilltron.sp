@@ -70,6 +70,7 @@ public OnPluginStart()
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.weaponsound = ROBOT_WEAPON_SOUND_FLAMETHROWER;
 	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
+	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
 	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;

@@ -102,7 +102,7 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-
+	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 
 
 	// RestrictionsDefinition restrictions = new RestrictionsDefinition();

@@ -58,6 +58,7 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.weaponsound = ROBOT_WEAPON_SOUND_MINIGUN;
+	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 	AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION);
 }
 

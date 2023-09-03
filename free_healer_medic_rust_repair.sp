@@ -54,6 +54,7 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
+	robot.difficulty = ROBOT_DIFFICULTY_HARD;
     AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION);
 	for(int client = 1 ; client <= MaxClients ; client++)
 	{

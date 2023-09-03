@@ -52,6 +52,7 @@ public OnPluginStart()
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
+	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
 	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 1);
 }
 

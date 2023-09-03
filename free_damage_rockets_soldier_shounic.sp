@@ -115,6 +115,7 @@ public OnPluginStart()
 	robot.sounds.gunfire = GUNFIRE;
 	robot.sounds.gunfire_crit = GUNFIRE_CRIT;
 	robot.weaponsound = ROBOT_WEAPON_SOUND_ROCKETLAUNCHER;
+	robot.difficulty = ROBOT_DIFFICULTY_HARD;
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 
 	AutoAim = CreateConVar("shounic_rocket_launcher_auto_aim", "0", "Should a fired rocket launcher automatically target players", _, true, 0.0, true, 1.0);

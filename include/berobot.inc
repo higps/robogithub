@@ -103,6 +103,7 @@ enum struct RobotDefinition {
   char deatheffect[64];
   int weaponsound;
   int footstep;
+  int difficulty;
 }
 typedef RobotCallback = function void (int client);
 
@@ -194,6 +195,14 @@ native bool IsAnyRobot(int client);
  * @return          return handled
  */
  native bool IsTank(int client);
+
+ /**
+ * checks if a client is a sentry buster
+ * @param client    clientId to check for robot
+ * 
+ * @return          return handled
+ */
+ native bool IsSentryBuster(int client);
 
  /**
  * Sets the stats for tanks

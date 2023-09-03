@@ -217,7 +217,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("CreateRobot", Native_CreateRobot);
     CreateNative("TrashRobot", Native_TrashRobot);
     CreateNative("IsTank", Native_IsTank);
+    CreateNative("IsSentryBuster", Native_IsSentryBuster);
     CreateNative("RoboSetHealth", Native_RoboSetHealth);
+
     // CreateNative("SetTankStats", Native_SetTankStats);
 
     return APLRes_Success;
@@ -591,6 +593,29 @@ public any Native_IsTank(Handle plugin, int numParams)
 
 
     if (StrEqual(robot.role,"Tank"))
+    {
+     //  PrintToChatAll("Robot role from factory: %s", robot.role);
+        
+        return true;
+    }else
+    {
+        return false;
+    }
+}
+
+
+public any Native_IsSentryBuster(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+
+    char robotName[NAMELENGTH];
+
+    Robot robot;
+    GetRobot(client, robotName, NAMELENGTH);
+    GetRobotDefinition(robotName, robot);
+
+
+    if (StrEqual(robot.role,"Sentry Buster"))
     {
      //  PrintToChatAll("Robot role from factory: %s", robot.role);
         

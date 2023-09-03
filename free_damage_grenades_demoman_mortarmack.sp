@@ -54,6 +54,7 @@ public OnPluginStart()
 	robot.sounds.gunfire = GUNFIRE;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.weaponsound = ROBOT_WEAPON_SOUND_GRENADELAUNCHER;
+	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 
 
 

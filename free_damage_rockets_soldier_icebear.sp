@@ -68,6 +68,7 @@ public OnPluginStart()
 	robot.sounds.gunfire_crit = GUNFIRE_CRIT;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.weaponsound = ROBOT_WEAPON_SOUND_ROCKETLAUNCHER;
+	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION);
 }
 

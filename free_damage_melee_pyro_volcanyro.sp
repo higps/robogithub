@@ -65,6 +65,7 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
+	robot.difficulty = ROBOT_DIFFICULTY_HARD;
 	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
 }
 

@@ -76,6 +76,7 @@ public OnPluginStart()
 	robot.sounds.winddown = SOUND_WINDDOWN;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
+	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 	//robot.deatheffect = DEATHBOOM;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();

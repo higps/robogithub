@@ -43,6 +43,7 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
+	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 2);
 
 	// HookEvent("player_death", Event_Death, EventHookMode_Post);

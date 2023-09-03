@@ -49,7 +49,7 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-
+	robot.difficulty = ROBOT_DIFFICULTY_HARD;
 	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	// restrictions.RobotCoins.Overall = 1;

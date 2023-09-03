@@ -64,6 +64,7 @@ public OnPluginStart()
 	robot.sounds.windup = SOUND_WINDUP;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
+	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST; 

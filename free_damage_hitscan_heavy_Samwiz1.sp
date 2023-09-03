@@ -70,6 +70,7 @@ public OnPluginStart()
 	// robot.sounds.winddown = SOUND_WINDDOWN;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
+	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 
 	AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null, 2);
 }
