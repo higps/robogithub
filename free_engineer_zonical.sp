@@ -10,7 +10,7 @@
 #include <sdktools>
 //#include <collisionhook>
 #include <tf_custom_attributes>
-
+#include <tf_ontakedamage>
 #pragma semicolon 1
 //#pragma newdecls required
 
@@ -75,7 +75,7 @@ public OnPluginStart()
     robot.sounds.loop = LOOP;
     robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
+	robot.difficulty = ROBOT_DIFFICULTY_HARD;
     AddRobot(robot, MakeUncleDane, PLUGIN_VERSION);
 	
 
@@ -121,8 +121,8 @@ public void OnWeaponSwitch(int client, int weapon)
 		if (IsPistol(weapon))
 		{
 			TF2_AddCondition(client, TFCond_CritHype, 1.5);
-			TF2Attrib_AddCustomPlayerAttribute(client, "faster reload rate", 0.5, 1.5);
-			TF2Attrib_AddCustomPlayerAttribute(client, "fire rate bonus", 0.5, 1.5);
+			// // TF2Attrib_AddCustomPlayerAttribute(client, "faster reload rate", 0.5, 1.5);
+			// // TF2Attrib_AddCustomPlayerAttribute(client, "fire rate bonus", 0.5, 1.5);
 		}
 	}
 }
@@ -286,20 +286,21 @@ stock GiveBigRoboDane(client)
 			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", 0.5);
-			TF2Attrib_SetByName(Weapon2, "damage bonus", 1.75);			
-			// TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.5);
-			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.0);
-			TF2Attrib_SetByName(Weapon2, "weapon spread bonus",	0.15);
+			TF2Attrib_SetByName(Weapon2, "damage bonus", 2.25);			
+			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.5);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.5);
+			TF2Attrib_SetByName(Weapon2, "weapon spread bonus",	0.25);
 			TF2Attrib_SetByName(Weapon2, "engineer building teleporting pickup", 10.0);
-			// TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
-			
+			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.85);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);	
+			RoboCorrectClipSize(Weapon2);
 		}
 		if(IsValidEntity(Weapon3))
 		{
 			//TF2Attrib_RemoveAll(Weapon3);
 			// TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
 			// TF2Attrib_SetByName(Weapon1, "item style override", 1.0);
-			//TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.0);
+			TF2Attrib_SetByName(Weapon3, "engineer sentry build rate multiplier", 1000.0);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
@@ -309,7 +310,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 6.0);
-			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
+			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 1.6);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 8.0);
 
@@ -318,4 +319,40 @@ stock GiveBigRoboDane(client)
 		}
 		
 	}
+}
+
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+    // if (!g_Enable)
+    //     return Plugin_Continue;
+	if(!IsValidClient(victim))
+	return Plugin_Continue;    
+	if(!IsValidClient(attacker))
+	return Plugin_Continue;
+
+	if (IsRobot(attacker, ROBOT_NAME) && TF2_IsPlayerInCondition(attacker, TFCond_CritHype))
+	{
+		// int iActiveWeapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
+		int Weapon2 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Secondary);
+		if (IsCrit(attacker)) return Plugin_Continue;
+		
+			// PrintToChatAll("Crittype was %i", critType);
+			
+				if(weapon == Weapon2)critType = CritType_MiniCrit;
+				return Plugin_Changed;
+			
+			
+		
+	}
+	return Plugin_Continue;
+}
+
+public bool IsCrit(int client){
+
+	//Ignores damage reduction if you are kritzed or minicritted with buff banner or winning
+	if(IsValidClient(client) && (TF2_IsPlayerInCondition(client, TFCond_Kritzkrieged) || TF2_IsPlayerInCondition(client, TFCond_Buffed)) || TF2_IsPlayerInCondition(client, TFCond_CritOnWin) || TF2_IsPlayerInCondition(client, TFCond_CritCanteen))
+	{
+		return true;
+	}
+	return false;
 }

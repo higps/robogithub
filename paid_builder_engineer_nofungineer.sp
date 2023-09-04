@@ -217,6 +217,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon2, "damage bonus", 3.0);
 			TF2Attrib_SetByName(Weapon2, "clip size penalty", 1.0);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
+			
 		}
 
 		if(IsValidEntity(Weapon3))

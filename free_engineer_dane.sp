@@ -260,6 +260,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "mod ammo per shot", 30.0);
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);	
 			// TF2Attrib_SetByName(Weapon1, "damage bonus bullet vs sentry target", 2.5);
 			
 		}
@@ -281,7 +282,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 4.0);
-			
+			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);	
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
 			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.45 dispenser_scale=1.45 sentry_count=1 dispenser_count=1 remove_all_sappers=0 yeet=0");	
 		}

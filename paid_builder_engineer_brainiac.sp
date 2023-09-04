@@ -211,7 +211,7 @@ stock GiveBigRoboDane(client)
 
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
 			TF2CustAttr_SetString(Weapon1, "projectile upgrades buildings", "5");
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);		
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);		
 		}
 
 		if(IsValidEntity(Weapon3))

@@ -114,7 +114,7 @@ int g_AprilEnable;
 float g_f_Damage_Bonus = 1.0;
 float g_f_previous_dmg_bonus = -1.0;
 //bool g_IsAprilRTD[MAXPLAYERS + 1] = false;
-
+bool b_g_high_power = false;
 int g_RoundCount;
 // int g_TankCount;
 
@@ -1558,7 +1558,6 @@ Action ChooseRobot(int client, bool redrawing = false)
 
 void Internal_SetRandomRobot(int client)
 {
-    PrintToChatAll("Setting random robot for %N", client);
     if (!g_Enable)
         return;
 
@@ -1994,108 +1993,85 @@ int Native_SetVolunteers(Handle plugin, int numParams)
     }
 }
 bool g_b_changed_dmg = false;
+bool g_b_calculated = false;
 
 int Native_EnsureRobotCount(Handle plugin, int numParams)
 {
     if (!g_BossMode)
         return;
 
+
+
+    while (g_Volunteers.Length == g_RoboCapTeam)
+    {
+        if (g_b_calculated) PrintCenterTextAll("Alert: Robot Power Restored\nRobots take normal damage");
+        
+        
+        g_f_Damage_Bonus = -1.0;
+        g_b_calculated = false;
+        break;
+    }
+
+
+
     while (g_Volunteers.Length < g_RoboCapTeam)
     {
         bool success = AddRandomVolunteer();
         SMLogTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
         
-        g_f_Damage_Bonus = -1.0;
-        g_b_changed_dmg = false;
+        CalculateDamageModifier();
+        // PrintToChatAll("Previous %f, g_f_dmg %f", g_f_previous_dmg_bonus, g_f_Damage_Bonus);
 
+        if(g_b_changed_dmg || !g_b_calculated)PrintCenterTextAll("Alert: High Power!\nRobots take %.0f %% less damage!", (g_f_Damage_Bonus-1.0)*100);
+        g_b_calculated = true;
         if (!success)
             break;
     }
 
-    while (g_Volunteers.Length == g_RoboCapTeam)
-    {
-        if (g_b_changed_dmg)
-        {
-            PrintCenterTextAll("Alert: Robot Power Restored\nRobots take normal damage");
-        }
-        
-        g_f_Damage_Bonus = -1.0;
-        g_b_changed_dmg = false;
-        break;
-    }
 
     while (g_Volunteers.Length > g_RoboCapTeam)
     {
-        //Old code, may use as CVAR later
-        // bool success = RemoveRandomRobot();
-        // SMLogTag(SML_VERBOSE, "removing random robot succcess: %b", success);
-        // if (!success)
-        //     break;
-
-
-        //We now know there's too many robots compared to humans
-        // int TotalClients = GetClientCount();
-        // int ServerMaxplayers = GetMaxHumanPlayers() - 1; 
-        //Failsafe for when you have admins who became a robot without volunteering
-        int CurrentRobots = 0;
-        int CurrentHumans = 0;
-        // int STV = 0;
-        for(int i = 0; i <= MaxClients+1; i++)
-        {
-            if(IsAnyRobot(i))
-            {
-                CurrentRobots++;
-            }
-
-            if(!IsAnyRobot(i) && IsValidClient(i))
-            {
-                CurrentHumans++;
-            }
-
-            // if (IsClientInGame(i) && IsClientSourceTV(i))
-            // {
-            //     STV = 1;
-            // }
-        }
-
-        ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
-        // PrintToChatAll("Dynamic count was %f", drobotcount.FloatValue);
-
-        // PrintToChatAll("Robots: %i Humans %i", CurrentRobots, CurrentHumans);
-        // float MissingHumans = (drobotcount.FloatValue*float(CurrentRobots))-float(Humans);
-   
-        int TargetRobots = RoundToFloor(float(CurrentRobots+CurrentHumans) / drobotcount.FloatValue);
-        // int RobotSurplus = CurrentRobots-TargetRobots;
-
-        int TargetHumans = RoundToFloor(float(CurrentRobots) * drobotcount.FloatValue) - CurrentRobots;
-
-        // int MissingHumans = TargetHumans-CurrentHumans;
-        // int RobotOverflow = CurrentRobots-g_RoboCapTeam;
-
-//24 - 18 - 6 
-        // if(TargetRobots >= 0)
-        // {
-        //     TargetRobots = 1;
-        // }
-        //PrintToChatAll("Current Robots: %i\nTarget Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", CurrentRobots, TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
-        // PrintCenterTextAll("Target Robots: %i\nTarget Humans: %i\n Missing Humans %i\nCurrent Humans %i", TargetRobots, TargetHumans, MissingHumans, CurrentHumans);
-
-        // PrintToChatAll("Missing humans: %i", MissingHumans);
-        g_f_Damage_Bonus = float(TargetHumans)/float(CurrentHumans);
-        // g_f_Damage_Bonus = Logarithm(float(TargetHumans)/float(CurrentHumans), float(CurrentHumans)) + 1.0;
+        CalculateDamageModifier();
         
-        if (g_f_previous_dmg_bonus != g_f_Damage_Bonus)
-        {
-            // float displaydmg = g_f_Damage_Bonus-1.0;
-
-            PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% more damage!", (g_f_Damage_Bonus-1.0)*100);
-        }
-        
-        g_f_previous_dmg_bonus = g_f_Damage_Bonus;
-        g_b_changed_dmg = true;
+        if(g_b_changed_dmg || !g_b_calculated)PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% more damage!", (g_f_Damage_Bonus-1.0)*100);
+        g_b_calculated = true;
         break;
     }
 
+
+
+}
+
+void CalculateDamageModifier()
+{
+    PrintToChatAll("Calculating");
+
+
+
+    int CurrentRobots = GetCurrentRobotCount();
+    int CurrentHumans = GetCurrentHumanCount();
+
+    ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
+
+    // int TargetRobots = RoundToFloor(float(CurrentRobots+CurrentHumans) / drobotcount.FloatValue);
+    int TargetHumans = RoundToFloor(float(CurrentRobots) * drobotcount.FloatValue) - CurrentRobots;
+    
+    g_f_Damage_Bonus = float(TargetHumans)/float(CurrentHumans); 
+
+    if (g_f_previous_dmg_bonus == g_f_Damage_Bonus)
+    {
+        g_b_changed_dmg = false;   
+    }else
+    {
+        g_b_changed_dmg = true;    
+    }
+
+    g_f_previous_dmg_bonus = g_f_Damage_Bonus;
+
+
+    
+    //Put better calculative formula here if discovered
+    // g_f_Damage_Bonus = Logarithm(float(TargetHumans)/float(CurrentHumans), float(CurrentHumans)) + 1.0;
 }
 
 int Native_UnmakeRobot(Handle plugin, int numParams)
@@ -2138,6 +2114,7 @@ bool AddRandomVolunteer()
         int islots = g_RoboCapTeam - g_Volunteers.Length;
         //PrintToChatAll("A new robot-slot is available. There is now %i available robot slots remains. Type !join to become a giant robot", islots);
         MC_PrintToChatAll("{green}%i{orange} Robot-slot available! Type {green}!join{orange} to become a giant robot!", islots);
+        b_g_high_power = true;
         return false;
     }
 
@@ -2154,7 +2131,7 @@ bool AddRandomVolunteer()
     MC_PrintToChatAllEx(newVolunteer, "{teamcolor}%N{orange} was automatically chosen to fillup the robot-team.", newVolunteer);
     MakeRobot(newVolunteer, true);
     ChangeClientTeam(newVolunteer, g_RoboTeam);
-
+    b_g_high_power = false;
     return true;
 }
 

@@ -1525,7 +1525,7 @@ void SetSpawnPitchSound(int client)
 
 public Action Timer_CheckSpawnAnnouncement(Handle timer, int client)
 {
-    if(IsPlayerAlive(client) && !b_AnnounceClamp)
+    if(IsClientInGame(client) && IsPlayerAlive(client) && !b_AnnounceClamp)
     {
 
         if (IsAnyRobot(client) && !b_AnnounceClamp)

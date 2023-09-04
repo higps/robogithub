@@ -209,6 +209,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "mod sentry killed revenge", 1.0);
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);	
 		}
 
 		if(IsValidEntity(Weapon3))

@@ -315,16 +315,12 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	{
 		if(IsRobot(attacker, ROBOT_NAME))
 		{
-			// PrintToChatAll("Target killed correctly");
-			TF2_SetHealth(attacker, iHealth);
-			TF2_AddCondition(attacker, TFCond_UberchargedCanteen, 1.0);
-			// SetGameTime();
+			TerminatorHeal(attacker);
 
 		}else if(IsRobot(assister, ROBOT_NAME))
 		{
 		// {PrintToChatAll("Target killed assist correctly");
-			TF2_SetHealth(assister, iHealth);
-			TF2_AddCondition(assister, TFCond_UberchargedCanteen, 1.0);
+			TerminatorHeal(assister);
 			// SetGameTime();
 
 		}/* else
@@ -345,6 +341,12 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	// 	// FindTerminationTarget();
 	// }
 	FindTerminator();
+}
+
+void TerminatorHeal(int client)
+{
+	AddPlayerHealth(client, GetCurrentHumanCount()*166, 0, false, true);
+	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
 }
 #define HeavyMetal 31369
 #define Nuke 30885

@@ -374,6 +374,45 @@ stock void UpdatePlayerHitbox(const int client, const float fScale)
 	SetEntPropVector(client, Prop_Send, "m_vecSpecifiedSurroundingMaxs", vecScaledPlayerMax);
 }
 
+
+/**
+ * returns how many robot players there are (non humans)
+ * 
+ * @return              number of robots
+ */
+stock int GetCurrentRobotCount()
+{
+        int CurrentRobots = 0;
+        // int STV = 0;
+        for(int i = 0; i <= MaxClients+1; i++)
+        {
+            if(IsAnyRobot(i))
+            {
+                CurrentRobots++;
+            }
+        }
+        return CurrentRobots;
+}
+
+/**
+ * returns how many human players there are (non robots)
+ * 
+ * @return              number of humans:
+ */
+stock int GetCurrentHumanCount()
+{
+        int CurrentHumans = 0;
+        for(int i = 0; i <= MaxClients+1; i++)
+        {
+            if(!IsAnyRobot(i) && IsValidClient(i))
+            {
+                CurrentHumans++;
+            }
+        }
+    return CurrentHumans;
+}
+
+
 /**
  * checks if the given client is valid (in game, not coaching and if requested not SourceTV/replay)
  * 
