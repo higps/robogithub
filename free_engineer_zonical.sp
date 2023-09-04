@@ -284,9 +284,9 @@ stock GiveBigRoboDane(client)
 		{
 			//TF2Attrib_RemoveAll(Weapon1);
 			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 2.25);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", 0.5);
-			TF2Attrib_SetByName(Weapon2, "damage bonus", 2.25);			
+			TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", 0.5);		
 			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.5);
 			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.5);
 			TF2Attrib_SetByName(Weapon2, "weapon spread bonus",	0.25);
