@@ -629,28 +629,28 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                 switch (damagecustom)
                 {
-                case TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, 
-                TF_CUSTOM_TAUNT_FENCING, TF_CUSTOM_TAUNT_ARROW_STAB, TF_CUSTOM_TELEFRAG,
-                TF_CUSTOM_TAUNT_BARBARIAN_SWING, TF_CUSTOM_TAUNT_UBERSLICE, 
-                 TF_CUSTOM_TAUNT_ENGINEER_SMASH, TF_CUSTOM_TAUNT_ENGINEER_ARM, TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF,
-                 TF_CUSTOM_TAUNTATK_GASBLAST:
-                {
-                    damage *= 2.5;
-                    return Plugin_Changed;
-                }
-                case TF_CUSTOM_TAUNT_GRENADE:
-                {
-                    damage *= 3.5;
-                    return Plugin_Changed;
-                }
-                case TF_CUSTOM_TAUNT_HADOUKEN:
-                {
-                    damage *= 3.0;
-                    return Plugin_Changed;
-                }
+                    case TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, 
+                    TF_CUSTOM_TAUNT_FENCING, TF_CUSTOM_TAUNT_ARROW_STAB, TF_CUSTOM_TELEFRAG,
+                    TF_CUSTOM_TAUNT_BARBARIAN_SWING, TF_CUSTOM_TAUNT_UBERSLICE, 
+                    TF_CUSTOM_TAUNT_ENGINEER_SMASH, TF_CUSTOM_TAUNT_ENGINEER_ARM, TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF,
+                    TF_CUSTOM_TAUNTATK_GASBLAST:
+                    {
+                        damage *= 2.5;
+                        return Plugin_Changed;
+                    }
+                    case TF_CUSTOM_TAUNT_GRENADE:
+                    {
+                        damage *= 3.5;
+                        return Plugin_Changed;
+                    }
+                    case TF_CUSTOM_TAUNT_HADOUKEN:
+                    {
+                        damage *= 3.0;
+                        return Plugin_Changed;
+                    }
                 }
 
-                if (!IsBoss(victim))
+                if (!IsBoss(victim) && IsAnyRobot(victim))
                 {
                     switch (damagecustom)
                     {
@@ -1724,14 +1724,17 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }else
             {
                 //To avoid keeping the buff when switching weapons
-                if (IsAnyBanner(Weapon2))
+                if(Weapon2 != -1)
                 {
-                    
-                    TF2Attrib_RemoveByName(Weapon2, "increase buff duration");
-                    
-                }else
-                {
-                    TF2Attrib_RemoveByName(Weapon2, "clip size bonus");
+                    if (IsAnyBanner(Weapon2))
+                    {
+                        
+                        TF2Attrib_RemoveByName(Weapon2, "increase buff duration");
+                        
+                    }else
+                    {
+                        TF2Attrib_RemoveByName(Weapon2, "clip size bonus");
+                    }
                 }
             }
 

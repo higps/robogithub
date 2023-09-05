@@ -2044,7 +2044,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
 void CalculateDamageModifier()
 {
-    PrintToChatAll("Calculating");
+    // PrintToChatAll("Calculating");
 
 
 
