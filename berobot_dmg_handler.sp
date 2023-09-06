@@ -1686,18 +1686,22 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
                 stat1 = 1.6;
                 TF2Attrib_SetByName(Weapon1, "clip size bonus", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: +{orange}+%0.0f%%%% clip size{teamcolor}",chat_display, MoreIsMore(stat1));
-                if (IsAnyBanner(Weapon2))
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%%%% clip size{teamcolor}",chat_display, MoreIsMore(stat1));
+                
+                if (Weapon2 != -1)
                 {
-                    stat1 = 2.0;
-                    TF2Attrib_SetByName(Weapon2, "increase buff duration", stat1);
-                    
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+%0.0f%%%% longer buff duration{teamcolor}",chat_display, MoreIsMore(stat1));
-                }else
-                {
-                    stat1 = 1.5;
-                    TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
+                    if (IsAnyBanner(Weapon2))
+                    {
+                        stat1 = 2.0;
+                        TF2Attrib_SetByName(Weapon2, "increase buff duration", stat1);
+                        
+                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+%0.0f%%%% longer buff duration{teamcolor}",chat_display, MoreIsMore(stat1));
+                    }else
+                    {
+                        stat1 = 1.5;
+                        TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
+                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
+                    }
                 }
             }else
             {
