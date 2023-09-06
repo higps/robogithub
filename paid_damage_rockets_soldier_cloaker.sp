@@ -13,6 +13,7 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Cloaker"
+#define ROBOT_TIPS "Cloak your team with the banner"
 #define ROBOT_ON_DEATH "Coaker's banner turns his teammates invisible in a radius\nUse fire and liquids to track the location of cloaked bots"
 //#define GSOLDIER             "models/bots/spy/bot_spy.mdl"
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
@@ -214,7 +215,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Use your cloak to hide your team");
+	PrintHintText(client , ROBOT_TIPS);
 	
 }
 
