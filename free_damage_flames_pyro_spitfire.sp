@@ -151,7 +151,7 @@ MakeGiantPyro(client)
 	
 
 	//TF2Attrib_SetByName(client, "deploy time decreased", 1.0);
-	//TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
+	
 	
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);

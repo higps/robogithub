@@ -151,7 +151,7 @@ MakeToofty(client)
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-	//TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
+	
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);

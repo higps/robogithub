@@ -206,9 +206,6 @@ MakeGiantSoldier(client)
 	//TF2Attrib_SetByName(client, "blast_dmg_to_self", 0.1);
 	TF2Attrib_SetByName(client, "increase buff duration", 2.5);
 	//TF2Attrib_SetByName(client, "self dmg push force increased", 4.0);
-	// TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
-	// TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	
 	//
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);

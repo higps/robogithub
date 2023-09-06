@@ -906,28 +906,6 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
         return Plugin_Continue;    
 
 
-
-
-	if(!IsValidClient(attacker))
-	{
-
-		if(IsAnyRobot(victim) && damagetype == DMG_FALL)
-		{
-			// PrintToChatAll("Taking regular fall damage %N", victim);
-			damage *= 0.5;
-			return Plugin_Changed;
-		}
-	}else
-	{
-		if(IsAnyRobot(attacker) && damagetype == DMG_FALL)
-		{
-			// PrintToChatAll("Else attacker was %N", attacker);
-			// PrintToChatAll("Else vicitm was %N", victim);
-			damage *= 0.25;
-			return Plugin_Changed;
-		}
-	}
-
     if(!IsValidClient(attacker))
         return Plugin_Continue;
     
@@ -1174,7 +1152,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 
                 // TF2Attrib_SetByName(Weapon3, "crit vs burning players", 1.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Axtinguisher: {orange}Provides %0.0f second speed boost{teamcolor} and{orange}%0.0f seconds of Battalion Backup buff",chat_display, g_axtinguisherspeedboost, g_axtinguisherbuffduration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Axtinguisher: {orange}Provides %0.0f second speed boost{teamcolor} and {orange}%0.0f seconds of Battalion Backup buff",chat_display, g_axtinguisherspeedboost, g_axtinguisherbuffduration);
 
             }
 
@@ -1542,7 +1520,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsSolemnVow(Weapon3))
             {
-                stat1 = 2.0;
+                stat1 = 1.0;
                 TF2Attrib_SetByName(Weapon2, "healing mastery", stat1);
                 TF2Attrib_SetByName(Weapon3, "mod see enemy health", 1.0);
                 

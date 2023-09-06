@@ -232,6 +232,10 @@ public void OnPluginStart()
     RegConsoleCmd("sm_car", Command_MountRobot, "get a taunt mount for your robot");
 
     RegConsoleCmd("sm_w", Command_TauntHuman, "get a taunt mount for your robot");
+    RegConsoleCmd("sm_showstats", Command_ShowStats, "Shows stats in the MvM upgrade menu");
+    RegConsoleCmd("sm_showstat", Command_ShowStats, "Shows stats in the MvM upgrade menu");
+    RegConsoleCmd("sm_mystat", Command_ShowStats, "Shows stats in the MvM upgrade menu");
+    RegConsoleCmd("sm_mystats", Command_ShowStats, "Shows stats in the MvM upgrade menu");
 //April Fools
     //RegConsoleCmd("sm_rtd", Command_RTDRobot, "become random robot");
 
@@ -789,11 +793,13 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
 public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 {
     //Activates when doing OnRegenerate (touchihng resupply locker) and then ignoring it if you are a boss
+    
 
     if(isMiniBoss(pThis) && IsPlayerAlive(pThis)){
         //PrintToChatAll("1");
-    PrintCenterText(pThis,"Error: Incompatible locker technology");
-
+    PrintCenterText(pThis,"Error: Incompatible locker technology\nDisplaying Robot Stats");
+    // int args;
+    Command_ShowStats(pThis, 1);
     //sets the robot health when touch
 	// int maxhealth = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, pThis);
     //     SetEntityHealth(pThis, maxhealth);
@@ -1356,6 +1362,33 @@ public Action Command_ChangeRobot(int client, int args)
 
     return Plugin_Handled;
 }
+
+public Action Command_ShowStats(int client, int args)
+{
+    // SetEntProp(client, Prop_Send, "m_bInUpgradeZone", false);
+    SetEntProp(client, Prop_Send, "m_bInUpgradeZone", true);
+}
+
+public Action OnClientCommandKeyValues(int client, KeyValues kv)
+{
+	
+	char section[32];
+	if (kv.GetSectionName(section, sizeof(section)))
+	{
+        // PrintToChatAll("%s",section);
+			if (!strcmp(section, "MvM_UpgradesDone"))
+			{		
+				CancelClientMenu(client);
+				SetEntProp(client, Prop_Send, "m_bInUpgradeZone", false);					
+		}
+	}
+	return Plugin_Continue;
+}
+
+
+
+
+
 
 public Action Command_TauntHuman(int client, int args)
 {

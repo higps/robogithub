@@ -12,6 +12,7 @@ float g_stomp_damage_given;
 int g_use_static_value_on_dmg;
 int g_use_static_value_on_stomp_dmg;
 bool g_found_stat = false;
+
 bool HasStat(int client)
 {
 	//int iActiveWeapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
@@ -21,36 +22,36 @@ bool HasStat(int client)
 
 	char stat_buffer[256];
 	if (!TF2CustAttr_GetString(client, "fall-damage", stat_buffer, sizeof(stat_buffer))) {
-		g_found_stat = false;
-		PrintToChatAll("DID NOT FOUND STAT ON CLIENT");
-	}
-
-	if (!g_found_stat && TF2_GetPlayerClass(client) == TFClass_Soldier)
-	{
-		int mantreads = FindTFWearable(client, 444);
-		if (IsValidEntity(mantreads))
-		{
-			if (!TF2CustAttr_GetString(mantreads, "fall-damage", stat_buffer, sizeof(stat_buffer))) {
-			g_found_stat = false;
-			PrintToChatAll("DID NOT FOUND ON BOOTS");
-			}
-		}
-	}
-
-	if (g_found_stat == false)
-	{
-		PrintToChatAll("DID NOT FIND STAT ANYWHERE");
+		// g_found_stat = false;
 		return false;
 	}
+
+	// if (!g_found_stat && TF2_GetPlayerClass(client) == TFClass_Soldier)
+	// {
+	// 	int mantreads = FindTFWearable(client, 444);
+	// 	if (IsValidEntity(mantreads))
+	// 	{
+	// 		if (!TF2CustAttr_GetString(mantreads, "fall-damage", stat_buffer, sizeof(stat_buffer))) {
+	// 		g_found_stat = false;
+	// 		PrintToChatAll("DID NOT FOUND ON BOOTS");
+	// 		}
+	// 	}
+	// }
+
+	// if (g_found_stat == false)
+	// {
+	// 	PrintToChatAll("DID NOT FIND STAT ANYWHERE");
+	// 	return false;
+	// }
 	g_use_static_value_on_dmg = ReadIntVar(stat_buffer, "static-damage", 0);
 	g_use_static_value_on_stomp_dmg = ReadIntVar(stat_buffer, "static-damage-stomp", 0);
 	g_fall_damage_taken = ReadFloatVar(stat_buffer, "fall-damage", 1.0);
 	g_stomp_damage_given = ReadFloatVar(stat_buffer, "stomp-damage", 1.0);
-	// PrintToChatAll("HAS STATS");
+	PrintToChatAll("%N HAS STATS, falldmg taken: %f, stomp_dmg_given, %f",client, g_fall_damage_taken, g_stomp_damage_given);
 	return true;
 }
 
-public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor,
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		float &damage, int &damagetype, int &weapon, float damageForce[3],
 		float damagePosition[3], int damagecustom, CritType &critType)
 {
@@ -61,45 +62,48 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
 		if (IsValidClient(attacker))
 		{
-				if(HasStat(attacker) && damagetype == DMG_FALL && damagecustom == TF_CUSTOM_BOOTS_STOMP)
+				if(damagetype == DMG_FALL && damagecustom == TF_CUSTOM_BOOTS_STOMP)
 				{
-					PrintToChatAll("attacker was %N, victim was %N, damagecustom was %i, inflictor was %i", attacker, victim, damagecustom, inflictor);
-				if(g_use_static_value_on_stomp_dmg == 1)
-				{
-					damage = g_stomp_damage_given;
-
-					return Plugin_Changed;
-				}else
-				{
-					damage *= g_stomp_damage_given;
-
-					return Plugin_Changed;
-				}
-			
+					if(HasStat(attacker)){
+				
+						PrintToChatAll("attacker was %N damage was %f", victim, damage);
+						// PrintToChatAll("attacker was %N, victim was %N, damagecustom was %i, inflictor was %i", attacker, victim, damagecustom, inflictor);
+						if(g_use_static_value_on_stomp_dmg == 1)
+						{
+							PrintToChatAll("1 dmg: %f g_stomp: %f", damage, g_stomp_damage_given);
+							damage = g_stomp_damage_given;
+							PrintToChatAll("1: After dmg damage %f", damage);
+						}else
+						{
+							PrintToChatAll("2");
+							damage *= g_stomp_damage_given;
+						}
+						return Plugin_Changed;
+					}
 			}
 
 		}
 
 
 		//Regular Fall damage, is applied to the victim
-		if(HasStat(victim) && damagetype == DMG_FALL && damagecustom != TF_CUSTOM_BOOTS_STOMP && damage != 0.0)
+		if(damagetype == DMG_FALL && damagecustom != TF_CUSTOM_BOOTS_STOMP && damage != 0.0)
 		{
-			PrintToChatAll("Victim was %N damage was %f", victim, damage);
-			PrintToChatAll("Taking regular fall damagecustom was %i attacker was %i, inflictor fall was %i", damagecustom, attacker, inflictor);
-
-			if(g_use_static_value_on_dmg == 1)
-			{
-				damage = g_fall_damage_taken;
-				
-				return Plugin_Changed;
-			}else
-			{
-				damage *= g_fall_damage_taken;
+			// PrintToChatAll("Victim was %N damage was %f", victim, damage);
+			// PrintToChatAll("Taking regular fall damagecustom was %i attacker was %i, inflictor fall was %i", damagecustom, attacker, inflictor);
+			if (HasStat(victim)){
+				if(g_use_static_value_on_dmg == 1)
+				{
+					PrintToChatAll("3 dmg: %f, falldmgstatic: %f", damage,g_fall_damage_taken);
+					damage = g_fall_damage_taken;
+					PrintToChatAll("3: After dmg damage %f", damage);
+				}else
+				{
+					PrintToChatAll("4");
+					damage *= g_fall_damage_taken;
+				}
 				
 				return Plugin_Changed;
 			}
-			
-			
 		}
 
 
@@ -108,7 +112,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 	// if (g_bool_change)return Plugin_Changed;
 
 	}
-	return Plugin_Continue;
+	// return Plugin_Continue;
 }
 
 public int FindTFWearable(int iClient, int item)

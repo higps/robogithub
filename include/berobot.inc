@@ -401,14 +401,14 @@ stock int GetCurrentRobotCount()
  */
 stock int GetCurrentHumanCount()
 {
-        int CurrentHumans = 0;
-        for(int i = 0; i <= MaxClients+1; i++)
+    int CurrentHumans = 0;
+    for(int i = 0; i <= MaxClients+1; i++)
+    {
+        if(!IsAnyRobot(i) && IsValidClient(i))
         {
-            if(!IsAnyRobot(i) && IsValidClient(i))
-            {
-                CurrentHumans++;
-            }
+            CurrentHumans++;
         }
+    }
     return CurrentHumans;
 }
 
