@@ -148,7 +148,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-int g_Heal_Bolts_Hits_Needed = 10;
+int g_Heal_Bolts_Hits_Needed = 12;
 int g_healcount = 0;
 float g_duration = 8.0;
 
@@ -181,7 +181,7 @@ stock GiveGiantMedic(client)
 			// TF2Attrib_SetByName(Weapon1, "mark for death", 5.0);
 			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.01);
 
-			TF2Attrib_SetByName(Weapon1, "clip size bonus", 3.0);
+			TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
 			// TF2Attrib_SetByName(Weapon1, "Reload time decreased", 1.75);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);

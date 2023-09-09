@@ -797,9 +797,9 @@ public MRESReturn OnRegenerate(int pThis, Handle hReturn, Handle hParams)
 
     if(isMiniBoss(pThis) && IsPlayerAlive(pThis)){
         //PrintToChatAll("1");
-    PrintCenterText(pThis,"Error: Incompatible locker technology\nDisplaying Robot Stats");
+    PrintCenterText(pThis,"Error: Unable to use human lockers");
     // int args;
-    Command_ShowStats(pThis, 1);
+    // Command_ShowStats(pThis, 1);
     //sets the robot health when touch
 	// int maxhealth = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, pThis);
     //     SetEntityHealth(pThis, maxhealth);

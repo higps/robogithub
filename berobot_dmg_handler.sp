@@ -300,6 +300,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     TF2Attrib_AddCustomPlayerAttribute(victim, "reduced_healing_from_medics", g_blutsauger_heal_reduction, g_blutsauger_heal_reduction_duration);
                 }
             }
+
+            if(TF2_IsPlayerInCondition(victim, TFCond_Stealthed))
+            {
+                
+                if (damagecustom == TF_CUSTOM_BLEEDING || IsElectric(weapon))
+                {
+                    TF2_RemoveCondition(victim, TFCond_Stealthed);
+                }        //Code to remove stealthed from burning and bleeding
+
+            }
         }
 
     
@@ -1096,7 +1106,7 @@ void DisplayMMStats(int client, char[] chat_display)
 {
     if (g_Attribute_Display[client] < GetEngineTime() && b_Attribute_Display[client] && !strlen(chat_display) < 1)
     {
-        MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs:");
+        MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs: Type {orange}!mystats to see your stats");
         MC_PrintToChatEx(client, client, chat_display);
         MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}/mminfo {teamcolor}to toggle this information on/off");
         g_Attribute_Display[client] = GetEngineTime() + g_Attribute_Display_CollDown;
@@ -1335,10 +1345,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsHuntsMan(Weapon1))
         {
             stat1 = 1.93;
-
+            stat2 = 0.8;
             TF2Attrib_SetByName(Weapon1, "maxammo primary increased", stat1);
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade, +%0.0f%% {teamcolor}max ammo",chat_display, MoreIsMore(stat1));
+            TF2Attrib_SetByName(Weapon1, "faster reload rate", stat2);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade, +%0.0f%% {teamcolor}max ammo.{orange}+20%%%% {teamcolor}fire rate bonus",chat_display, MoreIsMore(stat1), LessIsMore(stat2));
         }
 
         if (IsSniperRifle(Weapon1))
@@ -1582,7 +1593,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsZatoichi(Weapon3))
         {
-            stat1 = 15.0;
+            stat1 = 25.0;
             TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", stat1);
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit",chat_display, stat1);
 
@@ -1814,6 +1825,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2Attrib_SetByName(Weapon3, "engineer sentry build rate multiplier", stat1 = 8.0);
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+%0.0f%%%% faster sentry build",chat_display, MoreIsMore(stat1));
             
+        }
+        if (IsBackScratcher(Weapon3))
+        {
+            TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1 = 20.0);
+            TF2Attrib_SetByName(Weapon3, "health from healers reduced", 1.0);
+            
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Backscratcher: On Hit: {orange}Bleed for %0.0f seconds, {orange}No healing penalty",chat_display, stat1);
         }
         // if (IsSapper(Weapon2))
         // {
@@ -2674,6 +2692,21 @@ bool IsGunSlinger(int weapon)
 	return false;
 }
 
+bool IsBackScratcher(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Back scratcher
+	case 326: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool IsNatascha(int weapon)
 {
 	if(weapon == -1 && weapon <= MaxClients) return false;
@@ -3084,12 +3117,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
                 // RequestFrame(RemoveMilk, client);
             }
-            //Code to remove stealthed from burning and bleeding
-            if (condition == TFCond_Bleeding || condition == TFCond_BurningPyro)
-            {
-                TF2_RemoveCondition(client, TFCond_Stealthed);
-            }
-
             
             if (condition == TFCond_MarkedForDeath && milk_time[client] < GetEngineTime())
             {

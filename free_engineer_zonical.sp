@@ -120,7 +120,7 @@ public void OnWeaponSwitch(int client, int weapon)
 		//PrintToChatAll("Weapon was %i", weapon);
 		if (IsPistol(weapon))
 		{
-			TF2_AddCondition(client, TFCond_CritHype, 1.5);
+			TF2_AddCondition(client, TFCond_CritHype, 1.0);
 			// // TF2Attrib_AddCustomPlayerAttribute(client, "faster reload rate", 0.5, 1.5);
 			// // TF2Attrib_AddCustomPlayerAttribute(client, "fire rate bonus", 0.5, 1.5);
 		}
@@ -282,16 +282,17 @@ stock GiveBigRoboDane(client)
 
 		if(IsValidEntity(Weapon2))
 		{
-			//TF2Attrib_RemoveAll(Weapon1);
-			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.7);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 2.25);
+			TF2Attrib_RemoveAll(Weapon2);
+			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.7);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 3.0);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", 0.5);		
 			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.5);
-			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.5);
+			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 4.0);
 			TF2Attrib_SetByName(Weapon2, "weapon spread bonus",	0.25);
 			TF2Attrib_SetByName(Weapon2, "engineer building teleporting pickup", 10.0);
-			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.85);
+			// TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.85);
+
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);	
 			RoboCorrectClipSize(Weapon2);
 		}

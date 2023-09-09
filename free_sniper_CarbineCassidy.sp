@@ -183,9 +183,10 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(SMG, "hidden secondary max ammo penalty", 2.0);
 			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(SMG, "weapon spread bonus", 0.0);
-			TF2Attrib_SetByName(SMG, "headshot damage increase", 3.0);
+			TF2Attrib_SetByName(SMG, "headshot damage increase", 2.0);
 			TF2Attrib_SetByName(SMG, "minicrits become crits", 1.0);
 			TF2Attrib_SetByName(SMG, "crit_dmg_falloff", 0.0);
+			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 2.025);
 			
 			TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=19 duration=8.0 addcond=66");
 

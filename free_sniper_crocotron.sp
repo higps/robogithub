@@ -14,7 +14,7 @@
 #define ROBOT_ROLE "Sniper"
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
-#define ROBOT_DESCRIPTION "Sydney Sleeper, Danger Shield, Bushwacka"
+#define ROBOT_DESCRIPTION "Sydney Sleeper, Danger Shield, Kukri"
 #define ROBOT_TIPS "Immune to afterburn\nYour rifle causes Jarate splash on hit\nDefend yourself with your Bushwacka"
 #define ROBOT_ON_DEATH "Crocotron causes Jarate splash on hit\nCounter-snipe or backstab sniper bots while they are distracted"
 
@@ -170,7 +170,7 @@ stock GiveBigRoboJbird(client)
 
 	CreateRoboWeapon(client, "tf_weapon_sniperrifle", 230, 6, 1, 0, 0);
 	// CreateRoboWeapon(client, "tf_weapon_jar", 58, 6, 1, 1, 0);
-	CreateRoboWeapon(client, "tf_weapon_club", 232, 6, 1, 2, 0); //shahansah
+	CreateRoboWeapon(client, "tf_weapon_club", 3, 6, 1, 2, 0); //kukri
 
 
 	CreateRoboHat(client, Snaggle, 10, 6, 0.0, 1.25, -1.0); 
