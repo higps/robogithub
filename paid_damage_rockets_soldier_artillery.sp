@@ -211,7 +211,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	
 	// TF2Attrib_SetByName(client, "self dmg push force increased", 6.0);
-	// TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
+
 	
 	//
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);

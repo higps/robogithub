@@ -61,7 +61,7 @@ int g_Eyelander_Counter[MAXPLAYERS + 1] = {0, ...};
 
 float g_AirStrikeDamage[MAXPLAYERS +1] = {0.0, ...};
 float g_AirStrikeDMGRequirement = 250.0;
-float g_ElectricStunDuration = 1.0;
+float g_ElectricStunDuration = 5.0;
 float g_HealDebuff = 0.5;
 
 float g_FrontierJusticeDamage[MAXPLAYERS + 1] = {0.0, ...};
@@ -82,7 +82,7 @@ float g_axtinguisherbuffduration = 5.0;
 int g_powerjackhealonhit = 50;
 int g_powerjackhealonhitoverheal = 260;
 
-float g_blutsauger_heal_reduction = 0.65;
+float g_blutsauger_heal_reduction = 0.35;
 float g_blutsauger_heal_reduction_duration = 1.0;
 
 float g_spycicle_fire_speed_debuff = 0.7;
@@ -296,8 +296,9 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 {
                     // int Detonated = GetEntProp(weapon, Prop_Send, "m_iDetonated");// PrintToChatAll("Removing Bonus"); //Removes the damage bonus from caber after use, in case of ubered players
                     // PrintToChatAll("Detonated %i", Detonated);
+                    SetHealingDebuff(victim, g_blutsauger_heal_reduction, g_blutsauger_heal_reduction_duration, attacker);
 
-                    TF2Attrib_AddCustomPlayerAttribute(victim, "reduced_healing_from_medics", g_blutsauger_heal_reduction, g_blutsauger_heal_reduction_duration);
+                    // TF2Attrib_AddCustomPlayerAttribute(victim, "reduced_healing_from_medics", g_blutsauger_heal_reduction, g_blutsauger_heal_reduction_duration);
                 }
             }
 
@@ -3092,7 +3093,7 @@ void SetHealingDebuff(int victim, float value, float duration, int attacker)
 
     TF2_AddCondition(victim, TFCond_HealingDebuff, duration, attacker);
     TF2_AddCondition(victim, TFCond_Sapped, duration, attacker);
-    TF2Attrib_AddCustomPlayerAttribute(victim, "mult_health_fromhealers_penalty_active", value, duration);
+    TF2Attrib_AddCustomPlayerAttribute(victim, "reduced_healing_from_medics", value, duration);
 
 }
 // int g_attacker[MAXPLAYERS + 1];

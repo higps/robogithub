@@ -149,7 +149,7 @@ MakeGiantSoldier(client)
 	
 	
 	// TF2Attrib_SetByName(client, "self dmg push force increased", 8.0);
-	// TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
+
 	//TF2Attrib_SetByName(client, "rocket jump damage reduction", 0.2);
 	
 	
@@ -246,41 +246,3 @@ stock GiveGiantPyro(client)
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
-	
-// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
-// {
-
-// 		if (!IsRobot(victim, ROBOT_NAME))
-// 		{
-// 			if (damagecustom == TF_CUSTOM_BOOTS_STOMP)
-// 			{
-				
-// 				PrintToChatAll("Damage was %f, type was %i on %N", damage, damagetype, victim);
-// 				return Plugin_Changed;
-
-// 			}
-// 		}
-// //if (StrEqual(robot.role,"ZBOSS"))
-// 		if (IsRobot(victim, ROBOT_NAME) && attacker == 0)
-// 		{
-// 			if (damagetype == 32){
-// 				damage = 0.0;
-// 				PrintToChatAll("Was victim %N, attacker was %N", victim, attacker);
-// 				//return Plugin_Changed;
-// 			}
-
-// 		}
-
-// 		// if (IsRobot(attacker, ROBOT_NAME))
-// 		// {
-// 		// 	if (damagetype == 32){
-// 		// 		//damage = 0.0;
-// 		// 		PrintToChatAll("%N was attacker", attacker);
-// 		// 		//return Plugin_Changed;
-// 		// 	}
-
-// 		// }
-
-	
-
-// }

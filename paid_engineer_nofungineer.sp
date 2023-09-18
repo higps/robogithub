@@ -19,9 +19,9 @@
 #define ROBOT_ROLE "Engineer"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS "SingleClass"
-#define ROBOT_DESCRIPTION "Ultra Drain Pomson, High Damage Short Circuit"
-#define ROBOT_TIPS "Negate spam with Short Circuit\nPomson fully drains cloak and Uber\nBuild up to 3 normal sentries\nExtra dispenser"
-#define ROBOT_ON_DEATH "NoFungineer has 3 sentries and 2 dispensers\nNofun counters projectiles, use other forms of damage on his buildings"
+#define ROBOT_DESCRIPTION "Rapid Pomson High Damage Short Circuit"
+#define ROBOT_TIPS "Negate spam with Short Circuit\nPomson fully drains cloak and Uber\nBuild up to 3 normal sentries"
+#define ROBOT_ON_DEATH "NoFungineer has 3 sentries\nNofun counters projectiles, use other forms of damage on his buildings"
 #define ROBOT_COST 2.0
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
@@ -207,8 +207,8 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
 			
-			TF2Attrib_SetByName(Weapon1, "subtract victim medigun charge on hit", 100.0);
-			TF2Attrib_SetByName(Weapon1, "subtract victim cloak on hit", 100.0);
+			TF2Attrib_SetByName(Weapon1, "subtract victim medigun charge on hit", 0.0);
+			TF2Attrib_SetByName(Weapon1, "subtract victim cloak on hit", 0.0);
 			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
 		}
 

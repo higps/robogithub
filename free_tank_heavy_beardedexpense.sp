@@ -387,12 +387,12 @@ stock GiveBearded(client)
 			// TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.2);
 			TF2Attrib_SetByName(Weapon3, "move speed bonus", 0.693);
 			TF2Attrib_SetByName(Weapon3, "damage penalty", 1.5);
-			TF2Attrib_SetByName(Weapon3, "critboost on kill", 10.0);
+			// TF2Attrib_SetByName(Weapon3, "critboost on kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
+			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
 			// TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 10.0);
 			// TF2Attrib_SetByName(Weapon3, "heal on kill", 400.0);
-			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
+			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.5);
 			// TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
 			// TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);

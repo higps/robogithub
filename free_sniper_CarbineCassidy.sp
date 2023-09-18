@@ -178,7 +178,7 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_RemoveAll(SMG);
 			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(SMG, "fire rate bonus", 0.65);
-			TF2Attrib_SetByName(SMG, "clip size bonus", 0.2);
+			// TF2Attrib_SetByName(SMG, "clip size bonus", 0.2);
 			TF2Attrib_SetByName(SMG, "lunchbox adds minicrits", 1.0);
 			TF2Attrib_SetByName(SMG, "hidden secondary max ammo penalty", 2.0);
 			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);

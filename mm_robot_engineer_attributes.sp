@@ -236,6 +236,10 @@ int g_infinite_ammo;
 int g_yeet[MAXPLAYERS + 1] = {0,...};
 float g_sentry_scale;
 float g_dispenser_scale;
+int g_upgradelevel_sentry;
+int g_upgradelevel_dispenser;
+
+
 
 bool HasStat(int client)
 {
@@ -260,7 +264,8 @@ bool HasStat(int client)
 	// g_DispenserLimit = ReadIntVar(stat_buffer, "dispensers", 1);
 	g_dispenser_scale = ReadFloatVar(stat_buffer, "dispenser_scale", 0.0);
 	g_infinite_ammo = ReadIntVar(stat_buffer, "infinite_ammo", 0);
-
+	g_upgradelevel_sentry = ReadIntVar(stat_buffer, "upgrade_level_sentry", -1);
+	g_upgradelevel_dispenser = ReadIntVar(stat_buffer, "upgrade_level_dispenser", -1);
 	g_yeet[client] = ReadIntVar(stat_buffer, "yeet", 0);
 
 //PrintToChatAll("SG Limit: %i, SG Scale: %f, Disp Limit: %i, Disp Scale: %f, infinite ammo: %i, Yeet: %i for %N",g_SentryLimit, g_sentry_scale, g_DispenserLimit, g_dispenser_scale, g_infinite_ammo, g_yeet[owner], client);
@@ -327,6 +332,23 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 			{
 				SetEntProp(iObj, Prop_Data, "m_spawnflags", flags|1<<3);
 			}
+
+			if(g_upgradelevel_sentry != -1)
+			{	
+				SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", g_upgradelevel_sentry);
+				SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", g_upgradelevel_sentry);
+			}
+
+		}
+
+		if (view_as<TFObjectType>(event.GetInt("object")) == TFObject_Dispenser)
+		{
+			if(g_upgradelevel_dispenser != -1)
+			{	
+				SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", g_upgradelevel_dispenser);
+				SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", g_upgradelevel_dispenser);
+			}
+			
 		}
 //Code for instant levels in case we need it in the future
 			// 	SetVariantInt(0);
