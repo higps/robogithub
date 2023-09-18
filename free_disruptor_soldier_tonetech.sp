@@ -147,7 +147,8 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	
-	
+		TF2Attrib_SetByName(client, "attach particle effect", 35.0);
+	TF2Attrib_SetByName(client, "increase player capture value", 4.0);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 10.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "mod_air_control_blast_jump", 9.0);
