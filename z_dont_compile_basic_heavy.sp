@@ -63,7 +63,7 @@ public OnPluginStart()
     robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 
-    AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null, 2);
+    AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null);
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)

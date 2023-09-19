@@ -67,7 +67,7 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
-	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null);
 }
 
 public void OnPluginEnd()
@@ -172,7 +172,7 @@ MakeGiantSoldier(client)
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=50.0 stomp-damage=500");
+	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=100.0 stomp-damage=125.0");
 	
 	TF2Attrib_SetByName(client, "self dmg push force increased", 8.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);

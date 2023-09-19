@@ -63,7 +63,7 @@ public OnPluginStart()
 	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
 	robot.difficulty = ROBOT_DIFFICULTY_HARD;
 
-	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null);
 }
 
 public void OnPluginEnd()
@@ -147,7 +147,7 @@ MakeGiantPyro(client)
 	
 	TF2Attrib_SetByName(client, "deploy time decreased", 0.05);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
-	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=50.0 stomp-damage=500");
+	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=100.0 stomp-damage=125.0");
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.75);

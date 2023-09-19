@@ -52,7 +52,7 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_HARD;
-	AddRobot(robot, MakeToofty, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeToofty, PLUGIN_VERSION, null);
 
 }
 
@@ -121,7 +121,7 @@ MakeToofty(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
 
-	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=50.0 stomp-damage=500");
+	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=100.0 stomp-damage=125.0");
 	
 	UpdatePlayerHitbox(client, 1.75);
 

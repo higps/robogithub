@@ -240,7 +240,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "mod projectile heat seek power", 360.0);
 			TF2Attrib_SetByName(Weapon2, "extinguish restores health", 200.0);
 			
-			TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=44 duration=5.0 addcond=52");
+			TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=44 duration=3.0 addcond=52");
 			TF2CustAttr_SetString(Weapon2, "Extinguish-Health-Gain", "HealthGain=180 StaticMax=1 ShowGain=0");
 		//	TF2Attrib_SetByName(Weapon2, "Projectile speed decreased", 0.75);
 		}

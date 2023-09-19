@@ -45,7 +45,7 @@ public OnPluginStart()
     // restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
     // restrictions.RobotCoins.Overall = 2;
 
-    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION, null, 2);
+    AddRobot(robot, MakeGiantMedic, PLUGIN_VERSION, null);
 }
 
 public void OnPluginEnd()

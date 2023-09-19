@@ -59,7 +59,7 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 
-	AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION, null);
 
 
 }

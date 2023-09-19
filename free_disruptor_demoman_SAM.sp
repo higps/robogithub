@@ -44,7 +44,7 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_EASY;
-	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null);
 
 	// HookEvent("player_death", Event_Death, EventHookMode_Post);
 }

@@ -1789,8 +1789,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         if (IsReserveShooter(Weapon2))
         {
             TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", stat1 = 0.6);
-            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=2.0 critType=2");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter:{orange}+100%% damage bonus vs jumping robots. {orange}+%0.0f%%%% faster deploy speed",chat_display, LessIsMore(stat1));
+            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.25 critType=2");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter:{orange}+25%% damage bonus vs jumping robots. {orange}+%0.0f%%%% faster deploy speed",chat_display, LessIsMore(stat1));
         }
 
         if(IsSandman(Weapon3))

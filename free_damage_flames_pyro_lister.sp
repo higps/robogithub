@@ -68,7 +68,7 @@ public OnPluginStart()
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
 
-	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, null);
 }
 
 public void OnPluginEnd()

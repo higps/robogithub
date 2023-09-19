@@ -73,7 +73,7 @@ public OnPluginStart()
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 
-	AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION, null);
 
 
 	FormatTime(sTime, sizeof sTime, "%m", GetTime());

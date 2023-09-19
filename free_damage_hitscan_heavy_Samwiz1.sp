@@ -72,7 +72,7 @@ public OnPluginStart()
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 
-	AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null);
 }
 
 public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)

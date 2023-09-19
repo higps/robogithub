@@ -236,7 +236,7 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "rocket jump damage reduction", 0.0);
 	TF2Attrib_SetByName(client, "no self blast dmg", 0.0);
 	
-	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=50.0 stomp-damage=500");
+	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=100.0 stomp-damage=125.0");
 	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 }
 

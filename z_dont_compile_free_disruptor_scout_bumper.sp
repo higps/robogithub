@@ -60,7 +60,7 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
-	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null);
 }
 
 public void OnPluginEnd()

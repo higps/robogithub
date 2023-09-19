@@ -63,7 +63,7 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_HARD;
-	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null, 2);
+	AddRobot(robot, MakeGiantscout, PLUGIN_VERSION, null);
 }
 
 public void OnPluginEnd()
