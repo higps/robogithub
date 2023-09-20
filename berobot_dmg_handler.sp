@@ -1483,6 +1483,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 // TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.5);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: {orange}+%0.0f%%%% clip size",chat_display, MoreIsMore(stat1));
             }
+            if (IsSouthernHospitality(Weapon3))
+            {
+                TF2Attrib_RemoveByName(Weapon3, "upgrade rate decrease");
+                // TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.5);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Southern Hospitality: No upgrade penalty",chat_display);
+            }
         }
 
         if (TF2_GetPlayerClass(client) == TFClass_Spy)
@@ -2959,6 +2965,21 @@ bool IsSpycicle(int weapon)
 	{
 		//If others are added, add them here
 	case 649:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsSouthernHospitality(int weapon)
+{
+    if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 155:
 		{
 			return true;
 		}
