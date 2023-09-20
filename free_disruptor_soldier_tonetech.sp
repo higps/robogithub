@@ -147,8 +147,8 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	
-		TF2Attrib_SetByName(client, "attach particle effect", 35.0);
-	TF2Attrib_SetByName(client, "increase player capture value", 4.0);
+	TF2Attrib_SetByName(client, "attach particle effect", 35.0);
+	TF2Attrib_SetByName(client, "increase player capture value", 3.0);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 10.0);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "mod_air_control_blast_jump", 9.0);
@@ -163,7 +163,7 @@ MakeGiantSoldier(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=10.0 stomp-damage=500");
+	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=50.0 stomp-damage=125");
 
 	PrintHintText(client , ROBOT_TIPS);
 	
@@ -222,7 +222,7 @@ stock GiveGiantPyro(client)
 			// TF2Attrib_SetByName(Weapon1, "damage penalty", 0.75);
 			TF2Attrib_SetByName(Weapon1, "clip size bonus", 3.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 5.0);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);			
 			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 2.0);	
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
@@ -236,7 +236,7 @@ stock GiveGiantPyro(client)
 		// }
 		if(IsValidEntity(Weapon3))
 		{
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.4);
 			// TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
 			// TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);

@@ -15,13 +15,13 @@
 //#pragma newdecls required
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Zonical"
+#define ROBOT_NAME	"Barricade"
 #define ROBOT_ROLE "Engineer"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS "SingleClass"
-#define ROBOT_DESCRIPTION "Quick-draw Pistol, Gunslinger"
-#define ROBOT_TIPS "Gain Minicrits by switching to your pistol\nBuild teamporters to easily teleport your team to the front lines"
-#define ROBOT_ON_DEATH "Zonical's pistol mini-crits when pulled out\nUse explosive weapons to damage both engineers and their buildings at once"
+#define ROBOT_DESCRIPTION "Barricade Buildings, Weak LVL 3 sentry, Shotgun, Southern Hospitality"
+#define ROBOT_TIPS "Build teamporters to easily teleport your team to the front lines"
+#define ROBOT_ON_DEATH "Barricade's sentry has very small range and shoots slowly"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -210,6 +210,7 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "mod teleporter cost", 18.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	
 
 	
 	TF2CustAttr_SetString(client, "robot engineer", "sentry_scale=1.35 dispenser_scale=1.5 infinite_ammo=0 sentries=1 dispensers=1 remove_all_sappers=0 yeet=0");
@@ -251,8 +252,8 @@ public Action:Timer_Switch(Handle:timer, any:client)
 // }
 
 // #define THEDANGER 30420
-#define GOLDDIGGER 30172
-#define ENDOTHERMIC 30412
+#define IronLung 30698
+#define Wavefinder 31148
 
 stock GiveBigRoboDane(client)
 {
@@ -264,44 +265,38 @@ stock GiveBigRoboDane(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_pistol", 22, 6, 1, 2, 0);
-		CreateRoboWeapon(client, "tf_weapon_robot_arm", 142, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_shotgun_primary", 199, 6, 1, 2, 0);
+		CreateRoboWeapon(client, "tf_weapon_wrench", 155, 6, 1, 2, 0);
 
 //15126
 		//CreateWeapon(client, "tf_weapon_wrench", 7, 9, 69, 2, 0);
 
 
 		// CreateRoboHat(client, THEDANGER, 10, 6, 15132390.0, 1.25, -1.0);
-		CreateRoboHat(client, GOLDDIGGER, 10, 6, 0.0, 1.0, -1.0);
-		CreateRoboHat(client, ENDOTHERMIC, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, IronLung, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, Wavefinder, 10, 6, 0.0, 1.0, -1.0);
 
-		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
 		//SetEntData(Weapon3, FindSendPropInfo(entclass, "m_iEntityQuality"), 11);
 
-		if(IsValidEntity(Weapon2))
+		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_RemoveAll(Weapon2);
-			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.7);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 3.0);
-			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", 0.5);		
-			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.5);
-			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 4.0);
-			TF2Attrib_SetByName(Weapon2, "weapon spread bonus",	0.25);
-			TF2Attrib_SetByName(Weapon2, "engineer building teleporting pickup", 10.0);
-			// TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.85);
-
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);	
-			RoboCorrectClipSize(Weapon2);
+			TF2Attrib_RemoveAll(Weapon1);
+			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon1, "engineer building teleporting pickup", 10.0);
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.85);
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);	
+			RoboCorrectClipSize(Weapon1);
 		}
 		if(IsValidEntity(Weapon3))
 		{
 			//TF2Attrib_RemoveAll(Weapon3);
 			// TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
 			// TF2Attrib_SetByName(Weapon1, "item style override", 1.0);
-			TF2Attrib_SetByName(Weapon3, "engineer sentry build rate multiplier", 1000.0);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Weapon3, "Construction rate increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
@@ -309,12 +304,15 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "Repair rate increased", 2.0);
 			// TF2Attrib_SetByName(Weapon3, "single wep deploy time increased", 1.6);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
-			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
-			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 6.0);
-			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 1.6);
+			TF2Attrib_SetByName(Weapon3, "engy sentry radius increased", 0.3);
+			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 2.5);
+			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 10.0);
+			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.6);
+			
+			
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 8.0);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500 dispenser=750");
-
+			TF2CustAttr_SetString(Weapon3, "robot engineer", "dispenser_scale=3.0 upgrade_level_dispenser=3 sentry_scale=3.0 upgrade_level_sentry=3");
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
 			
 		}
@@ -334,12 +332,12 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if (IsRobot(attacker, ROBOT_NAME) && TF2_IsPlayerInCondition(attacker, TFCond_CritHype))
 	{
 		// int iActiveWeapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
-		int Weapon2 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Secondary);
+		int Weapon1 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Secondary);
 		if (IsCrit(attacker)) return Plugin_Continue;
 		
 			// PrintToChatAll("Crittype was %i", critType);
 			
-				if(weapon == Weapon2)critType = CritType_MiniCrit;
+				if(weapon == Weapon1)critType = CritType_MiniCrit;
 				return Plugin_Changed;
 			
 			

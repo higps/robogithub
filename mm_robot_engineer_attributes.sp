@@ -336,7 +336,9 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 			if(g_upgradelevel_sentry != -1)
 			{	
 				SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", g_upgradelevel_sentry);
-				SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", g_upgradelevel_sentry);
+				SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", g_upgradelevel_sentry-1);
+				// SetEntPropFloat(iObj, Prop_Send, "m_flPercentageConstructed", 3.0);
+				// DispatchKeyValue(iObj, "defaultupgrade", "2"); 
 			}
 
 		}
