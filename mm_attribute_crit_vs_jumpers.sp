@@ -23,7 +23,7 @@ bool ActiveHasStatWeapon(int iActiveWeapon)
 		return false;
 	}
 	g_dmg = ReadFloatVar(stat_buffer, "damage", 1.15);
-	g_critType = ReadIntVar(stat_buffer, "critType", 1);
+	g_critType = ReadIntVar(stat_buffer, "critType", 0);
 	// PrintToChatAll("HAS STATS");
 	return true;
 }

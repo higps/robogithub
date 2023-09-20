@@ -1677,7 +1677,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             if (IsAirStrike(Weapon1))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}AirStrike: {orange}Gains additional clip{teamcolor} by doing %i damage to robots", chat_display, RoundToNearest(g_AirStrikeDMGRequirement));
+                TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 8.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}AirStrike: {orange}Gains additional clip{teamcolor} by doing %i damage to robots, {orange}+4 extra bonus clip", chat_display, RoundToNearest(g_AirStrikeDMGRequirement));
             }
             if (IsBlackBox(Weapon1))
             {
@@ -1714,6 +1715,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                         TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
                         Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
                     }
+                }else
+                {
+                    //Either mantreads or gunboats
                 }
             }else
             {
@@ -1754,12 +1758,25 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
                     TF2Attrib_SetByName(SoldierShoes, "cancel falling damage", 1.0);
                     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunboats:{orange} No fall damage",chat_display);
+                    if(isLibertyLauncher(Weapon1))
+                    {
+                        stat1 = 0.1;
+                        Format(chat_display, sizeof(chat_display), "%s{orange}Liberty Launcher: -%0.0f%%%% {teamcolor}rocket jump damage reduction",chat_display, LessIsMore(stat1));
+                        TF2Attrib_SetByName(SoldierShoes, "rocket jump damage reduction", stat1);
+                    }
                 }
 
                 SoldierShoes = FindTFWearable(client, 444);
                 if (IsValidEntity(SoldierShoes))
                 {
                     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Mantreads:{orange} Stomp: Stun tanks, Dizzy Robots",chat_display);
+
+                    if(isLibertyLauncher(Weapon1))
+                    {
+                        stat1 = 1.3;
+                        Format(chat_display, sizeof(chat_display), "%s{orange}\nLiberty Launcher: -%0.0f%%%% {teamcolor}faster move speed",chat_display, MoreIsMore(stat1));
+                        TF2Attrib_SetByName(SoldierShoes, "move speed bonus", stat1);
+                    }
                 }
             }
         }
@@ -1775,7 +1792,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
             TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
             TF2Attrib_SetByName(Weapon1, "fire rate bonus", stat1);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates through enemies{teamcolor} and {orange}+%0.0f%%%% faster firing and reload speed",chat_display, LessIsMore(stat1));
+            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.25");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +25%%%% dmg bonus vs jumping robots",chat_display, LessIsMore(stat1));
         }
         if (IsShotGun(Weapon2))
         {
@@ -1783,13 +1801,14 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
             TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
             TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates through enemies{teamcolor} and {orange}+%0.0f%%%% faster firing and reload speed",chat_display, LessIsMore(stat1));
+            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.25");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +25%%%% dmg bonus vs jumping robots",chat_display, LessIsMore(stat1));
         }
 
         if (IsReserveShooter(Weapon2))
         {
             TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", stat1 = 0.6);
-            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.25 critType=2");
+            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.75 critType=2");
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter:{orange}+25%% damage bonus vs jumping robots. {orange}+%0.0f%%%% faster deploy speed",chat_display, LessIsMore(stat1));
         }
 
