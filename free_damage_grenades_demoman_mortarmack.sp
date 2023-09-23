@@ -231,7 +231,7 @@ stock GiveGiantDemoKnight(client)
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			TF2Attrib_SetByName(Weapon1, "clip size penalty", 4.7);
+			TF2Attrib_SetByName(Weapon1, "clip size penalty", 5.0);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.7);
 			// TF2Attrib_SetByName(Weapon1, "projectile speed increased", 1.15);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);

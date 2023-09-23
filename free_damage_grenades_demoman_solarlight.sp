@@ -12,18 +12,13 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Hybrid Knight"
-#define ROBOT_TIPS "Iron Bomber"
+#define ROBOT_TIPS "Be demoknight TF2"
 #define ROBOT_ON_DEATH "Short Circuit and Airblast are good ways to deal with this robot"
 
-#define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
+#define GDEKNIGHT		"models/bots/demo/bot_demo.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
-
-#define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
-#define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
-#define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
-#define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
 
 public Plugin:myinfo =
 {
@@ -51,35 +46,6 @@ public OnPluginStart()
 	robot.difficulty = ROBOT_DIFFICULTY_HARD;
 	AddRobot(robot, MakeSolar, PLUGIN_VERSION);
 
-	AddNormalSoundHook(BossMortar);
-}
-
-public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT1, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT1, entity);
-		}
-		return Plugin_Changed;
-	}
-	return Plugin_Continue;
 }
 
 public void OnPluginEnd()
@@ -92,20 +58,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	//	CreateNative("BeGiantDemoKnight_MakeSolar", Native_SetGiantDemoKnight);
 	//	CreateNative("BeGiantDemoKnight_IsGiantDemoKnight", Native_IsGiantDemoKnight);
 	return APLRes_Success;
-}
-
-public OnMapStart()
-{
-	
-
-
-
-	
-
-
-	
-	
-
 }
 
 public Action:SetModel(client, const String:model[])
@@ -136,7 +88,7 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 2500;
+	int iHealth = 2000;
 	
 	
 	int MaxHealth = 175;
@@ -172,6 +124,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	TF2Attrib_SetByName(client, "charge time increased", 4.0);		
+	TF2Attrib_SetByName(client, "head scale", 0.75);		
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
