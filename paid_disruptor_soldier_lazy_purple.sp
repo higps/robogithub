@@ -18,7 +18,7 @@
 #define ROBOT_TIPS "Direct Hit deals normal damage to buildings"
 #define ROBOT_ON_DEATH "Blast jumpers can be countered heavily by the Reserve Shooter"
 #define ROBOT_COST 3.0
-#define ROBOT_COIN_GENERATION 2
+#define ROBOT_COIN_GENERATION 1
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

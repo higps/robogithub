@@ -11,6 +11,9 @@
 int g_requiredcond = -1;
 float flDistance;
 float flDistanceVertical;
+float flClamp;
+float g_clamptime[MAXPLAYERS + 1] = {0.0,...};
+
 bool ActiveHasStatWeapon(int iActiveWeapon)
 {
 	//int iActiveWeapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
@@ -24,6 +27,7 @@ bool ActiveHasStatWeapon(int iActiveWeapon)
 	g_requiredcond = ReadIntVar(stat_buffer, "cond", -1);
 	flDistance = ReadFloatVar(stat_buffer, "flDist", 500.0);
 	flDistanceVertical = ReadFloatVar(stat_buffer, "flDistVert", 100.0);
+	flClamp = ReadFloatVar(stat_buffer, "clamp", -1.0);
 	return true;
 }
 
@@ -39,6 +43,8 @@ int damagecustom, CritType &critType)
 			if(ActiveHasStatWeapon(weapon))
 			{
 
+			if(g_clamptime[attacker] < GetEngineTime())
+			
 			if(g_requiredcond == -1){
 
 				DoTeleport(attacker);
@@ -80,4 +86,6 @@ void DoTeleport(int client)
 
 
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vVelocity);
+	
+	g_clamptime[client] = GetEngineTime() + flClamp;
 }

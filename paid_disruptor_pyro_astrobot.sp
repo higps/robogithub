@@ -16,7 +16,7 @@
 #define ROBOT_TIPS "25%%%% Faster Airblast\nAirblasts propel you backwards while airborne\nHeal 175 on extinguish"
 #define ROBOT_ON_DEATH "Low gravity robots are open for fire while jumping\nForce them away with knockback"
 #define ROBOT_COST 0.75
-#define ROBOT_COIN_GENERATION 2
+#define ROBOT_COIN_GENERATION 1
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

@@ -12,16 +12,15 @@
 
 public Plugin myinfo ={
 	name = "[TF2] Building Overhaul",
-	author = "Scag",
+	author = "Scag, HiGPS | Bmod.TF",
 	description = "Gotta move that gear up!",
 	version = PLUGIN_VERSION,
 	url = "https://github.com/Scags"
 };
 
-// ConVar
-// 	cvMax[3]
-// ;
 int cvMax[3];
+
+
 // Need to handle bad objects...
 const TFObjectType TFObject_Invalid = view_as< TFObjectType >(-1);
 const TFObjectMode TFObjectMode_Invalid = view_as< TFObjectMode >(-1);
@@ -138,10 +137,9 @@ Address
 	g_GameStats
 ;
 
-
-int g_SentryLimit = 1;
-int g_DispenserLimit = 1;
-int g_TeleporterLimit = 1;
+int g_SentryLimit;
+int g_DispenserLimit;
+int g_TeleporterLimit;
 
 public void OnPluginStart()
 {
@@ -207,9 +205,6 @@ public void OnPluginStart()
 
 	delete conf;
 
-	// cvMax[0] = CreateConVar("sm_buildingov_max_dispenser", "999", "Max amount of dispensers", FCVAR_NOTIFY, true, 1.0);
-	// cvMax[1] = CreateConVar("sm_buildingov_max_teleporter", "999", "Max amount of teleporters. Counts for each set i.e. setting to 3 means 3 sets of teleporters.", FCVAR_NOTIFY, true, 1.0);
-	// cvMax[2] = CreateConVar("sm_buildingov_max_sentry", "999", "Max amount of sentries", FCVAR_NOTIFY, true, 1.0);
 
 
 	cvMax[0] = g_DispenserLimit;
@@ -217,6 +212,9 @@ public void OnPluginStart()
 	cvMax[2] = g_SentryLimit;
 
 
+	// cvMax[0] = CreateConVar("sm_buildingov_max_dispenser", "999", "Max amount of dispensers", FCVAR_NOTIFY, true, 1.0);
+	// cvMax[1] = CreateConVar("sm_buildingov_max_teleporter", "999", "Max amount of teleporters. Counts for each set i.e. setting to 3 means 3 sets of teleporters.", FCVAR_NOTIFY, true, 1.0);
+	// cvMax[2] = CreateConVar("sm_buildingov_max_sentry", "999", "Max amount of sentries", FCVAR_NOTIFY, true, 1.0);
 	AutoExecConfig(true, "TF2BuildingOverhaul");
 
 	HookEvent("player_death", OnPlayerDied);
@@ -226,24 +224,20 @@ public void OnPluginStart()
 			OnClientPutInServer(i);
 }
 
+
+
 bool HasStat(int client)
 {
 	
  	int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 	if(Weapon3 == -1)
 	{
-        cvMax[0] = 1;
-	    cvMax[1] = 1;
-	    cvMax[2] = 1;
 		return false;
 	}
 	//PrintToChatAll("Checking has stat for %N", client);
 	char stat_buffer[256];
 	if (!TF2CustAttr_GetString(Weapon3, "multi-building", stat_buffer, sizeof(stat_buffer))) {
 		//PrintToChatAll("Has Stat Not Found for %N", client);
-		cvMax[0] = 1;
-	    cvMax[1] = 1;
-	    cvMax[2] = 1;
 		return false;
 		
 	}
@@ -259,7 +253,6 @@ bool HasStat(int client)
 	// PrintToChatAll("%N had stat",client);
 	return true;
 }
-
 
 public void OnPluginEnd()
 {
@@ -293,7 +286,7 @@ public Action OnWeaponSwitch(int client, int weapon)
 		return Plugin_Continue;
 	}
 	// And re-add the oldest objects to them afterwards
-	else if (GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") != 28)
+	else if (GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") != 28 && HasStat(client))
 	{
 		AllowDestroying(client);
 		return Plugin_Continue;
@@ -526,6 +519,7 @@ public MRESReturn CTFPlayer_RemoveAllObjects(int pThis, DHookParam hParams)
 		}
 	}
 	g_ActualObjects[pThis].Clear();
+	// return MRES_Continue;
 }
 
 // Overriding this completely
@@ -533,7 +527,7 @@ public MRESReturn CTFPlayer_RemoveAllObjects(int pThis, DHookParam hParams)
 public MRESReturn CObjectTeleporter_FindMatch(int pThis, DHookReturn hReturn)
 {
 	int builder = GetBuilder(pThis);
-	if (!(0 < builder <= MaxClients))
+	if (!(0 < builder <= MaxClients) || !HasStat(builder))
 	{
 		hReturn.Value = -1;
 		return MRES_Supercede;
@@ -598,38 +592,38 @@ public MRESReturn CTFPlayer_FinishedObject(int pThis, DHookParam hParams)
 	TFObjectMode mode = TF2_GetObjectMode(obj);
 
 	CUtlVector m_aObjects = GetObjectVector(pThis);
-//	bool addtovec = true;
+	bool addtovec = true;
 	// I don't even think this loop runs because the PDA is still out
 	// and the vector is flushed when that happens
-//	for (int i = m_aObjects.Count()-1; i >= 0; --i)
-//	{
-//		int foundobj = m_aObjects.GetEx(i);
-//		if (foundobj == -1)
-//		{
-//			m_aObjects.FastRemove(i);			
-//			continue;
-//		}
-//		foundobj &= 0xFFF;
-//		if (!IsValidEntity(foundobj) || foundobj <= MaxClients)
-//		{
-//			m_aObjects.FastRemove(i);
-//			continue;
-//		}
-//
-//		if (TF2_GetObjectType(foundobj) == type)
-//		{
-//			if (type == TFObject_Teleporter && TF2_GetObjectMode(foundobj) != mode)
-//				continue;
-//
-//			addtovec = false;
-//			break;
-//		}
-//	}
-//
-//	if (addtovec)
-//	{
-//		m_aObjects.AddToTail(GetEntityHandle(obj));
-//	}
+	for (int i = m_aObjects.Count()-1; i >= 0; --i)
+	{
+		int foundobj = m_aObjects.GetEx(i);
+		if (foundobj == -1)
+		{
+			m_aObjects.FastRemove(i);			
+			continue;
+		}
+		foundobj &= 0xFFF;
+		if (!IsValidEntity(foundobj) || foundobj <= MaxClients)
+		{
+			m_aObjects.FastRemove(i);
+			continue;
+		}
+
+		if (TF2_GetObjectType(foundobj) == type)
+		{
+			if (type == TFObject_Teleporter && TF2_GetObjectMode(foundobj) != mode)
+				continue;
+
+			addtovec = false;
+			break;
+		}
+	}
+
+	if (addtovec)
+	{
+		m_aObjects.AddToTail(GetEntityHandle(obj));
+	}
 
 	int oldest = GetOldestObject(pThis, type, mode);
 	if (oldest != -1)
@@ -706,16 +700,16 @@ public MRESReturn CTFPlayer_FinishedObject(int pThis, DHookParam hParams)
 public Action OnPlayerRunCsmd(int client)
 {
 	//	ObjectInfo info;
-	//	for (int i = g_ActualObjects[client].Length-1; i >= 0; --i)
-	//	{
-	//		g_ActualObjects[client].GetArray(i, info, sizeof(info));
-	//		if (!IsValidEntity(info.ref))
-	//		{
-	//			g_ActualObjects[client].Erase(i);
-	//			continue;
-	//		}
-	//		PrintToChat(client, "%d %d", info.ref, info.GetType());
-	//	}
+		for (int i = g_ActualObjects[client].Length-1; i >= 0; --i)
+		{
+			g_ActualObjects[client].GetArray(i, info, sizeof(info));
+			if (!IsValidEntity(info.ref))
+			{
+				g_ActualObjects[client].Erase(i);
+				continue;
+			}
+			// PrintToChat(client, "%d %d", info.ref, info.GetType());
+		}
 	CUtlVector vec = GetObjectVector(client);
 //	if (!GetRandomInt(0, 10))
 	{
@@ -991,47 +985,50 @@ stock bool IsPDA(int wep)
 
 stock void AllowBuilding(int client)
 {
-	int count[3];
-	int teleportercount[2];
-
-	ObjectInfo info;
-	for (int i = GetNumObjects(client)-1; i >= 0; --i)
+	if(HasStat(client))
 	{
-		g_ActualObjects[client].GetArray(i, info);
-		if (!IsValidEntity(info.ref))
-			g_ActualObjects[client].Erase(i);
+		int count[3];
+		int teleportercount[2];
 
-		++count[view_as< int >(info.GetType())];
-		if (info.GetType() == TFObject_Teleporter)
-			++teleportercount[view_as< int >(info.GetMode())];
-	}
+		ObjectInfo info;
+		for (int i = GetNumObjects(client)-1; i >= 0; --i)
+		{
+			g_ActualObjects[client].GetArray(i, info);
+			if (!IsValidEntity(info.ref))
+				g_ActualObjects[client].Erase(i);
 
-	CUtlVector m_aObjects = GetObjectVector(client);
-	for (int i = m_aObjects.Count()-1; i >= 0; --i)
-	{
-		int foundobj = m_aObjects.GetEx(i);
-		if (foundobj == -1)
-		{
-			m_aObjects.FastRemove(i);			
-			continue;
-		}
-		foundobj &= 0xFFF;
-		if (!IsValidEntity(foundobj) || foundobj <= MaxClients)
-		{
-			m_aObjects.FastRemove(i);
-			continue;
+			++count[view_as< int >(info.GetType())];
+			if (info.GetType() == TFObject_Teleporter)
+				++teleportercount[view_as< int >(info.GetMode())];
 		}
 
-		bool remove = false;
+		CUtlVector m_aObjects = GetObjectVector(client);
+		for (int i = m_aObjects.Count()-1; i >= 0; --i)
+		{
+			int foundobj = m_aObjects.GetEx(i);
+			if (foundobj == -1)
+			{
+				m_aObjects.FastRemove(i);			
+				continue;
+			}
+			foundobj &= 0xFFF;
+			if (!IsValidEntity(foundobj) || foundobj <= MaxClients)
+			{
+				m_aObjects.FastRemove(i);
+				continue;
+			}
 
-		TFObjectType currtype = TF2_GetObjectType(foundobj);
-		if (currtype == TFObject_Teleporter)
-			remove |= teleportercount[view_as< int >(TF2_GetObjectMode(foundobj))] < cvMax[1];
+			bool remove = false;
 
-		remove |= count[view_as< int >(currtype)] < cvMax[view_as< int >(currtype)];
+			TFObjectType currtype = TF2_GetObjectType(foundobj);
+			if (currtype == TFObject_Teleporter)
+				remove |= teleportercount[view_as< int >(TF2_GetObjectMode(foundobj))] < cvMax[1];
 
-		if (remove)
-			m_aObjects.FastRemove(i);
+			remove |= count[view_as< int >(currtype)] < cvMax[view_as< int >(currtype)];
+
+			if (remove)
+				m_aObjects.FastRemove(i);
+		}
 	}
 }
 

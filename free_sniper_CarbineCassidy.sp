@@ -14,8 +14,8 @@
 #define ROBOT_CLASS "Sniper"
 #define ROBOT_SUBCLASS "Sniper"
 #define ROBOT_DESCRIPTION "Headshotting Carbine, Cloak on Crickey"
-#define ROBOT_TIPS "Carbine crits on headshot\nUse Crikey cloak to sneak around"
-#define ROBOT_ON_DEATH "Carbine Cassidy is weak to any kind of flinching\nCassidy's Crikey grants him cloak"
+#define ROBOT_TIPS "Carbine crits on headshot"
+#define ROBOT_ON_DEATH "Carbine Cassidy is weak to any kind of flinching"
 
 #define ChangeDane             "models/bots/Sniper/bot_Sniper.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -178,17 +178,17 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_RemoveAll(SMG);
 			TF2Attrib_SetByName(SMG, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(SMG, "fire rate bonus", 0.65);
-			// TF2Attrib_SetByName(SMG, "clip size bonus", 0.2);
+			TF2Attrib_SetByName(SMG, "clip size bonus", 0.3);
 			TF2Attrib_SetByName(SMG, "lunchbox adds minicrits", 1.0);
 			TF2Attrib_SetByName(SMG, "hidden secondary max ammo penalty", 2.0);
 			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(SMG, "weapon spread bonus", 0.0);
 			TF2Attrib_SetByName(SMG, "headshot damage increase", 2.0);
-			TF2Attrib_SetByName(SMG, "minicrits become crits", 1.0);
+			// TF2Attrib_SetByName(SMG, "minicrits become crits", 1.0);
 			TF2Attrib_SetByName(SMG, "crit_dmg_falloff", 0.0);
-			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 2.025);
+			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 1.8);
 			
-			TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=19 duration=8.0 addcond=66");
+			// TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=19 duration=8.0 addcond=66");
 
 			RoboCorrectClipSize(SMG);
 		}

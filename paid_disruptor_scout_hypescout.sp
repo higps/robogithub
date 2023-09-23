@@ -5,16 +5,18 @@
 #include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Hype Scout"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Scout"
 #define ROBOT_SUBCLASS "Disruptor"
-#define ROBOT_DESCRIPTION "Soda Popper"
+#define ROBOT_DESCRIPTION "Soda Popper. Forward boost on hit"
 #define ROBOT_COST 0.75
-#define ROBOT_COIN_GENERATION 2
+#define ROBOT_COIN_GENERATION 1
 #define ROBOT_ON_DEATH "Focus fire this robot before he causes too much disruption"
+#define ROBOT_TIPS "Use the boost you gain on hit to close the gap to get in enemies face"
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -136,7 +138,7 @@ MakeGiantscout(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
-	PrintHintText(client , "Use the Soda Popper hype to evade your enemies");
+	PrintHintText(client, ROBOT_TIPS);
 	
 }
 
@@ -179,6 +181,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.65);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);	
+			TF2CustAttr_SetString(Weapon1, "pushforce-on-hit", "cond=-1 flDist=150.0 flDistVert=300 clamp=0.1");
 			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
 			// TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			

@@ -15,7 +15,7 @@
 #define ROBOT_DESCRIPTION "Bonk + Rapid Sandman"
 #define ROBOT_DETAILS "Use bonk to take sentry fire\nShoot a ball to begin generating more"
 #define ROBOT_COST 2.0
-#define ROBOT_COIN_GENERATION 2
+#define ROBOT_COIN_GENERATION 1
 #define ROBOT_ON_DEATH "Airblast counters this robot"
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

@@ -17,7 +17,7 @@
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Heavy"
 #define ROBOT_SUBCLASS "Tank"
-#define ROBOT_DESCRIPTION "Terminate specific to restore health"
+#define ROBOT_DESCRIPTION "Terminate specific players"
 #define ROBOT_COST 2.0
 #define ROBOT_TIPS "HiNet: Terminate your target"
 #define ROBOT_ON_DEATH "Terminator has 90%% resistance to bullets & 50%% to explosives."

@@ -11,7 +11,7 @@
 #define ROBOT_ROLE "Tank"
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Tank"
-#define ROBOT_DESCRIPTION "SkullCutter"
+#define ROBOT_DESCRIPTION "High Damage Skull Cutter"
 #define ROBOT_TIPS "High Damage Axe\nIncreased melee range\nYou can't contest objectives"
 #define ROBOT_ON_DEATH "Executioner has high melee range but is slow\nTanks can be stunned by shields and stomps\nTanks take double melee damage"
 

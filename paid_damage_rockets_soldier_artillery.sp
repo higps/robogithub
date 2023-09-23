@@ -255,7 +255,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 1104, 6, 1, 2, 217);
+		CreateRoboWeapon(client, "tf_weapon_rocketlauncher_airstrike", 1104, 6, 1, 2, 217);
 		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
 		//CreateRoboWeapon(client, "tf_weapon_shovel", 416, 6, 1, 2, 0);
 		
@@ -277,7 +277,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.4);				
 			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.85);
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 6.0);
+			TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 8.0);
+			// TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
 			
 			
 

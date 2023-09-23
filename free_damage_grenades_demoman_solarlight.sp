@@ -12,7 +12,7 @@
 #define ROBOT_CLASS "Demoman"
 #define ROBOT_SUBCLASS "Grenades"
 #define ROBOT_DESCRIPTION "Hybrid Knight"
-#define ROBOT_TIPS "Rapid Iron Bomber\nCharge longer while your sword is out"
+#define ROBOT_TIPS "Iron Bomber"
 #define ROBOT_ON_DEATH "Short Circuit and Airblast are good ways to deal with this robot"
 
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
@@ -136,7 +136,7 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 3000;
+	int iHealth = 2500;
 	
 	
 	int MaxHealth = 175;
@@ -163,7 +163,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
@@ -171,6 +171,7 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
+	TF2Attrib_SetByName(client, "charge time increased", 4.0);		
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -267,7 +268,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_RemoveAll(Weapon3);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon3, "is_festivized", 1.0);		
-			TF2Attrib_SetByName(Weapon3, "charge time increased", 4.0);		
+			TF2Attrib_SetByName(Weapon3, "charge time increased", 5.0);	
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);		
 			// TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);		
 			

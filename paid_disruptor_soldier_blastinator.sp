@@ -17,7 +17,7 @@
 #define ROBOT_TIPS "Shoot at crowds to break them up"
 #define ROBOT_ON_DEATH "Blastinator's rockets have extremely high knockback"
 #define ROBOT_COST 3.0
-#define ROBOT_COIN_GENERATION 2
+#define ROBOT_COIN_GENERATION 1
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
