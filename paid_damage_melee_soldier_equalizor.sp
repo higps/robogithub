@@ -17,7 +17,7 @@
 #define ROBOT_DESCRIPTION "Equalizer & Escape Plan fusion, Base Jumper"
 #define ROBOT_TIPS "Taunt to get airborne to use the base jumper\nSpeed & damage increase as health decreases"
 #define ROBOT_ON_DEATH "Equalizor becomes buffed as health decreases"
-#define ROBOT_COST 4.0
+#define ROBOT_COST 2.0
 
 #define GSOLDIER		"models/bots/soldier/bot_soldier.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

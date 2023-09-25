@@ -1839,6 +1839,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}SMG: {orange}On Hit: {teamcolor}Speed boost for %0.0f seconds",chat_display, stat1);
         }
 
+        if(IsCarbine(Weapon2))
+        {
+            TF2Attrib_SetByName(Weapon2, "minicrit_boost_when_charged", stat1 = 16.0);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Carbine: {orange}Increased duration to %0.0f seconds",chat_display, stat1);
+        }
+
         if(IsShiv(Weapon3))
         {
             // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
@@ -1964,6 +1970,21 @@ bool IsSMG(int weapon)
 	{
 		//Sniper Rifles and Reskins
 	case 16, 203, 1149, 15001, 15022, 15032, 15037, 15058, 15076, 15110, 15134, 15153:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsCarbine(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Sniper Rifles and Reskins
+	case 751:
 		{
 			return true;
 		}

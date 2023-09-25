@@ -226,7 +226,7 @@ public void OnPluginStart()
 			OnClientPutInServer(i);
 }
 
-bool HasStat(int client)
+void HasStat(int client)
 {
 	
  	int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -235,7 +235,7 @@ bool HasStat(int client)
         cvMax[0] = 1;
 	    cvMax[1] = 1;
 	    cvMax[2] = 1;
-		return false;
+		// return false;
 	}
 	//PrintToChatAll("Checking has stat for %N", client);
 	char stat_buffer[256];
@@ -244,9 +244,11 @@ bool HasStat(int client)
 		cvMax[0] = 1;
 	    cvMax[1] = 1;
 	    cvMax[2] = 1;
-		return false;
+		// return false;
 		
-	}
+	}else{
+
+	
 
 	//PrintToChatAll("Has Stat Found for %N, setting variables", client);
 	g_SentryLimit = ReadIntVar(stat_buffer, "sentries", 1);
@@ -257,7 +259,8 @@ bool HasStat(int client)
 	cvMax[1] = g_TeleporterLimit;
 	cvMax[2] = g_SentryLimit;
 	// PrintToChatAll("%N had stat",client);
-	return true;
+	
+	}
 }
 
 
@@ -287,8 +290,9 @@ public Action OnWeaponSwitch(int client, int weapon)
 		return Plugin_Continue;
 
 	// If a player pulls out a pda, flush m_aObjects
-	if (GetPlayerWeaponSlot(client, 3) == weapon && IsPDA(weapon) && HasStat(client))
+	if (GetPlayerWeaponSlot(client, 3) == weapon && IsPDA(weapon))
 	{
+		HasStat(client);
 		AllowBuilding(client);
 		return Plugin_Continue;
 	}
