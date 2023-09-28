@@ -305,7 +305,7 @@ stock GiveBigRoboDane(client)
 			// TF2Attrib_SetByName(Weapon3, "single wep deploy time increased", 1.6);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			TF2Attrib_SetByName(Weapon3, "engy sentry radius increased", 0.3);
-			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 2.5);
+			// TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 2.5);
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 10.0);
 			TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.6);
 			

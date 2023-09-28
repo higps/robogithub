@@ -20,10 +20,6 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
-#define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
-#define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
-#define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
 #define ENEMY_HIT   "archibald.wav"
 
 public Plugin:myinfo =
@@ -200,7 +196,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);						
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.4);			
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 10.0);		
-			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
+			TF2Attrib_SetByName(Weapon3, "dmg taken increased", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.45);	
 			TF2Attrib_SetByName(Weapon3, "single wep deploy time decreased", 0.01);
 			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=6 Cooldown=2.0");
