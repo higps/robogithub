@@ -518,6 +518,7 @@ void SplitRocket(int rocket, bool converge)
 		int team = GetClientTeam(owner);
 		SetVariantInt(team);
 		AcceptEntityInput(mirv, "TeamNum");
+		SetVariantInt(team);
 		AcceptEntityInput(mirv, "SetTeam");
 		SetEntPropEnt(mirv, Prop_Send, "m_hOwnerEntity", owner);
 
