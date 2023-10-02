@@ -466,6 +466,14 @@ void SplitRocket(int rocket, bool converge)
 	if (!IsValidClient(owner)) return;
 	if (!IsValidEntity(rocket) || rocket < MaxClients) return;
 
+	bool airblasted = false;
+	int launcher = GetEntPropEnt(rocket, Prop_Send, "m_hLauncher");
+	if (launcher <= 0)
+	{
+		launcher = GetEntPropEnt(rocket, Prop_Send, "m_hOriginalLauncher");
+		airblasted = true;
+	}
+
 	GetEntPropVector(rocket, Prop_Data, "m_vecOrigin", pos);
 	GetEntPropVector(rocket, Prop_Send, "m_angRotation", rocketAngle);
 	GetEntPropVector(rocket, Prop_Data, "m_vecVelocity", rocketVel);
@@ -513,6 +521,15 @@ void SplitRocket(int rocket, bool converge)
 		AcceptEntityInput(mirv, "TeamNum");
 		AcceptEntityInput(mirv, "SetTeam");
 		SetEntPropEnt(mirv, Prop_Send, "m_hOwnerEntity", owner);
+
+		// Set our launcher to the parent launcher
+		if (launcher > 0 && IsValidEntity(launcher))
+		{
+			if (airblast)
+				SetEntPropEnt(mirv, Prop_send, "m_hOriginalLauncher", launcher);
+			else
+				SetEntPropEnt(mirv, Prop_Send, "m_hLauncher", launcher);
+		}
 		float vel[3];
 		GetAngleVectors(angles, vel, NULL_VECTOR, NULL_VECTOR);
 		ScaleVector(vel, speed);
