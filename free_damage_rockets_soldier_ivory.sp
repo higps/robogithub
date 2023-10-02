@@ -539,6 +539,14 @@ void SplitRocket(int rocket, bool converge)
 			SetEntProp(mirv, Prop_Send, "m_bCritical", crit);
 		SetEntDataFloat(mirv, FindSendPropInfo(netname, "m_iDeflected") + 4, 50.0);
 
+
+		DataPack info = new DataPack();
+		info.Reset();
+		info.WriteCell(mirv);
+		info.WriteCell(launcher);
+		
+		RequestFrame(SetOwnerStats, info);
+
 		if (converge)
 		{
 			MirvConverge[mirv] = true;
@@ -549,6 +557,20 @@ void SplitRocket(int rocket, bool converge)
 		}
 	}
 }
+
+void SetOwnerStats(DataPack info)
+{
+	//Get our player indexes and free up the handle
+	info.Reset();
+	int child = info.ReadCell();
+	int owner = info.ReadCell();
+	delete info;
+	// PrintToChatAll("Owner was %N", owner);
+	//m_hLauncher or m_hThrower
+	// SetEntPropEnt(child, Prop_Send, "m_hOriginalLauncher", owner);
+	SetEntPropEnt(child, Prop_Send, "m_hLauncher", owner);
+}
+
 
 public bool FilterCollision(int entity, int ContentsMask)
 {
