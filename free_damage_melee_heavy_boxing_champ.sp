@@ -94,7 +94,7 @@ MakeGDeflectorH(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
 
-	RoboSetHealth(client,TFClass_HeavyHeavy, 3000, 1.5);
+	RoboSetHealth(client,TFClass_Heavy, 3000, 1.5);
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.5);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);

@@ -129,7 +129,7 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	RoboSetHealth(client,TFClass_PyroPyro, 3000, 1.5);
+	RoboSetHealth(client,TFClass_Pyro, 3000, 1.5);
 
 	// PrintToChatAll("iHealth %i", iHealth);
 	
