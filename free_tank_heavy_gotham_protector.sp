@@ -232,7 +232,7 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	//TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
@@ -241,7 +241,7 @@ TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
 	// TF2Attrib_SetByName(client, "dmg taken from crit increased", 0.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
+	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	TF2Attrib_SetByName(client, "head scale", 0.95);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 
@@ -313,7 +313,7 @@ stock GiveGDeflectorH(client)
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 			TF2Attrib_SetByName(Weapon1, "move speed penalty", 0.9);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 		}
 		CreateRoboHat(client, 111, 10, 6, 0.0, 1.0, 1.0); 
 		TF2Attrib_SetByName(client, "attach particle effect", 35.0);

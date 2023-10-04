@@ -275,12 +275,9 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.4);				
-			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.85);
 			TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 8.0);
-			// TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
-			
-			
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);
 
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");

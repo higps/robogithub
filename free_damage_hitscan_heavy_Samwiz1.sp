@@ -284,7 +284,7 @@ stock GiveGDeflectorH(client)
 			
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.65);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 0.1);

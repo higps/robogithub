@@ -237,6 +237,7 @@ stock GiveGiantPyro(client)
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.4);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 			// TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
 			// TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);

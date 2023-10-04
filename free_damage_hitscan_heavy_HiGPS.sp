@@ -202,7 +202,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "attack projectiles", 1.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			
 			
 		}

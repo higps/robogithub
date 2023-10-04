@@ -239,7 +239,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.8);
 			TF2Attrib_SetByName(Weapon2, "weapon spread bonus", 0.75);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.2);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.4);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon2, "minicrit vs burning player", 1.0);
 			TF2Attrib_SetByName(Weapon2, "Set DamageType Ignite", 3.0);
 		}

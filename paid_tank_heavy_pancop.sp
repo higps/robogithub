@@ -195,11 +195,12 @@ stock GiveGDeflectorH(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.30);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.30);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.8);
 			TF2Attrib_SetByName(Weapon1, "ragdolls plasma effect", 1.0);
-			TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 109.0);
+			// TF2Attrib_SetByName(Weapon1, "heal on hit for slowfire", 109.0);
 			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.35);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);	
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 

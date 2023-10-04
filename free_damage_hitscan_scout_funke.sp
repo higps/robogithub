@@ -206,7 +206,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2CustAttr_SetString(Weapon2, "mod crit type on target condition", "condition=25 crit_type=1");
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.25);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
 		}
 		// g_iTeam = GetClientTeam(client);
 	}

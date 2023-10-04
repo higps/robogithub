@@ -16,18 +16,13 @@
 #define ROBOT_DESCRIPTION "High Knock Back Rockets"
 #define ROBOT_TIPS "Shoot at crowds to break them up"
 #define ROBOT_ON_DEATH "Blastinator's rockets have extremely high knockback"
-#define ROBOT_COST 3.0
+#define ROBOT_COST 2.0
 #define ROBOT_COIN_GENERATION 1
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
-
-#define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
 
 // #define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
 // #define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"

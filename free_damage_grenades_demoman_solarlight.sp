@@ -222,7 +222,8 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon3, "is_festivized", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 5.0);	
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);		
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);		
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);			
 			// TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);		
 			
 			
