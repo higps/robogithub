@@ -108,7 +108,7 @@ MakeSolar(client)
 	SetModel(client, GDEKNIGHT);
 
 	float scale = 1.75;	
-	int iHealth = 7500;
+	RoboSetHealth(client, TFClass_, 7500, 1.5);
 	
 	
 //	PrintToChatAll("MaxHealth %i", MaxHealth);

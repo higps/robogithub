@@ -124,7 +124,7 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	int iHealth = 3500;
+	RoboSetHealth(client, TFClass_, 3500, 1.5);
 		
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	

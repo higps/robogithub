@@ -186,7 +186,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 5800;		
+	RoboSetHealth(client, TFClass_, 5800, 1.5);		
 	
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);

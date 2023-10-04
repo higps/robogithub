@@ -89,7 +89,7 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 2175;
+	RoboSetHealth(client, TFClass_, 2175, 1.5);
 	float OverHealRate = 1.5;
 	
 	

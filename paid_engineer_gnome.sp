@@ -104,7 +104,7 @@ MakeUncleDane(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, ChangeDane);
 
-	int iHealth = 2000;
+	RoboSetHealth(client, TFClass_, 2000, 1.5);
 	float OverHealRate = 1.5;
 
 	float scale = 1.65;

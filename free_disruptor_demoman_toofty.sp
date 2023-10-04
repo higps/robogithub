@@ -90,7 +90,7 @@ MakeToofty(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 1750;
+	RoboSetHealth(client, TFClass_, 1750, 1.5);
 	
 	
 	

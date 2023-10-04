@@ -103,7 +103,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 1250;
+	RoboSetHealth(client, TFClass_, 1250, 1.5);
 		
 	
 	

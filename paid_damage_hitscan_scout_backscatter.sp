@@ -105,7 +105,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 2000;	
+	RoboSetHealth(client, TFClass_, 2000, 1.5);	
 
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);

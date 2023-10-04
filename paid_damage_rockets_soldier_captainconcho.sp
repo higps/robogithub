@@ -116,7 +116,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 3800;
+	RoboSetHealth(client, TFClass_, 3800, 1.5);
 		
 	
 	

@@ -122,7 +122,7 @@ MakeSpy(client)
 	SetModel(client, MODEL);
 
 
-	int iHealth = 1200;
+	RoboSetHealth(client, TFClass_, 1200, 1.5);
 	float scale = 1.5;
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);

@@ -99,7 +99,7 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 9000;
+	RoboSetHealth(client, TFClass_, 9000, 1.5);
 	
 	
 	float OverHealRate = 1.5;

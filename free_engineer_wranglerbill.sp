@@ -102,7 +102,7 @@ MakeBotSlinger(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1250;
+	RoboSetHealth(client, TFClass_, 1250, 1.5);
 
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);

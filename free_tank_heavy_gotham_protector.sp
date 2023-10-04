@@ -141,7 +141,7 @@ MakePanCop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 6000;
+	RoboSetHealth(client, TFClass_, 6000, 1.5);
 
 
 	

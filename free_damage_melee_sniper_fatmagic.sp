@@ -100,7 +100,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 2250;
+	RoboSetHealth(client, TFClass_, 2250, 1.5);
 
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);

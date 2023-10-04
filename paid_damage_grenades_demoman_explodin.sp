@@ -97,7 +97,7 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 4000;
+	RoboSetHealth(client, TFClass_, 4000, 1.5);
 	
 	
 

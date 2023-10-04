@@ -99,7 +99,7 @@ MakeGiantMedic(client)
 	SetModel(client, GMEDIC);
    
 		
-	int iHealth = 1500;
+	RoboSetHealth(client, TFClass_, 1500, 1.5);
 	
 	
    

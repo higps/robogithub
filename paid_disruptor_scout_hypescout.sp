@@ -105,7 +105,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 2150;
+	RoboSetHealth(client, TFClass_, 2150, 1.5);
 		
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	

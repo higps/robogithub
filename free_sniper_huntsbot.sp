@@ -102,7 +102,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1500;
+	RoboSetHealth(client, TFClass_, 1500, 1.5);
 	float scale = 1.5;
 
 

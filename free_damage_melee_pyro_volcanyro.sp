@@ -106,7 +106,7 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	int iHealth = 2750;
+	RoboSetHealth(client, TFClass_, 2750, 1.5);
 	
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
