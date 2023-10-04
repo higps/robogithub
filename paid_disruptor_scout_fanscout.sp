@@ -183,7 +183,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.3);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);	
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);	
 			// TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			
 			

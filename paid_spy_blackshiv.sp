@@ -223,7 +223,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Knife, "silent killer", 1.0);
 			TF2Attrib_SetByName(Knife, "damage penalty", 0.75);
 			TF2Attrib_SetByName(Knife, "fire rate bonus", 0.55);
-			TF2Attrib_SetByName(Knife, "dmg penalty vs buildings", 0.0);
+			TF2Attrib_SetByName(Knife, "dmg penalty vs buildings", 0.5);
 		}
 
 	if(IsValidEntity(Sapper)) //

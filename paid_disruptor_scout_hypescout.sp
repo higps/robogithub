@@ -178,7 +178,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.65);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);	
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);	
+			TF2CustAttr_SetString(Weapon1, "pushforce-on-hit", "cond=-1 flDist=150.0 flDistVert=300 clamp=0.1");
 			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.5);
 			// TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			

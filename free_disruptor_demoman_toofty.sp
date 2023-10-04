@@ -177,7 +177,7 @@ stock GiveGiantToofty(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.35);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);	
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);	
 		
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
 						

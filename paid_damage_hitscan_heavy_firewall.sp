@@ -223,7 +223,7 @@ stock GiveGRageH(client)
 			// TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.3);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon1, "ring of fire while aiming", 45.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus vs burning", 0.5);
 			TF2Attrib_SetByName(Weapon1, "crit vs burning players", 1.0);

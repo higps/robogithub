@@ -199,7 +199,7 @@ stock GiveGRageH(client)
 			TF2Attrib_SetByName(Weapon1, "attack projectiles", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.45);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			
 			
 			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.9);

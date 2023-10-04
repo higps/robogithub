@@ -263,6 +263,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 1.1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.75);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);	
 			// TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.15);
 			//TF2Attrib_SetByName(Weapon1, "mini rockets", 5.0);
 			//TF2Attrib_SetByName(Weapon1, "auto fires when full", 1.0);

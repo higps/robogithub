@@ -228,6 +228,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "flame_speed", 3800.0);
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 0.25);
 			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			// TF2Attrib_SetByName(Weapon1, "airblast cost decreased", 0.85);
 
 		}

@@ -267,8 +267,9 @@ stock GiveBigRoboDane(client)
 		{
 			TF2Attrib_RemoveAll(Revolver);
 			
-			TF2Attrib_SetByName(Revolver, "fire rate bonus", 2.5);
-			TF2Attrib_SetByName(Revolver, "damage bonus", 2.0);
+			// TF2Attrib_SetByName(Revolver, "fire rate bonus", 2.5);
+			// TF2Attrib_SetByName(Revolver, "damage bonus", 2.0);
+			TF2Attrib_SetByName(Revolver, "dmg penalty vs buildings", 0.25);	
 			TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
 						
 		}

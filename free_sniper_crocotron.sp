@@ -188,7 +188,7 @@ stock GiveBigRoboJbird(client)
 	if(IsValidEntity(SniperRifle))
 		{	
 			TF2Attrib_SetByName(SniperRifle, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.65);
+			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.5);
 		
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);

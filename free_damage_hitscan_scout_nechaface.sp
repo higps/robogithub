@@ -213,7 +213,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_RemoveAll(Weapon1);
                         
 			// TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.35);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			// TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.75);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			// TF2Attrib_SetByName(Weapon1, "speed_boost_on_hit", 2.0);

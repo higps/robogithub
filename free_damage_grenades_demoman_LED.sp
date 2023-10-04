@@ -235,7 +235,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.4);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.5);
 			
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
 			// TF2Attrib_SetByName(Weapon1, "mod use metal ammo type", 1.0);

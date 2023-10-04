@@ -229,6 +229,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "self dmg push force increased", 12.0);
 			TF2Attrib_SetByName(Weapon2, "Blast radius increased", 1.75);
 			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.35);
+			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);	
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);	
 			//TF2Attrib_SetByName(Weapon2, "Reload time decreased", 5.05);
 		}
 
@@ -240,7 +242,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
 			TF2Attrib_SetByName(Weapon3, "fire rate penalty", 1.2);
-			TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
+			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
 			
 			//TF2Attrib_SetByName(Weapon2, "apply look velocity on damage", 1500.0);
 		}

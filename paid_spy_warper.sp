@@ -277,6 +277,8 @@ stock GiveBigRoboDane(client)
 			// TF2Attrib_RemoveAll(Knife);
 			
 			//TF2Attrib_SetByName(Knife, "fire rate bonus", 0.8);
+			TF2Attrib_SetByName(Knife, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Knife, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Knife, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
 			// TF2Attrib_SetByName(Knife, "mod_disguise_consumes_cloak", 0.0);

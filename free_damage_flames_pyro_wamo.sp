@@ -221,7 +221,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			//TF2Attrib_SetByName(Weapon1, "mod flamethrower back crit", 1.0);		
 			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);			
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);			
 			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 8.0);			
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.3);
 			

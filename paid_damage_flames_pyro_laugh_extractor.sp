@@ -14,6 +14,7 @@
 #define ROBOT_DESCRIPTION "AOE scare ability"
 #define ROBOT_TIPS "Kill 5 enemies to charge your scare!\nSlower airblast\nHeal 250 on extinguish"
 #define ROBOT_ON_DEATH "Laugh Extractor can AOE scare after getting 5 kills\nDon't stay too close"
+#define ROBOT_COST 2.0
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -66,7 +67,13 @@ public OnPluginStart()
 	robot.deathtip = ROBOT_ON_DEATH;
 	// robot.weaponsound = ROBOT_WEAPON_SOUND_FLAMETHROWER;
 	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
-	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
+	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
+
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+
+	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions, null);
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
@@ -123,7 +130,7 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	int iHealth = 3000;
+	int iHealth = 3500;
 		
 	int MaxHealth = 175;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
@@ -139,7 +146,7 @@ MakeGiantPyro(client)
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
