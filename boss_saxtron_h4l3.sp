@@ -496,7 +496,8 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 2.0);
 			// TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);		
-			TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);					
+			TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);		
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);			
 		}
 		
 	}

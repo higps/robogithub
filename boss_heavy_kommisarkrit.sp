@@ -350,8 +350,6 @@ stock GiveBigJoey(client)
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 	//	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		
-		float spreadpenalty = scale;
 		if(IsValidEntity(Weapon1))
 		{
 			//TF2Attrib_SetByName(Weapon1, "fire rate bonus", 2.0);
@@ -360,9 +358,9 @@ stock GiveBigJoey(client)
 			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.65);
 			TF2Attrib_SetByName(Weapon1, "minigun spinup time decreased", 1.25);
 			TF2Attrib_SetByName(Weapon1, "mod weapon blocks healing", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.0);
 			
-			TF2Attrib_SetByName(Weapon1, "spread penalty", spreadpenalty);
+			
 		}
 	}
 }
