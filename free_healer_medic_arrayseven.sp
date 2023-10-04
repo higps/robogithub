@@ -63,15 +63,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
  
-public OnMapStart()
-{
-//
-
-
-
-   
-}
- 
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -130,15 +121,7 @@ MakeGiantMedic(client)
 	PrintHintText(client, ROBOT_TIPS);
 }
 
-// public TF2_OnConditionAdded(client, TFCond:condition)
-// {
-//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-//     {
-//        TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 2.5);
-// 	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
-//     }
-// }
- 
+
 stock TF2_SetHealth(client, NewHealth)
 {
 	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
@@ -183,12 +166,11 @@ stock GiveGiantMedic(client)
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.5);
+			TF2Attrib_SetByName(Weapon2, "uber duration bonus", 4.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
 			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.75);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
-			//SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 1.0);
 			
 		}
 

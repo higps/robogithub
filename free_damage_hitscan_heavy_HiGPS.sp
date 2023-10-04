@@ -118,10 +118,6 @@ MakeGDeflectorH(client)
 
 
 	TF2_SetHealth(client, iHealth);
-		// PrintToChatAll("MaxHealth %i", MaxHealth);
-	 // PrintToChatAll("iHealth %i", iHealth);
-	
-	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	float OverHeal = float(MaxHealth) * OverHealRate;
 	float TotalHealthOverHeal = iHealth * OverHealRate;
 

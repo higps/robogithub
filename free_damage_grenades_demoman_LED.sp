@@ -20,13 +20,6 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
-// #define GUNFIRE	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
-
-#define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
-#define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
-#define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
-#define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
-
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Major Bomber lite",
@@ -59,46 +52,6 @@ public OnPluginStart()
 	AddRobot(robot, MakeSolar, PLUGIN_VERSION);
 }
 
-public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT1, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT1, entity);
-		}
-		return Plugin_Changed;
-	}
-
-	// if (strncmp(sample, ")weapons/", 9, false) == 0)
-	// {
-	// 	if (StrContains(sample, "grenade_launcher_shoot.wav", false) != -1)
-	// 	{
-	// 		Format(sample, sizeof(sample), GUNFIRE);
-	// 		EmitSoundToAll(sample, entity,_,_,_, 0.07);	
-	// 	//	PrintToChatAll("SOUND!--");
-	// 		return Plugin_Changed;	
-	// 	}
-		
-	// }
-	return Plugin_Continue;
-}
-
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
@@ -109,22 +62,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	//	CreateNative("BeGiantDemoKnight_MakeSolar", Native_SetGiantDemoKnight);
 	//	CreateNative("BeGiantDemoKnight_IsGiantDemoKnight", Native_IsGiantDemoKnight);
 	return APLRes_Success;
-}
-
-public OnMapStart()
-{
-	// 
-	// PrecacheSound(SPAWN);
-	// PrecacheSound(DEATH);
-	// PrecacheSound(LOOP);
-
-	// PrecacheSound(LEFTFOOT);
-	// PrecacheSound(LEFTFOOT1);
-	// 
-	// 
-
-	// PrecacheSound(GUNFIRE);
-
 }
 
 public Action:SetModel(client, const String:model[])
@@ -173,7 +110,6 @@ MakeSolar(client)
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
-	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -215,19 +151,17 @@ stock GiveGiantDemoKnight(client)
 
 
 		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 206, 9, 1, 2, 0);
-		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
 
 		CreateRoboHat(client, Tartan, 10, 6, 15185211.0, 0.75, -1.0); 
 		CreateRoboHat(client, Bombardier, 10, 6, 15185211.0, 0.75, -1.0); 
 		CreateRoboHat(client, Dustcatcher, 10, 6, 15185211.0, 0.75, -1.0); 
-		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
-		//CreateHat(client, 30945, 10, 6, false);//blast locker
+
 		TF2CustAttr_SetString(client, "projectile-size", "size=1.35 update-hitbox=1");
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
 		if(IsValidEntity(Weapon1))
 		{
-			//TF2Attrib_RemoveAll(Weapon1);
+
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2Attrib_SetByName(Weapon1, "is australium item", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
@@ -239,11 +173,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.5);
 			
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.75);
-			// TF2Attrib_SetByName(Weapon1, "mod use metal ammo type", 1.0);
-			
-			// TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=1500.0 homing_mode=0 projectilename=tf_projectile_pipe");
 
-			
 		}
 	}
 }

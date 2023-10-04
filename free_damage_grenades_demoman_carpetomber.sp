@@ -24,11 +24,6 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
-#define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
-#define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
-#define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
-
 bool Mirv[MAXPLAYERS+1];
 ConVar PipeCount;
 ConVar PipeDamage;

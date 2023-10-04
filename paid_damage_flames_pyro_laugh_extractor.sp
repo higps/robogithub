@@ -73,7 +73,7 @@ public OnPluginStart()
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
 
-	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions, null);
+	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions, 1);
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
@@ -133,14 +133,10 @@ MakeGiantPyro(client)
 	int iHealth = 3500;
 		
 	int MaxHealth = 175;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
 	int iAdditiveHP = iHealth - MaxHealth;
 	
 	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
@@ -153,9 +149,6 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
-	// TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
-	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.75);
 
@@ -208,26 +201,16 @@ stock GiveGiantPyro(client)
 		
 		if(IsValidEntity(Weapon1))
 		{
-			//TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.35);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			// TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.6);		
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);			
 			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
 			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.5);
 			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 250.0);
-			
-			
-			// TF2Attrib_SetByName(Weapon1, "airblast vertical pushback scale", 1.5);
-			
-			// charged airblast
-
-
 		}
-
 		g_KillCount = 5;
 	}
 }

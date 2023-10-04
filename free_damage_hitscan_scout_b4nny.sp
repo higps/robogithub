@@ -27,9 +27,9 @@
 
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant <Someone> Scout",
+	name = "[TF2] Be the Giant B4nny Scout",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Scout",
+	description = "Play as the Giant B4nny Scout",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -47,9 +47,6 @@ public OnPluginStart()
 	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
-
-
-
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -109,14 +106,11 @@ MakeGiantscout(client)
 	int iHealth = 1250;
 		
 	int MaxHealth = 125;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
 	int iAdditiveHP = iHealth - MaxHealth;
 	
 	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
+
 	
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
@@ -143,8 +137,6 @@ MakeGiantscout(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client, ROBOT_TIPS);
-	// SetEntProp(client, Prop_Send, "m_bForcedSkin", 1);
-	// SetEntProp(client, Prop_Send, "m_nForcedSkin", 0);
 
 }
 

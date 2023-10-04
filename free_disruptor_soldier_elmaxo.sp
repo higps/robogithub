@@ -236,7 +236,6 @@ stock GiveGiantPyro(client)
 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon1))
@@ -249,19 +248,11 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);	
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
-		// if(IsValidEntity(Weapon2))
-		// {
-		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.00);
-		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-		// 	TF2Attrib_SetByName(Weapon2, "faster reload rate", 2.5);							
-		// 	TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
-		// }
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
-			// TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);							
-			// TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);	
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);							
 		}
 		
 

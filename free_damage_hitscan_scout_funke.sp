@@ -22,13 +22,11 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_scout/giant_scout_loop.wav"
 
-// #define BLUE_MODEL "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl"
-
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant <Someone> Scout",
+	name = "[TF2] Be the Giant Funke Scout",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Scout",
+	description = "Play as the Giant Funke Scout",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -78,12 +76,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-// public OnMapStart()
-// {
-
-// 	PrecacheModel(BLUE_MODEL);
-// }
-
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -114,16 +106,10 @@ MakeGiantscout(client)
 	SetModel(client, GSCOUT);
 	
 	int iHealth = 1250;
-		
 	int MaxHealth = 125;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
-	
 	int iAdditiveHP = iHealth - MaxHealth;
 	
 	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);

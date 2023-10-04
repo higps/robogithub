@@ -41,11 +41,6 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-// new bool:Locked1[MAXPLAYERS+1];
-// new bool:Locked2[MAXPLAYERS+1];
-// new bool:Locked3[MAXPLAYERS+1];
-// new bool:CanWindDown[MAXPLAYERS+1];
-
 public OnPluginStart()
 {
 	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
@@ -96,7 +91,7 @@ MakeGiantPyro(client)
 {
 	SMLogTag(SML_VERBOSE, "Creating Volcanyro");
 	TF2_SetPlayerClass(client, TFClass_Pyro);
-	//TF2_RespawnPlayer(client);
+
 	TF2_RegeneratePlayer(client);
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
@@ -112,17 +107,11 @@ MakeGiantPyro(client)
 	SetModel(client, GPYRO);
 	
 	int iHealth = 2750;
-		
 	int MaxHealth = 175;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
-	
 	int iAdditiveHP = iHealth - MaxHealth;
 	
 	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
+
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
@@ -204,8 +193,6 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "fire rate penalty", 0.85);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 1.0);
-			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
-			// TF2Attrib_SetByName(Weapon3, "damage bonus vs burning", 1.35);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", 0.25); 
 			TF2Attrib_SetByName(Weapon3, "weapon burn dmg reduced", 0.5); //Since it crits, this should do about 7.5 per tick instead of 13 per tick

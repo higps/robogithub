@@ -102,12 +102,8 @@ MakeGiantSoldier(client)
 	SetModel(client, GSOLDIER);
 	
 	int iHealth = 3800;
-		
 	int MaxHealth = 200;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
-	
 	int iAdditiveHP = iHealth - MaxHealth;
-	
 	TF2_SetHealth(client, iHealth);
 	float OverHealRate = 1.5;
 
@@ -128,7 +124,6 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
-	//TF2Attrib_SetByName(client, "override footstep sound set", 3.0);
 	TF2Attrib_SetByName(client, "head scale", 0.75);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
@@ -167,20 +162,9 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		CreateRoboWeapon(client, "tf_weapon_particle_cannon", 441, 6, 1, 2, 0);
-		// CreateRoboWeapon(client, "tf_weapon_raygun", 442, 6, 1, 2, 0);
-//		CreateWeapon(client, "tf_weapon_shovel", 447, 6, 1, 2, 0);
-		
 		CreateRoboHat(client, LordCockswain, 10, 6, 0.0, 1.0, -1.0);
 		CreateRoboHat(client, Pipe, 10, 6, 0.0, 1.0, -1.0);
-		// CreateRoboHat(client, Professorspeks, 10, 6, 0.0, 0.75, 1.0);
-		
-		// CreateHat(client, 183, 10, 6, true); //Sergeant's Drill Hat
-		// CreateHat(client, 647, 10, 6, true); //The All-Father
-		// CreateHat(client, 343, 10, 6, true);//Professor speks
-
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		//int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		// TF2Attrib_SetByName(client, "gesture speed increase", 10.0);
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
@@ -196,23 +180,7 @@ stock GiveGiantPyro(client)
 		}
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		//int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-		
-		// if(IsValidEntity(Weapon2))
-		// {
-		// 	TF2Attrib_RemoveAll(Weapon2);
-			
-		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 3.0);
-		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-		// 	TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 2.0);
-		// 	TF2Attrib_SetByName(Weapon2, "clip size bonus upgrade", 3.0);
-		// 	TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.4);
-		// 	TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.2);
-		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);			
-		// 	// TF2Attrib_SetByName(Weapon2, "auto fires full clip all at once", 1.0);			
 
-			
-		// }
 		
 
 	}
@@ -226,18 +194,9 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
     if(IsValidClient(attacker) &&IsValidClient(victim))
     {
-		// PrintToChatAll("Attacker was %N , victim was %N weapon was %i", attacker, victim, weapon);
-		// PrintToChatAll("damagecustom was %i , damage type was %i", damagecustom, damagetype);
-
 		if(IsRobot(attacker,ROBOT_NAME) && damagecustom == TF_CUSTOM_SPELL_LIGHTNING)
 		{
-		// PrintToChatAll("damage before change %f", damage);	
 		damage *= 0.1;
-		// PrintToChatAll("damage after change %f", damage);	
-		//critType = CritType_None;
-		// damageForce[0] == -10.0;
-		// damageForce[1] == -10.0;
-		// damageForce[2] == -10.0;
 		return Plugin_Handled;
 		}
 	}

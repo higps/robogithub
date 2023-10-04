@@ -202,11 +202,8 @@ stock GiveGiantMedic(client)
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 
-			
-			// TF2Attrib_SetByName(Weapon2, "lunchbox adds minicrits", 1.0);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
-			// TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.1);
 			TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.15);
 			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.35);
 			TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.15);
@@ -218,8 +215,6 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
 			TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.0);
-			//TF2CustAttr_SetString(Weapon2,"medigun charge is group overheal", "range=500.0 heal_rate=80.0 overheal_ratio=1.05 overheal_duration_mult=0.25");
-
 			
 		}
 
@@ -267,13 +262,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 	}
 
-	// if (condition == TFCond_Charging)
-	// {	
-
-	// 		SetEntPropFloat(healtarget, Prop_Send, "m_flMaxspeed", 750.0);
-	// 		SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 750.0);
-
-	// }
 
 	}
 }

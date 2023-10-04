@@ -59,21 +59,6 @@ public OnPluginStart()
 	LoadTranslations("common.phrases");
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
-
-	// g_hGameConf = LoadGameConfigFile("bm_charge_airblast_immunity_data");
-
-	// //IsDeflectable
-	// g_hIsDeflectable = DHookCreate(0, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, IsPlayerDeflectable);
-	// if(g_hIsDeflectable == null) SetFailState("Failed to setup hook for CTFPlayer::IsDeflectable!"); 
-
-	// if(!DHookSetFromConf(g_hIsDeflectable, g_hGameConf, SDKConf_Virtual, "CTFPlayer::IsDeflectable"))
-	// SetFailState("Failed to find CTFPlayer::IsDeflectable offset in the gamedata!");
-
-	// //Finds players to hook for IsDeflectable
-	// FindAndHookPlayers();
-
-	// delete g_hGameConf;
-
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
@@ -93,35 +78,7 @@ public void OnPluginEnd()
 	RemoveRobot(ROBOT_NAME);
 }
 
-// void FindAndHookPlayers()
-// {
-// 	for(int i = 1; i <= MaxClients+1; i++)
-// 	{
-// 		if(IsValidClient(i))
-// 		{
-// 			DHookEntity(g_hIsDeflectable, false, i);
-// 		}
-// 	}
-// }
 
-// public void OnClientPutInServer(int client)
-// {
-// 	DHookEntity(g_hIsDeflectable, false, client);
-// }
-
-// public MRESReturn IsPlayerDeflectable(int pThis, Handle hReturn, Handle hParams)
-// {
-// 	if(IsRobot(pThis, ROBOT_NAME))
-// 	{
-// 		//PrintToChatAll("Shouldn't airblast target %N", pThis);
-		
-// 		DHookSetReturn(hReturn, false);
-		
-// 		return MRES_Override;
-// 	}
-// 	return MRES_Ignored;
-// }
- 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
 	return APLRes_Success;
@@ -129,83 +86,20 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnMapStart()
 {
-	// PrecacheModel(SHWC);
-
-
-
-	
-	// PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
-	// PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
-	// PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
-	// PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
-
 	PrecacheSound(sBoomNoise);
 	PrecacheSound(ALARM);
 	PrecacheSound(JUMP);
-	// PrecacheSound(SOUND_LEAP);
-}
 
-public Action:BossBearded(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step01.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step03.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step02.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step04.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
-	}
-	return Plugin_Continue;
 }
  
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-	// int weaponID = GetEventInt(event, "weapon_def_index");
-
-	// char weapon_logname[MAX_NAME_LENGTH];
-	// GetEventString(event, "weapon_logclassname", weapon_logname, sizeof(weapon_logname));
-
-	
-	//int weaponID = GetEntPropEnt(weapon, Prop_Send, "m_iItemDefinitionIndex");
-	
-	//PrintToChatAll("Attacker %N , weaponID %i, logname: %s", attacker, weaponID, weapon_logname);
-
-	// if (IsRobot(attacker, ROBOT_NAME) && StrEqual(weapon_logname,"mantreads"))
-	// {
-	// 	//PrintToChatAll("Drop the bomb");
-		
-	// 	Handle infokv = CreateKeyValues("infokv");
-	// 	KvSetNum(infokv, "attacker", attacker);
-	// 	KvSetNum(infokv, "victim", victim);
-	// 	CreateTimer(0.0, BeardedBoom, infokv);
-
-	// 	SDKHooks_TakeDamage(attacker, 0, attacker, 120.0, 0, -1);
-	// }
 
 	if (IsRobot(attacker, ROBOT_NAME))
 	{
-		//PrintToChatAll("applying slowed");
+
 		
 		TF2_AddCondition(attacker, TFCond_Slowed, 10.0);
 		PrintHintText(victim,"Bearded Expense has weakness to melee damage");
@@ -305,18 +199,15 @@ MakeBearded(client)
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
-	// TF2Attrib_SetByName(client, "increased air control", 5.0);
-	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.5);
-	// TF2Attrib_SetByName(client, "increased jump height", 0.5);
 
+	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.5);
 	UpdatePlayerHitbox(client, 1.75);
-	
+
 	//Tank stats
-    // TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);

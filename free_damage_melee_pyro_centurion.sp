@@ -38,11 +38,6 @@ enum(<<= 1)
     SML_ERROR,
 }
 
-// new bool:Locked1[MAXPLAYERS+1];
-// new bool:Locked2[MAXPLAYERS+1];
-// new bool:Locked3[MAXPLAYERS+1];
-// new bool:CanWindDown[MAXPLAYERS+1];
-
 public OnPluginStart()
 {
 	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
@@ -57,8 +52,6 @@ public OnPluginStart()
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
-	// robot.sounds.gunfire = SOUND_GUNFIRE;
-	// robot.sounds.windup = SOUND_WINDUP;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
@@ -93,7 +86,6 @@ MakeGiantPyro(client)
 {
 	SMLogTag(SML_VERBOSE, "Creating Volcanyro");
 	TF2_SetPlayerClass(client, TFClass_Pyro);
-	//TF2_RespawnPlayer(client);
 	TF2_RegeneratePlayer(client);
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
@@ -108,18 +100,12 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	int iHealth = 3250;
-		
+	int iHealth = 3250;	
 	int MaxHealth = 175;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
-	
 	int iAdditiveHP = iHealth - MaxHealth;
 	
 	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
+
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
@@ -162,7 +148,6 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 #define Centurion 30063
 #define SteelSixpack 30062
-// #define PyromancersMask 316
 
 stock GiveGiantPyro(client)
 {
@@ -178,7 +163,6 @@ stock GiveGiantPyro(client)
 
 		CreateRoboHat(client, Centurion, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, SteelSixpack, 10, 6, 0.0, 1.0, -1.0); 
-		// CreateRoboHat(client, PyromancersMask, 10, 6, 1315860.0, 1.15, -1.0); 
 
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
@@ -188,16 +172,10 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon3);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
-			// TF2Attrib_SetByName(Weapon3, "minicrits become crits", 1.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 1.0);
-			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
-			// TF2Attrib_SetByName(Weapon3, "damage bonus vs burning", 1.35);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", 0.25); 
 			TF2CustAttr_SetString(Weapon3,"third-degree", "critType=2 hitGroup=1");
-			// TF2CustAttr_SetString(Weapon3, "mod crit type on target condition", "condition=23 crit_type=2");
-			// TF2CustAttr_SetString(Weapon3, "mod crit type on target condition", "condition=21 crit_type=2");
-
 		}	
 	}
 }

@@ -230,11 +230,7 @@ stock GiveGiantDemoKnight(client)
 			
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 3.0);
 			
-<<<<<<< HEAD
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);
-=======
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
->>>>>>> robot-tweaks
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 

@@ -22,12 +22,6 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
-#define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
-#define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
-#define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
-
-
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Toofty",
@@ -119,7 +113,6 @@ MakeToofty(client)
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	//TF2Attrib_SetByName(client, "increased jump height", 0.3);
 
 	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=100.0 stomp-damage=125.0");
 	
@@ -157,9 +150,6 @@ stock GiveGiantToofty(client)
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
-		// TF2_RemoveWeaponSlot(client, 3);
-		// TF2_RemoveWeaponSlot(client, 4);
-		// TF2_RemoveWeaponSlot(client, 5);
 		
 		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 1151, 8, 1, 0, 213);
 		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 265, 6, 1, 1, 0);
@@ -172,8 +162,6 @@ stock GiveGiantToofty(client)
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
 		{
-
-			// TF2Attrib_SetByName(Weapon1, "damage penalty", 0.85);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.35);
@@ -183,7 +171,7 @@ stock GiveGiantToofty(client)
 			TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
 						
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			// TF2CustAttr_SetString(client, "projectile-size", "size=1.75 update-hitbox=1");
+
 		}
 		
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);

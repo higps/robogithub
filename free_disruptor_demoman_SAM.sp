@@ -46,7 +46,6 @@ public OnPluginStart()
 	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null);
 
-	// HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
 public void OnPluginEnd()
@@ -61,48 +60,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-// public Event_Death(Event event, const char[] name, bool dontBroadcast)
-// {
-// 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-
-// 	if (IsRobotWhenDead(victim, ROBOT_NAME))
-// 	{
-// 		char weaponName[32];
-// 		GetEventString(event, "weapon", weaponName, sizeof(weaponName));
-
-
-// 		// int weaponid = GetEventInt(event, "weaponid");
-// 	//	PrintToChatAll("%i a ", weaponid);
-// 			//PrintToChatAll("%i", GetEventInt(event, "weaponid"));
-// 			// if (weaponid == -1) return;
-			
-// 			//int weapondef = GetEntProp(weaponid, Prop_Send, "m_iItemDefinitionIndex");	
-			
-// 		if (StrEqual(weaponName, "demokatana"))//If killed by katana you respawn faster
-// 		{
-// 		//PrintToChatAll("%N was killed by weapon id %i which was named %s", victim, weaponid, weaponName);
-		
-// 		CreateTimer(4.0, Timer_Respawn, victim);
-// 		}
-			
-		
-		 
-		
-// 	}
-
-
-// }
-
-// public Action Timer_Respawn(Handle timer, any client)
-// {
-//     //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
-// 	if (IsValidClient(client) && !IsPlayerAlive(client))
-//     {
-//         TF2_RespawnPlayer(client);
-//         //PrintToChat(client,"You have instant respawn as scout");
-//     }
-// 	return Plugin_Continue;
-// }
 
 public Action:SetModel(client, const String:model[])
 {
@@ -133,18 +90,11 @@ MakeDemoKnight(client)
 	SetModel(client, GDEKNIGHT);
 
 	int iHealth = 2175;
-	
-	
 	int MaxHealth = 175;
 	float OverHealRate = 1.5;
-//	PrintToChatAll("MaxHealth %i", MaxHealth);
-	
 	int iAdditiveHP = iHealth - MaxHealth;
 	
 	TF2_SetHealth(client, iHealth);
-//	 PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
 	float OverHeal = float(MaxHealth) * OverHealRate;
 	float TotalHealthOverHeal = iHealth * OverHealRate;
@@ -162,8 +112,6 @@ MakeDemoKnight(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.15);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
-	// TF2Attrib_SetByName(client, "charge impact damage increased", 2.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
 	UpdatePlayerHitbox(client, 1.75);
@@ -215,7 +163,6 @@ stock GiveGiantDemoKnight(client)
 		{
 			if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
 			{				
-				//PrintToChatAll("going through entity");
 				TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.65);		
 				TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);			
 				TF2Attrib_SetByName(iEntity2, "dmg taken from fire reduced", 1.0);		
@@ -228,17 +175,16 @@ stock GiveGiantDemoKnight(client)
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon3))
 		{
-			//TF2Attrib_RemoveAll(Weapon3);
+
 			
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
-			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);					
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 3.0);		
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);			
 			TF2Attrib_SetByName(Weapon3, "mult charge turn control", 10.0);		
 			TF2Attrib_SetByName(Weapon3, "charge meter on hit", 1.0);
 			TF2Attrib_SetByName(Weapon3, "restore health on kill", 10.0);	
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
-			// TF2Attrib_SetByName(Weapon3, "minicrits become crits", 1.0);			
+	
 		}
 	}
 }

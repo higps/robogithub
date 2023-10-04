@@ -159,33 +159,20 @@ stock GiveGiantMedic(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		CreateRoboWeapon(client, "tf_weapon_medigun", 998, 6, 1, 2, 0);
-		// CreateRoboWeapon(client, "tf_weapon_syringegun_medic", 36, 6, 1, 2, 0);
 		CreateRoboWeapon(client, "tf_weapon_bonesaw", 413, 6, 1, 2, 0);
 		
 		CreateRoboHat(client, VintageTyrolean, 10, 6, 15132390.0, 1.0, -1.0); 
 		CreateRoboHat(client, HeatofWinter, 10, 6, 0.0, 1.0, -1.0); 
 		CreateRoboHat(client, TheMedicineManpurse, 10, 6, 0.0, 1.0, -1.0); 
 		
-		// int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
-		
-		// if(IsValidEntity(Weapon1))
-		// {
-		// 	TF2Attrib_RemoveAll(Weapon1);
-		// 	TF2Attrib_SetByName(Weapon1, "health drain", 0.0);
-		// 	TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-		// 	TF2Attrib_SetByName(Weapon1, "damage bonus", 1.15);
-		// 	TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
-		// }
-
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
-			// TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.1);
 			TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.15);
 			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.35);
 			TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.15);
@@ -202,7 +189,6 @@ stock GiveGiantMedic(client)
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Weapon3, "damage bonus", 1.5);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.25);
 		}
 		
@@ -213,29 +199,27 @@ stock GiveGiantMedic(client)
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
-
-	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
 	if (IsRobot(client, ROBOT_NAME))
 	{
 
-	int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-	int healtarget = -1;
+		int medigun = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		int healtarget = -1;
 
-	if(GetEntProp(medigun, Prop_Send, "m_bHealing"))
-	{
-	healtarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
-	//PrintToChatAll("Healtarget was: %N", healtarget);
-	}
+		if(GetEntProp(medigun, Prop_Send, "m_bHealing"))
+		{
+		healtarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
 
-	if (IsValidClient(healtarget) && IsPlayerAlive(healtarget))
-	{
-	if(condition == TFCond_UberBulletResist || condition == TFCond_UberBlastResist || condition == TFCond_UberFireResist){
+		}
 
-	//TF2_AddCondition(healtarget,TFCond_CritCola, 3.5);
-	TF2_AddCondition(client, TFCond_RuneWarlock, 4.0);
-	TF2_AddCondition(healtarget, TFCond_RuneWarlock, 4.0);
-	}
-	}
+		if (IsValidClient(healtarget) && IsPlayerAlive(healtarget))
+		{
+			if(condition == TFCond_UberBulletResist || condition == TFCond_UberBlastResist || condition == TFCond_UberFireResist){
+
+
+			TF2_AddCondition(client, TFCond_RuneWarlock, 4.0);
+			TF2_AddCondition(healtarget, TFCond_RuneWarlock, 4.0);
+			}
+		}
 	}
 }
 

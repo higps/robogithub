@@ -28,11 +28,6 @@
 #define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
 #define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
 
-#define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
-
 #define sBoomNoise1  "weapons/tacky_grenadier_explode1.wav"
 #define sBoomNoise2  "weapons/tacky_grenadier_explode2.wav"
 #define sBoomNoise3  "weapons/tacky_grenadier_explode3.wav"
@@ -65,10 +60,6 @@ public OnPluginStart()
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
-	robot.sounds.gunfire = SOUND_GUNFIRE;
-	robot.sounds.gunspin = SOUND_GUNSPIN;
-	robot.sounds.windup = SOUND_WINDUP;
-	robot.sounds.winddown = SOUND_WINDDOWN;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_EASY;
@@ -141,10 +132,6 @@ MakeGDeflectorH(client)
 
 
 	TF2_SetHealth(client, iHealth);
-		// PrintToChatAll("MaxHealth %i", MaxHealth);
-	 // PrintToChatAll("iHealth %i", iHealth);
-	
-	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	float OverHeal = float(MaxHealth) * OverHealRate;
 	float TotalHealthOverHeal = iHealth * OverHealRate;
 

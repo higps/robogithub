@@ -20,12 +20,6 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_scout/giant_scout_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_scout/giant_scout_step_01.wav"
-#define LEFTFOOT1       ")mvm/giant_scout/giant_scout_step_03.wav"
-#define RIGHTFOOT       ")mvm/giant_scout/giant_scout_step_02.wav"
-#define RIGHTFOOT1      ")mvm/giant_scout/giant_scout_step_04.wav"
-
-
 
 public Plugin:myinfo = 
 {
@@ -49,8 +43,6 @@ public OnPluginStart()
 	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
-	// HookEvent("player_death", Event_Death, EventHookMode_Post);
-
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -76,19 +68,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 //	CreateNative("BeGiantPyro_MakeGiantscout", Native_SetGiantPyro);
 //	CreateNative("BeGiantPyro_IsGiantPyro", Native_IsGiantPyro);
 	return APLRes_Success;
-}
-
-public OnMapStart()
-{
-	
-
-
-
-
-	
-	//PrecacheSound(SOUND_GUNFIRE);
-	//PrecacheSound(SOUND_WINDUP);
-	
 }
 
 public Action:SetModel(client, const String:model[])
@@ -125,23 +104,16 @@ MakeGiantscout(client)
 	SetModel(client, GSCOUT);
 	
 	int iHealth = 1250;
-		
 	int MaxHealth = 125;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
-	
 	int iAdditiveHP = iHealth - MaxHealth;
 	
 	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
+
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
 	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.5);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
@@ -161,8 +133,6 @@ MakeGiantscout(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client, ROBOT_TIPS);
-	// SetEntProp(client, Prop_Send, "m_bForcedSkin", 1);
-	// SetEntProp(client, Prop_Send, "m_nForcedSkin", 0);
 
 }
 
@@ -213,11 +183,8 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
                         
-			// TF2Attrib_SetByName(Weapon1, "weapon spread bonus", 0.35);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			// TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.75);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Weapon1, "speed_boost_on_hit", 2.0);
 			TF2Attrib_SetByName(Weapon1, "hype resets on jump", 0.0);
 			TF2Attrib_SetByName(Weapon1, "lose hype on take damage", 1.0);
 			TF2Attrib_SetByName(Weapon1, "boost on damage", 1.0);
@@ -231,32 +198,3 @@ stock GiveGiantPyro(client)
  
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
-
-// public Event_Death(Event event, const char[] name, bool dontBroadcast)
-// {
-// 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-// 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-
-// 	if (!IsAnyRobot(victim) && IsRobot(attacker, ROBOT_NAME))
-// 	{
-// 		int Weapon1 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
-
-// 		if(Weapon1 != -1)
-// 		{
-// 			float Hypemeter = GetEntPropFloat(attacker, Prop_Send, "m_flHypeMeter");
-// 			SetEntPropFloat(attacker, Prop_Send, "m_flHypeMeter", Hypemeter+30.0);
-
-// 			float Speed = GetEntPropFloat(attacker, Prop_Send, "m_flMaxspeed");
-// 			if (Speed*1.05 >= 520.0){
-
-// 				SetEntPropFloat(attacker, Prop_Send, "m_flMaxspeed", 520.0);
-// 			}else
-// 			{
-// 				SetEntPropFloat(attacker, Prop_Send, "m_flMaxspeed", Speed+26.8);
-// 			}
-			
-// 			// PrintToChatAll("Speed set to %f", Speed+26.8);
-// 		}
-// 	}
-
-// }

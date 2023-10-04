@@ -24,13 +24,6 @@
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
-
-//#define GIFTBRINGER 30747
-
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Deflector Heavy",
@@ -43,7 +36,6 @@ public Plugin:myinfo =
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-	AddNormalSoundHook(BossGPS);
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -62,38 +54,6 @@ public OnPluginStart()
 
 }
 
-public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step01.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step03.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step02.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), "mvm/giant_heavy/giant_heavy_step04.wav");
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
-	}
-	return Plugin_Continue;
-}
-
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
@@ -105,14 +65,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 //	CreateNative("BeGDeflectorH_IsGDeflectorH", Native_IsGDeflectorH);
 	return APLRes_Success;
 }
- 
-public OnMapStart()
-{
 
-	
-
-}
- 
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -141,19 +94,12 @@ MakeGDeflectorH(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
 	int iHealth = 3000;
-	
-	
 	int MaxHealth = 300;
 	int iAdditiveHP = iHealth - MaxHealth;
 	float OverHealRate = 1.5;
 
-
 	TF2_SetHealth(client, iHealth);
-		// PrintToChatAll("MaxHealth %i", MaxHealth);
-	 // PrintToChatAll("iHealth %i", iHealth);
-	
-	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	float OverHeal = float(MaxHealth) * OverHealRate;
+
 	float TotalHealthOverHeal = iHealth * OverHealRate;
 
 	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
@@ -172,16 +118,11 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	// TF2Attrib_SetByName(client, "increased jump height", 0.0);
-	
-	//TF2Attrib_SetByName(client, "head scale", 0.75);
-	// TF2Attrib_SetByName(client, "hand scale", 1.25);
-	
+
 	UpdatePlayerHitbox(client, 1.5);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	// TF2_AddCondition(client, TFCond_CritCanteen);
 
 	PrintHintText(client , ROBOT_TIPS);
 
@@ -208,14 +149,13 @@ stock GiveGDeflectorH(client)
 {
 	if (IsValidClient(client))
 	{
-		//Remove items and hats
+
 		RoboRemoveAllWearables(client);
-		//TF2_RemoveAllWearables(client);
+
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		//void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale, float style);
 		CreateRoboHat(client, Pugilist, 10, 6, 0.0, 1.0, -1.0);//Rotation sensation
 		CreateRoboHat(client, HeacyChamp, 10, 6, 0.0, 1.0, -1.0);//Summer shades
 
@@ -234,9 +174,6 @@ stock GiveGDeflectorH(client)
 		}
 	}
 }
-
-// float g_cooldown = 1.5;
-// float g_crouch_time = 0.0;
 
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
