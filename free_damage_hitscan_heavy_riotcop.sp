@@ -40,8 +40,6 @@ public OnPluginStart()
 
 	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 
-	AddNormalSoundHook(BossGPS);
-
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
@@ -56,37 +54,6 @@ public OnPluginStart()
 	AddRobot(robot, MakeRiotcop, PLUGIN_VERSION);
 }
 
-public Action:BossGPS(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), LEFTFOOT);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), LEFTFOOT1);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), RIGHTFOOT);
-			EmitSoundToAll(sample, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			Format(sample, sizeof(sample), RIGHTFOOT1);
-			EmitSoundToAll(sample, entity);
-		}
-		return Plugin_Changed;
-	}
-}
-
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
@@ -98,30 +65,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 //	CreateNative("BeGDeflectorH_IsGDeflectorH", Native_IsGDeflectorH);
 	return APLRes_Success;
 }
- 
-public OnMapStart()
-{
-//
-
-
-
-	
-
-
-	
-	
-
-}
-
-/* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if(g_bIsRiotcop[client])
-	{
-		g_bIsRiotcop[client] = false;
-	}
-} */
  
 public Action:SetModel(client, const String:model[])
 {
@@ -150,33 +93,17 @@ MakeRiotcop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 5000;
+	RoboSetHealth(client,TFClass_Heavy, 5000, 1.5);
 	
-	
-	int MaxHealth = 300;
-	// PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-	 // PrintToChatAll("iHealth %i", iHealth);
-	
-	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
-	
-   
+
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.7);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.7);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.2);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -191,12 +118,6 @@ MakeRiotcop(client)
 	
 }
  
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
  
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -229,25 +150,19 @@ stock GiveGDeflectorH(client)
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "fire rate penalty", 1.0);
-			// TF2Attrib_SetByName(Weapon2, "fire rate penalty", 2.0);
 			TF2Attrib_SetByName(Weapon2, "bullets per shot bonus", 10.0);
 			TF2Attrib_SetByName(Weapon2, "damage penalty", 0.5);
-			// TF2Attrib_SetByName(Weapon2, "faster reload rate", 0.3);
 			TF2Attrib_SetByName(Weapon2, "spread penalty", 1.2);
-			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.1);
-
-			
-			
+			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.1);		
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.53);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon2, "mult_spread_scales_consecutive", 0.0);
 
 			
-			//TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
+
 
 		}
-		// TF2_SetWeaponAmmo(Weapon2, 1);
 		RoboCorrectClipSize(Weapon2);
 	}
 }

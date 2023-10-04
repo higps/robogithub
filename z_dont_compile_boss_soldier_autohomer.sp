@@ -205,14 +205,10 @@ MakeGiantSoldier(client)
 	SetModel(client, GSOLDIER);
 	
 	int iHealth = 3800;		
-	int MaxHealth = 200;
-	int iAdditiveHP = iHealth - MaxHealth;
 	float Scale = 1.85;
-	TF2_SetHealth(client, iHealth);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", Scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.4);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
@@ -220,7 +216,6 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.65);

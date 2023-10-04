@@ -164,21 +164,14 @@ MakeGDeflectorH(client)
 	int iHealth = 3000;
 	
 	
-	int MaxHealth = 300;
-	int iAdditiveHP = iHealth - MaxHealth;
 	float OverHealRate = 1.5;
 
 
-	TF2_SetHealth(client, iHealth);
 		// PrintToChatAll("MaxHealth %i", MaxHealth);
 	 // PrintToChatAll("iHealth %i", iHealth);
 	
 	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
 
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.5);
@@ -186,10 +179,7 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 1.15);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);

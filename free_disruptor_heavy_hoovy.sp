@@ -28,11 +28,6 @@
 #define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
 #define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
 
-#define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
-
 #define sBoomNoise1  "weapons/tacky_grenadier_explode1.wav"
 #define sBoomNoise2  "weapons/tacky_grenadier_explode2.wav"
 #define sBoomNoise3  "weapons/tacky_grenadier_explode3.wav"
@@ -65,10 +60,6 @@ public OnPluginStart()
 	robot.shortDescription = ROBOT_DESCRIPTION;
 	robot.sounds.spawn = SPAWN;
 	robot.sounds.loop = LOOP;
-	robot.sounds.gunfire = SOUND_GUNFIRE;
-	robot.sounds.gunspin = SOUND_GUNSPIN;
-	robot.sounds.windup = SOUND_WINDUP;
-	robot.sounds.winddown = SOUND_WINDDOWN;
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_EASY;
@@ -132,24 +123,13 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 3000;
+	RoboSetHealth(client,TFClass_Heavy, 3000, 1.5);
 	
 	
-	int MaxHealth = 300;
-	int iAdditiveHP = iHealth - MaxHealth;
 	float OverHealRate = 1.5;
 
 
-	TF2_SetHealth(client, iHealth);
-		// PrintToChatAll("MaxHealth %i", MaxHealth);
-	 // PrintToChatAll("iHealth %i", iHealth);
-	
-	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
 
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.5);
@@ -157,10 +137,7 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 1.15);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -177,12 +154,6 @@ MakeGDeflectorH(client)
 
 }
  
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
  
 public Action:Timer_Switch(Handle:timer, any:client)
 {

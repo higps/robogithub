@@ -59,7 +59,6 @@ float g_dottime = 0.0;
 float g_dot_interval = 0.25;
 int g_previous_state = -2;
 
-// bool g_switch_available = false;
 float g_retarget_timer = 25.0;
 
 int g_loadingDots = 1;
@@ -74,11 +73,7 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-// new bool:Locked1[MAXPLAYERS+1];
-// new bool:Locked2[MAXPLAYERS+1];
-// new bool:Locked3[MAXPLAYERS+1];
-// new bool:CanWindDown[MAXPLAYERS+1];
- 
+
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
@@ -153,12 +148,9 @@ MakeGRageH(client)
 	
 	
 	
-	int MaxHealth = 300;
 	// PrintToChatAll("MaxHealth %i", MaxHealth);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 	 // PrintToChatAll("iHealth %i", iHealth);
 	
 	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
@@ -170,13 +162,9 @@ MakeGRageH(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.2);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	// TF2Attrib_SetByName(client, "head scale", 0.75);
 
@@ -195,12 +183,6 @@ MakeGRageH(client)
 	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 }
  
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
  
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -319,27 +301,13 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 		}else if(IsRobot(assister, ROBOT_NAME))
 		{
-		// {PrintToChatAll("Target killed assist correctly");
 			TerminatorHeal(assister);
-			// SetGameTime();
 
-		}/* else
-		{
-			PrintToChatAll("You failed to kill your target");
-			// SetGameTime();
+		}
 
-			int Terminator = FindTerminator();
-			TF2_StunPlayer(Terminator, 3.0, 0.0, TF_STUNFLAGS_BIGBONK, Terminator);
-		} */
 	}
 
-	// if(IsRobot(victim, ROBOT_NAME))
-	// {
-	// 	g_targetstatus = target_lost;
-	// 	SetGameTime();
-	// 	PrintToChatAll("DEAD, TARGET LOST");
-	// 	// FindTerminationTarget();
-	// }
+
 	FindTerminator();
 }
 
@@ -364,16 +332,16 @@ stock GiveGRageH(client)
 
 		CreateRoboWeapon(client, "tf_weapon_shotgun_hwg", 199, 6, 1, 0, 304);
 		
-		// CreateRoboHat(client, Hat1, 10, 6, 0.75, 1.0, -1.0); 
+
 		CreateRoboHat(client, HeavyMetal, 10, 6, 0.0, 0.75, -1.0); 
 		CreateRoboHat(client, Nuke, 10, 6, 1315860.0, 0.75, -1.0); 
-		CreateRoboHat(client, GRAYBANNS, 10, 6, 1315860.0, 1.0, 0.0);//gray banns
+		CreateRoboHat(client, GRAYBANNS, 10, 6, 1315860.0, 1.0, 0.0);
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		if(IsValidEntity(Weapon2))
 		{
 
-			// TF2Attrib_SetByName(Weapon2, "attack projectiles", 2.0);
+
 			TF2Attrib_SetByName(Weapon2, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.10);
@@ -382,7 +350,7 @@ stock GiveGRageH(client)
 		}
 		
 		PrintHintText(client, ROBOT_TIPS);
-		// FindTerminationTarget();
+
 	}
 }
 
@@ -394,11 +362,6 @@ Action OnGlowShouldTransmit(int glow, int client) {
 		return Plugin_Stop;
 	}
 
-	
-	// if (TF2_IsPlayerInCondition(glowTarget, TFCond_Cloaked)
-	// 		|| TF2_IsPlayerInCondition(glowTarget, TFCond_Disguised)) {
-	// 	return Plugin_Stop;
-	// }
 	
 	if (!TF2_IsEnemyTeam(TF2_GetClientTeam(glowTarget), TF2_GetClientTeam(client))) {
 		// prevent showing outline on teammates

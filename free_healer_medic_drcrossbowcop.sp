@@ -61,15 +61,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
  
-public OnMapStart()
-{
-//
 
-
-
-   
-}
- 
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -98,22 +90,15 @@ MakeGiantMedic(client)
 	SetModel(client, GMEDIC);
    
 	int iHealth = 1500;
-	int MaxHealth = 150;
-	int iAdditiveHP = iHealth - MaxHealth;
    
-	TF2_SetHealth(client, iHealth);
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-TF2Attrib_SetByName(client, "move speed penalty", 0.9);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.75);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "health regen", 20.0);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "maxammo primary increased", 2.5);
@@ -128,12 +113,6 @@ TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 
 }
  
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
  
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -176,28 +155,12 @@ stock GiveGiantMedic(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 2.5);
-			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.95);
-
-			// TF2Attrib_SetByName(Weapon1, "mark for death", 5.0);
-			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.01);
-
 			TF2Attrib_SetByName(Weapon1, "clip size bonus", 2.0);
-			// TF2Attrib_SetByName(Weapon1, "Reload time decreased", 1.75);
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.5);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 
-		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-
-		// if(IsValidEntity(Weapon2))
-		// {
-		// 	TF2Attrib_RemoveAll(Weapon2);
-		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
-		// 	TF2Attrib_SetByName(Weapon2, "heal on hit for slowfire", 50.0);
-		// }
-		
 				
 		
 	}
@@ -210,7 +173,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE|IN_ATTACK2) ) 
 		{
-			//  PrintToChatAll("Press");
             g_button_held[client] = true;
 		}
 
@@ -218,13 +180,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_USE|IN_ATTACK2) ) 
 		{
-			//  PrintToChatAll("Release");
 			g_button_held[client] = false;
             
 		}
-		//0 = fireball
-		//PrintToChat(client, "Throwing spell!");
-		// UpdateCharge(client);
 		DrawHUD(client);
 		
 	}
@@ -338,9 +296,6 @@ public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroad
 	{
 	TF2_AddCondition(target, TFCond_CritCanteen, reduced_duration);
 	}
-
-
-	// PrintToChatAll("Duration %f", reduced_duration);
 	}
 
 	}

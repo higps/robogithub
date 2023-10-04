@@ -21,11 +21,6 @@
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 
-// #define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
-// #define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
-// #define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
-// #define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
-
 #define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
 #define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
 #define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
@@ -41,11 +36,6 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-
-// new bool:Locked1[MAXPLAYERS+1];
-// new bool:Locked2[MAXPLAYERS+1];
-// new bool:Locked3[MAXPLAYERS+1];
-// new bool:CanWindDown[MAXPLAYERS+1];
  
 public OnPluginStart()
 {
@@ -77,27 +67,8 @@ public void OnPluginEnd()
  
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-//	CreateNative("BeGRageH_MakeGRageH", Native_SetGRageH);
-//	CreateNative("BeGRageH_IsGRageH", Native_IsGRageH);
+
 	return APLRes_Success;
-}
- 
-public OnMapStart()
-{
-	
-
-
-
-	
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step01.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step03.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step02.wav");
-	PrecacheSound("mvm/giant_heavy/giant_heavy_step04.wav");
-
-	// PrecacheSound(SOUND_GUNFIRE);
-	// PrecacheSound(SOUND_GUNSPIN);
-	// PrecacheSound(SOUND_WINDUP);
-	// PrecacheSound(SOUND_WINDDOWN);
 }
  
 public Action:SetModel(client, const String:model[])
@@ -127,18 +98,9 @@ MakeGRageH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GRageH);
-	int iHealth = 6000;
+	RoboSetHealth(client,TFClass_Heavy, 6000, 1.5);
 	
 	
-	int MaxHealth = 300;
-	// PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-	 // PrintToChatAll("iHealth %i", iHealth);
-	
-	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
 	
    
@@ -147,16 +109,10 @@ MakeGRageH(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.2);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	// TF2Attrib_SetByName(client, "head scale", 0.75);
-
 	UpdatePlayerHitbox(client, scale);
    
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
@@ -164,12 +120,6 @@ MakeGRageH(client)
 
 }
  
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
  
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -195,23 +145,6 @@ stock GiveGRageH(client)
 
 		CreateRoboWeapon(client, "tf_weapon_minigun", 811, 6, 15, 0, 204);
 		
-		//Cosmetic code
-		// Cream Spirit
-// set item tint RGB : 12807213
-// set item tint RGB 2 : 12091445
-		// TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
-		// float TeamPaint = 0.0;
-
-		// if (iTeam == TFTeam_Blue){
-		// 	TeamPaint = 12807213.0;
-			
-		// }
-		// if (iTeam == TFTeam_Red){
-			
-		// 	TeamPaint = 12091445.0;
-		// }
-
-		// CreateRoboHat(client, Hat1, 10, 6, 0.75, 1.0, -1.0); 
 		CreateRoboHat(client, KapitanKaftan, 10, 6, 13595446.0, 1.0, -1.0); 
 		CreateRoboHat(client, LuchaDor, 10, 6, 135954460.0, 1.0, -1.0); 
 
@@ -220,18 +153,14 @@ stock GiveGRageH(client)
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
 		{
-			// TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.3);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon1, "ring of fire while aiming", 45.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus vs burning", 0.5);
 			TF2Attrib_SetByName(Weapon1, "crit vs burning players", 1.0);
 			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 1.8);
-			
-			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.9);
-			//TF2CustAttr_SetString(Weapon1, "rage fill multiplier", "2.5");
-			// TF2Attrib_SetByName(Weapon1, "spread penalty", scale);
+
 
 			TF2CustAttr_SetString(Weapon1, "weapon overheat", "heat_rate=0.0035 heat_rate_alt=0.0015 cooldown=3.0 decay_time=0.1 decay_rate=0.2 overheat_dmg_scale=3.0");
 			TF2CustAttr_SetString(Weapon1, "weapon overheat sound", "weapons/bumper_car_decelerate.wav");
@@ -241,25 +170,3 @@ stock GiveGRageH(client)
 		PrintHintText(client, ROBOT_TIPS);
 	}
 }
-
-// public TF2_OnConditionAdded(client, TFCond:condition)
-// {
-//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-//     {	
-//         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-
-//         if (tauntid == -1)
-//         {
-//            	 CreateTimer(1.2, Timer_Taunt_Cancel, client);
-//         }	  
-
-// 	}
-// }
-
-// public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
-// {
-// 	if (IsValidClient(client)){
-// 		TF2_RemoveCondition(client, TFCond_Taunting);
-		
-// 	}
-// }

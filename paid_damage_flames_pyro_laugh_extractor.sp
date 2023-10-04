@@ -14,6 +14,7 @@
 #define ROBOT_DESCRIPTION "AOE scare ability"
 #define ROBOT_TIPS "Kill 5 enemies to charge your scare!\nSlower airblast\nHeal 250 on extinguish"
 #define ROBOT_ON_DEATH "Laugh Extractor can AOE scare after getting 5 kills\nDon't stay too close"
+#define ROBOT_COST 2.0
 
 #define GPYRO		"models/bots/pyro_boss/bot_pyro_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -67,7 +68,12 @@ public OnPluginStart()
 	// robot.weaponsound = ROBOT_WEAPON_SOUND_FLAMETHROWER;
 	robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
 	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
-	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION);
+
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST; 
+
+	AddRobot(robot, MakeGiantPyro, PLUGIN_VERSION, restrictions, 1);
 
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
@@ -124,32 +130,18 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	int iHealth = 3000;
+	int iHealth = 3500;
 		
-	int MaxHealth = 175;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
+	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
-	// TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
-	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.75);
 
@@ -166,12 +158,6 @@ MakeGiantPyro(client)
 	
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -202,26 +188,16 @@ stock GiveGiantPyro(client)
 		
 		if(IsValidEntity(Weapon1))
 		{
-			//TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.35);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			// TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.6);		
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);			
 			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
 			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
 			TF2Attrib_SetByName(Weapon1, "mult airblast refire time", 1.5);
 			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 250.0);
-			
-			
-			// TF2Attrib_SetByName(Weapon1, "airblast vertical pushback scale", 1.5);
-			
-			// charged airblast
-
-
 		}
-
 		g_KillCount = 5;
 	}
 }

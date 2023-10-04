@@ -639,11 +639,51 @@ public any Native_IsSentryBuster(Handle plugin, int numParams)
 
 public any Native_RoboSetHealth(Handle plugin, int numParams)
 {
-    int client = GetNativeCell(1);
-    int NewHealth = GetNativeCell(2);
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
+	int client = GetNativeCell(1);
+	TFClassType iClass = GetNativeCell(2);
+	int iHealth = GetNativeCell(3);
+	float OverHealRate = GetNativeCell(4);
+	int ClassHealth;
+
+	switch (iClass) {
+        case TFClass_Scout:
+            ClassHealth = 125;
+        case TFClass_Soldier:
+            ClassHealth = 200;
+        case TFClass_Pyro:
+            ClassHealth = 175;
+        case TFClass_DemoMan:
+            ClassHealth = 175;
+        case TFClass_Heavy:
+            ClassHealth = 300;
+        case TFClass_Engineer:
+            ClassHealth = 125;
+        case TFClass_Medic:
+            ClassHealth = 150;
+        case TFClass_Sniper:
+            ClassHealth = 125;
+        case TFClass_Spy:
+            ClassHealth = 125;
+        default:
+            ClassHealth = 100; // Default health if class is not recognized
+    }
+	
+    //Set New health before doing the rest
+	SetEntProp(client, Prop_Send, "m_iHealth", iHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iHealth", iHealth, 1);
+	SetEntProp(client, Prop_Data, "m_iMaxHealth", iHealth, 1);
+
+    //Calculate the overheal and health pickup penalty
+	int iAdditiveHP = iHealth - ClassHealth;
+	float OverHeal = float(ClassHealth) * OverHealRate;
+	float TotalHealthOverHeal = iHealth * OverHealRate;
+	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
+	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
+	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
+
+	float HealthPackPickUpRate =  float(ClassHealth) / float(iHealth);
+	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+
 }
 
 // public Action Timer_SetDefenseBuff(Handle timer, any client)

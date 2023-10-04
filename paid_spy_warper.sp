@@ -46,14 +46,6 @@ float g_skill;
 int g_target = -1;
 float g_target_coords[3] = {0.0, ...};
 float g_scale = 1.5;
-// #define SPY_DEATH_SOUND1		"vo/mvm_spybot_death01.mp3"
-// #define SPY_DEATH_SOUND2		"vo/mvm_spybot_death02.mp3"
-// #define SPY_DEATH_SOUND3		"vo/mvm_spybot_death03.mp3"
-// #define SPY_DEATH_SOUND4		"vo/mvm_spybot_death04.mp3"
-// #define SPY_DEATH_SOUND5		"vo/mvm_spybot_death05.mp3"
-// #define SPY_DEATH_SOUND6		"vo/mvm_spybot_death06.mp3"
-// #define SPY_DEATH_SOUND7		"vo/mvm_spybot_death07.mp3"
-
 
 public Plugin:myinfo =
 {
@@ -85,28 +77,9 @@ public OnPluginStart()
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
 	restrictions.RobotCoins.PerRobot = ROBOT_COST;
 	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
-	// restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-	// restrictions.TeamCoins.Overall = 2;
-
 
 	AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 
-	// PrecacheModel(MODEL);
-
-
-
-
-	// PrecacheSound(SPY_SPAWN_SOUND1, true);
-	// PrecacheSound(SPY_SPAWN_SOUND2, true);
-	// PrecacheSound(SPY_SPAWN_SOUND3, true);
-	// PrecacheSound(SPY_SPAWN_SOUND4, true);
-	// PrecacheSound(SPY_DEATH_SOUND1, true);
-	// PrecacheSound(SPY_DEATH_SOUND2, true);
-	// PrecacheSound(SPY_DEATH_SOUND3, true);
-	// PrecacheSound(SPY_DEATH_SOUND4, true);
-	// PrecacheSound(SPY_DEATH_SOUND5, true);
-
-	
 }
 
 public void OnPluginEnd()
@@ -123,7 +96,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnMapStart()
 {
-	// PrecacheModel(MODEL);
 	PrecacheSound(SHRINK, true);
 	PrecacheSound(SIZE_RESTORED, true);
 	PrecacheSound(TELEPORTER_SPAWN, true);
@@ -161,27 +133,15 @@ MakeSpy(client)
 
 
 	int iHealth = 2000;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
 
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", g_scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
 	TF2Attrib_SetByName(client, "move speed penalty", 0.95);
-	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-
-	
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-
-	// TF2Attrib_SetByName(client, "increase player capture value", -1.0);
 	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
@@ -193,24 +153,13 @@ MakeSpy(client)
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	
-	// PrintToChat(client, "1. You are now Giant Mr Paladin robot!");
 	PrintHintText(client, ROBOT_TIPS);
 
-	// if (IsPlayerAlive(client)){
-	// EmitGameSoundToAll("Announcer.MVM_Spy_Alert");
-	// } 
 
 	g_target = -1;
 
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -218,18 +167,9 @@ public Action:Timer_Switch(Handle:timer, any:client)
 	GiveBigRoboDane(client);
 }
 
-// public Action:Timer_Resize(Handle:timer, any:hat)
-// {
-	// if (IsValidClient(client))
-	// GiveBigRoboDane(client);
-// }
-
 #define RoBro 733
 #define Gawkers 31279
 #define TacticalTurtleneck 31278
-// #define Spek 343
-// #define WhitePaint 15132390.0
-
 
 
 stock GiveBigRoboDane(client)
@@ -253,9 +193,6 @@ stock GiveBigRoboDane(client)
 	CreateRoboHat(client, RoBro, 10, 6, 15132390.0, 1.0, -1.0); 
 	CreateRoboHat(client, Gawkers, 10, 6, 15132390.0, 1.0, -1.0); 
 	CreateRoboHat(client, TacticalTurtleneck, 10, 6, 15132390.0, 1.0, -1.0); 
-	// CreateRoboHat(client, LadyKiller, 10, 6, 0.0, 1.0, -1.0);
-	// CreateRoboHat(client, Spek, 10, 6, 0.0, 1.0, -1.0);
-	
 		
 	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
 	int Knife = GetPlayerWeaponSlot(client, 2); //Knife
@@ -265,43 +202,27 @@ stock GiveBigRoboDane(client)
 	if(IsValidEntity(Revolver)) //Revovler
 		{
 			TF2Attrib_RemoveAll(Revolver);
-			
-			// TF2Attrib_SetByName(Revolver, "fire rate bonus", 2.5);
-			// TF2Attrib_SetByName(Revolver, "damage bonus", 2.0);
 			TF2Attrib_SetByName(Revolver, "killstreak tier", 1.0);
 						
 		}
 
 	if(IsValidEntity(Knife)) //
 		{
-			// TF2Attrib_RemoveAll(Knife);
-			
-			//TF2Attrib_SetByName(Knife, "fire rate bonus", 0.8);
-			TF2Attrib_SetByName(Knife, "damage bonus", 1.25);
-			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Knife, "mod_disguise_consumes_cloak", 0.0);
-			// TF2Attrib_SetByName(Knife, "sanguisuge", 0.0);
-			// TF2Attrib_SetByName(Knife, "restore health on kill", 10.0);
-						
+			TF2Attrib_SetByName(Knife, "dmg penalty vs players", 1.25);
+			TF2Attrib_SetByName(Knife, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Knife, "killstreak tier", 1.0);		
 		}
 	if(IsValidEntity(Cloak)) //
 		{
 			TF2Attrib_RemoveAll(Cloak);
-			// TF2Attrib_SetByName(Cloak, "mod weapon blocks healing", 1.0);
 			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
 			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.3);
 		}
 	if(IsValidEntity(Sapper)) //
 		{
-			//TF2Attrib_RemoveAll(Sapper);
-			
-		//	TF2Attrib_SetByName(Sapper, "mult cloak meter consume rate", 0.0);
 			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 5.0);
 			TF2Attrib_SetByName(Sapper, "robo sapper", 100.0);
-			// TF2Attrib_SetByName(Sapper, "mod weapon blocks healing", 1.0);
-			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
 		}	
-	// }
 	TF2_AddCondition(client, TFCond_Cloaked);
 	}
 }
@@ -313,7 +234,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE) ) 
 		{
-			//  PrintToChatAll("Press");
             g_button_held[client] = true;
 		}
 
@@ -321,7 +241,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_USE) ) 
 		{
-			//  PrintToChatAll("Release");
 			g_button_held[client] = false;
             
 		}
@@ -332,12 +251,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	}
 }
 
-
-
-
-
 bool isready;
-
 void DrawHUD(int client)
 {
 	char sHUDText[128];
@@ -391,7 +305,7 @@ void Teleport (int client)
 	{
 
 
-			// PrintToChat(client, "You selected %i which was %N", SelectedIndex[client], SelectedIndex[client]);
+
 
 			float PreTeleOrigin[3];
 			GetClientAbsOrigin(client, PreTeleOrigin);
@@ -417,10 +331,6 @@ void Teleport (int client)
 				isready = false;
 				g_target = -1;
 			
-
-		// TeleportEntity(client, g_target_coords, NULL_VECTOR, NULL_VECTOR);
-		// g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-		// isready= false;
 		
 	}
 }

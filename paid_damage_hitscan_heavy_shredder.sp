@@ -20,11 +20,6 @@
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
-
-// #define SOUND_GUNFIRE	")mvm/giant_heavy/giant_heavy_gunfire.wav"
-// #define SOUND_GUNSPIN	")mvm/giant_heavy/giant_heavy_gunspin.wav"
-// #define SOUND_WINDUP	")mvm/giant_heavy/giant_heavy_gunwindup.wav"
-// #define SOUND_WINDDOWN	")mvm/giant_heavy/giant_heavy_gunwinddown.wav"
 float scale = 1.75;
 
 public Plugin:myinfo =
@@ -36,11 +31,7 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-// new bool:Locked1[MAXPLAYERS+1];
-// new bool:Locked2[MAXPLAYERS+1];
-// new bool:Locked3[MAXPLAYERS+1];
-// new bool:CanWindDown[MAXPLAYERS+1];
- 
+
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
@@ -105,35 +96,19 @@ MakeGRageH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GRageH);
-	int iHealth = 6000;
+	RoboSetHealth(client,TFClass_Heavy, 6000, 1.5);
 	
-	
-	int MaxHealth = 300;
-	// PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-	 // PrintToChatAll("iHealth %i", iHealth);
-	
-	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
-	
+
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.2);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	// TF2Attrib_SetByName(client, "head scale", 0.75);
 
 	UpdatePlayerHitbox(client, scale);
    
@@ -143,12 +118,6 @@ MakeGRageH(client)
 
 }
  
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
  
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -157,11 +126,10 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 #define Jaws 485
-// #define HeavyHarness 30910
 #define HeavyHeating 31346
 #define WearHead 635
-#define RoadBlock 31306
-//#define Flatliner 31121		
+#define RoadBlock 31306	
+
 stock GiveGDeflectorH(client)
 {
 	if (IsValidClient(client))
@@ -176,24 +144,18 @@ stock GiveGDeflectorH(client)
 
 		CreateRoboHat(client, WearHead, 10, 6, 0.0, 0.75, -1.0); 
 		CreateRoboHat(client, Jaws, 10, 6, 0.0, 0.75, 1.0); 
-		// CreateRoboHat(client, HeavyHeating, 10, 6, 1315860.0, 0.60, -1.0); 
-
 		CreateRoboHat(client, RoadBlock, 10, 6, 15132390.0, 1.0, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(Weapon1))
 		{
-
 			TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage penalty", 0.75);
-			
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 0.7);
-			
 			TF2Attrib_SetByName(Weapon1, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);
-			
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 		}
 	}
 }

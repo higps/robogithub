@@ -84,17 +84,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
-//
-
-
-
-	
-	// PrecacheSound(SOUND_GUNFIRE);
-	// PrecacheSound(SOUND_WINDUP);
-	
-}
 
 public Action:SetModel(client, const String:model[])
 {
@@ -111,7 +100,6 @@ MakeGiantPyro(client)
 {
 	SMLogTag(SML_VERBOSE, "Createing Agro");
 	TF2_SetPlayerClass(client, TFClass_Pyro);
-	//TF2_RespawnPlayer(client);
 	TF2_RegeneratePlayer(client);
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
@@ -126,29 +114,22 @@ MakeGiantPyro(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GPYRO);
 	
-	int iHealth = 5000;
+	RoboSetHealth(client,TFClass_Pyro, 5000, 1.5);
 		
-	int MaxHealth = 175;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 	// PrintToChatAll("iHealth %i", iHealth);
 	
 	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	// TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	
@@ -168,12 +149,6 @@ MakeGiantPyro(client)
 	
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -181,8 +156,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 		GiveGiantPyro(client);
 }
 #define FlameWarrior  31357 
-/* #define MK50  30473 
-#define SpaceDiver   30664  */
+
 
 stock GiveGiantPyro(client)
 {
@@ -194,23 +168,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		
 		CreateRoboWeapon(client, "tf_weapon_flamethrower", 208, 6, 1, 0, 205);	
-
-		
-		// TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
-		
-		// float TeamPaint = 0.0;
-
-		// if (iTeam == TFTeam_Blue){
-		// 	TeamPaint = 12807213.0;
-		// }
-		// if (iTeam == TFTeam_Red){
-		// 	TeamPaint = 13595446.0;
-		// }
-
 		CreateRoboHat(client, FlameWarrior, 10, 6, 0.0, 1.0, -1.0);
-		// CreateRoboHat(client, MK50, 10, 6, TeamPaint, 0.75, -1.0);
-		// CreateRoboHat(client, SpaceDiver, 10, 6, 0.0, 0.75, -1.0);
-		// CreateRoboHat(client, Pyrotechnic, 10, 6, 5322826.0, 0.75, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 
@@ -218,22 +176,16 @@ stock GiveGiantPyro(client)
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		if(IsValidEntity(Weapon1))
 		{
-			//TF2Attrib_RemoveAll(Weapon1);
-			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.25);
+
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			// TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.1);		
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);			
+			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);			
 			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 35.0);			
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
 			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);
 			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 175.0);
 			TF2CustAttr_SetString(Weapon1,"spawn-fireballs", "damage=5.0 range=350.0 projectiles=1 firetime=5.0 angle=0 only-yaw=1 random-spread=0");
-			// TF2CustAttr_SetString(client, "Spell-Caster", "Spell=9 Cooldown=40.0");
-			// TF2CustAttr_SetString(Weapon1, "fire ring attribute", "max_rage=1000.0 damage=70.0 radius=150.0 duration=10.0");
-			// TF2Attrib_SetByName(Weapon1, "airblast vertical pushback scale", 1.5);
-			
-			// charged airblast
+
 
 
 		}

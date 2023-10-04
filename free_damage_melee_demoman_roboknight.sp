@@ -19,12 +19,6 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
-#define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
-#define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
-#define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
-
-
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Demoknight",
@@ -37,10 +31,6 @@ public Plugin:myinfo =
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-
-	AddNormalSoundHook(BossMortar);
-
-	// HookEvent("player_death", Event_Death, EventHookMode_Post);
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -56,35 +46,6 @@ public OnPluginStart()
 	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 1);
 }
 
-public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT1, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT1, entity);
-		}
-		return Plugin_Changed;
-	}
-
-	return Plugin_Continue;
-}
-
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
@@ -95,15 +56,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	//	CreateNative("BeGiantDemoKnight_MakeDemoKnight", Native_SetGiantDemoKnight);
 	//	CreateNative("BeGiantDemoKnight_IsGiantDemoKnight", Native_IsGiantDemoKnight);
 	return APLRes_Success;
-}
-
-public OnMapStart()
-{
-	
-
-
-
-
 }
 
 public Action:SetModel(client, const String:model[])
@@ -134,37 +86,21 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 2500;
+	RoboSetHealth(client,TFClass_DemoMan, 2500, 1.5);
 	
 	
-	int MaxHealth = 175;
 	float OverHealRate = 1.5;
-//	PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-//	 PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
 
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
+	
+
 	
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.85);
@@ -179,12 +115,6 @@ MakeDemoKnight(client)
 	
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -219,8 +149,6 @@ stock GiveGiantDemoKnight(client)
 		{
 			if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
 			{				
-				//PrintToChatAll("going through entity");
-				// TF2Attrib_SetByName(iEntity2, "major increased jump height", 1.35);		
 				TF2Attrib_SetByName(iEntity2, "lose demo charge on damage when charging", 0.0);			
 				TF2Attrib_SetByName(iEntity2, "dmg taken from fire reduced", 1.0);			
 				TF2Attrib_SetByName(iEntity2, "dmg taken from blast reduced", 1.0);			
@@ -234,58 +162,24 @@ stock GiveGiantDemoKnight(client)
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon3))
 		{
-			//TF2Attrib_RemoveAll(Weapon3);
-			
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.2);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 5.0);		
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);			
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.9);			
 			TF2Attrib_SetByName(Weapon3, "charge impact damage increased", 5.0);	
-			TF2Attrib_SetByName(Weapon3, "no charge impact range", 100.0);	
-			
-			// TF2Attrib_SetByName(Weapon3, "minicritboost on kill", 5.0);		
+			TF2Attrib_SetByName(Weapon3, "no charge impact range", 100.0);		
 			TF2Attrib_SetByName(Weapon3, "full charge turn control", 50.0);		
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.15);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 		}
 	}
 }
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
-	
-	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
 		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Charging)
 		{	
 			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 550.0);
-			// TF2_AddCondition(client, TFCond_CritCanteen, 3.0);
 		}
 	
 }
-
-// public Event_Death(Event event, const char[] name, bool dontBroadcast)
-// {
-// 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-// 	//int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-
-// 	if(IsRobot(attacker, ROBOT_NAME))
-// 	{
-
-// 			//PrintToChatAll("HP WAS %i , MAXHP was %i", HP, MAXHP);
-
-// 			RequestFrame(SetHP, attacker);
-
-// 			// SetEntProp(attacker, Prop_Send, "m_iHealth", HP, 1);
-// 			// SetEntProp(attacker, Prop_Data, "m_iHealth", HP, 1);
-
-
-// 	}
-// }
-
-// void SetHP(int attacker)
-// {
-// 			// int HP = GetEntProp(attacker, Prop_Send, "m_iHealth");
-// 			// int MAXHP = GetEntProp(attacker, Prop_Data, "m_iMaxHealth");
-// 			// SetEntProp(attacker, Prop_Send, "m_iMaxHealth", MAXHP+115, 1);
-// 			// SetEntProp(attacker, Prop_Data, "m_iMaxHealth", MAXHP+115, 1);
-// }

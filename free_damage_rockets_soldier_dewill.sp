@@ -29,15 +29,6 @@
 #include <tf2_stocks>
 
 
-public Plugin MyInfo =
-{
-	name = "[TF2] Artillery Rocket Launcher",
-	author = "IvoryPal",
-	description = "Rocket launcher that fires volleys of rockets.",
-	version = "1.0"
-}
-
-
 public Plugin:myinfo = 
 {
 	name = "[TF2] Be the DEWILL",
@@ -61,8 +52,6 @@ public OnPluginStart()
 
 	LoadTranslations("common.phrases");
 
-	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
@@ -76,16 +65,7 @@ public OnPluginStart()
 	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 
 
-
-	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	// restrictions.RobotCoins.PerRobot = ROBOT_COST; 
-
 	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, null);
-	//Artillery Code
-
-
-	//HookEvent("post_inventory_application", Event_PlayerResupply);
 
 }
 
@@ -100,38 +80,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 //	CreateNative("BeGiantPyro_IsGiantPyro", Native_IsGiantPyro);
 	return APLRes_Success;
 }
-
-public OnMapStart()
-{
-	
-
-
-
-
-	// PrecacheSound(GUNFIRE);
-	// PrecacheSound(GUNFIRE_CRIT);
-	// PrecacheSound(GUNFIRE_EXPLOSION);
-	
-
-
-
-	
-	
-	
-	//PrecacheSound(SOUND_GUNFIRE);
-	//PrecacheSound(SOUND_WINDUP);
-	
-}
-
-/* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if(g_bIsGSoldier[client])
-	{
-		g_bIsGSoldier[client] = false;
-	}
-} */
 
 public Action:SetModel(client, const String:model[])
 {
@@ -161,34 +109,19 @@ MakeGiantSoldier(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
+	RoboSetHealth(client,TFClass_Soldier, 3800, 1.5);
 	
-	int iHealth = 3800;
-		
-	int MaxHealth = 200;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
 	float OverHealRate = 1.5;
 
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
 
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
 
 	float scale = 1.65;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 
@@ -202,12 +135,6 @@ MakeGiantSoldier(client)
 	
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -216,7 +143,7 @@ public Action:Timer_Switch(Handle:timer, any:client)
 }
 
 // #define SergeantsDrillHat 183
-// 
+
 #define skullcap 30578
 #define KringleCollection 650
 #define GRAYBANNS 30104
@@ -233,9 +160,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher_airstrike", 1104, 6, 1, 2, 0);
-		// CreateRoboWeapon(client, "tf_weapon_shotgun_soldier", 10, 6, 1, 2, 0);
-		//CreateRoboWeapon(client, "tf_weapon_shovel", 416, 6, 1, 2, 0);
-		
+
 		CreateRoboHat(client, skullcap, 10, 6, 0.0, 0.8, -1.0);
 		CreateRoboHat(client, KringleCollection, 10, 6, 0.0, 0.75, -1.0);
 		CreateRoboHat(client, GRAYBANNS, 10, 6, 0.0, 0.8, -1.0);
@@ -262,11 +187,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if (IsRobot(client, ROBOT_NAME))
 	{
-	//0 = fireball
-	//PrintToChat(client, "Throwing spell!");
 	if( GetEntProp( client, Prop_Data, "m_afButtonPressed" ) & IN_ATTACK3 ) 
 	{
-	// PrintToChatAll("Press");
 	g_button_held[client] = true;
 	}
 
@@ -274,7 +196,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	if( GetEntProp( client, Prop_Data, "m_afButtonReleased" ) & IN_ATTACK3 ) 
 	{
-	// PrintToChatAll("Release");
 	g_button_held[client] = false;
 
 	}
@@ -305,12 +226,7 @@ void EnterRapidFireMode(int client)
 	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 	if(IsValidEntity(Weapon1))
 	{
-
-		// TF2Attrib_SetByName(Weapon1, "faster reload rate", 0.5);			
-		// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 		TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.35);
-		// TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 11.0);
-		// TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 1.0);
 		TF2Attrib_SetByName(Weapon1, "major increased jump height", 0.0);		
 	}
 }
@@ -318,13 +234,11 @@ void EnterRapidFireMode(int client)
 void ResetWeapon(int client)
 {
 	g_FireMode = false;
-	//PrintCenterText(client, "Exiting Firing mode");
 	TF2Attrib_AddCustomPlayerAttribute(client, "move speed penalty", 0.5);
 	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	g_skill_time = g_skill + g_skill_cooldown;
-	// PrintToChatAll("Gskill time: %f", g_skill_time);
-	// PrintToChatAll("Gskill: %f", g_skill);
+
 
 	int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 	if(IsValidEntity(Weapon1))
@@ -335,27 +249,22 @@ void ResetWeapon(int client)
 		TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 		TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 		TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);			
-		// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
+
 		TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.85);
 		TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 4.0);
 		TF2Attrib_SetByName(Weapon1, "major increased jump height", 1.0);		
 		
-		TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);		
+		TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);		
 
-		// TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 0.0);
 		TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		
 	}
 }
 
-// #define CHAR_FULL "■"
-// #define CHAR_EMPTY "□"
 
 void DrawHUD(int client)
 {
 	char sHUDText[128];
-	// char sProgress[32];
-	// int iPercents = RoundToCeil(g_skill / g_skill_time * 100.0);
 
 	int iCountDown = RoundToCeil(g_skill_time - g_skill);
 	int iCountDownFiring = RoundToCeil(FireModeTimer - g_skill);
@@ -395,5 +304,5 @@ void DrawHUD(int client)
 
 
 	ShowHudText(client, -3, sHUDText);
-	// b_hud_clamp[client] = false;
+
 }

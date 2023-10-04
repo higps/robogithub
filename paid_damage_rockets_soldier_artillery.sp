@@ -180,33 +180,23 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 3800;
+	RoboSetHealth(client,TFClass_Soldier, 3800, 1.5);
 		
-	int MaxHealth = 200;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 	float OverHealRate = 1.5;
 
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
 
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
 
 	float scale = 1.65;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	
@@ -225,12 +215,6 @@ MakeGiantSoldier(client)
 	
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -275,13 +259,9 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.4);				
-			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.85);
 			TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 8.0);
-			// TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
-			
-			
-
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
@@ -309,21 +289,6 @@ public Action CmdToggleArc(int client, int args)
 	PrintToChat(client, "Artillery Launcher %s", arcRockets[client] ? "Enabled. Resupply to obtain it." : "Removed.");
 	return Plugin_Continue;
 }
-
-// public Action Event_PlayerResupply(Handle event, const char[] name, bool dbroad)
-// {
-// 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-// 	if (0 < client <= MaxClients && IsClientInGame(client))
-// 	{
-// 		int launcher = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-// 		if (IsValidEntity(launcher) && launcher > MaxClients && arcRockets[client])
-// 		{
-// 			weaponArc[launcher] = true;
-// 			TF2Attrib_SetByName(launcher, "clip size bonus", 5.0);
-// 		}
-// 	}
-// 	return Plugin_Continue;
-// }
 
 public void OnEntityDestroyed(int ent)
 {

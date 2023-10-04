@@ -55,8 +55,6 @@ public void OnPluginEnd()
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-	//	CreateNative("BeGiantDemoKnight_MakeSolar", Native_SetGiantDemoKnight);
-	//	CreateNative("BeGiantDemoKnight_IsGiantDemoKnight", Native_IsGiantDemoKnight);
 	return APLRes_Success;
 }
 
@@ -88,37 +86,22 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 2000;
+	RoboSetHealth(client,TFClass_DemoMan, 2000, 1.5);
 	
-	
-	int MaxHealth = 175;
 	float OverHealRate = 1.5;
-//	PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-//	 PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
 
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
+	
+
+	
+
 	
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -134,12 +117,6 @@ MakeSolar(client)
 
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -222,8 +199,8 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon3, "is_festivized", 1.0);		
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 5.0);	
-			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.25);		
-			// TF2Attrib_SetByName(Weapon3, "heal on kill", 200.0);		
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);		
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);			
 			
 			
 			
@@ -235,7 +212,6 @@ stock GiveGiantDemoKnight(client)
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
 	
-	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
 		if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Charging)
 		{	
 			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 550.0);

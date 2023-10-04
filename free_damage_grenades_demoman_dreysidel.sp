@@ -54,7 +54,6 @@ public OnPluginStart()
 	robot.difficulty = ROBOT_DIFFICULTY_HARD;
 	AddRobot(robot, MakeToofty, PLUGIN_VERSION);
 
-	AddNormalSoundHook(BossMortar);
 }
 
 public void OnPluginEnd()
@@ -78,33 +77,6 @@ public OnMapStart()
 
 }
 
-public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT1, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT1, entity);
-		}
-		return Plugin_Changed;
-	}
-	return Plugin_Continue;
-}
 
 public Action:SetModel(client, const String:model[])
 {
@@ -134,25 +106,18 @@ MakeToofty(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 3000;
+	RoboSetHealth(client,TFClass_DemoMan, 3000, 1.5);
 	
 	
-	int MaxHealth = 175;
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
@@ -167,12 +132,6 @@ MakeToofty(client)
 	PrintHintText(client, ROBOT_TIPS);
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -194,33 +153,14 @@ stock GiveGiantToofty(client)
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
-		// TF2_RemoveWeaponSlot(client, 3);
-		// TF2_RemoveWeaponSlot(client, 4);
-		// TF2_RemoveWeaponSlot(client, 5);
-		
-		// CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 308, 8, 1, 0, 0);
+
 		CreateRoboWeapon(client, "tf_weapon_pipebomblauncher", 130, 6, 1, 1, 0);
-	//	CreateRoboWeapon(client, "tf_weapon_parachute", 1101, 6, 1, 2, 0);
+
 		
 		CreateRoboHat(client, Bandana, 10, 6, 0.0, 0.8, 1.0); //Bruiser's Bandana
 		CreateRoboHat(client, AntarcticEyewear, 10, 6, 0.0, 0.8, -1.0); //Antarctic Eyewear
 		CreateRoboHat(client, SpookySleeves, 10, 6, 2960676.0, 1.1, -1.0); //Spooky Sleeves
-		//CreateRoboHat(client, 1101, 10, 6, 0.0, 5.0, -1.0); //parachute
 
-		// int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// if(IsValidEntity(Weapon1))
-		// {
-
-		// 	//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.20);
-		// 	TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.50);
-		// 	TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-		// 	//TF2Attrib_SetByName(Weapon1, "is_festivized", 1.0);
-		// 	TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
-		// 	TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.65);
-		// 	TF2Attrib_SetByName(Weapon1, "reload time increased", 0.75);
-			
-		// 	//TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-		// }
 		
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		if(IsValidEntity(Weapon3))
@@ -232,41 +172,11 @@ stock GiveGiantToofty(client)
 			TF2Attrib_SetByName(Weapon3, "faster reload rate", 3.75);
 			TF2Attrib_SetByName(Weapon3, "sticky arm time penalty", 0.5);
 			TF2Attrib_SetByName(Weapon3, "max pipebombs increased", 16.0);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);			
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2CustAttr_SetString(Weapon3, "reload full clip at once", "1.0");
 		}
 
-		// int iEntity2 = -1;
-		// while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_weapon_parachute")) != -1)
-		// {
-		// 	if (client == GetEntPropEnt(iEntity2, Prop_Data, "m_hOwnerEntity"))
-		// 	{				
-		// 		//PrintToChatAll("going through entity");
-		// 		TF2Attrib_SetByName(iEntity2, "major increased jump height", 2.75);		
-				
-		// 		break;
-		// 	}
-		// }
+
 	}
 }
-
-// public void OnEntityCreated(int iEntity, const char[] sClassName) 
-// {
-// 	if (StrContains(sClassName, "tf_projectile_pipe") == 0)
-// 	{
-// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-// 	}
-	
-// }
-
-// public void Hook_OnProjectileSpawn(iEntity) {
-// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-
-
-
-
-// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
-		
-// 	}
-// }

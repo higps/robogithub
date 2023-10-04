@@ -124,23 +124,16 @@ void MakeBuster(client)
 	}
 	RequestFrame(ClientSwitch, client);
 	SetModel(client, GBUSTER);
-	int iHealth = 2500;
-	int MaxHealth = 175;
-	int iAdditiveHP = iHealth - MaxHealth;
-	TF2_SetHealth(client, iHealth);
+	RoboSetHealth(client,TFClass_DemoMan, 2500, 1.5);
 
 	TF2CustAttr_SetString(client, "faster-respawn", "respawn=4.0");
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 2.0);
 	// TF2Attrib_SetByName(client, "airblast vulnerability multiplier", -5.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 
 	TF2Attrib_SetByName(client, "override footstep sound set", 7.0);
 	TF2Attrib_SetByName(client, "increased jump height", 2.0);
@@ -160,26 +153,6 @@ void MakeBuster(client)
 
 	EmitGameSoundToAll("Announcer.MVM_Sentry_Buster_Alert");
 
-			// int ent = -1;
-			// while ((ent = FindEntityByClassname2(ent, "obj_sentrygun")) != -1)
-			// {
-			// 	int owner = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
-			// 	if (IsValidEntity(ent) && IsValidClient(owner))
-			// 	{
-			// 	//int iBuilder = GetEntPropEnt(ent, Prop_Send, "m_hBuilder");
-				
-				
-			// 	TFTeam iBuildingTeam = TF2_GetClientTeam(owner);
-			// 	TFTeam iClientTeam = TF2_GetClientTeam(client);
-
-				
-			// 	if(iClientTeam != iBuildingTeam)
-			// 	{
-			// 			SetEntPropEnt(ent, Prop_Send, "m_bGlowEnabled", 1);
-			// 	}
-	
-			// 	}
-			// }
 }
 
 stock void TF2_SetHealth(int client, int NewHealth)

@@ -107,18 +107,12 @@ MakePanCop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 10500;
-	
-	
-	int MaxHealth = 300;
-	// PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-	 // PrintToChatAll("iHealth %i", iHealth);
-	
-	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
+
+	RoboSetHealth(client,TFClass_Heavy, 10500, 1.5);
+
+	// int iHealth = 10500;
+
+
 	float scale = 1.85;
 	
    
@@ -127,13 +121,11 @@ MakePanCop(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
+	
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "increase buff duration", 10.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
@@ -158,14 +150,7 @@ TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
 
 }
- 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
- 
+
 public Action:Timer_Switch(Handle:timer, any:client)
 {
 	if (IsValidClient(client))

@@ -6,10 +6,7 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
-// #include <dhooks>
-// #include <tf_ontakedamage>
-// #include <tf_custom_attributes>
- 
+
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Megaton"
 #define ROBOT_ROLE "Tank"
@@ -28,9 +25,6 @@
 #define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
 #define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
-
-
-//#define GIFTBRINGER 30747
 
 public Plugin:myinfo =
 {
@@ -105,24 +99,13 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 9000;
+	RoboSetHealth(client,TFClass_Heavy, 9000, 1.5);
 	
 	
-	int MaxHealth = 300;
-	int iAdditiveHP = iHealth - MaxHealth;
 	float OverHealRate = 1.5;
 
 
-	TF2_SetHealth(client, iHealth);
-		// PrintToChatAll("MaxHealth %i", MaxHealth);
-	 // PrintToChatAll("iHealth %i", iHealth);
-	
-	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
 
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
 	float scale = 1.75;
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
@@ -130,10 +113,7 @@ MakeGDeflectorH(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "hand scale", 1.35);
@@ -150,19 +130,13 @@ MakeGDeflectorH(client)
 
 	PrintHintText(client , ROBOT_TIPS);
 	//Tank stats
-    // TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
+
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
+	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+
 }
  
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
  
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -180,14 +154,14 @@ stock GiveGDeflectorH(client)
 	{
 		//Remove items and hats
 		RoboRemoveAllWearables(client);
-		//TF2_RemoveAllWearables(client);
+
 		TF2_RemoveWeaponSlot(client, 0);
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		//void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale, float style);
-		CreateRoboHat(client, EliminatorSafeguard, 10, 6, 15132390.0, 1.0, 1.0);//Rotation sensation
-		CreateRoboHat(client, Spooktacles, 10, 6, 8289918.0, 1.0, -1.0);//Summer shades
+
+		CreateRoboHat(client, EliminatorSafeguard, 10, 6, 15132390.0, 1.0, 1.0);
+		CreateRoboHat(client, Spooktacles, 10, 6, 8289918.0, 1.0, -1.0);
 		CreateRoboHat(client, AirborneAttire, 10, 6, 0.0, 1.0, -1.0);
 
 
@@ -196,18 +170,15 @@ stock GiveGDeflectorH(client)
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
-			// TF2Attrib_RemoveAll(Weapon1);
+
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.6);
-			//TF2Attrib_SetByName(Weapon1, "critboost on kill", 180.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.3);
-			
 			TF2Attrib_SetByName(Weapon1, "reduced_healing_from_medics", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg from ranged reduced", 0.9);
 			TF2Attrib_SetByName(Weapon1, "dmg from melee increased", 1.1);
-			
 			TF2Attrib_SetByName(Weapon1, "melee range multiplier", 1.6);
 			TF2Attrib_SetByName(Weapon1, "apply z velocity on damage", 350.0);
 			TF2CustAttr_SetString(Weapon1, "knockback modifier", "20.0");
@@ -215,9 +186,8 @@ stock GiveGDeflectorH(client)
 
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
-			//TF2Attrib_SetByName(Weapon1, "dmg from melee increased", 0.25);
 		}
-				CreateRoboHat(client, 111, 10, 6, 0.0, 1.0, 1.0); 
+		CreateRoboHat(client, 111, 10, 6, 0.0, 1.0, 1.0); 
 		TF2Attrib_SetByName(client, "attach particle effect", 35.0);
 	}
 }

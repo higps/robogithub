@@ -27,9 +27,9 @@
 
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant <Someone> Scout",
+	name = "[TF2] Be the Giant B4nny Scout",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Scout",
+	description = "Play as the Giant B4nny Scout",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -47,9 +47,6 @@ public OnPluginStart()
 	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
-
-
-
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -106,31 +103,21 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 1250;
+	RoboSetHealth(client,TFClass_Scout, 1250, 1.5);
 		
-	int MaxHealth = 125;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
+
 	
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.95);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.65);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.0);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	
 	TF2Attrib_SetByName(client, "increased jump height", 1.25);
@@ -143,17 +130,9 @@ MakeGiantscout(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client, ROBOT_TIPS);
-	// SetEntProp(client, Prop_Send, "m_bForcedSkin", 1);
-	// SetEntProp(client, Prop_Send, "m_nForcedSkin", 0);
 
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -194,7 +173,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Scattergun, "clip size bonus", 1.4);
 			TF2Attrib_SetByName(Scattergun, "Reload time increased", 0.8);
 			TF2Attrib_SetByName(Scattergun, "dmg penalty vs players", 1.15);
-			TF2Attrib_SetByName(Scattergun, "dmg penalty vs buildings", 0.15);	
+			TF2Attrib_SetByName(Scattergun, "dmg penalty vs buildings", 0.5);	
 			// TF2CustAttr_SetString(Scattergun, "damage increase mult on hit", "amount=0.15 max=3.0 decay_start=5.0 decay_per_second=0.05 reset_on_kill=1 show_on_hud=1");
 		}
 		

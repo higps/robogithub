@@ -38,9 +38,6 @@ public Plugin:myinfo =
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
-
-	// AddNormalSoundHook(BossMortar);
-
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
@@ -100,32 +97,17 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 9000;
+	RoboSetHealth(client,TFClass_DemoMan, 9000, 1.5);
 	
 	
-	int MaxHealth = 175;
 	float OverHealRate = 1.5;
-//	PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-//	 PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
 
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
+
+
 	
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	//TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
@@ -134,32 +116,22 @@ MakeDemoKnight(client)
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "hand scale", 1.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
-	// TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
-	// TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
-	// TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	// 	TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
+
+	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
+
 	UpdatePlayerHitbox(client, 1.75);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
-	// TF2_RemoveCondition(client,TFCond_DefenseBuffNoCritBlock);
 
 	PrintHintText(client , ROBOT_TIPS);
 
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
+	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	// TF2_AddCondition(client, TFCond_MegaHeal);
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -169,7 +141,6 @@ public Action:Timer_Switch(Handle:timer, any:client)
 
 #define Executioner 921
 #define DarkAgeDefender 30073
-// #define CoolBreeze 979
 
 stock GiveGiantDemoKnight(client)
 {
@@ -181,25 +152,20 @@ stock GiveGiantDemoKnight(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 		
-		// CreateRoboWeapon(client, "tf_wearable_demoshield", 131, 6, 1, 2, 0);
+
 		CreateRoboWeapon(client, "tf_weapon_sword", 172, 6, 1, 2, 0);
 
 		CreateRoboHat(client, Executioner, 10, 6, 0.0, 0.75, 1.0); 
 		CreateRoboHat(client, DarkAgeDefender, 10, 6, 0.0, 1.0, 1.0); 
-		// CreateRoboHat(client, CoolBreeze, 10, 6, 0.0, 1.0, 1.0); 
 
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon3))
 		{
 			//TF2Attrib_RemoveAll(Weapon3);
 			
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
-			//TF2Attrib_SetByName(Weapon3, "charge meter on hit", 0.25);		
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);					
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 10.0);		
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 2.5);			
-			// TF2Attrib_SetByName(Weapon3, "critboost on kill", 3.0);		
-			// TF2Attrib_SetByName(Weapon3, "mult charge turn control", 2.0);		
-			// TF2Attrib_SetByName(Weapon3, "kill refills meter", 0.25);		
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 2.5);				
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);	
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);	
 			

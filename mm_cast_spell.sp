@@ -55,8 +55,8 @@ bool HasStat(int attacker)
 	}
 	g_Spell[attacker] = ReadIntVar(stat_buffer, "Spell", 0);
 	g_RechargeCooldown = ReadFloatVar(stat_buffer, "Cooldown", 5.0);
-    g_SpellOnCond = ReadIntVar(stat_buffer, "SpellOnCond", -1);
-    g_Cond = ReadIntVar(stat_buffer, "Cond", -1);
+	g_SpellOnCond = ReadIntVar(stat_buffer, "SpellOnCond", -1);
+	g_Cond = ReadIntVar(stat_buffer, "Cond", -1);
 
 	if(g_Spell[attacker] == -1) return false;
 

@@ -8,6 +8,7 @@
 #include <tf2attributes>
 #include <tf2utils>
 #include <tf2items>
+#include <tf2>
 
 #pragma newdecls required
 #pragma semicolon 1

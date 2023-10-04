@@ -40,8 +40,6 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	// AddNormalSoundHook(BossMortar);
-
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
@@ -61,46 +59,6 @@ public OnPluginStart()
 	AddRobot(robot, MakeSolar, PLUGIN_VERSION);
 }
 
-// public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-// {
-// 	if (!IsValidClient(entity)) return Plugin_Continue;
-// 	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-// 	// if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-// 	// {
-// 	// 	if (StrContains(sample, "1.wav", false) != -1)
-// 	// 	{
-// 	// 		EmitSoundToAll(LEFTFOOT, entity);
-// 	// 	}
-// 	// 	else if (StrContains(sample, "3.wav", false) != -1)
-// 	// 	{
-// 	// 		EmitSoundToAll(LEFTFOOT1, entity);
-// 	// 	}
-// 	// 	else if (StrContains(sample, "2.wav", false) != -1)
-// 	// 	{
-// 	// 		EmitSoundToAll(RIGHTFOOT, entity);
-// 	// 	}
-// 	// 	else if (StrContains(sample, "4.wav", false) != -1)
-// 	// 	{
-// 	// 		EmitSoundToAll(RIGHTFOOT1, entity);
-// 	// 	}
-// 	// 	return Plugin_Changed;
-// 	// }
-
-// 	if (strncmp(sample, ")weapons/", 9, false) == 0)
-// 	{
-// 		if (StrContains(sample, "grenade_launcher_shoot.wav", false) != -1)
-// 		{
-// 			Format(sample, sizeof(sample), GUNFIRE);
-// 			EmitSoundToAll(sample, entity,_,_,_, 0.07);	
-// 		//	PrintToChatAll("SOUND!--");
-// 			return Plugin_Changed;	
-// 		}
-		
-// 	}
-// 	return Plugin_Continue;
-// }
-
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
@@ -113,21 +71,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
-	
-
-
-
-
-
-
-	
-	
-
-	PrecacheSound(GUNFIRE);
-
-}
 
 public Action:SetModel(client, const String:model[])
 {
@@ -157,25 +100,16 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 3000;
-	int MaxHealth = 175;
+	RoboSetHealth(client,TFClass_DemoMan, 3000, 1.5);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	// TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
-	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -188,12 +122,6 @@ MakeSolar(client)
 	PrintHintText(client , ROBOT_TIPS);
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -210,30 +138,23 @@ stock GiveGiantDemoKnight(client)
 		RoboRemoveAllWearables(client);
 
 		TF2_RemoveWeaponSlot(client, 0);
-		
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-
 		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 206, 6, 1, 2, 217);
-		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
 
 		CreateRoboHat(client, ScotchBonnet, 10, 6, 0.0, 0.75, -1.0); 
 		CreateRoboHat(client, ShrapnellShell, 10, 6, 7511618.0, 0.75, -1.0); 
-		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
-		//CreateHat(client, 30945, 10, 6, false);//blast locker
+
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
 		if(IsValidEntity(Weapon1))
 		{
-			//TF2Attrib_RemoveAll(Weapon1);
+
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 5.0);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.7);
-			// TF2Attrib_SetByName(Weapon1, "projectile speed increased", 1.15);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.15);
@@ -241,9 +162,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 10.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.4);
 			TF2Attrib_SetByName(Weapon1, "rocket jump damage reduction", 0.05);
-			// TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.75);
-			// TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
-			// TF2Attrib_SetByName(Weapon1, "grenade no spin", 0.0);
+
 		}
 	}
 }

@@ -97,21 +97,15 @@ MakeGiantMedic(client)
 	SetModel(client, GMEDIC);
    
 		
-	int iHealth = 1500;
+	RoboSetHealth(client,TFClass_Medic, 1500, 1.5);
 	
 	
-	int MaxHealth = 150;
-	int iAdditiveHP = iHealth - MaxHealth;
    
-	TF2_SetHealth(client, iHealth);
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
@@ -128,12 +122,6 @@ MakeGiantMedic(client)
 
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
  
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -201,12 +189,8 @@ stock GiveGiantMedic(client)
 		if(IsValidEntity(Weapon2))
 		{
 			TF2Attrib_RemoveAll(Weapon2);
-
-			
-			// TF2Attrib_SetByName(Weapon2, "lunchbox adds minicrits", 1.0);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.0);
-			// TF2Attrib_SetByName(Weapon2, "ubercharge rate bonus", 1.1);
 			TF2Attrib_SetByName(Weapon2, "medigun bullet resist passive", 0.15);
 			TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.35);
 			TF2Attrib_SetByName(Weapon2, "medigun blast resist passive", 0.15);
@@ -218,8 +202,6 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
 			TF2Attrib_SetByName(Weapon2, "uber duration bonus", 1.0);
-			//TF2CustAttr_SetString(Weapon2,"medigun charge is group overheal", "range=500.0 heal_rate=80.0 overheal_ratio=1.05 overheal_duration_mult=0.25");
-
 			
 		}
 
@@ -267,13 +249,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 	}
 
-	// if (condition == TFCond_Charging)
-	// {	
-
-	// 		SetEntPropFloat(healtarget, Prop_Send, "m_flMaxspeed", 750.0);
-	// 		SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 750.0);
-
-	// }
 
 	}
 }

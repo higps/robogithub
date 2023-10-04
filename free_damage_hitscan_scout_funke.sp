@@ -22,13 +22,11 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_scout/giant_scout_loop.wav"
 
-// #define BLUE_MODEL "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl"
-
 public Plugin:myinfo = 
 {
-	name = "[TF2] Be the Giant <Someone> Scout",
+	name = "[TF2] Be the Giant Funke Scout",
 	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Scout",
+	description = "Play as the Giant Funke Scout",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
@@ -78,12 +76,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-// public OnMapStart()
-// {
-
-// 	PrecacheModel(BLUE_MODEL);
-// }
-
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -113,30 +105,17 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 1250;
-		
-	int MaxHealth = 125;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
+	RoboSetHealth(client,TFClass_Scout, 1250, 1.5);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
 	TF2Attrib_SetByName(client, "damage force increase", 10.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 2.25);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 2.0);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
@@ -148,12 +127,6 @@ MakeGiantscout(client)
 	
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -191,12 +164,6 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 1.5);
-			// TF2Attrib_SetByName(Weapon1, "bleeding duration", 0.01);
-			
-			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
-			// TF2Attrib_SetByName(Weapon1, "mark for death", 10.0);
-			
-			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 		}
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -206,54 +173,12 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2CustAttr_SetString(Weapon2, "mod crit type on target condition", "condition=25 crit_type=1");
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.25);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
 		}
-		// g_iTeam = GetClientTeam(client);
+
 	}
 }
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 
-
-// public void OnEntityCreated(int iEntity, const char[] sClassName) 
-// {
-// 	if (StrContains(sClassName, "tf_projectile") == 0)
-// 	{
-// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-// 	}
-	
-// }
-
-// public void Hook_OnProjectileSpawn(iEntity) {
-// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-
-// 		RequestFrame(SetProjectileModel, iEntity);
-// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
-// 	}
-// }
-
-
-		
-
-// float g_fStockvecMin[3] = {-10.0, -10.0, -10.0};
-// float g_fStockvecMax[3] = {10.0, 10.0, 10.0};
-
-// void SetProjectileModel (int iEntity)
-// {
-// 	if(g_iTeam == 2)
-// 	{
-// 		//Red
-// 		SetEntityModel(iEntity, BLUE_MODEL);
-		
-// 	}else
-// 	{
-// 		SetEntityModel(iEntity, BLUE_MODEL);
-// 	}
-
-
-// 	SetEntPropVector(iEntity, Prop_Send, "m_vecMins", g_fStockvecMin);
-// 	SetEntPropVector(iEntity, Prop_Send, "m_vecMaxs", g_fStockvecMax);
-
-// }

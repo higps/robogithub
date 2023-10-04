@@ -108,30 +108,16 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	int iHealth = 1250;
-		
-	int MaxHealth = 125;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
+	RoboSetHealth(client,TFClass_Scout, 1250, 1.5);	
 	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
-	//TF2Attrib_SetByName(client, "damage force increase", 10.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.5);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
@@ -143,12 +129,6 @@ MakeGiantscout(client)
 	
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -191,21 +171,12 @@ stock GiveGiantPyro(client)
 		{
 			TF2Attrib_RemoveAll(Weapon2);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Weapon2, "minicrits become crits", 1.0);
-			// TF2Attrib_SetByName(Weapon2, "damage penalty", 1.0);
+
 			TF2Attrib_SetByName(Weapon2, "maxammo grenades1 increased", 8.0);
 			TF2Attrib_SetByName(Weapon2, "effect bar recharge rate increased", 0.2);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.15);
-			// TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.0);
-			//TF2Attrib_SetByName(Weapon2, "Projectile speed increased", 10.0);
-			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
+
 			TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=14 duration=8.0 addcond=95");
-					// new iOffset = GetEntProp(Weapon2, Prop_Send, "m_iPrimaryAmmoType", 1)*4;
-					// new iAmmoTable = FindSendPropInfo("CTFPlayer", "m_iAmmo");
-					// SetEntData(client, iAmmoTable+iOffset, 23, 0, true);
-			// float Hypemeter = GetEntPropFloat(Weapon2, Prop_Send, "m_flChargeMeter");
-			// PrintToChatAll("Hype was %f", Weapon2);
-			// SetEntPropFloat(client, Prop_Send, "m_flChargeMeter", 0.0);
 		}
 
 		TF2_SetWeaponAmmo(Weapon2, 8);

@@ -5,9 +5,7 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
-//#include <sendproxy>
 #include <dhooks>
-//#include <tf2items_giveweapon>
 #include <tf_ontakedamage.inc>
 
 #define PLUGIN_VERSION "1.0"
@@ -124,21 +122,14 @@ MakeSpy(client)
 	SetModel(client, MODEL);
 
 
-	int iHealth = 2250;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
+	RoboSetHealth(client,TFClass_Spy, 2250, 1.5);
 	float scale = 1.5;
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.95);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	
@@ -157,12 +148,6 @@ MakeSpy(client)
 	PrintHintText(client, ROBOT_TIPS);
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -187,9 +172,6 @@ stock GiveBigRoboDane(client)
 	TF2_RemoveWeaponSlot(client, 3);// Disguise kit
 	TF2_RemoveWeaponSlot(client, 4);// inviswatch
 
-
-	
-	// CreateRoboWeapon(client, "tf_weapon_revolver", 224, 6, 1, 0, 0);
 	CreateRoboWeapon(client, "tf_weapon_knife", 638, 6, 1, 2, 0); //sharp dresser
 	CreateRoboWeapon(client, "tf_weapon_grapplinghook", 1152, 6, 1, 3, 0);
 	CreateRoboWeapon(client, "tf_weapon_sapper", 735, 6, 1, 1, 0); 
@@ -198,17 +180,14 @@ stock GiveBigRoboDane(client)
 
 	CreateRoboHat(client, DashinHashshashin, 10, 6, 0.0, 1.0, -1.0); 
 	CreateRoboHat(client, TheRogueRobe, 10, 6, 0.0, 1.0, 1.0);
-	// CreateRoboHat(client, ArkhamCowl, 10, 6, 0.0, 1.25, -1.0);
 	
 		
-//	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver
 	int Knife = GetPlayerWeaponSlot(client, 2); //Knife
 	int Cloak = GetPlayerWeaponSlot(client, 4); //Invis watch
 	int Sapper = GetPlayerWeaponSlot(client, 1); //Sapper
 
 	if(IsValidEntity(Cloak)) //
 		{
-			// TF2Attrib_RemoveAll(Cloak);
 			
 			TF2Attrib_SetByName(Cloak, "mult cloak meter consume rate", -100.0);
 			TF2Attrib_SetByName(Cloak, "mult decloak rate", 0.36);
@@ -216,26 +195,18 @@ stock GiveBigRoboDane(client)
 
 	if(IsValidEntity(Knife)) //
 		{
-			TF2Attrib_RemoveAll(Knife);
-			
-			//TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
-			
-			
+			TF2Attrib_RemoveAll(Knife);	
 			TF2Attrib_SetByName(Knife, "silent killer", 1.0);
 			TF2Attrib_SetByName(Knife, "damage penalty", 0.75);
 			TF2Attrib_SetByName(Knife, "fire rate bonus", 0.55);
-			TF2Attrib_SetByName(Knife, "dmg penalty vs buildings", 0.0);
+			TF2Attrib_SetByName(Knife, "dmg penalty vs buildings", 0.5);
 		}
 
 	if(IsValidEntity(Sapper)) //
 		{
 			TF2Attrib_RemoveAll(Sapper);
-			
-		//	TF2Attrib_SetByName(Sapper, "mult cloak meter consume rate", 0.0);
 			TF2Attrib_SetByName(Sapper, "sapper damage leaches health", 5.0);
 			TF2Attrib_SetByName(Sapper, "robo sapper", 150.0);
-			
-			//TF2Attrib_SetByName(Sapper, "min_viewmodel_offset", 5 -2 -4);
 		}	
 		TF2_AddCondition(client, TFCond_Cloaked);
 	}
@@ -245,15 +216,12 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_USE))
 	{
-		//0 = fireball
-		//PrintToChat(client, "Throwing spell!");
 		if (!g_PressedButton[client])
 		{
 		FakeClientCommand(client, "use tf_weapon_grapplinghook");
 		CreateTimer(1.0, Timer_Button, client);
 		}
 		g_PressedButton[client] = true;
-		//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", tf_weapon_grapplinghook");
 	}
 	return Plugin_Continue;
 }

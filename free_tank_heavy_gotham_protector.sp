@@ -87,11 +87,6 @@ public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 
-	//HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
-
-
-
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
@@ -104,57 +99,8 @@ public OnPluginStart()
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_EASY;
 
-
-	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	// // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-	// // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	// restrictions.RobotCoins.PerRobot= 1.0;
-
-
 	AddRobot(robot, MakePanCop, PLUGIN_VERSION);
 }
-
-public Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if (IsRobot(attacker, ROBOT_NAME))
-	{
-		PrintHintText(victim,"%s has 50% damage vulnerability to melee attacks", ROBOT_NAME);
-
-	}
-
-	// 	if (IsRobotWhenDead(victim, ROBOT_NAME))
-	// {
-	// 	//PrintToChatAll("Attempting to kill powerup");
-	// 	//Delte the powerup:
-	// 	KillRune();
-	// }
-	
-	
-}
-
-// public void KillRune(){
-
-// 			int iEnt = MaxClients + 1;
-// 		while ((iEnt = FindEntityByClassname(iEnt, "item_powerup_rune")) != -1)
-// 		{
-// 			if (IsValidEntity(iEnt))
-// 			{
-// 					//DispatchKeyValue(iEnt, "rendermode", "0");
-				
-// 				//DispatchSpawn(iEnt);
-// 				AcceptEntityInput(iEnt, "Kill");
-// 				// float fPos[3];
-// 				// fPos[0] = 15.0;
-// 				// fPos[1] = 15.0;
-// 				// fPos[2] = 15.0;
-// 				// TeleportEntity(iEnt, fPos, NULL_VECTOR, NULL_VECTOR);
-// 			}
-// 		} 
-// }
 
 public void OnPluginEnd()
 {
@@ -167,20 +113,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 //	CreateNative("BeGDeflectorH_IsGDeflectorH", Native_IsGDeflectorH);
 	return APLRes_Success;
 }
- 
-public OnMapStart()
-{
-//
-
-
-
-	
-
-
-	
-	
-}
- 
+  
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -208,40 +141,22 @@ MakePanCop(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 6000;
-	
-	
-	int MaxHealth = 300;
-	// PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-	 // PrintToChatAll("iHealth %i", iHealth);
-	
-	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
+	RoboSetHealth(client,TFClass_Heavy, 6000, 1.5);
+
+
 	
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
-	//TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.15);
 
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
-TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
+
+	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	//TF2Attrib_SetByName(client, "jarate backstabber", 1.0);
-	//TF2Attrib_SetByName(client, "increase buff duration", 10.0);
-	// TF2Attrib_SetByName(client, "dmg from melee increased", 1.5);
-	// TF2Attrib_SetByName(client, "dmg taken from crit increased", 0.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
+	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	TF2Attrib_SetByName(client, "head scale", 0.95);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 
@@ -258,22 +173,13 @@ TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	PrintHintText(client, ROBOT_TIPS);
 	
 	//Tank stats
-    // TF2Attrib_SetByName(client, "dmg taken from crit reduced", 0.75);
     TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
+	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
-	// TF2_AddCondition(client,TFCond_DefenseBuffNoCritBlock);
-	
-	// SetEntityRenderColor(client, 0, 0, 0, 0);
+
 
 }
  
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
  
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -313,7 +219,7 @@ stock GiveGDeflectorH(client)
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 			TF2Attrib_SetByName(Weapon1, "move speed penalty", 0.9);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 		}
 		CreateRoboHat(client, 111, 10, 6, 0.0, 1.0, 1.0); 
 		TF2Attrib_SetByName(client, "attach particle effect", 35.0);
@@ -393,14 +299,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
 	
-	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
-//    if (IsValidClient(client) && !IsRobot(client, ROBOT_NAME)){
 
-// 	if(condition == TFCond_RuneVampire || condition == TFCond_RuneHaste){
-
-// 		TF2_RemoveCondition(client, condition);
-// 	}
-//    }
 
 	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
 	{	
@@ -416,7 +315,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
 {
-	//PrintToChatAll("CONDITION REMOVED!");
+
 	if (IsRobot(client, ROBOT_NAME)){
 
 	
@@ -425,9 +324,6 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 
 	}
-	// TF2_RemoveCondition(client, TFCond_Dazed);
-	// TF2_RemoveCondition(client, TFCond_KnockedIntoAir);
-	// PrintToChatAll("Condition was: %i", condition);
    }
 
 }

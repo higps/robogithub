@@ -186,15 +186,11 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 5800;		
-	int MaxHealth = 200;
-	int iAdditiveHP = iHealth - MaxHealth;
+	RoboSetHealth(client,TFClass_Soldier, 5800, 1.5);		
 	
-	TF2_SetHealth(client, iHealth);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
@@ -202,7 +198,6 @@ MakeGiantSoldier(client)
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
 	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.65);
@@ -220,12 +215,6 @@ MakeGiantSoldier(client)
 	//SetBossHealth(client);
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -263,6 +252,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 1.1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.75);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);	
 			// TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", 0.15);
 			//TF2Attrib_SetByName(Weapon1, "mini rockets", 5.0);
 			//TF2Attrib_SetByName(Weapon1, "auto fires when full", 1.0);

@@ -100,23 +100,16 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 3500;
-	int MaxHealth = 175;
+	RoboSetHealth(client,TFClass_DemoMan, 3500, 1.5);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
@@ -132,12 +125,6 @@ MakeSolar(client)
 	PrintHintText(client , ROBOT_STATS);
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -168,13 +155,9 @@ stock GiveGiantDemoKnight(client)
 		CreateRoboHat(client, SubZeroSuit, 10, 6, 0.0, 0.75, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
-			// TF2Attrib_RemoveAll(Weapon1);
 
-			
-			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.2);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.9);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.75);
@@ -186,10 +169,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.25);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2CustAttr_SetString(client, "Player-Gravity", "amount=0.16");	
-			// SetEntityRenderColor(Weapon1, 50,205,50,155);
-			// //SetEntityRenderFx(Weapon1, RENDERFX_HOLOGRAM);
-			// SetEntityRenderMode(Weapon1, RENDER_TRANSTEXTURE);
-			
+
 		}
 	}
 }
@@ -213,15 +193,6 @@ public void Hook_OnProjectileSpawn(iEntity) {
 
 void SetGrav(int iEntity)
 {
-	// PrintToChatAll("Setting grav");
-	// SetEntityGravity(iEntity, 0.1);
 	Phys_EnableGravity(iEntity, false);
-	// Phys_SetMass(iEntity, 10.01);
-	// Phys_EnableDrag(iEntity, false);
-	// float velocity[2];
-	// velocity[0] = 100.0;
-	// velocity[1] = 100.0;
-	// velocity[2] = 100.0;
-	// Phys_AddVelocity(iEntity, velocity[2], velocity[2]);
 	SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.25);
 }

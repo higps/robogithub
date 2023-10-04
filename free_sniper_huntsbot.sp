@@ -6,7 +6,6 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
-//#include <sendproxy>
 #include <dhooks>
 
 #define PLUGIN_VERSION "1.0"
@@ -50,9 +49,6 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_HARD;
-	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	// restrictions.RobotCoins.Overall = 1;
 
 	AddRobot(robot, MakeSniper, PLUGIN_VERSION);
 }
@@ -69,24 +65,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
-	// PrecacheModel(ChangeDane);
-
-
-
-	
-	// PrecacheSound("^mvm/giant_common/giant_common_step_01.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_02.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_03.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_04.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_05.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_06.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_07.wav");
-	// PrecacheSound("^mvm/giant_common/giant_common_step_08.wav");
-
-
-}
 
 public Action:SetModel(client, const String:model[])
 {
@@ -124,12 +102,9 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1500;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
+	RoboSetHealth(client,TFClass_Sniper, 1500, 1.5);
 	float scale = 1.5;
 
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
@@ -137,15 +112,10 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "major increased jump height", 1.9);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 
@@ -162,12 +132,6 @@ MakeSniper(client)
 	
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -197,23 +161,13 @@ stock GiveBigRoboHuntsbot(client)
 
 
 	CreateRoboWeapon(client, "tf_weapon_compound_bow", 56, 6, 1, 0, 0);
-
 	CreateRoboWeapon(client, "tf_weapon_club", 3, 6, 1, 2, 0); //shahansah
-		
-	//CreateWeapon(client, "tf_wearable", 642, 6, 1, 3, 0); 
 
 	CreateRoboHat(client, ArcherSterling, 10, 6, 0.0, 0.75, -1.0); 
-	CreateRoboHat(client, GuiltenGuardian, 10, 6, 0.0, 1.0, -1.0); 
+	CreateRoboHat(client, GuiltenGuardian, 10, 6, 0.0, 1.0, -1.0); 		
+	int Huntsman = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 
-	//CreateHat(client, 30874, 10, 6, 0.0, true); // Archer sterling
-//	CreateHat(client, 30857, 10, 6, 0.0, false); //Guilten Guardian
-	//CreateHat(client, 393, 10, 6, 0.0); //veil
-	//CreateHat(client, 642, 10, 6, 0.0); //cozy camper
-
-		
-	int Huntsman = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //Huntsman
-	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
-	// int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
 
 
@@ -223,13 +177,10 @@ stock GiveBigRoboHuntsbot(client)
 			
 			TF2Attrib_SetByName(Huntsman, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Huntsman, "dmg penalty vs buildings", 0.3);
-			// TF2Attrib_SetByName(Huntsman, "sniper aiming movespeed decreased", 0.1);
 			TF2Attrib_SetByName(Huntsman, "projectile penetration", 1.0);
 			TF2Attrib_SetByName(Huntsman, "gesture speed increase", 1.95);
 			TF2Attrib_SetByName(Huntsman, "fire rate bonus", 0.4);
-			TF2Attrib_SetByName(Huntsman, "heal on kill", 50.0);
-			// TF2Attrib_SetByName(Huntsman, "faster reload rate", 3.5);
-			
+			TF2Attrib_SetByName(Huntsman, "heal on kill", 50.0);		
 			
 		}
 
@@ -238,8 +189,6 @@ stock GiveBigRoboHuntsbot(client)
 			TF2Attrib_RemoveAll(Kukri);
 			
 			TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
-			// TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
 
 		}
@@ -247,22 +196,3 @@ stock GiveBigRoboHuntsbot(client)
 
 
 }
-		
-
-
-// public void OnEntityCreated(int iEntity, const char[] sClassName) 
-// {
-// 	if (StrContains(sClassName, "tf_projectile_arrow") == 0)
-// 	{
-// 		PrintToChatAll("Hooked arrow");
-// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-// 	}
-	
-// }
-
-// public void Hook_OnProjectileSpawn(iEntity) {
-// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 5.25);
-// 	}
-// }

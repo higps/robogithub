@@ -64,15 +64,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
-	// PrecacheModel(ChangeDane);
-
-
-
-
-}
-
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -103,11 +94,8 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	int iHealth = 1500;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
+	RoboSetHealth(client,TFClass_Sniper, 1500, 1.5);
 
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
@@ -115,19 +103,12 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "major increased jump height", 1.9);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	// TF2Attrib_SetByName(client, "health regen", 10.0);
-
 	UpdatePlayerHitbox(client, 1.65);
 
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
@@ -137,12 +118,6 @@ MakeSniper(client)
 
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {
@@ -178,7 +153,6 @@ stock GiveBigRoboJbird(client)
 
 		
 	int SniperRifle = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //SniperRifle
-	// int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
 	int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
 
 
@@ -188,23 +162,16 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_RemoveAll(SniperRifle);
 			
 			TF2Attrib_SetByName(SniperRifle, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.65);
-		
+			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.35);
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
 			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 3.0);
-			
 			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
 			TF2Attrib_SetByName(SniperRifle, "apply z velocity on damage", 550.0);
 			TF2Attrib_SetByName(SniperRifle, "faster reload rate", 0.35);
-			
 			TF2Attrib_SetByName(SniperRifle, "heal on hit for rapidfire", 25.0);
-			// TF2Attrib_SetByName(SniperRifle, "headshot damage increase", 1.33);
 			TF2CustAttr_SetString(SniperRifle, "knockback modifier", "4.0");
-			
-			
-			
 		}
 
 	if(IsValidEntity(SMG))
