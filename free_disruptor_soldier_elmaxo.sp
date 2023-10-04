@@ -143,7 +143,7 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	RoboSetHealth(client, TFClass_, 2000, 1.5);
+	RoboSetHealth(client,TFClass_Soldier, 2000, 1.5);
 		
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
@@ -182,12 +182,6 @@ MakeGiantSoldier(client)
 	
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {

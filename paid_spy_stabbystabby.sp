@@ -116,7 +116,7 @@ MakeSpy(client)
 	SetModel(client, MODEL);
 
 
-	RoboSetHealth(client, TFClass_, 1200, 1.5);
+	RoboSetHealth(client,TFClass_Spy, 1200, 1.5);
 
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
@@ -139,12 +139,6 @@ MakeSpy(client)
 
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {

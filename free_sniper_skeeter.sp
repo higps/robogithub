@@ -94,7 +94,7 @@ MakeSniper(client)
 	SetModel(client, ChangeDane);
 
 
-	RoboSetHealth(client, TFClass_, 1500, 1.5);
+	RoboSetHealth(client,TFClass_Sniper, 1500, 1.5);
 
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
@@ -118,12 +118,6 @@ MakeSniper(client)
 
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {

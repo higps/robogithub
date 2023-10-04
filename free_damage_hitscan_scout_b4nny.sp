@@ -103,7 +103,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	RoboSetHealth(client, TFClass_, 1250, 1.5);
+	RoboSetHealth(client,TFClass_Scout, 1250, 1.5);
 		
 	
 	
@@ -133,12 +133,6 @@ MakeGiantscout(client)
 
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {

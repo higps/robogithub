@@ -124,7 +124,7 @@ void MakeBuster(client)
 	}
 	RequestFrame(ClientSwitch, client);
 	SetModel(client, GBUSTER);
-	RoboSetHealth(client, TFClass_, 2500, 1.5);
+	RoboSetHealth(client,TFClass_DemoMan, 2500, 1.5);
 
 	TF2CustAttr_SetString(client, "faster-respawn", "respawn=4.0");
 

@@ -99,7 +99,7 @@ MakeSolar(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	RoboSetHealth(client, TFClass_, 3000, 1.5);
+	RoboSetHealth(client,TFClass_DemoMan, 3000, 1.5);
 	
 	
 
@@ -124,12 +124,6 @@ MakeSolar(client)
 	PrintHintText(client , ROBOT_STATS);
 }
 
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
 
 public Action:Timer_Switch(Handle:timer, any:client)
 {

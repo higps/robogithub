@@ -107,7 +107,7 @@ MakeGiantMedic(client)
 	SetModel(client, GMEDIC);
    
 		
-	RoboSetHealth(client, TFClass_, 1500, 1.5);
+	RoboSetHealth(client,TFClass_Medic, 1500, 1.5);
    
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
@@ -132,12 +132,6 @@ MakeGiantMedic(client)
 }
 
  
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
  
 public Action:Timer_Switch(Handle:timer, any:client)
 {

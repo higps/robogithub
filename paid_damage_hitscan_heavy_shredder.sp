@@ -96,7 +96,7 @@ MakeGRageH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GRageH);
-	RoboSetHealth(client, TFClass_, 6000, 1.5);
+	RoboSetHealth(client,TFClass_Heavy, 6000, 1.5);
 	
 
    
@@ -118,12 +118,6 @@ MakeGRageH(client)
 
 }
  
-stock TF2_SetHealth(client, NewHealth)
-{
-	SetEntProp(client, Prop_Send, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iHealth", NewHealth, 1);
-	SetEntProp(client, Prop_Data, "m_iMaxHealth", NewHealth, 1);
-}
  
 public Action:Timer_Switch(Handle:timer, any:client)
 {
