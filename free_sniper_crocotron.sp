@@ -2,10 +2,8 @@
 #include <sourcemod>
 #include <tf2_stocks>
 #include <tf2attributes>
-// #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
-//#include <sendproxy>
 #include <tf_custom_attributes>
 #include <tf_ontakedamage>
 
@@ -65,14 +63,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
-	// PrecacheModel(ChangeDane);
-
-
-
-
-}
 
 public Action:SetModel(client, const String:model[])
 {
@@ -105,10 +95,7 @@ MakeSniper(client)
 
 
 	int iHealth = 1500;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
 
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
@@ -116,15 +103,10 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "major increased jump height", 1.9);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "afterburn immunity", 10.0);
@@ -169,7 +151,6 @@ stock GiveBigRoboJbird(client)
 	TF2_RemoveWeaponSlot(client, 2); // kukri
 
 	CreateRoboWeapon(client, "tf_weapon_sniperrifle", 230, 6, 1, 0, 0);
-	// CreateRoboWeapon(client, "tf_weapon_jar", 58, 6, 1, 1, 0);
 	CreateRoboWeapon(client, "tf_weapon_club", 3, 6, 1, 2, 0); //kukri
 
 
@@ -182,7 +163,7 @@ stock GiveBigRoboJbird(client)
 		
 	int SniperRifle = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary); //SniperRifle
 	int Kukri = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee); //Shahanshah
-	// int SMG = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary); //SMG
+
 
 
 
@@ -209,8 +190,6 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_RemoveAll(Kukri);
 			
 			TF2Attrib_SetByName(Kukri, "killstreak tier", 1.0);
-			// TF2Attrib_SetByName(Kukri, "fire rate bonus", 1.2);
-			// TF2Attrib_SetByName(Kukri, "dmg penalty vs players", 1.75);
 			TF2Attrib_SetByName(Kukri, "dmg penalty vs buildings", 0.5);
 
 		}
@@ -227,9 +206,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 	if (IsRobot(attacker, ROBOT_NAME) && damagecustom != 0)
 	{
-		// PrintToChatAll("damagecustom %i", damagecustom);
+
 		SpawnBombs(victim, attacker);
-		// BreadBoom(attacker, victim);
 
 
 	}

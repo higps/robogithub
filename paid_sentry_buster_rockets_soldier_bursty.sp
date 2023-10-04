@@ -27,26 +27,6 @@
 #define RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
 #define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
 
-
-#define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
-#define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
-// #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
-
-
-// #define MAX_ENTITY_LIMIT 2048
-
-// bool g_bHomingEnabled[MAX_ENTITY_LIMIT + 1];
-// float g_flHomingAccuracy[MAX_ENTITY_LIMIT + 1];
-// int g_iLauncher[MAX_ENTITY_LIMIT + 1];
-
-// float g_flHomingPoint[MAX_ENTITY_LIMIT + 1][3];
-// int g_iLatestProjectile[MAX_ENTITY_LIMIT + 1];
-
-// Handle g_KillTimer[MAX_ENTITY_LIMIT + 1];
-
-// int g_iBlueGlowModelID = -1;
-// int g_iRedGlowModelID = -1;
-
 public Plugin:myinfo = 
 {
 	name = "[TF2] Be the Giant Rapid Fire soldier",
@@ -70,7 +50,7 @@ public OnPluginStart()
 
 	LoadTranslations("common.phrases");
 
-	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
+
 
 
 	RobotDefinition robot;
@@ -84,11 +64,6 @@ public OnPluginStart()
 	robot.sounds.death = DEATH;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_MEDIUM;
-	// 	    RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	// // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-	// // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	// restrictions.RobotCoins.Overall = 5;
 
 	RestrictionsDefinition restrictions = new RestrictionsDefinition();
 	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
@@ -109,28 +84,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
-	
-
-
-
-
-	PrecacheSound(GUNFIRE);
-	PrecacheSound(GUNFIRE_CRIT);
-	// PrecacheSound(GUNFIRE_EXPLOSION);
-	
-
-
-
-	
-	
-	
-	//PrecacheSound(SOUND_GUNFIRE);
-	//PrecacheSound(SOUND_WINDUP);
-	// g_iBlueGlowModelID = PrecacheModel("sprites/blueglow1.vmt");
-	// g_iRedGlowModelID = PrecacheModel("sprites/redglow1.vmt");
-}
 
 public Action:SetModel(client, const String:model[])
 {
@@ -162,32 +115,16 @@ MakeGiantSoldier(client)
 	SetModel(client, GSOLDIER);
 	
 	int iHealth = 3800;
-		
-	int MaxHealth = 200;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.6);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
-	//TF2Attrib_SetByName(client, "override footstep sound set", 3.0);
-	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	
 	UpdatePlayerHitbox(client, 1.75);
@@ -225,65 +162,25 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher_directhit", 127, 6, 1, 2, 228);
-		
-//		CreateWeapon(client, "tf_weapon_shovel", 447, 6, 1, 2, 0);
-		
-		
 		CreateRoboHat(client, Patriot, 10, 6, 13595446.0, 0.75, -1.0);
 		CreateRoboHat(client, TheCloudCrasher, 10, 6, 13595446.0, 0.75, -1.0);
-	//	CreateRoboHat(client, SteelShako, 10, 6, 0.0, 0.75, -1.0);
-
-	//	CreateHat(client, 30050, 10, 6, true); //Gatebot
-		//CreateRoboWeapon(client, "tf_weapon_buff_item", 129, 6, 1, 1, 0);
-		//CreateHat(client, 647, 10, 6, true); //The All-Father
-		//CreateHat(client, 343, 10, 6, true);//Professor speks
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		
+
 		if(IsValidEntity(Weapon1))
 		{
-			//TF2Attrib_RemoveAll(Weapon1);
-			
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			// TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.15);
-			//TF2Attrib_SetByName(Weapon1, "Blast radius decreased", 0.6);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip penalty", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Reload time increased", 1.65);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(Weapon1, "dmg pierces resists absorbs", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.8);
-			// TF2Attrib_SetByName(Weapon1, "auto fires when full", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
-			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			//TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 1.25);
-
 			SetEntityRenderColor(Weapon1, 207,115,54,0);
-			
-			
-			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
-		//	TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
-			//TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			
-			
-		//	TF2Attrib_SetByName(Weapon1, "disable fancy class select anim", 1.0);
-						
-			
 		}
-		// if(IsValidEntity(Weapon2))
-		// {
-		// 	TF2Attrib_RemoveAll(Weapon2);
-		// //	TF2Attrib_SetByName(Weapon2, "increase buff duration", 1.65);
-		// 	// TF2CustAttr_SetString(Weapon2, "custom buff type", "rocket-aiming-control");
-		// 	// TF2CustAttr_SetString(Weapon2, "rocket control buff turn rate", "0.25");
-		// }
-
-		
-		
-
 	}
 }
 

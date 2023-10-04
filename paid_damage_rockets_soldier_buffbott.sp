@@ -95,33 +95,6 @@ public OnClientDisconnect_Post(client)
 	}
 }
 
-public OnMapStart()
-{
-	
-
-
-
-
-
-
-	
-	
-	
-	//PrecacheSound(SOUND_GUNFIRE);
-	//PrecacheSound(SOUND_WINDUP);
-	
-}
-
-/* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if(g_bIsGSoldier[client])
-	{
-		g_bIsGSoldier[client] = false;
-	}
-} */
-
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -153,24 +126,17 @@ MakeGiantSoldier(client)
 	
 	int iHealth = 3800;
 		
-	int MaxHealth = 200;
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
@@ -220,9 +186,6 @@ stock GiveGiantSoldier(client)
 		CreateRoboHat(client, Diplomat, 10, 6, 0.0, 1.0, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-
-		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 
 		if(IsValidEntity(Weapon1))
 		{
@@ -239,11 +202,6 @@ stock GiveGiantSoldier(client)
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
 		}
-		// if(IsValidEntity(Weapon2))
-		// {
-		// TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
-		// TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
-		// }
 	}
 }
 

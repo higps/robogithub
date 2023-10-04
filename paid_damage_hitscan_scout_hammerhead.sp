@@ -123,28 +123,21 @@ MakeGiantscout(client)
 	
 	int iHealth = 2000;
 		
-	int MaxHealth = 125;
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 	// PrintToChatAll("iHealth %i", iHealth);
 	
 	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 1.1);
 	//TF2Attrib_SetByName(client, "damage force increase", 10.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.5);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
@@ -184,8 +177,6 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 
 		CreateRoboWeapon(client, "tf_weapon_handgun_scout_primary", 220, 6, 1, 2, 217);
-		// CreateRoboWeapon(client, "tf_weapon_bat_wood", 44, 6, 1, 2, 0);
-		
 		CreateRoboHat(client, FortunateSon, 10, 6, 7511618.0, 1.0, -1.0); 
 		CreateRoboHat(client, ImpImprint, 10, 6, 7511618.0, 1.0, -1.0); 
 		CreateRoboHat(client, ForestFootWear, 10, 6, 7511618.0, 1.0, -1.0); 
@@ -212,13 +203,3 @@ stock GiveGiantPyro(client)
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
-
-
-stock void TF2_SetWeaponAmmo(int weapon, int amount) {
-	int ammoType = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
-	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
-	
-	if (client > 0 && client <= MaxClients && ammoType != -1) {
-		SetEntProp(client, Prop_Send, "m_iAmmo", amount, 4, ammoType);
-	}
-}

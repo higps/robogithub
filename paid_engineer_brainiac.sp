@@ -5,14 +5,11 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
-//#include <sendproxy>
 #include <dhooks>
 #include <sdktools>
-//#include <collisionhook>
 #include <tf_custom_attributes>
 #include <menus>
 #pragma semicolon 1
-//#pragma newdecls required
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Brainiac"
@@ -50,7 +47,6 @@ public OnPluginStart()
     robot.name = ROBOT_NAME;
     robot.role = ROBOT_ROLE;
     robot.class = ROBOT_CLASS;
-	// robot.subclass = ROBOT_SUBCLASS;
     robot.shortDescription = ROBOT_DESCRIPTION;
     robot.sounds.spawn = SPAWN;
     robot.sounds.loop = LOOP;
@@ -86,12 +82,7 @@ public Action:SetModel(client, const String:model[])
 	{
 		SetVariantString(model);
 		AcceptEntityInput(client, "SetCustomModel");
-
-
-
 		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
-		
-		
 	}
 }
 
@@ -114,17 +105,10 @@ MakeUncleDane(client)
 	SetModel(client, ChangeDane);
 
 	int iHealth = 2000;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
 	float OverHealRate = 1.5;
 
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
 	float scale = 1.65;
 	
-	TF2_SetHealth(client, iHealth);
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
@@ -132,16 +116,12 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.3);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 	TF2Attrib_SetByName(client, "metal regen", 200.0);
 
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "building cost reduction", 2.5);
 	TF2Attrib_SetByName(client, "mod teleporter cost", 9.0);
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -153,8 +133,6 @@ MakeUncleDane(client)
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	PrintHintText(client, ROBOT_TIPS);
-	//PrintCenterText(client, "Use !stuck if you get stuck in buildings");
-	
 	SetEntProp(client, Prop_Send, "m_iAmmo", 500, _, 3);
 	
 }
@@ -224,10 +202,7 @@ stock GiveBigRoboDane(client)
 			
 			TF2Attrib_SetByName(Weapon3, "mod wrench builds minisentry", 0.0);
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
-			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 2.32);
-			// TF2Attrib_SetByName(Weapon3, "engy sentry radius increased", 100.0);
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 3.0);
-			// TF2Attrib_SetByName(Weapon3, "engy building health bonus", 1.1);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
 			
 			

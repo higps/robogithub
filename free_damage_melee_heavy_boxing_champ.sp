@@ -93,28 +93,16 @@ MakeGDeflectorH(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 3000;
-	int MaxHealth = 300;
-	int iAdditiveHP = iHealth - MaxHealth;
-	float OverHealRate = 1.5;
 
-	TF2_SetHealth(client, iHealth);
-
-	float TotalHealthOverHeal = iHealth * OverHealRate;
-
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
-	
+	RoboSetHealth(client, TFClass_Heavy, 3000, 1.5);
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.5);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 1.15);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
+
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -223,8 +211,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 void SetSpeed(int client)
 {
 	// TF2Attrib_AddCustomPlayerAttribute(client, "increased jump height", 0.01, 1.0);
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
-	TF2_AddCondition(client, TFCond_Buffed, 1.0);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.5);
+	TF2_AddCondition(client, TFCond_Buffed, 1.5);
 	// TF2_AddCondition(client, 130, 0.5);
 	SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 520.0);
 	setspeed = true;

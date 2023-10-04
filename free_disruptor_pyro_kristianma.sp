@@ -102,25 +102,18 @@ MakeGiantPyro(client)
 	SetModel(client, GPYRO);
 	
 	int iHealth = 1750;
-	int MaxHealth = 175;
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 	float scale = 1.65;
 
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.5);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.5);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	TF2Attrib_SetByName(client, "deploy time decreased", 0.75);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);

@@ -228,11 +228,13 @@ native bool IsAnyRobot(int client);
  * The Health of the robot during creation
  * 
  * @param client    clientId to check for robot
- * 
+ * @param iClass
+ * @param iHealth
+ * @param OverHealRate
  * @return          Handled
  *                  
  */
- native void RoboSetHealth(int client);
+native void RoboSetHealth(int client, int iClass, int iHealth, float OverHealRate = 1.5)
 
  /**
  * Sets the boss healthbar
@@ -344,6 +346,7 @@ native void  CreateRoboHat(int client, int itemindex, int level, int quality, fl
 *
 **/
 native void RoboRemoveAllWearables(int client);
+
 
 /**
 * Fixes Clipsize on weapons that has less or more standard clip size

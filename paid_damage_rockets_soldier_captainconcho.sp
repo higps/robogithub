@@ -21,12 +21,6 @@
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
-
-
 public Plugin:myinfo = 
 {
 	name = "[TF2] Be the Giant Captain Conch",
@@ -49,8 +43,6 @@ public OnPluginStart()
 	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
-
-	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
@@ -95,33 +87,6 @@ public OnClientDisconnect_Post(client)
 	}
 }
 
-public OnMapStart()
-{
-	
-
-
-
-
-
-
-	
-	
-	
-	//PrecacheSound(SOUND_GUNFIRE);
-	//PrecacheSound(SOUND_WINDUP);
-	
-}
-
-/* public EventInventoryApplication(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if(g_bIsGSoldier[client])
-	{
-		g_bIsGSoldier[client] = false;
-	}
-} */
-
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -153,24 +118,17 @@ MakeGiantSoldier(client)
 	
 	int iHealth = 3800;
 		
-	int MaxHealth = 200;
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.5);
@@ -213,7 +171,6 @@ stock GiveGiantSoldier(client)
 
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 513, 6, 1, 0, 0);
 		CreateRoboWeapon(client, "tf_weapon_buff_item", 354, 6, 1, 1, 0);
-		// CreateRoboWeapon(client, "tf_weapon_katana", 357, 6, 1, 2, 0);
 
 		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 100.0);
 
@@ -222,23 +179,6 @@ stock GiveGiantSoldier(client)
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-
-		
-		
-		// if(IsValidEntity(Weapon1))
-		// {
-
-		// 	TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.00);
-		// 	TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
-		// 	TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-		// 	TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.75);				
-		// 	TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-		// }
-		// if(IsValidEntity(Weapon3))
-		// {						
-		// 	TF2CustAttr_SetString(Weapon3, "custom buff type", "mm-conch");
-		// }
 
 		if(IsValidEntity(Weapon1))
 		{
@@ -254,27 +194,11 @@ stock GiveGiantSoldier(client)
 
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
-
-		// if(IsValidEntity(Weapon2))
-		// {						
-		// 	TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
-		// 	TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
-			
-		// }
 		if(IsValidEntity(Weapon2))
 		{						
 			TF2CustAttr_SetString(Weapon2, "custom buff type", "concho-banner");
-			// TF2Attrib_SetByName(Weapon2, "provide on active", 1.0);
-			// TF2Attrib_SetByName(Weapon2, "move speed penalty", 0.01);
 			TF2Attrib_SetByName(Weapon2, "health regen", 12.0);
 		}
-		
-		// if(IsValidEntity(Weapon3))
-		// {
-		// 	TF2Attrib_RemoveAll(Weapon3);
-		// 	TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);				
-		// 	TF2Attrib_SetByName(Weapon3, "restore health on kill", 25.0);
-		// }
 	}
 }
 

@@ -95,9 +95,6 @@ public OnPluginStart()
 	PipeModel = CreateConVar("boss_clusterbomb_iron_bomber", "1", "Should child grenades use the iron bomber projectile or derive the model from the parent");
 	PipeSpeed = CreateConVar("boss_clusterbomb_speed", "300", "Max speed child grenades can be launched at");
 
-
-	AddNormalSoundHook(BossMortar);
-
 	RobotDefinition robot;
 	robot.name = ROBOT_NAME;
 	robot.role = ROBOT_ROLE;
@@ -113,36 +110,6 @@ public OnPluginStart()
 	AddRobot(robot, MakeDemoKnight, PLUGIN_VERSION, null, 1);
 }
 
-
-
-public Action:BossMortar(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
-{
-	if (!IsValidClient(entity)) return Plugin_Continue;
-	if (!IsRobot(entity, ROBOT_NAME)) return Plugin_Continue;
-
-	if (strncmp(sample, "player/footsteps/", 17, false) == 0)
-	{
-		if (StrContains(sample, "1.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT, entity);
-		}
-		else if (StrContains(sample, "3.wav", false) != -1)
-		{
-			EmitSoundToAll(LEFTFOOT1, entity);
-		}
-		else if (StrContains(sample, "2.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT, entity);
-		}
-		else if (StrContains(sample, "4.wav", false) != -1)
-		{
-			EmitSoundToAll(RIGHTFOOT1, entity);
-		}
-		return Plugin_Changed;
-	}
-
-	return Plugin_Continue;
-}
 
 public void OnPluginEnd()
 {
@@ -193,29 +160,19 @@ MakeDemoKnight(client)
 	int iHealth = 3300;
 	
 	
-	int MaxHealth = 175;
 	float OverHealRate = 1.5;
 //	PrintToChatAll("MaxHealth %i", MaxHealth);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 //	 PrintToChatAll("iHealth %i", iHealth);
 	
 	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
 	
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
 
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 	
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.5);

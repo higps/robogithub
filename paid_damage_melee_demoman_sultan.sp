@@ -19,11 +19,6 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
-#define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
-#define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
-#define RIGHTFOOT1      ")mvm/giant_demoman/giant_demoman_step_04.wav"
-
 
 public Plugin:myinfo =
 {
@@ -104,34 +99,18 @@ MakeDemoKnight(client)
 
 	int iHealth = 4000;
 	
-	int MaxHealth = 175;
 	float OverHealRate = 1.5;
-//	PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-//	 PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
-	
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
 
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
+	
+
 	
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.85);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "head scale", 0.85);

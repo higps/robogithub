@@ -178,21 +178,14 @@ MakeBearded(client)
    
 		
 	int iHealth = 9000;
-	TF2_SetHealth(client, iHealth);
 	
-	int MaxHealth = 300;
-	int iAdditiveHP = iHealth - MaxHealth;
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 
 	TF2Attrib_SetByName(client, "damage force reduction", 0.1);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.1);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 0.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	
 	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=100.0 stomp-damage=125.0");
 	TF2Attrib_SetByName(client, "dmg from melee increased", 2.0);
@@ -239,12 +232,6 @@ stock GiveBearded(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		CreateRoboWeapon(client, "tf_weapon_fists", 239, 6, 1, 2, 0);
 
-
-
-	// 	CreateHat(client, 145, 10, 6, 1315860.0, true);
-	// //	CreateHat(client, 30178, 10, 6, 1315860);
-	// 	CreateHat(client, 30645, 10, 6, 1315860.0, true);
-
 		CreateRoboHat(client, HOUNDDOG, 10, 6, 1315860.0, 0.75, 0.0);
 		CreateRoboHat(client, ELDUDERINO, 10, 6, 1315860.0, 0.75, 0.0);
 
@@ -275,23 +262,13 @@ stock GiveBearded(client)
 			// TF2Attrib_RemoveAll(Weapon3);
 			
 				
-			// TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.2);
 			TF2Attrib_SetByName(Weapon3, "move speed bonus", 0.693);
 			TF2Attrib_SetByName(Weapon3, "damage penalty", 1.5);
-			// TF2Attrib_SetByName(Weapon3, "critboost on kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
-			// TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 10.0);
-			// TF2Attrib_SetByName(Weapon3, "heal on kill", 400.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.5);
-			// TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);
-			// TF2Attrib_SetByName(Weapon3, "gesture speed increase", 0.8);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);
-			
-
-			
 			TF2Attrib_SetByName(Weapon3, "mod_maxhealth_drain_rate", 0.0);
-			//SetEntPropFloat(Weapon3, Prop_Send, "m_flModelScale", 2.75);
 
 			TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");
@@ -312,49 +289,31 @@ public TF2_OnConditionAdded(client, TFCond:condition)
     {	
         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
 
-	//PrintToChatAll("Taunt ID %i", tauntid);
+
 
 	if (tauntid == -1)
 	{
-//	 TF2_AddCondition(client,TFCond_DefenseBuffed, 20.0);
+
 	TF2_AddCondition(client, 130, 6.0);
 
 
 
 
-	/* 	float pos[3];
-	GetClientEyePosition(client, pos);
-	int clients[64]; */
-	//EmitGameSoundToClient(client, ALARM);
+
 	int clients[1];
 	clients[0] = client;
 
-	
-	//EmitSound(clients, 1, ALARM, client, SNDCHAN_AUTO, SNDLEVEL_WHISPER, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, NULL_VECTOR, NULL_VECTOR, true, 0.0);
-
-	//EmitGameSound(client, MaxClients, ALARM, client, SND_NOFLAGS, client, pos)
-	//EmitGameSound(clients, numClients, sample, client, channel, SNDLEVEL_CONVO);
-//	CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
-	// TF2_AddCondition(client, TFCond_GrapplingHookSafeFall, TFCondDuration_Infinite);
-	   //TFCond_CritHype
-	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
 
 	EmitSoundToAll(ALARM, client);
 	EmitSoundToAll(ALARM, client);
 
-	//EmitSoundToAll("misc/bonzo_vomit01.wav", _, _, 5, _, 10.0);
+
 	CreateTimer(2.3, Timer_Taunt_Cancel, client);
 	}
 
         if (tauntid == -1)
         {
-            //TF2_AddCondition(client,TFCond_DefenseBuffed, 120.0);
-            
 
-          //  CreateTimer(1.1, Timer_Alarm, client, TIMER_REPEAT);
-            // TF2_AddCondition(client, TFCond_GrapplingHookSafeFall, TFCondDuration_Infinite);
-            //TFCond_CritHype
-            // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
             CreateTimer(2.3, Timer_Taunt_Cancel, client);
         }	  
     }
@@ -413,8 +372,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 
 
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vVelocity);
-	
-	//EmitGameSoundToAll(SOUND_LEAP,client);
+
 	EmitSoundToAll(JUMP,client);
 	EmitSoundToAll(JUMP,client);
 	EmitSoundToAll(JUMP,client);
@@ -433,7 +391,6 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		KvSetNum(infokv, "victim", victim);
 		CreateTimer(0.0, BeardedBoom, infokv);
 
-		// SDKHooks_TakeDamage(attacker, 0, attacker, 120.0, 0, -1);
 		}
 
 	}

@@ -100,17 +100,10 @@ MakeUncleDane(client)
 	SetModel(client, ChangeDane);
 
 	int iHealth = 1250;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
 	float OverHealRate = 1.5;
 
-	float OverHeal = float(MaxHealth) * OverHealRate;
-	float TotalHealthOverHeal = iHealth * OverHealRate;
-	float OverHealPenaltyRate = OverHeal / TotalHealthOverHeal;
 	float scale = 1.65;
 	
-	TF2_SetHealth(client, iHealth);
-	TF2Attrib_SetByName(client, "patient overheal penalty", OverHealPenaltyRate);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
@@ -118,9 +111,6 @@ MakeUncleDane(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.75);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.3);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);

@@ -40,7 +40,30 @@ enum(<<= 1)
     SML_ERROR,
 }
 
+public void OnPluginStart()
+{
+    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
+    LoadTranslations("common.phrases");
+
+	RobotDefinition robot;
+	robot.name = ROBOT_NAME;
+	robot.role = ROBOT_ROLE;
+	robot.class = ROBOT_CLASS;
+	robot.subclass = ROBOT_SUBCLASS;
+	robot.shortDescription = ROBOT_DESCRIPTION;
+	robot.sounds.spawn = SPAWN;
+	robot.sounds.loop = LOOP;
+	robot.sounds.death = DEATH;
+	robot.deathtip = ROBOT_ON_DEATH;
+	robot.difficulty = ROBOT_DIFFICULTY_HARD;
+	RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	restrictions.RobotCoins.PerRobot = ROBOT_COST;
+
+	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
+
+}
 
 public void OnPluginEnd()
 {
@@ -86,23 +109,16 @@ MakeGiantSoldier(client)
 	SetModel(client, GSOLDIER);
 	
 	int iHealth = 2000;		
-	int MaxHealth = 200;
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.4);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 0.1);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "self dmg push force increased", 2.0);
 	
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
@@ -142,35 +158,25 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-		
-			
 		CreateRoboHat(client, PublicSpeaker, 10, 6, 0.0, 1.0, -1.0);
 		CreateRoboHat(client, ThousandYardStare, 10, 6, 0.0, 1.0, -1.0);
 		CreateRoboHat(client, ClassifiedCoif, 10, 6, 0.0, 1.0, -1.0);
 
-
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher", 205, 6, 98, 0, 256);
-		
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		
 		if(IsValidEntity(Weapon1))
 		{
-			// TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
-			// TF2Attrib_SetByName(Weapon1, "Blast radius increased", 1.5);
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
 			TF2Attrib_SetByName(Weapon1, "projectile speed decreased", 0.65);
 			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.6);
-			// TF2Attrib_SetByName(Weapon1, "rocket specialist", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			TF2CustAttr_SetString(Weapon1, "mouse-control-rocket", "aim-mode=1 turnspeed=225.0");
-			// TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "4.0");
-			//TF2CustAttr_SetString(Weapon1, "homing_proj_mvm", "detection_radius=250.0 homing_mode=1 projectilename=tf_projectile_rocket");			
 		}
 
 		CreateRoboWeapon(client, "tf_weapon_buff_item", 129, 6, 1, 1, 0);
@@ -183,40 +189,11 @@ stock GiveGiantPyro(client)
 			TF2CustAttr_SetString(Weapon2, "custom buff type", "rocket-aiming-control");
 			TF2CustAttr_SetString(Weapon2, "rocket control buff turn rate", "0.045");
 		}
-
-
 		RoboCorrectClipSize(Weapon1);
-
 	}
 }
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
 
-public void OnPluginStart()
-{
-    SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
-    LoadTranslations("common.phrases");
-
-    //	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
-
-	RobotDefinition robot;
-	robot.name = ROBOT_NAME;
-	robot.role = ROBOT_ROLE;
-	robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
-	robot.shortDescription = ROBOT_DESCRIPTION;
-	robot.sounds.spawn = SPAWN;
-	robot.sounds.loop = LOOP;
-	robot.sounds.death = DEATH;
-	robot.deathtip = ROBOT_ON_DEATH;
-	robot.difficulty = ROBOT_DIFFICULTY_HARD;
-	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = ROBOT_COST;
-
-	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions);
-
-
-}

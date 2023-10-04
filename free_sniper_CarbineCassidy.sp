@@ -64,14 +64,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
-	// PrecacheModel(ChangeDane);
-
-
-
-
-}
 
 public Action:SetModel(client, const String:model[])
 {
@@ -104,10 +96,7 @@ MakeSniper(client)
 
 
 	int iHealth = 1500;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
 
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
@@ -115,18 +104,12 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "major increased jump height", 1.9);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	// TF2Attrib_SetByName(client, "health regen", 10.0);
 
 	UpdatePlayerHitbox(client, 1.65);
 
@@ -184,18 +167,11 @@ stock GiveBigRoboJbird(client)
 			TF2Attrib_SetByName(SMG, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(SMG, "weapon spread bonus", 0.0);
 			TF2Attrib_SetByName(SMG, "headshot damage increase", 2.0);
-			// TF2Attrib_SetByName(SMG, "minicrits become crits", 1.0);
 			TF2Attrib_SetByName(SMG, "crit_dmg_falloff", 0.0);
 			TF2Attrib_SetByName(SMG, "dmg penalty vs players", 1.8);
 			
-			// TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=19 duration=8.0 addcond=66");
-
 			RoboCorrectClipSize(SMG);
 		}
 	}
 	
 }
-// public TF2_OnConditionAdded(client, TFCond:condition)
-// {
-// 	PrintToChatAll("Cond %i", condition);
-// }

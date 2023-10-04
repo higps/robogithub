@@ -106,23 +106,16 @@ MakeGiantscout(client)
 	SetModel(client, GSCOUT);
 	
 	int iHealth = 1250;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 1.3);
 	TF2Attrib_SetByName(client, "damage force increase", 10.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 2.25);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 2.0);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	UpdatePlayerHitbox(client, 1.75);
@@ -177,12 +170,6 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage bonus", 2.0);
 			TF2Attrib_SetByName(Weapon1, "effect bar recharge rate increased", 1.5);
-			// TF2Attrib_SetByName(Weapon1, "bleeding duration", 0.01);
-			
-			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 10.0);
-			// TF2Attrib_SetByName(Weapon1, "mark for death", 10.0);
-			
-			//TF2Attrib_SetByName(Weapon1, "minicritboost on kill", 5.0);
 		}
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -194,52 +181,10 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
 		}
-		// g_iTeam = GetClientTeam(client);
+
 	}
 }
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantscout(GetNativeCell(1));
 
-
-// public void OnEntityCreated(int iEntity, const char[] sClassName) 
-// {
-// 	if (StrContains(sClassName, "tf_projectile") == 0)
-// 	{
-// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-// 	}
-	
-// }
-
-// public void Hook_OnProjectileSpawn(iEntity) {
-// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-
-// 		RequestFrame(SetProjectileModel, iEntity);
-// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
-// 	}
-// }
-
-
-		
-
-// float g_fStockvecMin[3] = {-10.0, -10.0, -10.0};
-// float g_fStockvecMax[3] = {10.0, 10.0, 10.0};
-
-// void SetProjectileModel (int iEntity)
-// {
-// 	if(g_iTeam == 2)
-// 	{
-// 		//Red
-// 		SetEntityModel(iEntity, BLUE_MODEL);
-		
-// 	}else
-// 	{
-// 		SetEntityModel(iEntity, BLUE_MODEL);
-// 	}
-
-
-// 	SetEntPropVector(iEntity, Prop_Send, "m_vecMins", g_fStockvecMin);
-// 	SetEntPropVector(iEntity, Prop_Send, "m_vecMaxs", g_fStockvecMax);
-
-// }

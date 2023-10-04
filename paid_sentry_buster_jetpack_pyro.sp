@@ -124,30 +124,18 @@ MakeGiantPyro(client)
 	SetModel(client, GPYRO);
 	
 	int iHealth = 3000;
-		
-	int MaxHealth = 175;
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
-	
-	TF2_SetHealth(client, iHealth);
-	// PrintToChatAll("iHealth %i", iHealth);
-	
-	// PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
+
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 
 	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=100.0 stomp-damage=125.0");
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	//
 	TF2Attrib_SetByName(client, "override footstep sound set", 6.0);
 	
@@ -204,25 +192,14 @@ stock GiveGiantPyro(client)
 		
 		if(IsValidEntity(Weapon2))
 		{
-		//	TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon2, "thermal_thruster_air_launch", 1.0);		
 		}
 
 		if(IsValidEntity(Weapon3))
 		{
-		//	TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);					
 			TF2Attrib_SetByName(Weapon3, "dmg pierces resists absorbs", 1.0);				
-			// TF2Attrib_SetByName(Weapon3, "dmg taken increased", 1.6);	
-			// TF2Attrib_SetByName(Weapon3, "heal on kill", 175.0);
-			
-			
-			//TF2Attrib_SetByName(Weapon3, "provide on active", 1.0);					
-			
-			
 		}
 	}
-
-
 }

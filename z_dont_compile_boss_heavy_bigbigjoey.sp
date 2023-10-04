@@ -255,12 +255,9 @@ MakeBigBigJoey(client)
 	int iHealth = 7500;
 	
 	
-	int MaxHealth = 300;
 	// PrintToChatAll("MaxHealth %i", MaxHealth);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 	 // PrintToChatAll("iHealth %i", iHealth);
 	
 	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
@@ -275,10 +272,8 @@ MakeBigBigJoey(client)
 
 	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 0.2);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "health from healers reduced", 0.0);
 	
 	

@@ -6,7 +6,6 @@
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
-//#include <sendproxy>
 #include <dhooks>
 
 #define PLUGIN_VERSION "1.0"
@@ -104,10 +103,7 @@ MakeSniper(client)
 
 
 	int iHealth = 1500;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
 
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
@@ -115,15 +111,9 @@ MakeSniper(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "damage force reduction", 1.0);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.0);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-
 	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "major increased jump height", 1.9);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	TF2Attrib_SetByName(client, "health regen", 10.0);
@@ -188,23 +178,16 @@ stock GiveBigRoboJbird(client)
 	if(IsValidEntity(SniperRifle))
 		{
 			TF2Attrib_RemoveAll(SniperRifle);
-			
 			TF2Attrib_SetByName(SniperRifle, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs buildings", 0.5);
 			TF2Attrib_SetByName(SniperRifle, "damage bonus", 1.33);
-		
 			TF2Attrib_SetByName(SniperRifle, "aiming no flinch", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "sniper aiming movespeed decreased", 0.01);
 			TF2Attrib_SetByName(SniperRifle, "sniper charge per sec", 3.0);
-			
 			TF2Attrib_SetByName(SniperRifle, "sniper fires tracer HIDDEN", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "lunchbox adds minicrits", 3.0);
 			TF2Attrib_SetByName(SniperRifle, "explosive sniper shot", 1.0);
 			TF2Attrib_SetByName(SniperRifle, "dmg penalty vs players", 0.752);
-			
-			
-			
-			
 		}
 	if(IsValidEntity(Kukri))
 		{

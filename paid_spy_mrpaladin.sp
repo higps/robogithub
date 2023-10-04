@@ -5,9 +5,7 @@
 #include <sdkhooks>
 #include <berobot_constants>
 #include <berobot>
-//#include <sendproxy>
 #include <dhooks>
-//#include <tf2items_giveweapon>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"MrPaladin"
@@ -17,25 +15,11 @@
 #define ROBOT_DESCRIPTION "Turn invis on backstab"
 #define ROBOT_ON_DEATH "MrPaladin becomes invisible on backstab\nPyro's flames & airblast can shut down spies"
 #define ROBOT_COST 1.5
-
+#define ROBOT_TIPS "Become invisible on backstab and attack while invisible!\nInfinite cloak"
 #define MODEL             "models/bots/spy/bot_spy.mdl"
 #define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
-
-// #define SPY_SPAWN_SOUND1		"vo/mvm_spy_spawn01.mp3"
-// #define SPY_SPAWN_SOUND2		"vo/mvm_spy_spawn02.mp3"
-// #define SPY_SPAWN_SOUND3		"vo/mvm_spy_spawn03.mp3"
-// #define SPY_SPAWN_SOUND4		"vo/mvm_spy_spawn04.mp3"
-
-// #define SPY_DEATH_SOUND1		"vo/mvm_spybot_death01.mp3"
-// #define SPY_DEATH_SOUND2		"vo/mvm_spybot_death02.mp3"
-// #define SPY_DEATH_SOUND3		"vo/mvm_spybot_death03.mp3"
-// #define SPY_DEATH_SOUND4		"vo/mvm_spybot_death04.mp3"
-// #define SPY_DEATH_SOUND5		"vo/mvm_spybot_death05.mp3"
-// #define SPY_DEATH_SOUND6		"vo/mvm_spybot_death06.mp3"
-// #define SPY_DEATH_SOUND7		"vo/mvm_spybot_death07.mp3"
-
 
 public Plugin:myinfo =
 {
@@ -72,22 +56,6 @@ public OnPluginStart()
 
 	AddRobot(robot, MakeSpy, PLUGIN_VERSION, restrictions);
 
-	PrecacheModel(MODEL);
-
-
-
-
-	// PrecacheSound(SPY_SPAWN_SOUND1, true);
-	// PrecacheSound(SPY_SPAWN_SOUND2, true);
-	// PrecacheSound(SPY_SPAWN_SOUND3, true);
-	// PrecacheSound(SPY_SPAWN_SOUND4, true);
-	// PrecacheSound(SPY_DEATH_SOUND1, true);
-	// PrecacheSound(SPY_DEATH_SOUND2, true);
-	// PrecacheSound(SPY_DEATH_SOUND3, true);
-	// PrecacheSound(SPY_DEATH_SOUND4, true);
-	// PrecacheSound(SPY_DEATH_SOUND5, true);
-	// PrecacheSound(SPY_DEATH_SOUND6, true);
-	// PrecacheSound(SPY_DEATH_SOUND7, true);
 	
 }
 
@@ -103,12 +71,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-// public OnMapStart()
-// {
-// 	PrecacheModel(MODEL);
-// 
-// 
-// 
+
 
 
 // }
@@ -160,44 +123,25 @@ MakeSpy(client)
 
 
 	int iHealth = 1200;
-	int MaxHealth = 125;
-	int iAdditiveHP = iHealth - MaxHealth;
 	float scale = 1.5;
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	
 	TF2Attrib_SetByName(client, "move speed penalty", 0.95);
-	//TF2Attrib_SetByName(client, "damage force reduction", 0.3);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
-	
-	// TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
-	
 	TF2Attrib_SetByName(client, "voice pitch scale", 0.9);
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	// TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
-	// TF2Attrib_SetByName(client, "engy building health bonus", 2.0);
-	// TF2Attrib_SetByName(client, "engy dispenser radius increased", 3.0);
-	// TF2Attrib_SetByName(client, "metal regen", 50.0);
-	
 	TF2Attrib_SetByName(client, "major increased jump height", 1.25);
 	TF2Attrib_SetByName(client, "head scale", 0.8);
 	
-	
 	UpdatePlayerHitbox(client, scale);
-	
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 	
 	Addcond(client);
-	
-	PrintHintText(client, "Infinite Cloak\nStab enemies to gain buff to kill while stealthed!\nHeal from sapping buildings");
+	PrintHintText(client, ROBOT_TIPS);
 
 	RequestFrame(Addcond, client);
 

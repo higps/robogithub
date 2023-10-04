@@ -118,22 +118,15 @@ MakeSolar(client)
 	SetModel(client, GDEKNIGHT);
 
 	int iHealth = 3500;
-	int MaxHealth = 175;
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
 	TF2Attrib_SetByName(client, "charge impact damage increased", 1.5);
@@ -182,30 +175,18 @@ stock GiveGiantDemoKnight(client)
 
 		CreateRoboHat(client, BlastDefense, 10, 6, 7511618.0, 0.75, -1.0); 
 		CreateRoboHat(client, BlastBlocker, 10, 6, 7511618.0, 0.75, -1.0); 
-		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
-		//CreateHat(client, 30945, 10, 6, false);//blast locker
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
-			// TF2Attrib_RemoveAll(Weapon1);
-
-			
-			// TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.9);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.0);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
-			// TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.5);
-			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.35);
 			TF2Attrib_SetByName(Weapon1, "stickybomb charge rate", 0.05);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			
-			// SetEntityRenderColor(Weapon1, 50,205,50,155);
-			// //SetEntityRenderFx(Weapon1, RENDERFX_HOLOGRAM);
-			// SetEntityRenderMode(Weapon1, RENDER_TRANSTEXTURE);
 		}
 	}
 }

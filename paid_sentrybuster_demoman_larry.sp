@@ -21,8 +21,6 @@
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/giant_demoman/giant_demoman_loop.wav"
 
-#define GUNFIRE	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
-
 #define LEFTFOOT        ")mvm/giant_demoman/giant_demoman_step_01.wav"
 #define LEFTFOOT1       ")mvm/giant_demoman/giant_demoman_step_03.wav"
 #define RIGHTFOOT       ")mvm/giant_demoman/giant_demoman_step_02.wav"
@@ -73,22 +71,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
-	
-
-
-
-
-
-
-	
-	
-
-	PrecacheSound(GUNFIRE);
-
-}
-
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -118,22 +100,15 @@ MakeSolar(client)
 	SetModel(client, GDEKNIGHT);
 
 	int iHealth = 3000;
-	int MaxHealth = 175;
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "SET BONUS: dmg from sentry reduced", 0.6);
 	
 	//TF2Attrib_SetByName(client, "override footstep sound set", 4.0);
@@ -176,22 +151,15 @@ stock GiveGiantDemoKnight(client)
 		TF2_RemoveWeaponSlot(client, 1);
 		TF2_RemoveWeaponSlot(client, 2);
 
-
 		CreateRoboWeapon(client, "tf_weapon_grenadelauncher", 308, 6, 1, 2, 0);
-		//CreateRoboWeapon(client, "tf_weapon_stickbomb", 307, 6, 1, 2, 0);
-
 		CreateRoboHat(client, HazardHeadgear, 10, 6, 13595446.0, 0.75, -1.0); 
 		CreateRoboHat(client, BlastBlocker, 10, 6, 13595446.0, 0.75, -1.0); 
-		//CreateHat(client, 306, 10, 6, true);//Scotch bonnet
-		//CreateHat(client, 30945, 10, 6, false);//blast locker
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
-			
+
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 0.7);
 			TF2Attrib_SetByName(Weapon1, "clip size penalty", 1.5);
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
@@ -201,11 +169,9 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 1.0);
 			TF2Attrib_SetByName(Weapon1, "Blast radius increased", 2.5);
-			
-
 			TF2Attrib_SetByName(Weapon1, "sticky air burst mode", 0.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.25);
-
+			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			SetEntityRenderColor(Weapon1, 207,115,54,0);
 
 		}

@@ -123,18 +123,12 @@ MakeGiantMedic(client)
 	SetModel(client, GMEDIC);
    	
 	int iHealth = 1500;
-	int MaxHealth = 150;
-	int iAdditiveHP = iHealth - MaxHealth;
    
-	TF2_SetHealth(client, iHealth);
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.8);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.8);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.9);
 	TF2Attrib_SetByName(client, "health regen", 20.0);
@@ -157,11 +151,7 @@ public TF2_OnConditionRemoved(int client, TFCond:condition)
     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_RuneHaste)
     {
        TF2_AddCondition(client,TFCond_SpeedBuffAlly, 0.1);
-	   //TF2_RemoveCondition(client, TFCond_Taunting);
-//	   TF2_AddCondition(client,TFCond_Charging, 2.5);
 
-	
-	  // TF2_AddCondition(client,TFCond_HalloweenSpeedBoost, 15.0);
     }
 }
 
@@ -217,20 +207,14 @@ stock GiveGiantMedic(client)
 		CreateRoboHat(client, DasMetalmeatencasen, 10, 6, 0.0, 1.0, 1.0);
 		CreateRoboHat(client, TheSurgeonSidearms, 10, 6, 0.0, 1.0, -1.0);
 		
-		// CreateRoboHat(client, FOPPISH, 10, 6, 3100495.0, 1.0, -1.0); 
-		// CreateRoboHat(client, POWDERED, 10, 6, 6901050.0, 1.0, -1.0); 
-		// CreateRoboHat(client, 30149, 10, 6, 0.0, 1.0, -1.0);
 
-		//int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		 int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		if(IsValidEntity(Weapon3))
 		{
-			//TF2Attrib_RemoveAll(Weapon3);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.3);
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.25);
-			//TF2Attrib_SetByName(Weapon1, "clip size penalty", 0.5);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
 			TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 allow-overheal=0 extingiush=0 remove-ailments=0 remove-liquids=0");
 		}
@@ -249,7 +233,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE|IN_ATTACK2) ) 
 		{
-			//  PrintToChatAll("Press");
             g_button_held[client] = true;
 		}
 
@@ -257,13 +240,9 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_USE|IN_ATTACK2) ) 
 		{
-			//  PrintToChatAll("Release");
 			g_button_held[client] = false;
             
 		}
-		//0 = fireball
-		//PrintToChat(client, "Throwing spell!");
-		// UpdateCharge(client);
 		DrawHUD(client);
 		
 	}
@@ -378,27 +357,14 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& damage, int& damagetype, int& ammotype, int hitbox, int hitgroup)
 {
-	//TraceAttack fires everytime hitscan is used and in some cases, for syringes and Dragon's fury fireballs etc.	
-	//Vita-saw code - start
-	
-	// PrintToChatAll("Tracking! 1");
+
 	if((IsValidEntity(victim) && IsValidEntity(attacker) && IsValidEntity(inflictor)) &&
 	(victim <= MaxClients && victim > 0) &&
 	(attacker <= MaxClients && attacker > 0) &&
 	(inflictor <= MaxClients && inflictor > 0)) //Validity checks
 	{
 
-	// PrintToChatAll("Tracking!2");
-	/*
-	Checks if: The weapon is the vita-saw, the medic is hitting a teammate, 
-	the inflictor is the medic and actually playing the class, 
-	damagetype is also checked to determine if the trace came from a melee weapon.
-	*/
 
-	// char stat_buffer[256];
-	// if (!TF2CustAttr_GetString(attacker, "vita-saw-heal", stat_buffer, sizeof(stat_buffer))) {
-	// 	return;
-	// }
 		if((IsClientInGame(victim) && IsClientInGame(attacker) && IsClientInGame(inflictor)) &&
 		(TF2_GetClientTeam(attacker) == TF2_GetClientTeam(victim))
 		&& IsRobot(attacker, ROBOT_NAME)
@@ -415,23 +381,15 @@ public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& da
 				g_organ_bonus = GetOrganBonus(attacker);
 			}
 
-
-			//PrintToChatAll("%N Healed %N, healcount was %i ", healer, target, g_healcount);
-
 			if (TF2_IsPlayerInCondition(healer, TFCond_CritHype))
 			{
 			float team_duration = g_duration  + g_organ_bonus;
-			//PrintToChatAll("Target Duration %f", team_duration);
+
 			TF2_AddCondition(target, TFCond_SpeedBuffAlly, team_duration);
 			TF2_AddCondition(target, TFCond_Buffed, team_duration);
 			
 			}
 
-
-			// g_healcount++;
-			// int decap = GetEntProp(attacker, Prop_Send, "m_iDecapitations");
-			// PrintToChatAll("Decap: %i", decap);
-			 //SetEntProp(iClient, Prop_Send, "m_iDecapitations", GetEntProp(iClient, Prop_Send, "m_iDecapitations") + 1);
 		}
 	}
 	return Plugin_Continue;

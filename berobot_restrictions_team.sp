@@ -433,14 +433,14 @@ void SetRestriciton(RobotCoins restriction, char robotName[NAMELENGTH], bool ena
 
     OnRestrictionChanged(robotName);
     
-    char msg[256];
-    if (enable)
-        Format(msg, sizeof(msg), "Robot '%s' now available for purchase", robotName);
-    else
-        Format(msg, sizeof(msg), "Robot '%s' currently not affordable", robotName);
+    // char msg[256];
+    // if (enable)
+        // Format(msg, sizeof(msg), "Robot '%s' now available for purchase", robotName);
+    // else
+        // Format(msg, sizeof(msg), "Robot '%s' currently not affordable", robotName);
 
-    SMLogTag(SML_VERBOSE, msg);
-    MM_PrintToChatAll(msg);
+    // SMLogTag(SML_VERBOSE, msg);
+    // MM_PrintToChatAll(msg);
 }
 
 void GetRestrictions()

@@ -148,12 +148,9 @@ MakeGRageH(client)
 	
 	
 	
-	int MaxHealth = 300;
 	// PrintToChatAll("MaxHealth %i", MaxHealth);
 	
-	int iAdditiveHP = iHealth - MaxHealth;
 	
-	TF2_SetHealth(client, iHealth);
 	 // PrintToChatAll("iHealth %i", iHealth);
 	
 	 // PrintToChatAll("iAdditiveHP %i", iAdditiveHP);
@@ -165,13 +162,9 @@ MakeGRageH(client)
 	TF2Attrib_SetByName(client, "move speed penalty", 0.8);
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.2);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
 	// TF2Attrib_SetByName(client, "head scale", 0.75);
 

@@ -124,20 +124,13 @@ void MakeBuster(client)
 	RequestFrame(ClientSwitch, client);
 	SetModel(client, GBUSTER);
 	int iHealth = 500;
-	int MaxHealth = 175;
-	int iAdditiveHP = iHealth - MaxHealth;
-	TF2_SetHealth(client, iHealth);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	float HealthPackPickUpRate =  float(MaxHealth) / float(iHealth);
-	TF2Attrib_SetByName(client, "health from packs decreased", HealthPackPickUpRate);
-	TF2Attrib_SetByName(client, "max health additive bonus", float(iAdditiveHP));
 	TF2Attrib_SetByName(client, "damage force reduction", 0.0);
 	TF2Attrib_SetByName(client, "move speed penalty", 1.5);
 	// TF2Attrib_SetByName(client, "airblast vulnerability multiplier", -5.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "patient overheal penalty", 0.15);
 
 	TF2Attrib_SetByName(client, "override footstep sound set", 7.0);
 	// TF2Attrib_SetByName(client, "increased jump height", 2.0);
