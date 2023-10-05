@@ -99,7 +99,11 @@ enum struct RobotDefinition {
   char subclass[32];
   char shortDescription[NAMELENGTH];
   char deathtip[512];
+  char tips[512];
+  char model[512];
   RobotSounds sounds;
+  int health;
+  float scale;
   char deatheffect[64];
   int weaponsound;
   int footstep;

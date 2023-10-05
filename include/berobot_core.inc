@@ -615,8 +615,12 @@ enum struct Robot {
   char subclass[32];
   char shortDescription[NAMELENGTH];
   char deathtip[512];
+  char tips[512];
+  char model[512];
   PrivateForward callback;
   RobotSounds sounds;
+  int health;
+  float scale;
   Restrictions restrictions;
   int robotCoinsOnDeath;
   int teamCoinsOnDeath;
