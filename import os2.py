@@ -1,23 +1,28 @@
 import os
 
-# Directory path
-search_directory = 'D:/Github/robogithub'  # <-- Modify this to the path where you want to search
+def main():
+    # Check all files in the current directory
+    files = [f for f in os.listdir() if f.endswith('.sp')]
 
-# List of class names
-class_names = ["Scout", "Soldier", "Pyro", "DemoMan", "Heavy", "Engineer", "Medic", "Sniper", "Spy"]
+    # Filter files with desired prefixes
+    desired_prefixes = ['boss_', 'paid_', 'free_']
+    files_with_prefix = [f for f in files if any(f.startswith(prefix) for prefix in desired_prefixes)]
 
-# Search specified directory for .sp files
-for filename in os.listdir(search_directory):
-    if filename.endswith(".sp") and (filename.startswith("boss_") or filename.startswith("free_") or filename.startswith("paid_")):
-        with open(os.path.join(search_directory, filename), 'r') as file:
+    # Check for the absence of the string "RoboSetHealth(" in the file's content
+    files_without_string = []
+    for filename in files_with_prefix:
+        with open(filename, 'r') as file:
             content = file.read()
-        
-        # Check for duplicates and replace them
-        for class_name in class_names:
-            duplicate_str = f"TFClass_{class_name}{class_name}"
-            correct_str = f"TFClass_{class_name}"
-            content = content.replace(duplicate_str, correct_str)
-        
-        # Write back the modified content
-        with open(os.path.join(search_directory, filename), 'w') as file:
-            file.write(content)
+            if "RoboSetHealth(" not in content:
+                files_without_string.append(filename)
+
+    # Print out the files that don't contain the string
+    if files_without_string:
+        print("Files without the string 'RoboSetHealth(':")
+        for f in files_without_string:
+            print(f)
+    else:
+        print("All files contain the string 'RoboSetHealth('.")
+
+if __name__ == '__main__':
+    main()

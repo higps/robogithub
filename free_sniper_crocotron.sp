@@ -95,7 +95,7 @@ MakeSniper(client)
 
 
 	int iHealth = 1500;
-
+	RoboSetHealth(client,TFClass_Sniper, 1500, 1.5);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.65);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);

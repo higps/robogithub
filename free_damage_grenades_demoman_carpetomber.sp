@@ -157,10 +157,8 @@ MakeDemoKnight(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEKNIGHT);
 
-	int iHealth = 3300;
 	
-	
-	float OverHealRate = 1.5;
+	RoboSetHealth(client,TFClass_DemoMan, 3300, 1.5);
 //	PrintToChatAll("MaxHealth %i", MaxHealth);
 	
 	

@@ -178,7 +178,7 @@ MakeBearded(client)
    
 		
 	int iHealth = 9000;
-	
+	RoboSetHealth(client,TFClass_Heavy, iHealth, 1.5);
    
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);

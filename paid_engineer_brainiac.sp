@@ -107,6 +107,7 @@ MakeUncleDane(client)
 	int iHealth = 2000;
 	float OverHealRate = 1.5;
 
+	RoboSetHealth(client,TFClass_Engineer, iHealth, 1.5);
 	float scale = 1.65;
 	
 

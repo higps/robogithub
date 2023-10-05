@@ -177,9 +177,9 @@ MakeGiantSoldier(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
 	
-	int iHealth = 3800;	
-	
-	float OverHealRate = 1.5;
+
+	RoboSetHealth(client,TFClass_Soldier, 3800, 1.5);
+
 
 
 

@@ -56,6 +56,11 @@ public OnPluginStart()
 	AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null);
 }
 
+public void OnMapStart()
+{
+	PrecacheModel(BANANA_MODEL);
+}
+
 public void OnPluginEnd()
 {
 	RemoveRobot(ROBOT_NAME);
@@ -95,11 +100,8 @@ MakeGHeavy(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
-	int iHealth = 5000;
-	
-	
-	float OverHealRate = 1.5;
 
+	RoboSetHealth(client,TFClass_Heavy, 5000, 1.5);
 
 
 

@@ -413,7 +413,8 @@ MakeGiantSoldier(client)
 	// PrintToChatAll("Playercount was %i", PlayerCount);
 
 	int iHealth = 2046+PlayerBonusHP;
-		
+	RoboSetHealth(client,TFClass_Soldier, iHealth, 1.5);
+	
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
 	

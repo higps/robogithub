@@ -131,7 +131,6 @@ MakeSpy(client)
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.7);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
 	
-	TF2Attrib_SetByName(client, "override footstep sound set", 2.0);
 	
 	TF2Attrib_SetByName(client, "maxammo metal increased", 2.5);
 	

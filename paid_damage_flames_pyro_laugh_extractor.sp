@@ -132,7 +132,7 @@ MakeGiantPyro(client)
 	
 	int iHealth = 3500;
 		
-	
+	RoboSetHealth(client,TFClass_Pyro, iHealth, 1.5);
 	
 	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);

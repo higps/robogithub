@@ -146,7 +146,7 @@ MakeGRageH(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GRageH);
 	
-	
+	RoboSetHealth(client,TFClass_Heavy, 3000, 1.5);
 	
 	// PrintToChatAll("MaxHealth %i", MaxHealth);
 	

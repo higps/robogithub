@@ -133,7 +133,7 @@ MakeSpy(client)
 
 
 	int iHealth = 2000;
-
+	RoboSetHealth(client,TFClass_Spy, iHealth, 1.5);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", g_scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
