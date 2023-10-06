@@ -236,7 +236,6 @@ MakeRobot(client)
 
     TFClassType iRobot_class = StringToTFClassType(robot.class)
     TF2_SetPlayerClass(client, iRobot_class);
-
 	TF2_RegeneratePlayer(client);
 
 	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
@@ -295,43 +294,30 @@ MakeRobot(client)
 
 //Reads the player attributes and adds them until there's nothing left
     // Reading player attributes and setting them.
-    PrintToChatAll("Got to 1 Config Path %s", configPath);
-
     if (g_hConfig.JumpToKey("player_attributes"))
     {
-        PrintToChatAll("Got to 2");
         char sSection[64];
         g_hConfig.GetSectionName(sSection, sizeof(sSection));
-        PrintToChatAll("SECTION %s", sSection);
-
         if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
         {
-            PrintToChatAll("Got to 3");
-
             do
             {
-                PrintToChatAll("Got to 4");
-
-                // The section name is directly the attribute name in this format.
+              // The section name is directly the attribute name in this format.
                 char attributeName[256];
                 g_hConfig.GetSectionName(attributeName, sizeof(attributeName));
-
                 // Fetch the value for this attribute.
                 float attributeValue = g_hConfig.GetFloat(NULL_STRING); 
-
-                PrintToChatAll("Attribute %s, value %f", attributeName, attributeValue);
+                // PrintToChatAll("Attribute %s, value %f", attributeName, attributeValue);
                 TF2Attrib_SetByName(client, attributeName, attributeValue);
-
             }
-            while (g_hConfig.GotoNextKey(false))
-            {
-                PrintToChatAll("Got to 5");
-                g_hConfig.GoBack();  // Go back to the parent "Robot" key after processing all attributes.
-            }  // Iterate through all the attributes
-            
+            while (g_hConfig.GotoNextKey(false))// Iterate through all the attributes            
+             g_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all attributes.      
         }
     }
-
+    g_hConfig.GoBack(); 
+    char sSection[64];
+    g_hConfig.GetSectionName(sSection, sizeof(sSection));
+    PrintToChatAll("Post player attribute Section %s", sSection);
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 }
@@ -358,7 +344,58 @@ stock MakeEquipment(client)
 	if (IsValidClient(client))
 	{
 		//Remove items and hats
-		// RoboRemoveAllWearables(client);
+		RoboRemoveAllWearables(client);
+        RemoveWeaponSlots(client);
+
+    if (g_hConfig.JumpToKey("weapons"))
+    {
+        
+        if (g_hConfig.GotoFirstSubKey())
+        {
+            do
+            {
+                // Get the weapon's class name
+                char weaponClassName[256];
+                g_hConfig.GetSectionName(weaponClassName, sizeof(weaponClassName));
+
+                int itemIndex = g_hConfig.GetNum("itemindex", 0);
+                int quality = g_hConfig.GetNum("quality", 0);
+                int level = g_hConfig.GetNum("level", 0);
+                int slot = g_hConfig.GetNum("slot", 0);
+                int paint = g_hConfig.GetNum("paint", 0);
+
+                // Create the weapon for the client using the details fetched above.
+                int iWeapon = CreateRoboWeapon(client, weaponClassName, itemIndex, quality, level, slot, paint);
+                
+                // Now, if the "attributes" key exists, loop through weapon attributes
+                if (g_hConfig.JumpToKey("attributes"))
+                {
+                    if (g_hConfig.GotoFirstSubKey())
+                    {
+                        do
+                        {
+                            char attributeKey[256];
+                            g_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
+                            float attributeValue = g_hConfig.GetFloat(NULL_STRING);
+
+                            // Apply each weapon attribute here.
+                            // Note: Assuming you will have a function or mechanism to apply these attributes to the weapon
+                            // Example: TF2Attrib_SetByNameForWeapon(client, weaponClassName, attributeKey, attributeValue);
+                            TF2Attrib_SetByName(iWeapon, attributeKey, attributeValue);
+                        } while (g_hConfig.GotoNextKey(false));
+                        
+                        g_hConfig.GoBack(); // Jump back to the weapon key after processing all attributes
+                    }
+                    g_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "attributes" key
+                }
+
+            } while (g_hConfig.GotoNextKey()); // Iterate through all the weapons
+
+            g_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all weapons.
+        }
+    }
+
+
 		//TF2_RemoveAllWearables(client);
 		// TF2_RemoveWeaponSlot(client, 0);
 		// TF2_RemoveWeaponSlot(client, 1);
@@ -425,4 +462,38 @@ TFClassType StringToTFClassType(const char[] className) {
     }
 
     return TFClass_Unknown; // Default to unknown if none of the above matches
+}
+
+void RemoveWeaponSlots(int client)
+{
+       char sSection[64];
+    g_hConfig.GetSectionName(sSection, sizeof(sSection));
+    PrintToChatAll("Prior to remove Weapons Section %s", sSection);
+    PrintToChatAll("Got 1");
+    if (g_hConfig.JumpToKey("remove_weapon_slots"))
+    {
+        PrintToChatAll("Got 2");
+        if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
+        {
+            PrintToChatAll("Got 3");
+            do
+            {
+                PrintToChatAll("Got 4");
+                int slotNumber = g_hConfig.GetNum(NULL_STRING, -1); // Assuming -1 indicates a failure to fetch
+
+                // Check if we have a valid slotNumber and it's within the expected range (0 to 5, for now)
+                if (slotNumber >= 0 && slotNumber <= 5) 
+                {
+                    PrintToChatAll("Got 5");
+                    // Remove the weapon slot
+                    PrintToChatAll("Slotnumber %i", slotNumber);
+                    TF2_RemoveWeaponSlot(client, slotNumber);
+                }
+
+            } while (g_hConfig.GotoNextKey(false));
+
+            g_hConfig.GoBack();  // Go back to the parent key after processing all weapon slots
+        }
+    }
+    g_hConfig.GoBack();
 }
