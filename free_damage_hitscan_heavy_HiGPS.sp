@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <berobot_constants>
 #include <berobot>
+// #include <berobot_core>
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"HiGPS"
@@ -59,6 +60,7 @@ public OnPluginStart()
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.weaponsound = ROBOT_WEAPON_SOUND_MINIGUN;
 	robot.difficulty = ROBOT_DIFFICULTY_EASY;
+	PrintToChatAll("from GPS Plugin: %s", robot.sounds.spawn);
 	AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION);
 }
 

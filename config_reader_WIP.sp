@@ -1,11 +1,28 @@
+// #include <sourcemod>
+// #include <berobot_constants>
+// #include <berobot>
+
 #include <sourcemod>
+#include <sdktools>
+#include <sdkhooks>
+#include <tf2>
+#include <tf2_stocks>
+#include <morecolors>
+#include <sm_logger>
 #include <berobot_constants>
 #include <berobot>
+#include <berobot_core>
+#include <tf2attributes>
+
 #define PATH "cfg/robots"
 #define PLUGIN_VERSION "0.01"
+
+StringMap s_RobotConfigPaths;
+
 KeyValues g_hConfig;
 public void OnPluginStart()
 {
+    s_RobotConfigPaths = new StringMap();
     char fileName[256];
     Handle dir = OpenDirectory(PATH);
     if(dir == null)
@@ -19,12 +36,42 @@ public void OnPluginStart()
         // Only process .cfg files
         if(StrContains(fileName, ".cfg") != -1)
         {
-			// ProcessCfgFile(fileName);
+
+            char fullPath[256];
+            Format(fullPath, sizeof(fullPath), "%s/%s", PATH, fileName);
+
+            //Map the robot name to it's cfg path
+            KeyValues kv = new KeyValues("Robot");
+            kv.ImportFromFile(fullPath);
+
+            char robotName[64];
+            if (kv.GetString("name", robotName, sizeof(robotName)))
+            {
+                s_RobotConfigPaths.SetString(robotName, fullPath, true);
+            }
+
+            delete kv;
 			LoadConfig(fileName);
         }
     }
-    
+   
     CloseHandle(dir);
+     //Debug function to print the robot path
+     //PrintConfigPathForRobotName("A-Robot");
+}
+
+//Debug function to print the robot path
+public void PrintConfigPathForRobotName(const char[] robotName)
+{
+    char configPath[256];
+    if (s_RobotConfigPaths.GetString(robotName, configPath, sizeof(configPath)))
+    {
+        PrintToServer("Robot: %s -> Config Path: %s", robotName, configPath);
+    }
+    else
+    {
+        PrintToServer("No config path found for Robot: %s", robotName);
+    }
 }
 
 public void LoadConfig(char[] fileName)
@@ -34,27 +81,29 @@ public void LoadConfig(char[] fileName)
 	g_hConfig = new KeyValues("Robot");
 	char fullPath[256];
 	Format(fullPath, sizeof(fullPath), "%s/%s", PATH, fileName);
-	PrintToChatAll("Filename %s, fullPath% %s", fileName, fullPath);
+	// PrintToChatAll("Filename %s, fullPath% %s", fileName, fullPath);
 	g_hConfig.ImportFromFile(fullPath);
+
+
 	ReadConfig();
 
 
 
 }
-
+int g_config_count = 0;
 public void ReadConfig()
 {
 	
     char robotName[64];
     if (g_hConfig.GetString("name", robotName, sizeof(robotName)))
     {
-        PrintToChatAll("Robot Name: %s", robotName);
+        // PrintToChatAll("Robot Name: %s", robotName);
 
 		char role[64], class[9], subclass[32], shortDescription[NAMELENGTH], tips[256];
         char deathtip[256], model[256];
         int difficulty, health;
         float scale;
-		RobotDefinition robot;
+
         // Attempt to fetch each attribute and set it
         g_hConfig.GetString("role", role, sizeof(role));
         g_hConfig.GetString("class", class, sizeof(class));
@@ -63,11 +112,13 @@ public void ReadConfig()
         g_hConfig.GetString("tips", tips, sizeof(tips));
         g_hConfig.GetString("deathtip", deathtip, sizeof(deathtip));
         g_hConfig.GetString("model", model, sizeof(model));
-        g_hConfig.GetNum("difficulty", difficulty);
-        g_hConfig.GetNum("health", health);
-        g_hConfig.GetFloat("scale", scale);
+        
+        difficulty = g_hConfig.GetNum("difficulty", difficulty);
+        health = g_hConfig.GetNum("health", health);
+        scale = g_hConfig.GetFloat("scale", scale);
 
         // Map the attributes to robot's properties
+        RobotDefinition robot;
         robot.name = robotName;
         robot.role = role;
         robot.class = class;
@@ -78,76 +129,300 @@ public void ReadConfig()
         robot.model = model;
         robot.difficulty = difficulty;
         robot.health = health;
+        // PrintToChatAll("Health reading from config was %i", health);
         robot.scale = scale;
 
+        char spawn[256], death[256];
+        g_hConfig.GetString("spawn", spawn, sizeof(spawn));
+        g_hConfig.GetString("death", death, sizeof(death));
+
+        robot.sounds.spawn = spawn;
+        robot.sounds.death = death;
+
+        // Debug logs to verify the fetched sounds
+        // PrintToChatAll("ROBOT SPAWN SOUND: %s", robot.sounds.spawn);
+        // PrintToChatAll("ROBOT DEATH SOUND: %s", robot.sounds.death);
+
     // Only continue if there are sounds to be added
-    if (g_hConfig.JumpToKey("sounds", false))
-    {
-        char sound[256];  // Adjust the size based on your expected maximum sound file path.
+    // if (g_hConfig.JumpToKey("sounds", false))
+    // {
+    //     char sound[256] = "";  // Adjust the size based on your expected maximum sound file path.
+        
+    //     if (g_hConfig.GetString("spawn", sound, sizeof(sound)))
+    //     {
+    //         robot.sounds.spawn = sound;
+    //         PrintToChatAll("ROBOT SPAWN SOUND: %s", robot.sounds.spawn);
+    //     }
 
-        if (g_hConfig.GetString("spawn", sound, sizeof(sound)))
-        {
-            PrintToChatAll("Spawn Sound: %s", sound);
-            robot.sounds.spawn = sound;
-        }
+    //     if (g_hConfig.GetString("death", sound, sizeof(sound)))
+    //     {
+    //         robot.sounds.death = sound;
+    //         PrintToChatAll("ROBOT DEATH SOUND: %s", robot.sounds.death);
+    //     }
 
-        if (g_hConfig.GetString("death", sound, sizeof(sound)))
-        {
-            PrintToChatAll("Death Sound: %s", sound);
-            robot.sounds.death = sound;
-        }
+    //     if (g_hConfig.GetString("loop", sound, sizeof(sound)))
+    //     {
+    //         robot.sounds.loop = sound;
+    //         // PrintToChatAll("ROBOT LOOP SOUND: %s", robot.sounds.loop);
+    //     }
 
-        if (g_hConfig.GetString("loop", sound, sizeof(sound)))
-        {
-            PrintToChatAll("Loop Sound: %s", sound);
-            robot.sounds.loop = sound;
-        }
+    //     if (g_hConfig.GetString("gunfire", sound, sizeof(sound)))
+    //     {
+    //         robot.sounds.gunfire = sound;
+    //         // PrintToChatAll("ROBOT GUNFIRE SOUND: %s", robot.sounds.gunfire);
+    //     }
 
-        if (g_hConfig.GetString("gunfire", sound, sizeof(sound)))
-        {
-            PrintToChatAll("Gunfire Sound: %s", sound);
-            robot.sounds.gunfire = sound;
-        }
+    //     if (g_hConfig.GetString("gunspin", sound, sizeof(sound)))
+    //     {
+    //         robot.sounds.gunspin = sound;
+    //         // PrintToChatAll("ROBOT GUNSPIN SOUND: %s", robot.sounds.gunspin);
+    //     }
 
-        if (g_hConfig.GetString("gunspin", sound, sizeof(sound)))
-        {
-            PrintToChatAll("Gunspin Sound: %s", sound);
-            robot.sounds.gunspin = sound;
-        }
+    //     if (g_hConfig.GetString("windup", sound, sizeof(sound)))
+    //     {
+    //         robot.sounds.windup = sound;
+    //         // PrintToChatAll("ROBOT WINDUP SOUND: %s", robot.sounds.windup);
+    //     }
 
-        if (g_hConfig.GetString("windup", sound, sizeof(sound)))
-        {
-            PrintToChatAll("Windup Sound: %s", sound);
-            robot.sounds.windup = sound;
-        }
-
-        if (g_hConfig.GetString("winddown", sound, sizeof(sound)))
-        {
-            PrintToChatAll("Winddown Sound: %s", sound);
-            robot.sounds.winddown = sound;
-        }
+    //     if (g_hConfig.GetString("winddown", sound, sizeof(sound)))
+    //     {
+    //         robot.sounds.winddown = sound;
+    //         // PrintToChatAll("ROBOT WINDDOWN SOUND: %s", robot.sounds.winddown);
+    //     }
 
         g_hConfig.GoBack();  // Go back to the parent "Robot" key after processing all sounds.
-    }
-    else
-    {
-        PrintToChatAll("No sounds key found for the robot.");
-    }
+    // }
+    // else
+    // {
+    //     PrintToChatAll("No sounds key found for the robot.");
+    // }
 
-
-
-		AddRobot(robot, MakeRobot, PLUGIN_VERSION);
+	    AddRobot(robot, MakeRobot, PLUGIN_VERSION);
     }
     else
     {
         PrintToChatAll("Unable to retrieve 'name' from 'Robot'");
     }
-
-
+}
+public void OnPluginEnd()
+{
+    if (s_RobotConfigPaths != INVALID_HANDLE)
+    {
+        delete s_RobotConfigPaths;
+    }
 }
 
-
 MakeRobot(client)
-{	
-	PrintToChatAll("Robot stuff goes here");
+{
+    Robot robot;   
+    char robotName[NAMELENGTH];
+    GetRobot(client, robotName, NAMELENGTH);
+    GetRobotDefinition(robotName, robot);
+    // PrintToChatAll("Robot name for %N was %s", client, robot.name);
+
+    char configPath[256];
+    s_RobotConfigPaths.GetString(robotName, configPath, sizeof(configPath));
+    PrintToChatAll("CONFIG PATH %s", configPath);
+    // PrintToChatAll("SPAWNED ROBOT SPAWN SOUND: %s", robot.sounds.spawn);
+    // PrintToChatAll("SPAWNED ROBOT DEATH SOUND: %s", robot.sounds.death);
+
+    // PrintToChatAll("Class was %s", robot.class);
+    // PrintToChatAll("ROBOT LOOP SOUND: %s", robot.sounds.loop);
+    // PrintToChatAll("ROBOT GUNFIRE SOUND: %s", robot.sounds.gunfire);
+    // PrintToChatAll("ROBOT GUNSPIN SOUND: %s", robot.sounds.gunspin);
+    // PrintToChatAll("ROBOT WINDUP SOUND: %s", robot.sounds.windup);
+    // PrintToChatAll("ROBOT WINDDOWN SOUND: %s", robot.sounds.winddown);
+
+
+    TFClassType iRobot_class = StringToTFClassType(robot.class)
+    TF2_SetPlayerClass(client, iRobot_class);
+
+	TF2_RegeneratePlayer(client);
+
+	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
+	if (ragdoll > MaxClients && IsValidEntity(ragdoll)) AcceptEntityInput(ragdoll, "Kill");
+	decl String:weaponname[32];
+	GetClientWeapon(client, weaponname, sizeof(weaponname));
+	if (strcmp(weaponname, "tf_weapon_", false) == 0)
+	{
+		SetEntProp(GetPlayerWeaponSlot(client, 0), Prop_Send, "m_iWeaponState", 0);
+		TF2_RemoveCondition(client, TFCond_Slowed);
+	}
+	CreateTimer(0.0, Timer_Switch, client);
+	SetModel(client, robot.model);
+
+    // PrintToChatAll("Robot health was %i or %s", robot.health, robot.health);
+	RoboSetHealth(client,iRobot_class, robot.health);
+
+	SetEntPropFloat(client, Prop_Send, "m_flModelScale", robot.scale);
+    UpdatePlayerHitbox(client, robot.scale);
+	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
+
+    g_hConfig.DeleteThis();  // Clear any previous data.
+    g_hConfig = new KeyValues("Robot");
+
+    if (!g_hConfig.ImportFromFile(configPath))
+    {
+        PrintToChatAll("Failed to import robot config from path %s for robot name %s", configPath, robotName);
+        return;
+    }
+
+    // Now, fetch the name from the configuration to verify.
+    char configRobotName[NAMELENGTH];
+    g_hConfig.GetString("name", configRobotName, sizeof(configRobotName));
+
+    // Verify if the name in the config matches the expected name.
+    if (strcmp(robotName, configRobotName) != 0)
+    {
+        PrintToChatAll("Mismatch! Expected robot name %s but got %s from config.", robotName, configRobotName);
+        return;
+    }
+
+// 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
+// 	TF2Attrib_SetByName(client, "damage force reduction", 0.1);
+// 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
+	
+// 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
+// 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
+// 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
+// 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	
+
+   
+
+// //	float spreadpenalty = scale * spreadmodifier;
+// 	PrintHintText(client , ROBOT_TIPS);
+
+//Reads the player attributes and adds them until there's nothing left
+    // Reading player attributes and setting them.
+    PrintToChatAll("Got to 1 Config Path %s", configPath);
+
+    if (g_hConfig.JumpToKey("player_attributes"))
+    {
+        PrintToChatAll("Got to 2");
+        char sSection[64];
+        g_hConfig.GetSectionName(sSection, sizeof(sSection));
+        PrintToChatAll("SECTION %s", sSection);
+
+        if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
+        {
+            PrintToChatAll("Got to 3");
+
+            do
+            {
+                PrintToChatAll("Got to 4");
+
+                // The section name is directly the attribute name in this format.
+                char attributeName[256];
+                g_hConfig.GetSectionName(attributeName, sizeof(attributeName));
+
+                // Fetch the value for this attribute.
+                float attributeValue = g_hConfig.GetFloat(NULL_STRING); 
+
+                PrintToChatAll("Attribute %s, value %f", attributeName, attributeValue);
+                TF2Attrib_SetByName(client, attributeName, attributeValue);
+
+            }
+            while (g_hConfig.GotoNextKey(false))
+            {
+                PrintToChatAll("Got to 5");
+                g_hConfig.GoBack();  // Go back to the parent "Robot" key after processing all attributes.
+            }  // Iterate through all the attributes
+            
+        }
+    }
+
+	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+}
+
+public Action:SetModel(client, const String:model[])
+{
+	if (IsValidClient(client) && IsPlayerAlive(client))
+	{
+		SetVariantString(model);
+		AcceptEntityInput(client, "SetCustomModel");
+
+		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
+	}
+}
+
+public Action:Timer_Switch(Handle:timer, any:client)
+{
+	if (IsValidClient(client))
+		MakeEquipment(client);
+}
+
+stock MakeEquipment(client)
+{
+	if (IsValidClient(client))
+	{
+		//Remove items and hats
+		// RoboRemoveAllWearables(client);
+		//TF2_RemoveAllWearables(client);
+		// TF2_RemoveWeaponSlot(client, 0);
+		// TF2_RemoveWeaponSlot(client, 1);
+		// TF2_RemoveWeaponSlot(client, 2);
+
+		//Cosmetic code
+		// TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		// float TeamPaint = 0.0;
+
+		// if (iTeam == TFTeam_Blue){
+		// 	TeamPaint = 5801378.0;
+			
+		// }
+		// if (iTeam == TFTeam_Red){
+			
+		// 	TeamPaint = 12073019.0;
+		// }
+
+		// CreateRoboHat(client, ROTATIONSENSATION, 10, 6, TeamPaint, 0.75, -1.0);//Rotation sensation
+		// CreateRoboHat(client, SUMMERSHADES, 10, 6, 1315860.0, 0.75, -1.0);//Summer shades
+		// CreateRoboHat(client, WEIGHTROOMWARMER, 10, 6, 0.0, 1.0, -1.0);//Weightroom warmer
+
+		// CreateRoboWeapon(client, "tf_weapon_minigun", 850, 6, 1, 0, 0);
+		
+
+
+		// int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+		// if(IsValidEntity(Weapon1))
+		// {
+		// 	TF2Attrib_RemoveAll(Weapon1);
+		// 	TF2Attrib_SetByName(Weapon1, "attack projectiles", 1.0);
+		// 	TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
+		// 	TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
+		// 	TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
+			
+			
+		// }
+	}
+}
+
+TFClassType StringToTFClassType(const char[] className) {
+    if (!className) {
+        return TFClass_Unknown;
+    }
+    
+    if (StrEqual(className, "Scout", false)) {
+        return TFClass_Scout;
+    } else if (StrEqual(className, "Soldier", false)) {
+        return TFClass_Soldier;
+    } else if (StrEqual(className, "Pyro", false)) {
+        return TFClass_Pyro;
+    } else if (StrEqual(className, "DemoMan", false) || StrEqual(className, "Demoman", false)) {
+        return TFClass_DemoMan;
+    } else if (StrEqual(className, "Heavy", false)) {
+        return TFClass_Heavy;
+    } else if (StrEqual(className, "Engineer", false)) {
+        return TFClass_Engineer;
+    } else if (StrEqual(className, "Medic", false)) {
+        return TFClass_Medic;
+    } else if (StrEqual(className, "Sniper", false)) {
+        return TFClass_Sniper;
+    } else if (StrEqual(className, "Spy", false)) {
+        return TFClass_Spy;
+    }
+
+    return TFClass_Unknown; // Default to unknown if none of the above matches
 }
