@@ -257,10 +257,10 @@ stock GiveBearded(client)
 			
 				
 			TF2Attrib_SetByName(Weapon3, "move speed bonus", 0.693);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_kill", 10.0);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.5);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.5);
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);
 			TF2Attrib_SetByName(Weapon3, "mod_maxhealth_drain_rate", 0.0);
 

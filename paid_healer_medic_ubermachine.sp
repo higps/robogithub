@@ -199,7 +199,7 @@ stock GiveGiantMedic(client)
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.8);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);
 		}
 	}
 }
