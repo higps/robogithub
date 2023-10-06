@@ -699,7 +699,7 @@ public MRESReturn CTFPlayer_FinishedObject(int pThis, DHookParam hParams)
 
 public Action OnPlayerRunCsmd(int client)
 {
-	//	ObjectInfo info;
+		ObjectInfo info;
 		for (int i = g_ActualObjects[client].Length-1; i >= 0; --i)
 		{
 			g_ActualObjects[client].GetArray(i, info, sizeof(info));
