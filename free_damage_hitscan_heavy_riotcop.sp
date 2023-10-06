@@ -156,7 +156,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon2, "clip size penalty", 0.1);		
 			TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 2.5);
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.7);
 			TF2Attrib_SetByName(Weapon2, "mult_spread_scales_consecutive", 0.0);
 
 			

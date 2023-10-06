@@ -14,7 +14,7 @@
 #define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Rapid Anti-Sentry Loch-n-Load"
 #define ROBOT_STATS "-65%%%% damage to players\nProjectiles don't shatter on surfaces\n+75%%%% faster firing speed"
-#define ROBOT_COST 4.0
+#define ROBOT_COST 3.0
 #define ROBOT_ON_DEATH "Use Short Circuit to circumvent massive damage"
 #define GDEKNIGHT		"models/bots/demo_boss/bot_demo_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"

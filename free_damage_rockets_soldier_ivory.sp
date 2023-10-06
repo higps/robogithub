@@ -97,7 +97,7 @@ public OnPluginStart()
 	//g_rocketCurve = CreateConVar("mirv_converge_rockets", "0", "Do rockets converge on a single point after splitting", _, true, 0.0, true, 1.0);
 	g_showDebug = CreateConVar("ivory_mirv_converge_debug", "0", "Show debug angles and trajectory for converging rockets", _, true, 0.0, true, 1.0);
 	g_rocketAngle = CreateConVar("ivory_mirv_split_angle", "60.0", "Positive angle from the down vector at which mirv rockets will split at (0.0 = directly down, 90.0 = no deviation)");
-	g_rocketDiverge = CreateConVar("ivory_mirv_split_variance", "10.0", "Random angle variance added onto mirv rockets");
+	g_rocketDiverge = CreateConVar("ivory_mirv_split_variance", "20.0", "Random angle variance added onto mirv rockets");
 	//HookConVarChange(g_rocketCurve, OnMirvSettingsChanged);
 
 	ShouldMirvConverge =  view_as<bool>(g_rocketCurve);
@@ -244,10 +244,10 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.00);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
-			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.0);		
+			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.0);		
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.15);		
-			TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);	
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.15);
+			// TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", 2.0);	
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
 

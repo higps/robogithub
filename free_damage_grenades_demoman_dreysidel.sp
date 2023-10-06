@@ -172,7 +172,7 @@ stock GiveGiantToofty(client)
 			TF2Attrib_SetByName(Weapon3, "faster reload rate", 3.75);
 			TF2Attrib_SetByName(Weapon3, "sticky arm time penalty", 0.5);
 			TF2Attrib_SetByName(Weapon3, "max pipebombs increased", 16.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);			
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.6);			
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2CustAttr_SetString(Weapon3, "reload full clip at once", "1.0");
 		}

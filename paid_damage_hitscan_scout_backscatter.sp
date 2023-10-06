@@ -13,7 +13,7 @@
 #define ROBOT_SUBCLASS "Hitscan"
 #define ROBOT_DESCRIPTION "Rapid Fire Backscatter"
 #define ROBOT_DETAILS "Faster firing & reload speed, 200 heal on kill"
-#define ROBOT_COST 2.0
+#define ROBOT_COST 1.5
 #define ROBOT_COIN_GENERATION 1
 #define ROBOT_ON_DEATH "Vaccinator and Battalions Backup counters this robot"
 #define GSCOUT		"models/bots/scout_boss/bot_scout_boss.mdl"
@@ -179,6 +179,9 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon2, "heal on kill", 200.0);
 			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Weapon2, "closerange backattack minicrits", 1.0);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.25);
+			
 			TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.8);
 
 			

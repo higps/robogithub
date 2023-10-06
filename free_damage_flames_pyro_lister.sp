@@ -194,7 +194,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "extinguish restores health", 175.0);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "afterburn duration bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);		
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.8);		
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.5);			
 		}

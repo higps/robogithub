@@ -167,7 +167,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "charge time increased", 10.0);		
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 2.5);				
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);	
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);	
 			
 			TF2CustAttr_SetString(Weapon3, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon3, "shake on hit", "amplitude=20.0 frequency=5.0 duration=1.0");

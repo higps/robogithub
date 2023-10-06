@@ -157,7 +157,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 3.7);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.15);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.35);
 			TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 10.0);
 			TF2Attrib_SetByName(Weapon1, "fuse bonus", 1.4);

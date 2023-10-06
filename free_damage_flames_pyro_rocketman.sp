@@ -207,7 +207,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);			
 			// TF2Attrib_SetByName(Weapon1, "airblast pushback scale", 1.6);		
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);			
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.8);			
 			TF2Attrib_SetByName(Weapon1, "flame_spread_degree", 5.0);			
 			TF2Attrib_SetByName(Weapon1, "flame size bonus", 1.6);
 			TF2Attrib_SetByName(Weapon1, "flame_speed", 3600.0);

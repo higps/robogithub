@@ -105,7 +105,7 @@ MakeGiantscout(client)
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSCOUT);
 	
-	RoboSetHealth(client,TFClass_Scout, 2150, 1.5);
+	RoboSetHealth(client,TFClass_Scout, 2000, 1.5);
 		
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
@@ -168,7 +168,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "reload time increased", 0.65);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);	
-			TF2CustAttr_SetString(Weapon1, "pushforce-on-hit", "cond=-1 flDist=150.0 flDistVert=300 clamp=0.1");			
+			TF2CustAttr_SetString(Weapon1, "pushforce-on-hit", "cond=-1 flDist=500.0 flDistVert=300 clamp=0.1");			
 			
 		}
 	}

@@ -177,7 +177,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.25);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.35);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
 			TF2Attrib_SetByName(Weapon1, "stickybomb charge rate", 0.05);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			

@@ -261,7 +261,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.4);				
 			TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 0.85);
 			TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 8.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.9);
 			TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", 1.0);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 			

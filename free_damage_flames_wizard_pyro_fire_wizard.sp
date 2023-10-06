@@ -176,7 +176,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 1.0);
 			TF2Attrib_SetByName(Weapon3, "crit vs burning players", 1.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);			
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);			
 			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=7.0 SpellOnCond=9 Cond=11");
 
 

@@ -16,7 +16,7 @@
 #define ROBOT_DESCRIPTION "Remote Control Rocket"
 #define ROBOT_TIPS "Activate Remote Control by pressing M2\nChange camera mode with +attack3 or +use\nBuff Banner allows you to control more than one rockets at a time."
 #define ROBOT_ON_DEATH "Kappy's rockets take a while to travel\nAvoid or Out-heal his damage to make him less effective"
-#define ROBOT_COST 1.25
+#define ROBOT_COST 1.0
 
 #define GSOLDIER		"models/bots/soldier_boss/bot_soldier_boss.mdl"
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
@@ -162,7 +162,7 @@ stock GiveGiantPyro(client)
 		
 		if(IsValidEntity(Weapon1))
 		{
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);				
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 2.5);
