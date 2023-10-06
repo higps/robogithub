@@ -209,7 +209,7 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon3, "damage bonus", 1.3);
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 1.25);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);	
 			TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 allow-overheal=0 extingiush=0 remove-ailments=0 remove-liquids=0");
 		}
 		g_healcount = 0;

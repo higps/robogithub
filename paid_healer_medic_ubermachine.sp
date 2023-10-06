@@ -195,5 +195,11 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 4.0);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);	
 		}
+
+		if(IsValidEntity(Weapon3))
+		{
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.8);
+		}
 	}
 }

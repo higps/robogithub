@@ -153,7 +153,7 @@ stock GiveGiantMedic(client)
 		CreateRoboHat(client, StahlHelm, 10, 6, 0.0, 1.0, -1.0);
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		
+		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		
 		
 		if(IsValidEntity(Weapon2))
@@ -169,7 +169,12 @@ stock GiveGiantMedic(client)
 			
 		}
 
-				
+		
+		if(IsValidEntity(Weapon3))
+		{
+			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);
+		}
 		
 	}
 }

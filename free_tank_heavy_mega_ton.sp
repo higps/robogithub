@@ -21,11 +21,6 @@
 #define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
 #define LOOP	"mvm/mvm_tank_loop.wav"
 
-#define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
-
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Deflector Heavy",
@@ -67,10 +62,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
  
-public OnMapStart()
-{
-
-}
  
 public Action:SetModel(client, const String:model[])
 {
@@ -173,7 +164,7 @@ stock GiveGDeflectorH(client)
 
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.6);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.8);
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.3);
 			TF2Attrib_SetByName(Weapon1, "reduced_healing_from_medics", 1.0);
 			TF2Attrib_SetByName(Weapon1, "damage causes airblast", 1.0);

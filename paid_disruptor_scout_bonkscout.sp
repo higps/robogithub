@@ -174,7 +174,7 @@ stock GiveGiantPyro(client)
 
 			TF2Attrib_SetByName(Weapon2, "maxammo grenades1 increased", 8.0);
 			TF2Attrib_SetByName(Weapon2, "effect bar recharge rate increased", 0.2);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.8);
 
 			TF2CustAttr_SetString(client, "OnCondAdd-addcond", "oncond=14 duration=8.0 addcond=95");
 		}

@@ -205,7 +205,7 @@ stock GiveGiantPyro(client)
 		CreateRoboHat(client, TheAllFather, 10, 6, 8208497.0, 1.0, -1.0);
 		CreateRoboHat(client, Gunboats, 10, 6, 0.0, 0.75, -1.0);
 
-
+		CreateRoboWeaponWithAttributes(client, "tf_weapon_parachute", 1101, 6, 77, true, true, "");
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		// int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -219,18 +219,11 @@ stock GiveGiantPyro(client)
 						
 			
 			TF2Attrib_SetByName(Weapon1, "fire rate bonus", 0.85);			
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.35);	
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.6);	
 			TF2Attrib_SetByName(Weapon1, "faster reload rate", 1.2);
-			// TF2Attrib_SetByName(Weapon1, "Projectile speed increased", 2.6);
 			TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
 		}
-		// if(IsValidEntity(Weapon2))
-		// {
-		// 	TF2Attrib_SetByName(Weapon2, "dmg penalty vs players", 1.00);
-		// 	TF2Attrib_SetByName(Weapon2, "killstreak tier", 1.0);
-		// 	TF2Attrib_SetByName(Weapon2, "faster reload rate", 2.5);							
-		// 	TF2CustAttr_SetString(Weapon2, "reload full clip at once", "1.0");
-		// }
+
 		if(IsValidEntity(Weapon3))
 		{
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.25);
@@ -244,79 +237,3 @@ stock GiveGiantPyro(client)
 
 public Native_SetGiantPyro(Handle:plugin, args)
 	MakeGiantSoldier(GetNativeCell(1));
-	
-// public void TF2_OnConditionAdded(int client, TFCond condition)
-// {
-	
-// 	//PrintToChatAll("CONDITION WAS: %i for %N", condition, client);
-// //    if (IsValidClient(client) && !IsRobot(client, ROBOT_NAME)){
-
-// // 	if(condition == TFCond_RuneVampire || condition == TFCond_RuneHaste){
-
-// // 		TF2_RemoveCondition(client, condition);
-// // 	}
-// //    }
-
-// 	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_BlastJumping)
-// 	{	
-// 		TF2_AddCondition(client, TFCond_Buffed, 3.0);
-// 	}
-
-// }
-// 	public void OnEntityCreated(int iEntity, const char[] sClassName) 
-// {
-// 	if (StrContains(sClassName, "tf_projectile") == 0)
-// 	{
-// 		SDKHook(iEntity, SDKHook_Spawn, Hook_OnProjectileSpawn);
-// 	}
-	
-// }
-
-// public void Hook_OnProjectileSpawn(iEntity) {
-// 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
-
-
-
-
-// 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-// 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.75);
-		
-// 	}
-// }
-// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
-// {
-
-// 		if (!IsRobot(victim, ROBOT_NAME))
-// 		{
-// 			if (damagecustom == TF_CUSTOM_BOOTS_STOMP)
-// 			{
-				
-// 				PrintToChatAll("Damage was %f, type was %i on %N", damage, damagetype, victim);
-// 				return Plugin_Changed;
-
-// 			}
-// 		}
-// //if (StrEqual(robot.role,"ZBOSS"))
-// 		if (IsRobot(victim, ROBOT_NAME) && attacker == 0)
-// 		{
-// 			if (damagetype == 32){
-// 				damage = 0.0;
-// 				PrintToChatAll("Was victim %N, attacker was %N", victim, attacker);
-// 				//return Plugin_Changed;
-// 			}
-
-// 		}
-
-// 		// if (IsRobot(attacker, ROBOT_NAME))
-// 		// {
-// 		// 	if (damagetype == 32){
-// 		// 		//damage = 0.0;
-// 		// 		PrintToChatAll("%N was attacker", attacker);
-// 		// 		//return Plugin_Changed;
-// 		// 	}
-
-// 		// }
-
-	
-
-// }

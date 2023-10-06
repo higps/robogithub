@@ -170,7 +170,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "charge impact damage increased", 5.0);	
 			TF2Attrib_SetByName(Weapon3, "no charge impact range", 100.0);		
 			TF2Attrib_SetByName(Weapon3, "full charge turn control", 50.0);		
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);	
 		}
 	}
 }

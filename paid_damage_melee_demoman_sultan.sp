@@ -173,7 +173,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus", 0.9);			
 			TF2Attrib_SetByName(Weapon3, "charge recharge rate increased", 4.0);	
 			TF2Attrib_SetByName(Weapon3, "full charge turn control", 50.0);		
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);	 
 		}
 	}
 }

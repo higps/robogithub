@@ -200,9 +200,9 @@ stock GiveGDeflectorH(client)
 		{
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.23076923076923077);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.23076923076923077);
 			TF2Attrib_SetByName(Weapon1, "fire rate penalty", 1.1);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.8);
 			TF2CustAttr_SetString(Weapon1, "shake on step", "amplitude=2.5 frequency=1.0 range=400.0");
 			TF2CustAttr_SetString(Weapon1, "shake on hit", "amplitude=10.0 frequency=2.0 duration=0.5");
 

@@ -167,7 +167,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "mult charge turn control", 10.0);		
 			TF2Attrib_SetByName(Weapon3, "charge meter on hit", 1.0);
 			TF2Attrib_SetByName(Weapon3, "restore health on kill", 10.0);	
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);	
 	
 		}
 	}

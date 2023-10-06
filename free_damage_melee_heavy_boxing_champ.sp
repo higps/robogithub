@@ -151,7 +151,7 @@ stock GiveGDeflectorH(client)
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.3);
 			TF2Attrib_SetByName(Weapon1, "critboost on kill", 6.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.25);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);	
 			TF2Attrib_SetByName(Weapon1, "dmg from melee increased", 0.25);
 		}
 	}

@@ -181,7 +181,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "fire rate penalty", 0.85);
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 1.0);
 			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", 0.25); 
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);	 
 			TF2Attrib_SetByName(Weapon3, "weapon burn dmg reduced", 0.5); //Since it crits, this should do about 7.5 per tick instead of 13 per tick
 			TF2CustAttr_SetString(Weapon3,"spawn-fireballs", "damage=10.0 range=350.0 projectiles=6 firetime=5.0 angle=359 only-yaw=1 random-spread=0");
 			

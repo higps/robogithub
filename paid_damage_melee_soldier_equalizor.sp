@@ -200,7 +200,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
 			TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", 1.5);
 			TF2Attrib_SetByName(Weapon3, "reduced_healing_from_medics", 1.0);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);	 
 			TF2Attrib_SetByName(Weapon3, "rocket jump damage reduction", 0.0);
 			TF2Attrib_SetByName(Weapon3, "fire rate bonus with reduced health", 0.2);		
 			TF2Attrib_SetByName(Weapon3, "self mark for death", 0.0);

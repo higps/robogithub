@@ -201,7 +201,7 @@ stock GiveGiantPyro(client)
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.4);
 			TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.4);
 			TF2Attrib_SetByName(Weapon3, "fire rate penalty", 1.2);
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);	
 
 		}
 	}

@@ -148,7 +148,8 @@ stock GiveGiantMedic(client)
 			TF2Attrib_RemoveAll(Weapon1);
 			TF2Attrib_SetByName(Weapon1, "health drain", 0.0);
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.15);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.15);
+			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.8);
 		}
 		if(IsValidEntity(Weapon2))
 		{
@@ -158,7 +159,6 @@ stock GiveGiantMedic(client)
 			TF2Attrib_SetByName(Weapon2, "overheal penalty", 0.01);
 			TF2Attrib_SetByName(Weapon2, "ubercharge rate penalty", 0.75);
 			TF2Attrib_SetByName(Weapon2, "heal rate bonus", 2.0);
-			TF2Attrib_SetByName(Weapon2, "dmg penalty vs buildings", 0.5);
 			
 		}
 

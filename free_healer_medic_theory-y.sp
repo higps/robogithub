@@ -182,7 +182,7 @@ stock GiveGiantMedic(client)
 			// TF2Attrib_SetByName(Weapon1, "damage bonus", 1.25);
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "hidden primary max ammo bonus", 2.0);
-			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.25);
+			TF2Attrib_SetByName(Weapon1, "dmg bonus vs buildings", 0.8);
 			
 		}
 

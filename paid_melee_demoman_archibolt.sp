@@ -165,7 +165,7 @@ stock GiveGiantDemoKnight(client)
 			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 1.4);			
 			TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", 10.0);		
 			TF2Attrib_SetByName(Weapon3, "dmg taken increased", 1.0);		
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.25);	
+			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.8);	 
 			TF2Attrib_SetByName(Weapon3, "single wep deploy time decreased", 0.01);
 			TF2CustAttr_SetString(client, "Spell-Caster", "Spell=6 Cooldown=2.0");
 		}
