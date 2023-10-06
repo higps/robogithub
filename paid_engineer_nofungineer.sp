@@ -16,7 +16,7 @@
 #define ROBOT_ROLE "Engineer"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS "SingleClass"
-#define ROBOT_DESCRIPTION "Rapid Pomson High Damage Short Circuit"
+#define ROBOT_DESCRIPTION "Rapid Sentry & Pomson, High Damage Short Circuit"
 #define ROBOT_TIPS "Negate spam with Short Circuit\nPomson fully drains cloak and Uber\nBuild up to 3 normal sentries"
 #define ROBOT_ON_DEATH "NoFungineer has 3 sentries\nNofun counters projectiles, use other forms of damage on his buildings"
 #define ROBOT_COST 2.0
@@ -206,7 +206,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "engineer building teleporting pickup", 10.0);
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 3.0);
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 4.0);
-
+			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.75);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
 			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.15 dispenser_scale=1.15 infinite_ammo=1remove_all_sappers=1 yeet=0");

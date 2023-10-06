@@ -18,8 +18,8 @@
 #define ROBOT_ROLE "Engineer"
 #define ROBOT_CLASS "Engineer"
 #define ROBOT_SUBCLASS "SingleClass"
-#define ROBOT_DESCRIPTION "Wrangler, 4 mini-sentries, Teamporter"
-#define ROBOT_TIPS "Use your 4 mini-sentries to cover areas\nBuild teamporters to teleport your team to the front lines"
+#define ROBOT_DESCRIPTION "Wrangler, Rapid Fire Mini-Sentry"
+#define ROBOT_TIPS "Use your minisentry shoots fast\nBuild teamporters to teleport your team to the front lines"
 #define ROBOT_ON_DEATH "Bill can build up to 4 mini-sentries\nUse explosive weapons to damage both engineers and their buildings at once"
 
 #define ChangeDane             "models/bots/engineer/bot_engineer.mdl"
@@ -177,6 +177,7 @@ stock GiveBigRoboDane(client)
 			TF2Attrib_SetByName(Weapon3, "engy dispenser radius increased", 3.0);
 			TF2CustAttr_SetString(Weapon3, "mod building health", "teleporter=500");
 			TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", 8.0);
+			TF2Attrib_SetByName(Weapon3, "engy sentry fire rate increased", 0.6);
 			TF2CustAttr_SetString(Weapon3, "owned building phasing", "sentry=1 dispenser=1");
 			TF2CustAttr_SetString(Weapon3, "robot engineer", "sentry_scale=1.25 dispenser_scale=1.25 infinite_ammo=1 remove_all_sappers=1 yeet=0");
 			TF2CustAttr_SetString(Weapon3, "multi-building", "sentries=4 dispensers=1");
