@@ -3227,11 +3227,11 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 {
 	
         //Code To Handle Sentry Vuln on spun up heavies
-		if (IsAnyRobot(client) && condition == TFCond_Slowed && TF2_GetPlayerClass(client) == TFClass_Heavy)
-		{	
-            // PrintToChatAll("%N WAS DONE SPUN UP", client);
-            TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.0);
-		}
+		// if (IsAnyRobot(client) && condition == TFCond_Slowed && TF2_GetPlayerClass(client) == TFClass_Heavy)
+		// {	
+        //     // PrintToChatAll("%N WAS DONE SPUN UP", client);
+        //     TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.0);
+		// }
 
         if(condition == TFCond_RuneHaste)
         {
