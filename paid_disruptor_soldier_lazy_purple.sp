@@ -14,7 +14,7 @@
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Disruptor"
-#define ROBOT_DESCRIPTION "Fast Direct hit, Market Garden"
+#define ROBOT_DESCRIPTION "Fast Direct hit, Market Garden, BASE Jumper"
 #define ROBOT_TIPS "Direct Hit deals normal damage to buildings"
 #define ROBOT_ON_DEATH "Blast jumpers can be countered heavily by the Reserve Shooter"
 #define ROBOT_COST 3.0
@@ -24,11 +24,6 @@
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/giant_soldier/giant_soldier_explode.wav"
 #define LOOP	"mvm/giant_soldier/giant_soldier_loop.wav"
-
-#define LEFTFOOT        ")mvm/giant_soldier/giant_soldier_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_soldier/giant_soldier_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_soldier/giant_soldier_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_soldier/giant_soldier_step04.wav"
 
 // #define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
 // #define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"

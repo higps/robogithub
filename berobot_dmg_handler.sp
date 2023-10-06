@@ -1143,7 +1143,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             if(Weapon1 != -1)
             {
-            stat1 = 0.5;
+            stat1 = 0.85;
             TF2Attrib_SetByName(Weapon1, "dmg taken from fire reduced", stat1);
             
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pyro: {orange}+%0.0f%%%% fire resistance",chat_display, OneIs100(stat1));
