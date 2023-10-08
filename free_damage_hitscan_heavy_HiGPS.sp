@@ -60,7 +60,11 @@ public OnPluginStart()
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.weaponsound = ROBOT_WEAPON_SOUND_MINIGUN;
 	robot.difficulty = ROBOT_DIFFICULTY_EASY;
-	PrintToChatAll("from GPS Plugin: %s", robot.sounds.spawn);
+	// PrintToChatAll("Death from GPS Plugin: %s", robot.sounds.death);
+	// PrintToChatAll("Spawn from GPS Plugin: %s", robot.sounds.spawn);
+	// PrintToChatAll("Gunfire from GPS Plugin: %s", robot.sounds.gunfire);
+	// PrintToChatAll("Spawn from GPS Plugin: %s", robot.sounds.spawn);
+
 	AddRobot(robot, MakeGDeflectorH, PLUGIN_VERSION);
 }
 

@@ -310,7 +310,7 @@ native void EquipWearable(int client, int item);
  * @noreturn
  */
  //CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
-native bool CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, int paint);
+native int CreateRoboWeapon(int client, char[] classname, int itemindex, int quality, int level, int slot, int paint);
 
 /**
  * Creates a weapon with attributes
@@ -342,7 +342,7 @@ native bool CreateRoboWeaponWithAttributes(int client, char[] classname, int ite
  * @noreturn
  */
  //CreateWeapon(client, "tf_weapon_minigun", 850, 6, 1, 2);
-native void  CreateRoboHat(int client, int itemindex, int level, int quality, float paint, float scale, float style);
+native void  CreateRoboHat(int client, int itemindex, int level, int quality, int paint, int paint2, float scale, float style);
 
 
 /**

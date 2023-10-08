@@ -15,11 +15,52 @@
 #include <tf2attributes>
 
 #define PATH "cfg/robots"
-#define PLUGIN_VERSION "0.01"
+#define PLUGIN_VERSION "0.2"
 
 StringMap s_RobotConfigPaths;
 
 KeyValues g_hConfig;
+
+#define MAX_PAINTS 100
+
+char paintNames[MAX_PAINTS][64];
+int paintValues1[MAX_PAINTS];
+int paintValues2[MAX_PAINTS];
+int numPaints = 0;
+
+public void AddPaint(char[] name, int value1)
+{
+    _InternalAddPaint(name, value1, 0);
+}
+
+public void AddPaintTeam(char[] name, int value1, int value2)
+{
+    _InternalAddPaint(name, value1, value2);
+}
+
+public void _InternalAddPaint(char[] name, int value1, int value2)
+{
+    if (numPaints < MAX_PAINTS)
+    {
+        PrintToServer("Adding paint: %s", name);
+        
+        for (int i = 0; i < strlen(name) && i < 64; i++)
+        {
+            paintNames[numPaints][i] = name[i];
+        }
+        
+        paintValues1[numPaints] = value1;
+        paintValues2[numPaints] = value2;
+        numPaints++;
+    }
+    else
+    {
+        PrintToServer("Error: numPaints exceeds or is equal to MAX_PAINTS. Not copying string.");
+    }
+}
+
+
+
 public void OnPluginStart()
 {
     s_RobotConfigPaths = new StringMap();
@@ -30,7 +71,9 @@ public void OnPluginStart()
         LogError("Failed to open directory: %s", PATH);
         return;
     }
-    
+
+    //Load paints if there are robots in the folder
+    LoadPaints();
     while (ReadDirEntry(dir, fileName, sizeof(fileName)))
     {
         // Only process .cfg files
@@ -52,9 +95,10 @@ public void OnPluginStart()
 
             delete kv;
 			LoadConfig(fileName);
+            
         }
     }
-   
+
     CloseHandle(dir);
      //Debug function to print the robot path
      //PrintConfigPathForRobotName("A-Robot");
@@ -83,14 +127,9 @@ public void LoadConfig(char[] fileName)
 	Format(fullPath, sizeof(fullPath), "%s/%s", PATH, fileName);
 	// PrintToChatAll("Filename %s, fullPath% %s", fileName, fullPath);
 	g_hConfig.ImportFromFile(fullPath);
-
-
 	ReadConfig();
-
-
-
 }
-int g_config_count = 0;
+
 public void ReadConfig()
 {
 	
@@ -101,8 +140,8 @@ public void ReadConfig()
 
 		char role[64], class[9], subclass[32], shortDescription[NAMELENGTH], tips[256];
         char deathtip[256], model[256];
-        int difficulty, health;
-        float scale;
+        int difficulty, health, boss_cost;
+        float scale, cost;
 
         // Attempt to fetch each attribute and set it
         g_hConfig.GetString("role", role, sizeof(role));
@@ -116,6 +155,8 @@ public void ReadConfig()
         difficulty = g_hConfig.GetNum("difficulty", difficulty);
         health = g_hConfig.GetNum("health", health);
         scale = g_hConfig.GetFloat("scale", scale);
+        cost = g_hConfig.GetFloat("rc_cost", cost);
+        boss_cost = g_hConfig.GetNum("boss_cost", boss_cost);
 
         // Map the attributes to robot's properties
         RobotDefinition robot;
@@ -131,78 +172,107 @@ public void ReadConfig()
         robot.health = health;
         // PrintToChatAll("Health reading from config was %i", health);
         robot.scale = scale;
+        // float cost;
+        // robot.cost = cost;
+        RestrictionsDefinition restrictions = new RestrictionsDefinition();
+        
+        restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+        restrictions.RobotCoins.PerRobot = cost; 
 
-        char spawn[256], death[256];
-        g_hConfig.GetString("spawn", spawn, sizeof(spawn));
-        g_hConfig.GetString("death", death, sizeof(death));
+        if (boss_cost != 0)
+        {
+        restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+        restrictions.TeamCoins.Overall = boss_cost;
+        }
+        
 
-        robot.sounds.spawn = spawn;
-        robot.sounds.death = death;
+
+        //MAPPING SOUNDS LIKE THIS WORKS
+        // char spawn[256], death[256];
+        // g_hConfig.GetString("spawn", spawn, sizeof(spawn));
+        // g_hConfig.GetString("death", death, sizeof(death));
+
+        // robot.sounds.spawn = spawn;
+        // robot.sounds.death = death;
 
         // Debug logs to verify the fetched sounds
         // PrintToChatAll("ROBOT SPAWN SOUND: %s", robot.sounds.spawn);
         // PrintToChatAll("ROBOT DEATH SOUND: %s", robot.sounds.death);
 
     // Only continue if there are sounds to be added
-    // if (g_hConfig.JumpToKey("sounds", false))
-    // {
-    //     char sound[256] = "";  // Adjust the size based on your expected maximum sound file path.
+    if (g_hConfig.JumpToKey("sounds", false))
+    {
+        char sound[256];  // Adjust the size based on your expected maximum sound file path.
         
-    //     if (g_hConfig.GetString("spawn", sound, sizeof(sound)))
-    //     {
-    //         robot.sounds.spawn = sound;
-    //         PrintToChatAll("ROBOT SPAWN SOUND: %s", robot.sounds.spawn);
-    //     }
+        if (g_hConfig.GetString("spawn", sound, sizeof(sound)))
+        {
+            robot.sounds.spawn = sound;
+            // PrintToChatAll("ROBOT SPAWN SOUND: %s", robot.sounds.spawn);
+        }
 
-    //     if (g_hConfig.GetString("death", sound, sizeof(sound)))
-    //     {
-    //         robot.sounds.death = sound;
-    //         PrintToChatAll("ROBOT DEATH SOUND: %s", robot.sounds.death);
-    //     }
+        if (g_hConfig.GetString("death", sound, sizeof(sound)))
+        {
+            robot.sounds.death = sound;
+            // PrintToChatAll("ROBOT DEATH SOUND: %s", robot.sounds.death);
+        }
 
-    //     if (g_hConfig.GetString("loop", sound, sizeof(sound)))
-    //     {
-    //         robot.sounds.loop = sound;
-    //         // PrintToChatAll("ROBOT LOOP SOUND: %s", robot.sounds.loop);
-    //     }
+        if (g_hConfig.GetString("loop", sound, sizeof(sound)))
+        {
+            robot.sounds.loop = sound;
+            // PrintToChatAll("ROBOT LOOP SOUND: %s", robot.sounds.loop);
+        }
 
-    //     if (g_hConfig.GetString("gunfire", sound, sizeof(sound)))
-    //     {
-    //         robot.sounds.gunfire = sound;
-    //         // PrintToChatAll("ROBOT GUNFIRE SOUND: %s", robot.sounds.gunfire);
-    //     }
+        if (g_hConfig.GetString("footstep", sound, sizeof(sound)))
+        {
+            int footstep = StringToInt(sound);
+            robot.footstep = footstep;
+            // PrintToChatAll("ROBOT LOOP SOUND: %s", robot.sounds.loop);
+        }
 
-    //     if (g_hConfig.GetString("gunspin", sound, sizeof(sound)))
-    //     {
-    //         robot.sounds.gunspin = sound;
-    //         // PrintToChatAll("ROBOT GUNSPIN SOUND: %s", robot.sounds.gunspin);
-    //     }
+        if (g_hConfig.GetString("weaponsound", sound, sizeof(sound)))
+        {
 
-    //     if (g_hConfig.GetString("windup", sound, sizeof(sound)))
-    //     {
-    //         robot.sounds.windup = sound;
-    //         // PrintToChatAll("ROBOT WINDUP SOUND: %s", robot.sounds.windup);
-    //     }
+            int weaponsound = StringToInt(sound);
+            robot.weaponsound = weaponsound;   
+            // PrintToChatAll("Weaponsound ID was %i", weaponsound);
+            if (g_hConfig.GetString("gunfire", sound, sizeof(sound)))
+            {
+                robot.sounds.gunfire = sound;
+                // PrintToChatAll("ROBOT GUNFIRE SOUND: %s", robot.sounds.gunfire);
+            }
 
-    //     if (g_hConfig.GetString("winddown", sound, sizeof(sound)))
-    //     {
-    //         robot.sounds.winddown = sound;
-    //         // PrintToChatAll("ROBOT WINDDOWN SOUND: %s", robot.sounds.winddown);
-    //     }
+            if (g_hConfig.GetString("gunspin", sound, sizeof(sound)))
+            {
+                robot.sounds.gunspin = sound;
+                // PrintToChatAll("ROBOT GUNSPIN SOUND: %s", robot.sounds.gunspin);
+            }
+
+            if (g_hConfig.GetString("windup", sound, sizeof(sound)))
+            {
+                robot.sounds.windup = sound;
+                // PrintToChatAll("ROBOT WINDUP SOUND: %s", robot.sounds.windup);
+            }
+
+            if (g_hConfig.GetString("winddown", sound, sizeof(sound)))
+            {
+                robot.sounds.winddown = sound;
+                // PrintToChatAll("ROBOT WINDDOWN SOUND: %s", robot.sounds.winddown);
+            }
+        }
 
         g_hConfig.GoBack();  // Go back to the parent "Robot" key after processing all sounds.
-    // }
+    }
     // else
     // {
     //     PrintToChatAll("No sounds key found for the robot.");
     // }
 
-	    AddRobot(robot, MakeRobot, PLUGIN_VERSION);
+	    AddRobot(robot, MakeRobot, PLUGIN_VERSION, restrictions);
     }
-    else
-    {
-        PrintToChatAll("Unable to retrieve 'name' from 'Robot'");
-    }
+    // else
+    // {
+    //     PrintToChatAll("Unable to retrieve 'name' from 'Robot'");
+    // }
 }
 public void OnPluginEnd()
 {
@@ -222,17 +292,6 @@ MakeRobot(client)
 
     char configPath[256];
     s_RobotConfigPaths.GetString(robotName, configPath, sizeof(configPath));
-    PrintToChatAll("CONFIG PATH %s", configPath);
-    // PrintToChatAll("SPAWNED ROBOT SPAWN SOUND: %s", robot.sounds.spawn);
-    // PrintToChatAll("SPAWNED ROBOT DEATH SOUND: %s", robot.sounds.death);
-
-    // PrintToChatAll("Class was %s", robot.class);
-    // PrintToChatAll("ROBOT LOOP SOUND: %s", robot.sounds.loop);
-    // PrintToChatAll("ROBOT GUNFIRE SOUND: %s", robot.sounds.gunfire);
-    // PrintToChatAll("ROBOT GUNSPIN SOUND: %s", robot.sounds.gunspin);
-    // PrintToChatAll("ROBOT WINDUP SOUND: %s", robot.sounds.windup);
-    // PrintToChatAll("ROBOT WINDDOWN SOUND: %s", robot.sounds.winddown);
-
 
     TFClassType iRobot_class = StringToTFClassType(robot.class)
     TF2_SetPlayerClass(client, iRobot_class);
@@ -248,9 +307,9 @@ MakeRobot(client)
 		TF2_RemoveCondition(client, TFCond_Slowed);
 	}
 	CreateTimer(0.0, Timer_Switch, client);
+
 	SetModel(client, robot.model);
 
-    // PrintToChatAll("Robot health was %i or %s", robot.health, robot.health);
 	RoboSetHealth(client,iRobot_class, robot.health);
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", robot.scale);
@@ -276,23 +335,6 @@ MakeRobot(client)
         PrintToChatAll("Mismatch! Expected robot name %s but got %s from config.", robotName, configRobotName);
         return;
     }
-
-// 	TF2Attrib_SetByName(client, "move speed penalty", 0.5);
-// 	TF2Attrib_SetByName(client, "damage force reduction", 0.1);
-// 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.0);
-	
-// 	TF2Attrib_SetByName(client, "aiming movespeed increased", 2.0);
-// 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-// 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-// 	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
-	
-
-   
-
-// //	float spreadpenalty = scale * spreadmodifier;
-// 	PrintHintText(client , ROBOT_TIPS);
-
-//Reads the player attributes and adds them until there's nothing left
     // Reading player attributes and setting them.
     if (g_hConfig.JumpToKey("player_attributes"))
     {
@@ -315,9 +357,9 @@ MakeRobot(client)
         }
     }
     g_hConfig.GoBack(); 
-    char sSection[64];
-    g_hConfig.GetSectionName(sSection, sizeof(sSection));
-    PrintToChatAll("Post player attribute Section %s", sSection);
+    // char sSection[64];
+    // g_hConfig.GetSectionName(sSection, sizeof(sSection));
+    // // PrintToChatAll("Post player attribute Section %s", sSection);
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 }
@@ -363,15 +405,24 @@ stock MakeEquipment(client)
                 int level = g_hConfig.GetNum("level", 0);
                 int slot = g_hConfig.GetNum("slot", 0);
                 int paint = g_hConfig.GetNum("paint", 0);
+                int remove_attributes = g_hConfig.GetNum("remove_attributes", 0);
+
 
                 // Create the weapon for the client using the details fetched above.
                 int iWeapon = CreateRoboWeapon(client, weaponClassName, itemIndex, quality, level, slot, paint);
-                
+                // PrintToChatAll("iWeapon %i", iWeapon);
+
+                //Remove attributes if set to 1
+                if(remove_attributes)TF2Attrib_RemoveAll(iWeapon);
+
                 // Now, if the "attributes" key exists, loop through weapon attributes
                 if (g_hConfig.JumpToKey("attributes"))
                 {
-                    if (g_hConfig.GotoFirstSubKey())
+                    //First we need to check if the attributes uses index or string. Preferably string as then we can create and apply attributes at the same time
+                    // PrintToChatAll("IN  ATTRIBUTES");
+                    if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
                     {
+                        // PrintToChatAll("GOT THE FIRST KEY");
                         do
                         {
                             char attributeKey[256];
@@ -381,6 +432,7 @@ stock MakeEquipment(client)
                             // Apply each weapon attribute here.
                             // Note: Assuming you will have a function or mechanism to apply these attributes to the weapon
                             // Example: TF2Attrib_SetByNameForWeapon(client, weaponClassName, attributeKey, attributeValue);
+                            // PrintToChatAll("Key: %s, Attribute %f", attributeKey, attributeValue)
                             TF2Attrib_SetByName(iWeapon, attributeKey, attributeValue);
                         } while (g_hConfig.GotoNextKey(false));
                         
@@ -393,46 +445,42 @@ stock MakeEquipment(client)
 
             g_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all weapons.
         }
+        g_hConfig.GoBack();
     }
+        // char sSection[64];
+        // g_hConfig.GetSectionName(sSection, sizeof(sSection));
+        // PrintToChatAll("After to remove Weapons Section %s", sSection);
+        if (g_hConfig.JumpToKey("cosmetics"))
+        {
+            if (g_hConfig.GotoFirstSubKey())
+            {
+                do
+                {
+                    int itemIndex = g_hConfig.GetNum("itemindex", 0);
+                    int level = g_hConfig.GetNum("level", 10);
+                    int quality = g_hConfig.GetNum("quality", 6);
+                    
+                    // Handle paint as a float or string (like "TeamPaint")
+                    char paintName[256];
+                    g_hConfig.GetString("paint", paintName, sizeof(paintName));
+
+                    int paint, paint2;
+                    GetPaintValuesByName(paintName, paint, paint2);
+
+                    float scale = g_hConfig.GetFloat("scale", 1.0);  // Default to 1.0 if not specified
+                    float style = g_hConfig.GetFloat("style", -1.0); // Default to -1.0 if not specified
+
+                    // Create the hat for the client using the details fetched above.
+                    CreateRoboHat(client, itemIndex, level, quality, paint, paint2, scale, style);
+
+                } while (g_hConfig.GotoNextKey()); // Iterate through all the cosmetics
+
+                g_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all cosmetics.
+            }
+        }
 
 
-		//TF2_RemoveAllWearables(client);
-		// TF2_RemoveWeaponSlot(client, 0);
-		// TF2_RemoveWeaponSlot(client, 1);
-		// TF2_RemoveWeaponSlot(client, 2);
 
-		//Cosmetic code
-		// TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
-		// float TeamPaint = 0.0;
-
-		// if (iTeam == TFTeam_Blue){
-		// 	TeamPaint = 5801378.0;
-			
-		// }
-		// if (iTeam == TFTeam_Red){
-			
-		// 	TeamPaint = 12073019.0;
-		// }
-
-		// CreateRoboHat(client, ROTATIONSENSATION, 10, 6, TeamPaint, 0.75, -1.0);//Rotation sensation
-		// CreateRoboHat(client, SUMMERSHADES, 10, 6, 1315860.0, 0.75, -1.0);//Summer shades
-		// CreateRoboHat(client, WEIGHTROOMWARMER, 10, 6, 0.0, 1.0, -1.0);//Weightroom warmer
-
-		// CreateRoboWeapon(client, "tf_weapon_minigun", 850, 6, 1, 0, 0);
-		
-
-
-		// int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		// if(IsValidEntity(Weapon1))
-		// {
-		// 	TF2Attrib_RemoveAll(Weapon1);
-		// 	TF2Attrib_SetByName(Weapon1, "attack projectiles", 1.0);
-		// 	TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
-		// 	TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-		// 	TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			
-			
-		// }
 	}
 }
 
@@ -466,27 +514,24 @@ TFClassType StringToTFClassType(const char[] className) {
 
 void RemoveWeaponSlots(int client)
 {
-       char sSection[64];
-    g_hConfig.GetSectionName(sSection, sizeof(sSection));
-    PrintToChatAll("Prior to remove Weapons Section %s", sSection);
-    PrintToChatAll("Got 1");
+
     if (g_hConfig.JumpToKey("remove_weapon_slots"))
     {
-        PrintToChatAll("Got 2");
+
         if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
         {
-            PrintToChatAll("Got 3");
+            // PrintToChatAll("Got 3");
             do
             {
-                PrintToChatAll("Got 4");
+                // PrintToChatAll("Got 4");
                 int slotNumber = g_hConfig.GetNum(NULL_STRING, -1); // Assuming -1 indicates a failure to fetch
 
                 // Check if we have a valid slotNumber and it's within the expected range (0 to 5, for now)
                 if (slotNumber >= 0 && slotNumber <= 5) 
                 {
-                    PrintToChatAll("Got 5");
+                    // PrintToChatAll("Got 5");
                     // Remove the weapon slot
-                    PrintToChatAll("Slotnumber %i", slotNumber);
+                    // PrintToChatAll("Slotnumber %i", slotNumber);
                     TF2_RemoveWeaponSlot(client, slotNumber);
                 }
 
@@ -496,4 +541,58 @@ void RemoveWeaponSlots(int client)
         }
     }
     g_hConfig.GoBack();
+}
+
+// Initialization or setup function where you load the paints when the plugin starts or when needed
+public void LoadPaints()
+{
+    // Regular paints
+    AddPaint("A Color Similar to Slate", 3100495);
+    AddPaint("A Deep Commitment to Purple", 8208497);
+    AddPaint("A Distinctive Lack of Hue", 1315860);
+    AddPaint("A Mann's Mint", 12377523);
+    AddPaint("After Eight", 2960676);
+    AddPaint("Aged Moustache Grey", 8289918);
+    AddPaint("An Extraordinary Abundance of Tinge", 15132390);
+    AddPaint("Australium Gold", 15185211);
+    AddPaint("Color No. 216-190-216", 14204632);
+    AddPaint("Dark Salmon Injustice", 15308410);
+    AddPaint("Drably Olive", 8421376);
+    AddPaint("Indubitably Green", 7511618);
+    AddPaint("Mann Co. Orange", 13595446);
+    AddPaint("Muskelmannbraun", 10843461);
+    AddPaint("Noble Hatter's Violet", 5322826);
+    AddPaint("Peculiarly Drab Tincture", 12955537);
+    AddPaint("Pink as Hell", 16738740);
+    AddPaint("Radigan Conagher Brown", 6901050);
+    AddPaint("The Bitter Taste of Defeat and Lime", 3329330);
+    AddPaint("The Color of a Gentlemann's Business Pants", 15787660);
+    AddPaint("Ye Olde Rustic Colour", 8154199);
+    AddPaint("Zepheniah's Greed", 4345659);
+    
+    // Team colors
+    AddPaintTeam("An Air of Debonair", 6637376, 2636109);
+    AddPaintTeam("Balaclavas Are Forever", 3874595, 1581885);
+    AddPaintTeam("Cream Spirit", 12807213, 12091445);
+    AddPaintTeam("Operator's Overalls", 4732984, 3686984);
+    AddPaintTeam("Team Spirit", 12073019, 5801378);
+    AddPaintTeam("The Value of Teamwork", 8400928, 2452877);
+    AddPaintTeam("Waterlogged Lab Coat", 11049612, 8626083);
+
+}
+
+public void GetPaintValuesByName(const char[] name, int &paint1, int &paint2)
+{
+    paint1 = 0;  // default to 0
+    paint2 = 0;  // default to 0
+
+    for (int i = 0; i < numPaints; i++)
+    {
+        if (StrEqual(name, paintNames[i]))
+        {
+            paint1 = paintValues1[i];
+            paint2 = paintValues2[i];
+            return;
+        }
+    }
 }

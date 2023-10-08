@@ -182,7 +182,7 @@ stock GiveGiantPyro(client)
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher_fireball", 1178, 6, 1, 0, 390);	
 		CreateRoboWeapon(client, "tf_weapon_fireaxe", 214, 6, 1, 2, 0);	
 
-		CreateRoboHat(client, DeadCone, 10, 6, 0.0, 0.75, 1.0); 
+		CreateRoboHat(client, DeadCone, 10, 6, 0.0, 0.0, 0.75, 1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);

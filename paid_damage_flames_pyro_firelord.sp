@@ -168,7 +168,7 @@ stock GiveGiantPyro(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		
 		CreateRoboWeapon(client, "tf_weapon_flamethrower", 208, 6, 1, 0, 205);	
-		CreateRoboHat(client, FlameWarrior, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, FlameWarrior, 10, 6, 0.0, 0.0, 1.0, -1.0);
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 

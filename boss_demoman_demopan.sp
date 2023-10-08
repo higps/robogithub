@@ -176,8 +176,8 @@ stock GiveGiantDemoKnight(client)
 	CreateRoboWeapon(client, "tf_wearable_demoshield", 131, 6, 1, 1, 0);
 
 
-	CreateRoboHat(client, BountyHat, 10, 6, 0.0, 0.75, -1.0); 
-	CreateRoboHat(client, Dangeresque, 10, 6, 0.0, 0.85, -1.0); 
+	CreateRoboHat(client, BountyHat, 10, 6, 0.0, 0.0, 0.75, -1.0); 
+	CreateRoboHat(client, Dangeresque, 10, 6, 0.0, 0.0, 0.85, -1.0); 
 
 
 	int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);

@@ -14,6 +14,7 @@
 #pragma semicolon 1
 
 
+
 public Plugin myinfo =
 {
 	name = "berobot_equipment",
@@ -206,7 +207,7 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 
 	if (!IsValidEntity(weapon) && !IsAnyRobot(client))
 	{
-		return false;
+		return -1;
 	}
 	
 	char entclass[64];
@@ -240,7 +241,7 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
             DispatchSpawn(weapon);
             EquipPlayerWeapon(client, weapon); 
 
-            return true;             
+            return weapon;             
         }
     case 735, 736, 810, 933, 1080, 1102: //sapper
         {
@@ -289,7 +290,7 @@ public any Native_CreateRoboWeapon(Handle plugin, int numParams)
 	// 	PrintToChatAll("NOT WEARABLE");
 	// }
 
-	return true;
+	return weapon;
 }
 
 public any Native_CreateRoboHat(Handle plugin, int numParams)
@@ -298,9 +299,10 @@ public any Native_CreateRoboHat(Handle plugin, int numParams)
 	int itemindex = GetNativeCell(2);
 	int level = GetNativeCell(3);
 	int quality = GetNativeCell(4);
-	float paint = GetNativeCell(5);
-	float scale = GetNativeCell(6);
-	float style = GetNativeCell(7);
+	int paint = GetNativeCell(5);
+	int paint2 = GetNativeCell(6);
+	float scale = GetNativeCell(7);
+	float style = GetNativeCell(8);
 
 
 	int hat = CreateEntityByName("tf_wearable");
@@ -318,9 +320,16 @@ public any Native_CreateRoboHat(Handle plugin, int numParams)
 	SetEntData(hat, FindSendPropInfo(entclass, "m_iEntityQuality"), quality);
 	SetEntProp(hat, Prop_Send, "m_bValidatedAttachedEntity", 1);  	
 
-	if (paint != 0.0){
-		TF2Attrib_SetByDefIndex(hat, 142, view_as<float>(paint));
-		TF2Attrib_SetByDefIndex(hat, 261, view_as<float>(paint));
+	//Team colored paints have 2 values, if the first paint has no value we don't do anything
+	if (paint != 0){
+		TF2Attrib_SetByDefIndex(hat, 142, float(paint));	
+	}
+
+	if (paint2 != 0){
+	TF2Attrib_SetByDefIndex(hat, 261, float(paint2));
+	}else{
+		// If paint2 is 0 (doesn't exist), then set paint to attribute 261 as well
+		TF2Attrib_SetByDefIndex(hat, 261, float(paint));
 	}
 	
 	if (scale != 0.0){
