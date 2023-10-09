@@ -138,52 +138,141 @@ public void ReadConfig()
     {
         // PrintToChatAll("Robot Name: %s", robotName);
 
-		char role[64], class[9], subclass[32], shortDescription[NAMELENGTH], tips[256];
-        char deathtip[256], model[256];
-        int difficulty, health, boss_cost;
-        float scale, cost;
+		// char role[64], class[9], subclass[32], shortDescription[NAMELENGTH], tips[256];
+        // char deathtip[256], model[256];
+        // int difficulty, health, boss_cost;
+        // float scale, cost;
 
-        // Attempt to fetch each attribute and set it
-        g_hConfig.GetString("role", role, sizeof(role));
-        g_hConfig.GetString("class", class, sizeof(class));
-        g_hConfig.GetString("subclass", subclass, sizeof(subclass));
-        g_hConfig.GetString("shortdescription", shortDescription, sizeof(shortDescription));
-        g_hConfig.GetString("tips", tips, sizeof(tips));
-        g_hConfig.GetString("deathtip", deathtip, sizeof(deathtip));
-        g_hConfig.GetString("model", model, sizeof(model));
+        // // Attempt to fetch each attribute and set it
+        // g_hConfig.GetString("role", role, sizeof(role));
+        // g_hConfig.GetString("class", class, sizeof(class));
+        // g_hConfig.GetString("subclass", subclass, sizeof(subclass));
+        // g_hConfig.GetString("shortdescription", shortDescription, sizeof(shortDescription));
+        // g_hConfig.GetString("tips", tips, sizeof(tips));
+        // g_hConfig.GetString("deathtip", deathtip, sizeof(deathtip));
+        // g_hConfig.GetString("model", model, sizeof(model));
         
-        difficulty = g_hConfig.GetNum("difficulty", difficulty);
-        health = g_hConfig.GetNum("health", health);
-        scale = g_hConfig.GetFloat("scale", scale);
-        cost = g_hConfig.GetFloat("rc_cost", cost);
-        boss_cost = g_hConfig.GetNum("boss_cost", boss_cost);
+        // difficulty = g_hConfig.GetNum("difficulty", difficulty);
+        // health = g_hConfig.GetNum("health", health);
+        // scale = g_hConfig.GetFloat("scale", scale);
+        // cost = g_hConfig.GetFloat("rc_cost", cost);
+        // boss_cost = g_hConfig.GetNum("boss_cost", boss_cost);
 
-        // Map the attributes to robot's properties
-        RobotDefinition robot;
-        robot.name = robotName;
-        robot.role = role;
-        robot.class = class;
-        robot.subclass = subclass;
-        robot.shortDescription = shortDescription;
-        robot.tips = tips;
-        robot.deathtip = deathtip;
-        robot.model = model;
-        robot.difficulty = difficulty;
-        robot.health = health;
-        // PrintToChatAll("Health reading from config was %i", health);
-        robot.scale = scale;
+        // // Map the attributes to robot's properties
+        // RobotDefinition robot;
+        // robot.name = robotName;
+        // robot.role = role;
+        // robot.class = class;
+        // robot.subclass = subclass;
+        // robot.shortDescription = shortDescription;
+        // robot.tips = tips;
+        // robot.deathtip = deathtip;
+        // robot.model = model;
+        // robot.difficulty = difficulty;
+        // robot.health = health;
+        // // PrintToChatAll("Health reading from config was %i", health);
+        // robot.scale = scale;
         // float cost;
         // robot.cost = cost;
-        RestrictionsDefinition restrictions = new RestrictionsDefinition();
-        
-        restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-        restrictions.RobotCoins.PerRobot = cost; 
 
-        if (boss_cost != 0)
+
+
+        char sString[256];
+        int iInteger;
+        float fFloat;
+        RobotDefinition robot;
+
+        // Fetch name
+        robot.name = robotName;
+        // strcopy(robot.name, sizeof(robot.name), robotName);
+        // PrintToChatAll("Robot Name was %s", robotName)
+        if (g_hConfig.GetString("class", sString, sizeof(robot.class)))
         {
-        restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-        restrictions.TeamCoins.Overall = boss_cost;
+            
+            strcopy(robot.class, sizeof(robot.class), sString);
         }
+
+        // For 'role'
+        if (g_hConfig.GetString("role", sString, sizeof(robot.role)))
+        {
+            strcopy(robot.role, sizeof(robot.role), sString);
+        }
+
+        // For 'subclass'
+        if (g_hConfig.GetString("subclass", sString, sizeof(robot.subclass)))
+        {
+            strcopy(robot.subclass, sizeof(robot.subclass), sString);
+        }
+
+        // For 'shortdescription'
+        if (g_hConfig.GetString("shortdescription", sString, sizeof(robot.shortDescription)))
+        {
+            strcopy(robot.shortDescription, sizeof(robot.shortDescription), sString);
+        }
+
+        // Fetch tips
+        if (g_hConfig.GetString("tips", sString, sizeof(sString)))
+        {
+            robot.tips = sString;
+        }
+
+        // Fetch deathtip
+        if (g_hConfig.GetString("deathtip", sString, sizeof(sString)))
+        {
+            robot.deathtip = sString;
+        }
+
+        // Fetch model
+        if (g_hConfig.GetString("model", sString, sizeof(sString)))
+        {
+            robot.model = sString;
+        }
+
+        // Fetch difficulty
+        iInteger = g_hConfig.GetNum("difficulty", iInteger);
+        robot.difficulty = iInteger;
+
+        // Fetch health
+        iInteger = g_hConfig.GetNum("health", iInteger);
+        robot.health = iInteger;
+
+        // Fetch scale
+        fFloat = g_hConfig.GetFloat("scale", fFloat);
+        robot.scale = fFloat;
+
+        RestrictionsDefinition restrictions = new RestrictionsDefinition();
+        bool hasRestrictions = false;
+
+        // Fetch cost
+        if (g_hConfig.GetFloat("rc_cost"))
+        {
+            fFloat = g_hConfig.GetFloat("rc_cost", fFloat);
+            if (restrictions.RobotCoins == null)
+            {
+                restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+            }
+            restrictions.RobotCoins.PerRobot = fFloat;
+            hasRestrictions = true;
+        }
+
+        // Fetch boss_cost
+        if (g_hConfig.GetNum("boss_cost"))
+        {
+            iInteger = g_hConfig.GetNum("boss_cost", iInteger);
+            if (restrictions.TeamCoins == null)
+            {
+                restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+            }
+            restrictions.TeamCoins.Overall = iInteger;
+            hasRestrictions = true;
+        }
+
+        if (!hasRestrictions)
+        {
+            delete restrictions;
+            restrictions = null;
+        }
+
         
 
 
@@ -267,7 +356,7 @@ public void ReadConfig()
     //     PrintToChatAll("No sounds key found for the robot.");
     // }
 
-	    AddRobot(robot, MakeRobot, PLUGIN_VERSION, restrictions);
+        AddRobot(robot, MakeRobot, PLUGIN_VERSION, restrictions);
     }
     // else
     // {
@@ -349,8 +438,18 @@ MakeRobot(client)
                 g_hConfig.GetSectionName(attributeName, sizeof(attributeName));
                 // Fetch the value for this attribute.
                 float attributeValue = g_hConfig.GetFloat(NULL_STRING); 
-                // PrintToChatAll("Attribute %s, value %f", attributeName, attributeValue);
-                TF2Attrib_SetByName(client, attributeName, attributeValue);
+
+                if (IsStringInteger(attributeName))
+                {
+                    int attributeIndex = StringToInt(attributeName);
+                    // Handle applying attribute by index here
+                    TF2Attrib_SetByDefIndex(client, attributeIndex, attributeValue);
+                }else
+                {
+                    // PrintToChatAll("Attribute %s, value %f", attributeName, attributeValue);
+                    TF2Attrib_SetByName(client, attributeName, attributeValue);    
+                }
+                
             }
             while (g_hConfig.GotoNextKey(false))// Iterate through all the attributes            
              g_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all attributes.      
@@ -429,11 +528,21 @@ stock MakeEquipment(client)
                             g_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
                             float attributeValue = g_hConfig.GetFloat(NULL_STRING);
 
+                            if (IsStringInteger(attributeKey))
+                            {
+                                int attributeIndex = StringToInt(attributeKey);
+                                // Handle applying attribute by index here
+                                TF2Attrib_SetByDefIndex(iWeapon, attributeIndex, attributeValue);
+                            }
+                            else
+                            {
                             // Apply each weapon attribute here.
                             // Note: Assuming you will have a function or mechanism to apply these attributes to the weapon
                             // Example: TF2Attrib_SetByNameForWeapon(client, weaponClassName, attributeKey, attributeValue);
-                            // PrintToChatAll("Key: %s, Attribute %f", attributeKey, attributeValue)
                             TF2Attrib_SetByName(iWeapon, attributeKey, attributeValue);
+                            }
+
+
                         } while (g_hConfig.GotoNextKey(false));
                         
                         g_hConfig.GoBack(); // Jump back to the weapon key after processing all attributes
@@ -482,6 +591,16 @@ stock MakeEquipment(client)
 
 
 	}
+}
+
+bool IsStringInteger(const char[] string)
+{
+    for(int i = 0; string[i] != '\0'; i++)
+    {
+        if (string[i] < '0' || string[i] > '9')
+            return false;
+    }
+    return true;
 }
 
 TFClassType StringToTFClassType(const char[] className) {
