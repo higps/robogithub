@@ -13,6 +13,7 @@
 #include <berobot>
 #include <berobot_core>
 #include <tf2attributes>
+#include <tf_custom_attributes>
 
 #define PATH "cfg/robots"
 #define PLUGIN_VERSION "0.2"
@@ -452,13 +453,39 @@ MakeRobot(client)
                 
             }
             while (g_hConfig.GotoNextKey(false))// Iterate through all the attributes            
-             g_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all attributes.      
+             g_hConfig.GoBack();
+        }
+        g_hConfig.GoBack();
+    // char sSection[64];
+    g_hConfig.GetSectionName(sSection, sizeof(sSection));
+    PrintToChatAll("Post player attribute Section %s", sSection);
+        if (g_hConfig.JumpToKey("custom_attributes_player"))
+        {
+            PrintToChatAll("Inside custom attribute player");
+            if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
+            {
+                // PrintToChatAll("Got 1");
+                do
+                {
+                    
+                    char attributeKey[256], attributeValue[256];
+
+                    g_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
+                    g_hConfig.GetString(NULL_STRING, attributeValue, sizeof(attributeValue));
+
+                    // Apply the custom attribute to the weapon
+                    PrintToChatAll("attributeKey %s, attributeValue %s", attributeKey, attributeValue);
+                    TF2CustAttr_SetString(client, attributeKey, attributeValue);
+
+                } while (g_hConfig.GotoNextKey(false));
+                
+            }
+
+            g_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "custom_attributes" key
         }
     }
     g_hConfig.GoBack(); 
-    // char sSection[64];
-    // g_hConfig.GetSectionName(sSection, sizeof(sSection));
-    // // PrintToChatAll("Post player attribute Section %s", sSection);
+
 	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
 }
@@ -506,11 +533,17 @@ stock MakeEquipment(client)
                 int paint = g_hConfig.GetNum("paint", 0);
                 int remove_attributes = g_hConfig.GetNum("remove_attributes", 0);
 
-
-                // Create the weapon for the client using the details fetched above.
-                int iWeapon = CreateRoboWeapon(client, weaponClassName, itemIndex, quality, level, slot, paint);
-                // PrintToChatAll("iWeapon %i", iWeapon);
-
+                int iWeapon;
+            // Check for special weapon ID 1101
+                if(itemIndex == 1101)
+                {
+                    iWeapon = CreateRoboWeaponWithAttributes(client, "tf_weapon_parachute", 1101, 6, 77, true, true, "");
+                }
+                else
+                {
+                    // Create the weapon for the client using the details fetched above.
+                    iWeapon = CreateRoboWeapon(client, weaponClassName, itemIndex, quality, level, slot, paint);
+                }
                 //Remove attributes if set to 1
                 if(remove_attributes)TF2Attrib_RemoveAll(iWeapon);
 
@@ -547,7 +580,38 @@ stock MakeEquipment(client)
                         
                         g_hConfig.GoBack(); // Jump back to the weapon key after processing all attributes
                     }
-                    g_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "attributes" key
+
+                   g_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "attributes" key
+                    
+                }
+                // char sSection[64];
+                // g_hConfig.GetSectionName(sSection, sizeof(sSection));
+                // PrintToChatAll("After Attributes, heading to custom_attributes Section %s", sSection);
+                //Now let's handle the custom attributes
+                if (g_hConfig.JumpToKey("custom_attributes_weapon"))
+                {
+                    //  PrintToChatAll("Inside custom attribute");
+                    if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
+                    {
+                        // PrintToChatAll("Got 1");
+                        do
+                        {
+                            
+                            char attributeKey[256], attributeValue[256];
+
+                            g_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
+                            g_hConfig.GetString(NULL_STRING, attributeValue, sizeof(attributeValue));
+
+                            // Apply the custom attribute to the weapon
+                            PrintToChatAll("attributeKey %s, attributeValue %s", attributeKey, attributeValue);
+                            TF2CustAttr_SetString(iWeapon, attributeKey, attributeValue);
+
+                        } while (g_hConfig.GotoNextKey(false));
+                        
+                        g_hConfig.GoBack(); // Jump back to the weapon key after processing all custom attributes
+                    }
+
+                    g_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "custom_attributes" key
                 }
 
             } while (g_hConfig.GotoNextKey()); // Iterate through all the weapons

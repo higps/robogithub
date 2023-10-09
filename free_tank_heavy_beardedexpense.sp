@@ -226,8 +226,8 @@ stock GiveBearded(client)
 		TF2_RemoveWeaponSlot(client, 2);
 		CreateRoboWeapon(client, "tf_weapon_fists", 239, 6, 1, 2, 0);
 
-		CreateRoboHat(client, HOUNDDOG, 10, 6, 1315860.0, 0.75, 0.0);
-		CreateRoboHat(client, ELDUDERINO, 10, 6, 1315860.0, 0.75, 0.0);
+		CreateRoboHat(client, HOUNDDOG, 10, 6, 1315860.0, 1315860.0,0.75, 0.0);
+		CreateRoboHat(client, ELDUDERINO, 10, 6, 1315860.0, 1315860.0, 0.75, 0.0);
 
 		int iTeam = GetClientTeam(client);
 		int suit = 0;
@@ -245,7 +245,7 @@ stock GiveBearded(client)
 				suit = WEIGHTROOMWARMER;//weight room warmer
 			}
 		}
-		CreateRoboHat(client, suit, 10, 6, 0.0, 0.0, 0.0);
+		CreateRoboHat(client, suit, 10, 6, 0, 0, 0, 0.0);
 		
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
@@ -270,7 +270,7 @@ stock GiveBearded(client)
 		}
 
 
-		CreateRoboHat(client, 111, 10, 6, 0.0, 1.0, 1.0); 
+		CreateRoboHat(client, 111, 10, 6, 0.0, 0.0, 1.0, 1.0); 
 		TF2Attrib_SetByName(client, "attach particle effect", 35.0);
 		
 		
