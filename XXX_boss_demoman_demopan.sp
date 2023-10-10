@@ -8,7 +8,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Demopan"
+#define ROBOT_NAME	"Demopan_OLD"
 #define ROBOT_ROLE "ZBOSS"
 #define ROBOT_DESCRIPTION "Crit Pan + Chargin' Targe"
 #define ROBOT_CLASS "Demoman"

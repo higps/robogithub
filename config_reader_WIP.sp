@@ -464,35 +464,47 @@ MakeRobot(client)
     // PrintToChatAll("Post player attribute Section %s", sSection);
     char attributeKey[256], attributeValue[256];
         //Code for player conditions such as crit_canteens.
-    if (g_hConfig.JumpToKey("player_conditions"))
+
+if (g_hConfig.JumpToKey("player_conditions"))
+{
+    char sSection[64];
+    g_hConfig.GetSectionName(sSection, sizeof(sSection));
+    if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
     {
-        char sCondition[16];  // Buffer to hold the section name.
-        
-        if (g_hConfig.GotoFirstSubKey(false))
+        do
         {
-            do
+            // The section name is directly the condition ID in this format.
+            char conditionIDStr[64];
+            g_hConfig.GetSectionName(conditionIDStr, sizeof(conditionIDStr));
+
+            // Convert the condition ID from string to integer.
+            int conditionID = StringToInt(conditionIDStr);
+
+            // Fetch the duration for this condition.
+            float duration = g_hConfig.GetFloat(NULL_STRING); 
+
+            // Apply the condition with the specified duration.
+            if (duration >= 0.0)
             {
-                // Get the section name as a string (the condition number)
-                g_hConfig.GetSectionName(sCondition, sizeof(sCondition));
-                int iCondition = StringToInt(sCondition);  // Convert the string to an integer.
+                TF2_AddCondition(client, conditionID, duration);
+            }
+            else
+            {
+                TF2_AddCondition(client, conditionID);
+            }
 
-                float flDuration;
-                // Attempt to retrieve a float. If successful, this is a duration.
-                if (g_hConfig.GetFloat("", flDuration))
-                {
-                    TF2_AddCondition(client, iCondition, flDuration);
-                }
-                else
-                {
-                    // If no duration is associated, add the condition indefinitely.
-                    TF2_AddCondition(client, iCondition);
-                }
-
-            } while (g_hConfig.GotoNextKey(false));
-        }
-        
+        } while (g_hConfig.GotoNextKey(false)); // Iterate through all the conditions.
         g_hConfig.GoBack();
     }
+    g_hConfig.GoBack();
+}
+
+
+    
+
+
+    g_hConfig.GoBack();
+    
 
 
 
@@ -579,11 +591,12 @@ stock MakeEquipment(client)
                 }
                 else
                 {
-                    // Create the weapon for the client using the details fetched above.
+                    // // Create the weapon for the client using the details fetched above.
+                    // PrintToChatAll("Creating weapon with %s", weaponClassName);
                     iWeapon = CreateRoboWeapon(client, weaponClassName, itemIndex, quality, level, slot, paint);
                 }
                 //Remove attributes if set to 1
-                if(remove_attributes)TF2Attrib_RemoveAll(iWeapon);
+               if(remove_attributes)TF2Attrib_RemoveAll(iWeapon);
 
                 // Now, if the "attributes" key exists, loop through weapon attributes
                 if (g_hConfig.JumpToKey("attributes") && IsValidEntity(iWeapon))
