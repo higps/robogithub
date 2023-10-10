@@ -233,6 +233,8 @@ public void ReadConfig()
         iInteger = g_hConfig.GetNum("difficulty", iInteger);
         robot.difficulty = iInteger;
 
+
+        //Could optmize these to be read from the config later, but it doesn't really matter too much I think
         // Fetch health
         iInteger = g_hConfig.GetNum("health", iInteger);
         robot.health = iInteger;
@@ -456,25 +458,61 @@ MakeRobot(client)
              g_hConfig.GoBack();
         }
         g_hConfig.GoBack();
+
     // char sSection[64];
-    g_hConfig.GetSectionName(sSection, sizeof(sSection));
-    PrintToChatAll("Post player attribute Section %s", sSection);
+    // g_hConfig.GetSectionName(sSection, sizeof(sSection));
+    // PrintToChatAll("Post player attribute Section %s", sSection);
+    char attributeKey[256], attributeValue[256];
+        //Code for player conditions such as crit_canteens.
+    if (g_hConfig.JumpToKey("player_conditions"))
+    {
+        char sCondition[16];  // Buffer to hold the section name.
+        
+        if (g_hConfig.GotoFirstSubKey(false))
+        {
+            do
+            {
+                // Get the section name as a string (the condition number)
+                g_hConfig.GetSectionName(sCondition, sizeof(sCondition));
+                int iCondition = StringToInt(sCondition);  // Convert the string to an integer.
+
+                float flDuration;
+                // Attempt to retrieve a float. If successful, this is a duration.
+                if (g_hConfig.GetFloat("", flDuration))
+                {
+                    TF2_AddCondition(client, iCondition, flDuration);
+                }
+                else
+                {
+                    // If no duration is associated, add the condition indefinitely.
+                    TF2_AddCondition(client, iCondition);
+                }
+
+            } while (g_hConfig.GotoNextKey(false));
+        }
+        
+        g_hConfig.GoBack();
+    }
+
+
+
+
+        
+    
         if (g_hConfig.JumpToKey("custom_attributes_player"))
         {
-            PrintToChatAll("Inside custom attribute player");
             if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
             {
                 // PrintToChatAll("Got 1");
                 do
                 {
-                    
-                    char attributeKey[256], attributeValue[256];
+                    // char attributeKey[256], attributeValue[256];
 
                     g_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
                     g_hConfig.GetString(NULL_STRING, attributeValue, sizeof(attributeValue));
 
                     // Apply the custom attribute to the weapon
-                    PrintToChatAll("attributeKey %s, attributeValue %s", attributeKey, attributeValue);
+                    //PrintToChatAll("attributeKey %s, attributeValue %s", attributeKey, attributeValue);
                     TF2CustAttr_SetString(client, attributeKey, attributeValue);
 
                 } while (g_hConfig.GotoNextKey(false));
@@ -548,7 +586,7 @@ stock MakeEquipment(client)
                 if(remove_attributes)TF2Attrib_RemoveAll(iWeapon);
 
                 // Now, if the "attributes" key exists, loop through weapon attributes
-                if (g_hConfig.JumpToKey("attributes"))
+                if (g_hConfig.JumpToKey("attributes") && IsValidEntity(iWeapon))
                 {
                     //First we need to check if the attributes uses index or string. Preferably string as then we can create and apply attributes at the same time
                     // PrintToChatAll("IN  ATTRIBUTES");

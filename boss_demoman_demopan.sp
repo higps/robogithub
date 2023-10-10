@@ -225,22 +225,3 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		}
 	
 }
-
-
-// public void TF2_OnConditionRemoved(int client, TFCond condition)
-// {
-// 	//PrintToChatAll("CONDITION REMOVED!");
-// 	if (IsRobot(client, ROBOT_NAME)){
-
-	
-//     if(condition == TFCond_RuneHaste){
-
-// 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-
-// 	}
-// 	// TF2_RemoveCondition(client, TFCond_Dazed);
-// 	// TF2_RemoveCondition(client, TFCond_KnockedIntoAir);
-// 	// PrintToChatAll("Condition was: %i", condition);
-//    }
-
-// }
