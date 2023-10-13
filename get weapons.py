@@ -1,137 +1,90 @@
-import os
 import re
-import shutil
-
-# Constants
-WEAPON_SLOTS = {
-    "TFWeaponSlot_Primary": "0",
-    "TFWeaponSlot_Secondary": "1",
-    "TFWeaponSlot_Melee": "2",
-    "TFWeaponSlot_Grenade": "3",
-    "TFWeaponSlot_Building": "4",
-    "TFWeaponSlot_PDA": "5",
-    "TFWeaponSlot_Item1": "6",
-    "TFWeaponSlot_Item2": "7"
-}
+import os
 
 def extract_equipment_data(filename):
     with open(filename, 'r') as file:
         content = file.readlines()
 
-    data = {
-        "weapons": {}
-    }
-
-    weapon_attrs = {}
-    current_weapon = None
-    current_slot = None
+    weapons = {}
+    weapon_references = {}
 
     for line in content:
-
-        # Skip commented lines
-        if line.strip().startswith('//'):
+        # Ignore commented out lines
+        if line.strip().startswith("//"):
             continue
 
-        # Create weapons
-        weapon_match = re.search(r'CreateRoboWeapon\(\w+, "([^"]+)", (\d+), (\d+), (\d+), (\d+), \d+\);', line)
+        # Extract weapon creation
+        weapon_match = re.search(r'CreateRoboWeapon\(\w+, "([^"]+)", (\d+), (\d+), (\d+), (\d+), (\d+)\);', line)
         if weapon_match:
             weapon_name = weapon_match.group(1)
-            data["weapons"][weapon_name] = {
+            weapon_data = {
                 "itemindex": weapon_match.group(2),
                 "quality": weapon_match.group(3),
                 "level": weapon_match.group(4),
                 "slot": weapon_match.group(5)
             }
-            current_weapon = weapon_name
-            current_slot = weapon_match.group(5)
-            weapon_attrs[current_weapon] = []
+            weapons[weapon_name] = weapon_data
 
-        # Extract the weapon slot
-        weapon_slot_match = re.search(r'GetPlayerWeaponSlot\(\w+, (\w+)\);', line)
-        if weapon_slot_match:
-            weapon_slot_enum = weapon_slot_match.group(1)
+        # Map the weapon reference variable to weapon name
+        ref_match = re.search(r'int (\w+) = GetPlayerWeaponSlot\(\w+, \w+\);', line)
+        if ref_match:
+            weapon_ref = ref_match.group(1)
+            weapon_references[weapon_ref] = None
+            for key in weapons:
+                weapon_references[weapon_ref] = key
+                break
 
-            # Ensure the weapon_slot_enum is in our dictionary
-            if weapon_slot_enum not in WEAPON_SLOTS:
-                print(f"Warning: Unexpected weapon slot '{weapon_slot_enum}' found. Skipping...")
-                continue
+        # Extract weapon attributes
+        attrs_match = re.search(r'if\(IsValidEntity\((\w+)\)\)', line)
+        if attrs_match:
+            weapon_ref = attrs_match.group(1)
+            weapon_name = weapon_references.get(weapon_ref)
+            attributes = {}
 
-            current_slot = WEAPON_SLOTS[weapon_slot_enum]
+            index = content.index(line) + 1
+            while 'TF2Attrib_SetByName' in content[index]:
+                attr_match = re.search(r'TF2Attrib_SetByName\(\w+, "([^"]+)", ([\d.]+)\);', content[index])
+                if attr_match:
+                    attr_name = attr_match.group(1)
+                    attr_val = attr_match.group(2)
+                    attributes[attr_name] = attr_val
+                index += 1
 
-        # Weapon attributes
-        attrs_match = re.search(r'TF2Attrib_SetByName\(\w+, "([^"]+)", ([\d.]+)\);', line)
-        if attrs_match and current_slot:
-            attr_name = attrs_match.group(1)
-            attr_val = attrs_match.group(2)
-            for weapon, details in data["weapons"].items():
-                if details["slot"] == current_slot:
-                    if "attributes" not in details:
-                        details["attributes"] = {}
-                    details["attributes"][attr_name] = attr_val
+            if weapon_name:
+                if weapon_ref not in weapons:
+                    weapons[weapon_ref] = {
+                        "weapon_class_name": weapon_name,
+                        "attributes": {}
+                    }
 
-    return data
+                weapons[weapon_ref]['attributes'].update(attributes)
 
+    return weapons
 
+def process_files(directory_path):
+    output = {}
+    for filename in os.listdir(directory_path):
+        if filename.endswith('.sp') and (filename.startswith('free_') or filename.startswith('paid_') or filename.startswith('boss_')):
+            filepath = os.path.join(directory_path, filename)
+            weapons_data = extract_equipment_data(filepath)
+            output.update(weapons_data)
 
-def write_cfg_file(filename, data):
-    output_dir = "CFG_WEAPON_GROUPING"
-    os.makedirs(output_dir, exist_ok=True)  # Ensure the directory exists
-    
-    new_filename = os.path.join(output_dir, os.path.splitext(filename)[0] + "WEAPONS.cfg")
-    
-    with open(new_filename, 'w') as output_file:
-        output_file.write("\"weapons\"\n{\n")
-        for weapon, details in data["weapons"].items():
-            output_file.write(f'  "{weapon}"\n  {{\n')
+    # Write the final CFG output
+    with open("CFG_WEAPON_ATTRIBUTE_GROUPING/cfg_output.cfg", 'w') as out_file:
+        for weapon_ref, details in output.items():
+            out_file.write(f'"{weapon_ref}"\n{{\n')
             for key, value in details.items():
                 if key != "attributes":
-                    output_file.write(f'    "{key}" "{value}"\n')
+                    out_file.write(f'  "{key}" "{value}"\n')
                 else:
-                    output_file.write('    "attributes"\n    {\n')
+                    out_file.write('  "attributes"\n  {\n')
                     for attr_name, attr_val in value.items():
-                        output_file.write(f'      "{attr_name}" "{attr_val}"\n')
-                    output_file.write('    }\n')
-            output_file.write("  }\n")
-        output_file.write("}\n")
+                        out_file.write(f'    "{attr_name}" "{attr_val}"\n')
+                    out_file.write('  }\n')
+            out_file.write('}\n')
 
-def get_files_from_directory(prefixes=["free_", "boss_", "paid_"], extension=".sp"):
-    # Get all files from the current directory
-    all_files = os.listdir()
-
-    # Filter files based on the given prefixes and extension
-    filtered_files = [f for f in all_files if any(f.startswith(prefix) for prefix in prefixes) and f.endswith(extension)]
-    
-    return filtered_files
-
-def check_for_manual_input(filename):
-    with open(filename, 'r') as file:
-        content = file.readlines()
-
-    for line in content:
-        # Skip commented lines
-        if line.strip().startswith('//'):
-            continue
-        
-        # Check for the specific while loop pattern
-        if "while" in line and "FindEntityByClassname" in line and "tf_wearable" in line:
-            return True
-
-    return False
-
-def rename_with_prefix(filename):
-    new_filename = "XXX_" + filename
-    os.rename(filename, new_filename)
-    return new_filename
-
-if __name__ == "__main__":
-    files_to_process = get_files_from_directory()
-    for filename in files_to_process:
-        needs_manual_input = check_for_manual_input(filename)
-            
-        if needs_manual_input:
-            filename = rename_with_prefix(filename)
-                
-        data = extract_equipment_data(filename)
-        write_cfg_file(filename, data)
-
-        
+if __name__ == '__main__':
+    directory_path = input("Enter the directory path: ")
+    if not os.path.exists("CFG_WEAPON_ATTRIBUTE_GROUPING"):
+        os.makedirs("CFG_WEAPON_ATTRIBUTE_GROUPING")
+    process_files(directory_path)

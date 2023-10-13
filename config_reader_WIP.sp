@@ -427,6 +427,17 @@ MakeRobot(client)
         PrintToChatAll("Mismatch! Expected robot name %s but got %s from config.", robotName, configRobotName);
         return;
     }
+
+    int bonus_hp = 0;
+    if(g_hConfig.GetNum("health_bonus_per_player"))
+    {
+        bonus_hp = g_hConfig.GetNum("health_bonus_per_player", bonus_hp);
+        PrintToChatAll("Found bonus HP it was %i", bonus_hp);
+        bonus_hp *= GetCurrentHumanCount();
+    }
+
+    RoboSetHealth(client, iRobot_class, robot.health + bonus_hp);
+
     // Reading player attributes and setting them.
     if (g_hConfig.JumpToKey("player_attributes"))
     {
