@@ -4,9 +4,9 @@ def rename_files(directory_path):
     # List all files in the specified directory
     for filename in os.listdir(directory_path):
         # Check if the file is a .cfg file and contains the string "_attributes"
-        if filename.endswith('.cfg') and "_weapon_attribute_grouping" in filename:
+        if filename.endswith('.cfg') and "_output" in filename:
             # Form the new filename by removing "_attributes"
-            new_filename = filename.replace("_weapon_attribute_grouping", "")
+            new_filename = filename.replace("_output", "")
             # Rename the file
             os.rename(os.path.join(directory_path, filename), os.path.join(directory_path, new_filename))
             print(f'Renamed {filename} to {new_filename}')
