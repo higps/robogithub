@@ -8,7 +8,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Kristianma"
+#define ROBOT_NAME	"Kristianma2"
 #define ROBOT_ROLE "Disruptor"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Disruptor"
@@ -113,8 +113,6 @@ MakeGiantPyro(client)
 	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
 	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 1.5);
 	TF2Attrib_SetByName(client, "airblast vertical vulnerability multiplier", 1.5);
-
-	
 	TF2Attrib_SetByName(client, "deploy time decreased", 0.75);
 	TF2Attrib_SetByName(client, "boots falling stomp", 1.0);
 	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=100.0 stomp-damage=125.0");
@@ -171,9 +169,9 @@ stock GiveGiantPyro(client)
 			TeamPaint = 5801378.0;
 		}
 
-		CreateRoboHat(client, HEADWARMER, 10, 6, 0.0, 1.0, -1.0);
-		CreateRoboHat(client, CUTESUIT, 10, 6, TeamPaint, 0.75, -1.0);
-		CreateRoboHat(client, FLASHDANCEFOOTIES, 10, 6, 0.0, 0.75, -1.0);
+		CreateRoboHat(client, HEADWARMER, 10, 6, 0.0, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, CUTESUIT, 10, 6, TeamPaint, TeamPaint, 0.75, -1.0);
+		CreateRoboHat(client, FLASHDANCEFOOTIES, 10, 6, 0.0, 0.0, 0.75, -1.0);
 
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);

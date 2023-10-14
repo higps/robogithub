@@ -143,7 +143,8 @@ stock GiveGiantDemoKnight(client)
 		CreateRoboHat(client, KingOfScotland, 10, 6, 0.0, 1.0, 1.0); 
 		CreateRoboHat(client, CoolBreeze, 10, 6, 0.0, 1.0, 1.0); 
 
-		
+
+
 		int iEntity2 = -1;
 		while ((iEntity2 = FindEntityByClassname(iEntity2, "tf_wearable_demoshield")) != -1)
 		{

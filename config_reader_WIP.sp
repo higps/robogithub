@@ -301,6 +301,9 @@ public void ReadConfig()
             int footstep = StringToInt(sound);
             robot.footstep = footstep;
             // PrintToChatAll("ROBOT LOOP SOUND: %s", robot.sounds.loop);
+        }else
+        {
+            robot.footstep = ROBOT_FOOTSTEP_GIANTCOMMON;
         }
 
         if (g_hConfig.GetString("weaponsound", sound, sizeof(sound)))
@@ -525,7 +528,13 @@ MakeRobotFrame(client)
                         
                         i_hConfig.GoBack(); // Jump back to the weapon key after processing all attributes
                     }
-
+                    if(IsValidEntity(iWeapon))
+                    {
+                    if (HasEntProp(iWeapon, Prop_Send, "m_iPrimaryAmmoType"))
+                     {
+                        RoboCorrectClipSize(iWeapon);
+                     }
+                    }
                    i_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "attributes" key
                     
                 }
