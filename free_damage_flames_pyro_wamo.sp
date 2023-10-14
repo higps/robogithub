@@ -8,7 +8,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Wamo"
+#define ROBOT_NAME	"Wamo_OLD"
 #define ROBOT_ROLE "Damage"
 #define ROBOT_CLASS "Pyro"
 #define ROBOT_SUBCLASS "Flames"
@@ -190,9 +190,9 @@ stock GiveGiantPyro(client)
 		CreateRoboWeapon(client, "tf_weapon_flamethrower", 594, 6, 1, 0, 0);
 		CreateRoboWeapon(client, "tf_weapon_flaregun_revenge", 595, 6, 1, 1, 0);
 
-		CreateRoboHat(client, FlameboyantFlamenco, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, LastBreath, 10, 6, 0.0, 1.0, -1.0); 
-		CreateRoboHat(client, SubzeroSuit, 10, 6, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, FlameboyantFlamenco, 10, 6, 0.0, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, LastBreath, 10, 6, 0.0, 0.0, 1.0, -1.0); 
+		CreateRoboHat(client, SubzeroSuit, 10, 6, 0.0, 0.0, 1.0, -1.0); 
 
 		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);

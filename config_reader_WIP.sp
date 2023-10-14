@@ -64,6 +64,17 @@ public void _InternalAddPaint(char[] name, int value1, int value2)
 
 public void OnPluginStart()
 {
+
+    RegAdminCmd("sm_reload_robot_configs", Cmd_ReloadRobotConfigs, ADMFLAG_SLAY, "Reload the robot configs");
+    Initialize();
+    
+     //Debug function to print the robot path
+     //PrintConfigPathForRobotName("A-Robot");
+}
+
+public Action Initialize()
+{
+    // PrintToChatAll("Initializing");
     s_RobotConfigPaths = new StringMap();
     char fileName[256];
     Handle dir = OpenDirectory(PATH);
@@ -101,8 +112,16 @@ public void OnPluginStart()
     }
 
     CloseHandle(dir);
-     //Debug function to print the robot path
-     //PrintConfigPathForRobotName("A-Robot");
+
+}
+
+public Action Cmd_ReloadRobotConfigs(int client, int argc)
+{
+
+    Initialize();
+    if(IsValidClient)ReplyToCommand(client, "[SM] Robot configs reloaded successfully!");
+
+    return Plugin_Handled;
 }
 
 //Debug function to print the robot path
@@ -137,56 +156,12 @@ public void ReadConfig()
     char robotName[64];
     if (g_hConfig.GetString("name", robotName, sizeof(robotName)))
     {
-        // PrintToChatAll("Robot Name: %s", robotName);
-
-		// char role[64], class[9], subclass[32], shortDescription[NAMELENGTH], tips[256];
-        // char deathtip[256], model[256];
-        // int difficulty, health, boss_cost;
-        // float scale, cost;
-
-        // // Attempt to fetch each attribute and set it
-        // g_hConfig.GetString("role", role, sizeof(role));
-        // g_hConfig.GetString("class", class, sizeof(class));
-        // g_hConfig.GetString("subclass", subclass, sizeof(subclass));
-        // g_hConfig.GetString("shortdescription", shortDescription, sizeof(shortDescription));
-        // g_hConfig.GetString("tips", tips, sizeof(tips));
-        // g_hConfig.GetString("deathtip", deathtip, sizeof(deathtip));
-        // g_hConfig.GetString("model", model, sizeof(model));
-        
-        // difficulty = g_hConfig.GetNum("difficulty", difficulty);
-        // health = g_hConfig.GetNum("health", health);
-        // scale = g_hConfig.GetFloat("scale", scale);
-        // cost = g_hConfig.GetFloat("rc_cost", cost);
-        // boss_cost = g_hConfig.GetNum("boss_cost", boss_cost);
-
-        // // Map the attributes to robot's properties
-        // RobotDefinition robot;
-        // robot.name = robotName;
-        // robot.role = role;
-        // robot.class = class;
-        // robot.subclass = subclass;
-        // robot.shortDescription = shortDescription;
-        // robot.tips = tips;
-        // robot.deathtip = deathtip;
-        // robot.model = model;
-        // robot.difficulty = difficulty;
-        // robot.health = health;
-        // // PrintToChatAll("Health reading from config was %i", health);
-        // robot.scale = scale;
-        // float cost;
-        // robot.cost = cost;
-
-
 
         char sString[256];
         int iInteger;
         float fFloat;
         RobotDefinition robot;
-
-        // Fetch name
         robot.name = robotName;
-        // strcopy(robot.name, sizeof(robot.name), robotName);
-        // PrintToChatAll("Robot Name was %s", robotName)
         if (g_hConfig.GetString("class", sString, sizeof(robot.class)))
         {
             
@@ -476,52 +451,42 @@ MakeRobot(client)
     char attributeKey[256], attributeValue[256];
         //Code for player conditions such as crit_canteens.
 
-if (g_hConfig.JumpToKey("player_conditions"))
-{
-    char sSection[64];
-    g_hConfig.GetSectionName(sSection, sizeof(sSection));
-    if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
+    if (g_hConfig.JumpToKey("player_conditions"))
     {
-        do
+        char sSection[64];
+        g_hConfig.GetSectionName(sSection, sizeof(sSection));
+        if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
         {
-            // The section name is directly the condition ID in this format.
-            char conditionIDStr[64];
-            g_hConfig.GetSectionName(conditionIDStr, sizeof(conditionIDStr));
-
-            // Convert the condition ID from string to integer.
-            int conditionID = StringToInt(conditionIDStr);
-
-            // Fetch the duration for this condition.
-            float duration = g_hConfig.GetFloat(NULL_STRING); 
-
-            // Apply the condition with the specified duration.
-            if (duration >= 0.0)
+            do
             {
-                TF2_AddCondition(client, conditionID, duration);
-            }
-            else
-            {
-                TF2_AddCondition(client, conditionID);
-            }
+                // The section name is directly the condition ID in this format.
+                char conditionIDStr[64];
+                g_hConfig.GetSectionName(conditionIDStr, sizeof(conditionIDStr));
 
-        } while (g_hConfig.GotoNextKey(false)); // Iterate through all the conditions.
+                // Convert the condition ID from string to integer.
+                int conditionID = StringToInt(conditionIDStr);
+
+                // Fetch the duration for this condition.
+                float duration = g_hConfig.GetFloat(NULL_STRING); 
+
+                // Apply the condition with the specified duration.
+                if (duration >= 0.0)
+                {
+                    TF2_AddCondition(client, conditionID, duration);
+                }
+                else
+                {
+                    TF2_AddCondition(client, conditionID);
+                }
+
+            } while (g_hConfig.GotoNextKey(false)); // Iterate through all the conditions.
+            g_hConfig.GoBack();
+        }
         g_hConfig.GoBack();
     }
-    g_hConfig.GoBack();
-}
-
-
-    
-
 
     g_hConfig.GoBack();
-    
 
-
-
-
-        
-    
         if (g_hConfig.JumpToKey("custom_attributes_player"))
         {
             if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
