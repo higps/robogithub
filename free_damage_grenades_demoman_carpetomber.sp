@@ -123,12 +123,6 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	return APLRes_Success;
 }
 
-public OnMapStart()
-{
-
-
-}
-
 public Action:SetModel(client, const String:model[])
 {
 	if (IsValidClient(client) && IsPlayerAlive(client))
@@ -220,8 +214,8 @@ stock GiveGiantDemoKnight(client)
 		// CreateRoboWeapon(client, "tf_weapon_sword", 132, 6, 1, 2, 0);
 
 		// CreateRoboHat(client, HurtLocher, 10, 6, 15185211.0, 1.0, 1.0); 
-		CreateRoboHat(client, Captain, 10, 6, 15185211.0, 1.0, 1.0); 
-		CreateRoboHat(client, HighLandHighHeels, 10, 6, 15185211.0, 1.0, 1.0); 
+		CreateRoboHat(client, Captain, 10, 6, 15185211.0, 15185211.0, 1.0, 1.0); 
+		CreateRoboHat(client, HighLandHighHeels, 10, 6, 15185211.0, 15185211.0, 1.0, 1.0); 
 
 		
 

@@ -215,7 +215,14 @@ public void ReadConfig()
         robot.health = iInteger;
 
         // Fetch scale
-        fFloat = g_hConfig.GetFloat("scale", fFloat);
+        if(g_hConfig.GetFloat("scale"))
+        {
+            fFloat = g_hConfig.GetFloat("scale", fFloat);
+        }else
+        {
+            fFloat = 1.75
+        }
+        
         robot.scale = fFloat;
 
         RestrictionsDefinition restrictions = new RestrictionsDefinition();
@@ -351,11 +358,19 @@ public void OnPluginEnd()
 
 MakeRobot(client)
 {
+    RequestFrame(MakeRobotFrame, client);
+}
+
+MakeRobotFrame(client)
+{
+    
     Robot robot;   
     char robotName[NAMELENGTH];
     GetRobot(client, robotName, NAMELENGTH);
+
     GetRobotDefinition(robotName, robot);
-    // PrintToChatAll("Robot name for %N was %s", client, robot.name);
+    // PrintToChatAll("===");
+    // PrintToChatAll("%N: Robot name: %s", client, robotName);
 
     char configPath[256];
     s_RobotConfigPaths.GetString(robotName, configPath, sizeof(configPath));
@@ -373,20 +388,27 @@ MakeRobot(client)
 		SetEntProp(GetPlayerWeaponSlot(client, 0), Prop_Send, "m_iWeaponState", 0);
 		TF2_RemoveCondition(client, TFCond_Slowed);
 	}
-	CreateTimer(0.0, Timer_Switch, client);
+
 
 	SetModel(client, robot.model);
 
 	RoboSetHealth(client,iRobot_class, robot.health);
+	RoboRemoveAllWearables(client);
+    // RemoveWeaponSlots(client);
+
+
+
+
 
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", robot.scale);
     UpdatePlayerHitbox(client, robot.scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 
-    g_hConfig.DeleteThis();  // Clear any previous data.
-    g_hConfig = new KeyValues("Robot");
-
-    if (!g_hConfig.ImportFromFile(configPath))
+    //g_hConfig.DeleteThis();  // Clear any previous data.
+    KeyValues i_hConfig = new KeyValues("Robot");
+	// CreateTimer(0.0, Timer_Switch, client);
+    // MakeEquipment(client, robot);
+    if (!i_hConfig.ImportFromFile(configPath))
     {
         PrintToChatAll("Failed to import robot config from path %s for robot name %s", configPath, robotName);
         return;
@@ -394,170 +416,66 @@ MakeRobot(client)
 
     // Now, fetch the name from the configuration to verify.
     char configRobotName[NAMELENGTH];
-    g_hConfig.GetString("name", configRobotName, sizeof(configRobotName));
-
+    i_hConfig.GetString("name", configRobotName, sizeof(configRobotName));
+    // PrintToChatAll("%N: Config name: %s", client,configRobotName);
     // Verify if the name in the config matches the expected name.
     if (strcmp(robotName, configRobotName) != 0)
     {
-        PrintToChatAll("Mismatch! Expected robot name %s but got %s from config.", robotName, configRobotName);
+        //PrintToChatAll("Mismatch! Expected robot name %s but got %s from config.", robotName, configRobotName);
         return;
     }
 
-    int bonus_hp = 0;
-    if(g_hConfig.GetNum("health_bonus_per_player"))
+    if (i_hConfig.JumpToKey("remove_weapon_slots"))
     {
-        bonus_hp = g_hConfig.GetNum("health_bonus_per_player", bonus_hp);
-        PrintToChatAll("Found bonus HP it was %i", bonus_hp);
-        bonus_hp *= GetCurrentHumanCount();
-    }
 
-    RoboSetHealth(client, iRobot_class, robot.health + bonus_hp);
-
-    // Reading player attributes and setting them.
-    if (g_hConfig.JumpToKey("player_attributes"))
-    {
-        char sSection[64];
-        g_hConfig.GetSectionName(sSection, sizeof(sSection));
-        if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
+        if (i_hConfig.GotoFirstSubKey(.keyOnly=false))
         {
+            // PrintToChatAll("Got 3");
             do
             {
-              // The section name is directly the attribute name in this format.
-                char attributeName[256];
-                g_hConfig.GetSectionName(attributeName, sizeof(attributeName));
-                // Fetch the value for this attribute.
-                float attributeValue = g_hConfig.GetFloat(NULL_STRING); 
+                // PrintToChatAll("Got 4");
+                int slotNumber = i_hConfig.GetNum(NULL_STRING, -1); // Assuming -1 indicates a failure to fetch
 
-                if (IsStringInteger(attributeName))
+                // Check if we have a valid slotNumber and it's within the expected range (0 to 5, for now)
+                if (slotNumber >= 0 && slotNumber <= 5) 
                 {
-                    int attributeIndex = StringToInt(attributeName);
-                    // Handle applying attribute by index here
-                    TF2Attrib_SetByDefIndex(client, attributeIndex, attributeValue);
-                }else
-                {
-                    // PrintToChatAll("Attribute %s, value %f", attributeName, attributeValue);
-                    TF2Attrib_SetByName(client, attributeName, attributeValue);    
+                    // PrintToChatAll("Got 5");
+                    // Remove the weapon slot
+                    // PrintToChatAll("Slotnumber %i", slotNumber);
+                    TF2_RemoveWeaponSlot(client, slotNumber);
                 }
-                
-            }
-            while (g_hConfig.GotoNextKey(false))// Iterate through all the attributes            
-             g_hConfig.GoBack();
+
+            } while (i_hConfig.GotoNextKey(false));
+
+            i_hConfig.GoBack();  // Go back to the parent key after processing all weapon slots
         }
-        g_hConfig.GoBack();
-
-    // char sSection[64];
-    // g_hConfig.GetSectionName(sSection, sizeof(sSection));
-    // PrintToChatAll("Post player attribute Section %s", sSection);
-    char attributeKey[256], attributeValue[256];
-        //Code for player conditions such as crit_canteens.
-
-    if (g_hConfig.JumpToKey("player_conditions"))
-    {
-        char sSection[64];
-        g_hConfig.GetSectionName(sSection, sizeof(sSection));
-        if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
-        {
-            do
-            {
-                // The section name is directly the condition ID in this format.
-                char conditionIDStr[64];
-                g_hConfig.GetSectionName(conditionIDStr, sizeof(conditionIDStr));
-
-                // Convert the condition ID from string to integer.
-                int conditionID = StringToInt(conditionIDStr);
-
-                // Fetch the duration for this condition.
-                float duration = g_hConfig.GetFloat(NULL_STRING); 
-
-                // Apply the condition with the specified duration.
-                if (duration >= 0.0)
-                {
-                    TF2_AddCondition(client, conditionID, duration);
-                }
-                else
-                {
-                    TF2_AddCondition(client, conditionID);
-                }
-
-            } while (g_hConfig.GotoNextKey(false)); // Iterate through all the conditions.
-            g_hConfig.GoBack();
-        }
-        g_hConfig.GoBack();
+        i_hConfig.GoBack();
     }
+    
 
-    g_hConfig.GoBack();
 
-        if (g_hConfig.JumpToKey("custom_attributes_player"))
-        {
-            if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
-            {
-                // PrintToChatAll("Got 1");
-                do
-                {
-                    // char attributeKey[256], attributeValue[256];
-
-                    g_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
-                    g_hConfig.GetString(NULL_STRING, attributeValue, sizeof(attributeValue));
-
-                    // Apply the custom attribute to the weapon
-                    //PrintToChatAll("attributeKey %s, attributeValue %s", attributeKey, attributeValue);
-                    TF2CustAttr_SetString(client, attributeKey, attributeValue);
-
-                } while (g_hConfig.GotoNextKey(false));
-                
-            }
-
-            g_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "custom_attributes" key
-        }
-    }
-    g_hConfig.GoBack(); 
-
-	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-}
-
-public Action:SetModel(client, const String:model[])
-{
-	if (IsValidClient(client) && IsPlayerAlive(client))
-	{
-		SetVariantString(model);
-		AcceptEntityInput(client, "SetCustomModel");
-
-		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
-	}
-}
-
-public Action:Timer_Switch(Handle:timer, any:client)
-{
-	if (IsValidClient(client))
-		MakeEquipment(client);
-}
-
-stock MakeEquipment(client)
-{
-	if (IsValidClient(client))
-	{
-		//Remove items and hats
-		RoboRemoveAllWearables(client);
-        RemoveWeaponSlots(client);
-
-    if (g_hConfig.JumpToKey("weapons"))
+ if (i_hConfig.JumpToKey("weapons"))
     {
         
-        if (g_hConfig.GotoFirstSubKey())
+        if (i_hConfig.GotoFirstSubKey())
         {
             do
             {
                 // Get the weapon's class name
                 char weaponClassName[256];
-                g_hConfig.GetSectionName(weaponClassName, sizeof(weaponClassName));
+                i_hConfig.GetSectionName(weaponClassName, sizeof(weaponClassName));
 
-                int itemIndex = g_hConfig.GetNum("itemindex", 0);
-                int quality = g_hConfig.GetNum("quality", 0);
-                int level = g_hConfig.GetNum("level", 0);
-                int slot = g_hConfig.GetNum("slot", 0);
-                int paint = g_hConfig.GetNum("paint", 0);
-                int remove_attributes = g_hConfig.GetNum("remove_attributes", 0);
+                int itemIndex = i_hConfig.GetNum("itemindex", 0);
+                
+                int quality = i_hConfig.GetNum("quality", 0);
+
+                int level = i_hConfig.GetNum("level", 0);
+                
+                int slot = i_hConfig.GetNum("slot", 0);
+                
+
+                int paint = i_hConfig.GetNum("paint", 0);
+                int remove_attributes = i_hConfig.GetNum("remove_attributes", 0);
 
                 int iWeapon;
             // Check for special weapon ID 1101
@@ -568,25 +486,25 @@ stock MakeEquipment(client)
                 else
                 {
                     // // Create the weapon for the client using the details fetched above.
-                    // PrintToChatAll("Creating weapon with %s", weaponClassName);
+                    PrintToChatAll("%N: Creating weapon with %s", client, weaponClassName);
                     iWeapon = CreateRoboWeapon(client, weaponClassName, itemIndex, quality, level, slot, paint);
                 }
                 //Remove attributes if set to 1
                if(remove_attributes)TF2Attrib_RemoveAll(iWeapon);
 
                 // Now, if the "attributes" key exists, loop through weapon attributes
-                if (g_hConfig.JumpToKey("attributes") && IsValidEntity(iWeapon))
+                if (i_hConfig.JumpToKey("attributes") && IsValidEntity(iWeapon))
                 {
                     //First we need to check if the attributes uses index or string. Preferably string as then we can create and apply attributes at the same time
                     // PrintToChatAll("IN  ATTRIBUTES");
-                    if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
+                    if (i_hConfig.GotoFirstSubKey(.keyOnly=false))
                     {
                         // PrintToChatAll("GOT THE FIRST KEY");
                         do
                         {
                             char attributeKey[256];
-                            g_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
-                            float attributeValue = g_hConfig.GetFloat(NULL_STRING);
+                            i_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
+                            float attributeValue = i_hConfig.GetFloat(NULL_STRING);
 
                             if (IsStringInteger(attributeKey))
                             {
@@ -603,22 +521,22 @@ stock MakeEquipment(client)
                             }
 
 
-                        } while (g_hConfig.GotoNextKey(false));
+                        } while (i_hConfig.GotoNextKey(false));
                         
-                        g_hConfig.GoBack(); // Jump back to the weapon key after processing all attributes
+                        i_hConfig.GoBack(); // Jump back to the weapon key after processing all attributes
                     }
 
-                   g_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "attributes" key
+                   i_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "attributes" key
                     
                 }
                 // char sSection[64];
-                // g_hConfig.GetSectionName(sSection, sizeof(sSection));
+                // i_hConfig.GetSectionName(sSection, sizeof(sSection));
                 // PrintToChatAll("After Attributes, heading to custom_attributes Section %s", sSection);
                 //Now let's handle the custom attributes
-                if (g_hConfig.JumpToKey("custom_attributes_weapon"))
+                if (i_hConfig.JumpToKey("custom_attributes_weapon"))
                 {
                     //  PrintToChatAll("Inside custom attribute");
-                    if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
+                    if (i_hConfig.GotoFirstSubKey(.keyOnly=false))
                     {
                         // PrintToChatAll("Got 1");
                         do
@@ -626,63 +544,385 @@ stock MakeEquipment(client)
                             
                             char attributeKey[256], attributeValue[256];
 
-                            g_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
-                            g_hConfig.GetString(NULL_STRING, attributeValue, sizeof(attributeValue));
+                            i_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
+                            i_hConfig.GetString(NULL_STRING, attributeValue, sizeof(attributeValue));
 
                             // Apply the custom attribute to the weapon
-                            PrintToChatAll("attributeKey %s, attributeValue %s", attributeKey, attributeValue);
+                            //PrintToChatAll("attributeKey %s, attributeValue %s", attributeKey, attributeValue);
                             TF2CustAttr_SetString(iWeapon, attributeKey, attributeValue);
 
-                        } while (g_hConfig.GotoNextKey(false));
+                        } while (i_hConfig.GotoNextKey(false));
                         
-                        g_hConfig.GoBack(); // Jump back to the weapon key after processing all custom attributes
+                        i_hConfig.GoBack(); // Jump back to the weapon key after processing all custom attributes
                     }
 
-                    g_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "custom_attributes" key
+                    i_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "custom_attributes" key
                 }
 
-            } while (g_hConfig.GotoNextKey()); // Iterate through all the weapons
+            } while (i_hConfig.GotoNextKey()); // Iterate through all the weapons
 
-            g_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all weapons.
+            i_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all weapons.
         }
-        g_hConfig.GoBack();
+        i_hConfig.GoBack();
     }
         // char sSection[64];
-        // g_hConfig.GetSectionName(sSection, sizeof(sSection));
+        // i_hConfig.GetSectionName(sSection, sizeof(sSection));
         // PrintToChatAll("After to remove Weapons Section %s", sSection);
-        if (g_hConfig.JumpToKey("cosmetics"))
+        if (i_hConfig.JumpToKey("cosmetics"))
         {
-            if (g_hConfig.GotoFirstSubKey())
+            if (i_hConfig.GotoFirstSubKey())
             {
                 do
                 {
-                    int itemIndex = g_hConfig.GetNum("itemindex", 0);
-                    int level = g_hConfig.GetNum("level", 10);
-                    int quality = g_hConfig.GetNum("quality", 6);
+                    int itemIndex = i_hConfig.GetNum("itemindex", 0);
+                    
+                    int level;
+                    if(i_hConfig.GetNum("level", 10))
+                    {
+                        level = i_hConfig.GetNum("level", 10);
+                    }else
+                    {
+                        level = 10
+                    }
+                    int quality;
+                    if (i_hConfig.GetNum("quality", 6))
+                    {
+                        quality = i_hConfig.GetNum("quality", 6);
+                    }else
+                    {
+                        quality = 6;
+                    }
+                    
                     
                     // Handle paint as a float or string (like "TeamPaint")
                     char paintName[256];
-                    g_hConfig.GetString("paint", paintName, sizeof(paintName));
+                    i_hConfig.GetString("paint", paintName, sizeof(paintName));
 
                     int paint, paint2;
                     GetPaintValuesByName(paintName, paint, paint2);
 
-                    float scale = g_hConfig.GetFloat("scale", 1.0);  // Default to 1.0 if not specified
-                    float style = g_hConfig.GetFloat("style", -1.0); // Default to -1.0 if not specified
+                    float scale = i_hConfig.GetFloat("scale", 1.0);  // Default to 1.0 if not specified
+                    float style = i_hConfig.GetFloat("style", -1.0); // Default to -1.0 if not specified
 
                     // Create the hat for the client using the details fetched above.
                     CreateRoboHat(client, itemIndex, level, quality, paint, paint2, scale, style);
 
-                } while (g_hConfig.GotoNextKey()); // Iterate through all the cosmetics
+                } while (i_hConfig.GotoNextKey()); // Iterate through all the cosmetics
 
-                g_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all cosmetics.
+                i_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all cosmetics.
             }
+            i_hConfig.GoBack();
         }
 
+	
 
 
+
+
+
+
+
+
+    int bonus_hp = 0;
+    if(i_hConfig.GetNum("health_bonus_per_player"))
+    {
+        bonus_hp = i_hConfig.GetNum("health_bonus_per_player", bonus_hp);
+      //  PrintToChatAll("Found bonus HP it was %i", bonus_hp);
+        bonus_hp *= GetCurrentHumanCount();
+    }
+
+    RoboSetHealth(client, iRobot_class, robot.health + bonus_hp);
+
+    // Reading player attributes and setting them.
+    if (i_hConfig.JumpToKey("player_attributes"))
+    {
+        char sSection[64];
+        i_hConfig.GetSectionName(sSection, sizeof(sSection));
+        if (i_hConfig.GotoFirstSubKey(.keyOnly=false))
+        {
+            do
+            {
+              // The section name is directly the attribute name in this format.
+                char attributeName[256];
+                i_hConfig.GetSectionName(attributeName, sizeof(attributeName));
+                // Fetch the value for this attribute.
+                float attributeValue = i_hConfig.GetFloat(NULL_STRING); 
+
+                if (IsStringInteger(attributeName))
+                {
+                    int attributeIndex = StringToInt(attributeName);
+                    // Handle applying attribute by index here
+                    TF2Attrib_SetByDefIndex(client, attributeIndex, attributeValue);
+                }else
+                {
+                    // PrintToChatAll("Attribute %s, value %f", attributeName, attributeValue);
+                    TF2Attrib_SetByName(client, attributeName, attributeValue);    
+                }
+                
+            }
+            while (i_hConfig.GotoNextKey(false))// Iterate through all the attributes            
+             i_hConfig.GoBack();
+        }
+        i_hConfig.GoBack();
+
+    // char sSection[64];
+    // i_hConfig.GetSectionName(sSection, sizeof(sSection));
+    // PrintToChatAll("Post player attribute Section %s", sSection);
+    char attributeKey[256], attributeValue[256];
+        //Code for player conditions such as crit_canteens.
+
+    if (i_hConfig.JumpToKey("player_conditions"))
+    {
+        char sSection[64];
+        i_hConfig.GetSectionName(sSection, sizeof(sSection));
+        if (i_hConfig.GotoFirstSubKey(.keyOnly=false))
+        {
+            do
+            {
+                // The section name is directly the condition ID in this format.
+                char conditionIDStr[64];
+                i_hConfig.GetSectionName(conditionIDStr, sizeof(conditionIDStr));
+
+                // Convert the condition ID from string to integer.
+                int conditionID = StringToInt(conditionIDStr);
+
+                // Fetch the duration for this condition.
+                float duration = i_hConfig.GetFloat(NULL_STRING); 
+
+                // Apply the condition with the specified duration.
+                if (duration >= 0.0)
+                {
+                    TF2_AddCondition(client, conditionID, duration);
+                }
+                else
+                {
+                    TF2_AddCondition(client, conditionID);
+                }
+
+            } while (i_hConfig.GotoNextKey(false)); // Iterate through all the conditions.
+            i_hConfig.GoBack();
+        }
+        i_hConfig.GoBack();
+    }
+
+    i_hConfig.GoBack();
+
+        if (i_hConfig.JumpToKey("custom_attributes_player"))
+        {
+            if (i_hConfig.GotoFirstSubKey(.keyOnly=false))
+            {
+                // PrintToChatAll("Got 1");
+                do
+                {
+                    // char attributeKey[256], attributeValue[256];
+
+                    i_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
+                    i_hConfig.GetString(NULL_STRING, attributeValue, sizeof(attributeValue));
+
+                    // Apply the custom attribute to the weapon
+                    //PrintToChatAll("attributeKey %s, attributeValue %s", attributeKey, attributeValue);
+                    TF2CustAttr_SetString(client, attributeKey, attributeValue);
+
+                } while (i_hConfig.GotoNextKey(false));
+                
+            }
+
+            i_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "custom_attributes" key
+        }
+    }
+
+    i_hConfig.DeleteThis();
+	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+
+}
+
+public Action:SetModel(client, const String:model[])
+{
+	if (IsValidClient(client) && IsPlayerAlive(client))
+	{
+		SetVariantString(model);
+		AcceptEntityInput(client, "SetCustomModel");
+
+		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
 	}
 }
+
+// public Action:Timer_Switch(Handle:timer, any:client)
+// {
+// 	if (IsValidClient(client))
+// 		MakeEquipment(client);
+// }
+
+// stock MakeEquipment(int client)
+// {
+// 	if (IsValidClient(client))
+// 	{
+// 		//Remove items and hats
+// 		RoboRemoveAllWearables(client);
+//         RemoveWeaponSlots(client);
+
+//     if (g_hConfig.JumpToKey("weapons"))
+//     {
+        
+//         if (g_hConfig.GotoFirstSubKey())
+//         {
+//             do
+//             {
+//                 // Get the weapon's class name
+//                 char weaponClassName[256];
+//                 g_hConfig.GetSectionName(weaponClassName, sizeof(weaponClassName));
+
+//                 int itemIndex = g_hConfig.GetNum("itemindex", 0);
+                
+//                 int quality = g_hConfig.GetNum("quality", 0);
+
+//                 int level = g_hConfig.GetNum("level", 0);
+                
+//                 int slot = g_hConfig.GetNum("slot", 0);
+                
+
+//                 int paint = g_hConfig.GetNum("paint", 0);
+//                 int remove_attributes = g_hConfig.GetNum("remove_attributes", 0);
+
+//                 int iWeapon;
+//             // Check for special weapon ID 1101
+//                 if(itemIndex == 1101)
+//                 {
+//                     iWeapon = CreateRoboWeaponWithAttributes(client, "tf_weapon_parachute", 1101, 6, 77, true, true, "");
+//                 }
+//                 else
+//                 {
+//                     // // Create the weapon for the client using the details fetched above.
+//                     PrintToChatAll("%N: Creating weapon with %s", client, weaponClassName);
+//                     iWeapon = CreateRoboWeapon(client, weaponClassName, itemIndex, quality, level, slot, paint);
+//                 }
+//                 //Remove attributes if set to 1
+//                if(remove_attributes)TF2Attrib_RemoveAll(iWeapon);
+
+//                 // Now, if the "attributes" key exists, loop through weapon attributes
+//                 if (g_hConfig.JumpToKey("attributes") && IsValidEntity(iWeapon))
+//                 {
+//                     //First we need to check if the attributes uses index or string. Preferably string as then we can create and apply attributes at the same time
+//                     // PrintToChatAll("IN  ATTRIBUTES");
+//                     if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
+//                     {
+//                         // PrintToChatAll("GOT THE FIRST KEY");
+//                         do
+//                         {
+//                             char attributeKey[256];
+//                             g_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
+//                             float attributeValue = g_hConfig.GetFloat(NULL_STRING);
+
+//                             if (IsStringInteger(attributeKey))
+//                             {
+//                                 int attributeIndex = StringToInt(attributeKey);
+//                                 // Handle applying attribute by index here
+//                                 TF2Attrib_SetByDefIndex(iWeapon, attributeIndex, attributeValue);
+//                             }
+//                             else
+//                             {
+//                             // Apply each weapon attribute here.
+//                             // Note: Assuming you will have a function or mechanism to apply these attributes to the weapon
+//                             // Example: TF2Attrib_SetByNameForWeapon(client, weaponClassName, attributeKey, attributeValue);
+//                             TF2Attrib_SetByName(iWeapon, attributeKey, attributeValue);
+//                             }
+
+
+//                         } while (g_hConfig.GotoNextKey(false));
+                        
+//                         g_hConfig.GoBack(); // Jump back to the weapon key after processing all attributes
+//                     }
+
+//                    g_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "attributes" key
+                    
+//                 }
+//                 // char sSection[64];
+//                 // g_hConfig.GetSectionName(sSection, sizeof(sSection));
+//                 // PrintToChatAll("After Attributes, heading to custom_attributes Section %s", sSection);
+//                 //Now let's handle the custom attributes
+//                 if (g_hConfig.JumpToKey("custom_attributes_weapon"))
+//                 {
+//                     //  PrintToChatAll("Inside custom attribute");
+//                     if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
+//                     {
+//                         // PrintToChatAll("Got 1");
+//                         do
+//                         {
+                            
+//                             char attributeKey[256], attributeValue[256];
+
+//                             g_hConfig.GetSectionName(attributeKey, sizeof(attributeKey));
+//                             g_hConfig.GetString(NULL_STRING, attributeValue, sizeof(attributeValue));
+
+//                             // Apply the custom attribute to the weapon
+//                             //PrintToChatAll("attributeKey %s, attributeValue %s", attributeKey, attributeValue);
+//                             TF2CustAttr_SetString(iWeapon, attributeKey, attributeValue);
+
+//                         } while (g_hConfig.GotoNextKey(false));
+                        
+//                         g_hConfig.GoBack(); // Jump back to the weapon key after processing all custom attributes
+//                     }
+
+//                     g_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "custom_attributes" key
+//                 }
+
+//             } while (g_hConfig.GotoNextKey()); // Iterate through all the weapons
+
+//             g_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all weapons.
+//         }
+//         g_hConfig.GoBack();
+//     }
+//         // char sSection[64];
+//         // g_hConfig.GetSectionName(sSection, sizeof(sSection));
+//         // PrintToChatAll("After to remove Weapons Section %s", sSection);
+//         if (g_hConfig.JumpToKey("cosmetics"))
+//         {
+//             if (g_hConfig.GotoFirstSubKey())
+//             {
+//                 do
+//                 {
+//                     int itemIndex = g_hConfig.GetNum("itemindex", 0);
+                    
+//                     int level;
+//                     if(g_hConfig.GetNum("level", 10))
+//                     {
+//                         level = g_hConfig.GetNum("level", 10);
+//                     }else
+//                     {
+//                         level = 10
+//                     }
+//                     int quality;
+//                     if (g_hConfig.GetNum("quality", 6))
+//                     {
+//                         quality = g_hConfig.GetNum("quality", 6);
+//                     }else
+//                     {
+//                         quality = 6;
+//                     }
+                    
+                    
+//                     // Handle paint as a float or string (like "TeamPaint")
+//                     char paintName[256];
+//                     g_hConfig.GetString("paint", paintName, sizeof(paintName));
+
+//                     int paint, paint2;
+//                     GetPaintValuesByName(paintName, paint, paint2);
+
+//                     float scale = g_hConfig.GetFloat("scale", 1.0);  // Default to 1.0 if not specified
+//                     float style = g_hConfig.GetFloat("style", -1.0); // Default to -1.0 if not specified
+
+//                     // Create the hat for the client using the details fetched above.
+//                     CreateRoboHat(client, itemIndex, level, quality, paint, paint2, scale, style);
+
+//                 } while (g_hConfig.GotoNextKey()); // Iterate through all the cosmetics
+
+//                 g_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all cosmetics.
+//             }
+//         }
+
+// 	}
+// }
 
 bool IsStringInteger(const char[] string)
 {
@@ -722,36 +962,36 @@ TFClassType StringToTFClassType(const char[] className) {
     return TFClass_Unknown; // Default to unknown if none of the above matches
 }
 
-void RemoveWeaponSlots(int client)
-{
+// void RemoveWeaponSlots(int client)
+// {
 
-    if (g_hConfig.JumpToKey("remove_weapon_slots"))
-    {
+//     if (g_hConfig.JumpToKey("remove_weapon_slots"))
+//     {
 
-        if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
-        {
-            // PrintToChatAll("Got 3");
-            do
-            {
-                // PrintToChatAll("Got 4");
-                int slotNumber = g_hConfig.GetNum(NULL_STRING, -1); // Assuming -1 indicates a failure to fetch
+//         if (g_hConfig.GotoFirstSubKey(.keyOnly=false))
+//         {
+//             // PrintToChatAll("Got 3");
+//             do
+//             {
+//                 // PrintToChatAll("Got 4");
+//                 int slotNumber = g_hConfig.GetNum(NULL_STRING, -1); // Assuming -1 indicates a failure to fetch
 
-                // Check if we have a valid slotNumber and it's within the expected range (0 to 5, for now)
-                if (slotNumber >= 0 && slotNumber <= 5) 
-                {
-                    // PrintToChatAll("Got 5");
-                    // Remove the weapon slot
-                    // PrintToChatAll("Slotnumber %i", slotNumber);
-                    TF2_RemoveWeaponSlot(client, slotNumber);
-                }
+//                 // Check if we have a valid slotNumber and it's within the expected range (0 to 5, for now)
+//                 if (slotNumber >= 0 && slotNumber <= 5) 
+//                 {
+//                     // PrintToChatAll("Got 5");
+//                     // Remove the weapon slot
+//                     // PrintToChatAll("Slotnumber %i", slotNumber);
+//                     TF2_RemoveWeaponSlot(client, slotNumber);
+//                 }
 
-            } while (g_hConfig.GotoNextKey(false));
+//             } while (g_hConfig.GotoNextKey(false));
 
-            g_hConfig.GoBack();  // Go back to the parent key after processing all weapon slots
-        }
-    }
-    g_hConfig.GoBack();
-}
+//             g_hConfig.GoBack();  // Go back to the parent key after processing all weapon slots
+//         }
+//     }
+//     g_hConfig.GoBack();
+// }
 
 // Initialization or setup function where you load the paints when the plugin starts or when needed
 public void LoadPaints()
