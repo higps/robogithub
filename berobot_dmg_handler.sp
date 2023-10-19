@@ -856,12 +856,12 @@ void ChangeKnockBack (int victim)
                     GetEntPropVector(victim, Prop_Data, "m_vecVelocity", vVelocity);
                     AddVectors(vVelocity, vForward, vVelocity);
                     
-                    float flDistanceVertical = 10.0;
+                    // float flDistanceVertical = 10.0;
                         
-                    vVelocity[2] -= flDistanceVertical; // we always want to go a bit up
+                    // vVelocity[2] -= flDistanceVertical; // we always want to go a bit up
                     
                     // And set it
-                    TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, vVelocity);
+                   TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, vVelocity);
 }
 
 void Disguiseframe (DataPack info)
@@ -1233,11 +1233,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsIronBomber(Weapon1))
             {
-                stat1 = 3.0;
-                stat2 = 1.15;
+                stat1 = 4.0;
+                stat2 = 5.5;
                 TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
                 TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", stat1);
                 TF2Attrib_SetByName(Weapon1, "Reload time increased", stat2);
+                TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
                 
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}IronBomber: {orange}Fires full clip at once, {teamcolor}& {orange}+%0.0f%%%% {teamcolor}slower reload rate, {orange}%0.0f%%%% degrees less accurate",chat_display, MoreIsMore(stat2), MoreIsMore(stat1));
             }
