@@ -27,13 +27,6 @@ public Plugin:myinfo =
 }
 bool b_Hooked[MAXPLAYERS + 1] = false;
 
-public void OnPluginEnd()
-{
-	RemoveRobot(ROBOT_NAME);
-}
-
-
-
 public void OnClientPutInServer(int client)
 {
 
