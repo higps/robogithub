@@ -489,7 +489,7 @@ MakeRobotFrame(client)
                 else
                 {
                     // // Create the weapon for the client using the details fetched above.
-                    PrintToChatAll("%N: Creating weapon with %s", client, weaponClassName);
+                    // PrintToChatAll("%N: Creating weapon with %s", client, weaponClassName);
                     iWeapon = CreateRoboWeapon(client, weaponClassName, itemIndex, quality, level, slot, paint);
                 }
                 //Remove attributes if set to 1
@@ -612,10 +612,21 @@ MakeRobotFrame(client)
 
                     float scale = i_hConfig.GetFloat("scale", 1.0);  // Default to 1.0 if not specified
                     float style = i_hConfig.GetFloat("style", -1.0); // Default to -1.0 if not specified
-
+                    
+                    //Specific code for team specific cosmetics
+                    int team = i_hConfig.GetNum("create_only_on_team_number", -1)// Default to -1.0 if not specified
+                    
+                    int iTeam = TF2_GetClientTeam(client);
                     // Create the hat for the client using the details fetched above.
-                    CreateRoboHat(client, itemIndex, level, quality, paint, paint2, scale, style);
 
+                    // PrintToChatAll("ITEMINDEX: %i, Team was %i, iTeam: %i", itemIndex, team, iTeam);
+                    if (team == -1)CreateRoboHat(client, itemIndex, level, quality, paint, paint2, scale, style);
+                    if (team == iTeam)CreateRoboHat(client, itemIndex, level, quality, paint, paint2, scale, style);
+                    // if (team == )
+/* 	TFTeam_Unassigned = 0,
+	TFTeam_Spectator = 1,
+	TFTeam_Red = 2,
+	TFTeam_Blue = 3 */
                 } while (i_hConfig.GotoNextKey()); // Iterate through all the cosmetics
 
                 i_hConfig.GoBack(); // Go back to the parent "Robot" key after processing all cosmetics.
