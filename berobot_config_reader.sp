@@ -158,6 +158,7 @@ public void ReadConfig()
     {
 
         char sString[256];
+        char processedString[256] = "";
         int iInteger;
         float fFloat;
         RobotDefinition robot;
@@ -189,13 +190,48 @@ public void ReadConfig()
         // Fetch tips
         if (g_hConfig.GetString("tips", sString, sizeof(sString)))
         {
-            robot.tips = sString;
+            processedString = "";
+            int j = 0;
+
+            for(int i = 0; sString[i] != '\0' && j < sizeof(processedString) - 1; i++)
+            {
+                if(sString[i] == '\\' && sString[i+1] == 'n')
+                {
+                    processedString[j] = '\n'; // Add newline character
+                    j++;
+                    i++; // Skip the next character which is 'n'
+                }
+                else
+                {
+                    processedString[j] = sString[i];
+                    j++;
+                }
+            }
+
+            robot.tips = processedString;
         }
 
         // Fetch deathtip
         if (g_hConfig.GetString("deathtip", sString, sizeof(sString)))
         {
-            robot.deathtip = sString;
+            processedString = "";
+            int j = 0;
+
+            for(int i = 0; sString[i] != '\0' && j < sizeof(processedString) - 1; i++)
+            {
+                if(sString[i] == '\\' && sString[i+1] == 'n')
+                {
+                    processedString[j] = '\n'; // Add newline character
+                    j++;
+                    i++; // Skip the next character which is 'n'
+                }
+                else
+                {
+                    processedString[j] = sString[i];
+                    j++;
+                }
+            }
+            robot.deathtip = processedString;
         }
 
         // Fetch model

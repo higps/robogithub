@@ -286,7 +286,8 @@ public void OnMapStart()
 	PrecacheSound(GUNFIRE_CRIT);
 	PrecacheSound(GUNFIRE_EXPLOSION);
 	PrecacheSound(GUNFIRE_DEMO);
-
+    // PrecacheSound("bigjoey.wav");
+    // PrecacheSound("later.wav");
 
     PrecacheScriptSound(ANNOUNCERWAVESTART);
     PrecacheScriptSound(ANNOUNCER_ALL_DEAD);
