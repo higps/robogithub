@@ -3,7 +3,7 @@
 #endif
 #define _berobot_core_included "0.1"
 
-
+//#define NAMELENGTH 128
 /**
  * checks if the plugin is enabled
  * 
@@ -463,7 +463,7 @@ methodmap RobotCoins < RobotCoinRestrictionDefinition {
         float price = robotCount * this.PerRobot;
         int roundedPrice = RoundToNearest(robotCount * this.PerRobot);
         
-        SMLogTag(SML_VERBOSE, "GetPrice(): robotCount: %i, PerRobot %f => %f rounded to %i", robotCount, this.PerRobot, price, roundedPrice);
+        //SMLogTag(SML_VERBOSE, "GetPrice(): robotCount: %i, PerRobot %f => %f rounded to %i", robotCount, this.PerRobot, price, roundedPrice);
         return roundedPrice;
     }
 
@@ -615,8 +615,12 @@ enum struct Robot {
   char subclass[32];
   char shortDescription[NAMELENGTH];
   char deathtip[512];
+  char tips[512];
+  char model[512];
   PrivateForward callback;
   RobotSounds sounds;
+  int health;
+  float scale;
   Restrictions restrictions;
   int robotCoinsOnDeath;
   int teamCoinsOnDeath;

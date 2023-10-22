@@ -161,9 +161,9 @@ stock GiveGiantPyro(client)
 
 		CreateRoboWeapon(client, "tf_weapon_rocketlauncher_airstrike", 1104, 6, 1, 2, 0);
 
-		CreateRoboHat(client, skullcap, 10, 6, 0.0, 0.8, -1.0);
-		CreateRoboHat(client, KringleCollection, 10, 6, 0.0, 0.75, -1.0);
-		CreateRoboHat(client, GRAYBANNS, 10, 6, 0.0, 0.8, -1.0);
+		CreateRoboHat(client, skullcap, 10, 6, 0.0, 0.0, 0.8, -1.0);
+		CreateRoboHat(client, KringleCollection, 10, 6, 0.0, 0.0, 0.75, -1.0);
+		CreateRoboHat(client, GRAYBANNS, 10, 6, 0.0, 0.0, 0.8, -1.0);
 
 		ResetWeapon(client);
 				

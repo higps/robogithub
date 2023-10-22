@@ -37,7 +37,11 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
- 
+public OnMapStart()
+{
+	PrecacheModel(BANANA_MODEL);
+}
+
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
@@ -100,14 +104,9 @@ MakeGHeavy(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GDEFLECTORH);
+	int iHealth = 5000;
+	RoboSetHealth(client, TFClass_Heavy, iHealth);
 
-	RoboSetHealth(client,TFClass_Heavy, 5000, 1.5);
-
-
-
-	
-	
-	
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
@@ -154,10 +153,10 @@ stock GiveGDeflectorH(client)
 
 		g_DamageDone = 0.0;
 
-		CreateRoboHat(client, Tsarboosh, 10, 6, 15185211.0, 1.0, -1.0);
-		CreateRoboHat(client, DeadofNight, 10, 6, 15185211.0, 1.0, -1.0);
-		CreateRoboHat(client, WildWestWhiskers, 10, 6, 0.0, 1.0, -1.0);
-		CreateRoboHat(client, BananaHat, 10, 6, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, Tsarboosh, 10, 6, 15185211, 15185211, 1.0, -1.0);
+		CreateRoboHat(client, DeadofNight, 10, 6, 15185211, 15185211, 1.0, -1.0);
+		CreateRoboHat(client, WildWestWhiskers, 10, 6, 0.0, 0.0, 1.0, -1.0);
+		CreateRoboHat(client, BananaHat, 10, 6, 0.0, 0.0, 1.0, -1.0);
 		RequestFrame(FindHat, client);
 	
 		CreateRoboWeapon(client, "tf_weapon_minigun", 312, 6, 1, 0, 0);
@@ -166,9 +165,6 @@ stock GiveGDeflectorH(client)
 		if(IsValidEntity(Weapon1))
 		{
 			TF2Attrib_RemoveAll(Weapon1);
-
-
-			
 			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
 			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
 			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);

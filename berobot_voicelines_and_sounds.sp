@@ -62,6 +62,8 @@ public void OnPluginStart()
 #define GUNFIRE	")mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
 #define GUNFIRE_CRIT	")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
 #define GUNFIRE_EXPLOSION	")mvm/giant_soldier/giant_soldier_rocket_explode.wav"
+
+#define GUNFIRE_DEMO ")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 // Easier to have all the sounds we want in a single variable array for better access
 // static const char WaveVoiceLineStartSounds[][256] =
 // {
@@ -283,8 +285,9 @@ public void OnMapStart()
 	PrecacheSound(GUNFIRE);
 	PrecacheSound(GUNFIRE_CRIT);
 	PrecacheSound(GUNFIRE_EXPLOSION);
-	
-
+	PrecacheSound(GUNFIRE_DEMO);
+    // PrecacheSound("bigjoey.wav");
+    // PrecacheSound("later.wav");
 
     PrecacheScriptSound(ANNOUNCERWAVESTART);
     PrecacheScriptSound(ANNOUNCER_ALL_DEAD);

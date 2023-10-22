@@ -135,7 +135,16 @@ public any Native_AddRobot(Handle plugin, int numParams)
     robot.deathtip = robotDefinition.deathtip;
     robot.weaponsound = robotDefinition.weaponsound;
     robot.footstep = robotDefinition.footstep;
+
+    //New stuff for the config file
+    //Modify this to only store what's needed to view in the menu
+    //The rest will be read via the config reader
     robot.difficulty = robotDefinition.difficulty;
+    robot.health = robotDefinition.health;
+    robot.model = robotDefinition.model;
+    robot.difficulty = robotDefinition.difficulty;
+    robot.scale = robotDefinition.scale;
+    robot.tips = robotDefinition.tips;
 
     PrivateForward privateForward = new PrivateForward(ET_Single, Param_Cell);
     privateForward.AddFunction(plugin, callback);

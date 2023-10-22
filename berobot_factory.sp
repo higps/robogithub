@@ -545,7 +545,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         { 
             // PrintToChatAll("PLAYER %N WAS ALIVE", client);
             EmitSoundToAll(item.sounds.spawn);
-
+            
             // EmitGameSoundToAll(item.sounds.spawn);
             
 
@@ -866,4 +866,5 @@ void CallCreate(int client, Robot item)
     }
     TrackRobot(client, item.name);
     TrackRobotCreation(client, true);
+    PrintHintText(client, item.tips);
 }
