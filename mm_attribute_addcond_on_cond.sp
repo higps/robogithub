@@ -19,23 +19,6 @@
 #endif
 #define __stocksoup_tf_tempents_stocks_included
 
-// bool g_cv_bDebugMode;
-// float g_HitTime[MAXPLAYERS + 1] = {0.0, ...};
-
-
-public void OnPluginStart()
-{	
-	
-}
-// public void OnMapStart()
-// {	
-// 	PrecacheSound(sHealNoise);
-// 	PrecacheSound(sExtinguish);
-// 	PrecacheSound(sSyringeBuffOn);
-// 	// PrecacheSound(sSyringeBuffOff);
-// }
-
-
 int g_TFCond = 0;
 float g_TFCond_duration = 0.0;
 int g_TFCond_addcond = 0;

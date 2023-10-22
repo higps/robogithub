@@ -416,7 +416,7 @@ MakeGiantSoldier(client)
 		
 	//PrintToChatAll("MaxHealth %i", MaxHealth);
 	
-	
+	RoboSetHealth(client, TFClass_Soldier, iHealth);
 	float OverHealRate = 1.5;
 
 
