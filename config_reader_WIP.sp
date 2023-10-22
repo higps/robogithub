@@ -227,19 +227,6 @@ public void ReadConfig()
 
         RestrictionsDefinition restrictions = new RestrictionsDefinition();
         bool hasRestrictions = false;
-
-        // Fetch cost
-        if (g_hConfig.GetFloat("rc_cost"))
-        {
-            fFloat = g_hConfig.GetFloat("rc_cost", fFloat);
-            if (restrictions.RobotCoins == null)
-            {
-                restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-            }
-            restrictions.RobotCoins.PerRobot = fFloat;
-            hasRestrictions = true;
-        }
-
         // Fetch boss_cost
         if (g_hConfig.GetNum("boss_cost"))
         {
@@ -251,6 +238,19 @@ public void ReadConfig()
             restrictions.TeamCoins.Overall = iInteger;
             hasRestrictions = true;
         }
+        // Fetch cost
+        if (g_hConfig.GetFloat("rc_cost"))
+        {
+            // fFloat = g_hConfig.GetFloat("rc_cost", fFloat);
+            if (restrictions.RobotCoins == null)
+            {
+                restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+            }
+            restrictions.RobotCoins.PerRobot = fFloat;
+            hasRestrictions = true;
+        }
+
+
 
         if (!hasRestrictions)
         {
@@ -478,7 +478,26 @@ MakeRobotFrame(client)
                 
 
                 int paint = i_hConfig.GetNum("paint", 0);
+                //Only used for Sandman and Wrap Assasin
+                int weaponammo = i_hConfig.GetNum("weaponammo", 0);
                 int remove_attributes = i_hConfig.GetNum("remove_attributes", 0);
+                
+                    int red, green, blue, alpha;
+                    bool rgba = false;
+                    if (GetRGBA(i_hConfig, red, green, blue, alpha))
+                    {
+                        // RGBA value successfully fetched and parsed
+                        // Now, you can use red, green, blue, and alpha variables as required
+                        // For example, store them, print them, or use in some logic
+                        PrintToChatAll("RGBA for %s: %d, %d, %d, %d", weaponClassName, red, green, blue, alpha);
+                        rgba = true;
+                    }
+                    // else
+                    // {
+                    //     // Handle the error or default the RGBA values if necessary
+                    //     // Example: Set them to some default value or print an error message
+                    //     PrintToChatAll("Failed to parse RGBA for %s", weaponClassName);
+                    // }
 
                 int iWeapon;
             // Check for special weapon ID 1101
@@ -493,7 +512,13 @@ MakeRobotFrame(client)
                     iWeapon = CreateRoboWeapon(client, weaponClassName, itemIndex, quality, level, slot, paint);
                 }
                 //Remove attributes if set to 1
-               if(remove_attributes)TF2Attrib_RemoveAll(iWeapon);
+                if(remove_attributes)TF2Attrib_RemoveAll(iWeapon);
+                
+                //Sets weapon ammo for Sandman and Wrapassasin if value is more than 1
+                //PrintToChatAll("WeaponAmmo %i, quality %i", weaponammo, quality);
+                if(weaponammo)TF2_SetWeaponAmmo(iWeapon, weaponammo);
+
+                if(rgba)SetEntityRenderColor(iWeapon, red,green,blue,alpha);
 
                 // Now, if the "attributes" key exists, loop through weapon attributes
                 if (i_hConfig.JumpToKey("attributes") && IsValidEntity(iWeapon))
@@ -1065,4 +1090,39 @@ public void GetPaintValuesByName(const char[] name, int &paint1, int &paint2)
             return;
         }
     }
+}
+
+stock void TF2_SetWeaponAmmo(int weapon, int amount) {
+	int ammoType = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwner");
+	
+	if (client > 0 && client <= MaxClients && ammoType != -1) {
+		SetEntProp(client, Prop_Send, "m_iAmmo", amount, 4, ammoType);
+	}
+}
+
+#include <string>
+
+stock bool GetRGBA(KeyValues i_hConfig, int &red, int &green, int &blue, int &alpha)
+{
+    char rgbaString[32];
+    if (!i_hConfig.GetString("RGBA", rgbaString, sizeof(rgbaString)))
+    {
+        return false; // key "RGBA" not found or its value couldn't be fetched
+    }
+    
+    char buffer[4][32];  // Adjusted this line for correct SourcePawn syntax
+    int numComponents = ExplodeString(rgbaString, ",", buffer, 4, 32);
+    
+    if (numComponents != 4)
+    {
+        return false; // RGBA string doesn't have four components
+    }
+    
+    red = StringToInt(buffer[0]);
+    green = StringToInt(buffer[1]);
+    blue = StringToInt(buffer[2]);
+    alpha = StringToInt(buffer[3]);
+    
+    return true;
 }

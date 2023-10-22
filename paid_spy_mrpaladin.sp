@@ -8,7 +8,7 @@
 #include <dhooks>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"MrPaladin"
+#define ROBOT_NAME	"MrPaladin2"
 #define ROBOT_ROLE "Spy"
 #define ROBOT_CLASS "Spy"
 #define ROBOT_SUBCLASS "Spy"
@@ -191,9 +191,9 @@ stock GiveBigRoboDane(client)
 	CreateRoboWeapon(client, "tf_weapon_invis", 30, 6, 1, 4, 0); 
 	CreateRoboWeapon(client, "tf_weapon_sapper", 1102, 6, 1, 1, 0);//snack attack
 
-	CreateRoboHat(client, Noir, 10, 6, WhitePaint, 1.0, -1.0); 
-	CreateRoboHat(client, LadyKiller, 10, 6, 0.0, 1.0, -1.0);
-	CreateRoboHat(client, Spek, 10, 6, 0.0, 1.0, -1.0);
+	// CreateRoboHat(client, Noir, 10, 6, WhitePaint, 1.0, -1.0); 
+	// CreateRoboHat(client, LadyKiller, 10, 6, 0.0, 1.0, -1.0);
+	// CreateRoboHat(client, Spek, 10, 6, 0.0, 1.0, -1.0);
 	
 		
 	int Revolver = GetPlayerWeaponSlot(client, 0); //Revolver

@@ -392,6 +392,7 @@ public any Native_RoboCorrectClipSize(Handle plugin, int numParams)
 		int item = GetNativeCell(1);
 		int ammoType = GetEntProp(item, Prop_Send, "m_iPrimaryAmmoType");
 		if (ammoType != -1) {
+			// PrintToChatAll("Max clip: %i", TF2Util_GetWeaponMaxClip(item));
 			SetEntProp(item, Prop_Send, "m_iClip1", TF2Util_GetWeaponMaxClip(item));
 			return true;
 		}
