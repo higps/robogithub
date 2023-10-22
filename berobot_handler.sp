@@ -1602,6 +1602,7 @@ void Internal_SetRandomRobot(int client)
     }
 
     char robotname[NAMELENGTH];  
+     PrintToChatAll("===");
     for (;;)  
     {
         int i = GetRandomInt(0, robotNames.Length -1);
@@ -1615,6 +1616,7 @@ void Internal_SetRandomRobot(int client)
             Robot item;
             
             GetRobotDefinition(robotname, item);
+           
             PrintToChatAll("Trying: Robot name was %s and difficulty was %i", robotname, item.difficulty);
             //Checks if the robit is Enable and not played by anyone (active), and that the difficulty of the robot is easy or undefined
             if (item.restrictions.IsEnabled() && !item.restrictions.IsActive() && item.difficulty == ROBOT_DIFFICULTY_EASY || item.difficulty == ROBOT_DIFFICULTY_UNDEFINED)
@@ -1628,8 +1630,8 @@ void Internal_SetRandomRobot(int client)
                 break;
             }else{
 
-                if(g_cv_bDebugMode)PrintToChatAll("For %N, the robot %s, was not enabled & active, index was: %i", client, robotname, i);
-
+                // if(g_cv_bDebugMode);
+                PrintToChatAll("NO BREAK: For %N, the robot %s, was not enabled & active, index was: %i", client, robotname, i);
                 //SMLogTag(SML_VERBOSE, "For %N, the robot %s, was not enabled & active, index was: %i", client, robotname, i);
             }
 
@@ -1647,9 +1649,10 @@ void Internal_SetRandomRobot(int client)
         }
     }
 
-    SMLogTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
+    //SMLogTag(SML_VERBOSE, "setting bot %L to be robot '%s'", client, robotname);
     if(g_cv_bDebugMode)PrintToChatAll("setting bot %L to be robot '%s'", client, robotname);
-    
+    PrintToChatAll("%N: setting bot %L to be robot '%s'",client,  client, robotname);
+    PrintToChatAll("===");
     ForceRobot(robotname, client);
 }
 

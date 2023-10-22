@@ -208,12 +208,13 @@ public void ReadConfig()
         iInteger = g_hConfig.GetNum("difficulty", iInteger);
         robot.difficulty = iInteger;
 
+        PrintToChatAll("SetDifficulty for %s to %i", robot.name, iInteger);
 
         //Could optmize these to be read from the config later, but it doesn't really matter too much I think
         // Fetch health
         iInteger = g_hConfig.GetNum("health", iInteger);
         robot.health = iInteger;
-
+        PrintToChatAll("Setting Robot health for %s to %i", robot.name, iInteger);
         // Fetch scale
         if(g_hConfig.GetFloat("scale"))
         {
