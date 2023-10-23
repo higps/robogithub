@@ -37,10 +37,6 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-public OnMapStart()
-{
-	PrecacheModel(BANANA_MODEL);
-}
 
 public OnPluginStart()
 {

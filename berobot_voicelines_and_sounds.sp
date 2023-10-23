@@ -286,6 +286,10 @@ public void OnMapStart()
 	PrecacheSound(GUNFIRE_CRIT);
 	PrecacheSound(GUNFIRE_EXPLOSION);
 	PrecacheSound(GUNFIRE_DEMO);
+    
+    PrecacheSound(")mvm/giant_pyro/giant_pyro_flamethrower_loop.wav");
+    PrecacheSound(")mvm/giant_pyro/giant_pyro_flamethrower_start.wav");
+
     // PrecacheSound("bigjoey.wav");
     // PrecacheSound("later.wav");
 
@@ -521,7 +525,7 @@ public Action NormalSoundHook(int clients[64], int& numClients, char sample[PLAT
             // if (!EveryOtherStep[entity])
             // {
                 // PrintToChatAll("HOLDING PRIMARY");
-                
+                // PrintToChatAll("FOOTSTEP");
                 int rand = GetRandomInt(1,8);
                 Format(sample, sizeof(sample), "mvm/giant_common/giant_common_step_%s%i.wav", (rand < 10) ? "0" : "", rand);
                 pitch = GetRandomInt(70, 85);
