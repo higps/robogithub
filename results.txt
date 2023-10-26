@@ -1,0 +1,104 @@
+Identical Files:
+boss_demoman_demopan.cfg
+boss_demoman_nuker.cfg
+boss_heavy_kommisarkrit.cfg
+boss_soldier_General_Crits.cfg
+free_damage_flames_pyro_lister.cfg
+free_damage_flames_pyro_spitfire.cfg
+free_damage_grenades_demoman_carpetomber.cfg
+free_damage_grenades_demoman_dreysidel.cfg
+free_damage_grenades_demoman_LED.cfg
+free_damage_grenades_demoman_mortarmack.cfg
+free_damage_grenades_demoman_raid.cfg
+free_damage_hitscan_heavy_bigjoey.cfg
+free_damage_hitscan_heavy_HiGPS.cfg
+free_damage_hitscan_scout_b4nny.cfg
+free_damage_hitscan_scout_funke.cfg
+free_damage_hitscan_scout_mechaface.cfg
+free_damage_melee_demoman_roboknight.cfg
+free_damage_melee_heavy_boxing_champ.cfg
+free_damage_melee_sniper_fatmagic.cfg
+free_damage_rockets_soldier_bazookajoe.cfg
+free_damage_rockets_soldier_drgrordbot.cfg
+free_damage_rockets_soldier_icebear.cfg
+free_damage_rockets_soldier_ivory.cfg
+free_damage_rockets_soldier_shounic.cfg
+free_disruptor_demoman_SAM.cfg
+free_disruptor_heavy_hoovy.cfg
+free_disruptor_pyro_kristianma.cfg
+free_disruptor_soldier_elmaxo.cfg
+free_engineer_barricade.cfg
+free_engineer_dane.cfg
+free_engineer_wranglerbill.cfg
+free_engineer_zonical.cfg
+free_healer_medic_arrayseven.cfg
+free_healer_medic_beskymin.cfg
+free_healer_medic_drcrossbowcop.cfg
+free_healer_medic_rust_repair.cfg
+free_healer_medic_sentro.cfg
+free_healer_medic_theory-y.cfg
+free_sniper_crocotron.cfg
+free_sniper_huntsbot.cfg
+free_sniper_jbird.cfg
+free_sniper_skeeter.cfg
+free_sniper_spaceguyonline.cfg
+free_tank_demoman_executer.cfg
+free_tank_heavy_gotham_protector.cfg
+free_tank_heavy_terminator.cfg
+paid_damage_grenades_demoman_explodin.cfg
+paid_damage_grenades_demoman_quickler.cfg
+paid_damage_grenades_demoman_zerog.cfg
+paid_damage_hitscan_heavy_deflector.cfg
+paid_damage_hitscan_heavy_firewall.cfg
+paid_damage_hitscan_heavy_rageheavy.cfg
+paid_damage_hitscan_heavy_shredder.cfg
+paid_damage_hitscan_scout_backscatter.cfg
+paid_damage_hitscan_scout_hammerhead.cfg
+paid_damage_melee_demoman_sultan.cfg
+paid_damage_rockets_soldier_artillery.cfg
+paid_damage_rockets_soldier_backup.cfg
+paid_damage_rockets_soldier_buffbott.cfg
+paid_damage_rockets_soldier_captainconcho.cfg
+paid_damage_rockets_soldier_cloaker.cfg
+paid_damage_rockets_soldier_kappy.cfg
+paid_disruptor_pyro_astrobot.cfg
+paid_disruptor_scout_bonkscout.cfg
+paid_disruptor_scout_fanscout.cfg
+paid_disruptor_scout_hypescout.cfg
+paid_disruptor_soldier_blastinator.cfg
+paid_disruptor_soldier_lazy_purple.cfg
+paid_engineer_brainiac.cfg
+paid_engineer_gnome.cfg
+paid_engineer_nofungineer.cfg
+paid_healer_medic_quick-shielder.cfg
+paid_healer_medic_ubermachine.cfg
+paid_sentrybuster_demoman_larry.cfg
+paid_sentry_buster_rockets_soldier_bursty.cfg
+paid_spy_blackshiv.cfg
+paid_spy_warper.cfg
+paid_tank_demoman_hacked_slasher.cfg
+paid_tank_heavy_pancop.cfg
+paid_tank_heavy_sensor_armstrong.cfg
+
+Differing Files:
+boss_pyro_skilltron.cfg - Missing key: flame_spread_degree
+free_damage_flames_pyro_agro.cfg - Missing key: flame_spread_degree
+free_damage_flames_pyro_rocketman.cfg - Missing key: flame_spread_degree
+free_damage_flames_pyro_wamo.cfg - Missing key: flame_spread_degree
+free_damage_flames_wizard_pyro_fire_wizard.cfg - Missing key: speed_boost_on_hit
+free_damage_grenades_demoman_solarlight.cfg - Missing key: is_festivized
+free_damage_hitscan_heavy_riotcop.cfg - Missing key: mult_spread_scales_consecutive
+free_damage_melee_pyro_centurion.cfg - Missing key: speed_boost_on_hit
+free_damage_melee_pyro_volcanyro.cfg - Missing key: explode_on_ignite
+free_disruptor_demoman_toofty.cfg - Missing key: is_festivized
+free_disruptor_soldier_tonetech.cfg - Missing key: mod_air_control_blast_jump
+free_sniper_CarbineCassidy.cfg - Missing key: crit_dmg_falloff
+free_tank_heavy_beardedexpense.cfg - Missing key: speed_boost_on_kill
+free_tank_heavy_mega_ton.cfg - Missing key: reduced_healing_from_medics
+paid_damage_flames_pyro_firelord.cfg - Missing key: flame_spread_degree
+paid_damage_flames_pyro_laugh_extractor.cfg - Missing key: flame_spread_degree
+paid_damage_melee_soldier_equalizor.cfg - Missing key: reduced_healing_from_medics
+paid_sentry_buster_jetpack_pyro.cfg - Missing key: thermal_thruster_air_launch
+paid_spy_mrpaladin.cfg - Missing key: sanguisuge
+paid_spy_stabbystabby.cfg - Missing key: sanguisuge
+paid_spy_trickster.cfg - Missing key: mod_disguise_consumes_cloak
