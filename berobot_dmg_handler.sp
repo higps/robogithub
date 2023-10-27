@@ -1235,12 +1235,15 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 4.0;
                 stat2 = 5.5;
+                stat3 = 2.5;
                 TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
                 TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", stat1);
                 TF2Attrib_SetByName(Weapon1, "Reload time increased", stat2);
+                TF2Attrib_SetByName(Weapon1, "single wep deploy time increased", stat3);
+                
                 TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}IronBomber: {orange}Fires full clip at once, {teamcolor}& {orange}+%0.0f%%%% {teamcolor}slower reload rate, {orange}%0.0f%%%% degrees less accurate",chat_display, MoreIsMore(stat2), MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}IronBomber: {orange}Fires full clip at once, {teamcolor}& {orange}+%0.0f%%%% {teamcolor}slower reload rate, {orange}%0.0f%%%% degrees less accurate and deploys %0.0f%%%% slower",chat_display, MoreIsMore(stat2), MoreIsMore(stat1), MoreIsMore(stat3));
             }
             
             if (IsClaid(Weapon3))

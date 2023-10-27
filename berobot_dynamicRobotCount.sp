@@ -117,7 +117,7 @@ void SetRoboCapTeam()
     // PrintToChatAll("Robot Team was %i", robotteam);
 
     float ratio = _humansPerRobot;
-    int robotCount = RoundToCeil(count/ratio);
+    int robotCount = RoundToNearest(count/ratio);
     // PrintToChatAll("Robocount was: %i", robotCount);
     if (robotCount == 0){
         robotCount = 1;
