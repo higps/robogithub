@@ -247,6 +247,9 @@ void SplitRocket(int rocket, bool converge)
 	GetEntPropVector(rocket, Prop_Data, "m_vecOrigin", pos);
 	GetEntPropVector(rocket, Prop_Send, "m_angRotation", rocketAngle);
 	GetEntPropVector(rocket, Prop_Data, "m_vecVelocity", rocketVel);
+
+	int launcher = GetEntPropEnt(rocket, Prop_Send, "m_hLauncher");
+	
 	speed = GetVectorLength(rocketVel);
 	int crit = 0;
 	if (HasEntProp(rocket, Prop_Send, "m_bCritical"))
@@ -289,8 +292,12 @@ void SplitRocket(int rocket, bool converge)
 		int team = GetClientTeam(owner);
 		SetVariantInt(team);
 		AcceptEntityInput(mirv, "TeamNum");
+		SetVariantInt(team);
 		AcceptEntityInput(mirv, "SetTeam");
 		SetEntPropEnt(mirv, Prop_Send, "m_hOwnerEntity", owner);
+		SetEntPropEnt(mirv, Prop_Send, "m_hLauncher", launcher);
+		SetEntPropEnt(mirv, Prop_Send, "m_hOriginalLauncher", launcher);
+
 		float vel[3];
 		GetAngleVectors(angles, vel, NULL_VECTOR, NULL_VECTOR);
 		ScaleVector(vel, speed);
