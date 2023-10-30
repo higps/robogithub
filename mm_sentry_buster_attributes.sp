@@ -244,7 +244,7 @@ void CreateExplosion(float position[3], float radius, int client)
 {
 	int bomb = CreateEntityByName("tf_generic_bomb");
 
-	DispatchKeyValueFloat(bomb, "damage", LasBuster.Damage);
+	DispatchKeyValueFloat(bomb, "damage", LastBuster.Damage);
 	DispatchKeyValueFloat(bomb, "radius", radius);
 	DispatchKeyValue(bomb, "health", "1");
 
