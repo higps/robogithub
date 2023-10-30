@@ -227,8 +227,10 @@ Action Bewm(Handle timer, any userid)
 
 	LastBuster.Pos = clientPos;
 
+	CreateExplosion(clientPos, LastBuster.Radius, LastBuster.Get());
+
 	// This will include everything in one go, no need to loop through all clients and then also entities
-	TR_EnumerateEntitiesSphere(clientPos, LastBuster.Radius, MASK_SHOT, FindEntitiesInSphere, LastBuster.Get());
+	// TR_EnumerateEntitiesSphere(clientPos, LastBuster.Radius, MASK_SHOT, FindEntitiesInSphere, LastBuster.Get());
 	
 	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_explode.wav", client);
 	AttachParticle(client, "fluidSmokeExpl_ring_mvm");
@@ -238,6 +240,25 @@ Action Bewm(Handle timer, any userid)
 	return Plugin_Handled;
 }
 
+void CreateExplosion(float position[3], float radius, int client)
+{
+	int bomb = CreateEntityByName("tf_generic_bomb");
+
+	DispatchKeyValueFloat(bomb, "damage", LasBuster.Damage);
+	DispatchKeyValueFloat(bomb, "radius", radius);
+	DispatchKeyValue(bomb, "health", "1");
+
+	SetEntPropEnt(bomb, Prop_Data, "m_hOwnerEntity", client);
+
+	DispatchSpawn(bomb);
+	ActivateEntity(bomb);
+
+	TeleportEntity(bomb, position, NULL_VECTOR, NULL_VECTOR);
+
+	SDKHooks_TakeDamage(bomb, client, client, 2.0);
+}
+
+/*
 bool FindEntitiesInSphere(int entity, int exclude)
 {
 	// Ignore entities that we can't or shouldn't damage
@@ -327,6 +348,7 @@ bool CheckTrace(int entity, int mask, int ignore)
 
 	return true;
 }
+*/
 
 stock bool AttachParticle(int Ent, char[] particleType, bool cache = false) // from L4D Achievement Trophy
 {
