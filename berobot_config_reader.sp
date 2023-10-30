@@ -526,7 +526,7 @@ MakeRobotFrame(client)
                         // RGBA value successfully fetched and parsed
                         // Now, you can use red, green, blue, and alpha variables as required
                         // For example, store them, print them, or use in some logic
-                        PrintToChatAll("RGBA for %s: %d, %d, %d, %d", weaponClassName, red, green, blue, alpha);
+                        //PrintToChatAll("RGBA for %s: %d, %d, %d, %d", weaponClassName, red, green, blue, alpha);
                         rgba = true;
                     }
                     // else
