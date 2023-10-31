@@ -43,7 +43,7 @@ public void _InternalAddPaint(char[] name, int value1, int value2)
 {
     if (numPaints < MAX_PAINTS)
     {
-        PrintToServer("Adding paint: %s", name);
+        //PrintToServer("Adding paint: %s", name);
         
         for (int i = 0; i < strlen(name) && i < 64; i++)
         {
@@ -54,10 +54,10 @@ public void _InternalAddPaint(char[] name, int value1, int value2)
         paintValues2[numPaints] = value2;
         numPaints++;
     }
-    else
-    {
-        PrintToServer("Error: numPaints exceeds or is equal to MAX_PAINTS. Not copying string.");
-    }
+    // else
+    // {
+    //     PrintToServer("Error: numPaints exceeds or is equal to MAX_PAINTS. Not copying string.");
+    // }
 }
 
 
@@ -514,7 +514,7 @@ MakeRobotFrame(client)
                 int slot = i_hConfig.GetNum("slot", 0);
                 
 
-                int paint = i_hConfig.GetNum("paint", 0);
+                int paint = i_hConfig.GetNum("warpaint_id", 0);
                 //Only used for Sandman and Wrap Assasin
                 int weaponammo = i_hConfig.GetNum("weaponammo", 0);
                 int remove_attributes = i_hConfig.GetNum("remove_attributes", 0);
