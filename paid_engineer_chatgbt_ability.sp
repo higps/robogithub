@@ -34,7 +34,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	char weapon_logname[MAX_NAME_LENGTH];
 	GetEventString(event, "weapon_logclassname", weapon_logname, sizeof(weapon_logname));
 	
-	if (IsRobot(attacker, ROBOT_NAME) && wepindex == 141)
+	if (IsRobot(attacker, ROBOT_NAME) && wepindex == 1153)
 	{
 		if (StrContains(weapon_logname, "obj_sentrygun") == -1)  // This will account for all obj_sentrygun variations
 		{
