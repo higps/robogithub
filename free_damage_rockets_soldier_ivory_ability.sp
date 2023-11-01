@@ -21,7 +21,8 @@ bool RocketOverride[2049];
 bool MirvRocket[2049];
 bool MirvConverge[2049];
 
-bool ShouldMirvConverge;
+bool ShouldMirvConverge = false;
+bool MirvConvergeOnAim = false;
 
 float ConvergePoint[2049][3];
 float MinFlightTime[2049];
@@ -35,6 +36,7 @@ bool g_rocketCurve;
 ConVar g_showDebug;
 ConVar g_rocketAngle;
 ConVar g_rocketDiverge;
+ConVar g_rocketConvergeAim;
 
 #define GUNFIRE	"weapons/sentry_rocket.wav"
 #define GUNFIRE_CRIT	"weapons/sentry_rocket.wav"
@@ -61,9 +63,12 @@ public OnPluginStart()
 	g_showDebug = CreateConVar("ivory_mirv_converge_debug", "0", "Show debug angles and trajectory for converging rockets", _, true, 0.0, true, 1.0);
 	g_rocketAngle = CreateConVar("ivory_mirv_split_angle", "60.0", "Positive angle from the down vector at which mirv rockets will split at (0.0 = directly down, 90.0 = no deviation)");
 	g_rocketDiverge = CreateConVar("ivory_mirv_split_variance", "10.0", "Random angle variance added onto mirv rockets");
+	g_rocketConvergeAim = CreateConVar("mirv_converge_aim", "1", "Rocket converge point is based on player aim instead of rocket aim", _, true, 0.0, true, 1.0);
 	//HookConVarChange(g_rocketCurve, OnMirvSettingsChanged);
+	HookConVarChange(g_rocketConvergeAim, OnMirvConvergeChanged);
 
 	ShouldMirvConverge =  view_as<bool>(g_rocketCurve);
+	MirvConvergeOnAim = g_rocketConvergeAim.BoolValue;
 
 	ExplodeSprite = PrecacheModel("sprites/sprite_fire01.vmt");
 	PrecacheSound(ExplodeSound);
@@ -111,6 +116,12 @@ public void OnMirvSettingsChanged(ConVar convar, char[] oldVal, char[] newVal)
 {
 	int cvarValue = StringToInt(newVal);
 	ShouldMirvConverge = view_as<bool>(cvarValue);
+}
+
+void OnMirvConvergeChanged(ConVar convar, char[] oldVal, char[] newVal)
+{
+	int cvarValue = StringToInt(newVal);
+	MirvConvergeOnAim = view_as<bool>(cvarValue);
 }
 
 bool g_PushButton[MAXPLAYERS + 1] = {false, ...};
@@ -329,11 +340,29 @@ public bool FilterCollision(int entity, int ContentsMask)
 
 void SetupConvergePoint(float pos[3], float angle[3], float range, float bufferPos[3], int owner)
 {
-	float forwardPos[3];
-	GetAngleVectors(angle, forwardPos, NULL_VECTOR, NULL_VECTOR);
-	ScaleVector(forwardPos, range);
-	AddVectors(pos, forwardPos, forwardPos);
-	Handle trace = TR_TraceRayFilterEx(pos, forwardPos, MASK_PLAYERSOLID, RayType_EndPoint, FilterCollision);
+	float forwardPos[3], originPos[3];
+	if (MirvConvergeOnAim)
+	{
+		float playerAngle[3];
+		GetClientEyeAngles(owner, playerAngle);
+
+		GetClientEyePosition(owner, originPos);
+
+		float aimVec[3];
+		GetAngleVectors(playerAngle, aimVec, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(aimVec, range);
+
+		AddVectors(originPos, aimVec, forwardPos);
+	}
+	else
+	{
+		GetAngleVectors(angle, forwardPos, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(forwardPos, range);
+		AddVectors(pos, forwardPos, forwardPos);
+		originPos = pos;
+	}
+	
+	Handle trace = TR_TraceRayFilterEx(originPos, forwardPos, MASK_PLAYERSOLID, RayType_EndPoint, FilterCollision);
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(bufferPos, trace);
@@ -382,43 +411,33 @@ void ConvergeRocket(int rocket)
 {
 	if (IsValidEntity(rocket) && MirvConverge[rocket])
 	{
-		float curPos[3], curAngle[3], trajectory[3], vel[3], speed;
+		float velocity[3], acceleration[3], angle[3];
+
+		GetEntPropVector(rocket, Prop_Data, "m_vecAbsVelocity", velocity);
+		float magnitude = 55.0; // rate at which rockets accelerate towards the homing posiition
+		acceleration = GetHomingAccel(rocket, ConvergePoint[rocket], magnitude);
+
+		float speed = GetVectorLength(velocity);
+
+		AddVectors(velocity, acceleration, velocity);
+		GetVectorAngles(velocity, angle);
+
+		NormalizeVector(velocity, velocity); // reset speed
+		ScaleVector(velocity, speed);
+
+		TeleportEntity(rocket, NULL_VECTOR, angle, velocity);
+
+		float forwardVec[3], angleVec[3], curPos[3], trajectory[3];
 		GetEntPropVector(rocket, Prop_Data, "m_vecOrigin", curPos);
-		GetEntPropVector(rocket, Prop_Data, "m_angRotation", curAngle);
-		GetEntPropVector(rocket, Prop_Data, "m_vecAbsVelocity", vel);
-		speed = GetVectorLength(vel);
-
 		MakeVectorFromPoints(curPos, ConvergePoint[rocket], trajectory);
-		NormalizeVector(trajectory, trajectory);
-		float distance = ClampFloat(GetMagnitudeFromDistance(GetVectorDistance(curPos, ConvergePoint[rocket])), 35.0, 400.0);
-		ScaleVector(trajectory, distance);
-		AddVectors(curPos, trajectory, curPos);
 
-		AddVectors(vel, trajectory, vel);
-		NormalizeVector(vel, vel);
-		GetVectorAngles(vel, curAngle);
-		ScaleVector(vel, speed);
-		TeleportEntity(rocket, NULL_VECTOR, curAngle, vel);
-
-		//Check angles between forward vector of rocket and vector to converge point
-		float forwardVec[3], angleVec[3];
-		GetAngleVectors(curAngle, forwardVec, NULL_VECTOR, NULL_VECTOR);
+		GetAngleVectors(angle, forwardVec, NULL_VECTOR, NULL_VECTOR);
 		ScaleVector(forwardVec, 150.0);
 		AddVectors(curPos, forwardVec, forwardVec);
 		angleVec = trajectory;
 		NormalizeVector(angleVec, angleVec);
 		ScaleVector(angleVec, 150.0);
 		AddVectors(curPos, angleVec, angleVec);
-
-		if (GetConVarBool(g_showDebug))
-		{
-			//forward visual
-			TE_SetupBeamPoints(curPos, forwardVec, glow, glow, 0, 1, 5.0, 5.0, 5.0, 10, 0.0, {100, 0, 200, 255}, 10);
-			TE_SendToAll();
-			//converge vector
-			TE_SetupBeamPoints(curPos, angleVec, glow, glow, 0, 1, 5.0, 5.0, 5.0, 10, 0.0, {255, 255, 0, 255}, 10);
-			TE_SendToAll();
-		}
 
 		NormalizeVector(forwardVec, forwardVec);
 		NormalizeVector(angleVec, angleVec);
@@ -429,12 +448,27 @@ void ConvergeRocket(int rocket)
 	}
 }
 
+float[] GetHomingAccel(int rocket, float targetpos[3], float magnitude)
+{
+	float acceleration[3];
+	float rocketPos[3];
+	GetEntPropVector(rocket, Prop_Data, "m_vecOrigin", rocketPos);
+
+	SubtractVectors(targetpos, rocketPos, acceleration);
+	NormalizeVector(acceleration, acceleration);
+	ScaleVector(acceleration, magnitude);
+
+	return acceleration;
+}
+
+/*
 float GetMagnitudeFromDistance(float distance)
 {
 	float magnitude;
 	magnitude = 600.0 / distance;
 	return magnitude;
 }
+*/
 
 public Action OnRocketEnd(int rocket, int victim)
 {
