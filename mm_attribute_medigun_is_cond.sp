@@ -172,15 +172,20 @@ MRESReturn OnGetPlayerProvidedCharge(int client, Handle hReturn) {
 	if (IsUberchargeDeployed(activeWeapon) && IsGroupOverhealMedigun(activeWeapon, healprops)) {
 		DHookSetReturn(hReturn, -1);
 //		PrintToChatAll("Nothing %i", g_cond);
+		RequestFrame(testframe, client);
+		return MRES_Supercede;
+	}
+	return MRES_Ignored;
+}
+
+void testframe(int client){
+	// PrintToChatAll("Frame after");
 		int healtarget = getHealingTarget(client);
 		TF2_AddCondition(client, g_cond, g_duration);
 		if(IsClientInGame(healtarget))
 		{
 			TF2_AddCondition(healtarget, g_cond, g_duration);
 		}
-		return MRES_Supercede;
-	}
-	return MRES_Ignored;
 }
 
 bool IsUberchargeDeployed(int weapon) {

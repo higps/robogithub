@@ -1720,7 +1720,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
                 stat1 = 1.6;
                 TF2Attrib_SetByName(Weapon1, "clip size bonus", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%%%% clip size{teamcolor}",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%%%% clip{teamcolor}",chat_display, MoreIsMore(stat1));
                 
                 if (Weapon2 != -1)
                 {
@@ -1736,9 +1736,22 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                         TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
                         Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
                     }
+
+                    if(IsBison(Weapon2))
+                   {
+                        stat1 = 0.65;
+                        TF2Attrib_SetByName(Weapon2, "faster reload rate", stat1);
+                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bison: {orange}+%0.0f%% faster reload",chat_display, LessIsMore(stat1));
+                   }
+                   if(IsBaseJumper(Weapon2))
+                   {
+                        stat1 = 25.0;
+                        TF2Attrib_SetByName(Weapon2, "max health additive bonus", stat1);
+                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Base Jumper: {orange}+%0.0f%% max hp",chat_display, stat1);
+                   }
                 }else
                 {
-                    //Either mantreads or gunboats
+    
                 }
             }else
             {
@@ -1770,6 +1783,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "Blast radius increased", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+%0.0f%%%% larger explosion radius",chat_display, MoreIsMore(stat1));
             }
+
             if (IsWearable(Weapon2))
             {
 
@@ -1799,6 +1813,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                         TF2Attrib_SetByName(SoldierShoes, "move speed bonus", stat1);
                     }
                 }
+            }
+
+            if (isEqualizer(Weapon3))
+            {
+                stat1 = 20.0;
+                Format(chat_display, sizeof(chat_display), "%s{orange}\nEqualizer: %0.0f%%%% {teamcolor}increased rage build",chat_display, MoreIsMore(stat1));
+                TF2Attrib_SetByName(Weapon3, "mod rage on hit bonus", stat1);
             }
         }
 
@@ -2451,6 +2472,21 @@ bool isLibertyLauncher(int weapon)
 	return false;
 }
 
+bool isEqualizer(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other Equalizer are added, add here
+	case 128: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool IsAnyBanner(int weapon)
 {
 	if(weapon == -1 && weapon <= MaxClients) return false;
@@ -2459,6 +2495,20 @@ bool IsAnyBanner(int weapon)
 	{
 		//If other Beggarbazooka are added, add here
 	case 1001, 226, 129, 354: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsBison(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+	case 442: 
 		{
 			return true;
 		}
