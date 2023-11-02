@@ -38,6 +38,8 @@ enum struct FProjectile
 }
 FProjectile Projectile[2049];
 
+bool ChildBomb[2049] = {false, ...}; // Projectiles fired from projectile launchers, ignore these when spawned.
+
 bool ProjectileLauncher[2049]; // Tags projectile as one that should fire more projectiles
 char ProjectileModel[MAXPLAYERS+1][128]; // Model to use for the projectile which will fire itself
 char ProjectileFireSound[MAXPLAYERS+1][128]; // Sound to use for projectiles being fired
@@ -99,6 +101,8 @@ public void OnEntityDestroyed(int entity)
 	if (IsValidEntity(entity))
 	{
 		ProjectileLauncher[entity] = false;
+
+		ChildBomb[entity] = false;
 	}
 }
 
@@ -108,6 +112,10 @@ void ProjectileSpawned(int projRef)
 	FObject proj;
 	proj.ref = projRef;
 	if (!proj.Valid())
+		return;
+
+	// Ignore projectiles spawned from a launcher already
+	if (ChildBomb[proj.Get()])
 		return;
 
 	FClient owner;
@@ -181,6 +189,13 @@ void OnProjectileTick(FObject entity, FProjectile proj, FClient owner)
 
 		child = CreateObjectDeferred(classname);
 
+		// Sets the launcher for this child projectile
+		SetProjectileLauncher(entity, child);
+
+		ChildBomb[child.Get()] = true;
+
+		child.SetOwner(entity.GetOwner());
+
 		// Shift upwards a bit to prevent collisions
 		spawn.position.z += 2.0;
 
@@ -199,18 +214,16 @@ void OnProjectileTick(FObject entity, FProjectile proj, FClient owner)
 			}
 		}
 
-		// Sets the launcher for this child projectile
-		SetProjectileLauncher(entity, child);
-
 		// Using safer methods for setting properties, also much cleaner than before
 		SetProjectileProperties(ABaseProjectile(entity), ABaseProjectile(child));
 
 		// Now let's set our owner, we do this after spawning to ensure we don't end up spawning an infinite amount of projectiles
-		DataPack pack = new DataPack();
+		// DataPack pack = new DataPack();
+		// No longer need to do this
 
-		pack.WriteCellArray(entity, sizeof FObject);
-		pack.WriteCellArray(child, sizeof FObject);
-		RequestFrame(OnChildPost, pack);
+		//pack.WriteCellArray(entity, sizeof FObject);
+		//pack.WriteCellArray(child, sizeof FObject);
+		//RequestFrame(OnChildPost, pack);
 	}
 }
 
@@ -240,6 +253,7 @@ void SetProjectileLauncher(FObject entity, FObject child)
 		child.SetPropEnt(Prop_Send, "m_hLauncher", launcher);
 }
 
+/*
 void OnChildPost(DataPack pack)
 {
 	FObject child, entity;
@@ -252,3 +266,4 @@ void OnChildPost(DataPack pack)
 
 	delete pack;
 }
+*/
