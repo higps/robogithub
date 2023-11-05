@@ -1146,7 +1146,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             stat1 = 0.85;
             TF2Attrib_SetByName(Weapon1, "dmg taken from fire reduced", stat1);
             
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pyro: {orange}+%0.0f%%%% fire resistance",chat_display, OneIs100(stat1));
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pyro: {orange}+%0.0f%%%% fire resistance",chat_display, LessIsMore(stat1));
             }
             
             if(IsThirdDegree(Weapon3))
@@ -1233,8 +1233,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsIronBomber(Weapon1))
             {
-                stat1 = 4.0;
-                stat2 = 5.5;
+                stat1 = 3.5;
+                stat2 = 4.5;
                 stat3 = 2.5;
                 TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
                 TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", stat1);

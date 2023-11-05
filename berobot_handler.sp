@@ -61,6 +61,11 @@ enum //Convar names
     CV_g_AprilEnable,
     CV_PluginVersion
 }
+
+enum {
+    dmg_method_on_target,
+    dmg_method_off_target
+}
 /* Global Variables */
 
 /* Global Handles */
@@ -2030,7 +2035,7 @@ int Native_SetVolunteers(Handle plugin, int numParams)
     }
 }
 bool g_b_changed_dmg = false;
-bool g_b_calculated = false;
+bool g_b_broadcast_msg = false;
 
 int Native_EnsureRobotCount(Handle plugin, int numParams)
 {
@@ -2041,11 +2046,12 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
     while (g_Volunteers.Length == g_RoboCapTeam)
     {
-        if (g_b_calculated) PrintCenterTextAll("Alert: Robot Power Restored\nRobots take normal damage");
-        
-        
-        g_f_Damage_Bonus = -1.0;
-        g_b_calculated = false;
+        //Only type this one time when damage value is restarted
+      if (g_f_Damage_Bonus == -1.0 || !g_b_broadcast_msg) PrintCenterTextAll("Alert: Robot Power Restored\nRobots take normal damage");
+
+        CalculateDamageModifier(dmg_method_on_target);
+        if(g_b_changed_dmg || !g_b_broadcast_msg)PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% more damage!", (g_f_Damage_Bonus-1.0)*100);
+        g_b_broadcast_msg = true;
         break;
     }
 
@@ -2056,11 +2062,11 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         bool success = AddRandomVolunteer();
         SMLogTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
         
-        CalculateDamageModifier();
+        CalculateDamageModifier(dmg_method_off_target);
         // PrintToChatAll("Previous %f, g_f_dmg %f", g_f_previous_dmg_bonus, g_f_Damage_Bonus);
 
-        if(g_b_changed_dmg || !g_b_calculated)PrintCenterTextAll("Alert: High Power!\nRobots take %.0f %% less damage!", (g_f_Damage_Bonus-1.0)*100);
-        g_b_calculated = true;
+        if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)PrintCenterTextAll("Alert: High Power!\nRobots take %.0f %% less damage!", (g_f_Damage_Bonus-1.0)*100);
+        g_b_broadcast_msg = true;
         if (!success)
             break;
     }
@@ -2068,10 +2074,10 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
     while (g_Volunteers.Length > g_RoboCapTeam)
     {
-        CalculateDamageModifier();
+        CalculateDamageModifier(dmg_method_off_target);
         
-        if(g_b_changed_dmg || !g_b_calculated)PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% more damage!", (g_f_Damage_Bonus-1.0)*100);
-        g_b_calculated = true;
+        if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% more damage!", (g_f_Damage_Bonus-1.0)*100);
+        g_b_broadcast_msg = true;
         break;
     }
 
@@ -2079,33 +2085,52 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
 }
 
-void CalculateDamageModifier()
+void CalculateDamageModifier(int dmg_method)
 {
     // PrintToChatAll("Calculating");
 
 
 
-    int CurrentRobots = GetCurrentRobotCount();
-    int CurrentHumans = GetCurrentHumanCount();
-
-    ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
-
-    // int TargetRobots = RoundToFloor(float(CurrentRobots+CurrentHumans) / drobotcount.FloatValue);
-    int TargetHumans = RoundToFloor(float(CurrentRobots) * drobotcount.FloatValue) - CurrentRobots;
     
-    g_f_Damage_Bonus = float(TargetHumans)/float(CurrentHumans); 
 
-    if (g_f_previous_dmg_bonus == g_f_Damage_Bonus)
-    {
-        g_b_changed_dmg = false;   
-    }else
-    {
-        g_b_changed_dmg = true;    
-    }
+        int CurrentRobots = GetCurrentRobotCount();
+        int CurrentHumans = GetCurrentHumanCount();
 
-    g_f_previous_dmg_bonus = g_f_Damage_Bonus;
+        ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
+        float ratio = drobotcount.FloatValue;
 
 
+
+        if (dmg_method == dmg_method_off_target)
+        {
+            int TargetHumans = RoundToFloor(float(CurrentRobots) * ratio) - CurrentRobots;
+
+            g_f_Damage_Bonus = float(TargetHumans)/float(CurrentHumans); 
+        }
+        else if (dmg_method == dmg_method_on_target)
+        {
+            float unrounded = (CurrentRobots+CurrentHumans)/ratio;
+            int rounded = RoundToCeil((CurrentRobots+CurrentHumans)/ratio);
+            if (unrounded != rounded)
+            {
+                float dmg = float(rounded)/unrounded;
+                g_f_Damage_Bonus = dmg;
+            }
+            else //This happens when the ratio is within target, to not go with the offset in human ratio
+            {
+                g_f_Damage_Bonus = -1.0;      
+            }   
+        }
+
+        if (g_f_previous_dmg_bonus == g_f_Damage_Bonus)
+        {
+            g_b_changed_dmg = false;   
+        }else
+        {
+            g_b_changed_dmg = true;    
+        }
+
+        g_f_previous_dmg_bonus = g_f_Damage_Bonus;
     
     //Put better calculative formula here if discovered
     // g_f_Damage_Bonus = Logarithm(float(TargetHumans)/float(CurrentHumans), float(CurrentHumans)) + 1.0;
