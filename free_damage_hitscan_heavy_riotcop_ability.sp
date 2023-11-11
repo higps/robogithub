@@ -18,20 +18,38 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
-
+bool g_b_valid_taunt;
 public TF2_OnConditionAdded(client, TFCond:condition)
 {
     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
     {	
         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
         if (tauntid == -1)
-        {
-        CreateTimer(3.2, Timer_Taunt_Cancel, client);
-        }	  
+		{
+		g_b_valid_taunt = true;
+
+        }else
+		{
+		g_b_valid_taunt = false;
+		}	  
+  
 
 	}
 }
 
+
+public TF2_OnConditionRemoved(client, TFCond:condition)
+{
+    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+    {	
+        int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+        if (g_b_valid_taunt )
+        {
+		TF2_AddCondition(client, TFCond_Buffed, 6.0);
+        }  
+		g_b_valid_taunt = false;
+	}
+}
 public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 {
 	if (IsValidClient(client)){
@@ -39,7 +57,7 @@ public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
 		if (TF2_IsPlayerInCondition(client, TFCond_Taunting))
 		{
 		TF2_RemoveCondition(client, TFCond_Taunting);
-		TF2_AddCondition(client, TFCond_Buffed, 5.0);
+		TF2_AddCondition(client, TFCond_Buffed, 6.0);
 		}
 	}
 }

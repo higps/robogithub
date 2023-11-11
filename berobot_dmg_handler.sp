@@ -1016,7 +1016,6 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             {
                 if(IsBazaar(weapon)) {
                     int decapitations = GetEntProp(attacker, Prop_Send, "m_iDecapitations");
-
                     if(damagecustom == TF_CUSTOM_HEADSHOT)
                     {
                         SetEntProp(attacker, Prop_Send, "m_iDecapitations", decapitations + 1);
@@ -1031,7 +1030,8 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                         }
                         
                     }
-                    
+                    decapitations = GetEntProp(attacker, Prop_Send, "m_iDecapitations");
+                    TF2Attrib_SetByName(weapon, "faster reload rate", calculateReloadSpeed(decapitations));
 
                 }
 
@@ -1100,6 +1100,13 @@ public void HeatmakerRage(int attacker)
     }
 }
 
+float calculateReloadSpeed(int heads) {
+    float baseReloadSpeed = 1.0;
+    float a = 0.025; // Adjust this value based on your preference
+    
+    float reloadSpeed = 1.0 / (1.0 + a * heads * heads);
+    return baseReloadSpeed * reloadSpeed;
+}
 // float g_Attribute_Display_CollDown[MAXPLAYERS + 1] = 10.0;
 // float g_Attribute_Display [MAXPLAYERS + 1] = 0.0;
 
@@ -1377,7 +1384,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsBazaar(Weapon1))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bragin: {orange}Gain head on headshot{teamcolor}, but {darkred}Lose 2 heads{teamcolor} on bodyshot",chat_display);  
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bargin: {orange}On Headshot: +1 head{teamcolor}, {darkred}On Bodyshot: -2 heads{teamcolor}. {orange}Heads: Gives faster reload speed bonus",chat_display);  
         }
 
         if (IsClassic(Weapon1))
