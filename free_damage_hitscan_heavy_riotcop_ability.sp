@@ -43,21 +43,22 @@ public TF2_OnConditionRemoved(client, TFCond:condition)
     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
     {	
         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-        if (g_b_valid_taunt )
+        if (g_b_valid_taunt)
         {
 		TF2_AddCondition(client, TFCond_Buffed, 6.0);
-        }  
 		g_b_valid_taunt = false;
+        }  
+		
 	}
 }
-public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
-{
-	if (IsValidClient(client)){
+// public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
+// {
+// 	if (IsValidClient(client)){
 
-		if (TF2_IsPlayerInCondition(client, TFCond_Taunting))
-		{
-		TF2_RemoveCondition(client, TFCond_Taunting);
-		TF2_AddCondition(client, TFCond_Buffed, 6.0);
-		}
-	}
-}
+// 		if (TF2_IsPlayerInCondition(client, TFCond_Taunting))
+// 		{
+// 		TF2_RemoveCondition(client, TFCond_Taunting);
+// 		TF2_AddCondition(client, TFCond_Buffed, 6.0);
+// 		}
+// 	}
+// }
