@@ -2047,10 +2047,15 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
     while (g_Volunteers.Length == g_RoboCapTeam)
     {
         //Only type this one time when damage value is restarted
-      if (g_f_Damage_Bonus == -1.0 || !g_b_broadcast_msg) PrintCenterTextAll("Alert: Robot Power Restored\nRobots take normal damage");
+      if (g_f_Damage_Bonus == -1.0 && (g_b_changed_dmg || !g_b_broadcast_msg))
+      {
+        PrintCenterTextAll("Alert: Robot Power Restored\nRobots take normal damage");
+        g_b_broadcast_msg = true;
+      } 
+      
 
         CalculateDamageModifier(dmg_method_on_target);
-        if(g_b_changed_dmg || !g_b_broadcast_msg)PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% more damage!", (g_f_Damage_Bonus-1.0)*100);
+        if(g_f_Damage_Bonus != -1.0 && (g_b_changed_dmg || !g_b_broadcast_msg))PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% more damage!", (g_f_Damage_Bonus-1.0)*100);
         g_b_broadcast_msg = true;
         break;
     }
@@ -2076,7 +2081,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
     {
         CalculateDamageModifier(dmg_method_off_target);
         
-        if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% more damage!", (g_f_Damage_Bonus-1.0)*100);
+        if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)PrintCenterTextAll("Alert v4: Low Power!\nRobots take %.0f %% more damage!", (g_f_Damage_Bonus-1.0)*100);
         g_b_broadcast_msg = true;
         break;
     }

@@ -1208,22 +1208,22 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
                 TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");
 
-                stat1 = 0.75;
+                stat1 = 0.70;
                 if (Weapon1 != -1)
                 {
                     TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
-                    SetDemoDamageBuff(Weapon1);
+                 //   SetDemoDamageBuff(Weapon1);
                     
                 }
 
                 if (Weapon2 != -1)
                 {
                     TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
-                    SetDemoDamageBuff(Weapon2);
+                   // SetDemoDamageBuff(Weapon2);
                     
                 }
                 stat1 = 1.0-stat1;
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoman: All of projectile weapons {orange}Reload %0.0f%%%% faster\n{teamcolor}All weapons deal {orange}more damage{teamcolor} the more damage you do",chat_display, OneIs100(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoman: All of projectile weapons {orange}Reload %0.0f%%%% faster\n{teamcolor}Melee weapons {orange}more damage{teamcolor} the more damage you do",chat_display, OneIs100(stat1));
             }
 
             if (Weapon3 != -1)
@@ -1240,9 +1240,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsIronBomber(Weapon1))
             {
-                stat1 = 3.5;
-                stat2 = 4.5;
-                stat3 = 2.5;
+                stat1 = 5.0;
+                stat2 = 5.0;
+                stat3 = 3.0;
                 TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
                 TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", stat1);
                 TF2Attrib_SetByName(Weapon1, "Reload time increased", stat2);
