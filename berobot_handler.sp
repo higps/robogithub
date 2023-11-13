@@ -2092,34 +2092,38 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
 void CalculateDamageModifier(int dmg_method)
 {
-    // PrintToChatAll("Calculating");
-
-
-
-    
-
         int CurrentRobots = GetCurrentRobotCount();
         int CurrentHumans = GetCurrentHumanCount();
 
         ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
         float ratio = drobotcount.FloatValue;
 
-
+        // Parameters for the exp_decay function
+        // float a_value = 1.25;  // Adjust as needed
+        // float b_value = 0.2;  // Adjust as needed
+        int TargetHumans = RoundToFloor(float(CurrentRobots) * ratio) - CurrentRobots;
+        int MissingHumans = TargetHumans - CurrentHumans;
 
         if (dmg_method == dmg_method_off_target)
         {
-            int TargetHumans = RoundToFloor(float(CurrentRobots) * ratio) - CurrentRobots;
+            
 
-            g_f_Damage_Bonus = float(TargetHumans)/float(CurrentHumans); 
+            g_f_Damage_Bonus = damage_bonus(float(MissingHumans));
+           // PrintToChatAll("Missing Humans %i DMG BONUS v1 %f",MissingHumans,g_f_Damage_Bonus);
+            //g_f_Damage_Bonus = float(TargetHumans)/float(CurrentHumans); 
         }
         else if (dmg_method == dmg_method_on_target)
         {
+
             float unrounded = (CurrentRobots+CurrentHumans)/ratio;
             int rounded = RoundToCeil((CurrentRobots+CurrentHumans)/ratio);
             if (unrounded != rounded)
             {
-                float dmg = float(rounded)/unrounded;
-                g_f_Damage_Bonus = dmg;
+               // float dmg = float(rounded)/unrounded;
+               // g_f_Damage_Bonus = dmg;
+
+              g_f_Damage_Bonus =  damage_bonus(float(MissingHumans));
+                //PrintToChatAll("Missing Humans %i, DMG BONUS v2 %f",MissingHumans, g_f_Damage_Bonus);
             }
             else //This happens when the ratio is within target, to not go with the offset in human ratio
             {
@@ -2140,6 +2144,16 @@ void CalculateDamageModifier(int dmg_method)
     //Put better calculative formula here if discovered
     // g_f_Damage_Bonus = Logarithm(float(TargetHumans)/float(CurrentHumans), float(CurrentHumans)) + 1.0;
 }
+
+float damage_bonus(float x) {
+    float initial_bonus = 1.0;
+    float base = Pow(3.80 / initial_bonus, 1.0 / 17.0);
+    return initial_bonus * Pow(base, x);
+}
+// float exp_decay(float x, float a, float b) {
+
+//     return a * (1.0 - Exponential(-b * x));
+// }
 
 int Native_UnmakeRobot(Handle plugin, int numParams)
 {
