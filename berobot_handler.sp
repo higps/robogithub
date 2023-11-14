@@ -2146,10 +2146,17 @@ void CalculateDamageModifier(int dmg_method)
 }
 
 float damage_bonus(float x) {
-    float initial_bonus = 1.0;
-    float base = Pow(3.80 / initial_bonus, 1.0 / 17.0);
-    return initial_bonus * Pow(base, x);
+    float base = Pow(3.80 / 1.0, 1.0 / 17.0);
+    return 1.0 * Pow(base, x);
 }
+
+// float diff_value(float diff) {
+//     float mod = 0.147;
+//     float val = mod * diff;
+//     val = 0.00038 * Pow(diff, 3) + 0.03461 * diff;
+//     PrintToChatAll("%f",val);
+//     return val;
+// }
 // float exp_decay(float x, float a, float b) {
 
 //     return a * (1.0 - Exponential(-b * x));

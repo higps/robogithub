@@ -7,13 +7,20 @@ def exp_decay(x, a, b):
 
 def damage_bonus(x):
     initial_bonus = 1.0
-    base = (4.50 / initial_bonus) ** (1 / 17)
+    base = (3.50 / initial_bonus) ** (1 / 17)
     return initial_bonus * base ** x
+
+def diff_value(diff):
+    mod = -0.147
+    val = mod * diff
+    val = -0.00038 * pow(diff,3)  - 0.03461 * diff
+    return round(val,3)
+
 
 # Variables for testing
 ratio = 4
-current_humans = 1
-current_robots = 6
+current_humans = 2
+current_robots = 3
 total_players = current_humans + current_robots
 target_humans = (current_robots * ratio) - current_robots
 missing_humans = target_humans - current_humans
@@ -53,7 +60,7 @@ for current_humans in current_humans_list:
 
     # Calculate damage bonus using exp_decay function
 ##    damage_bonus = exp_decay(missing_humans, a_value, b_value)
-    g_f_Damage_Bonus = damage_bonus(missing_humans)
+    g_f_Damage_Bonus = diff_value(missing_humans)
     # Apply the damage bonus to g_f_Damage_Bonus
 ##    g_f_Damage_Bonus *= damage_bonus + 1
 
