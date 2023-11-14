@@ -2146,20 +2146,18 @@ void CalculateDamageModifier(int dmg_method)
 }
 
 float damage_bonus(float x) {
-    float base = Pow(3.80 / 1.0, 1.0 / 17.0);
+    float base = Pow(2.75/ 1.0, 1.0 / 17.0);
     return 1.0 * Pow(base, x);
 }
 
 // float diff_value(float diff) {
-//     float mod = 0.147;
-//     float val = mod * diff;
-//     val = 0.00038 * Pow(diff, 3) + 0.03461 * diff;
-//     PrintToChatAll("%f",val);
-//     return val;
-// }
-// float exp_decay(float x, float a, float b) {
-
-//     return a * (1.0 - Exponential(-b * x));
+//     float new_diff = -1.0 * diff;
+//     PrintToChatAll("new diff%f",new_diff);
+//     float mod = -0.147;
+//     float val = mod * new_diff;
+//     float result = -0.00038 * Pow(val, 3) - 0.03461 * val;
+//     PrintToChatAll("diff %f",result);
+//     return result;
 // }
 
 int Native_UnmakeRobot(Handle plugin, int numParams)
