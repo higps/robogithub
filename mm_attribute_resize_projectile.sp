@@ -51,7 +51,7 @@ public void Hook_OnProjectileSpawn(iEntity) {
 
 	if (0 < iClient && iClient <= MaxClients && ActiveHasStatClient(iClient)) {
 		
-		
+		// PrintToChatAll("SETTING SCALE")
 		SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", g_Size);
 		if (g_UpdateHitBox)RequestFrame(SetProjectileSize, iEntity);
 	}

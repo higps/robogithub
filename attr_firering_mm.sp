@@ -312,7 +312,7 @@ void InitiateFireRing(int iClient, int iWeapon)
     float fVec[3];
     GetClientAbsOrigin(iClient, fVec);
 
-    TF2_AddCondition(iClient, TFCond_RuneVampire, 0.5);
+    //TF2_AddCondition(iClient, TFCond_RuneVampire, 0.5);
 
     AttachParticle(iClient, "heavy_ring_of_fire", 0.5);
     AttachParticle(iClient, "heavy_ring_of_fire_fp", 0.5, _, false);
@@ -349,7 +349,7 @@ void InitiateFireRing(int iClient, int iWeapon)
         if(!((fVec[2] > fVecEnemy[2] + fMin[2] - 32.0) && (fVec[2] < fVecEnemy[2] + fMax[2])))
             continue;
         
-        SDKHooks_TakeDamage(iEntity, iClient, iClient, Weapon[iWeapon].m_fDamage, DMG_PLASMA | DMG_PREVENT_PHYSICS_FORCE);
+        SDKHooks_TakeDamage(iEntity, iClient, iClient, Weapon[iWeapon].m_fDamage, DMG_PLASMA);
     }
 
     return;
