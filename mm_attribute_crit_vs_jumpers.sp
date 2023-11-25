@@ -8,6 +8,7 @@
 
 float g_dmg;
 int g_critType;
+int g_only_bots;
 
 #define NOCRIT 538968064
 #define IS_CRIT 540016640
@@ -24,6 +25,7 @@ bool ActiveHasStatWeapon(int iActiveWeapon)
 	}
 	g_dmg = ReadFloatVar(stat_buffer, "damage", 1.15);
 	g_critType = ReadIntVar(stat_buffer, "critType", 0);
+	g_only_bots = ReadIntVar(stat_buffer, "only-bots", 0);
 	// PrintToChatAll("HAS STATS");
 	return true;
 }
@@ -37,7 +39,7 @@ int damagecustom, CritType &critType)
 	{
 		if(IsValidClient(attacker))
 		{
-			if(ActiveHasStatWeapon(weapon) && IsAnyRobot(victim))
+			if(ActiveHasStatWeapon(weapon) && ConfirmVictim(victim))
 			{
 				int IsJumping = GetEntProp(victim, Prop_Send, "m_bJumping");
 
@@ -67,4 +69,18 @@ int damagecustom, CritType &critType)
 	}
 
 	return Plugin_Continue;
+}
+
+bool ConfirmVictim(int client)
+{
+	if (!g_only_bots)
+	{
+		return true;
+	}
+
+	if (g_only_bots && IsAnyRobot(client))
+	{
+		return true;
+	}
+	return false;
 }

@@ -1841,7 +1841,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
             TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
             TF2Attrib_SetByName(Weapon1, "fire rate bonus", stat1);
-            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.25");
+            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.25 only-bots=1");
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +25%%%% dmg bonus vs jumping robots",chat_display, LessIsMore(stat1));
         }
         if (IsShotGun(Weapon2))
