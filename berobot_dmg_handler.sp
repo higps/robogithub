@@ -1031,7 +1031,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                         
                     }
                     decapitations = GetEntProp(attacker, Prop_Send, "m_iDecapitations");
-                    TF2Attrib_SetByName(weapon, "faster reload rate", calculateReloadSpeed(decapitations));
+                    //TF2Attrib_SetByName(weapon, "faster reload rate", calculateReloadSpeed(decapitations));
 
                 }
 
@@ -1384,7 +1384,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (IsBazaar(Weapon1))
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bargin: {orange}On Headshot: +1 head{teamcolor}, {darkred}On Bodyshot: -2 heads{teamcolor}. {orange}Heads: Gives faster reload speed bonus",chat_display);  
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bargin: {orange}On Headshot: +1 head{teamcolor}, {darkred}On Bodyshot: -2 heads{teamcolor}",chat_display);  
         }
 
         if (IsClassic(Weapon1))
