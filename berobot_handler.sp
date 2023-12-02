@@ -891,7 +891,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
         {
             // PrintToChatAll("Damage before is %f, g_damagebonus was %f", damage, g_f_Damage_Bonus);
             //PrintToChatAll("Crittype was %i",critType);
-            if(critType == 0)
+            if(critType == CritType_None && g_f_Damage_Bonus > 1.0)
             {
                 damage *= g_f_Damage_Bonus;
                 return Plugin_Changed;
