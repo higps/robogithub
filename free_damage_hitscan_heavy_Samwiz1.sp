@@ -111,7 +111,7 @@ MakeGHeavy(client)
 
 	TF2Attrib_SetByName(client, "ammo regen", 100.0);
 	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.85);
+	TF2Attrib_SetByName(client, "rage giving scale", 0.75);
 
 	UpdatePlayerHitbox(client, 1.75);
    

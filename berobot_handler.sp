@@ -890,9 +890,14 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
         if(!IsAnyRobot(attacker) && IsAnyRobot(victim))
         {
             // PrintToChatAll("Damage before is %f, g_damagebonus was %f", damage, g_f_Damage_Bonus);
-            damage *= g_f_Damage_Bonus;
+            //PrintToChatAll("Crittype was %i",critType);
+            if(critType == 0)
+            {
+                damage *= g_f_Damage_Bonus;
+                return Plugin_Changed;
+            }
             // PrintToChatAll("Damage after is %f", damage);
-            return Plugin_Changed;
+            
         }
     }
 
