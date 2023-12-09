@@ -363,8 +363,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("ForceRobot", Native_ForceRobot);
     CreateNative("GetRobotTeam", Native_GetRobotTeam);
     CreateNative("AddPlayerHealth", Native_AddPlayerHealth);
-    CreateNative("GetRobotCount", Native_GetCurrentRobotCount);
-    CreateNative("GetHumanCount", Native_GetCurrentHumanCount);
+    // CreateNative("GetRobotCount", Native_GetCurrentRobotCount);
+    // CreateNative("GetHumanCount", Native_GetCurrentHumanCount);
 
 
     return APLRes_Success;
