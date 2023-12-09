@@ -15,9 +15,11 @@ foreach ($spFile in $spFiles) {
         continue;
     }
 
-    $outputPath = $spFile.Directory.FullName + "\compiled\" + $spFile.BaseName + ".smx"
-
-    if ($spFile.Name -like "berobot_*.sp") {
+    $outputPath = ""
+    
+    if ($spFile.Name -like "ability_*.sp") {
+        $outputPath = $spFile.Directory.FullName + "\compiled\mm_robots\mm_robots_abilities\" + $spFile.BaseName + ".smx"
+    } elseif ($spFile.Name -like "berobot_*.sp") {
         $outputPath = $spFile.Directory.FullName + "\compiled\mm_handlers\" + $spFile.BaseName + ".smx"
     } elseif ($spFile.Name -like "free_*.sp" -or
               $spFile.Name -like "paid_*.sp" -or

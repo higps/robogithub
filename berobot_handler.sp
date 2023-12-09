@@ -363,6 +363,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("ForceRobot", Native_ForceRobot);
     CreateNative("GetRobotTeam", Native_GetRobotTeam);
     CreateNative("AddPlayerHealth", Native_AddPlayerHealth);
+    CreateNative("GetRobotCount", Native_GetCurrentRobotCount);
+    CreateNative("GetHumanCount", Native_GetCurrentHumanCount);
 
 
     return APLRes_Success;
@@ -2060,8 +2062,14 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
       
 
         CalculateDamageModifier(dmg_method_on_target);
-        if(g_f_Damage_Bonus != -1.0 && (g_b_changed_dmg || !g_b_broadcast_msg))PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% damage!", (g_f_Damage_Bonus-1.0)*100);
-        g_b_broadcast_msg = true;
+        if(g_f_Damage_Bonus != -1.0 && (g_b_changed_dmg || !g_b_broadcast_msg))
+        {
+            char word[5]; // Assuming "more" or "less" won't exceed 4 characters
+            GetDamageWord(word, sizeof(word));
+            PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100,word);
+            g_b_broadcast_msg = true;
+        }
+        
         break;
     }
 
@@ -2075,8 +2083,14 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         CalculateDamageModifier(dmg_method_off_target);
         // PrintToChatAll("Previous %f, g_f_dmg %f", g_f_previous_dmg_bonus, g_f_Damage_Bonus);
 
-        if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)PrintCenterTextAll("Alert: High Power!\nRobots take %.0f %% less damage!", (g_f_Damage_Bonus-1.0)*100);
-        g_b_broadcast_msg = true;
+        if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)
+        {
+            char word[5]; // Assuming "more" or "less" won't exceed 4 characters
+            GetDamageWord(word, sizeof(word));
+            PrintCenterTextAll("Alert: High Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100, word);
+            g_b_broadcast_msg = true;
+        }
+        
         if (!success)
             break;
     }
@@ -2086,13 +2100,27 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
     {
         CalculateDamageModifier(dmg_method_off_target);
         
-        if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% damage!", (g_f_Damage_Bonus-1.0)*100);
-        g_b_broadcast_msg = true;
+        if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)
+        {
+            char word[5]; // Assuming "more" or "less" won't exceed 4 characters
+            GetDamageWord(word, sizeof(word));
+            PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100, word);
+            g_b_broadcast_msg = true;
+        }
         break;
     }
+}
 
-
-
+stock void GetDamageWord(char[] word, int maxsize)
+{
+    if (g_f_Damage_Bonus < 1.0)
+    {
+        Format(word, maxsize, "less");
+    }
+    else
+    {
+        Format(word, maxsize, "more");
+    }
 }
 
 void CalculateDamageModifier(int dmg_method)
@@ -2111,15 +2139,12 @@ void CalculateDamageModifier(int dmg_method)
 
         if (dmg_method == dmg_method_off_target)
         {
-            
-
             g_f_Damage_Bonus = damage_bonus(float(MissingHumans));
            // PrintToChatAll("Missing Humans %i DMG BONUS v1 %f",MissingHumans,g_f_Damage_Bonus);
             //g_f_Damage_Bonus = float(TargetHumans)/float(CurrentHumans); 
         }
         else if (dmg_method == dmg_method_on_target)
         {
-
             float unrounded = (CurrentRobots+CurrentHumans)/ratio;
             int rounded = RoundToCeil((CurrentRobots+CurrentHumans)/ratio);
             if (unrounded != rounded)
@@ -2437,4 +2462,36 @@ public void OnEntityCreated(int iEntity, const char[] sClassName)
 //     g_counter = 0;
 //     b_counter = false;
 
+// }
+
+// int Native_GetCurrentRobotCount(Handle plugin, int numParams)
+// {
+//         int CurrentRobots = 0;
+//         // int STV = 0;
+//         for(int i = 0; i <= MaxClients+1; i++)
+//         {
+//             if(IsAnyRobot(i))
+//             {
+//                 CurrentRobots++;
+//             }
+//         }
+//         return CurrentRobots;
+// }
+
+// int Native_GetCurrentHumanCount(Handle plugin, int numParams)
+// {
+//     int CurrentHumans = 0;
+//     for(int i = 0; i <= MaxClients+1; i++)
+//     {
+//         if(!IsAnyRobot(i) && IsValidClient(i))
+//         {   
+//             TFTeam iteam = GetClientTeam(i);
+//             //Teams unassigned and spectate is below 2
+//             if (iteam != TFTeam_Spectator || iteam != TFTeam_Unassigned)
+//             {
+//                 CurrentHumans++;
+//             }
+//         }
+//     }
+//     return CurrentHumans;
 // }

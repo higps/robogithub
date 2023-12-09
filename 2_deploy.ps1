@@ -17,7 +17,7 @@ foreach ($spFile in $spFiles) {
 
 if ($spFile.Name -like "berobot_*.sp") {
     $outputPath = $spFile.Directory.FullName + "\compiled\mm_handlers\" + $spFile.BaseName + ".smx"
-} elseif ($spFile.Name -like "*_ability.sp") {
+} elseif ($spFile.Name -like "*ability_") {
     # Check for specific prefixes here
     if ($spFile.Name -like "free_*.sp" -or
         $spFile.Name -like "paid_*.sp" -or

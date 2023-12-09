@@ -443,3 +443,19 @@ stock bool IsValidClient(int client, bool replaycheck = true)
     }
     return true;
 }
+
+
+/**
+ * Returns the number of robots, excluding them if they are in spectate or unassigned
+ * 
+ * @noreturn
+ */
+native int GetCurrentRobotCount();
+
+
+/**
+ * Returns the number of humans, excluding them if they are in spectate or unassigned
+ * 
+ * @noreturn
+ */
+native int GetCurrentHumanCount();

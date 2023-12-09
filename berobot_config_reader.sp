@@ -542,6 +542,12 @@ MakeRobotFrame(client)
                 {
                     iWeapon = CreateRoboWeaponWithAttributes(client, "tf_weapon_parachute", 1101, 6, 77, true, true, "");
                 }
+                else if (itemIndex == 489 || itemIndex == 30015 || itemIndex == 30535)
+                {
+                    // // Create the weapon for the client using the details fetched above.
+                    PrintToChatAll("%N: Creating weapon with %s", client, weaponClassName);
+                    iWeapon = CreateRoboWeaponWithAttributes(client, "tf_powerup_bottle", itemIndex, 6, 77, true, true, "");
+                }
                 else
                 {
                     // // Create the weapon for the client using the details fetched above.

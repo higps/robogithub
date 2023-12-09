@@ -307,6 +307,12 @@ public any Native_CreateRoboHat(Handle plugin, int numParams)
 
 	int hat = CreateEntityByName("tf_wearable");
 	
+	//Specific logic for canteens
+	if (itemindex == 489 || itemindex  == 30015 || itemindex  == 30535)
+	{
+		hat = CreateEntityByName("tf_powerup_bottle");
+	}
+
 	if (!IsValidEntity(hat))
 	{
 		return false;

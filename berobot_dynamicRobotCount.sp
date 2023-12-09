@@ -150,3 +150,35 @@ void SetRoboCapFrame()
 {
     SetRoboCapTeam();
 }
+
+int Native_GetCurrentRobotCount(Handle plugin, int numParams)
+{
+        int CurrentRobots = 0;
+        // int STV = 0;
+        for(int i = 0; i <= MaxClients+1; i++)
+        {
+            if(IsAnyRobot(i))
+            {
+                CurrentRobots++;
+            }
+        }
+        return CurrentRobots;
+}
+
+int Native_GetCurrentHumanCount()
+{
+    int CurrentHumans = 0;
+    for(int i = 0; i <= MaxClients+1; i++)
+    {
+        if(!IsAnyRobot(i) && IsValidClient(i))
+        {   
+            TFTeam iteam = GetClientTeam(i);
+            //Teams unassigned and spectate is below 2
+            if (iteam != TFTeam_Spectator || iteam != TFTeam_Unassigned)
+            {
+                CurrentHumans++;
+            }
+        }
+    }
+    return CurrentHumans;
+}
