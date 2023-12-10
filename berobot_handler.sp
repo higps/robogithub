@@ -222,6 +222,7 @@ public void OnPluginStart()
     
     RegAdminCmd("sm_me_boss", Command_Me_Boss, ADMFLAG_SLAY, "Checks if you are a boss");
     RegAdminCmd("sm_random_robot", Command_SetRandomRobot, ADMFLAG_SLAY, "Checks if you are a boss");
+    RegAdminCmd("sm_toggle_team_switch", Command_ToggleTeamSwitch, ADMFLAG_SLAY, "Toggles allowing teamswitch");
 
     RegConsoleCmd("sm_rtr", Command_RoboVote, "Votes to begin a mode");
     RegConsoleCmd("sm_rocktherobot", Command_RoboVote, "Votes to begin a mode");
@@ -966,7 +967,6 @@ public any Native_GetRobotTeam(Handle plugin, int numParams)
 
 void RobotTeamCheck(int client)
 {
-    PrintToChatAll("Robot Check");
     if(IsClientInGame(client))
     {
         int iTeam = GetClientTeam(client);
@@ -1036,6 +1036,31 @@ public Action Command_BeRobot(int client, int numParams)
 public Action Command_SetRandomRobot(int client, int args)
 {
     Internal_SetRandomRobot(client);
+    
+}
+
+public Action Command_ToggleTeamSwitch(int client, int args)
+{
+    
+    g_cv_BlockTeamSwitch = !g_cv_BlockTeamSwitch;
+
+    if (g_cv_BlockTeamSwitch)
+    {
+        // Code to execute if g_cv_BlockTeamSwitch is now true
+        //g_cv_BlockTeamSwitch = false;
+        PrintToChat(client, "Team switching is now blocked.");
+        
+    }
+    else
+    {
+        // Code to execute if g_cv_BlockTeamSwitch is now false
+        //g_cv_BlockTeamSwitch = true;
+        PrintToChat(client, "Team switching is now allowed.");
+    }
+
+    // Additional code if needed
+
+    return Plugin_Handled;
     
 }
 
