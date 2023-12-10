@@ -79,11 +79,14 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
         
         // int iattackerUserId = event.GetInt("attacker");
         // int iattackerClientId = GetClientOfUserId(attackerUserId);
-        char robotName[NAMELENGTH];
-        GetRobot(attackerClientId, robotName, NAMELENGTH);
-        Robot robot;
-        GetRobotDefinition(robotName, robot);
-        PrintHintText(victimClientId,"Tip: %s", robot.deathtip);
+
+        DataPack info = new DataPack();
+        info.Reset();
+        info.WriteCell(victimClientId);
+        info.WriteCell(attackerClientId);
+
+        CreateTimer(6.5, Timer_DeathTip, info);
+        
     }
 
     if (!IsValidClient(victimClientId))
@@ -138,4 +141,23 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
     
 
 
+}
+
+public Action Timer_DeathTip(Handle timer, DataPack info)
+{
+
+    info.Reset();
+    int victimClientId = info.ReadCell();
+    int attackerClientId = info.ReadCell();
+    delete info;
+    if(IsClientInGame(victimClientId))
+    {
+    char robotName[NAMELENGTH];
+    GetRobot(attackerClientId, robotName, NAMELENGTH);
+    Robot robot;
+    GetRobotDefinition(robotName, robot);
+
+    PrintHintText(victimClientId,"Tip: %s", robot.deathtip);
+    }
+    return Plugin_Continue;
 }

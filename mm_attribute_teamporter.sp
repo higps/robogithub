@@ -41,6 +41,8 @@ static const char TeleActivateSounds[][256] =
 #define TELEPORTER_SPAWN		"mvm/mvm_tele_deliver.wav"
 #define TELEPORTER_ACTIVATE		"mvm/mvm_tele_activate.wav"
 
+#define TELE_INCORRECT_PLACEMENT_WARNING "ui/rd_2base_alarm.wav"
+
 #define TF_OBJECT_TELEPORTER	1
 #define TF_TELEPORTER_ENTR	0
 // #define DEBUG
@@ -223,6 +225,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	return APLRes_Success;
 }
 
+int g_iLaserSprite;
+int g_iHaloSprite;
+
 public void OnMapStart()
 {
 	// HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
@@ -234,9 +239,11 @@ public void OnMapStart()
 
 	PrecacheSound(TELEPORTER_SPAWN, true);
 	PrecacheSound(TELEPORTER_ACTIVATE, true);
+	PrecacheSound(TELE_INCORRECT_PLACEMENT_WARNING, true);
 
+	g_iLaserSprite = PrecacheModel("materials/sprites/laserbeam.vmt");
+	g_iHaloSprite = PrecacheModel("materials/sprites/halo01.vmt");
 	
-
 }
 
 // public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
@@ -281,6 +288,7 @@ public void ObjectBuilt(Event event, const char[] name, bool dontBroadcast)
 				PrintToChatAll("Built builder teleporter!");
 			#endif
 			SetEntPropFloat(iObj, Prop_Send, "m_flModelScale", 1.0);
+			CheckTeleportClamping(iObj, iBuilder);
 			SetEntProp(iObj, Prop_Send, "m_iHighestUpgradeLevel", 3);	//Set Pads to level 3 for cosmetic reasons related to recharging
 			SetEntProp(iObj, Prop_Send, "m_iUpgradeLevel", 3);
 			SetEntProp(iObj, Prop_Send, "m_bMiniBuilding", true);
@@ -998,6 +1006,11 @@ public Action CommandListener_Build(client, const char[] command, argc)
 		PrintToChat(client,"You can't build an entrance , you can only build an exit teleporter!");
 		return Plugin_Handled;
 	}
+	// if(IsAnyRobot(client) && iObjectType == TF_OBJECT_TELEPORTER && iObjectMode == 1)
+	// {
+	// 	PrintCenterText(client,"WAS EXIT!");
+
+	// }
 	return Plugin_Continue;
 }
 
@@ -1350,4 +1363,98 @@ void GetActiveSelection(int client, ObjectPointer teleporter, ObjectPointer fart
 		teleporter.set(SelectedIndex[client]);
 }
 
+// Code from
+//https://github.com/caxanga334/tf-bewithrobots-redux/blob/master/addons/sourcemod/scripting/bwrredux/functions.sp#L782
+bool CheckTeleportClamping(int teleporter, int client)
+{
+	// PrintToChatAll("Checking teleporter clamp");
+	float telepos[3];
+	GetEntPropVector(teleporter, Prop_Send, "m_vecOrigin", telepos);
+	telepos[2] += 12.0;
+	Handle trace = null;
+	float mins_normal[3] = { -50.0, -50.0, 0.0 }; // Normal map
+	float maxs_normal[3] = { 50.0, 50.0, 164.0 };
+	// float mins_small[3] = { -29.0, -29.0, 0.0 }; // Small map
+	// float maxs_small[3] = { 29.0, 29.0, 99.0 };	
 
+	trace = TR_TraceHullFilterEx(telepos, telepos, mins_normal, maxs_normal, MASK_PLAYERSOLID, TraceFilterTeleporter, teleporter);
+		
+	if(TR_DidHit(trace))
+	{
+		// PrintToChatAll("Hit the trace");
+		DrawBox(client, telepos, mins_normal, maxs_normal);
+		PrintCenterText(client, "!!!WARNING!!!\nTELE MAY CAUSE TEAMMATES TO GET STUCK!\nREBUILD TELE IN MORE OPEN SPACE!");
+		MC_PrintToChat(client, "{RED}WARNING!: {ORANGE}TELE MAY CAUSE TEAMMATES TO GET {RED}STUCK!\n{ORANGE}REBUILD TELE IN MORE OPEN SPACE!");
+		PrintHintText(client, "WARNING!: TELEPORTER MAY CAUSE TEAMMATES TO GET STUCK!\nREBUILD TELE IN MORE OPEN SPACE!");
+		EmitSoundToClient(client, TELE_INCORRECT_PLACEMENT_WARNING);
+		EmitSoundToClient(client, TELE_INCORRECT_PLACEMENT_WARNING);
+		delete trace;
+		return true;
+	}
+
+	delete trace;
+	return false;
+}
+
+bool TraceFilterTeleporter(int entity, int contentsMask, any data)
+{
+	if(entity >= 1 && entity <= MaxClients)
+		return false;
+		
+	if(entity == data)
+		return false;
+		
+	return true;
+}
+
+// Code from Silver's dev cmd plugin
+void DrawBox(int client, float vPos[3], float vMins[3], float vMaxs[3], int colors[4] = { 255, 0, 0, 255 }, float time = 5.0)
+{
+	if( vMins[0] == vMaxs[0] && vMins[1] == vMaxs[1] && vMins[2] == vMaxs[2] )
+	{
+		vMins = view_as<float>({ -15.0, -15.0, -15.0 });
+		vMaxs = view_as<float>({ 15.0, 15.0, 15.0 });
+	}
+	else
+	{
+		AddVectors(vPos, vMaxs, vMaxs);
+		AddVectors(vPos, vMins, vMins);
+	}
+	
+	float vPos1[3], vPos2[3], vPos3[3], vPos4[3], vPos5[3], vPos6[3];
+	vPos1 = vMaxs;
+	vPos1[0] = vMins[0];
+	vPos2 = vMaxs;
+	vPos2[1] = vMins[1];
+	vPos3 = vMaxs;
+	vPos3[2] = vMins[2];
+	vPos4 = vMins;
+	vPos4[0] = vMaxs[0];
+	vPos5 = vMins;
+	vPos5[1] = vMaxs[1];
+	vPos6 = vMins;
+	vPos6[2] = vMaxs[2];
+
+	TE_SendBeam(vMaxs, vPos1, colors, client, time);
+	TE_SendBeam(vMaxs, vPos2, colors, client, time);
+	TE_SendBeam(vMaxs, vPos3, colors, client, time);
+	TE_SendBeam(vPos6, vPos1, colors, client, time);
+	TE_SendBeam(vPos6, vPos2, colors, client, time);
+	TE_SendBeam(vPos6, vMins, colors, client, time);
+	TE_SendBeam(vPos4, vMins, colors, client, time);
+	TE_SendBeam(vPos5, vMins, colors, client, time);
+	TE_SendBeam(vPos5, vPos1, colors, client, time);
+	TE_SendBeam(vPos5, vPos3, colors, client, time);
+	TE_SendBeam(vPos4, vPos3, colors, client, time);
+	TE_SendBeam(vPos4, vPos2, colors, client, time);
+}
+
+void TE_SendBeam(const float vMins[3], const float vMaxs[3], const int colors[4] = { 255, 255, 255, 255 }, int client = -1, float time = 5.0)
+{
+	TE_SetupBeamPoints(vMins, vMaxs, g_iLaserSprite, g_iHaloSprite, 0, 0, time, 1.0, 1.0, 1, 0.0, colors, 0);
+	
+	if(client > 0 && client <= MaxClients)
+		TE_SendToClient(client);
+	else
+		TE_SendToAll();
+}
