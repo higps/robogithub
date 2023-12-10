@@ -439,12 +439,13 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     int client = GetClientOfUserId(GetEventInt(event, "userid"));
     
    // RequestFrame(RobotTeamCheck, client);
-
+    if (!g_AprilEnable) RequestFrame(RobotTeamCheck, client);//dont check robo teams if april fools mode is on
+    
     if (IsAnyRobot(client)){ 
         
         //PrintToChatAll("%N spawned, checking if boss", client);
 
-        if (!g_AprilEnable) RequestFrame(RobotTeamCheck, client);//dont check robo teams if april fools mode is on
+    //    if (!g_AprilEnable) RequestFrame(RobotTeamCheck, client);//dont check robo teams if april fools mode is on
 
         
         // else
@@ -452,7 +453,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         //     MC_PrintToChatEx(client, client, "{teamcolor}You're a robot on the robot team!");
         // }
         MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!bot{teamcolor} or {orange}change class{teamcolor} in spawn to change robot!");
-        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!mt{teamcolor} get a mount to move around faster");
+        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!car{teamcolor} get a car to move faster!");
         if(g_cv_bDebugMode)PrintToChatAll("%N spawned, with %i health from previous life", client, g_PlayerHealth[client]);
         //FakeClientCommand(client, "tf_respawn_on_loadoutchanges 0");
         if (g_PlayerHealth[client] > 0){
@@ -965,6 +966,7 @@ public any Native_GetRobotTeam(Handle plugin, int numParams)
 
 void RobotTeamCheck(int client)
 {
+    PrintToChatAll("Robot Check");
     if(IsClientInGame(client))
     {
         int iTeam = GetClientTeam(client);
@@ -974,6 +976,11 @@ void RobotTeamCheck(int client)
                
             TrashRobot(client);
             CreateTimer(0.5, Timer_Regen, client);       
+        }
+        //Makes players who are manually moved to the robot team a robot
+        if (iTeam == g_RoboTeam && !IsAnyRobot(client))
+        {
+            Internal_SetRandomRobot(client);
         }
     }
 }
