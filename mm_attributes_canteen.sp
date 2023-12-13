@@ -28,7 +28,7 @@ int g_type[MAXPLAYERS + 1];
 int g_charges[MAXPLAYERS + 1];
 int g_charges_on_kill[MAXPLAYERS + 1];
 int g_kills_needed_refill[MAXPLAYERS + 1];
-
+int g_max_charge[MAXPLAYERS + 1];
 int kills[MAXPLAYERS + 1] = {0,...};
 
 bool HasStats(int client)
@@ -41,7 +41,8 @@ bool HasStats(int client)
 	g_type[client] = ReadIntVar(stat_buffer, "type", 1);
 	g_charges[client] = ReadIntVar(stat_buffer, "start-charges", 1);
 	g_charges_on_kill[client] = ReadIntVar(stat_buffer, "charges-on-kill", 1);
-	g_kills_needed_refill[client] = ReadIntVar(stat_buffer, "kills_needed", 1);
+	g_kills_needed_refill[client] = ReadIntVar(stat_buffer, "kills-needed", 1);
+	g_max_charge[client] = ReadIntVar(stat_buffer, "max-charge", 1);
 	return true;
 	
 }
@@ -77,7 +78,8 @@ public Action Event_PlayerDeath(Event event, char[] name, bool dontBroadcast){
 	int client = GetClientOfUserId(event.GetInt("attacker"));
 	if(HasStats(client)){ 
 		
-		// PrintToChatAll("Had stat and kills was %i", kills[client]);
+		
+
 		if (kills[client] >= g_kills_needed_refill[client])
 		{
 		ApplyCharge(client, view_as<PowerupBottleType>(g_type[client]), g_charges_on_kill[client]);
@@ -170,7 +172,7 @@ public Action ApplyCharge(int client, PowerupBottleType type, int charges)
 
 				int new_charge = current_charge + charges;
 				//Prevent Charges going over 5
-				if (new_charge > 5)new_charge = 5;
+				if (new_charge > g_max_charge)new_charge = g_max_charge;
 				SetEntProp(bottle, Prop_Send, "m_usNumCharges", new_charge);
 				//Add visual effect to see when it refills
 				TF2_AddCondition(client, TFCond_InHealRadius, 0.5);

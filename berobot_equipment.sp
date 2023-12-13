@@ -313,6 +313,12 @@ public any Native_CreateRoboHat(Handle plugin, int numParams)
 		hat = CreateEntityByName("tf_powerup_bottle");
 	}
 
+	//Spellbooks
+	if (itemindex == 1069 || itemindex == 1070 || itemindex == 1132 || itemindex == 5605)
+	{
+		hat = CreateEntityByName("tf_weapon_spellbook");
+	}
+
 	if (!IsValidEntity(hat))
 	{
 		return false;

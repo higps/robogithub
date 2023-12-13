@@ -13,7 +13,9 @@ float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
 float g_RechargeCooldown = 1.0;
 float g_skill;
 int g_Spell[MAXPLAYERS + 1] = {0,...};
-
+int g_stat_Charges[MAXPLAYERS + 1] = {0,...};
+int g_book[MAXPLAYERS + 1] = {-1,...}
+int g_player_charges[MAXPLAYERS + 1] = {0,...}
 //Diefferent spell based on cond
 int g_SpellOnCond;
 int g_Cond;
@@ -57,20 +59,55 @@ bool HasStat(int attacker)
 	g_RechargeCooldown = ReadFloatVar(stat_buffer, "Cooldown", 5.0);
 	g_SpellOnCond = ReadIntVar(stat_buffer, "SpellOnCond", -1);
 	g_Cond = ReadIntVar(stat_buffer, "Cond", -1);
+	g_stat_Charges[attacker] = ReadIntVar(stat_buffer, "Charges", 1);
 
 	if(g_Spell[attacker] == -1) return false;
 
 	return true;
 }
-
+bool isready[MAXPLAYERS + 1] = {false,...}; 
+public Action OnClientCommandKeyValues(int client, KeyValues kvCommand)
+{
+    char sCommand[64];
+    kvCommand.GetSectionName(sCommand,sizeof(sCommand));
+    if (strcmp(sCommand,"+use_action_slot_item_server") == 0)//The client pressed his action key (Default:H)
+    {
+		//Add some logic here to check for if the number of charges was changed
+        if(HasStat(client))
+		{
+			if(g_book[client])
+			{
+				g_player_charges[client] = GetEntProp(g_book[client], Prop_Send, "m_iSpellCharges");
+				PrintToChatAll("Had charges: %i",g_player_charges[client])
+				if(g_player_charges[client]>0)
+				{
+					g_button_held[client] = true;
+					g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+					isready[client] = false;
+				}
+			}else
+			{
+			PrintToChatAll("Had no charge");
+			g_button_held[client] = false;
+			}
+			
+		}
+		
+    }
+}
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if (HasStat(client))
 	{
-
+		// if( GetEntProp(client, Prop_Data, "m_afButtonPressed" )) 
+		// {
+		// PrintToChatAll("BUTTON");	
+        //     g_button_held[client] = true;
+		// }
+		
 		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE) ) 
 		{
-			//  PrintToChatAll("Press");
+			
             g_button_held[client] = true;
 		}
 
@@ -91,9 +128,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	return Plugin_Continue;
 }
 
-public void CastSpell(int client) {
-	// PrintToChatAll("castin spell");
-
+public void Recharge_Spell(int client) {
+	
     int index = g_Spell[client];
     
 
@@ -109,47 +145,35 @@ public void CastSpell(int client) {
     }
 	
 
-	if (!IsPlayerAlive(client))ReplyToCommand(client, "[SM] You must be alive to use this command!");
-	else {
 		int ent = FindSpellbook(client);
-		if (!ent) {
-			ent = CreateEntityByName("tf_weapon_spellbook");
-			if (ent != -1) {
-				SetEntProp(ent, Prop_Send, "m_iItemDefinitionIndex", 1132);
-				SetEntProp(ent, Prop_Send, "m_bInitialized", 1);
-				SetEntProp(ent, Prop_Send, "m_iAccountID", GetSteamAccountID(client));
-				DispatchSpawn(ent);
-			}
-			else {
-				ReplyToCommand(client, "[SM] Could not create spellbook entity!");
-				return;
-			}
-		}
-		
-		int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if (active != ent) {
-			SetEntProp(ent, Prop_Send, "m_iSpellCharges", 1);
+		if (ent) {
+			SetEntProp(ent, Prop_Send, "m_iSpellCharges", g_stat_Charges[client]);
 			SetEntProp(ent, Prop_Send, "m_iSelectedSpellIndex", index);
-			
-			SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", active);
-			EquipPlayerWeapon(client, ent);
-			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", ent);
-			
-
+			g_book[client] = ent;
+		}else
+		{
+			g_book[client] = -1;
 		}
-	}
+
+
+
 }
 
 public int FindSpellbook(int client) {
 	int i = -1;
 	while ((i = FindEntityByClassname(i, "tf_weapon_spellbook")) != -1) {
-		if (IsValidEntity(i) && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client && !GetEntProp(i, Prop_Send, "m_bDisguiseWeapon"))return i;
+		if (IsValidEntity(i) && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client && !GetEntProp(i, Prop_Send, "m_bDisguiseWeapon"))
+		{
+			PrintToChatAll("Book found");
+			return i;
+		}
 	}
+	PrintToChatAll("No book found");
 	return 0;
 }
 
 
-bool isready[MAXPLAYERS + 1] = {false,...}; 
+
 void DrawHUD(int client)
 {
 	char sHUDText[128];
@@ -177,7 +201,8 @@ void DrawHUD(int client)
 	Format(sHUDText, sizeof(sHUDText), "%s: Ready!", SpellText);
 
 	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
-
+	//Give The Spell
+//	GiveSpellCharge(client);
 
 	} else {
 		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
@@ -195,16 +220,19 @@ void DrawHUD(int client)
 	isready[client] = true;	
 	}
 
-	if (g_button_held[client] && iCountDown <= 0 && IsPlayerAlive(client))
+	// Old code where the button did the attack
+	// if (g_button_held[client] && iCountDown <= 0 && IsPlayerAlive(client))
+	// {
+	// PrintToChatAll("Pressing button to cast spell");
+	// RequestFrame(Recharge_Spell, client);
+	// g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+	// isready[client] = false;
+	// }
+	if (iCountDown <= 0 && IsPlayerAlive(client) && isready[client] == true)
 	{
-	RequestFrame(CastSpell, client);
-	g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-	isready[client] = false;
-
+		if (g_player_charges[client]< 1)RequestFrame(Recharge_Spell, client);
 	}
 }
-
-
 
 public bool IsKritzed(int client){
 	if (TF2_IsPlayerInCondition(client, (TFCond_Buffed)) || TF2_IsPlayerInCondition(client, (TFCond_CritCanteen)))
