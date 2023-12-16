@@ -1241,8 +1241,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if(IsIronBomber(Weapon1))
             {
                 stat1 = 5.0;
-                stat2 = 5.0;
-                stat3 = 3.0;
+                stat2 = 4.5;
+                stat3 = 1.5;
                 TF2Attrib_SetByName(Weapon1, "auto fires full clip all at once", 1.0);
                 TF2Attrib_SetByName(Weapon1, "projectile spread angle penalty", stat1);
                 TF2Attrib_SetByName(Weapon1, "Reload time increased", stat2);
