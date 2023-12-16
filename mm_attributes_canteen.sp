@@ -172,7 +172,7 @@ public Action ApplyCharge(int client, PowerupBottleType type, int charges)
 
 				int new_charge = current_charge + charges;
 				//Prevent Charges going over 5
-				if (new_charge > g_max_charge)new_charge = g_max_charge;
+				if (new_charge > g_max_charge[client])new_charge = g_max_charge[client];
 				SetEntProp(bottle, Prop_Send, "m_usNumCharges", new_charge);
 				//Add visual effect to see when it refills
 				TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
