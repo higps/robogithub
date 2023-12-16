@@ -106,26 +106,26 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 
 
 
-	if (tauntid == -1)
-	{
+		if (tauntid == -1)
+		{
 
-	TF2_AddCondition(client, 130, 6.0);
+		TF2_AddCondition(client, 130, 6.0);
 
-	int clients[1];
-	clients[0] = client;
+		int clients[1];
+		clients[0] = client;
 
-	EmitSoundToAll(ALARM, client);
-	EmitSoundToAll(ALARM, client);
+		EmitSoundToAll(ALARM, client);
+		EmitSoundToAll(ALARM, client);
 
 
-	CreateTimer(2.3, Timer_Taunt_Cancel, client);
-	}
+		CreateTimer(4.3, Timer_Taunt_Cancel, client);
+		}
 
-        if (tauntid == -1)
-        {
+		if (tauntid == -1)
+		{
 
-            CreateTimer(2.3, Timer_Taunt_Cancel, client);
-        }	  
+			CreateTimer(4.3, Timer_Taunt_Cancel, client);
+		}	  
     }
 }
 

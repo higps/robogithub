@@ -14,22 +14,7 @@
 #include <stocksoup/tf/tempents_stocks>
 #include <stocksoup/datapack>
 #include <smlib>
-// #include <addplayerhealth>
 
-
-// #include <berobot_constants>
-// #include <berobot>
-// #include <berobot_core_restrictions>
-// #include <morecolors>
-// #include <sdkhooks>
-// #include <sdktools>
-// #include <sm_logger>
-// #include <sourcemod>
-// #include <tf2>
-// #include <tf2_stocks>
-// #include <tf_ontakedamage>
-// #include <tf2_isPlayerInSpawn>
-// #include <particle>
 
 char LOG_TAGS[][] =	 {"VERBOSE", "INFO", "ERROR"};
 enum (<<= 1)
@@ -403,47 +388,37 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 if(IsKGB(weapon))
 	        	{
 
-                if(g_cv_bDebugMode) PrintToChatAll("Hit # %i", Punch_Count[attacker]);
+                    if(g_cv_bDebugMode) PrintToChatAll("Hit # %i", Punch_Count[attacker]);
 
-                //Get the name of the player to use with the tauntem plugin
-                int playerID = GetClientUserId(victim);
-                
-                if(g_cv_bDebugMode) PrintToChatAll("Victim name %s", playerID);
+                    //Get the name of the player to use with the tauntem plugin
+                    int playerID = GetClientUserId(victim);
                     
-                    
-                    //Count the punches
-                    Punch_Count[attacker]++;
+                    if(g_cv_bDebugMode) PrintToChatAll("Victim name %s", playerID);
+                        
+                        
+                        //Count the punches
+                        Punch_Count[attacker]++;
 
-                if(TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen))
-                {
-                    Punch_Count[attacker] = 0;
-                }
-                //PrintToChatAll("Punch count %i", Punch_Count[attacker]);
-			
-			// PrintToChatAll("========================");
-	// PrintToChatAll("Before timer Punch_Count %i:", Punch_Count[attacker]);
-	// PrintToChatAll("Beforetimer Timer_Punch_Count %i:", Timer_Punch_Count[attacker]);
-			
-			if(!g_Timer[attacker]){
-			
-			//PrintToChatAll("Creating timer");
-			
-			CreateTimer(2.0, Combo_Check_Timer, attacker);
-			Timer_Punch_Count[attacker] = Punch_Count[attacker];
-			
-			g_Timer[attacker] = true;
-			}
-		
-		
-			
-		//Combo_Stopper(attacker);
-		
-		if (Punch_Count[attacker] > 2)
-		{
-			Combo_Stopper(attacker);
-            
-            TF2_AddCondition(attacker, TFCond_CritCanteen, g_kgb_crit_combo_duration, attacker);
-		}
+                    if(TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen))
+                    {
+                        Punch_Count[attacker] = 0;
+                    }
+
+                    if(!g_Timer[attacker]){
+
+                    
+                    CreateTimer(3.0, Combo_Check_Timer, attacker);
+                    Timer_Punch_Count[attacker] = Punch_Count[attacker];
+                    
+                    g_Timer[attacker] = true;
+                    }
+
+                    if (Punch_Count[attacker] > 2)
+                    {
+                        Combo_Stopper(attacker);
+                        
+                        TF2_AddCondition(attacker, TFCond_CritCanteen, g_kgb_crit_combo_duration, attacker);
+                    }
 
 		}
                     
@@ -1114,10 +1089,44 @@ void DisplayMMStats(int client, char[] chat_display)
 {
     if (g_Attribute_Display[client] < GetEngineTime() && b_Attribute_Display[client] && !strlen(chat_display) < 1)
     {
-        MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs: Type {orange}!mystats to see your stats");
-        MC_PrintToChatEx(client, client, chat_display);
-        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}/mminfo {teamcolor}to toggle this information on/off");
-        g_Attribute_Display[client] = GetEngineTime() + g_Attribute_Display_CollDown;
+
+        const int max_chat_length = 256;
+        int chat_length = strlen(chat_display);
+
+        if (chat_length <= max_chat_length)
+        {
+            MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs: Type {orange}!mystats to see your stats");
+            MC_PrintToChatEx(client, client, chat_display);
+            MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}/mminfo {teamcolor}to toggle this information on/off");
+        }
+        else
+        {
+            // Split the chat_display into parts and print each part
+            // Split the chat_display into parts and print each part
+            for (int i = 0; i < chat_length; i += max_chat_length)
+            {
+           // Split the chat_display into parts and print each part
+                for (int i = 0; i < chat_length; i += max_chat_length)
+                {
+                    char part[max_chat_length + 1];
+                    
+                    // Copy characters individually
+                    int j;
+                    for (j = 0; j < max_chat_length && chat_display[i + j] != '\0'; ++j)
+                    {
+                        part[j] = chat_display[i + j];
+                    }
+                    
+                    part[j] = '\0'; // Null-terminate the substring
+
+                    MC_PrintToChatEx(client, client, part);
+                }
+            }
+        }
+        // MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs: Type {orange}!mystats to see your stats");
+        // MC_PrintToChatEx(client, client, chat_display);
+        // MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}/mminfo {teamcolor}to toggle this information on/off");
+        // g_Attribute_Display[client] = GetEngineTime() + g_Attribute_Display_CollDown;
     }
 }
 
@@ -1250,7 +1259,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
                 TF2CustAttr_SetString(Weapon1, "reload full clip at once", "1.0");
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}IronBomber: {orange}Fires full clip at once, {teamcolor}& {orange}+%0.0f%%%% {teamcolor}slower reload rate, {orange}%0.0f%%%% degrees less accurate and deploys %0.0f%%%% slower",chat_display, MoreIsMore(stat2), MoreIsMore(stat1), MoreIsMore(stat3));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}IronBomber: {orange}Fires full clip at once, {teamcolor}& {orange}+%0.0f%%%% {teamcolor}slower reload rate, {orange}%0.0f%%%% degrees less accurate,deploys %0.0f%%%% slower",chat_display, MoreIsMore(stat2), MoreIsMore(stat1), MoreIsMore(stat3));
             }
             
             if (IsClaid(Weapon3))
