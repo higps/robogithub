@@ -75,10 +75,10 @@ public Action OnClientCommandKeyValues(int client, KeyValues kvCommand)
 		//Add some logic here to check for if the number of charges was changed
         if(HasStat(client))
 		{
-			if(g_book[client])
+			if(IsValidEntity(g_book[client]))
 			{
 				g_player_charges[client] = GetEntProp(g_book[client], Prop_Send, "m_iSpellCharges");
-				PrintToChatAll("Had charges: %i",g_player_charges[client])
+				//PrintToChatAll("%N Had charges: %i",client, g_player_charges[client])
 				if(g_player_charges[client]>0)
 				{
 					g_button_held[client] = true;
@@ -87,7 +87,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kvCommand)
 				}
 			}else
 			{
-			PrintToChatAll("Had no charge");
+			//PrintToChatAll("%N Had no charge",client );
 			g_button_held[client] = false;
 			}
 			
@@ -105,18 +105,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
         //     g_button_held[client] = true;
 		// }
 		
-		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE) ) 
-		{
+		// if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE) ) 
+		// {
 			
-            g_button_held[client] = true;
-		}
+        //     g_button_held[client] = true;
+		// }
 
-		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_USE) ) 
-		{
-			//  PrintToChatAll("Release");
-			g_button_held[client] = false;
+		// if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_USE) ) 
+		// {
+		// 	//  PrintToChatAll("Release");
+		// 	g_button_held[client] = false;
             
-		}
+		// }
 
 		//0 = Shadow Leap
 		//PrintToChat(client, "Throwing spell!");
@@ -164,12 +164,12 @@ public int FindSpellbook(int client) {
 	while ((i = FindEntityByClassname(i, "tf_weapon_spellbook")) != -1) {
 		if (IsValidEntity(i) && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client && !GetEntProp(i, Prop_Send, "m_bDisguiseWeapon"))
 		{
-			PrintToChatAll("Book found");
+			//PrintToChatAll("Book found %N", client);
 			return i;
 		}
 	}
-	PrintToChatAll("No book found");
-	return 0;
+	//PrintToChatAll("No book found for %N", client);
+	return -1;
 }
 
 
@@ -179,7 +179,7 @@ void DrawHUD(int client)
 	char sHUDText[128];
 	int iCountDown = RoundToCeil(g_Recharge[client] - g_skill);
 	char SpellText[64];
-
+	if(!IsValidEntity(g_book[client])) g_book[client] = FindSpellbook(client);
 	// PrintToChatAll("Gcond %i", g_Cond);
     if (TF2_IsPlayerInCondition(client, g_Cond))
     {
@@ -198,11 +198,12 @@ void DrawHUD(int client)
 	
 	if(iCountDown <= 0)
 	{
-	Format(sHUDText, sizeof(sHUDText), "%s: Ready!", SpellText);
+	Format(sHUDText, sizeof(sHUDText), "%s: Ready!\nActivate With\nAction Slot!", SpellText);
 
 	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
 	//Give The Spell
 //	GiveSpellCharge(client);
+	if (g_player_charges[client]< 1)RequestFrame(Recharge_Spell, client);
 
 	} else {
 		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
@@ -230,7 +231,7 @@ void DrawHUD(int client)
 	// }
 	if (iCountDown <= 0 && IsPlayerAlive(client) && isready[client] == true)
 	{
-		if (g_player_charges[client]< 1)RequestFrame(Recharge_Spell, client);
+		
 	}
 }
 
