@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <tf_custom_attributes>
 #include <stocksoup/var_strings>
+#include <berobot>
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -76,23 +77,26 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 public Action Event_PlayerDeath(Event event, char[] name, bool dontBroadcast){
 
 	int client = GetClientOfUserId(event.GetInt("attacker"));
-	if(HasStats(client)){ 
-		
-		
+	if(IsValidClient(client))
+	{
+		if(HasStats(client)){ 
+			
+			
 
-		if (kills[client] >= g_kills_needed_refill[client])
-		{
-		ApplyCharge(client, view_as<PowerupBottleType>(g_type[client]), g_charges_on_kill[client]);
-		kills[client] = 0;
+			if (kills[client] >= g_kills_needed_refill[client])
+			{
+			ApplyCharge(client, view_as<PowerupBottleType>(g_type[client]), g_charges_on_kill[client]);
+			kills[client] = 0;
+			}
+			else
+			{
+				kills[client]++;
+			}
 		}
 		else
 		{
-			kills[client]++;
+			kills[client] = 0;
 		}
-	}
-	else
-	{
-		kills[client] = 0;
 	}
 	return Plugin_Continue;
 }

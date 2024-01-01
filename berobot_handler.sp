@@ -376,7 +376,7 @@ public void OnMapStart()
     g_WaitingForPlayers = true;
     g_RoundCount = 0;
     ResetMode();
-
+    g_RoboTeam = -1;
     PrecacheSound(RESISTANCE);
     
 

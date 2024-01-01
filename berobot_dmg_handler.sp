@@ -1126,7 +1126,7 @@ void DisplayMMStats(int client, char[] chat_display)
         // MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs: Type {orange}!mystats to see your stats");
         // MC_PrintToChatEx(client, client, chat_display);
         // MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}/mminfo {teamcolor}to toggle this information on/off");
-        // g_Attribute_Display[client] = GetEngineTime() + g_Attribute_Display_CollDown;
+        g_Attribute_Display[client] = GetEngineTime() + g_Attribute_Display_CollDown;
     }
 }
 
@@ -1520,6 +1520,10 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 // TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.5);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Southern Hospitality: No upgrade penalty",chat_display);
             }
+            // if(IsShortCircuit(Weapon2))
+            // {
+            //     TF2Attrib_RemoveByName(Weapon2, "upgrade rate decrease");
+            // }
         }
 
         if (TF2_GetPlayerClass(client) == TFClass_Spy)
@@ -2179,6 +2183,21 @@ bool IsKunai(int weapon)
 // 	}
 // 	return false;
 // }
+
+bool IsShortCircuit(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other Frontier are added add here
+	case 528: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 bool HasDiamondback(int client)
 {
