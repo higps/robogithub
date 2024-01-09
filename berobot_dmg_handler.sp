@@ -1085,47 +1085,35 @@ float calculateReloadSpeed(int heads) {
 // float g_Attribute_Display_CollDown[MAXPLAYERS + 1] = 10.0;
 // float g_Attribute_Display [MAXPLAYERS + 1] = 0.0;
 
-void DisplayMMStats(int client, char[] chat_display)
+void DisplayMMStats(int client, const char[] chat_display)
 {
     if (g_Attribute_Display[client] < GetEngineTime() && b_Attribute_Display[client] && !strlen(chat_display) < 1)
     {
-
         const int max_chat_length = 256;
         int chat_length = strlen(chat_display);
 
         if (chat_length <= max_chat_length)
         {
             MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs: Type {orange}!mystats to see your stats");
-            MC_PrintToChatEx(client, client, chat_display);
-            MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}/mminfo {teamcolor}to toggle this information on/off");
+
+            // Check if the chat_display string contains newline characters
+
+            char lines[10][max_chat_length]; // Assuming a maximum of 100 lines
+            int numLines = ExplodeString(chat_display, "\n", lines, sizeof(lines), sizeof(lines[]));
+            // Print each line separately
+            for (int i = 0; i < numLines; i++)
+            {
+                MC_PrintToChatEx(client, client, lines[i]);
+            }
+
+
+            
         }
         else
         {
-            // Split the chat_display into parts and print each part
-            // Split the chat_display into parts and print each part
-            for (int i = 0; i < chat_length; i += max_chat_length)
-            {
-           // Split the chat_display into parts and print each part
-                for (int i = 0; i < chat_length; i += max_chat_length)
-                {
-                    char part[max_chat_length + 1];
-                    
-                    // Copy characters individually
-                    int j;
-                    for (j = 0; j < max_chat_length && chat_display[i + j] != '\0'; ++j)
-                    {
-                        part[j] = chat_display[i + j];
-                    }
-                    
-                    part[j] = '\0'; // Null-terminate the substring
-
-                    MC_PrintToChatEx(client, client, part);
-                }
-            }
+            MC_PrintToChatEx(client, client, chat_display);
         }
-        // MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs: Type {orange}!mystats to see your stats");
-        // MC_PrintToChatEx(client, client, chat_display);
-        // MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}/mminfo {teamcolor}to toggle this information on/off");
+        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}/mminfo {teamcolor}to toggle this information on/off");
         g_Attribute_Display[client] = GetEngineTime() + g_Attribute_Display_CollDown;
     }
 }
