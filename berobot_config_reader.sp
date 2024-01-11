@@ -163,6 +163,21 @@ public void ReadConfig()
         float fFloat;
         RobotDefinition robot;
         robot.name = robotName;
+        // char modifiedRobotName[NAMELENGTH];
+
+        // Copy the original name to the new variable
+        // CODE FOR internal names
+        // strcopy(modifiedRobotName, sizeof(robotName),robotName);
+
+        // // Define the search string and replacement string
+
+        // // Replace spaces with underscores
+        // ReplaceString(modifiedRobotName, sizeof(modifiedRobotName), " ", "", false);
+
+        // // Convert the robot name to lowercase
+        // MC_StrToLower(modifiedRobotName);
+        // PrintToChatAll("internal name %s", modifiedRobotName);
+
         if (g_hConfig.GetString("class", sString, sizeof(robot.class)))
         {
             
@@ -278,7 +293,7 @@ public void ReadConfig()
         // Fetch cost
         if (g_hConfig.GetFloat("rc_cost"))
         {
-            // fFloat = g_hConfig.GetFloat("rc_cost", fFloat);
+            fFloat = g_hConfig.GetFloat("rc_cost", fFloat);
             if (restrictions.RobotCoins == null)
             {
                 restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
@@ -464,6 +479,11 @@ MakeRobotFrame(client)
         //PrintToChatAll("Mismatch! Expected robot name %s but got %s from config.", robotName, configRobotName);
         return;
     }
+    
+    // Create a new variable for the modified name
+
+
+    // Now, configRobotName contains the original name, and modifiedRobotName contains the stripped-down internal name
 
     if (i_hConfig.JumpToKey("remove_weapon_slots"))
     {
