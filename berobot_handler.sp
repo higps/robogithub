@@ -123,6 +123,8 @@ bool b_g_high_power = false;
 int g_RoundCount;
 // int g_TankCount;
 
+int b_is_koth;
+
 ArrayList g_Volunteers;
 
 
@@ -379,7 +381,7 @@ public void OnMapStart()
     g_RoboTeam = -1;
     PrecacheSound(RESISTANCE);
     
-
+    b_is_koth = GameRules_GetProp("m_bPlayingKoth");
 }
 
 public void ResetMode()
@@ -754,11 +756,16 @@ public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontB
 
     if (g_Enable && g_BossMode)
     {
+        
+        if (!b_is_koth)
+        {
         AddTeamCoins(TFTeam_Blue, 1);
         AddTeamCoins(TFTeam_Red, 1);
-        
+        }else
+        {
+            int client = GetClientOfUserId(GetEventInt(event, "userid"));
+        }  
     }
-
 }
 
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
