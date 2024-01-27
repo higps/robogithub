@@ -1089,11 +1089,11 @@ void DisplayMMStats(int client, const char[] chat_display)
 {
     if (g_Attribute_Display[client] < GetEngineTime() && b_Attribute_Display[client] && !strlen(chat_display) < 1)
     {
-        const int max_chat_length = 256;
+        const int max_chat_length = 255;
         int chat_length = strlen(chat_display);
 
-        if (chat_length <= max_chat_length)
-        {
+        // if (chat_length <= max_chat_length)
+        // {
             MC_PrintToChatEx(client, client, "{teamcolor}Custom Buffs: Type {orange}!mystats to see your stats");
 
             // Check if the chat_display string contains newline characters
@@ -1103,16 +1103,17 @@ void DisplayMMStats(int client, const char[] chat_display)
             // Print each line separately
             for (int i = 0; i < numLines; i++)
             {
+
                 MC_PrintToChatEx(client, client, lines[i]);
             }
 
 
             
-        }
-        else
-        {
-            MC_PrintToChatEx(client, client, chat_display);
-        }
+        // }
+        // else
+        // {
+        //     MC_PrintToChatEx(client, client, chat_display);
+        // }
         MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}/mminfo {teamcolor}to toggle this information on/off");
         g_Attribute_Display[client] = GetEngineTime() + g_Attribute_Display_CollDown;
     }
@@ -1416,7 +1417,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2CustAttr_SetString(client, "faster-respawn", "respawn=8.0");
 
             stat1 = 0.80;
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Power: {orange}Greatly reduced respawn time\nAll weapons {orange}penetrate robots, +%0.f%%% faster reload",chat_display, LessIsMore(stat1));
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Power: {orange}Greatly reduced respawn time\nAll weapons {orange}penetrate robots, +%0.f%%%% faster reload",chat_display, LessIsMore(stat1));
 
             
             if (IsValidEntity(Weapon1))
@@ -1842,8 +1843,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
             TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
             TF2Attrib_SetByName(Weapon1, "fire rate bonus", stat1);
-            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.25 only-bots=1");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +25%%%% dmg bonus vs jumping robots",chat_display, LessIsMore(stat1));
+            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.15 only-bots=1 critType=1");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
         }
         if (IsShotGun(Weapon2))
         {
@@ -1851,8 +1852,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
             TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
             TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
-            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.25");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +25%%%% dmg bonus vs jumping robots",chat_display, LessIsMore(stat1));
+            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots",  "damage=1.15 only-bots=1 critType=1");
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
         }
 
         if (IsReserveShooter(Weapon2))

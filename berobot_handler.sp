@@ -124,7 +124,7 @@ int g_RoundCount;
 // int g_TankCount;
 
 int b_is_koth;
-
+int koth_caps;
 ArrayList g_Volunteers;
 
 
@@ -382,6 +382,7 @@ public void OnMapStart()
     PrecacheSound(RESISTANCE);
     
     b_is_koth = GameRules_GetProp("m_bPlayingKoth");
+    koth_caps = 0;
 }
 
 public void ResetMode()
@@ -763,7 +764,13 @@ public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontB
         AddTeamCoins(TFTeam_Red, 1);
         }else
         {
-            int client = GetClientOfUserId(GetEventInt(event, "userid"));
+            koth_caps++;
+            if (koth_caps > 4)
+            {
+                AddTeamCoins(TFTeam_Blue, 1);
+                AddTeamCoins(TFTeam_Red, 1);
+                koth_caps = 0;
+            }
         }  
     }
 }
