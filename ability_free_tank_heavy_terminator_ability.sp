@@ -82,6 +82,7 @@ int g_previous_target = -2;
 bool g_isTerminator = false;
 float gametime = -1.0;
 float gametime_retarget = -1.0;
+
 public FindTerminator()
 {
 	
@@ -189,6 +190,11 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 		{
 			TerminatorHeal(assister);
 
+		}
+
+		if(attacker == victim)
+		{
+			TerminatorHeal(FindTerminator());
 		}
 
 	}

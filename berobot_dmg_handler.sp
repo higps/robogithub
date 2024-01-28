@@ -70,6 +70,9 @@ int g_powerjackhealonhitoverheal = 260;
 float g_blutsauger_heal_reduction = 0.35;
 float g_blutsauger_heal_reduction_duration = 1.0;
 
+float g_syringegun_debuff_amount  = 0.85;
+float g_syringe_dmg_debuff_duration = 1.0;
+
 float g_spycicle_fire_speed_debuff = 0.7;
 float g_spycicle_fire_Speed_debuff_duration = 6.0;
 
@@ -284,6 +287,10 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     SetHealingDebuff(victim, g_blutsauger_heal_reduction, g_blutsauger_heal_reduction_duration, attacker);
 
                     // TF2Attrib_AddCustomPlayerAttribute(victim, "reduced_healing_from_medics", g_blutsauger_heal_reduction, g_blutsauger_heal_reduction_duration);
+                }
+                if (IsSyringeGun(weapon))
+                {
+                    SetDamageDebuff(victim, g_syringegun_debuff_amount, g_syringe_dmg_debuff_duration, attacker);
                 }
             }
 
@@ -581,7 +588,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     // PrintToChatAll("victimHP %i, MAXHP %i", victimHP, victimMAXHP);
                     
                     
-                    if (victimHPpercent >= 80){
+                    if (victimHPpercent >= 95){
 
                         //Code for dynamic damage, but doesn't work well with vulnerabilities
                         // PrintToChatAll("percent %i", victimHPpercent);
@@ -1522,13 +1529,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (TF2_GetPlayerClass(client) == TFClass_Medic)
         {
-            //  if(IsSyringeGun(Weapon1))
-            // {
-            //     //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
-            //     stat1 = 1.051;
-            //     TF2Attrib_SetByName(Weapon1, "ubercharge rate bonus", stat1);
-            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: {orange}%0.00f%%%% faster uber build rate{teamcolor}",chat_display, MoreIsMore(stat1));
-            // }
+             if(IsSyringeGun(Weapon1))
+            {
+                //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
+                // stat1 = 1.15;
+                // TF2Attrib_SetByName(Weapon1, "damage bonus", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: On Hit: {orange}Reduce robot damage by %0.00f%%%% for %0.0f second.{teamcolor}",chat_display, MoreIsMore(g_syringegun_debuff_amount), g_syringe_dmg_debuff_duration);
+            }
             if(IsBlutsauger(Weapon1))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: On Hit: {orange}Reduce Enemy healing by -%0.0f%%%%{teamcolor} for %0.0f second.",chat_display, LessIsMore(g_blutsauger_heal_reduction), g_blutsauger_heal_reduction_duration);
@@ -1578,7 +1585,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 0.4;
                 TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vita-Saw: {orange}While Active: {orange}+%0.0f%%%% {teamcolor}Passive melee resistance",chat_display, LessIsMore(stat1));    
+                TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0 addcond=91 cond-duration=1.0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vita-Saw: {orange}While Active: {orange}+%0.0f%%%% Melee resistance\n{teamcolor}Vita Saw: On Teammate hit: Apply {orange}Haste Rune for 1 seconds",chat_display, LessIsMore(stat1));    
             }else
             {
                 TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
@@ -1586,7 +1594,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if(IsCrossbow(Weapon1))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Crossbow: {orange}Protection Rune{teamcolor}teammate for %0.0f seconds",chat_display, g_protection_rune_duration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Crossbow: {orange}Protection Rune {teamcolor}teammate for %0.0f seconds",chat_display, g_protection_rune_duration);
             }
 
             if(IsStockOrAllClassWeapon(Weapon3))
@@ -1960,6 +1968,7 @@ void RemoveJingle(int iClient)
 void SetDemoDamageBuff(int weapon)
 {
     TF2CustAttr_SetString(weapon, "damage increase mult on hit", "amount=0.1 max=0.4 decay_start=0.5 decay_per_second=0.025 reset_on_kill=0 show_on_hud=1");
+    
 }
 
 bool IsMarketGardner(int weapon)
@@ -3260,6 +3269,14 @@ void SetHealingDebuff(int victim, float value, float duration, int attacker)
     TF2_AddCondition(victim, TFCond_HealingDebuff, duration, attacker);
     TF2_AddCondition(victim, TFCond_Sapped, duration, attacker);
     TF2Attrib_AddCustomPlayerAttribute(victim, "reduced_healing_from_medics", value, duration);
+
+}
+
+void SetDamageDebuff(int victim, float value, float duration, int attacker)
+{
+    TF2_AddCondition(victim, TFCond_Teleporting, duration, attacker);
+    TF2Attrib_AddCustomPlayerAttribute(victim, "damage bonus HIDDEN", value, duration);
+    TF2_AddCondition(victim, TFCond_Sapped, duration, attacker);
 
 }
 // int g_attacker[MAXPLAYERS + 1];

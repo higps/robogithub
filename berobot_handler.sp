@@ -909,10 +909,35 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
         {
             // PrintToChatAll("Damage before is %f, g_damagebonus was %f", damage, g_f_Damage_Bonus);
             //PrintToChatAll("Crittype was %i",critType);
-            if(critType == CritType_None && g_f_Damage_Bonus > 1.0)
+            if(g_f_Damage_Bonus > 1.0)
             {
-                damage *= g_f_Damage_Bonus;
+
+                if(damagecustom != TF_CUSTOM_BACKSTAB)
+                {
+                    switch(critType)
+                    {
+                        case CritType_None:
+                        {
+                            damage *= g_f_Damage_Bonus;
+                        }
+                        case CritType_MiniCrit:
+                        {
+                            damage *= g_f_Damage_Bonus*1.15;
+                        }
+                        case CritType_Crit:
+                        {
+                            damage *= g_f_Damage_Bonus*1.15;
+                        }
+                    }
+                    
+                }else
+                {
+                    damage *= g_f_Damage_Bonus*1.15;
+                }
+            //42%
+            // 71
                 return Plugin_Changed;
+
             }
             // PrintToChatAll("Damage after is %f", damage);
             
