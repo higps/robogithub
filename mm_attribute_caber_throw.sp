@@ -20,7 +20,7 @@
 #include <tf2_stocks>
 #include <tf2attributes>
 #include <tf_custom_attributes>
-//#include <stocksoup/var_strings>
+#include <stocksoup/var_strings>
 
 public Plugin MyInfo =
 {
@@ -68,13 +68,13 @@ bool HasStat(int weapon, FCaber caber)
 	char stat_buffer[256];
 	if (!TF2CustAttr_GetString(weapon, "caber-throw", stat_buffer, sizeof(stat_buffer)))
 	{
-		return false;
+		//return false;
 	}
 
 	caber.Damage = ReadFloatVar(stat_buffer, "caber_blast_damage", 100.0);
 	caber.Radius = ReadFloatVar(stat_buffer, "caber_blast_radius", 176.0);
 	caber.DetOnImpact = view_as<bool>(ReadIntVar(stat_buffer, "caber_det_impact", 0));
-	caber.RegenDuration = ReadFloatVar(stat_buffer, "caber_regen_time", 20.0);
+	caber.RegenDuration = ;ReadFloatVar(stat_buffer, "caber_regen_time", 20.0);
 	caber.Speed = ReadFloatVar(stat_buffer, "caber_grenade_speed", 1600.0);
 
 	return true;
@@ -136,7 +136,7 @@ public void OnPlayerRunCmdPost(int clientId, int buttons)
 		{
 			if (CaberGrenade[weaponId].OnCooldown)
 			{
-				if (HudTimer[clientId].Expired())
+				if (CaberGrenade[weaponId].RegenDuration > 1.0 && HudTimer[clientId].Expired())
 				{
 					float timeLeft = CaberGrenade[weaponId].RegenTimer.GetTimeRemaining();
 					SetHudTextParams(-1.0, 0.65, HudRefreshRate, 255, 255, 255, 255);
@@ -165,7 +165,7 @@ public void OnPlayerRunCmdPost(int clientId, int buttons)
 		}
 	}
 }
-
+//int index = 31;
 void ThrowCaber(FClient client, int weaponId, FCaber caber)
 {
 	caber.OnCooldown = true;
@@ -219,10 +219,38 @@ void ThrowCaber(FClient client, int weaponId, FCaber caber)
 
 	ThrownCaber[grenade.Get()] = true;
 
-	SetProjectileProperties(UBaseProjectile(grenade), caber);
+	bool crit = ClientHasCrits(client);
+
+	SetProjectileProperties(UBaseProjectile(grenade), caber, crit);
+	int iclient = client.Get();
+	
+	SetViewmodelAnimation(iclient, 33);
+	// 32,33,35,55 throw-ish
+	// PrintToChatAll("Index was %i", index);
+	// index++;
+	// TE_Start("PlayerAnimEvent");
+	// TE_WriteEnt("m_hPlayer", client);
+	// TE_WriteNum("m_iEvent", 2);
+	// TE_SendToAll();
 }
 
-void SetProjectileProperties(UBaseProjectile grenade, FCaber caber)
+bool ClientHasCrits(FClient client)
+{
+	if (client.InCondition(TFCond_CritCanteen) || client.InCondition(TFCond_HalloweenCritCandy) || client.InCondition(TFCond_Kritzkrieged) ||
+		client.InCondition(TFCond_CritOnKill) || client.InCondition(TFCond_CritOnFirstBlood))
+		return true;
+
+	return false;
+}
+
+void SetViewmodelAnimation(int client, int sequence)
+{
+	int ent = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
+	if (!IsValidEdict(ent)) return;
+	SetEntProp(ent, Prop_Send, "m_nSequence", sequence);
+	// SetEntPropFloat(ent, Prop_Send, "m_flPlaybackRate", 0.5);
+}
+void SetProjectileProperties(UBaseProjectile grenade, FCaber caber, bool crit)
 {
 	// If invalid, stop here
 	if (!grenade.Valid())
@@ -230,6 +258,7 @@ void SetProjectileProperties(UBaseProjectile grenade, FCaber caber)
 
 	// Set our properties for the newly spawned projectile
 	grenade.Damage = caber.Damage;
+	grenade.Critical = crit;
 
 	if (caber.DetOnImpact) // Pipes need m_flFullDamage set for impact damage 
 		SetFullDamage(grenade, caber.Damage);
