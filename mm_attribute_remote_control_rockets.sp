@@ -154,7 +154,7 @@ public void OnEntityDestroyed(int entity)
 public void OnRocketSpawned(int rocket)
 {
 	int owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");
-	if (HasStat(owner) && PlayerControlRockets[owner])
+	if (HasStat(owner) && PlayerControlRockets[owner] && !ControllingRocket[client])
 	{
 		RocketID[owner] = rocket;
 		RocketOverride[rocket] = true;
