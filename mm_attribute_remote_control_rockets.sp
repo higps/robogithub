@@ -21,6 +21,8 @@ bool PlayerControlRockets[MAXPLAYERS+1];
 bool RocketOverride[2049];
 int RocketID[MAXPLAYERS+1];
 
+float LastControlTime[MAXPLAYERS+1] = {-1.0, ...};
+
 //rocket settings
 float g_rocketTurnRate;
 int g_rocketAimType;
@@ -56,8 +58,16 @@ stock bool IsValidClient(iClient)
 	return (0 < iClient && iClient <= MaxClients && IsClientInGame(iClient));
 }
 
+public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] weaponname, bool &result)
+{
+	int slot = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+	if (weapon == slot && HasStat(client))
+	{
+		LastControlTime[client] = GetGameTime() + 0.1;
+	}
 
-
+	return Plugin_Continue;
+}
 
 public Plugin MyInfo =
 {
@@ -154,7 +164,7 @@ public void OnEntityDestroyed(int entity)
 public void OnRocketSpawned(int rocket)
 {
 	int owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");
-	if (HasStat(owner) && PlayerControlRockets[owner] && !ControllingRocket[client])
+	if (HasStat(owner) && PlayerControlRockets[owner] && !ControllingRocket[owner] && LastControlTime[owner] > GetGameTime())
 	{
 		RocketID[owner] = rocket;
 		RocketOverride[rocket] = true;
