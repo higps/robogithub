@@ -15,7 +15,7 @@
 enum struct FClient
 {
 	// Reference used for this client
-	FObject reference;
+	FObject Obj;
 
 	/*
 	* Sets the reference of this client as the given client index
@@ -25,37 +25,53 @@ enum struct FClient
 	void Set(int client)
 	{
 		if (client > 0 && client <= MaxClients && IsClientInGame(client))
-			this.reference.Set(client);
+			this.Obj.Set(client);
 	}
 
 	// Gets this client's referenced index
 	int Get()
 	{
-		return this.reference.Get();
+		return this.Obj.Get();
+	}
+	
+	// Gets the EntRef of this client
+	int GetReference()
+	{
+		return this.Obj.GetReference();
+	}
+	
+	/*
+	* Sets EntRef of this client
+	*
+	* @param clientRef EntRef of the client
+	*/
+	void SetReference(int clientRef)
+	{
+		this.Obj.Reference = clientRef;
 	}
 
 	// Increments the referenced index by one
 	void Next()
 	{
-		this.reference.Next();
+		this.Obj.Next();
 	}
 
 	// Resets this reference
 	void Clear()
 	{
-		this.reference.ref = -1;
+		this.Obj.Reference = -1;
 	}
 
 	// Returns this client's FObject reference
 	FObject GetObject()
 	{
-		return this.reference;
+		return this.Obj;
 	}
 
 	// Returns true if this client is valid and in game
 	bool Valid()
 	{
-		int client = this.reference.Get();
+		int client = this.Obj.Get();
 		if (client > 0 && client <= MaxClients)
 			return IsClientInGame(client);
 
@@ -86,26 +102,21 @@ enum struct FClient
 	*/
 	void Teleport(FVector pos, FRotator rot, FVector vel)
 	{
-		if (this.Valid())
-		{
-			float position[3], angles[3], velocity[3];
-			if (Vector_IsNull(pos))
-				position = NULL_VECTOR;
-			else
-				position = Vector_MakeFloat(pos);
+		float position[3], angles[3], velocity[3];
+		position = Vector_MakeFloat(pos);
+		angles = Rotator_MakeFloat(rot);
+		velocity = Vector_MakeFloat(vel);
 
-			if (Rotator_IsNull(rot))
-				angles = NULL_VECTOR;
-			else
-				angles = Rotator_MakeFloat(rot);
+		TeleportEntity(this.GetReference(), position, angles, velocity);
+	}
 
-			if (Vector_IsNull(vel))
-				velocity = NULL_VECTOR;
-			else
-				velocity = Vector_MakeFloat(vel);
-
-			TeleportEntity(this.Get(), position, angles, velocity);
-		}
+	void SetPosition(FVector position)
+	{
+		TeleportEntity(this.GetReference(), position.ToFloat(), NULL_VECTOR, NULL_VECTOR);
+	}
+	void SetAngles(FRotator angles)
+	{
+		TeleportEntity(this.GetReference(), NULL_VECTOR, angles.ToFloat(), NULL_VECTOR);
 	}
 	
 	/*
@@ -118,7 +129,7 @@ enum struct FClient
 	{
 		if (this.Valid())
 		{
-			TeleportEntity(this.Get(), NULL_VECTOR, rot.ToFloat(), vel.ToFloat());
+			TeleportEntity(this.GetReference(), NULL_VECTOR, rot.ToFloat(), vel.ToFloat());
 		}
 	}
 
@@ -144,7 +155,7 @@ enum struct FClient
 	int GetMaxHealth()
 	{
 		if (this.Alive())
-			return GetEntProp(this.Get(), Prop_Data, "m_iMaxHealth");
+			return GetEntProp(this.GetReference(), Prop_Data, "m_iMaxHealth");
 
 		return 0;
 	}
@@ -169,7 +180,7 @@ enum struct FClient
 			if (health > max * overheal)
 				health = RoundFloat(max * overheal);
 
-			SetEntityHealth(this.Get(), health);
+			SetEntityHealth(this.GetReference(), health);
 		}
 	}
 
@@ -243,7 +254,7 @@ enum struct FClient
 	float GetMaxSpeed()
 	{
 		if (this.Valid())
-			return GetEntPropFloat(this.Get(), Prop_Data, "m_flMaxspeed");
+			return GetEntPropFloat(this.GetReference(), Prop_Data, "m_flMaxspeed");
 
 		else return 0.0;
 	}
@@ -385,7 +396,7 @@ stock FClient ConstructClient(int index, bool userid = false)
 stock FClient GetWorld()
 {
 	FClient world;
-	world.reference.ref = 0;
+	world.Obj.Reference = 0;
 
 	return world;
 }

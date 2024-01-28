@@ -20,7 +20,7 @@
 #include <tf2_stocks>
 #include <tf2attributes>
 #include <tf_custom_attributes>
-//#include <stocksoup/var_strings>
+#include <stocksoup/var_strings>
 
 public Plugin MyInfo =
 {
@@ -165,7 +165,7 @@ public void OnPlayerRunCmdPost(int clientId, int buttons)
 		}
 	}
 }
-
+int index = 31;
 void ThrowCaber(FClient client, int weaponId, FCaber caber)
 {
 	caber.OnCooldown = true;
@@ -220,8 +220,25 @@ void ThrowCaber(FClient client, int weaponId, FCaber caber)
 	ThrownCaber[grenade.Get()] = true;
 
 	SetProjectileProperties(UBaseProjectile(grenade), caber);
+	int iclient = client.Get();
+	
+	SetViewmodelAnimation(iclient, 33);
+	// 32,33,35,55 throw-ish
+	// PrintToChatAll("Index was %i", index);
+	// index++;
+	// TE_Start("PlayerAnimEvent");
+	// TE_WriteEnt("m_hPlayer", client);
+	// TE_WriteNum("m_iEvent", 2);
+	// TE_SendToAll();
 }
 
+stock void SetViewmodelAnimation(int client, int sequence)
+{
+    new ent = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
+    if (!IsValidEdict(ent)) return;
+    SetEntProp(ent, Prop_Send, "m_nSequence", sequence);
+    // SetEntPropFloat(ent, Prop_Send, "m_flPlaybackRate", 0.5);
+}
 void SetProjectileProperties(UBaseProjectile grenade, FCaber caber)
 {
 	// If invalid, stop here

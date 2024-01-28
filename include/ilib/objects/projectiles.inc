@@ -9,19 +9,19 @@
 /*
 * Map for handling projectiles. This can be used on any projectile already existing in the world
 */
-methodmap ABaseProjectile < AObject
+methodmap UBaseProjectile < UObject
 {
 	/*
 	* Used as a cast to check if an object is a projectile. If needing to spawn a specific projectile, use the appropriate methodmap
 	*
 	* @return 			ABaseProjectile wrapping the entity reference.
 	*/
-	public ABaseProjectile(FObject entity)
+	public UBaseProjectile(FObject entity)
 	{
 		if (entity.Cast("tf_projectile_"))
-			return view_as<ABaseProjectile>(entity.ref);
+			return view_as<UBaseProjectile>(entity.Reference);
 
-		return view_as<ABaseProjectile>(0);
+		return view_as<UBaseProjectile>(0);
 	}
 
 	// Damage this projectile will deal. Note: not all projectiles handle damage in the same way, this may not work for all
@@ -53,7 +53,7 @@ methodmap ABaseProjectile < AObject
 			{
 				// This should work for most other projectiles
 				int offset = FindSendPropInfo(this.GetClassname(ClassType_Networked), "m_iDeflected") + 4;
-				GetEntDataFloat(this.Get(), offset);
+				return GetEntDataFloat(this.Get(), offset);
 			}
 		}
 	}

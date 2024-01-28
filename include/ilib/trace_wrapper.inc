@@ -9,15 +9,15 @@
 * Handles creating line traces between two points
 * Must be deleted after it is done being used
 */
-methodmap RayTrace < Handle
+methodmap FRayTraceSingle < Handle
 {
 	/*
 	* Unlike normal sourcepawn traces, angles cannot be used to create an infinite trace
 	* Infinite traces use up slightly more overhead and really aren't necessary
 	*/
-	public RayTrace(FVector pos, FVector end, int mask, TraceEntityFilter filter, any data = -1)
+	public FRayTraceSingle(FVector pos, FVector end, int mask, TraceEntityFilter filter, any data = -1)
 	{
-		return view_as<RayTrace>(TR_TraceRayFilterEx(Vector_MakeFloat(pos), Vector_MakeFloat(end), mask, RayType_EndPoint, filter, data));
+		return view_as<FRayTraceSingle>(TR_TraceRayFilterEx(Vector_MakeFloat(pos), Vector_MakeFloat(end), mask, RayType_EndPoint, filter, data));
 	}
 
 	// Returns true if this trace hit an entity
@@ -116,10 +116,10 @@ methodmap RayTrace < Handle
 /*
 * Trace wrapper for hull traces
 */
-methodmap HullTrace < RayTrace
+methodmap FHullTrace < FRayTraceSingle
 {
-	public HullTrace(FVector pos, FVector end, FVector mins, FVector maxs, int flags, TraceEntityFilter filter, any data = -1)
+	public FHullTrace(FVector pos, FVector end, FVector mins, FVector maxs, int flags, TraceEntityFilter filter, any data = -1)
 	{
-		return view_as<HullTrace>(TR_TraceHullFilterEx(Vector_MakeFloat(pos), Vector_MakeFloat(end), Vector_MakeFloat(mins), Vector_MakeFloat(maxs), flags, filter, data));
+		return view_as<FHullTrace>(TR_TraceHullFilterEx(Vector_MakeFloat(pos), Vector_MakeFloat(end), Vector_MakeFloat(mins), Vector_MakeFloat(maxs), flags, filter, data));
 	}
 }

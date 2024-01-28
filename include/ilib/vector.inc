@@ -10,25 +10,25 @@
 */
 enum struct FVector
 {
-	float x;
-	float y;
-	float z;
+	float X;
+	float Y;
+	float Z;
 
 	// Converts a float array into a vector
 	void Set(float vec[3])
 	{
-		this.x = vec[0];
-		this.y = vec[1];
-		this.z = vec[2];
+		this.X = vec[0];
+		this.Y = vec[1];
+		this.Z = vec[2];
 	}
 
 	// Converts this vector into a float array
 	float[] ToFloat()
 	{
 		float vec[3];
-		vec[0] = this.x;
-		vec[1] = this.y;
-		vec[2] = this.z;
+		vec[0] = this.X;
+		vec[1] = this.Y;
+		vec[2] = this.Z;
 
 		return vec;
 	}
@@ -45,9 +45,9 @@ enum struct FVector
 	// Adds this vector with another vector
 	void Add(FVector vec)
 	{
-		this.x += vec.x;
-		this.y += vec.y;
-		this.z += vec.z;
+		this.X += vec.X;
+		this.Y += vec.Y;
+		this.Z += vec.Z;
 	}
 
 	// Returns the distance between this vector and another given vector
@@ -59,9 +59,9 @@ enum struct FVector
 	// Scales this vector by the given value
 	void Scale(float value)
 	{
-		this.x *= value;
-		this.y *= value;
-		this.z *= value;
+		this.X *= value;
+		this.Y *= value;
+		this.Z *= value;
 	}
 
 	// Normalizes this vector
@@ -79,14 +79,14 @@ enum struct FVector
 	// Negatives this vector
 	void Negate()
 	{
-		this.x = this.x * -1.0;
-		this.y = this.y * -1.0;
-		this.z = this.z * -1.0;
+		this.X = this.X * -1.0;
+		this.Y = this.Y * -1.0;
+		this.Z = this.Z * -1.0;
 	}
 }
 
 // Used for null vector inputs
-public FVector NULL_FVector;
+//public FVector NULL_FVector;
 
 /*
 * Wrappers for float arrays intended to be used for angles
@@ -96,16 +96,16 @@ public FVector NULL_FVector;
 */
 enum struct FRotator
 {
-	float pitch;
-	float yaw;
-	float roll;
+	float Pitch;
+	float Yaw;
+	float Roll;
 
 	// Sets this rotator from a float array
 	void Set(float angle[3])
 	{
-		this.pitch = angle[0];
-		this.yaw = angle[1];
-		this.roll = angle[2];
+		this.Pitch = angle[0];
+		this.Yaw = angle[1];
+		this.Roll = angle[2];
 	}
 
 	// Converts this rotator into a float array
@@ -113,9 +113,9 @@ enum struct FRotator
 	{
 		float angle[3];
 
-		angle[0] = this.pitch;
-		angle[1] = this.yaw;
-		angle[2] = this.roll;
+		angle[0] = this.Pitch;
+		angle[1] = this.Yaw;
+		angle[2] = this.Roll;
 
 		return angle;
 	}
@@ -168,20 +168,20 @@ enum struct FRotator
 	// Normalizes this rotation's axes and returns as a value
 	FRotator GetNormalized()
 	{
-		while (this.pitch > 180.0) this.pitch -= 360.0;
-		while (this.pitch < -180.0) this.pitch += 360.0;
-		while (this.yaw > 180.0) this.yaw -= 360.0;
-		while (this.yaw < -180.0) this.yaw += 360.0;
-		while (this.roll > 180.0) this.roll -= 360.0;
-		while (this.roll < -180.0) this.roll += 360.0;
+		while (this.Pitch > 180.0) this.Pitch -= 360.0;
+		while (this.Pitch < -180.0) this.Pitch += 360.0;
+		while (this.Yaw > 180.0) this.Yaw -= 360.0;
+		while (this.Yaw < -180.0) this.Yaw += 360.0;
+		while (this.Roll > 180.0) this.Roll -= 360.0;
+		while (this.Roll < -180.0) this.Roll += 360.0;
 		
 		return this;
 	}
 	
-	// Checks if this rotator is equal to another
+	// Checks if this rotator is equal to another - precision makes this inaccurate
 	bool IsEqual(FRotator rotation)
 	{
-		if (this.pitch == rotation.pitch && this.yaw == rotation.yaw && this.roll == rotation.yaw)
+		if (this.Pitch == rotation.Pitch && this.Yaw == rotation.Yaw && this.Roll == rotation.Yaw)
 			return true;
 			
 		return false;
@@ -189,13 +189,13 @@ enum struct FRotator
 }
 
 // Used for null rotator inputs
-public FRotator NULL_ROTATOR;
+//public FRotator NULL_ROTATOR;
 
 enum struct FTransform
 {
-	FVector position;
-	FRotator rotation;
-	FVector velocity;
+	FVector Position;
+	FRotator Rotation;
+	FVector Velocity;
 }
 
 /*
@@ -205,19 +205,11 @@ enum struct FTransform
 stock FVector ConstructVector(float x = 0.0, float y = 0.0, float z = 0.0)
 {
 	FVector vector;
-	vector.x = x;
-	vector.y = y;
-	vector.z = z;
+	vector.X = x;
+	vector.Y = y;
+	vector.Z = z;
 
 	return vector;
-}
-
-/*
-* Checks if the given vector is null, or zero
-*/
-stock bool Vector_IsNull(FVector vector)
-{
-	return (vector.x == 0.0 && vector.y == 0.0 && vector.z == 0.0);
 }
 
 /*
@@ -261,17 +253,14 @@ stock void Vector_CrossProduct(FVector vector1, FVector vector2, FVector buffer)
 // Converts a float array into a FVector object
 stock void Vector_MakeFromFloat(FVector vector, float vec[3])
 {
-	vector.x = vec[0];
-	vector.y = vec[1];
-	vector.z = vec[2];
+	vector.X = vec[0];
+	vector.Y = vec[1];
+	vector.Z = vec[2];
 }
 
 // Converts back to a float array
 stock float[] Vector_MakeFloat(FVector vector)
 {
-	if (Vector_IsNull(vector))
-		return NULL_VECTOR;
-
 	return vector.ToFloat();
 }
 
@@ -279,27 +268,27 @@ stock float[] Vector_MakeFloat(FVector vector)
 // Adds two FVectors. Either inputs may be used as the buffer
 stock void Vector_Add(FVector vector1, FVector vector2, FVector buffer)
 {
-	buffer.x = vector1.x + vector2.x;
-	buffer.y = vector1.y + vector2.y;
-	buffer.z = vector1.z + vector2.z;
+	buffer.X = vector1.X + vector2.X;
+	buffer.Y = vector1.Y + vector2.Y;
+	buffer.Z = vector1.Z + vector2.Z;
 }
 
 
 // Subtracts an FVector from another FVector. Either inputs may be used as the buffer
 stock void Vector_Subtract(FVector vector1, FVector vector2, FVector buffer)
 {
-	buffer.x = vector1.x - vector2.x;
-	buffer.y = vector1.y - vector2.y;
-	buffer.z = vector1.z - vector2.z;
+	buffer.X = vector1.X - vector2.X;
+	buffer.Y = vector1.Y - vector2.Y;
+	buffer.Z = vector1.Z - vector2.Z;
 }
 
 
 // Creates an FVector from two points by subtracting the two points
 stock void Vector_MakeFromPoints(FVector origin, FVector destination, FVector buffer)
 {
-	buffer.x = destination.x - origin.x;
-	buffer.y = destination.y - origin.y;
-	buffer.z = destination.z - origin.z;
+	buffer.X = destination.X - origin.X;
+	buffer.Y = destination.Y - origin.Y;
+	buffer.Z = destination.Z - origin.Z;
 }
 
 
@@ -359,17 +348,11 @@ stock FVector Vector_GetFromKV(KeyValues kv, const char[] key)
 stock FRotator ConstructRotator(float pitch = 0.0, float yaw = 0.0, float roll = 0.0)
 {
 	FRotator rot;
-	rot.pitch = pitch;
-	rot.yaw = yaw;
-	rot.roll = roll;
+	rot.Pitch = pitch;
+	rot.Yaw = yaw;
+	rot.Roll = roll;
 
 	return rot;
-}
-
-// Checks to see if the given Rotator is null
-stock bool Rotator_IsNull(FRotator rot)
-{
-	return (rot.pitch == 0.0 && rot.yaw == 0.0 && rot.roll == 0.0);
 }
 
 
@@ -391,9 +374,9 @@ stock void Rotator_SetProperty(int entity, PropType type, const char[] property,
 // Converts a float array into a Rotator object
 stock void Rotator_MakeFromFloat(FRotator rot, float vec[3])
 {
-	rot.pitch = vec[0];
-	rot.yaw = vec[1];
-	rot.roll = vec[2];
+	rot.Pitch = vec[0];
+	rot.Yaw = vec[1];
+	rot.Roll = vec[2];
 }
 
 // Converts back to a float array
@@ -401,9 +384,9 @@ stock float[] Rotator_MakeFloat(FRotator rotation)
 {
 	float rot[3];
 
-	rot[0] = rotation.pitch;
-	rot[1] = rotation.yaw;
-	rot[2] = rotation.roll;
+	rot[0] = rotation.Pitch;
+	rot[1] = rotation.Yaw;
+	rot[2] = rotation.Roll;
 
 	return rot;
 }
@@ -448,22 +431,21 @@ stock void Rotator_GetClientAbsAngles(int client, FRotator rot)
 // Clamps the given angles to acceptable values
 stock void NormalizeAngles(FRotator angle)
 {
- 	while (angle.pitch > 89.0) angle.pitch -= 180.0;
-	while (angle.pitch < -89.0) angle.pitch += 180.0;
-	while (angle.yaw > 180.0) angle.yaw -= 360.0;
-	while (angle.yaw < -180.0) angle.yaw += 360.0;
+ 	while (angle.Pitch > 89.0) angle.Pitch -= 180.0;
+	while (angle.Pitch < -89.0) angle.Pitch += 180.0;
+	while (angle.Yaw > 180.0) angle.Yaw -= 360.0;
+	while (angle.Yaw < -180.0) angle.Yaw += 360.0;
 }
 
 /*
 *	Constructor for FTransform types
 */
-
 stock FTransform ConstructTransform(FVector pos, FRotator rot, FVector vel = {0.0, 0.0, 0.0})
 {
 	FTransform result;
-	result.position = pos;
-	result.rotation = rot;
-	result.velocity = vel;
+	result.Position = pos;
+	result.Rotation = rot;
+	result.Velocity = vel;
 
 	return result;
 }
@@ -480,9 +462,9 @@ stock void InterpVector(FVector origin, FVector destination, float time, FVector
 {
 	FVector result;
 
-	result.x = (1.0 - time) * origin.x + time * destination.x;
-	result.y = (1.0 - time) * origin.y + time * destination.y;
-	result.z = (1.0 - time) * origin.z + time * destination.z;
+	result.X = (1.0 - time) * origin.X + time * destination.X;
+	result.Y = (1.0 - time) * origin.Y + time * destination.Y;
+	result.Z = (1.0 - time) * origin.Z + time * destination.Z;
 
 	buffer = result;
 }
@@ -516,7 +498,6 @@ stock bool Vector_GetEntityAttachment(FObject entity, int id, FTransform buffer)
 			return true;
 		}
 	}
-
 	return false;
 }
 
@@ -557,42 +538,9 @@ stock bool GetAttachmentTransform(FObject entity, const char[] name, FTransform 
 	{
 		int id = LookupEntityAttachment(entity.Get(), name);
 
-		FTransform transform;
-		if (Vector_GetEntityAttachment(entity, id, transform))
+		if (Vector_GetEntityAttachment(entity, id, buffer))
 			return true;
 	}
 
 	return false;
 }
-
-/*
-* Currently does not work, need to figure out how to properly interpolate to the nearest angle
-* Currently can't get the value to cross from 0 to 359 or vice versa
-
-// Doesn't seem to give expected results
-stock FRotator GetShortestAngle(FRotator origin, FRotator destination)
-{
-	FRotator result;
-
-	result.pitch = (((((destination.pitch - origin.pitch) % 180.0) + 270.0) % 180.0) - 90.0);
-	result.yaw = (((((destination.yaw - origin.yaw) % 360.0) + 540.0) % 360.0) - 180.0);
-	result.roll = (((((destination.roll - origin.roll) % 360.0) + 540.0) % 360.0) - 180.0);
-
-	NormalizeAngles(result);
-
-	return result;
-}
-
-stock void InterpRotator(FRotator origin, FRotator destination, float time, FRotator buffer)
-{
-	FRotator result;
-
-	result.pitch = (1.0 - time) * origin.pitch + time * destination.pitch;
-	result.yaw = (1.0 - time) * origin.yaw + time * destination.yaw;
-	result.roll = (1.0 - time) * origin.roll + time * destination.roll;
-
-	NormalizeAngles(result);
-
-	buffer = result;
-}
-*/

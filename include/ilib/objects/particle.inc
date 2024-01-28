@@ -55,15 +55,16 @@ enum struct FParticleSystem
 * @param name			Effect name to use
 * @param position		World location to spawn this particle at
 * @param rotation		World rotation to spawn particle with
+* @param duration		How long this particle exists for (0.0 = indefinite)
 * @param startActive	Should this particle immediately start
 * @param weather		Whether or not this entity should be flagged as a weather system
 *
 * @return 				Particle system with the given properties
 */
-stock FParticleSystem CreateParticleSystem(const char[] name, const FVector position, const FRotator rotation, bool startActive = false, bool weather = false)
+stock FParticleSystem CreateParticleSystem(const char[] name, const FVector position, const FRotator rotation, float duration = 0.0, bool startActive = true, bool weather = false)
 {
 	FObject reference;
-	reference = CreateObjectDeferred("info_particle_system");
+	reference = FGameplayStatics.CreateObjectDeferred("info_particle_system");
 	
 	FParticleSystem particle;
 	FormatEx(particle.EffectName, sizeof FParticleSystem::EffectName, name);
@@ -73,10 +74,13 @@ stock FParticleSystem CreateParticleSystem(const char[] name, const FVector posi
 	reference.SetKeyValue("flag_as_weather", weather ? "1" : "0");
 	
 	FTransform spawn;
-	spawn.position = position;
-	spawn.rotation = rotation;
+	spawn.Position = position;
+	spawn.Rotation = rotation;
 	
-	FinishSpawn(reference, spawn);
+	FGameplayStatics.FinishSpawn(reference, spawn);
+
+	if (duration > 0.0)
+		reference.KillOnDelay(duration);
 	
 	particle.Reference = reference;
 	

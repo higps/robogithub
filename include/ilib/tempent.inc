@@ -11,28 +11,29 @@
 */
 enum struct FTempentProperties
 {
-	float radius;
-	float end_radius;
+	float Radius;
+	float EndRadius;
 
-	float scale;
+	float Scale;
 
-	int model;
-	int halo;
+	int Model;
+	int Halo;
 
-	int start_frame;
-	int frame_rate;
+	int StartFrame;
+	int FrameRate;
 
-	float lifetime;
-	float width;
-	float amplitude;
+	float Lifetime;
+	float Width;
+	float Amplitude;
 
-	int magnitude;
+	int Magnitude;
+	int Brightness;
 
-	int color[4];
+	int Color[4];
 
-	int speed;
+	int Speed;
 
-	int flags;
+	int Flags;
 }
 
 // General tempent constructor - most common tempents will use these properties
@@ -40,33 +41,24 @@ stock FTempentProperties ConstructTempent(float scale = 1.0, float radius = 0.0,
 {
 	FTempentProperties info;
 
-	info.scale = scale;
-	info.radius = radius;
-	info.end_radius = end_radius;
-	info.model = model;
-	info.halo = halo;
-	info.lifetime = life;
-	info.width = width;
+	info.Scale = scale;
+	info.Radius = radius;
+	info.EndRadius = end_radius;
+	info.Model = model;
+	info.Halo = halo;
+	info.Lifetime = life;
+	info.Width = width;
 
-	info.frame_rate = rate;
+	info.FrameRate = rate;
 
 	return info;
 }
 
-// Used for tracking how many tempents have been created
-int tempent_index;
-
 /*
 * Methodmap for creating tempents
 */
-methodmap TempEnt
+methodmap FTempEnt
 {
-	public TempEnt()
-	{
-		tempent_index++;
-		return view_as<TempEnt>(tempent_index);
-	}
-
 	/*
 	* Wrapper for TE_SetupBeamRingPoint()
 	*
@@ -74,12 +66,12 @@ methodmap TempEnt
 	* @param origin		Position to spawn this tempent at
 	* @param info		Struct containing the information for this tempent
 	*/
-	public void CreateRing(FClient client, FVector origin, FTempentProperties info)
+	public static void CreateRing(FClient client, FVector origin, FTempentProperties info)
 	{
 		float pos[3];
 		pos = Vector_MakeFloat(origin);
 
-		TE_SetupBeamRingPoint(pos, info.radius, info.end_radius, info.model, info.halo, info.start_frame, info.frame_rate, info.lifetime, info.width, info.amplitude, info.color, info.speed, info.flags);
+		TE_SetupBeamRingPoint(pos, info.Radius, info.EndRadius, info.Model, info.Halo, info.StartFrame, info.FrameRate, info.Lifetime, info.Width, info.Amplitude, info.Color, info.Speed, info.Flags);
 
 		if (IsWorld(client))
 			TE_SendToAll();
@@ -94,12 +86,12 @@ methodmap TempEnt
 	* @param origin		Position to spawn this tempent at
 	* @param info		Struct containing the information for this tempent
 	*/
-	public void CreateSmoke(FClient client, FVector origin, FTempentProperties info)
+	public static void CreateSmoke(FClient client, FVector origin, FTempentProperties info)
 	{
 		float pos[3];
 		pos = Vector_MakeFloat(origin);
 
-		TE_SetupSmoke(pos, info.model, info.scale, info.frame_rate);
+		TE_SetupSmoke(pos, info.Model, info.Scale, info.FrameRate);
 
 		if (IsWorld(client))
 			TE_SendToAll();
@@ -114,12 +106,12 @@ methodmap TempEnt
 	* @param origin		Position to spawn this tempent at
 	* @param info		Struct containing the information for this tempent
 	*/
-	public void CreateExplosion(FClient client, FVector origin, FTempentProperties info)
+	public static void CreateExplosion(FClient client, FVector origin, FTempentProperties info)
 	{
 		float pos[3];
 		pos = Vector_MakeFloat(origin);
 
-		TE_SetupExplosion(pos, info.model, info.scale, info.frame_rate, info.flags, RoundFloat(info.radius), info.magnitude);
+		TE_SetupExplosion(pos, info.Model, info.Scale, info.FrameRate, info.Flags, RoundFloat(info.Radius), info.Magnitude);
 		
 		if (IsWorld(client))
 			TE_SendToAll();
@@ -128,17 +120,34 @@ methodmap TempEnt
 	}
 
 	/*
-	* Wrapper for TE_CreateBeamPoints()
+	* Wrapper for TE_SetupBeamPoints()
 	*
 	* @param client			Client to send this tempent to, a reference to the world will send to all
 	* @param origin			Position to spawn this tempent at
 	* @param destination	Position to connect beam to
 	* @param info			Struct containing the information for this tempent
 	*/
-	public void CreateBeam(FClient client, FVector origin, FVector destination, FTempentProperties info)
+	public static void CreateBeam(FClient client, FVector origin, FVector destination, FTempentProperties info)
 	{
-		TE_SetupBeamPoints(origin.ToFloat(), destination.ToFloat(), info.model, info.halo, info.start_frame, info.frame_rate, info.lifetime, info.width, info.width, info.magnitude, info.amplitude, info.color, info.speed);
+		TE_SetupBeamPoints(origin.ToFloat(), destination.ToFloat(), info.Model, info.Halo, info.StartFrame, info.FrameRate, info.Lifetime, info.Width, info.Width, info.Magnitude, info.Amplitude, info.Color, info.Speed);
 		
+		if (IsWorld(client))
+			TE_SendToAll();
+		else if (client.Valid())
+			TE_SendToClient(client.Get());
+	}
+
+	/*
+	* Wrapper for TE_SetupGlowSprite()
+	*
+	* @param client			Client to send this tempent to, a reference to the world will send to all
+	* @param origin			Position to spawn this tempent at
+	* @param info			Struct containing the information for this tempent
+	*/
+	public static void CreateGlowSprite(FClient client, FVector origin, FTempentProperties info)
+	{
+		TE_SetupGlowSprite(origin.ToFloat(), info.Model, info.Lifetime, info.Scale, info.Brightness);
+
 		if (IsWorld(client))
 			TE_SendToAll();
 		else if (client.Valid())
@@ -152,7 +161,7 @@ methodmap TempEnt
 * @param pos	World position to spawn the box
 * @param size	Size of mins and maxs of the box
 */
-stock void Tempent_DrawBox(FVector pos, float size)
+stock void Tempent_DrawBox(FVector pos, float size, float duration = 0.1)
 {
 	FVector min, max;
 	max = ConstructVector(size, size, size);
@@ -163,48 +172,46 @@ stock void Tempent_DrawBox(FVector pos, float size)
 
 	FVector pos1, pos2, pos3, pos4, pos5, pos6;
 	pos1 = max;
-	pos1.x = min.x;
+	pos1.X = min.X;
 
 	pos2 = max;
-	pos2.y = min.y;
+	pos2.Y = min.Y;
 
 	pos3 = max;
-	pos3.z = min.z;
+	pos3.Z = min.Z;
 
 	pos4 = min;
-	pos4.x = max.x;
+	pos4.X = max.X;
 
 	pos5 = min;
-	pos5.y = max.y;
+	pos5.Y = max.Y;
 
 	pos6 = min;
-	pos6.z = max.z;
+	pos6.Z = max.Z;
 
 	FTempentProperties info;
-	info.model = PrecacheModel("materials/sprites/laser.vmt");
-	info.halo = info.model;
-	info.lifetime = 0.1;
-	info.width = 1.0;
-	info.color = {255, 255, 255, 255};
+	info.Model = PrecacheModel("materials/sprites/laser.vmt");
+	info.Halo = info.Model;
+	info.Lifetime = duration;
+	info.Width = 1.0;
+	info.Color = {255, 255, 255, 255};
 
 	FClient world;
 	world = GetWorld();
 
-	TempEnt laser = TempEnt();
+	FTempEnt.CreateBeam(world, max, pos1, info);
+	FTempEnt.CreateBeam(world, max, pos2, info);
+	FTempEnt.CreateBeam(world, max, pos3, info);
 
-	laser.CreateBeam(world, max, pos1, info);
-	laser.CreateBeam(world, max, pos2, info);
-	laser.CreateBeam(world, max, pos3, info);
+	FTempEnt.CreateBeam(world, pos6, pos1, info);
+	FTempEnt.CreateBeam(world, pos6, pos2, info);
+	FTempEnt.CreateBeam(world, pos6, min, info);
 
-	laser.CreateBeam(world, pos6, pos1, info);
-	laser.CreateBeam(world, pos6, pos2, info);
-	laser.CreateBeam(world, pos6, min, info);
+	FTempEnt.CreateBeam(world, pos4, min, info);
+	FTempEnt.CreateBeam(world, pos4, pos3, info);
+	FTempEnt.CreateBeam(world, pos4, pos2, info);
 
-	laser.CreateBeam(world, pos4, min, info);
-	laser.CreateBeam(world, pos4, pos3, info);
-	laser.CreateBeam(world, pos4, pos2, info);
-
-	laser.CreateBeam(world, pos5, min, info);
-	laser.CreateBeam(world, pos5, pos1, info);
-	laser.CreateBeam(world, pos5, pos3, info);
+	FTempEnt.CreateBeam(world, pos5, min, info);
+	FTempEnt.CreateBeam(world, pos5, pos1, info);
+	FTempEnt.CreateBeam(world, pos5, pos3, info);
 }

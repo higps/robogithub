@@ -11,19 +11,19 @@
 /*
 * Map for handling rockets
 */
-methodmap ARocket < ABaseProjectile
+methodmap URocket < UBaseProjectile
 {
 	/*
 	* Creates a rocket projectile
 	*
 	* @return 			Deferred rocket object.
 	*/
-	public ARocket()
+	public URocket()
 	{
 		FObject rocket;
-		rocket = CreateObjectDeferred("tf_projectile_rocket");
+		rocket = FGameplayStatics.CreateObjectDeferred("tf_projectile_rocket");
 
-		return view_as<ARocket>(rocket.ref);
+		return view_as<URocket>(rocket.Reference);
 	}
 }
 
@@ -32,13 +32,13 @@ methodmap ARocket < ABaseProjectile
 *
 * @param entity		Entity to test
 */
-stock ARocket CastToRocket(AObject entity)
+stock URocket CastToRocket(UObject entity)
 {
-	ARocket rocket;
+	URocket rocket;
 
 	// Cast to a rocket
 	if (entity.Cast("tf_projectile_rocket"))
-		rocket = view_as<ARocket>(entity.GetObject().ref);
+		rocket = view_as<URocket>(entity.GetObject().Reference);
 
 	return rocket;
 }

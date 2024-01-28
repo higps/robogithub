@@ -8,12 +8,12 @@
 #define _ilib_projlauncher_included
 
 // Enum for setting the type of a weapon mimic
-enum EWeaponType
+enum ELauncherType
 {
-	WeaponType_Rocket = 0,
-	WeaponType_Grenade,
-	WeaponType_Arrow,
-	WeaponType_Sticky
+	Launcher_Rocket = 0,
+	Launcher_Grenade,
+	Launcher_Arrow,
+	Launcher_Sticky
 };
 
 /*
@@ -21,7 +21,7 @@ enum EWeaponType
 * 
 */
 
-methodmap AProjectileLauncher < AObject
+methodmap UProjectileLauncher < UObject
 {
 	/*
 	* Creates a projectile launcher with the given type and properties
@@ -31,14 +31,14 @@ methodmap AProjectileLauncher < AObject
 	* 
 	* @return Wrapper for a deferred FObject. Use FinishSpawn() to activate
 	*/
-	public AProjectileLauncher(FObject entity = {}, bool cast = false)
+	public UProjectileLauncher(FObject entity = {}, bool cast = false)
 	{
 		// Cast to the given entity first
 		if (entity.Valid() && cast)
 		{
 			if (entity.Cast("tf_point_weapon_mimic"))
-				return view_as<AProjectileLauncher>(entity.ref);
-			else return view_as<AProjectileLauncher>(0);
+				return view_as<UProjectileLauncher>(entity.Reference);
+			else return view_as<UProjectileLauncher>(0);
 
 		}
 
@@ -46,10 +46,10 @@ methodmap AProjectileLauncher < AObject
 		else if (!entity.Valid() && !cast)
 		{
 			FObject launcher;
-			launcher = CreateObjectDeferred("tf_point_weapon_mimic");
+			launcher = FGameplayStatics.CreateObjectDeferred("tf_point_weapon_mimic");
 
 			// Setup default values
-			EWeaponType type = WeaponType_Rocket;
+			ELauncherType type = Launcher_Rocket;
 			int damage = 90;
 			float speed = 1100.0;
 			float blastradius = 146.0;
@@ -68,24 +68,24 @@ methodmap AProjectileLauncher < AObject
 			// Set the scale
 			launcher.SetPropFloat(Prop_Data, "m_flModelScale", scale);
 
-			return view_as<AProjectileLauncher>(launcher.ref);
+			return view_as<UProjectileLauncher>(launcher.Reference);
 		}
 		else // Otherwise don't create anything
 		{
-			return view_as<AProjectileLauncher>(0);
+			return view_as<UProjectileLauncher>(0);
 		}
 	}
 
 	// Type of weapon this launcher will mimic
-	property EWeaponType Type
+	property ELauncherType Type
 	{
-		public set(EWeaponType value)
+		public set(ELauncherType value)
 		{
 			this.GetObject().SetProp(Prop_Data, "m_nWeaponType", view_as<int>(value));
 		}
 		public get()
 		{
-			return view_as<EWeaponType>(this.GetObject().GetProp(Prop_Data, "m_nWeaponType"));
+			return view_as<ELauncherType>(this.GetObject().GetProp(Prop_Data, "m_nWeaponType"));
 		}
 	}
 
