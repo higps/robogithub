@@ -25,3 +25,5 @@ tf2items: https://github.com/asherkin/TF2Items
 SM Memory: https://github.com/Scags/SM-Memory
 
 SoureScramble: https://github.com/nosoop/SMExt-SourceScramble
+
+Ilib https://github.com/Ivory42/ilib/tree/main
