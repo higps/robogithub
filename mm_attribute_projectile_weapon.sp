@@ -8,6 +8,7 @@
 		Fire rate = "projectile-firedelay" - float
 		Projectile speed = "projectile-speed" - float
 		Fire Sound - "projectile-firesound" - string
+		Bomber - "projectile-bomber" - integer [0, 1]
 */
 
 #pragma semicolon 1
@@ -32,6 +33,7 @@ enum struct FProjectile
 {
 	float Speed;
 	char Classname[64];
+	bool Bomber;
 
 	FTimer NextFireTimer; // Timer for firing this projectile
 	//FProjectileLauncher Launcher;
@@ -46,6 +48,8 @@ char ProjectileFireSound[MAXPLAYERS+1][128]; // Sound to use for projectiles bei
 
 float FireDelay[MAXPLAYERS+1]; // Actual delay for the timer
 float ProjSpeed[MAXPLAYERS+1]; // Speed that projectiles should be fired at
+
+bool Bombing[MAXPLAYERS+1] = {false, ...}; // If true, the projecile launcher will fire directly downwards in a boming fashion
 
 
 bool HasStat(int client, int weapon)
@@ -65,6 +69,7 @@ bool HasStat(int client, int weapon)
 	ReadStringVar(stat_buffer, "projectile-firesound", ProjectileFireSound[client], sizeof ProjectileFireSound[]);
 	FireDelay[client] = ReadFloatVar(stat_buffer, "projectile-firedelay", 1.0);
 	ProjSpeed[client] = ReadFloatVar(stat_buffer, "projectile-speed", 1100.0);
+	Bombing[client] = view_as<bool>(ReadIntVar(stat_buffer, "projectile-bomber", 0));
 
 	return true;
 }
@@ -91,7 +96,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if (!(StrContains(classname, "tf_projectile_"))) // Any spawned projectile
 	{
-		RequestFrame(ProjectileSpawned, ConstructObject(entity).ref);
+		RequestFrame(ProjectileSpawned, ConstructObject(entity).Reference);
 	}
 }
 
@@ -110,7 +115,7 @@ void ProjectileSpawned(int projRef)
 {
 	// If our projectile is somehow removed by this time, abort the function
 	FObject proj;
-	proj.ref = projRef;
+	proj.Reference = projRef;
 	if (!proj.Valid())
 		return;
 
@@ -155,8 +160,9 @@ void SetupProjectile(FObject entity, FProjectile proj, FClient owner)
 	FormatEx(proj.Classname, sizeof FProjectile::Classname, classname);
 
 	proj.Speed = ProjSpeed[ownerId]; // Speed for child projectiles
+	proj.Bomber = Bombing[ownerId];
 
-	if (strlen(ProjectileModel[ownerId]))
+	if (strlen(ProjectileModel[ownerId]) > 3)
 	{
 		SetEntityModel(projId, ProjectileModel[ownerId]); // This will likely change physics of the projectile
 	}
@@ -180,14 +186,14 @@ void OnProjectileTick(FObject entity, FProjectile proj, FClient owner)
 	{
 		FTransform spawn;
 
-		spawn.rotation = entity.GetAngles();
-		spawn.position = entity.GetPosition();
+		spawn.Rotation = entity.GetAngles();
+		spawn.Position = entity.GetPosition();
 
 		FObject child;
 		char classname[64];
 		entity.GetClassname(classname, sizeof classname);
 
-		child = CreateObjectDeferred(classname);
+		child = FGameplayStatics.CreateObjectDeferred(classname);
 
 		// Sets the launcher for this child projectile
 		SetProjectileLauncher(entity, child);
@@ -197,12 +203,15 @@ void OnProjectileTick(FObject entity, FProjectile proj, FClient owner)
 		child.SetOwner(entity.GetOwner());
 
 		// Shift upwards a bit to prevent collisions
-		spawn.position.z += 2.0;
-
+		spawn.Position.Z += 2.0;
+		if (proj.Bomber)
+		{
+			spawn.Rotation.Pitch += 90.0;
+		}
 		// We can now spawn the projectile and set the velocity
-		spawn.velocity = spawn.rotation.GetForwardVector();
-		spawn.velocity.Scale(proj.Speed);
-		FinishSpawn(child, spawn);
+		spawn.Velocity = spawn.Rotation.GetForwardVector();
+		spawn.Velocity.Scale(proj.Speed);
+		FGameplayStatics.FinishSpawn(child, spawn);
 
 		// Play our fire sound
 		if (owner.Valid())
@@ -215,19 +224,11 @@ void OnProjectileTick(FObject entity, FProjectile proj, FClient owner)
 		}
 
 		// Using safer methods for setting properties, also much cleaner than before
-		SetProjectileProperties(ABaseProjectile(entity), ABaseProjectile(child));
-
-		// Now let's set our owner, we do this after spawning to ensure we don't end up spawning an infinite amount of projectiles
-		// DataPack pack = new DataPack();
-		// No longer need to do this
-
-		//pack.WriteCellArray(entity, sizeof FObject);
-		//pack.WriteCellArray(child, sizeof FObject);
-		//RequestFrame(OnChildPost, pack);
+		SetProjectileProperties(UBaseProjectile(entity), UBaseProjectile(child));
 	}
 }
 
-void SetProjectileProperties(ABaseProjectile parent, ABaseProjectile child)
+void SetProjectileProperties(UBaseProjectile parent, UBaseProjectile child)
 {
 	// If one of these casts fail, abort
 	if (!parent.Valid() || !child.Valid())
@@ -237,6 +238,21 @@ void SetProjectileProperties(ABaseProjectile parent, ABaseProjectile child)
 	child.Critical = parent.Critical;
 	child.Damage = parent.Damage;
 	child.Team = parent.Team;
+
+	if (parent.Cast("tf_projectile_pipe")) // Pipes need m_flFullDamage set for impact damage 
+		SetFullDamage(parent, child);
+}
+
+void SetFullDamage(UBaseProjectile parent, UBaseProjectile child)
+{
+	// not a networked property so we need to get its offset
+	int damageOffset = FindSendPropInfo("CTFGrenadePipebombProjectile", "m_bDefensiveBomb") - 4; // 4 bytes before m_bDefensiveBomb
+
+	if (damageOffset > 0)
+	{
+		float fullDamage = GetEntDataFloat(parent.Get(), damageOffset);
+		SetEntDataFloat(child.Get(), damageOffset, fullDamage);
+	}
 }
 
 void SetProjectileLauncher(FObject entity, FObject child)
@@ -252,18 +268,3 @@ void SetProjectileLauncher(FObject entity, FObject child)
 	else // otherwise set our launcher
 		child.SetPropEnt(Prop_Send, "m_hLauncher", launcher);
 }
-
-/*
-void OnChildPost(DataPack pack)
-{
-	FObject child, entity;
-
-	pack.Reset();
-	pack.ReadCellArray(entity, sizeof FObject);
-	pack.ReadCellArray(child, sizeof FObject);
-
-	child.SetOwner(entity.GetOwner());
-
-	delete pack;
-}
-*/
