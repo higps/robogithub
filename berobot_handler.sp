@@ -912,28 +912,28 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             if(g_f_Damage_Bonus > 1.0)
             {
 
-                if(damagecustom != TF_CUSTOM_BACKSTAB)
-                {
-                    switch(critType)
-                    {
-                        case CritType_None:
-                        {
-                            damage *= g_f_Damage_Bonus;
-                        }
-                        case CritType_MiniCrit:
-                        {
-                            damage *= g_f_Damage_Bonus*1.15;
-                        }
-                        case CritType_Crit:
-                        {
-                            damage *= g_f_Damage_Bonus*1.15;
-                        }
-                    }
+                // if(damagecustom != TF_CUSTOM_BACKSTAB)
+                // {
+                //     switch(critType)
+                //     {
+                //         case CritType_None:
+                //         {
+                //             damage *= g_f_Damage_Bonus;
+                //         }
+                //         case CritType_MiniCrit:
+                //         {
+                //             damage *= g_f_Damage_Bonus/1.15;
+                //         }
+                //         case CritType_Crit:
+                //         {
+                //             damage *= g_f_Damage_Bonus/1.15;
+                //         }
+                //     }
                     
-                }else
-                {
-                    damage *= g_f_Damage_Bonus*1.15;
-                }
+                // }else
+                // {
+                    damage *= g_f_Damage_Bonus;
+                // }
             //42%
             // 71
                 return Plugin_Changed;
