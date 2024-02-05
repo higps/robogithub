@@ -1585,8 +1585,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 0.4;
                 TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
-                TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0 addcond=91 cond-duration=1.0");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vita-Saw: {orange}While Active: {orange}+%0.0f%%%% Melee resistance\n{teamcolor}Vita Saw: On Teammate hit: Apply {orange}Haste Rune for 1 seconds",chat_display, LessIsMore(stat1));    
+                TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0 addcond=97 cond-duration=1.0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vita-Saw: {orange}While Active: {orange}+%0.0f%%%% Melee resistance\n{teamcolor}Vita Saw: On Teammate hit: Apply {orange}Agility Rune for 1 seconds",chat_display, LessIsMore(stat1));    
             }else
             {
                 TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
@@ -3320,6 +3320,10 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
             {
                 TF2_AddCondition(client, TFCond_CritCanteen, g_crit_a_cola_duration);
             }
+            if(condition == TFCond_RuneAgility)
+            {
+                TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
+            }
         }
 
 
@@ -3355,7 +3359,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
         //     TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.0);
 		// }
 
-        if(condition == TFCond_RuneHaste)
+        if(condition == TFCond_RuneHaste || condition == TFCond_RuneAgility)
         {
             // PrintToChatAll("RUNE HASTE ENDED ON %N, FIXING SPEED", client);
             TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
