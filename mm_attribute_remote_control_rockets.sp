@@ -42,14 +42,16 @@ bool HasStat(int client)
 	}
 
 	char stat_buffer[256];
-	if (!TF2CustAttr_GetString(Weapon1, "mouse-control-rocket", stat_buffer, sizeof(stat_buffer))) {
-	return false;
+	if (!TF2CustAttr_GetString(Weapon1, "mouse-control-rocket", stat_buffer, sizeof(stat_buffer)))
+	{
+		return false;
 	}
-	g_rocketTurnRate = ReadFloatVar(stat_buffer, "turnspeed", 1.0);
+	g_rocketTurnRate = ReadFloatVar(stat_buffer, "turnspeed", 90.0);
 	g_rocketAimType = ReadIntVar(stat_buffer, "aim-mode", 1);
 	// g_UpdateHitBox = ReadIntVar(stat_buffer, "update-hitbox", 1);
 	// g_bmod_disciplinary = ReadIntVar(stat_buffer, "bmod-disciplinary", 0);
 	// PlayerControlRockets[client] = false;
+
 	return true;
 }
 
@@ -80,13 +82,11 @@ public Plugin MyInfo =
 
 public void OnPluginStart()
 {
-
-
 	//Events
 
 	HookEvent("player_death", PlayerDeath);
 
-	// RegConsoleCmd("sm_rc", CmdControl);
+	//RegConsoleCmd("sm_rc", CmdControl);
 
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -97,10 +97,13 @@ public void OnPluginStart()
 	}
 }
 
-public void OnMapStart()
-{
-	
-}
+//Action CmdControl(int client, int args)
+//{
+//	ToggleControl[client] = !ToggleControl[client];
+//	PrintToChat(client, "RC Rockets: %s", ToggleControl[client] ? "True" : "False");
+//
+//	return Plugin_Handled;
+//}
 
 public Action PlayerDeath(Handle event, const char[] name, bool dBroad)
 {
@@ -112,16 +115,6 @@ public Action PlayerDeath(Handle event, const char[] name, bool dBroad)
 	return Plugin_Continue;
 }
 
-// public Action PlayerJoinClass(int client, const char[] command, int argc)
-// {
-// 	if (TF2_GetPlayerClass(client) == TFClass_Soldier && PlayerControlRockets[client])
-// 	{
-// 		PlayerControlRockets[client] = false;
-// 		PrintToChat(client, "[SM] Disabling RC rockets due to class change.");
-// 	}
-// 	return Plugin_Continue;
-// }
-
 public void OnClientPostAdminCheck(int client)
 {
 	//clear variables
@@ -130,25 +123,11 @@ public void OnClientPostAdminCheck(int client)
 	RocketID[client] = INVALID_ENT_REFERENCE;
 }
 
-// Action CmdControl(int client)
-// {
-// 	if (TF2_GetPlayerClass(client) != TFClass_Soldier)
-// 	{
-// 		PrintToChat(client, "[SM] You must be a soldier to use this attribute!");
-// 	}
-// 	else
-// 	{
-// 		PlayerControlRockets[client] = !PlayerControlRockets[client];
-// 	}
-// }
-
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	if (!(StrContains(classname, "tf_projectile_rocket")))
 	{
-		//SDKHook(entity, SDKHook_SpawnPost, OnRocketSpawned);
 		RequestFrame(OnRocketSpawned, entity);
-		SDKHook(entity, SDKHook_Touch, OnRocketEnd);
 	}
 }
 
@@ -157,7 +136,21 @@ public void OnEntityDestroyed(int entity)
 	if (entity <= 0 || entity > 2048) return; //prevent ent refs being used
 	if (IsValidEntity(entity))
 	{
+		if (RocketOverride[entity])
+		{
+			DisableRocket(entity);
+		}
 		RocketOverride[entity] = false;
+	}
+}
+
+void DisableRocket(int entity)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (owner > 0 && owner <= MaxClients && IsClientInGame(owner))
+	{
+		RocketID[owner] = INVALID_ENT_REFERENCE;
+		SetPlayerRCMode(owner, false);
 	}
 }
 
@@ -188,37 +181,6 @@ void SetPlayerRCMode(int client, bool status)
 	}
 }
 
-//Make sure to take the player out of the remote control state upon a rocket hitting something
-public Action OnRocketEnd(int rocket, int victim)
-{
-	if (RocketOverride[rocket])
-	{
-		int owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");
-		if (!IsValidClient(victim))
-		{
-			char classname[64];
-			GetEntityClassname(victim, classname, sizeof classname);
-			if (victim == 0 || !StrContains(classname, "prop_", false) || !StrContains(classname, "obj_", false) || !StrContains(classname, "func_door")) //solid props
-			{
-				SetPlayerRCMode(owner, false);
-			}
-		}
-		else if (IsValidClient(victim))
-		{
-			bool sameTeam = (GetClientTeam(owner) == GetClientTeam(victim)); //check if the player we hit is an enemy player
-			if (sameTeam)
-			{
-				//return Plugin_Handled; //pass through teammates to prevent control being lost on player overlap - DOESNT WORK NEED A BETTER METHOD
-			}
-			else
-			{
-				SetPlayerRCMode(owner, false);
-			}
-		}
-	}
-	return Plugin_Continue;
-}
-
 bool g_PushButton[MAXPLAYERS + 1] = {false, ...};
 bool g_toggethirdperson[MAXPLAYERS + 1] = {false, ...};
 public Action Button_Reset(Handle timer, int client)
@@ -247,8 +209,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 		g_PushButton[client] = true;
 		CreateTimer(0.2, Button_Reset, client);
-
-
 	}
 
 	if (HasStat(client) && buttons & (IN_ATTACK3|IN_USE) && !g_PushButton[client])
@@ -259,19 +219,16 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 			SetVariantInt(1);
 			AcceptEntityInput(client, "SetForcedTauntCam");
-		}else if (g_toggethirdperson[client] == true && ControllingRocket[client] == false) {
-
+		}
+		else if (g_toggethirdperson[client] == true && ControllingRocket[client] == false)
+		{
 			g_toggethirdperson[client] = false;
-
-
 
 			SetVariantInt(0);
 			AcceptEntityInput(client, "SetForcedTauntCam");
 		}
 		g_PushButton[client] = true;
 		CreateTimer(0.2, Button_Reset, client);
-
-
 	}
 
 	if (HasStat(client) && IsValidRocket(RocketID[client]))
