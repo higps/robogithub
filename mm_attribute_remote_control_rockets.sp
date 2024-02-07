@@ -24,8 +24,8 @@ int RocketID[MAXPLAYERS+1];
 float LastControlTime[MAXPLAYERS+1] = {-1.0, ...};
 
 //rocket settings
-float g_rocketTurnRate;
-int g_rocketAimType;
+float g_rocketTurnRate = 180.0;
+int g_rocketAimType = 1;
 
 
 bool HasStat(int client)
@@ -46,7 +46,7 @@ bool HasStat(int client)
 	{
 		return false;
 	}
-	g_rocketTurnRate = ReadFloatVar(stat_buffer, "turnspeed", 90.0);
+	g_rocketTurnRate = ReadFloatVar(stat_buffer, "turnspeed", 180.0);
 	g_rocketAimType = ReadIntVar(stat_buffer, "aim-mode", 1);
 	// g_UpdateHitBox = ReadIntVar(stat_buffer, "update-hitbox", 1);
 	// g_bmod_disciplinary = ReadIntVar(stat_buffer, "bmod-disciplinary", 0);
@@ -85,6 +85,7 @@ public void OnPluginStart()
 	//Events
 
 	HookEvent("player_death", PlayerDeath);
+	HookEvent("object_deflected", OnAirblasted);
 
 	//RegConsoleCmd("sm_rc", CmdControl);
 
@@ -105,14 +106,30 @@ public void OnPluginStart()
 //	return Plugin_Handled;
 //}
 
-public Action PlayerDeath(Handle event, const char[] name, bool dBroad)
+Action PlayerDeath(Handle event, const char[] name, bool dBroad)
 {
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 	if (ControllingRocket[victim])
 	{
 		SetPlayerRCMode(victim, false);
 	}
+
 	return Plugin_Continue;
+}
+
+Action OnAirblasted(Event event, const char[] name, bool dBroad)
+{
+	int entity = event.GetInt("object_entindex");
+	if (IsValidEdict(entity) && entity > 0 && RocketOverride[entity])
+	{
+		int owner = GetClientOfUserId(event.GetInt("ownerid"));
+		if (owner > 0 && owner <= MaxClients && IsClientInGame(owner))
+		{
+			SetPlayerRCMode(owner, false);
+		}
+	}
+
+	return Plugin_Handled;
 }
 
 public void OnClientPostAdminCheck(int client)
@@ -177,6 +194,11 @@ void SetPlayerRCMode(int client, bool status)
 	{
 		SetClientViewEntity(client, client);
 		SetEntityMoveType(client, MOVETYPE_WALK);
+		int rocket = RocketID[client];
+		if (rocket > 0 && IsValidEdict(rocket))
+		{
+			RocketOverride[rocket] = false;
+		}
 		RocketID[client] = INVALID_ENT_REFERENCE;
 	}
 }
@@ -199,13 +221,17 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			PlayerControlRockets[client] = true;
 
 			PrintCenterText(client, "REMOTE ROCKET CONTROL: ON");
+		}
+		else if (PlayerControlRockets[client] == true /*&& ControllingRocket[client] == false*/)
+		{
+			PlayerControlRockets[client] = false;
 
+			if (ControllingRocket[client])
+			{
+				SetPlayerRCMode(client, false);
+			}
 
-		}else if (PlayerControlRockets[client] == true && ControllingRocket[client] == false) {
-				
-				PlayerControlRockets[client] = false;
-
-				PrintCenterText(client, "REMOTE ROCKET CONTROL: OFF");
+			PrintCenterText(client, "REMOTE ROCKET CONTROL: OFF");
 		}
 		g_PushButton[client] = true;
 		CreateTimer(0.2, Button_Reset, client);
