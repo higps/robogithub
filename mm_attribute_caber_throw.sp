@@ -74,7 +74,7 @@ bool HasStat(int weapon, FCaber caber)
 	caber.Damage = ReadFloatVar(stat_buffer, "caber_blast_damage", 100.0);
 	caber.Radius = ReadFloatVar(stat_buffer, "caber_blast_radius", 176.0);
 	caber.DetOnImpact = view_as<bool>(ReadIntVar(stat_buffer, "caber_det_impact", 0));
-	caber.RegenDuration = ;ReadFloatVar(stat_buffer, "caber_regen_time", 20.0);
+	caber.RegenDuration = ReadFloatVar(stat_buffer, "caber_regen_time", 20.0);
 	caber.Speed = ReadFloatVar(stat_buffer, "caber_grenade_speed", 1600.0);
 
 	return true;

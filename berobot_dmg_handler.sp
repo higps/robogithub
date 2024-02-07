@@ -1498,6 +1498,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Crit-a-Cola: {orange}Applies %0.f second crits when used",chat_display, g_crit_a_cola_duration);
             }
+            if (IsWinger(Weapon2))
+            {
+                
+                stat1 = 1.50;
+                TF2Attrib_SetByName(Weapon2, "increased jump height", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Winger: {orange}+%0.f%%%% additional passive jump height bonus",chat_display, MoreIsMore(stat1));
+            }
 
         }
 
@@ -2667,6 +2674,20 @@ bool IsCritACola(int weapon){
 	{
 		//If other allclass are added, add here
 	case 163: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsWinger(int weapon){
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other allclass are added, add here
+	case 449: 
 		{
 			return true;
 		}
