@@ -140,7 +140,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if (tauntid != -1)SendVictimToSpace(victim);
 	}
 
-	RequestFrame(StunPlayer, victim);	
+	if(!TF2_IsPlayerInCondition(attacker, TFCond_RuneWarlock)) RequestFrame(StunPlayer, victim);
 
 
 	}  
