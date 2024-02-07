@@ -252,7 +252,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
             // PrintToChatAll("PLASMA");
             if(TF2_GetPlayerClass(attacker) == TFClass_Heavy || TF2_GetPlayerClass(attacker) == TFClass_Medic){
                 // PrintToChatAll("For heavy or medic TF_CUSTOM_PLASMA dmg was %f", damage);
-                damage = 0.0;
+                damage = 1.0;
                 
                 // PrintToChatAll("%f", GetEntPropFloat(attacker, Prop_Send, "m_flRageMeter"));
                 return Plugin_Changed;
