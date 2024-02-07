@@ -1277,7 +1277,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Caber: {orange}%0.0f% increased damage bonus{teamcolor}",chat_display, OneIs100(stat1));
                 TF2Attrib_SetByName(Weapon3, "damage bonus", stat1);
-                TF2Attrib_SetByName(Weapon3, "crits_become_minicrits", 1.0);
+                // TF2Attrib_SetByName(Weapon3, "crits_become_minicrits", 1.0);
                 
                 // TF2Attrib_SetByName(Weapon3, "blast dmg to self increased", 1000.0);
             }

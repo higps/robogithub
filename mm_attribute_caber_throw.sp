@@ -68,7 +68,7 @@ bool HasStat(int weapon, FCaber caber)
 	char stat_buffer[256];
 	if (!TF2CustAttr_GetString(weapon, "caber-throw", stat_buffer, sizeof(stat_buffer)))
 	{
-		//return false;
+		return false;
 	}
 
 	caber.Damage = ReadFloatVar(stat_buffer, "caber_blast_damage", 100.0);
