@@ -141,7 +141,7 @@ public void OnPlayerRunCmdPost(int clientId, int buttons)
 					float timeLeft = CaberGrenade[weaponId].RegenTimer.GetTimeRemaining();
 					SetHudTextParams(-1.0, 0.65, HudRefreshRate, 255, 255, 255, 255);
 
-					ShowSyncHudText(clientId, HudSync, "Caber Cooldown: %.0fs", timeLeft);
+					ShowSyncHudText(clientId, HudSync, "Caber Cooldown: %.0fs", timeLeft+1.0);
 				}
 
 				if (CaberGrenade[weaponId].RegenTimer.Expired())

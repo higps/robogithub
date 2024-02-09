@@ -350,6 +350,24 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
           }
 
+        if(IsAnyRobot(attacker))
+        {
+        switch (damagecustom)
+                {
+                    case TF_CUSTOM_BASEBALL:
+                    {
+                        if(IsSandman(weapon))
+                        {
+                            // SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
+                            DizzyTarget(victim);
+                            return Plugin_Changed;
+
+                        }                            
+                        
+                    }
+                }
+        }
+
     if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
     {
 
