@@ -146,7 +146,7 @@ public void Recharge_Spell(int client) {
 	
 
 		int ent = FindSpellbook(client);
-		if (ent) {
+		if (ent != -1) {
 			SetEntProp(ent, Prop_Send, "m_iSpellCharges", g_stat_Charges[client]);
 			SetEntProp(ent, Prop_Send, "m_iSelectedSpellIndex", index);
 			g_book[client] = ent;
@@ -195,7 +195,7 @@ void DrawHUD(int client)
     }
 
 	Format(sHUDText, sizeof(sHUDText), "%s: %i   ", SpellText, iCountDown);
-	
+	// PrintToChatAll("Countdown %i for %N", iCountDown, client);
 	if(iCountDown <= 0)
 	{
 	Format(sHUDText, sizeof(sHUDText), "%s: Ready!\nActivate With\nAction Slot!", SpellText);
@@ -229,10 +229,10 @@ void DrawHUD(int client)
 	// g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
 	// isready[client] = false;
 	// }
-	if (iCountDown <= 0 && IsPlayerAlive(client) && isready[client] == true)
-	{
+	// if (iCountDown <= 0 && IsPlayerAlive(client) && isready[client] == true)
+	// {
 		
-	}
+	// }
 }
 
 public bool IsKritzed(int client){

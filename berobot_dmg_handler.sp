@@ -1489,6 +1489,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsSunOnAStick(Weapon3))
             {
+    //                  "TF_WEAPON_SPELLBOOK"
+	//    {
+	// 		"itemindex" "5605"
+	// 		"quality" "0"
+	// 		"level" "1"
+	//    }
+                CreateRoboWeapon(client, "tf_weapon_spellbook", 5605, 0, 1, 4, 0);
                 TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=40.0");
                 // TF2_RegeneratePlayer(client);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display, MoreIsMore(stat1), stat2);
