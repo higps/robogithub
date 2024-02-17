@@ -138,9 +138,6 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
     SMLogTag(SML_VERBOSE, "adding %i TeamCoins, because robot %L died", rewardedTeamCoins, victimClientId);
     AddTeamCoinsFor(victimClientId, rewardedTeamCoins);
 
-    
-
-
 }
 
 public Action Timer_DeathTip(Handle timer, DataPack info)

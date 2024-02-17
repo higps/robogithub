@@ -302,7 +302,18 @@ public void ReadConfig()
             hasRestrictions = true;
         }
 
+        // Fetch on death cost. Default cost is located in berobot.inc
+        if (g_hConfig.GetFloat("rc_on_death"))
+        {
+            iInteger = g_hConfig.GetNum("rc_on_death", iInteger);
+            robot.robotCoinsOnDeath = iInteger;
+        }
 
+        if (g_hConfig.GetFloat("tc_on_death"))
+        {
+            iInteger = g_hConfig.GetNum("tc_on_death", iInteger);
+            robot.teamCoinsOnDeath = iInteger;
+        }
 
         if (!hasRestrictions)
         {
@@ -721,15 +732,6 @@ MakeRobotFrame(client)
             }
             i_hConfig.GoBack();
         }
-
-	
-
-
-
-
-
-
-
 
     int bonus_hp = 0;
     if(i_hConfig.GetNum("health_bonus_per_player"))

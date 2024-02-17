@@ -135,6 +135,8 @@ public any Native_AddRobot(Handle plugin, int numParams)
     robot.deathtip = robotDefinition.deathtip;
     robot.weaponsound = robotDefinition.weaponsound;
     robot.footstep = robotDefinition.footstep;
+    robot.robotCoinsOnDeath = robotDefinition.robotCoinsOnDeath;
+    robot.teamCoinsOnDeath = robotDefinition.teamCoinsOnDeath;
 
     //New stuff for the config file
     //Modify this to only store what's needed to view in the menu

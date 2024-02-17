@@ -108,6 +108,8 @@ enum struct RobotDefinition {
   int weaponsound;
   int footstep;
   int difficulty;
+  int robotCoinsOnDeath;
+  int teamCoinsOnDeath;
 }
 typedef RobotCallback = function void (int client);
 
@@ -123,7 +125,7 @@ typedef RobotCallback = function void (int client);
  * 
  * @noreturn
  */
-native void AddRobot(const any[] robot, RobotCallback callback, char[] version, RestrictionsDefinition restrictions = null, int robotCoinsOnDeath = 1, int teamCoinsOnDeath = 0);
+native void AddRobot(const any[] robot, RobotCallback callback, char[] version, RestrictionsDefinition restrictions = null, int robotCoinsOnDeath = 10, int teamCoinsOnDeath = 0);
 
 /**
  * Removes a robot to the storage. So it can't be used by other plugins anymore. (usually called during OnPluginEnd)

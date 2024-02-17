@@ -1775,7 +1775,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 {
                     if (IsAnyBanner(Weapon2))
                     {
-                        stat1 = 2.0;
+                        stat1 = 1.5;
                         TF2Attrib_SetByName(Weapon2, "increase buff duration", stat1);
                         
                         Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+%0.0f%%%% longer buff duration{teamcolor}",chat_display, MoreIsMore(stat1));
