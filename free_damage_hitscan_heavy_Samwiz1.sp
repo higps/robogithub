@@ -52,6 +52,7 @@ public OnPluginStart()
 	robot.sounds.loop = LOOP;
 	robot.deathtip = ROBOT_ON_DEATH;
 	robot.difficulty = ROBOT_DIFFICULTY_EASY;
+	robot.sounds.death = DEATH;
 
 	AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null);
 }
