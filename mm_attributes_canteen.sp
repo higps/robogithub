@@ -4,6 +4,7 @@
 #include <tf2attributes>
 #include <tf_custom_attributes>
 #include <stocksoup/var_strings>
+#include <berobot_constants>
 #include <berobot>
 #pragma semicolon 1
 #pragma newdecls required

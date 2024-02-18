@@ -1,5 +1,5 @@
 $sourcemodDir = "D:\sourcemod\addons\sourcemod"
-$spcompPath = "$sourcemodDir\scripting\spcomp.exe"
+$spcompPath = "$sourcemodDir\scripting\spcomp64.exe"
 $pluginsPath = "$sourcemodDir\plugins"
 $defaultArguments = "-i 'D:\Github\robogithub\include' -i 'D:\sourcemod-custom-includes' -O2 -v2"
 

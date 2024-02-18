@@ -14,7 +14,7 @@
 #define ROBOT_SUBCLASS "Sentry Buster"
 #define ROBOT_DESCRIPTION "Touch sentries to blow up"
 #define ROBOT_TIPS "Hit enemies, touch sentries, or taunt to activate the explosion"
-#define ROBOT_COST 1.0
+#define ROBOT_COST 10.0
 #define ROBOT_ON_DEATH "You can hide behind buildings to not get blown up by the explotion\nThe explosion is faster than regular mvm\nTouching the buster with a sentry will cause it to blow up"
 #define GBUSTER		"models/bots/demo/bot_sentry_buster.mdl"
 #define SPAWN	"#mvm/sentrybuster/mvm_sentrybuster_intro.wav"
