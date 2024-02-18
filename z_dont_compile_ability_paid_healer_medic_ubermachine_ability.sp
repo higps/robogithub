@@ -33,13 +33,14 @@ public Action:Event_Charge_Deployed(Handle:event, const String:name[], bool:dont
 	if (IsRobot(client, ROBOT_NAME))
 	{
 		int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 0.15);
-
+		// SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", 0.15);
+		SetEntProp(client, Prop_Data, "m_takedamage", 0, 1);
 		if(IsValidClient(target))
-		TF2_RemoveCondition(target, TFCond_Jarated);
-		TF2_RemoveCondition(target, TFCond_Milked);
-		TF2_RemoveCondition(target, TFCond_MarkedForDeath);
-		TF2_RemoveCondition(target, TFCond_Bleeding);
-		TF2_RemoveCondition(target, TFCond_Gas);
+		// TF2_RemoveCondition(target, TFCond_Jarated);
+		// TF2_RemoveCondition(target, TFCond_Milked);
+		// TF2_RemoveCondition(target, TFCond_MarkedForDeath);
+		// TF2_RemoveCondition(target, TFCond_Bleeding);
+		// TF2_RemoveCondition(target, TFCond_Gas);
+		SetEntProp(target, Prop_Data, "m_takedamage", 0, 1);
 		}
 }
