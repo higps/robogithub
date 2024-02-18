@@ -47,7 +47,7 @@ int g_Eyelander_Counter[MAXPLAYERS + 1] = {0, ...};
 float g_AirStrikeDamage[MAXPLAYERS +1] = {0.0, ...};
 float g_AirStrikeDMGRequirement = 250.0;
 float g_ElectricStunDuration = 5.0;
-float g_HealDebuff = 0.5;
+float g_HealDebuff = 1.0;
 
 float g_FrontierJusticeDamage[MAXPLAYERS + 1] = {0.0, ...};
 float g_FrontierJusticeDMGRequirement = 250.0;
