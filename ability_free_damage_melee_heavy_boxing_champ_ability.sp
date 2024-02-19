@@ -30,6 +30,7 @@ float g_done_dash;
 bool isready;
 
 
+
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if (IsRobot(client, "Boxing Champ"))
@@ -109,10 +110,16 @@ void DrawHUD(int client)
 
 	if(iCountDown <= 0)
 	{
+		if(!TF2Spawn_IsClientInSpawn(client))
+		{
 		Format(sHUDText, sizeof(sHUDText), "Crouch Dash Ready!");
 			
 		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
-
+		}else
+		{
+			Format(sHUDText, sizeof(sHUDText), "Crouch Dash Ready!\nUnavailable in spawn");
+			SetHudTextParams(1.0, 0.8, 0.5, 255, 0, 0, 255);
+		}
 		
 	} else {
 		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
