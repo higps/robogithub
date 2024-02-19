@@ -23,11 +23,11 @@ public Plugin:myinfo =
 
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-float g_RechargeCooldown = 5.0;
+float g_RechargeCooldown = 7.0;
 float g_skill;
-
+float g_dash_duration = 1.5;
+float g_done_dash;
 bool isready;
-bool setspeed;
 
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -49,16 +49,21 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			// PrintToChatAll("Release");
 			// g_button_held[client] = false;
 
-			if (g_Recharge[client] <= GetEngineTime() && isready && !TF2Spawn_IsClientInSpawn(client) && !setspeed) 
+			if (g_Recharge[client] <= GetEngineTime() && isready && !TF2Spawn_IsClientInSpawn(client)) 
 			{
 			SetSpeed(client);
 			g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-			
+			isready = false;
 			}
 
 
-			ResetSpeed(client);
+
+			
             
+		}
+		if(g_done_dash + g_dash_duration > GetEngineTime())
+		{
+			// ResetSpeed(client);
 		}
 		g_skill = GetEngineTime();
 		DrawHUD(client);
@@ -69,19 +74,21 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 void SetSpeed(int client)
 {
 	// TF2Attrib_AddCustomPlayerAttribute(client, "increased jump height", 0.01, 1.0);
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.5);
+	// SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 520.0);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.6);
 	TF2_AddCondition(client, TFCond_Buffed, 1.5);
 	// TF2_AddCondition(client, 130, 0.5);
 	SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 520.0);
-	setspeed = true;
+	g_done_dash = GetEngineTime();
+	// setspeed = true;
 }
 
-void ResetSpeed(int client)
-{
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.0);
-	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SLOWDOWN);
-	setspeed = false;
-}
+// void ResetSpeed(int client)
+// {
+// 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.0);
+// 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SLOWDOWN);
+// 	setspeed = false;
+// }
 
 
 void DrawHUD(int client)
