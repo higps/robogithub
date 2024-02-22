@@ -1205,7 +1205,34 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             }
 
+            if (IsJetpack(Weapon2))
+            {
+                TF2Attrib_SetByName(Weapon2, "falling_impact_radius_pushback", 0.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Jetpack: {darkred}Deals no knockback{teamcolor} when landing",chat_display);
+            }
+            if (IsBackScratcher(Weapon3))
+            {
+                TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1 = 20.0);
+                TF2Attrib_SetByName(Weapon3, "health from healers reduced", 1.0);
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Backscratcher: On Hit: {orange}Bleed for %0.0f seconds, {orange}No healing penalty",chat_display, stat1);
+            }
 
+            if (IsReserveShooter(Weapon2))
+            {
+                TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", stat1 = 0.6);
+                TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.75 critType=2");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter:{orange}+25%% damage bonus vs jumping robots. {orange}+%0.0f%%%% faster deploy speed",chat_display, LessIsMore(stat1));
+            }
+            if (IsShotGun(Weapon2))
+            {
+                stat1 = 0.8;
+                TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
+                TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
+                TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
+                TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots",  "damage=1.15 only-bots=1 critType=1");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
+            }
         }
         if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
         {
@@ -1316,6 +1343,18 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Eyelander: {orange}Gain a head every hit{teamcolor} vs robots",chat_display);
             }
 
+            if (IsZatoichi(Weapon3))
+            {
+            stat1 = 25.0;
+            TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", stat1);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit",chat_display, stat1);
+
+                if(TF2_GetPlayerClass(client) == TFClass_Soldier)
+                {
+                    TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");
+                }
+            }
+
             
         }
 
@@ -1351,71 +1390,88 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon3, "maxammo secondary increased", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Melee: {orange}+%0.00f%% maxammo on all weapons",chat_display, MoreIsMore(stat1));
             }
+            if (IsWarriorSpirit(Weapon3))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Warrior Spirit: {orange}+%i HP{teamcolor} on hit against robots",chat_display, g_warriorspirit_heal_on_hit);
+            }
+
+            if (IsKGB(Weapon3))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}KGB: {orange}+%0.0f seconds of critical hits{teamcolor} when landing a quick 3 hit combo vs robots",chat_display, g_kgb_crit_combo_duration);
+            }
+            if (IsShotGun(Weapon2))
+            {
+                stat1 = 0.8;
+                TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
+                TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
+                TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
+                TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots",  "damage=1.15 only-bots=1 critType=1");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
+            }
 
         }
-
         if (TF2_GetPlayerClass(client) == TFClass_Sniper)
         {
 
-        if (Weapon1 != -1)
-        {
-            TF2Attrib_RemoveByName(Weapon1, "maxammo primary reduced");
-            
-        }
-
-        if (IsWearable(Weapon2))
-        {
-            int razorback = FindTFWearable(client, 57);
-            if (IsValidEntity(razorback) && Weapon1 != -1 && Weapon3 != -1)
+            if (Weapon1 != -1)
             {
-                stat1 = 0.5;
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Razorback: {orange}+%0.0f%% melee damage resistance. {teamcolor}Instantly recharge, {orange}stuns spy robots.",chat_display, OneIs100(stat1));
-                TF2Attrib_SetByName(Weapon1, "dmg from melee increased", stat1);
-                TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
-            }else
-            {
-                TF2Attrib_RemoveByName(Weapon1, "dmg from melee increased");
-                TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
-            }
-
-            int cozycamper = FindTFWearable(client, 642);
-            if (IsValidEntity(cozycamper) && Weapon1 != -1 && Weapon3 != -1)
-            {
-                stat1 = 3.0;
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cozy Camper: {orange}+%0.0f%% {teamcolor}Max Ammo",chat_display, MoreIsMore(stat1));
-                TF2Attrib_SetByName(cozycamper, "maxammo primary increased", stat1);
+                TF2Attrib_RemoveByName(Weapon1, "maxammo primary reduced");
                 
             }
-        }
-        
-        if (IsHuntsMan(Weapon1))
-        {
-            stat1 = 1.93;
-            stat2 = 0.8;
-            TF2Attrib_SetByName(Weapon1, "maxammo primary increased", stat1);
-            TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            TF2Attrib_SetByName(Weapon1, "faster reload rate", stat2);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade, +%0.0f%% {teamcolor}max ammo.{orange}+20%%%% {teamcolor}fire rate bonus",chat_display, MoreIsMore(stat1), LessIsMore(stat2));
-        }
 
-        if (IsSniperRifle(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "explosive sniper shot", 1.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Rifle: {orange}Explosive headshots {teamcolor}upgrade",chat_display);
-           
-        }
+            if (IsWearable(Weapon2))
+            {
+                int razorback = FindTFWearable(client, 57);
+                if (IsValidEntity(razorback) && Weapon1 != -1 && Weapon3 != -1)
+                {
+                    stat1 = 0.5;
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Razorback: {orange}+%0.0f%% melee damage resistance. {teamcolor}Instantly recharge, {orange}stuns spy robots.",chat_display, OneIs100(stat1));
+                    TF2Attrib_SetByName(Weapon1, "dmg from melee increased", stat1);
+                    TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
+                }else
+                {
+                    TF2Attrib_RemoveByName(Weapon1, "dmg from melee increased");
+                    TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
+                }
 
-        if (IsBazaar(Weapon1))
-        {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bargin: {orange}On Headshot: +1 head{teamcolor}, {darkred}On Bodyshot: -2 heads{teamcolor}",chat_display);  
-        }
+                int cozycamper = FindTFWearable(client, 642);
+                if (IsValidEntity(cozycamper) && Weapon1 != -1 && Weapon3 != -1)
+                {
+                    stat1 = 3.0;
+                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cozy Camper: {orange}+%0.0f%% {teamcolor}Max Ammo",chat_display, MoreIsMore(stat1));
+                    TF2Attrib_SetByName(cozycamper, "maxammo primary increased", stat1);
+                    
+                }
+            }
+            
+            if (IsHuntsMan(Weapon1))
+            {
+                stat1 = 1.93;
+                stat2 = 0.8;
+                TF2Attrib_SetByName(Weapon1, "maxammo primary increased", stat1);
+                TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
+                TF2Attrib_SetByName(Weapon1, "faster reload rate", stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade, +%0.0f%% {teamcolor}max ammo.{orange}+20%%%% {teamcolor}fire rate bonus",chat_display, MoreIsMore(stat1), LessIsMore(stat2));
+            }
 
-        if (IsClassic(Weapon1))
-        {
-            TF2Attrib_SetByName(Weapon1, "sniper no headshot without full charge", 0.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Classic: {orange}Headshot anytime",chat_display);
-           
-        }
+            if (IsSniperRifle(Weapon1))
+            {
+                TF2Attrib_SetByName(Weapon1, "explosive sniper shot", 1.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Rifle: {orange}Explosive headshots {teamcolor}upgrade",chat_display);
+            
+            }
+
+            if (IsBazaar(Weapon1))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bargin: {orange}On Headshot: +1 head{teamcolor}, {darkred}On Bodyshot: -2 heads{teamcolor}",chat_display);  
+            }
+
+            if (IsClassic(Weapon1))
+            {
+                TF2Attrib_SetByName(Weapon1, "sniper no headshot without full charge", 0.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Classic: {orange}Headshot anytime",chat_display);
+            
+            }
 
 
             if(IsStockOrAllClassWeapon(Weapon3))
@@ -1432,18 +1488,36 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2CustAttr_SetString(Weapon3, "pushforce-on-hit", "cond=-1 flDist=-500.0 flDistVert=400");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shahansah: {orange}On Hit:{teamcolor} Self Knockback",chat_display, MoreIsMore(stat1));
             }
+
+            if(IsSMG(Weapon2))
+            {
+                TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", stat1 = 2.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}SMG: {orange}On Hit: {teamcolor}Speed boost for %0.0f seconds",chat_display, stat1);
+            }
+
+            if(IsCarbine(Weapon2))
+            {
+                TF2Attrib_SetByName(Weapon2, "minicrit_boost_when_charged", stat1 = 16.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Carbine: {orange}Increased duration to %0.0f seconds",chat_display, stat1);
+            }
+
+            if(IsShiv(Weapon3))
+            {
+                // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
+                TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1 = 20.0);
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tribalmans Shiv: {orange}Bleed lasts %0.0f seconds",chat_display, stat1);
+            }
             
         }
-
         if (TF2_GetPlayerClass(client) == TFClass_Scout)
         {
-
-            // PrintToChatAll("Setting respawn stat");
+            if(Weapon1 != -1)
+            {
             TF2CustAttr_SetString(client, "faster-respawn", "respawn=8.0");
-
             stat1 = 0.80;
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Power: {orange}Greatly reduced respawn time\nAll weapons {orange}penetrate robots, +%0.f%%%% faster reload",chat_display, LessIsMore(stat1));
-
+            }
             
             if (IsValidEntity(Weapon1))
             {
@@ -1489,15 +1563,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsSunOnAStick(Weapon3))
             {
-    //                  "TF_WEAPON_SPELLBOOK"
-	//    {
-	// 		"itemindex" "5605"
-	// 		"quality" "0"
-	// 		"level" "1"
-	//    }
                 CreateRoboWeapon(client, "tf_weapon_spellbook", 5605, 0, 1, 4, 0);
                 TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=40.0");
-                // TF2_RegeneratePlayer(client);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display, MoreIsMore(stat1), stat2);
             }else
             {
@@ -1530,35 +1597,58 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon2, "increased jump height", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Winger: {orange}+%0.f%%%% additional passive jump height bonus",chat_display, MoreIsMore(stat1));
             }
+            if(IsSandman(Weapon3))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Baseball: {orange}Knock robots dizzy",chat_display);
+            }
+            if(IsWrap(Weapon3))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots heal rate for %0.0f seconds",chat_display, g_wrap_duration);
+            }
+
+            if(IsCleaver(Weapon2))
+            {
+                TF2Attrib_SetByName(Weapon2, "bleeding duration", g_bleed_duration_bonus);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cleaver: {orange}On Hit: Bleed for %0.0f seconds",chat_display, g_bleed_duration_bonus);
+            }
 
         }
-
-        if(TF2_GetPlayerClass(client) == TFClass_Engineer)
+        if (TF2_GetPlayerClass(client) == TFClass_Engineer)
         {
             if (IsPistol(Weapon2))
             {
                 stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon2, "clip size bonus", 2.0);
-                // TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.5);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: {orange}+%0.0f%%%% clip size",chat_display, MoreIsMore(stat1));
             }
             if (IsSouthernHospitality(Weapon3))
             {
                 TF2Attrib_RemoveByName(Weapon3, "upgrade rate decrease");
-                // TF2Attrib_SetByName(Weapon2, "fire rate bonus", 0.5);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Southern Hospitality: No upgrade penalty",chat_display);
             }
-            // if(IsShortCircuit(Weapon2))
-            // {
-            //     TF2Attrib_RemoveByName(Weapon2, "upgrade rate decrease");
-            // }
+            if (HasFrontierJustice(client))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Frontier Justice: {orange}Gains 1 revenge crit{teamcolor} every %i damage your sentry does to robots",chat_display, RoundToNearest(g_FrontierJusticeDMGRequirement));
+            }
+            if(IsGunSlinger(Weapon3))
+            {
+                TF2Attrib_SetByName(Weapon3, "engineer sentry build rate multiplier", stat1 = 8.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+%0.0f%%%% faster sentry build",chat_display, MoreIsMore(stat1)); 
+            }
+            if (IsElectric(Weapon1) || IsElectric(Weapon2))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons {orange}reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
+            }
+            if (IsShotGun(Weapon1))
+            {
+                stat1 = 0.8;
+                TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
+                TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
+                TF2Attrib_SetByName(Weapon1, "fire rate bonus", stat1);
+                TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.15 only-bots=1 critType=1");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
+            }
         }
-
-        if (TF2_GetPlayerClass(client) == TFClass_Spy)
-        {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spy Power: {orange}Use enemy teamporters by touching their spawn",chat_display);
-        }
-
         if (TF2_GetPlayerClass(client) == TFClass_Medic)
         {
              if(IsSyringeGun(Weapon1))
@@ -1660,22 +1750,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
             // }
         }
-        
-
-        if (IsZatoichi(Weapon3))
-        {
-            stat1 = 25.0;
-            TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", stat1);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit",chat_display, stat1);
-
-            if(TF2_GetPlayerClass(client) == TFClass_Soldier)
-            {
-                TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");
-            }
-        }
-
         if (TF2_GetPlayerClass(client) == TFClass_Spy)
         {
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spy Power: {orange}Use enemy teamporters by touching their spawn",chat_display);
 
             if (IsRevolver(Weapon1))
             {
@@ -1716,33 +1793,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "crit_dmg_falloff", 0.0);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ambassador: {orange}No critical damage falloff",chat_display);
             }
+            if (IsDiamondback(Weapon1))
+            {
+                TF2Attrib_SetByName(Weapon1, "crit_dmg_falloff", 0.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Diamondback: {orange}No critical damage falloff",chat_display);
+            }
         }
-
-        if (IsMarketGardner(Weapon3))
-        {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Market Gardner: {orange}+%0.0f%%%% damage bonus while rocket jumping{teamcolor}",chat_display, MoreIsMore(g_market_gardner_dmg_bonus));
-        }
-
-        if (IsElectric(Weapon1) || IsElectric(Weapon2))
-        {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons {orange}reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
-        }
-
-        if (IsWarriorSpirit(Weapon3))
-        {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Warrior Spirit: {orange}+%i HP{teamcolor} on hit against robots",chat_display, g_warriorspirit_heal_on_hit);
-        }
-
-        if (IsKGB(Weapon3))
-        {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}KGB: {orange}+%0.0f seconds of critical hits{teamcolor} when landing a quick 3 hit combo vs robots",chat_display, g_kgb_crit_combo_duration);
-        }
-        if (IsJetpack(Weapon2))
-        {
-            TF2Attrib_SetByName(Weapon2, "falling_impact_radius_pushback", 0.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Jetpack: {darkred}Deals no knockback{teamcolor} when landing",chat_display);
-        }
-
         if (TF2_GetPlayerClass(client) == TFClass_Soldier)
         {
             if (IsAirStrike(Weapon1))
@@ -1870,115 +1926,51 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s{orange}\nEqualizer: %0.0f%%%% {teamcolor}increased rage build",chat_display, MoreIsMore(stat1));
                 TF2Attrib_SetByName(Weapon3, "mod rage on hit bonus", stat1);
             }
+            if (IsMarketGardner(Weapon3))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Market Gardner: {orange}+%0.0f%%%% damage bonus while rocket jumping{teamcolor}",chat_display, MoreIsMore(g_market_gardner_dmg_bonus));
+            }
+
+            if (IsZatoichi(Weapon3))
+            {
+                stat1 = 25.0;
+                TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit",chat_display, stat1);
+                TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");  
+            }
+
+            if (IsElectric(Weapon1) || IsElectric(Weapon2))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons {orange}reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
+            }
+            if (IsReserveShooter(Weapon2))
+            {
+                TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", stat1 = 0.6);
+                TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.75 critType=2");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter:{orange}+25%% damage bonus vs jumping robots. {orange}+%0.0f%%%% faster deploy speed",chat_display, LessIsMore(stat1));
+            }
+            if (IsShotGun(Weapon2))
+            {
+                stat1 = 0.8;
+                TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
+                TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
+                TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
+                TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots",  "damage=1.15 only-bots=1 critType=1");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
+            }
         }
 
-        if (HasFrontierJustice(client))
-        {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Frontier Justice: {orange}Gains 1 revenge crit{teamcolor} every %i damage your sentry does to robots",chat_display, RoundToNearest(g_FrontierJusticeDMGRequirement));
-        }
-
-        if (IsShotGun(Weapon1))
-        {
-            stat1 = 0.8;
-            TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-            TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
-            TF2Attrib_SetByName(Weapon1, "fire rate bonus", stat1);
-            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.15 only-bots=1 critType=1");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
-        }
-        if (IsShotGun(Weapon2))
-        {
-            stat1 = 0.8;
-            TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
-            TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
-            TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
-            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots",  "damage=1.15 only-bots=1 critType=1");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
-        }
-
-        if (IsReserveShooter(Weapon2))
-        {
-            TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", stat1 = 0.6);
-            TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.75 critType=2");
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter:{orange}+25%% damage bonus vs jumping robots. {orange}+%0.0f%%%% faster deploy speed",chat_display, LessIsMore(stat1));
-        }
-
-        if(IsSandman(Weapon3))
-        {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Baseball: {orange}Knock robots dizzy",chat_display);
-        }
-        if(IsWrap(Weapon3))
-        {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots heal rate for %0.0f seconds",chat_display, g_wrap_duration);
-        }
-
-        if(IsCleaver(Weapon2))
-        {
-            TF2Attrib_SetByName(Weapon2, "bleeding duration", g_bleed_duration_bonus);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cleaver: {orange}On Hit: Bleed for %0.0f seconds",chat_display, g_bleed_duration_bonus);
-        }
-
-        if(IsSMG(Weapon2))
-        {
-            TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", stat1 = 2.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}SMG: {orange}On Hit: {teamcolor}Speed boost for %0.0f seconds",chat_display, stat1);
-        }
-
-        if(IsCarbine(Weapon2))
-        {
-            TF2Attrib_SetByName(Weapon2, "minicrit_boost_when_charged", stat1 = 16.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Carbine: {orange}Increased duration to %0.0f seconds",chat_display, stat1);
-        }
-
-        if(IsShiv(Weapon3))
-        {
-            // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
-            TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1 = 20.0);
-            
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tribalmans Shiv: {orange}Bleed lasts %0.0f seconds",chat_display, stat1);
-        }
-        if(IsGunSlinger(Weapon3))
-        {
-            TF2Attrib_SetByName(Weapon3, "engineer sentry build rate multiplier", stat1 = 8.0);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+%0.0f%%%% faster sentry build",chat_display, MoreIsMore(stat1));
-            
-        }
-        if (IsBackScratcher(Weapon3))
-        {
-            TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1 = 20.0);
-            TF2Attrib_SetByName(Weapon3, "health from healers reduced", 1.0);
-            
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Backscratcher: On Hit: {orange}Bleed for %0.0f seconds, {orange}No healing penalty",chat_display, stat1);
-        }
-        // if (IsSapper(Weapon2))
-        // {
-        //     // Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sapper: {orange}Stuns robots{teamcolor} or some shit",chat_display);
-        //     // TF2Attrib_SetByName(Weapon2, "robo sapper", 4.0);
-            
-        // }                        
-        // DataPack info = new DataPack();
-        // info.Reset();
-        // info.WriteCell(client);
-        // info.WriteCell(chat_display);
-        
         RemoveJingle(client);
         // RequestFrame(FrameDelayedStatDisplay, info);        
         if(!IsAnyRobot(client))DisplayMMStats(client, chat_display);
 
-    }
-    //Jingle Sounds sometimes causes crash with the soundhooks somehow
-    
+    }      
+
 }
     
-// void FrameDelayedStatDisplay (DataPack info)
-// {
-//     info.Reset();
+    //Jingle Sounds sometimes causes crash with the soundhooks somehow
+    
 
-// 	int client = info.ReadCell();
-//     char chat_display[512] = info.ReadCell();
-// 	delete info;
-//     if(!IsAnyRobot(client))DisplayMMStats(client, chat_display);
-// }
 
 void RemoveJingle(int iClient)
 {
@@ -2417,6 +2409,21 @@ bool IsAmbassador(int weapon)
 	return false;
 }
 
+
+bool IsDiamondback(int weapon)
+{
+	if(weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Revolver and Enforcer
+	case 525: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 bool IsCandyCane(int weapon)
 {
 	if(weapon == -1 && weapon <= MaxClients) return false;
