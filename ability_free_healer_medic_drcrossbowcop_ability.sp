@@ -8,7 +8,7 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Dr. Crossbow Cop"
-
+bool g_isSetup = true;
 public Plugin:myinfo =
 {
 	name = "[TF2] Dr. Crossbow Cop Ability",
@@ -23,6 +23,7 @@ public OnPluginStart()
 	HookEvent("player_spawn", Event_PlayerSpawn);
     HookEvent("post_inventory_application", Event_PlayerSpawn);
 	HookEvent("crossbow_heal", Event_Crossbow_Heal, EventHookMode_Post);
+	HookEvent("teamplay_setup_finished", Event_teamplay_setup_finished, EventHookMode_Post);
 }
 
 
@@ -38,7 +39,7 @@ public Action Event_PlayerSpawn(Handle event, const char[] name, bool dontBroadc
     int client = GetClientOfUserId(GetEventInt(event, "userid"));
     if (IsRobot(client, ROBOT_NAME))
     {
-        g_healcount = 0;
+		g_healcount = !g_isSetup ? 0 : g_Heal_Bolts_Hits_Needed;
     }
 
     return Plugin_Continue;
@@ -138,6 +139,13 @@ public bool IsKritzed(int client){
 		return false;
 	}
 }    
+
+
+public Action Event_teamplay_setup_finished(Event event, const char[] name, bool dontBroadcast)
+{
+	g_isSetup = false;
+	return Plugin_Continue;
+}
 
 public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroadcast)
 {

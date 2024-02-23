@@ -1914,7 +1914,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                     if(isLibertyLauncher(Weapon1))
                     {
                         stat1 = 1.3;
-                        Format(chat_display, sizeof(chat_display), "%s{orange}\nLiberty Launcher: -%0.0f%%%% {teamcolor}faster move speed",chat_display, MoreIsMore(stat1));
+                        Format(chat_display, sizeof(chat_display), "%s\n{Teamcolor}Mantreads from Liberty Launcher: {orange}+%0.0f%%%% faster move speed",chat_display, MoreIsMore(stat1));
                         TF2Attrib_SetByName(SoldierShoes, "move speed bonus", stat1);
                     }
                 }
