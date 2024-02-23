@@ -24,6 +24,8 @@ public OnPluginStart()
     HookEvent("post_inventory_application", Event_PlayerSpawn);
 	HookEvent("crossbow_heal", Event_Crossbow_Heal, EventHookMode_Post);
 	HookEvent("teamplay_setup_finished", Event_teamplay_setup_finished, EventHookMode_Post);
+
+	g_isSetup = true;
 }
 
 

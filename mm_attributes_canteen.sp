@@ -59,10 +59,7 @@ public Plugin myinfo =
 };
 
 public void OnPluginStart()
-{
-	LoadTranslations("common.phrases.txt");
-	LoadTranslations("canteens.phrases.txt");
-	
+{	
 	RegAdminCmd("sm_canteen", ConCmd_SetPowerupBottleCharges, ADMFLAG_ROOT);
 
 	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);

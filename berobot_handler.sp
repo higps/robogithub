@@ -1014,7 +1014,8 @@ void RobotTeamCheck(int client)
             if(g_cv_bDebugMode)MC_PrintToChatEx(client, client, "{teamcolor}You're a robot not on the robot team!");
                
             TrashRobot(client);
-            CreateTimer(0.5, Timer_Regen, client);       
+            //This causes some handle issues
+            // CreateTimer(0.5, Timer_Regen, client);       
         }
         //Makes players who are manually moved to the robot team a robot
         if (iTeam == g_RoboTeam && !IsAnyRobot(client))

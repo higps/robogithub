@@ -58,8 +58,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	//     return Plugin_Continue;
 	if(!IsValidClient(victim))
 	return Plugin_Continue;    
-	if(!IsValidClient(attacker))
-	return Plugin_Continue;
+	// if(!IsValidClient(attacker))
+	// return Plugin_Continue;
 
 
 	if(IsAnyRobot(victim))
@@ -68,7 +68,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			int hp = GetClientHealth(victim);
 			// PrintToChatAll("HP: %i\ndmg: %f", hp, damage);
-			if(float(hp) + damage < 50.0)
+			if(float(hp) + damage < 250.0)
 			{
 				damage = 0.0;
 				return Plugin_Changed;
