@@ -1376,10 +1376,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 0.4;
                 stat2 = 1.0;
+
                 TF2Attrib_SetByName(Weapon1, "minigun spinup time decreased", stat1);
                 TF2Attrib_SetByName(Weapon1, "closerange backattack minicrits", stat2);
+
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tomislav: {orange}Mini-crits from behind. +%0.0f%%%% faster {teamcolor}rev up speed",chat_display, OneIs100(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tomislav: {orange}Mini-crits from behind. +%0.0f%%%% faster {teamcolor}rev up speed.",chat_display, OneIs100(stat1));
                 
             }
 
