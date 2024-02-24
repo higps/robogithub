@@ -49,7 +49,7 @@ const float HudRefreshRate = 0.2;
 Handle HudSync;
 
 Handle SDKCallInitGrenade;
-
+// int index = 0;
 bool HasStat(int weapon, FCaber caber)
 {
 	if (weapon == -1)
@@ -82,6 +82,7 @@ bool HasStat(int weapon, FCaber caber)
 
 public void OnPluginStart()
 {
+	// index = 0;
 	Handle hGameConf = LoadGameConfigFile("tf2.cattr_starterpack");
 	if (!hGameConf)
 	{
@@ -165,7 +166,7 @@ public void OnPlayerRunCmdPost(int clientId, int buttons)
 		}
 	}
 }
-//int index = 31;
+
 void ThrowCaber(FClient client, int weaponId, FCaber caber)
 {
 	caber.OnCooldown = true;
@@ -228,10 +229,16 @@ void ThrowCaber(FClient client, int weaponId, FCaber caber)
 	// 32,33,35,55 throw-ish
 	// PrintToChatAll("Index was %i", index);
 	// index++;
-	// TE_Start("PlayerAnimEvent");
+	
 	// TE_WriteEnt("m_hPlayer", client);
-	// TE_WriteNum("m_iEvent", 2);
-	// TE_SendToAll();
+
+	// int clientMask = iclient & 0x7FFF;
+	//64 or 65
+	int clientMask = GetEntProp(GetEntPropEnt(iclient, Prop_Send, "m_hActiveWeapon"), Prop_Send, "m_hOwnerEntity");
+	TE_Start("PlayerAnimEvent");
+	TE_WriteNum("m_hPlayer", clientMask);
+	TE_WriteNum("m_iEvent", 2);
+	TE_SendToAll();
 }
 
 bool ClientHasCrits(FClient client)
@@ -250,6 +257,7 @@ void SetViewmodelAnimation(int client, int sequence)
 	SetEntProp(ent, Prop_Send, "m_nSequence", sequence);
 	// SetEntPropFloat(ent, Prop_Send, "m_flPlaybackRate", 0.5);
 }
+
 void SetProjectileProperties(UBaseProjectile grenade, FCaber caber, bool crit)
 {
 	// If invalid, stop here

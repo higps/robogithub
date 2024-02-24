@@ -75,7 +75,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kvCommand)
 		//Add some logic here to check for if the number of charges was changed
         if(HasStat(client))
 		{
-			if(IsValidEntity(g_book[client]))
+			if(IsValidEntity(g_book[client]) && HasEntProp(g_book[client], Prop_Send, "m_iSpellCharges"))
 			{
 				g_player_charges[client] = GetEntProp(g_book[client], Prop_Send, "m_iSpellCharges");
 				//PrintToChatAll("%N Had charges: %i",client, g_player_charges[client])
