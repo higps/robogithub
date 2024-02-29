@@ -139,7 +139,7 @@ public void OnPluginStart()
 public Action Event_PlayerDeath(Event event, char[] name, bool dontBroadcast){
 
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	if(IsValidClient(client)){ 
+	if (IsValidClient(client)){ 
 		DeleteParticle(0.1, ParticleStorage[client]);
 	}
 	return Plugin_Continue;
@@ -152,7 +152,7 @@ public void OnMapStart()
 
 public Action Command_ToggleMMHumanDisplay(int client, int args)
 {
-    if(b_Attribute_Display[client])
+    if (b_Attribute_Display[client])
     {
         b_Attribute_Display[client] = false;
         MC_PrintToChatEx(client, client, "{orange}Chat Display of stats: off");
@@ -166,9 +166,9 @@ public Action Command_ToggleMMHumanDisplay(int client, int args)
 
 public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
 {
-    if(convar == g_cvCvarList[CV_bDebugMode])
+    if (convar == g_cvCvarList[CV_bDebugMode])
         g_cv_bDebugMode = view_as<bool>(StringToInt(sNewValue));
-    if(convar == g_cvCvarList[CV_flSpyBackStabModifier])
+    if (convar == g_cvCvarList[CV_flSpyBackStabModifier])
         g_CV_flSpyBackStabModifier = StringToFloat(sNewValue);
 }
 
@@ -200,13 +200,13 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
             TF2CustAttr_SetString(client, "Spell-Caster", "Spell=-1 Cooldown=40.0");
         }
 
-        if(HasFrontierJustice(client))
+        if (HasFrontierJustice(client))
         {
             g_FrontierJusticeDamage[client] = 0.0;
             
         }
 
-        if(TF2_GetPlayerClass(client) == TFClass_Scout)
+        if (TF2_GetPlayerClass(client) == TFClass_Scout)
         {
             TF2CustAttr_SetString(client, "faster-respawn", "respawn=8.0");
         }
@@ -222,11 +222,11 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
 
     
-    if(!IsValidClient(victim))
+    if (!IsValidClient(victim))
         return Plugin_Continue;    
-    if(!IsValidClient(attacker))
+    if (!IsValidClient(attacker))
      return Plugin_Continue;   
-    //     if(IsAnyRobot(victim) && damagetype == DMG_FALL && !IsBoss(victim))
+    //     if (IsAnyRobot(victim) && damagetype == DMG_FALL && !IsBoss(victim))
     //     {
     //     damage *= 0.25;
     //     return Plugin_Changed;
@@ -234,7 +234,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     //     return Plugin_Continue;
     // }
 
-		if(damagecustom == TF_CUSTOM_RUNE_REFLECT)
+		if (damagecustom == TF_CUSTOM_RUNE_REFLECT)
 		{
 		// PrintToChatAll("damage before change %f", damage);	
 		damage *= 0.4;
@@ -250,7 +250,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
         if (damagecustom == TF_CUSTOM_PLASMA)
         {
             // PrintToChatAll("PLASMA");
-            if(TF2_GetPlayerClass(attacker) == TFClass_Heavy || TF2_GetPlayerClass(attacker) == TFClass_Medic){
+            if (TF2_GetPlayerClass(attacker) == TFClass_Heavy || TF2_GetPlayerClass(attacker) == TFClass_Medic){
                 // PrintToChatAll("For heavy or medic TF_CUSTOM_PLASMA dmg was %f", damage);
                 damage = 1.0;
                 
@@ -266,7 +266,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
         //     PrintToChatAll("WAS ELECTRIC");
         // }
 
-        if(IsAnyRobot(victim))
+        if (IsAnyRobot(victim))
         {
             if (TF2_GetPlayerClass(attacker) == TFClass_DemoMan)
             {
@@ -294,7 +294,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
             }
 
-            if(TF2_IsPlayerInCondition(victim, TFCond_Stealthed))
+            if (TF2_IsPlayerInCondition(victim, TFCond_Stealthed))
             {
                 
                 if (damagecustom == TF_CUSTOM_BLEEDING || IsElectric(weapon))
@@ -306,7 +306,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
         }
 
     
-        if(!IsAnyRobot(victim))
+        if (!IsAnyRobot(victim))
         {
 
             //     //m_flItemChargeMeter
@@ -319,7 +319,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     {
                         // PrintToChatAll("BACKSTAB 0!");
                         int razorback = FindTFWearable(victim, 57);
-                        if(IsValidEntity(razorback))
+                        if (IsValidEntity(razorback))
                         {
                             // PrintToChatAll("%N had razorback when stabbed", victim);
 
@@ -341,7 +341,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                                 TF2_AddCondition(attacker, TFCond_Sapped, 0.5, attacker);
                             }else
                             {
-                                if(g_Razorback_Original_Recharge != -1.0)TF2Attrib_SetByName(razorback, "item_meter_charge_rate", g_Razorback_Original_Recharge);
+                                if (g_Razorback_Original_Recharge != -1.0)TF2Attrib_SetByName(razorback, "item_meter_charge_rate", g_Razorback_Original_Recharge);
                             }
                             // TF2Attrib_AddCustomPlayerAttribute(victim, "item_meter_charge_rate", 0.1, 5.0);
                         }
@@ -350,13 +350,13 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
           }
 
-        if(IsAnyRobot(attacker))
+        if (IsAnyRobot(attacker))
         {
         switch (damagecustom)
                 {
                     case TF_CUSTOM_BASEBALL:
                     {
-                        if(IsSandman(weapon))
+                        if (IsSandman(weapon))
                         {
                             // SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
                             DizzyTarget(victim);
@@ -368,14 +368,14 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
         }
 
-    if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
+    if (IsAnyRobot(victim) && !IsAnyRobot(attacker))
     {
 
         TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
 
             if (iClassAttacker == TFClass_Pyro)
             {
-                if(IsAxtinguisher(weapon) && TF2_IsPlayerInCondition(victim, TFCond_OnFire))
+                if (IsAxtinguisher(weapon) && TF2_IsPlayerInCondition(victim, TFCond_OnFire))
                 {
                  //   PrintToChatAll("Target on fire");
                     TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, g_axtinguisherspeedboost);
@@ -384,14 +384,14 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     
                 }
 
-                if(IsPowerJack(weapon))
+                if (IsPowerJack(weapon))
                 {
                 
                 AddPlayerHealth(attacker, g_powerjackhealonhit, g_powerjackhealonhitoverheal, true, true);
                 // ShowHealthGain(attacker, 50, attacker);
                 }
 
-                if(IsScorch(weapon) && damagecustom == 0)
+                if (IsScorch(weapon) && damagecustom == 0)
                 {
                     
                     // PrintToChatAll("Hit with Scorch %i",damagecustom);
@@ -403,33 +403,33 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
              if (iClassAttacker == TFClass_Heavy)
             {
-                if(IsWarriorSpirit(weapon))
+                if (IsWarriorSpirit(weapon))
                 {           
 
                     AddPlayerHealth(attacker, g_warriorspirit_heal_on_hit, g_warriorspirit_max_overheal, true, true);
                     // ShowHealthGain(attacker, 50, attacker);
                 }
 
-                if(IsKGB(weapon))
+                if (IsKGB(weapon))
 	        	{
 
-                    if(g_cv_bDebugMode) PrintToChatAll("Hit # %i", Punch_Count[attacker]);
+                    if (g_cv_bDebugMode) PrintToChatAll("Hit # %i", Punch_Count[attacker]);
 
                     //Get the name of the player to use with the tauntem plugin
                     int playerID = GetClientUserId(victim);
                     
-                    if(g_cv_bDebugMode) PrintToChatAll("Victim name %s", playerID);
+                    if (g_cv_bDebugMode) PrintToChatAll("Victim name %s", playerID);
                         
                         
                         //Count the punches
                         Punch_Count[attacker]++;
 
-                    if(TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen))
+                    if (TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen))
                     {
                         Punch_Count[attacker] = 0;
                     }
 
-                    if(!g_Timer[attacker]){
+                    if (!g_Timer[attacker]){
 
                     
                     CreateTimer(3.0, Combo_Check_Timer, attacker);
@@ -456,7 +456,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
             // {
             //     int Weapon3 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee);
 
-            //     if(IsSolemnVow(Weapon3))
+            //     if (IsSolemnVow(Weapon3))
             //     {
             //         damage = 0.0;
             //         return Plugin_Handled;
@@ -525,7 +525,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         
                         // PrintToChatAll("I assists %i", iSentryAssists);
 
-                        if(iSentryAssists == -1)
+                        if (iSentryAssists == -1)
                         {
                             iSentryAssists = 1;
                         }
@@ -544,10 +544,10 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
             }
 
-                if(damagecustom == TF_CUSTOM_BACKSTAB)
+                if (damagecustom == TF_CUSTOM_BACKSTAB)
                 {
 
-                    if(IsKunai(weapon))
+                    if (IsKunai(weapon))
                     {
                         AddPlayerHealth(attacker, 120, 275, true);
                     }
@@ -565,7 +565,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 3.0);
                     }
 
-                    if(IsSpycicle(weapon))
+                    if (IsSpycicle(weapon))
                     {
                         TF2Attrib_AddCustomPlayerAttribute(victim, "damage penalty", g_spycicle_fire_speed_debuff, g_spycicle_fire_Speed_debuff_duration);
                         //TF2_StunPlayer(victim, 1.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
@@ -597,7 +597,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 
                     //Do backstab modifying
-                    if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                    if (g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
 
                     int victimHP = GetClientHealth(victim);
                     int victimMAXHP = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
@@ -631,7 +631,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     }
 
                     critType = CritType_Crit;
-                    if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                    if (g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                     TF2_AddCondition(attacker, TFCond_RuneResist, g_protection_rune_duration);
                     // EmitSoundToAll(SPY_ROBOT_STAB, victim);
                     // EmitSoundToClient(victim, SPY_ROBOT_STAB);
@@ -702,14 +702,14 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         }
                         case TF_CUSTOM_BASEBALL:
                         {
-                            if(IsSandman(weapon))
+                            if (IsSandman(weapon))
                             {
                                 // SetHealingDebuff(victim, g_HealDebuff, 0.5, attacker);  
                                 DizzyTarget(victim);
 
                             }
 
-                            if(IsWrap(weapon)){
+                            if (IsWrap(weapon)){
                                 SetHealingDebuff(victim, g_HealDebuff, g_wrap_duration, attacker);  
                             }
 
@@ -913,16 +913,16 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 {
     // if (!g_Enable)
     //     return Plugin_Continue;
-    if(!IsValidClient(victim))
+    if (!IsValidClient(victim))
         return Plugin_Continue;    
 
 
-    if(!IsValidClient(attacker))
+    if (!IsValidClient(attacker))
         return Plugin_Continue;
     
        
 
-    if(IsAnyRobot(victim))
+    if (IsAnyRobot(victim))
     {
     TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
             switch(damagecustom){
@@ -944,9 +944,9 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                     
                 if (weapon == iWeapon)
                 {
-                    if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                    if (g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
                     damage *= g_HumanMiniGunDmGPenalty;
-                    if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                    if (g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                     return Plugin_Changed;
                     
                 }
@@ -960,10 +960,10 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
                 SetHealingDebuff(victim, g_HealDebuff, g_ElectricStunDuration, attacker);
 
-                if(TF2_GetPlayerClass(victim) == TFClass_Heavy || TF2_GetPlayerClass(victim) == TFClass_Medic)
+                if (TF2_GetPlayerClass(victim) == TFClass_Heavy || TF2_GetPlayerClass(victim) == TFClass_Medic)
                 {
                     // PrintToChatAll("WAS HEAVY OR MEDIC");
-                    if(HasEntProp(victim, Prop_Send, "m_flRageMeter"))
+                    if (HasEntProp(victim, Prop_Send, "m_flRageMeter"))
                     {
                         
 
@@ -983,12 +983,12 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             if (iClassAttacker == TFClass_DemoMan && !IsAnyRobot(attacker))
             {
 
-                if(IsEyelander(weapon)) IncrementHeadCount(attacker);
+                if (IsEyelander(weapon)) IncrementHeadCount(attacker);
 
 
-                // if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                // if (g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
                 // damage *= 1.25;
-                // if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                // if (g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                 // return Plugin_Changed;
                 
                     
@@ -1003,9 +1003,9 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 if (IsMarketGardner(weapon))
                 {
                     
-                    if(g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                    if (g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
                     damage *= g_market_gardner_dmg_bonus;
-                    if(g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                    if (g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                     return Plugin_Changed;
                     
                 }
@@ -1014,9 +1014,9 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             }
             if (iClassAttacker == TFClass_Sniper)
             {
-                if(IsBazaar(weapon)) {
+                if (IsBazaar(weapon)) {
                     int decapitations = GetEntProp(attacker, Prop_Send, "m_iDecapitations");
-                    if(damagecustom == TF_CUSTOM_HEADSHOT)
+                    if (damagecustom == TF_CUSTOM_HEADSHOT)
                     {
                         SetEntProp(attacker, Prop_Send, "m_iDecapitations", decapitations + 1);
                     }else
@@ -1055,10 +1055,10 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
         //Check for crit conditions to add more damage on minicrit conditions stacked against robots
         int condcount = 0;
         
-        if(TF2_IsPlayerInCondition(victim, TFCond_Jarated)) condcount++;
-        if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeath)) condcount++;
-        if(TF2_IsPlayerInCondition(attacker, TFCond_Buffed)) condcount++;
-        if(TF2_IsPlayerInCondition(attacker, TFCond_CritCola)) condcount++;
+        if (TF2_IsPlayerInCondition(victim, TFCond_Jarated)) condcount++;
+        if (TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeath)) condcount++;
+        if (TF2_IsPlayerInCondition(attacker, TFCond_Buffed)) condcount++;
+        if (TF2_IsPlayerInCondition(attacker, TFCond_CritCola)) condcount++;
         
 
             if (condcount >= 2)
@@ -1171,38 +1171,27 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (TF2_GetPlayerClass(client) == TFClass_Pyro)
         {
-            if(Weapon1 != -1)
+            if (IsValidWeaponForClassBuff(Weapon1))
             {
             stat1 = 0.85;
             TF2Attrib_SetByName(Weapon1, "dmg taken from fire reduced", stat1);
-            
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pyro: {orange}+%0.0f%%%% fire resistance",chat_display, LessIsMore(stat1));
             }
             
-            if(IsThirdDegree(Weapon3))
+            if (IsThirdDegree(Weapon3))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Third Degree: {orange}Crits players who are healed. Hits all players connected to the same heal source",chat_display);
-                
                 TF2CustAttr_SetString(Weapon3,"third-degree", "critType=2 hitGroup=1");
-                // TF2CustAttr_GetAttributeKeyValues();
-                // TF2CustAttr_SetInt(Weapon3, "critType", 2);
-                // TF2CustAttr_SetInt(Weapon3, "hitGroup", 1);
-                // TF2CustAttr_SetString(Weapon3, "third-degree", "critType=2 hitGroup=1")
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Third Degree: {orange}Crits players who are healed. Hits all players connected to the same heal source",chat_display);
             }
-            if (IsAxtinguisher(Weapon3))
-            {
-                
-                // TF2Attrib_SetByName(Weapon3, "crit vs burning players", 1.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Axtinguisher: {orange}Provides %0.0f second speed boost{teamcolor} and {orange}%0.0f seconds of Battalion Backup buff",chat_display, g_axtinguisherspeedboost, g_axtinguisherbuffduration);
 
+            if (IsAxtinguisher(Weapon3))
+            {  
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Axtinguisher: {orange}Provides %0.0f second speed boost{teamcolor} and {orange}%0.0f seconds of Battalion Backup buff",chat_display, g_axtinguisherspeedboost, g_axtinguisherbuffduration);
             }
 
             if (IsPowerJack(Weapon3))
             {
-                
-                // TF2Attrib_SetByName(Weapon3, "crit vs burning players", 1.0);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Powerjack: {orange}Provides %i heal on hit {teamcolor}that overheals",chat_display, g_powerjackhealonhit);
-
             }
 
             if (IsJetpack(Weapon2))
@@ -1210,6 +1199,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon2, "falling_impact_radius_pushback", 0.0);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Jetpack: {darkred}Deals no knockback{teamcolor} when landing",chat_display);
             }
+
             if (IsBackScratcher(Weapon3))
             {
                 TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1 = 20.0);
@@ -1224,6 +1214,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.75 critType=2");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter:{orange}+25%% damage bonus vs jumping robots. {orange}+%0.0f%%%% faster deploy speed",chat_display, LessIsMore(stat1));
             }
+
             if (IsShotGun(Weapon2))
             {
                 stat1 = 0.8;
@@ -1288,7 +1279,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}QuickeBomb: {orange}+%0.0f%%%% {teamcolor}charge damage increase",chat_display, MoreIsMore(stat1));
             }
 
-            if(IsIronBomber(Weapon1))
+            if (IsIronBomber(Weapon1))
             {
                 stat1 = 5.0;
                 stat2 = 4.5;
@@ -1349,7 +1340,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", stat1);
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit",chat_display, stat1);
 
-                if(TF2_GetPlayerClass(client) == TFClass_Soldier)
+                if (TF2_GetPlayerClass(client) == TFClass_Soldier)
                 {
                     TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");
                 }
@@ -1362,7 +1353,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your minigun deals {orange}-%0.00f %%%% damage{teamcolor} vs robots",chat_display, LessIsMore(g_HumanMiniGunDmGPenalty));
 
-            if(IsNatascha(Weapon1))
+            if (IsNatascha(Weapon1))
             {
                 stat1 = 3.0;
                 stat2 = 1.2;
@@ -1372,7 +1363,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Heavy Natascha: {orange}+%0.0f second speed boost on hit +%0.0f %%%% faster movespeed while spun up{teamcolor}",chat_display, stat1, MoreIsMore(stat2));
             }
 
-            if(IsTomiSlav(Weapon1))
+            if (IsTomiSlav(Weapon1))
             {
                 stat1 = 0.4;
                 stat2 = 1.0;
@@ -1385,7 +1376,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
             }
 
-            if(IsStockOrAllClassWeapon(Weapon3))
+            if (IsStockOrAllClassWeapon(Weapon3))
             {
                 stat1 = 1.5;
                 TF2Attrib_SetByName(Weapon3, "maxammo primary increased", stat1);
@@ -1421,7 +1412,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
             }
 
-            if (IsWearable(Weapon2))
+            if (Weapon2 != -1)
             {
                 int razorback = FindTFWearable(client, 57);
                 if (IsValidEntity(razorback) && Weapon1 != -1 && Weapon3 != -1)
@@ -1476,14 +1467,14 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
 
 
-            if(IsStockOrAllClassWeapon(Weapon3))
+            if (IsStockOrAllClassWeapon(Weapon3))
             {
                 stat1 = 1.15;
                 TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Stock Melee: {orange}+%0.0f%% move speed{teamcolor} while active",chat_display, MoreIsMore(stat1));
             }
 
-            if(IsShahanshah(Weapon3))
+            if (IsShahanshah(Weapon3))
             {
                 // stat1 = 3.0;
                 // TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", stat1);
@@ -1491,19 +1482,19 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shahansah: {orange}On Hit:{teamcolor} Self Knockback",chat_display, MoreIsMore(stat1));
             }
 
-            if(IsSMG(Weapon2))
+            if (IsSMG(Weapon2))
             {
                 TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", stat1 = 2.0);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}SMG: {orange}On Hit: {teamcolor}Speed boost for %0.0f seconds",chat_display, stat1);
             }
 
-            if(IsCarbine(Weapon2))
+            if (IsCarbine(Weapon2))
             {
                 TF2Attrib_SetByName(Weapon2, "minicrit_boost_when_charged", stat1 = 16.0);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Carbine: {orange}Increased duration to %0.0f seconds",chat_display, stat1);
             }
 
-            if(IsShiv(Weapon3))
+            if (IsShiv(Weapon3))
             {
                 // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
                 TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1 = 20.0);
@@ -1514,7 +1505,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         }
         if (TF2_GetPlayerClass(client) == TFClass_Scout)
         {
-            if(Weapon1 != -1)
+            if (IsValidWeaponForClassBuff(Weapon1))
             {
             TF2CustAttr_SetString(client, "faster-respawn", "respawn=8.0");
             stat1 = 0.80;
@@ -1599,16 +1590,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon2, "increased jump height", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Winger: {orange}+%0.f%%%% additional passive jump height bonus",chat_display, MoreIsMore(stat1));
             }
-            if(IsSandman(Weapon3))
+            if (IsSandman(Weapon3))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Baseball: {orange}Knock robots dizzy",chat_display);
             }
-            if(IsWrap(Weapon3))
+            if (IsWrap(Weapon3))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots heal rate for %0.0f seconds",chat_display, g_wrap_duration);
             }
 
-            if(IsCleaver(Weapon2))
+            if (IsCleaver(Weapon2))
             {
                 TF2Attrib_SetByName(Weapon2, "bleeding duration", g_bleed_duration_bonus);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cleaver: {orange}On Hit: Bleed for %0.0f seconds",chat_display, g_bleed_duration_bonus);
@@ -1632,7 +1623,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Frontier Justice: {orange}Gains 1 revenge crit{teamcolor} every %i damage your sentry does to robots",chat_display, RoundToNearest(g_FrontierJusticeDMGRequirement));
             }
-            if(IsGunSlinger(Weapon3))
+            if (IsGunSlinger(Weapon3))
             {
                 TF2Attrib_SetByName(Weapon3, "engineer sentry build rate multiplier", stat1 = 8.0);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+%0.0f%%%% faster sentry build",chat_display, MoreIsMore(stat1)); 
@@ -1653,19 +1644,19 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         }
         if (TF2_GetPlayerClass(client) == TFClass_Medic)
         {
-             if(IsSyringeGun(Weapon1))
+             if (IsSyringeGun(Weapon1))
             {
                 //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
                 // stat1 = 1.15;
                 // TF2Attrib_SetByName(Weapon1, "damage bonus", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: On Hit: {orange}Reduce robot damage by %0.00f%%%% for %0.0f second.{teamcolor}",chat_display, MoreIsMore(g_syringegun_debuff_amount), g_syringe_dmg_debuff_duration);
             }
-            if(IsBlutsauger(Weapon1))
+            if (IsBlutsauger(Weapon1))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blutsauger: On Hit: {orange}Reduce Enemy healing by -%0.0f%%%%{teamcolor} for %0.0f second.",chat_display, LessIsMore(g_blutsauger_heal_reduction), g_blutsauger_heal_reduction_duration);
             }
 
-            if(IsOverdose(Weapon1) && Weapon2 != -1)
+            if (IsOverdose(Weapon1) && Weapon2 != -1)
             {
                 TF2Attrib_SetByName(Weapon2, "overheal decay disabled", 1000.0);
                 stat1 = 1.6;
@@ -1678,20 +1669,20 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_RemoveByName(Weapon1, "increased jump height");
             }
 
-            if(!IsOverdose(Weapon1) && Weapon2 != -1)
+            if (!IsOverdose(Weapon1) && Weapon2 != -1)
             {
                 //Remove the attribute when changing loadout
                 TF2Attrib_RemoveByName(Weapon2, "overheal decay disabled");
             }
 
-            if(IsAmputator(Weapon3) && Weapon1 != -1)
+            if (IsAmputator(Weapon3) && Weapon1 != -1)
             {
                 stat1 = 0.4;
                 TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Amputator: Provides {orange}+%0.0f%%%% Passive critical resistance",chat_display, LessIsMore(stat1));
             }
 
-            if(IsSolemnVow(Weapon3))
+            if (IsSolemnVow(Weapon3))
             {
                 stat1 = 1.0;
                 TF2Attrib_SetByName(Weapon2, "healing mastery", stat1);
@@ -1705,7 +1696,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_RemoveByName(Weapon3, "mod see enemy health");
             }
 
-            if(IsVitaSaw(Weapon3) && Weapon2 != -1)
+            if (IsVitaSaw(Weapon3) && Weapon2 != -1)
             {
                 stat1 = 0.4;
                 TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
@@ -1716,12 +1707,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
             }
 
-            if(IsCrossbow(Weapon1))
+            if (IsCrossbow(Weapon1))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Crossbow: {orange}Protection Rune {teamcolor}teammate for %0.0f seconds",chat_display, g_protection_rune_duration);
             }
 
-            if(IsStockOrAllClassWeapon(Weapon3))
+            if (IsStockOrAllClassWeapon(Weapon3))
             {
                 stat1 = 1.0;
                 TF2Attrib_SetByName(Weapon3, "uber duration bonus", stat1);
@@ -1736,7 +1727,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Quickfix: {orange}Medic MvM Shield",chat_display);
             }
 
-            if(IsVaccinator(Weapon2))
+            if (IsVaccinator(Weapon2))
             {
 			    TF2Attrib_SetByName(Weapon2, "medigun bullet resist deployed", 0.85);
 			    TF2Attrib_SetByName(Weapon2, "medigun blast resist deployed", 0.85);
@@ -1744,7 +1735,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vaccinator: {orange}+10%%%% higher deployed resistances",chat_display);
             }
 
-            // if(Weapon2 != -1)
+            // if (Weapon2 != -1)
             // {
             //     stat1 = 0.5;
             //     TF2Attrib_SetByName(Weapon3, "ubercharge_preserved_on_spawn_max", stat1);
@@ -1778,7 +1769,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants %0.0f%%%% movespeed while actove",chat_display, MoreIsMore(stat1));
             }
 
-            if(IsSpycicle(Weapon3))
+            if (IsSpycicle(Weapon3))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spycicle:{orange}On Backstab: Slows enemy attack speed by -%0.0f%%%% for %0.0f seconds",chat_display, LessIsMore(g_spycicle_fire_speed_debuff), g_spycicle_fire_Speed_debuff_duration);
             }
@@ -1837,33 +1828,32 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                         TF2Attrib_SetByName(Weapon2, "increase buff duration", stat1);
                         
                         Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+%0.0f%%%% longer buff duration{teamcolor}",chat_display, MoreIsMore(stat1));
-                    }else
+                    }
+                    if (IsShotGun(Weapon2))
                     {
                         stat1 = 1.5;
                         TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
                         Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
                     }
 
-                    if(IsBison(Weapon2))
-                   {
+                    if (IsBison(Weapon2))
+                    {
                         stat1 = 0.65;
                         TF2Attrib_SetByName(Weapon2, "faster reload rate", stat1);
                         Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bison: {orange}+%0.0f%% faster reload",chat_display, LessIsMore(stat1));
-                   }
-                   if(IsBaseJumper(Weapon2))
+                    }
+                   if (IsBaseJumper(Weapon2))
                    {
                         stat1 = 25.0;
                         TF2Attrib_SetByName(Weapon2, "max health additive bonus", stat1);
                         Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Base Jumper: {orange}+%0.0f%% max hp",chat_display, stat1);
                    }
-                }else
-                {
-    
                 }
-            }else
+            }
+            else
             {
                 //To avoid keeping the buff when switching weapons
-                if(Weapon2 != -1)
+                if (Weapon2 != -1)
                 {
                     if (IsAnyBanner(Weapon2))
                     {
@@ -1891,16 +1881,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+%0.0f%%%% larger explosion radius",chat_display, MoreIsMore(stat1));
             }
 
-            if (IsWearable(Weapon2))
+            if (Weapon2 != -1)
             {
 
                 int SoldierShoes = FindTFWearable(client, 133);
-                if(IsValidEntity(SoldierShoes))
+                if (IsValidEntity(SoldierShoes))
                 {
 
                     TF2Attrib_SetByName(SoldierShoes, "cancel falling damage", 1.0);
                     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunboats:{orange} No fall damage",chat_display);
-                    if(isLibertyLauncher(Weapon1))
+                    if (isLibertyLauncher(Weapon1))
                     {
                         stat1 = 0.1;
                         Format(chat_display, sizeof(chat_display), "%s{orange}Liberty Launcher: -%0.0f%%%% {teamcolor}rocket jump damage reduction",chat_display, LessIsMore(stat1));
@@ -1913,7 +1903,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 {
                     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Mantreads:{orange} Stomp: Stun tanks, Dizzy Robots",chat_display);
 
-                    if(isLibertyLauncher(Weapon1))
+                    if (isLibertyLauncher(Weapon1))
                     {
                         stat1 = 1.3;
                         Format(chat_display, sizeof(chat_display), "%s\n{Teamcolor}Mantreads from Liberty Launcher: {orange}+%0.0f%%%% faster move speed",chat_display, MoreIsMore(stat1));
@@ -1964,7 +1954,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         RemoveJingle(client);
         // RequestFrame(FrameDelayedStatDisplay, info);        
-        if(!IsAnyRobot(client))DisplayMMStats(client, chat_display);
+        if (!IsAnyRobot(client))DisplayMMStats(client, chat_display);
 
     }      
 
@@ -1999,7 +1989,7 @@ void SetDemoDamageBuff(int weapon)
 
 bool IsMarketGardner(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2014,7 +2004,7 @@ bool IsMarketGardner(int weapon)
 
 bool IsElectric(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2029,7 +2019,7 @@ bool IsElectric(int weapon)
 
 bool IsSniperRifle(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2044,7 +2034,7 @@ bool IsSniperRifle(int weapon)
 
 bool IsSMG(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2059,7 +2049,7 @@ bool IsSMG(int weapon)
 
 bool IsCarbine(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2074,7 +2064,7 @@ bool IsCarbine(int weapon)
 
 bool IsShiv(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2089,7 +2079,7 @@ bool IsShiv(int weapon)
 
 bool IsHuntsMan(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2104,7 +2094,7 @@ bool IsHuntsMan(int weapon)
 
 bool IsBazaar(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2119,7 +2109,7 @@ bool IsBazaar(int weapon)
 
 bool IsHeatmaker(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2134,7 +2124,7 @@ bool IsHeatmaker(int weapon)
 
 bool IsClassic(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2149,7 +2139,7 @@ bool IsClassic(int weapon)
 
 bool IsEyelander(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2164,7 +2154,7 @@ bool IsEyelander(int weapon)
 
 bool IsZatoichi(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2180,7 +2170,7 @@ bool IsZatoichi(int weapon)
 
 bool IsKunai(int weapon)
 {
-  	if(weapon == -1 && weapon <= MaxClients) return false;
+  	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2195,7 +2185,7 @@ bool IsKunai(int weapon)
 
 // bool IsFrontierJustice(int weapon)
 // {
-// 	if(weapon == -1 && weapon <= MaxClients) return false;
+// 	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 // 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 // 	{
@@ -2210,7 +2200,7 @@ bool IsKunai(int weapon)
 
 bool IsShortCircuit(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2227,7 +2217,7 @@ bool HasDiamondback(int client)
 {
     int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
     
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2244,7 +2234,7 @@ bool HasAirStrike(int client)
 {
 
     int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2261,7 +2251,7 @@ bool HasFrontierJustice(int client)
 {
 
     int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2276,7 +2266,7 @@ bool HasFrontierJustice(int client)
 
 bool IsBigEarner(int weapon)
 {
-  	if(weapon == -1 && weapon <= MaxClients) return false;
+  	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2291,7 +2281,7 @@ bool IsBigEarner(int weapon)
 
 bool IsYer(int weapon)
 {
-  	if(weapon == -1 && weapon <= MaxClients) return false;
+  	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2306,7 +2296,7 @@ bool IsYer(int weapon)
 
 bool IsAxtinguisher(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2321,7 +2311,7 @@ bool IsAxtinguisher(int weapon)
 
 bool IsPowerJack(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2336,7 +2326,7 @@ bool IsPowerJack(int weapon)
 
 bool IsWarriorSpirit(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2352,7 +2342,7 @@ bool IsWarriorSpirit(int weapon)
 
 bool IsKGB(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2367,7 +2357,7 @@ bool IsKGB(int weapon)
 
 bool IsRevolver(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2382,7 +2372,7 @@ bool IsRevolver(int weapon)
 
 bool IsEnforcer(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2398,7 +2388,7 @@ bool IsEnforcer(int weapon)
 
 bool IsAmbassador(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2414,7 +2404,7 @@ bool IsAmbassador(int weapon)
 
 bool IsDiamondback(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2428,7 +2418,7 @@ bool IsDiamondback(int weapon)
 }
 bool IsCandyCane(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2442,7 +2432,7 @@ bool IsCandyCane(int weapon)
 }
 bool IsSunOnAStick(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2457,7 +2447,7 @@ bool IsSunOnAStick(int weapon)
 
 bool IsSkullCutter(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2472,7 +2462,7 @@ bool IsSkullCutter(int weapon)
 
 bool IsJetpack(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2487,7 +2477,7 @@ bool IsJetpack(int weapon)
 
 bool IsAirStrike(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2502,7 +2492,7 @@ bool IsAirStrike(int weapon)
 
 bool IsBlackBox(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2517,7 +2507,7 @@ bool IsBlackBox(int weapon)
 
 bool isBeggarsBazooka(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2533,7 +2523,7 @@ bool isBeggarsBazooka(int weapon)
 
 bool isLibertyLauncher(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2548,7 +2538,7 @@ bool isLibertyLauncher(int weapon)
 
 bool isEqualizer(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2563,7 +2553,7 @@ bool isEqualizer(int weapon)
 
 bool IsAnyBanner(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2578,7 +2568,7 @@ bool IsAnyBanner(int weapon)
 
 bool IsBison(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2592,7 +2582,7 @@ bool IsBison(int weapon)
 
 bool IsRocketLauncher(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2607,7 +2597,7 @@ bool IsRocketLauncher(int weapon)
 
 bool IsAnyRocketLauncher(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2621,7 +2611,7 @@ bool IsAnyRocketLauncher(int weapon)
 }
 
 bool IsStockOrAllClassWeapon(int weapon){
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2637,7 +2627,7 @@ bool IsStockOrAllClassWeapon(int weapon){
 
 bool IsCaber(int weapon)
 {
-    	if(weapon == -1 && weapon <= MaxClients) return false;
+    	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2654,7 +2644,7 @@ bool IsCaber(int weapon)
 
 bool IsQuickieBombLauncher(int weapon)
 {
-    	if(weapon == -1 && weapon <= MaxClients) return false;
+    	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2671,7 +2661,7 @@ bool IsQuickieBombLauncher(int weapon)
 
 bool IsClaid(int weapon)
 {
-    	if(weapon == -1 && weapon <= MaxClients) return false;
+    	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2688,7 +2678,7 @@ bool IsClaid(int weapon)
 
 bool IsThirdDegree(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2702,7 +2692,7 @@ bool IsThirdDegree(int weapon)
 }
 
 bool IsCritACola(int weapon){
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2716,7 +2706,7 @@ bool IsCritACola(int weapon){
 }
 
 bool IsWinger(int weapon){
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2730,7 +2720,7 @@ bool IsWinger(int weapon){
 }
 
 bool IsShotGun(int weapon){
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2744,7 +2734,7 @@ bool IsShotGun(int weapon){
 }
 
 bool IsReserveShooter(int weapon){
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2759,7 +2749,7 @@ bool IsReserveShooter(int weapon){
 
 bool IsSandman(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2774,7 +2764,7 @@ bool IsSandman(int weapon)
 
 bool IsWrap(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2789,7 +2779,7 @@ bool IsWrap(int weapon)
 
 bool IsScorch(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2804,7 +2794,7 @@ bool IsScorch(int weapon)
 
 bool IsLooseCannon(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2822,9 +2812,9 @@ bool IsDemoKnight(int weapon1, int weapon2)
     //Demoknights don't have weapons in slot1 or 2
     // PrintToChatAll("Weapon1 was %i", weapon1);
     // PrintToChatAll("Weapon2 was %i", weapon2);
-    if(weapon2 == -1)
+    if (weapon2 == -1)
     {
-        if(weapon1 == -1 || IsBaseJumper(weapon1))
+        if (weapon1 == -1 || IsBaseJumper(weapon1))
         return true;
     }
     return false;
@@ -2832,7 +2822,7 @@ bool IsDemoKnight(int weapon1, int weapon2)
 
 bool IsIronBomber(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2848,7 +2838,7 @@ bool IsIronBomber(int weapon)
 
 bool IsBlutsauger(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2863,7 +2853,7 @@ bool IsBlutsauger(int weapon)
 
 bool IsCleaver(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2879,7 +2869,7 @@ bool IsCleaver(int weapon)
 
 bool IsBaseJumper(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2895,7 +2885,7 @@ bool IsBaseJumper(int weapon)
 bool IsGunSlinger(int weapon)
 
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2910,7 +2900,7 @@ bool IsGunSlinger(int weapon)
 
 bool IsBackScratcher(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2925,7 +2915,7 @@ bool IsBackScratcher(int weapon)
 
 bool IsNatascha(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2940,7 +2930,7 @@ bool IsNatascha(int weapon)
 
 bool IsTomiSlav(int weapon)
 {
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2954,7 +2944,7 @@ bool IsTomiSlav(int weapon)
 }
 bool IsVitaSaw(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2969,7 +2959,7 @@ bool IsVitaSaw(int weapon)
 
 bool IsSyringeGun(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2984,7 +2974,7 @@ bool IsSyringeGun(int weapon)
 
 bool IsOverdose(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -2999,7 +2989,7 @@ bool IsOverdose(int weapon)
 
 bool IsAmputator(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3014,7 +3004,7 @@ bool IsAmputator(int weapon)
 
 bool IsSolemnVow(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3029,7 +3019,7 @@ bool IsSolemnVow(int weapon)
 
 bool IsCrossbow(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3044,7 +3034,7 @@ bool IsCrossbow(int weapon)
 
 bool IsQuickfix(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3059,7 +3049,7 @@ bool IsQuickfix(int weapon)
 
 bool IsVaccinator(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3074,7 +3064,7 @@ bool IsVaccinator(int weapon)
 
 bool IsMadMilk(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3089,7 +3079,7 @@ bool IsMadMilk(int weapon)
 
 bool IsShahanshah(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3104,7 +3094,7 @@ bool IsShahanshah(int weapon)
 
 bool IsAtomizer(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3119,7 +3109,7 @@ bool IsAtomizer(int weapon)
 
 bool IsPistol(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3134,7 +3124,7 @@ bool IsPistol(int weapon)
 
 bool IsStockKnife(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3149,7 +3139,7 @@ bool IsStockKnife(int weapon)
 
 bool IsSpycicle(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3164,7 +3154,7 @@ bool IsSpycicle(int weapon)
 
 bool IsSouthernHospitality(int weapon)
 {
-    if(weapon == -1 && weapon <= MaxClients) return false;
+    if (weapon == -1 && weapon <= MaxClients) return false;
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
@@ -3175,18 +3165,6 @@ bool IsSouthernHospitality(int weapon)
 		}
 	}
 	return false;
-}
-
-bool IsWearable(int weapon)
-{
-
-    if(weapon == -1 && weapon <= MaxClients)
-    {
-        return true;
-    }else
-    {
-        return false;       
-    }
 }
 
 public int FindTFWearable(int iClient, int item)
@@ -3218,9 +3196,20 @@ public int FindTFWearable(int iClient, int item)
 	return -1;
 }
 
+bool IsValidWeaponForClassBuff(int weapon)
+{
+
+    if (weapon == -1 && weapon <= MaxClients)
+    {
+        return true;
+    }else
+    {
+        return false;       
+    }
+}
 // bool IsSapper(int weapon)
 // {
-//     if(weapon == -1 && weapon <= MaxClients) return false;
+//     if (weapon == -1 && weapon <= MaxClients) return false;
 	
 // 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 // 	{
@@ -3375,14 +3364,14 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
             {
                 TF2_AddCondition(client, TFCond_CritCanteen, g_crit_a_cola_duration);
             }
-            if(condition == TFCond_RuneAgility)
+            if (condition == TFCond_RuneAgility)
             {
                 TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
             }
         }
 
 
-        // if(!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_DemoMan && condition == TFCond_Taunting)
+        // if (!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_DemoMan && condition == TFCond_Taunting)
         // {
              
         //      int iActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -3414,7 +3403,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
         //     TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.0);
 		// }
 
-        if(condition == TFCond_RuneHaste || condition == TFCond_RuneAgility)
+        if (condition == TFCond_RuneHaste || condition == TFCond_RuneAgility)
         {
             // PrintToChatAll("RUNE HASTE ENDED ON %N, FIXING SPEED", client);
             TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
@@ -3511,19 +3500,19 @@ stock void TE_Particle(const char[] Name, float origin[3] = NULL_VECTOR, float s
     }
     TE_WriteNum("m_bResetParticles", resetParticles ? 1 : 0);
 
-    if(customcolors)
+    if (customcolors)
     {
         TE_WriteNum("m_bCustomColors", customcolors);
         TE_WriteVector("m_CustomColors.m_vecColor1", color1);
-        if(customcolors == 2)
+        if (customcolors == 2)
         {
             TE_WriteVector("m_CustomColors.m_vecColor2", color2);
         }
     }
-    if(controlpoint != -1)
+    if (controlpoint != -1)
     {
         TE_WriteNum("m_bControlPoint1", controlpoint);
-        if(controlpointattachment != -1)
+        if (controlpointattachment != -1)
         {
             TE_WriteNum("m_ControlPoint1.m_eParticleAttachment", controlpointattachment);
             TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", controlpointoffset[0]);
