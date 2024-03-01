@@ -118,13 +118,13 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 		EmitSoundToAll(ALARM, client);
 
 
-		CreateTimer(4.3, Timer_Taunt_Cancel, client);
+		CreateTimer(3.3, Timer_Taunt_Cancel, client);
 		}
 
 		if (tauntid == -1)
 		{
 
-			CreateTimer(4.3, Timer_Taunt_Cancel, client);
+			CreateTimer(3.3, Timer_Taunt_Cancel, client);
 		}	  
     }
 }

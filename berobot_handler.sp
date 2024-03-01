@@ -2248,7 +2248,7 @@ void CalculateDamageModifier(int dmg_method)
 }
 
 float damage_bonus(float x) {
-    float base = Pow(2.75/ 1.0, 1.0 / 14.0);
+    float base = Pow(2.75/ 1.0, 1.0 / 15.0);
     return 1.0 * Pow(base, x);
 }
 

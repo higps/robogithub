@@ -22,6 +22,15 @@ public Plugin:myinfo =
 float fl_NextSecondaryAttack[MAXPLAYERS+1] = {0.0,...};
 float AirblastPower = 400.0;
 
+public void OnMapStart()
+{
+	for(int i = 0; i <= MAXPLAYERS; i++)
+	{
+		fl_NextSecondaryAttack[i] = 0.0;
+	}
+	
+}
+
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if(IsRobot(client, ROBOT_NAME) && IsPlayerAlive(client))
@@ -55,4 +64,5 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				// 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fl_vel);
 				// }
 		}
+	return Plugin_Continue;
 }
