@@ -1202,7 +1202,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsBackScratcher(Weapon3))
             {
-                TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1 = 20.0);
+                stat1 = 20.0;
+                TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1);
                 TF2Attrib_SetByName(Weapon3, "health from healers reduced", 1.0);
                 
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Backscratcher: On Hit: {orange}Bleed for %0.0f seconds, {orange}No healing penalty",chat_display, stat1);
@@ -1210,7 +1211,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsReserveShooter(Weapon2))
             {
-                TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", stat1 = 0.6);
+                stat1 = 0.6;
+                TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", stat1);
                 TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.75 critType=2");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter:{orange}+25%% damage bonus vs jumping robots. {orange}+%0.0f%%%% faster deploy speed",chat_display, LessIsMore(stat1));
             }
@@ -1310,9 +1312,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsCaber(Weapon3))
             {
                 stat1 = 2.0;
-                
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Caber: {orange}%0.0f% increased damage bonus{teamcolor}",chat_display, OneIs100(stat1));
                 TF2Attrib_SetByName(Weapon3, "damage bonus", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Caber: {orange}%0.0f% increased damage bonus{teamcolor}",chat_display, OneIs100(stat1));
+                
                 // TF2Attrib_SetByName(Weapon3, "crits_become_minicrits", 1.0);
                 
                 // TF2Attrib_SetByName(Weapon3, "blast dmg to self increased", 1000.0);
@@ -1321,9 +1323,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsSkullCutter(Weapon3))
             {
                 stat1 = 1.35;
-                
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Skullcutter: {orange}%0.0f%%%% increased damage bonus{teamcolor}",chat_display, MoreIsMore(stat1));
                 TF2Attrib_SetByName(Weapon3, "damage bonus", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Skullcutter: {orange}%0.0f%%%% increased damage bonus{teamcolor}",chat_display, MoreIsMore(stat1));
+                
             }
 
             if (IsEyelander(Weapon3))
@@ -1412,31 +1414,28 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
             }
 
-            if (Weapon2 != -1)
-            {
-                int razorback = FindTFWearable(client, 57);
-                if (IsValidEntity(razorback) && Weapon1 != -1 && Weapon3 != -1)
-                {
-                    stat1 = 0.5;
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Razorback: {orange}+%0.0f%% melee damage resistance. {teamcolor}Instantly recharge, {orange}stuns spy robots.",chat_display, OneIs100(stat1));
-                    TF2Attrib_SetByName(Weapon1, "dmg from melee increased", stat1);
-                    TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
-                }else
-                {
-                    TF2Attrib_RemoveByName(Weapon1, "dmg from melee increased");
-                    TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
-                }
 
-                int cozycamper = FindTFWearable(client, 642);
-                if (IsValidEntity(cozycamper) && Weapon1 != -1 && Weapon3 != -1)
-                {
-                    stat1 = 3.0;
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cozy Camper: {orange}+%0.0f%% {teamcolor}Max Ammo",chat_display, MoreIsMore(stat1));
-                    TF2Attrib_SetByName(cozycamper, "maxammo primary increased", stat1);
-                    
-                }
+            int The_Razorback = FindTFWearable(client, 57);
+            if (IsValidEntity(The_Razorback) && Weapon1 != -1 && Weapon3 != -1)
+            {
+                stat1 = 0.5;
+                TF2Attrib_SetByName(Weapon1, "dmg from melee increased", stat1);
+                TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Razorback: {orange}+%0.0f%% melee damage resistance. {teamcolor}Instantly recharge, {orange}stuns spy robots.",chat_display, OneIs100(stat1));
+
+            }else
+            {
+                TF2Attrib_RemoveByName(Weapon1, "dmg from melee increased");
+                TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
             }
-            
+
+            int Cozy_Camper = FindTFWearable(client, 642);
+            if (IsValidEntity(Cozy_Camper) && Weapon1 != -1 && Weapon3 != -1)
+            {
+                stat1 = 3.0;
+                TF2Attrib_SetByName(Cozy_Camper, "maxammo primary increased", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cozy Camper: {orange}+%0.0f%% {teamcolor}Max Ammo",chat_display, MoreIsMore(stat1));
+            }
             if (IsHuntsMan(Weapon1))
             {
                 stat1 = 1.93;
@@ -1479,25 +1478,28 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 // stat1 = 3.0;
                 // TF2Attrib_SetByName(Weapon3, "dmg bonus while half dead", stat1);
                 TF2CustAttr_SetString(Weapon3, "pushforce-on-hit", "cond=-1 flDist=-500.0 flDistVert=400");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shahansah: {orange}On Hit:{teamcolor} Self Knockback",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shahansah: {orange}On Hit:{teamcolor} Self Knockback",chat_display);
             }
 
             if (IsSMG(Weapon2))
             {
-                TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", stat1 = 2.0);
+                stat1 = 2.0;
+                TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}SMG: {orange}On Hit: {teamcolor}Speed boost for %0.0f seconds",chat_display, stat1);
             }
 
             if (IsCarbine(Weapon2))
             {
-                TF2Attrib_SetByName(Weapon2, "minicrit_boost_when_charged", stat1 = 16.0);
+                stat1 = 16.0;
+                TF2Attrib_SetByName(Weapon2, "minicrit_boost_when_charged", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Carbine: {orange}Increased duration to %0.0f seconds",chat_display, stat1);
             }
 
             if (IsShiv(Weapon3))
             {
+                stat1 = 20.0;
                 // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
-                TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1 = 20.0);
+                TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1);
                 
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tribalmans Shiv: {orange}Bleed lasts %0.0f seconds",chat_display, stat1);
             }
@@ -1558,7 +1560,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 CreateRoboWeapon(client, "tf_weapon_spellbook", 5605, 0, 1, 4, 0);
                 TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=40.0");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display, MoreIsMore(stat1), stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display);
             }else
             {
                 TF2CustAttr_SetString(client, "Spell-Caster", "Spell=-1 Cooldown=40.0");
@@ -1625,12 +1627,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
             if (IsGunSlinger(Weapon3))
             {
-                TF2Attrib_SetByName(Weapon3, "engineer sentry build rate multiplier", stat1 = 8.0);
+                stat1 = 8.0;
+                TF2Attrib_SetByName(Weapon3, "engineer sentry build rate multiplier", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+%0.0f%%%% faster sentry build",chat_display, MoreIsMore(stat1)); 
             }
             if (IsElectric(Weapon1) || IsElectric(Weapon2))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons {orange}reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons{orange} reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
             }
             if (IsShotGun(Weapon1))
             {
@@ -1812,61 +1815,6 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Beggars Bazooka: {orange}+%0.0f clip size",chat_display, stat1);
             }
-
-            if (isLibertyLauncher(Weapon1))
-            {
-
-                stat1 = 1.6;
-                TF2Attrib_SetByName(Weapon1, "clip size bonus", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%%%% clip{teamcolor}",chat_display, MoreIsMore(stat1));
-                
-                if (Weapon2 != -1)
-                {
-                    if (IsAnyBanner(Weapon2))
-                    {
-                        stat1 = 1.5;
-                        TF2Attrib_SetByName(Weapon2, "increase buff duration", stat1);
-                        
-                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+%0.0f%%%% longer buff duration{teamcolor}",chat_display, MoreIsMore(stat1));
-                    }
-                    if (IsShotGun(Weapon2))
-                    {
-                        stat1 = 1.5;
-                        TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
-                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
-                    }
-
-                    if (IsBison(Weapon2))
-                    {
-                        stat1 = 0.65;
-                        TF2Attrib_SetByName(Weapon2, "faster reload rate", stat1);
-                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bison: {orange}+%0.0f%% faster reload",chat_display, LessIsMore(stat1));
-                    }
-                   if (IsBaseJumper(Weapon2))
-                   {
-                        stat1 = 25.0;
-                        TF2Attrib_SetByName(Weapon2, "max health additive bonus", stat1);
-                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Base Jumper: {orange}+%0.0f%% max hp",chat_display, stat1);
-                   }
-                }
-            }
-            else
-            {
-                //To avoid keeping the buff when switching weapons
-                if (Weapon2 != -1)
-                {
-                    if (IsAnyBanner(Weapon2))
-                    {
-                        
-                        TF2Attrib_RemoveByName(Weapon2, "increase buff duration");
-                        
-                    }else
-                    {
-                        TF2Attrib_RemoveByName(Weapon2, "clip size bonus");
-                    }
-                }
-            }
-
             if (IsAnyRocketLauncher(Weapon1))
             {
                 stat1 = 0.8;
@@ -1880,43 +1828,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "Blast radius increased", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+%0.0f%%%% larger explosion radius",chat_display, MoreIsMore(stat1));
             }
-
-            if (Weapon2 != -1)
-            {
-
-                int SoldierShoes = FindTFWearable(client, 133);
-                if (IsValidEntity(SoldierShoes))
-                {
-
-                    TF2Attrib_SetByName(SoldierShoes, "cancel falling damage", 1.0);
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunboats:{orange} No fall damage",chat_display);
-                    if (isLibertyLauncher(Weapon1))
-                    {
-                        stat1 = 0.1;
-                        Format(chat_display, sizeof(chat_display), "%s{orange}Liberty Launcher: -%0.0f%%%% {teamcolor}rocket jump damage reduction",chat_display, LessIsMore(stat1));
-                        TF2Attrib_SetByName(SoldierShoes, "rocket jump damage reduction", stat1);
-                    }
-                }
-
-                SoldierShoes = FindTFWearable(client, 444);
-                if (IsValidEntity(SoldierShoes))
-                {
-                    Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Mantreads:{orange} Stomp: Stun tanks, Dizzy Robots",chat_display);
-
-                    if (isLibertyLauncher(Weapon1))
-                    {
-                        stat1 = 1.3;
-                        Format(chat_display, sizeof(chat_display), "%s\n{Teamcolor}Mantreads from Liberty Launcher: {orange}+%0.0f%%%% faster move speed",chat_display, MoreIsMore(stat1));
-                        TF2Attrib_SetByName(SoldierShoes, "move speed bonus", stat1);
-                    }
-                }
-            }
-
             if (isEqualizer(Weapon3))
             {
                 stat1 = 20.0;
-                Format(chat_display, sizeof(chat_display), "%s{orange}\nEqualizer: %0.0f%%%% {teamcolor}increased rage build",chat_display, MoreIsMore(stat1));
                 TF2Attrib_SetByName(Weapon3, "mod rage on hit bonus", stat1);
+                Format(chat_display, sizeof(chat_display), "%s{orange}\nEqualizer: %0.0f%%%% {teamcolor}increased rage build",chat_display, MoreIsMore(stat1));
+                
             }
             if (IsMarketGardner(Weapon3))
             {
@@ -1937,7 +1854,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
             if (IsReserveShooter(Weapon2))
             {
-                TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", stat1 = 0.6);
+                stat1 = 0.6;
+                TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", stat1);
                 TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.75 critType=2");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter:{orange}+25%% damage bonus vs jumping robots. {orange}+%0.0f%%%% faster deploy speed",chat_display, LessIsMore(stat1));
             }
@@ -1950,6 +1868,96 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots",  "damage=1.15 only-bots=1 critType=1");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
             }
+
+            int Gunboats = FindTFWearable(client, 133);
+            if (IsValidEntity(Gunboats))
+            {
+
+                TF2Attrib_SetByName(Gunboats, "cancel falling damage", 1.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunboats:{orange} No fall damage",chat_display);
+            }
+
+            int The_Mantreads = FindTFWearable(client, 444);
+            if (IsValidEntity(The_Mantreads))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Mantreads:{orange} Stomp: Stun tanks, Dizzy Robots",chat_display);
+
+
+            }
+
+            //Need to adjust for weapon switching as the stats stay there
+            if (isLibertyLauncher(Weapon1))
+            {
+
+                stat1 = 1.6;
+                TF2Attrib_SetByName(Weapon1, "clip size bonus", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: {orange}+%0.0f%%%% clip{teamcolor}",chat_display, MoreIsMore(stat1));
+                
+                if (Weapon2 != -1)
+                {
+                    if (IsAnyBanner(Weapon2))
+                    {
+                        stat1 = 1.5;
+                        TF2Attrib_SetByName(Weapon2, "increase buff duration", stat1);
+                        
+                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Liberty Launcher: Provides banner {orange}+%0.0f%%%% longer buff duration{teamcolor}",chat_display, MoreIsMore(stat1));
+                    }
+                    if (IsShotGun(Weapon2))
+                    {
+                        stat1 = 1.5;
+                        TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
+                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}From Liberty Launcher: Shotgun: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
+                    }
+
+                    if (IsBison(Weapon2))
+                    {
+                        stat1 = 0.65;
+                        TF2Attrib_SetByName(Weapon2, "faster reload rate", stat1);
+                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}From Liberty Launcher: Bison: {orange}+%0.0f%% faster reload",chat_display, LessIsMore(stat1));
+                    }
+                   if (IsBaseJumper(Weapon2))
+                   {
+                        stat1 = 25.0;
+                        TF2Attrib_SetByName(Weapon2, "max health additive bonus", stat1);
+                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}From Liberty Launcher: Base Jumper: {orange}+%0.0f%% max hp",chat_display, stat1);
+                   }
+                    int Gunboats = FindTFWearable(client, 133);
+                    if (IsValidEntity(Gunboats))
+                    {
+                            stat1 = 0.1;
+                            TF2Attrib_SetByName(Gunboats, "rocket jump damage reduction", stat1);
+                            Format(chat_display, sizeof(chat_display), "%s{orange}Gunboats from Liberty Launcher: -%0.0f%%%% {teamcolor}rocket jump damage reduction",chat_display, LessIsMore(stat1));
+                            
+                    }
+
+                    int The_Mantreads = FindTFWearable(client, 444);
+                    if (IsValidEntity(The_Mantreads))
+                    {
+                            stat1 = 1.3;
+                            TF2Attrib_SetByName(The_Mantreads, "move speed bonus", stat1);
+                            Format(chat_display, sizeof(chat_display), "%s\n{Teamcolor}Mantreads from Liberty Launcher: {orange}+%0.0f%%%% faster move speed",chat_display, MoreIsMore(stat1));
+                            
+                    }
+                }
+            }
+            else
+            {
+                //To avoid keeping the buff when switching weapons
+                if (Weapon2 != -1)
+                {
+                    if (IsAnyBanner(Weapon2))
+                    {
+                        
+                        TF2Attrib_RemoveByName(Weapon2, "increase buff duration");
+                        
+                    }else
+                    {
+                        TF2Attrib_RemoveByName(Weapon2, "clip size bonus");
+                    }
+                }
+            }
+
+
         }
 
         RemoveJingle(client);
@@ -3165,6 +3173,22 @@ bool IsSouthernHospitality(int weapon)
 		}
 	}
 	return false;
+}
+
+bool HasRazorback(int client)
+{
+    int wearableEntity = FindTFWearable(client, 57);
+    if (!IsValidEntity(wearableEntity))
+    {
+        return false;
+    }
+
+    switch(57)
+    {
+        case 57: return true;
+    }
+
+    return false; 
 }
 
 public int FindTFWearable(int iClient, int item)

@@ -25,7 +25,7 @@ bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
 float g_RechargeCooldown = 7.0;
 float g_skill;
-float g_dash_duration = 1.5;
+float g_dash_duration = 2.5;
 float g_done_dash;
 bool isready;
 
