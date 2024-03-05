@@ -1443,7 +1443,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "maxammo primary increased", stat1);
                 TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
                 TF2Attrib_SetByName(Weapon1, "faster reload rate", stat2);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade, +%0.0f%% {teamcolor}max ammo.{orange}+20%%%% {teamcolor}fire rate bonus",chat_display, MoreIsMore(stat1), LessIsMore(stat2));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Huntsman: {orange}Projectile penetration {teamcolor}upgrade, +%0.0f%% {teamcolor}max ammo.{orange}+%0.0f%%%% {teamcolor}fire rate bonus",chat_display, MoreIsMore(stat1), LessIsMore(stat2));
             }
 
             if (IsSniperRifle(Weapon1))
@@ -1704,7 +1704,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 0.4;
                 TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
                 TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0 addcond=97 cond-duration=1.0");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vita-Saw: {orange}While Active: {orange}+%0.0f%%%% Melee resistance\n{teamcolor}Vita Saw: On Teammate hit: Apply {orange}Agility Rune for 1 seconds",chat_display, LessIsMore(stat1));    
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vita-Saw: {orange}While Active: {orange}+%0.0f%%%% Melee resistance \n{teamcolor}Vita Saw: On Teammate hit: Apply {orange}Agility Rune for 1 seconds",chat_display, LessIsMore(stat1));    
             }else
             {
                 TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
