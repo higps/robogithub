@@ -1197,7 +1197,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsJetpack(Weapon2))
             {
                 TF2Attrib_SetByName(Weapon2, "falling_impact_radius_pushback", 0.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Jetpack: {darkred}Deals no knockback{teamcolor} when landing",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Jetpack: {orange}Deals no knockback{teamcolor} when landing",chat_display);
             }
 
             if (IsBackScratcher(Weapon3))
@@ -1239,7 +1239,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
                 TF2Attrib_SetByName(Weapon3, "fire rate bonus", stat1);
                 //Math to fix the correct display from ratio
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoknight: Melee weapon {orange}+%0.0f%%%% bullet, melee, crit damage resistance and attack speed bonus",chat_display, OneIs100(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoknight: Melee weapon {orange}+%0.0f%%%% bullet, melee, crit damage resistance and attack speed bonus",chat_display, LessIsMore(stat1));
        
 
 
@@ -1301,7 +1301,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon3, "speed_boost_on_hit", stat1);
                 TF2Attrib_SetByName(Weapon3, "charge time increased", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Claid: {orange}+%0.0f%%%% {teamcolor}charge time increase, {orange}+%0.0f second speed boost {teamcolor}on hit",chat_display, stat1, stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Claid: {orange}+%0.0f%%%% {teamcolor}charge time increase, {orange}+%0.0f second speed boost {teamcolor}on hit",chat_display, OneIs100(stat1), stat1);
             }
             if (IsStockOrAllClassWeapon(Weapon3))
             {
@@ -1314,10 +1314,6 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon3, "damage bonus", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Caber: {orange}%0.0f% increased damage bonus{teamcolor}",chat_display, OneIs100(stat1));
-                
-                // TF2Attrib_SetByName(Weapon3, "crits_become_minicrits", 1.0);
-                
-                // TF2Attrib_SetByName(Weapon3, "blast dmg to self increased", 1000.0);
             }
 
             if (IsSkullCutter(Weapon3))
@@ -1330,8 +1326,6 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsEyelander(Weapon3))
             {
-
-                //attribute "add head on hit"//
                 g_Eyelander_Counter[client] = 0;
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Eyelander: {orange}Gain a head every hit{teamcolor} vs robots",chat_display);
             }
@@ -1455,7 +1449,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsBazaar(Weapon1))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bargin: {orange}On Headshot: +1 head{teamcolor}, {darkred}On Bodyshot: -2 heads{teamcolor}",chat_display);  
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bargin: {orange}On Headshot: +1 head{teamcolor}, {orange}On Bodyshot: -2 heads{teamcolor}",chat_display);  
             }
 
             if (IsClassic(Weapon1))
@@ -1509,9 +1503,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             if (IsValidWeaponForClassBuff(Weapon1))
             {
-            TF2CustAttr_SetString(client, "faster-respawn", "respawn=8.0");
-            stat1 = 0.80;
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Power: {orange}Greatly reduced respawn time\nAll weapons {orange}penetrate robots, +%0.f%%%% faster reload",chat_display, LessIsMore(stat1));
+                stat1 = 0.80;
+                TF2CustAttr_SetString(client, "faster-respawn", "respawn=8.0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Power: {orange}Greatly reduced respawn time.\nAll weapons {orange}penetrates robots and reloads +%0.0f%%%% faster",chat_display, LessIsMore(stat1));
             }
             
             if (IsValidEntity(Weapon1))
@@ -1546,7 +1540,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 3.0;
                 TF2Attrib_SetByName(Weapon3, "air dash count", stat1);
                 TF2Attrib_SetByName(Weapon3, "minicrits become crits", 1.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Atomizer: {orange}%0.0f% Bonus Jumps. {orange}Crits when it would mini-crit",chat_display, stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Atomizer: {orange}%0.0f Bonus Jumps. {orange}Crits when it would mini-crit",chat_display, stat1);
             }
 
             if (IsPistol(Weapon2))
@@ -1583,14 +1577,14 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsCritACola(Weapon2))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Crit-a-Cola: {orange}Applies %0.f second crits when used",chat_display, g_crit_a_cola_duration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Crit-a-Cola: {orange}Applies %0.0f second crits when used",chat_display, g_crit_a_cola_duration);
             }
             if (IsWinger(Weapon2))
             {
                 
                 stat1 = 1.50;
                 TF2Attrib_SetByName(Weapon2, "increased jump height", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Winger: {orange}+%0.f%%%% additional passive jump height bonus",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Winger: {orange}+%0.0f%%%% additional passive jump height bonus",chat_display, MoreIsMore(stat1));
             }
             if (IsSandman(Weapon3))
             {
@@ -1629,7 +1623,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 8.0;
                 TF2Attrib_SetByName(Weapon3, "engineer sentry build rate multiplier", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+%0.0f%%%% faster sentry build",chat_display, MoreIsMore(stat1)); 
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+%0.0f%%%% faster sentry build speed",chat_display, MoreIsMore(stat1)); 
             }
             if (IsElectric(Weapon1) || IsElectric(Weapon2))
             {
@@ -1649,10 +1643,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
              if (IsSyringeGun(Weapon1))
             {
-                //TF2CustAttr_SetString(Weapon1, "syringe-uber-gain", "combo_time=1.5 buff_duration=20.0 buff_max=20 buff_min=5");
-                // stat1 = 1.15;
-                // TF2Attrib_SetByName(Weapon1, "damage bonus", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: On Hit: {orange}Reduce robot damage by %0.00f%%%% for %0.0f second.{teamcolor}",chat_display, MoreIsMore(g_syringegun_debuff_amount), g_syringe_dmg_debuff_duration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Syringe Gun: On Hit: {orange}Reduce robot damage by %0.0f%%%% for %0.0f second.{teamcolor}",chat_display, MoreIsMore(g_syringegun_debuff_amount), g_syringe_dmg_debuff_duration);
             }
             if (IsBlutsauger(Weapon1))
             {
@@ -1809,7 +1800,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blackbox: On Hit: Up to {orange}%0.0f bonus health",chat_display, stat1);
             }
 
-            if (isBeggarsBazooka(Weapon1))
+            if (IsBeggarsBazooka(Weapon1))
             {
                 stat1 = 3.0;
                 TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", stat1);
@@ -1828,11 +1819,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "Blast radius increased", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+%0.0f%%%% larger explosion radius",chat_display, MoreIsMore(stat1));
             }
-            if (isEqualizer(Weapon3))
+            if (IsEqualizer(Weapon3))
             {
                 stat1 = 20.0;
                 TF2Attrib_SetByName(Weapon3, "mod rage on hit bonus", stat1);
-                Format(chat_display, sizeof(chat_display), "%s{orange}\nEqualizer: %0.0f%%%% {teamcolor}increased rage build",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s{orange}\nEqualizer: %0.0f%%%%{teamcolor} increased rage build",chat_display, MoreIsMore(stat1));
                 
             }
             if (IsMarketGardner(Weapon3))
@@ -1844,8 +1835,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 25.0;
                 TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit",chat_display, stat1);
                 TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");  
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit",chat_display, stat1);
+                
             }
 
             if (IsElectric(Weapon1) || IsElectric(Weapon2))
@@ -1882,11 +1874,10 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Mantreads:{orange} Stomp: Stun tanks, Dizzy Robots",chat_display);
 
-
             }
 
             //Need to adjust for weapon switching as the stats stay there
-            if (isLibertyLauncher(Weapon1))
+            if (IsLibertyLauncher(Weapon1))
             {
 
                 stat1 = 1.6;
@@ -1919,7 +1910,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                    {
                         stat1 = 25.0;
                         TF2Attrib_SetByName(Weapon2, "max health additive bonus", stat1);
-                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}From Liberty Launcher: Base Jumper: {orange}+%0.0f%% max hp",chat_display, stat1);
+                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}From Liberty Launcher: Base Jumper: {orange}+%0.0f max hp",chat_display, stat1);
                    }
                     int Gunboats = FindTFWearable(client, 133);
                     if (IsValidEntity(Gunboats))
@@ -1935,7 +1926,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                     {
                             stat1 = 1.3;
                             TF2Attrib_SetByName(The_Mantreads, "move speed bonus", stat1);
-                            Format(chat_display, sizeof(chat_display), "%s\n{Teamcolor}Mantreads from Liberty Launcher: {orange}+%0.0f%%%% faster move speed",chat_display, MoreIsMore(stat1));
+                            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Mantreads from Liberty Launcher: {orange}+%0.0f%%%% faster move speed",chat_display, MoreIsMore(stat1));
                             
                     }
                 }
@@ -2513,7 +2504,7 @@ bool IsBlackBox(int weapon)
 	return false;
 }
 
-bool isBeggarsBazooka(int weapon)
+bool IsBeggarsBazooka(int weapon)
 {
 	if (weapon == -1 && weapon <= MaxClients) return false;
 	
@@ -2529,7 +2520,7 @@ bool isBeggarsBazooka(int weapon)
 }
 
 
-bool isLibertyLauncher(int weapon)
+bool IsLibertyLauncher(int weapon)
 {
 	if (weapon == -1 && weapon <= MaxClients) return false;
 	
@@ -2544,7 +2535,7 @@ bool isLibertyLauncher(int weapon)
 	return false;
 }
 
-bool isEqualizer(int weapon)
+bool IsEqualizer(int weapon)
 {
 	if (weapon == -1 && weapon <= MaxClients) return false;
 	
@@ -3231,20 +3222,6 @@ bool IsValidWeaponForClassBuff(int weapon)
         return false;       
     }
 }
-// bool IsSapper(int weapon)
-// {
-//     if (weapon == -1 && weapon <= MaxClients) return false;
-	
-// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-// 	{
-// 		//If others are added, add them here
-// 	case 735, 736: 
-// 		{
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
 
 
 //Functions to deal with different on kill to on hit stuff

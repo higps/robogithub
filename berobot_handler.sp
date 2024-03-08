@@ -912,32 +912,45 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             if(g_f_Damage_Bonus > 1.0)
             {
 
-                // if(damagecustom != TF_CUSTOM_BACKSTAB)
-                // {
-                //     switch(critType)
-                //     {
-                //         case CritType_None:
-                //         {
-                //             damage *= g_f_Damage_Bonus;
-                //         }
-                //         case CritType_MiniCrit:
-                //         {
-                //             damage *= g_f_Damage_Bonus/1.15;
-                //         }
-                //         case CritType_Crit:
-                //         {
-                //             damage *= g_f_Damage_Bonus/1.15;
-                //         }
-                //     }
+                if(damagecustom != TF_CUSTOM_BACKSTAB)
+                {
+                    float extraBonus = g_f_Damage_Bonus - 1.0; // Calculate the bonus above the base damage
+
+                    switch(critType)
+                    {
+                        case CritType_None:
+                        {
+                            damage *= g_f_Damage_Bonus;
+                        }
+                        case CritType_MiniCrit:
+                        {
+                            
+                            // Reduce the bonus by 10%, but ensure it does not go below 1.0
+                            
+                            float reducedExtraBonus = extraBonus * 0.9; // Apply 10% reduction to the extra bonus
+                            damage *= 1.0 + reducedExtraBonus; // Add the reduced extra bonus back to the base multiplier of 1.0
+                        }
+                        case CritType_Crit:
+                        {
+                            // Reduce the bonus by 20%, but ensure it does not go below 1.0
+                            float reducedExtraBonus = extraBonus * 0.8; // Apply 20% reduction to the extra bonus
+                            damage *= 1.0 + reducedExtraBonus; // Add the reduced extra bonus back to the base multiplier of 1.0
+                        }
+                    }
                     
-                // }else
-                // {
+                }else
+                {
                     damage *= g_f_Damage_Bonus;
-                // }
+                }
             //42%
             // 71
                 return Plugin_Changed;
 
+            }
+            else
+            {
+                damage *= g_f_Damage_Bonus;
+                return Plugin_Changed;
             }
             // PrintToChatAll("Damage after is %f", damage);
             
