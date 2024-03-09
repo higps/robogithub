@@ -1510,14 +1510,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             
             if (IsValidEntity(Weapon1))
             {
+                stat1 = 0.80;
                 TF2Attrib_SetByName(Weapon1, "Reload time increased", stat1);
                 TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
             }
             
             if (IsValidEntity(Weapon2))
             {
-            TF2Attrib_SetByName(Weapon2, "Reload time increased", stat1);
-            TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
+                stat1 = 0.80;
+                TF2Attrib_SetByName(Weapon2, "Reload time increased", stat1);
+                TF2Attrib_SetByName(Weapon2, "projectile penetration", 1.0);
             }
             
 
@@ -1525,11 +1527,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.5;
                 stat2 = 0.8;
-                // TF2Attrib_SetByName(client, "maxammo primary increased", 1.5);
-                // // TF2Attrib_SetByName(Weapon2, "maxammo secondary increased", 1.5);
+                stat3 = 20.0;
                 TF2Attrib_AddCustomPlayerAttribute(client, "maxammo primary increased", stat1);
                 TF2Attrib_AddCustomPlayerAttribute(client, "maxammo secondary increased", stat1);
-                stat3 = 20.0;
                 TF2Attrib_SetByName(Weapon3, "max health additive bonus", stat3);
 
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bat: All weapons gain {orange}+%0.0f%% maxammo and +%0.0f%%% faster reload",chat_display, MoreIsMore(stat1), LessIsMore(stat2));
