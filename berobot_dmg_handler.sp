@@ -399,6 +399,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                 }
 
+                
+
             }
 
              if (iClassAttacker == TFClass_Heavy)
@@ -1196,8 +1198,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsJetpack(Weapon2))
             {
-                TF2Attrib_SetByName(Weapon2, "falling_impact_radius_pushback", 0.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Jetpack: {orange}Deals no knockback{teamcolor} when landing",chat_display);
+                stat1 = 0.0;
+                stat2 = 1.0;
+                TF2Attrib_SetByName(Weapon2, "falling_impact_radius_pushback", stat1);
+                TF2Attrib_SetByName(Weapon2, "thermal_thruster_air_launch", stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Jetpack: {orange}Able to re-launch while already in-flight. {teamcolor}Deals no knockback when landing",chat_display);
             }
 
             if (IsBackScratcher(Weapon3))
@@ -1694,8 +1699,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 0.4;
                 TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
-                TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0 addcond=97 cond-duration=1.0");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vita-Saw: {orange}While Active: {orange}+%0.0f%%%% Melee resistance \n{teamcolor}Vita Saw: On Teammate hit: Apply {orange}Agility Rune for 1 seconds",chat_display, LessIsMore(stat1));    
+                TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0 addcond=97 cond-duration=2.0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vita-Saw: {orange}While Active: {orange}+%0.0f%%%% Melee resistance \n{teamcolor}Vita Saw: On Teammate hit: Apply {orange}Agility Rune for 2 seconds",chat_display, LessIsMore(stat1));    
             }else
             {
                 TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");

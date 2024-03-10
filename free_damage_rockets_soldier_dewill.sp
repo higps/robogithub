@@ -13,7 +13,6 @@
 #define ROBOT_CLASS "Soldier"
 #define ROBOT_SUBCLASS "Rockets"
 #define ROBOT_DESCRIPTION "Ground Striker"
-#define ROBOT_COST 2.5
 #define ROBOT_TIPS "Rapid Airstrike\nPress Special Attack to enter stationary rapid fire mode\nReduced damage to buildings"
 #define ROBOT_ON_DEATH "Dewill can't move while in rapid fire mode, leaving him open for damage"
 
@@ -109,8 +108,10 @@ MakeGiantSoldier(client)
 	}
 	CreateTimer(0.0, Timer_Switch, client);
 	SetModel(client, GSOLDIER);
-	RoboSetHealth(client,TFClass_Soldier, 3800, 1.5);
-	
+
+	int bonus_hp = 40 * GetCurrentHumanCount();
+	RoboSetHealth(client,TFClass_Soldier, 3500 + bonus_hp, 1.5);
+
 	float OverHealRate = 1.5;
 
 
