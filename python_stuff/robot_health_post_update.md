@@ -1,10 +1,10 @@
 |     | Name             | Class    | Subclass      |   Health |   RC Cost |   Health Bonus Per Player |   Health Before Patch |   Health Bonus Per Player Before Patch |
 |----:|:-----------------|:---------|:--------------|---------:|----------:|--------------------------:|----------------------:|---------------------------------------:|
-|   0 | Demopan          | DemoMan  | Melee         |     7500 |        50 |                       100 |                   nan |                                    nan |
-|   1 | Nuker            | DemoMan  | Grenades      |     5000 |        50 |                       100 |                   nan |                                    nan |
-|   2 | Kommisar Krit    | Heavy    | Hitscan       |     7500 |        60 |                       100 |                   nan |                                    nan |
-|   3 | SkillTron        | Pyro     | Flames        |     5000 |        50 |                       100 |                   nan |                                    nan |
-|   4 | General Crits    | Soldier  | Rockets       |     5800 |        50 |                        75 |                   nan |                                    nan |
+|   0 | Demopan          | DemoMan  | Melee         |     7500 |        50 |                       100 |                  7500 |                                     50 |
+|   1 | Nuker            | DemoMan  | Grenades      |     5000 |        50 |                       100 |                  5000 |                                      0 |
+|   2 | Kommisar Krit    | Heavy    | Hitscan       |     7500 |        60 |                       100 |                  7500 |                                    100 |
+|   3 | SkillTron        | Pyro     | Flames        |     5000 |        50 |                       100 |                  5000 |                                     25 |
+|   4 | General Crits    | Soldier  | Rockets       |     5800 |        50 |                        75 |                  5800 |                                     75 |
 |   5 | Agro             | Pyro     | Flames        |     3000 |         0 |                        28 |                  3000 |                                      0 |
 |   6 | Lister           | Pyro     | Flames        |     3000 |         0 |                        28 |                  3000 |                                      0 |
 |   7 | Rocket Man       | Pyro     | Flames        |     3500 |         0 |                        25 |                  3500 |                                      0 |
@@ -17,9 +17,9 @@
 |  14 | Mortar Mack      | Demoman  | Grenades      |     2700 |         0 |                        60 |                  3000 |                                      0 |
 |  15 | Raid             | Demoman  | Grenades      |     3800 |         0 |                        60 |                  4500 |                                      0 |
 |  16 | Solarlight       | Demoman  | Grenades      |     2700 |         0 |                        60 |                  2000 |                                      0 |
-|  17 | Big Joey         | Heavy    | Hitscan       |     5000 |         0 |                         0 |                   nan |                                    nan |
-|  18 | HiGPS            | Heavy    | Hitscan       |     5000 |         0 |                         0 |                   nan |                                    nan |
-|  19 | Riotcop          | Heavy    | Hitscan       |     5000 |         0 |                         0 |                   nan |                                    nan |
+|  17 | Big Joey         | Heavy    | Hitscan       |     5000 |         0 |                         0 |                  5000 |                                      0 |
+|  18 | HiGPS            | Heavy    | Hitscan       |     5000 |         0 |                         0 |                  5000 |                                      0 |
+|  19 | Riotcop          | Heavy    | Hitscan       |     5000 |         0 |                         0 |                  5000 |                                      0 |
 |  20 | B4nny            | Scout    | Hitscan       |     1250 |         0 |                        40 |                  1250 |                                      0 |
 |  21 | Funke            | Scout    | Melee         |     1250 |         0 |                       100 |                  1250 |                                      0 |
 |  22 | Mecha Face       | Scout    | Hitscan       |     1250 |         0 |                        40 |                  1250 |                                      0 |
@@ -55,13 +55,13 @@
 |  52 | Jbird            | Sniper   | Sniper        |     1250 |         0 |                        60 |                  1500 |                                      0 |
 |  53 | Skeeter          | Sniper   | Sniper        |     1250 |         0 |                        60 |                  1500 |                                      0 |
 |  54 | SpaceGuyOnline   | Sniper   | Sniper        |     1250 |         0 |                        60 |                  1500 |                                      0 |
-|  55 | EXEcutioner      | Demoman  | Tank          |     5000 |         0 |                       250 |                   nan |                                    nan |
-|  56 | Bearded Expense  | Heavy    | Tank          |     5000 |         0 |                       250 |                   nan |                                    nan |
-|  57 | Gotham Protector | Heavy    | Tank          |     5000 |         0 |                       100 |                   nan |                                    nan |
-|  58 | Megaton          | Heavy    | Tank          |     5000 |         0 |                       250 |                   nan |                                    nan |
+|  55 | EXEcutioner      | Demoman  | Tank          |     5000 |         0 |                       250 |                  5000 |                                    250 |
+|  56 | Bearded Expense  | Heavy    | Tank          |     5000 |         0 |                       250 |                  5000 |                                    250 |
+|  57 | Gotham Protector | Heavy    | Tank          |     5000 |         0 |                       100 |                  5000 |                                    100 |
+|  58 | Megaton          | Heavy    | Tank          |     5000 |         0 |                       250 |                  5000 |                                    250 |
 |  59 | Terminator       | Heavy    | Tank          |     3000 |         0 |                         0 |                  3000 |                                      0 |
 |  60 | Aero             | Pyro     | Flames        |     4000 |        12 |                        25 |                  4000 |                                      0 |
-|  61 | FireLord         | Pyro     | Flames        |     5000 |        30 |                         0 |                   nan |                                    nan |
+|  61 | FireLord         | Pyro     | Flames        |     5000 |        30 |                         0 |                  5000 |                                      0 |
 |  62 | HeatSink         | Pyro     | Flames        |     3000 |        10 |                       175 |                  3000 |                                    175 |
 |  63 | Laugh Extractor  | Pyro     | Flames        |     3000 |        20 |                        50 |                  3000 |                                      0 |
 |  64 | Expl-Odin        | Demoman  | Grenades      |     3500 |        20 |                        50 |                  4000 |                                      0 |
@@ -70,10 +70,10 @@
 |  67 | Stickler         | Demoman  | Grenades      |     3500 |        12 |                        50 |                  3500 |                                      0 |
 |  68 | Zero G           | Demoman  | Grenades      |     3500 |        15 |                        50 |                  3500 |                                      0 |
 |  69 | ZIP Bomb         | Demoman  | Grenades      |     3500 |        12 |                       100 |                  3500 |                                      0 |
-|  70 | Deflector MKII   | Heavy    | Hitscan       |     6000 |        20 |                       100 |                   nan |                                    nan |
-|  71 | Firewall         | Heavy    | Hitscan       |     6000 |        30 |                         0 |                   nan |                                    nan |
-|  72 | Rager            | Heavy    | Hitscan       |     6000 |        30 |                         0 |                   nan |                                    nan |
-|  73 | Shredder         | Heavy    | Hitscan       |     6000 |        30 |                         0 |                   nan |                                    nan |
+|  70 | Deflector MKII   | Heavy    | Hitscan       |     6000 |        20 |                       100 |                  6000 |                                    100 |
+|  71 | Firewall         | Heavy    | Hitscan       |     6000 |        30 |                         0 |                  6000 |                                      0 |
+|  72 | Rager            | Heavy    | Hitscan       |     6000 |        30 |                         0 |                  6000 |                                      0 |
+|  73 | Shredder         | Heavy    | Hitscan       |     6000 |        30 |                         0 |                  6000 |                                      0 |
 |  74 | Backscatter      | Scout    | Hitscan       |     2000 |        20 |                        60 |                  2000 |                                      0 |
 |  75 | Hammerhead       | Scout    | Hitscan       |     2000 |        15 |                        60 |                  2000 |                                      0 |
 |  76 | Archibolt        | Demoman  | Melee         |     3500 |        12 |                       175 |                  3500 |                                    175 |
@@ -110,8 +110,8 @@
 | 107 | StabbyStabby     | Spy      | Spy           |     1200 |        15 |                        50 |                  1200 |                                      0 |
 | 108 | Trickster        | Spy      | Spy           |     2000 |        15 |                        50 |                  2000 |                                      0 |
 | 109 | Warper           | Spy      | Spy           |     2000 |        12 |                        50 |                  2000 |                                      0 |
-| 110 | Hacked Slasher   | Demoman  | Tank          |     5000 |        12 |                       350 |                   nan |                                    nan |
-| 111 | Big Chief        | Heavy    | Tank          |     5000 |        12 |                       350 |                   nan |                                    nan |
-| 112 | Pancop           | Heavy    | Tank          |     5000 |        25 |                       350 |                   nan |                                    nan |
-| 113 | Sensor Armstrong | Heavy    | Tank          |     5000 |        25 |                       350 |                   nan |                                    nan |
+| 110 | Hacked Slasher   | Demoman  | Tank          |     5000 |        12 |                       350 |                  5000 |                                    350 |
+| 111 | Big Chief        | Heavy    | Tank          |     5000 |        12 |                       350 |                  5000 |                                    350 |
+| 112 | Pancop           | Heavy    | Tank          |     5000 |        25 |                       350 |                  5000 |                                    350 |
+| 113 | Sensor Armstrong | Heavy    | Tank          |     5000 |        25 |                       350 |                  5000 |                                    350 |
 | 114 | Back Up          | Soldier  | Tank          |     3500 |        20 |                        60 |                  3800 |                                     50 |
