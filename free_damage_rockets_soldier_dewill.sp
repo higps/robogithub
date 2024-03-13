@@ -110,10 +110,8 @@ MakeGiantSoldier(client)
 	SetModel(client, GSOLDIER);
 
 	int bonus_hp = 40 * GetCurrentHumanCount();
-	RoboSetHealth(client,TFClass_Soldier, 3500 + bonus_hp, 1.5);
-
 	float OverHealRate = 1.5;
-
+	RoboSetHealth(client,TFClass_Soldier, 3500 + bonus_hp, OverHealRate);
 
 
 	float scale = 1.65;
