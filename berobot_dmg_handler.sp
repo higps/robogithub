@@ -580,14 +580,14 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         TFTeam iTeam = view_as<TFTeam>(GetEntProp(victim, Prop_Send, "m_iTeamNum"));
                         // int attackerID = GetClientUserId(attacker);
                         // int victimID = GetClientUserId(victim);
-                        TFClassType iClassVictim = TF2_GetPlayerClass(victim);
+                        // TFClassType iClassVictim = TF2_GetPlayerClass(victim);
 
                         //TF2_DisguisePlayer(attackerID, iTeam, iClassVictim, victimID);
                         DataPack info = new DataPack();
                             info.Reset();
                             info.WriteCell(GetClientUserId(attacker));
                             info.WriteCell(iTeam);
-                            info.WriteCell(iClassVictim);
+                            info.WriteCell(TFClass_Spy);
                             info.WriteCell(GetClientUserId(victim));
 
                         RequestFrame(Disguiseframe, info);                  
@@ -1770,7 +1770,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsSpycicle(Weapon3))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spycicle:{orange}On Backstab: Slows enemy attack speed by -%0.0f%%%% for %0.0f seconds",chat_display, LessIsMore(g_spycicle_fire_speed_debuff), g_spycicle_fire_Speed_debuff_duration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spycicle: {orange}On Backstab: Slows enemy attack speed by -%0.0f%%%% for %0.0f seconds",chat_display, LessIsMore(g_spycicle_fire_speed_debuff), g_spycicle_fire_Speed_debuff_duration);
+            }
+
+            if (IsYer(Weapon3))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your Eternal Reward: {orange}On Backstab: Disguise as enemy spy",chat_display);
             }
 
             if (IsEnforcer(Weapon1))

@@ -446,7 +446,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	return Plugin_Continue;
 }
-// bool g_b_CanGetTeled[MAXPLAYERS + 1];
+bool g_b_touching_spawn[MAXPLAYERS + 1];
 
 public Action OnTouch(int client, int ent)
 {
@@ -465,6 +465,7 @@ public Action OnTouch(int client, int ent)
 				DrawHUD(client);
 				// PrintCenterText(client, "Touching Spawn Robo");
 				// g_b_CanGetTeled[client] = true;
+				g_b_touching_spawn[client] = true;
 			}
 			else if (!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Spy)
 			{
@@ -474,6 +475,7 @@ public Action OnTouch(int client, int ent)
 				{
 					UpdateCharge(client);
 					DrawHUD(client);
+					g_b_touching_spawn[client] = true;
 					// PrintCenterText(client, "Touching Enemy Spawn Spy");
 					// g_b_CanGetTeled[client] = true;
 				}
@@ -481,6 +483,10 @@ public Action OnTouch(int client, int ent)
 		
 				
 				
+		}
+		else
+		{
+			g_b_touching_spawn[client] = false;
 		}
 	}
 	return Plugin_Continue;
