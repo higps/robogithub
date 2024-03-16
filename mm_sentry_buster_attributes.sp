@@ -107,7 +107,7 @@ Action OnTouch(int client, int ent)
 
 				if(iClientTeam != iBuildingTeam && !g_Taunt_clamp)
 				{
-					SetEntPropEnt(ent, Prop_Send, "m_bGlowEnabled", 1);
+					// SetEntPropEnt(ent, Prop_Send, "m_bGlowEnabled", 1);
 					//PrintToChatAll("not the same team");
 					GetReadyToExplode(client);
 					FakeClientCommand(client, "taunt");

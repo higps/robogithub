@@ -525,7 +525,7 @@ MakeRobotFrame(client)
     
 
 
- if (i_hConfig.JumpToKey("weapons"))
+    if (i_hConfig.JumpToKey("weapons"))
     {
         
         if (i_hConfig.GotoFirstSubKey())
@@ -733,6 +733,12 @@ MakeRobotFrame(client)
             i_hConfig.GoBack();
         }
 
+    int health = 1000;
+    if(i_hConfig.GetNum("health"))
+    {
+        health = i_hConfig.GetNum("health", health);
+    }
+
     int bonus_hp = 0;
     if(i_hConfig.GetNum("health_bonus_per_player"))
     {
@@ -741,7 +747,7 @@ MakeRobotFrame(client)
         bonus_hp *= GetCurrentHumanCount();
     }
 
-    RoboSetHealth(client, iRobot_class, robot.health + bonus_hp);
+    RoboSetHealth(client, iRobot_class, health + bonus_hp);
 
     // Reading player attributes and setting them.
     if (i_hConfig.JumpToKey("player_attributes"))

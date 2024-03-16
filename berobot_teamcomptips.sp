@@ -17,7 +17,7 @@ float g_recommended_medics_per_robot = 0.5;
 public Plugin myinfo =
 {
 	name = "berobot_teamcomptip",
-	author = "heavy is gps",
+	author = "Heavy Is GPS | Bmod.TF",
 	description = "Manned Machines Team Comp Suggester",
 	version = "0.1",
 	url = "https://github.com/higps/robogithub"

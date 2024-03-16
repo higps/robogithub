@@ -6,13 +6,14 @@
 #include <tf_ontakedamage>
 #include <sdkhooks>
 #include <tf_custom_attributes>
+#include <stocksoup/tf/entity_prefabs>
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Buster"
 #define ROBOT_CLASS "Sentry"
 #define ROBOT_ROLE "Sentry Buster"
 #define ROBOT_SUBCLASS "Sentry Buster"
-#define ROBOT_DESCRIPTION "Touch sentries to blow up"
+#define ROBOT_DESCRIPTION "Tags all sentries, Touch sentries to blow up"
 #define ROBOT_TIPS "Hit enemies, touch sentries, or taunt to activate the explosion"
 #define ROBOT_COST 10.0
 #define ROBOT_ON_DEATH "You can hide behind buildings to not get blown up by the explotion\nThe explosion is faster than regular mvm\nTouching the buster with a sentry will cause it to blow up"
@@ -192,7 +193,43 @@ stock void GiveGiantDemoKnight(int client)
 			SetEntPropFloat(Weapon1, Prop_Send, "m_flModelScale", 0.01);
 		}
 		TF2CustAttr_SetString(client, "Sentry Buster", "damage=25000.0 radius=300.0 lineofsight=1 timer=1.25");
-		
-		
+		int team = GetClientTeam(client);
+		LoopThroughBuildings(client,team);
+		// TF2_AttachBasicGlow(client);
+		// int team = GetEntProp(client, Prop_Data, "m_iTeamNum");
+		// 	if (GetEntProp(ent, Prop_Send, "m_iTeamNum") != team)
+		// 	continue;
 	}
+
+
+}
+
+
+// Example function to iterate through all buildings
+void LoopThroughBuildings(int client, int team)
+{
+    // First, get the client's team
+    
+    // Get the client's team
+	int i = -1;
+	while ((i = FindEntityByClassname2(i, "obj_sentrygun")) != -1)
+	{
+		if (IsValidEntity(i))
+		{
+			int iBuildingTeam = GetEntProp(i, Prop_Send, "m_iTeamNum");
+			PrintToChatAll("Team was %i, building team was %i", team, iBuildingTeam);
+
+			if(iBuildingTeam != team)
+			{
+				SetEntPropEnt(i, Prop_Send, "m_bGlowEnabled", 1);
+			}
+		}
+	}
+}
+
+int FindEntityByClassname2(int startEnt, char[] classname)
+{
+	/* If startEnt isn't valid shifting it back to the nearest valid one */
+	while (startEnt > -1 && !IsValidEntity(startEnt)) startEnt--;
+	return FindEntityByClassname(startEnt, classname);
 }

@@ -267,6 +267,8 @@ public void OnPluginStart()
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
     HookEvent("teamplay_round_start", Event_Waiting_Abouttoend, EventHookMode_Post);
 
+
+
     HookEvent("teamplay_point_captured", Event_Teamplay_Point_Captured, EventHookMode_Post);
     
     HookEvent("player_death", Event_Death, EventHookMode_Post);
@@ -789,6 +791,21 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
             if(g_cv_bDebugMode) PrintToChatAll("Teamswitch detected!");
 
             ResetCoins();
+            PrintToChatAll("attempting reset");
+            //Logic to handle resetting you if you are a paid robot, uses a copied function from berobot_teamcomptips.sp, should be optimized later
+            for(int i = 0; i <= MaxClients; i++)
+            {
+                if(IsAnyRobot(i))
+                {
+                    char robotName[NAMELENGTH];
+                    GetRobot(i, robotName, sizeof(robotName));
+                    if (IsPaidRobot(i, robotName))
+                    {
+                        TrashRobot(i);
+                        Internal_SetRandomRobot(i);
+                    }
+                }
+            }
 
             switch(g_RoboTeam)
             {
@@ -2580,3 +2597,12 @@ public void OnEntityCreated(int iEntity, const char[] sClassName)
 //     }
 //     return CurrentHumans;
 // }
+
+bool IsPaidRobot(int clientId, char robotName[NAMELENGTH])
+{
+    Robot robot;
+    GetRobotDefinition(robotName, robot);
+
+    RobotCoins robotCoins = robot.restrictions.GetRobotCoinsFor(clientId);
+    return robotCoins.Active;
+}

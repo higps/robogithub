@@ -87,13 +87,13 @@ float g_protection_rune_duration = 1.0;
 
 float g_electric_rage_reduction = 5.0;
 
-float g_HumanMiniGunDmGPenalty = 0.8;
+// float g_HumanMiniGunDmGPenalty = 0.55;
 
 float g_wrap_duration = 5.0;
 
 float g_crit_a_cola_duration = 2.0;
 
-#define SPY_ROBOT_STAB	"weapons/saxxy_impact_gen_01.wav"
+// #define SPY_ROBOT_STAB	"weapons/saxxy_impact_gen_01.wav"
 // #define SPY_ROBOT_STAB	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 
 int ParticleStorage[MAXPLAYERS + 1] = {0, ...};
@@ -147,7 +147,7 @@ public Action Event_PlayerDeath(Event event, char[] name, bool dontBroadcast){
 
 public void OnMapStart()
 {
-    PrecacheSound(SPY_ROBOT_STAB);
+    // PrecacheSound(SPY_ROBOT_STAB);
 }
 
 public Action Command_ToggleMMHumanDisplay(int client, int args)
@@ -939,22 +939,22 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
                 }   
             }
-            /*Damage code for Heavy*/
-            if (iClassAttacker == TFClass_Heavy)
-            {
-                int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
+            // /*Damage code for Heavy*/
+            // if (iClassAttacker == TFClass_Heavy)
+            // {
+            //     int iWeapon = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
                     
-                if (weapon == iWeapon)
-                {
-                    if (g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
-                    damage *= g_HumanMiniGunDmGPenalty;
-                    if (g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
-                    return Plugin_Changed;
+            //     if (weapon == iWeapon)
+            //     {
+            //         if (g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+            //         damage *= g_HumanMiniGunDmGPenalty;
+            //         if (g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+            //         return Plugin_Changed;
                     
-                }
+            //     }
                     
                     
-            }
+            // }
 
             if (IsElectric(weapon))
             {
@@ -1352,12 +1352,18 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (TF2_GetPlayerClass(client) == TFClass_Heavy)
         {
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your minigun deals {orange}-%0.00f %%%% damage{teamcolor} vs robots",chat_display, LessIsMore(g_HumanMiniGunDmGPenalty));
+            if (IsAnyMinigun(Weapon1))
+            {
+                stat1 = 0.6;
+                TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Minigun deal {orange}-%0.00f %%%% damage{teamcolor} vs robots",chat_display, LessIsMore(stat1));
+            }
+            
 
             if (IsNatascha(Weapon1))
             {
                 stat1 = 3.0;
-                stat2 = 1.2;
+                stat2 = 1.3;
                 TF2Attrib_SetByName(Weapon1, "speed_boost_on_hit", stat1);
                 TF2Attrib_SetByName(Weapon1, "aiming movespeed increased", stat2);
                 
@@ -1366,7 +1372,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsTomiSlav(Weapon1))
             {
-                stat1 = 0.4;
+                stat1 = 0.25;
                 stat2 = 1.0;
 
                 TF2Attrib_SetByName(Weapon1, "minigun spinup time decreased", stat1);
@@ -1450,6 +1456,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "explosive sniper shot", 1.0);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sniper Rifle: {orange}Explosive headshots {teamcolor}upgrade",chat_display);
             
+            }
+
+            if (IsHeatmaker(Weapon1))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Hitman's Heatmaker: {orange}Gain focus on damage",chat_display);  
             }
 
             if (IsBazaar(Weapon1))
@@ -2132,6 +2143,21 @@ bool IsHeatmaker(int weapon)
 }
 
 bool IsClassic(int weapon)
+{
+	if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		
+	case 1098: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsMachina(int weapon)
 {
 	if (weapon == -1 && weapon <= MaxClients) return false;
 	
@@ -2915,6 +2941,21 @@ bool IsBackScratcher(int weapon)
 	{
 		//Back scratcher
 	case 326: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsAnyMinigun(int weapon)
+{
+	if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+
+	case 15, 202, 41, 298, 312, 424, 654, 793, 802, 811, 832, 850, 882, 891, 900, 909, 958, 967, 15004, 15020, 15026, 15031, 15040, 15055, 15086, 15087, 15088, 15098, 15099, 15123, 15124, 15125, 15147: 
 		{
 			return true;
 		}
