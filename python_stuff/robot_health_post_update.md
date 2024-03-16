@@ -17,9 +17,9 @@
 |  15 | Mortar Mack      | Demoman  | Grenades      |     2700 |         0 |                        60 |               3780 |
 |  16 | Raid             | Demoman  | Grenades      |     3800 |         0 |                        60 |               4880 |
 |  17 | Solarlight       | Demoman  | Grenades      |     2700 |         0 |                        60 |               3780 |
-|  18 | Big Joey         | Heavy    | Hitscan       |     5000 |         0 |                         0 |               5000 |
-|  19 | HiGPS            | Heavy    | Hitscan       |     5000 |         0 |                         0 |               5000 |
-|  20 | Riotcop          | Heavy    | Hitscan       |     5000 |         0 |                         0 |               5000 |
+|  18 | Big Joey         | Heavy    | Hitscan       |     3920 |         0 |                        60 |               5000 |
+|  19 | HiGPS            | Heavy    | Hitscan       |     3920 |         0 |                        60 |               5000 |
+|  20 | Riotcop          | Heavy    | Hitscan       |     3920 |         0 |                        60 |               5000 |
 |  21 | B4nny            | Scout    | Hitscan       |     1250 |         0 |                        40 |               1970 |
 |  22 | Funke            | Scout    | Melee         |     1250 |         0 |                       100 |               3050 |
 |  23 | Mecha Face       | Scout    | Hitscan       |     1250 |         0 |                        40 |               1970 |
@@ -62,7 +62,7 @@
 |  60 | Megaton          | Heavy    | Tank          |     5000 |         0 |                        75 |               6350 |
 |  61 | Terminator       | Heavy    | Tank          |     3000 |         0 |                        75 |               4350 |
 |  62 | Aero             | Pyro     | Flames        |     4000 |        12 |                        25 |               4450 |
-|  63 | FireLord         | Pyro     | Flames        |     5000 |        30 |                         0 |               5000 |
+|  63 | FireLord         | Pyro     | Flames        |     3920 |        30 |                        60 |               5000 |
 |  64 | HeatSink         | Pyro     | Flames        |     3000 |        10 |                        75 |               4350 |
 |  65 | Laugh Extractor  | Pyro     | Flames        |     3000 |        20 |                        50 |               3900 |
 |  66 | Expl-Odin        | Demoman  | Grenades      |     3500 |        20 |                        50 |               4400 |
@@ -71,10 +71,10 @@
 |  69 | Stickler         | Demoman  | Grenades      |     3500 |        12 |                        50 |               4400 |
 |  70 | Zero G           | Demoman  | Grenades      |     3500 |        15 |                        50 |               4400 |
 |  71 | ZIP Bomb         | Demoman  | Grenades      |     3500 |        12 |                       100 |               5300 |
-|  72 | Deflector MKII   | Heavy    | Hitscan       |     6000 |        20 |                         0 |               6000 |
-|  73 | Firewall         | Heavy    | Hitscan       |     6000 |        30 |                         0 |               6000 |
-|  74 | Rager            | Heavy    | Hitscan       |     6000 |        30 |                         0 |               6000 |
-|  75 | Shredder         | Heavy    | Hitscan       |     6000 |        30 |                         0 |               6000 |
+|  72 | Deflector MKII   | Heavy    | Hitscan       |     4920 |        20 |                        60 |               6000 |
+|  73 | Firewall         | Heavy    | Hitscan       |     4920 |        30 |                        60 |               6000 |
+|  74 | Rager            | Heavy    | Hitscan       |     4920 |        30 |                        60 |               6000 |
+|  75 | Shredder         | Heavy    | Hitscan       |     4920 |        30 |                        60 |               6000 |
 |  76 | Backscatter      | Scout    | Hitscan       |     2000 |        20 |                        60 |               3080 |
 |  77 | Hammerhead       | Scout    | Hitscan       |     2000 |        15 |                        60 |               3080 |
 |  78 | Archibolt        | Demoman  | Melee         |     3500 |        12 |                        75 |               4850 |
