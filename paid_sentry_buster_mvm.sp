@@ -217,7 +217,7 @@ void LoopThroughBuildings(int client, int team)
 		if (IsValidEntity(i))
 		{
 			int iBuildingTeam = GetEntProp(i, Prop_Send, "m_iTeamNum");
-			PrintToChatAll("Team was %i, building team was %i", team, iBuildingTeam);
+			// PrintToChatAll("Team was %i, building team was %i", team, iBuildingTeam);
 
 			if(iBuildingTeam != team)
 			{
