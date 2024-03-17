@@ -791,7 +791,7 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
             if(g_cv_bDebugMode) PrintToChatAll("Teamswitch detected!");
 
             ResetCoins();
-            PrintToChatAll("attempting reset");
+            // PrintToChatAll("attempting reset");
             //Logic to handle resetting you if you are a paid robot, uses a copied function from berobot_teamcomptips.sp, should be optimized later
             for(int i = 0; i <= MaxClients; i++)
             {

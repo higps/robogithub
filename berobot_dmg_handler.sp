@@ -252,7 +252,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
             // PrintToChatAll("PLASMA");
             if (TF2_GetPlayerClass(attacker) == TFClass_Heavy || TF2_GetPlayerClass(attacker) == TFClass_Medic){
                 // PrintToChatAll("For heavy or medic TF_CUSTOM_PLASMA dmg was %f", damage);
-                damage = 1.0;
+                damage = 0.0;
                 
                 // PrintToChatAll("%f", GetEntPropFloat(attacker, Prop_Send, "m_flRageMeter"));
                 return Plugin_Changed;
@@ -962,7 +962,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
                 SetHealingDebuff(victim, g_HealDebuff, g_ElectricStunDuration, attacker);
 
-                if (TF2_GetPlayerClass(victim) == TFClass_Heavy || TF2_GetPlayerClass(victim) == TFClass_Medic)
+                if (TF2_GetPlayerClass(victim) == TFClass_Heavy || TF2_GetPlayerClass(victim) == TFClass_Medic || TF2_GetPlayerClass(victim) == TFClass_Soldier)
                 {
                     // PrintToChatAll("WAS HEAVY OR MEDIC");
                     if (HasEntProp(victim, Prop_Send, "m_flRageMeter"))
@@ -1792,6 +1792,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsEnforcer(Weapon1))
             {
                 TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
+                TF2Attrib_SetByName(Weapon1, "keep disguise on attack", 1.0);
+                // TF2Attrib_SetByName(Weapon1, "last shot crits", 1.0);
                 TF2CustAttr_SetString(Weapon1, "dmg-bonus-vs-sapped-buildings", "damage=3.0");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}200%%%% Damage bonus {teamcolor}vs sapped buildings",chat_display);
             }
@@ -1863,7 +1865,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsElectric(Weapon1) || IsElectric(Weapon2))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons {orange}reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Electric weapons {orange}reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
             }
             if (IsReserveShooter(Weapon2))
             {
