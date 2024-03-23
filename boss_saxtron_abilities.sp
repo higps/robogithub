@@ -66,63 +66,82 @@
 #define HaleStubbed132		"saxtron_h413/saxtron_h413_132_stub_"  /// 1-4
 
 
-#define HALESPEED		340.0
+// #define HALESPEED		340.0
 
 // #define HALE_JUMPCHARGE		(25*1.0)
 // #define HALERAGEDIST		800.0
 // #define HALE_WEIGHDOWN_TIME	3.0
 
 bool b_SaxtonSaid[MAXPLAYERS + 1] = {false, ...};
+bool b_SaxtonSaidAll[MAXPLAYERS + 1] = {false, ...};
 float g_JumpTime = 0.0;
 public Plugin:myinfo = 
 {
 	name = "[TF2] Be the Giant Saxtron",
-	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
-	description = "Play as the Giant Saxtron",
+	author = "HiGPS | Bmod.TF",
+	description = "Saxtron Ability and Voicelines",
 	version = PLUGIN_VERSION,
-	url = "www.sourcemod.com"
+	url = "www.bmod.tf"
 }
 
-char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
-enum(<<= 1)
-{
-    SML_VERBOSE = 1,
-    SML_INFO,
-    SML_ERROR,
-}
 
 public OnPluginStart()
 {
-	SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
+	// SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
 
 	LoadTranslations("common.phrases");
 
 	//	HookEvent("post_inventory_application", EventInventoryApplication, EventHookMode_Post);
 	AddNormalSoundHook(SaxtronSoundHook);
 
-	RobotDefinition robot;
-	robot.name = ROBOT_NAME;
-	robot.role = ROBOT_ROLE;
-	robot.class = "Soldier";
-	robot.shortDescription = ROBOT_DESCRIPTION;
-	robot.sounds.spawn = SPAWN;
-	robot.sounds.loop = LOOP;
-	robot.sounds.death = DEATH;
-	robot.deathtip = ROBOT_ON_DEATH;
-	robot.difficulty = ROBOT_DIFFICULTY_HARD;
-	RestrictionsDefinition restrictions = new RestrictionsDefinition();
-	// restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
-	// restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
-	restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
-	restrictions.TeamCoins.Overall = 1;
-	restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
-	restrictions.RobotCoins.PerRobot = 35.0;
+	// RobotDefinition robot;
+	// robot.name = ROBOT_NAME;
+	// robot.role = ROBOT_ROLE;
+	// robot.class = "Soldier";
+	// robot.shortDescription = ROBOT_DESCRIPTION;
+	// robot.sounds.spawn = SPAWN;
+	// robot.sounds.loop = LOOP;
+	// robot.sounds.death = DEATH;
+	// robot.deathtip = ROBOT_ON_DEATH;
+	// robot.difficulty = ROBOT_DIFFICULTY_HARD;
+	// RestrictionsDefinition restrictions = new RestrictionsDefinition();
+	// // restrictions.TimeLeft = new TimeLeftRestrictionDefinition();
+	// // restrictions.TimeLeft.SecondsBeforeEndOfRound = 300;
+	// restrictions.TeamCoins = new RobotCoinRestrictionDefinition();
+	// restrictions.TeamCoins.Overall = 1;
+	// restrictions.RobotCoins = new RobotCoinRestrictionDefinition();
+	// restrictions.RobotCoins.PerRobot = 35.0;
 
-	AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions, 2);
-
+	// AddRobot(robot, MakeGiantSoldier, PLUGIN_VERSION, restrictions, 2);
+	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("object_destroyed",           ObjectDestroyed, EventHookMode_Pre);
 	HookEvent("teamplay_round_win", Event_teamplay_round_win, EventHookMode_Post);
+
+}
+public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+{
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+	CreateTimer(3.0, SaySpawnLine, client);
+
+
+	//EmitGameSoundToAll("Announcer.mvm_spybot_death");
+	return Plugin_Continue;
+}
+
+public Action SaySpawnLine (Handle timer, int client)
+{
+		// PrintToChatAll("1 %N", client);
+	if (IsRobot(client, ROBOT_NAME))
+	{
+		// PrintToChatAll("2");
+		char start_snd[PLATFORM_MAX_PATH];
+		// if( !GetRandomInt(0, 1) )
+		Format(start_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleRoundStart, GetRandomInt(1, 5));
+		// else 
+		//Format(start_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleStart132, GetRandomInt(1, 5));
+		SaxtronSayAll(client , start_snd);	
+	}
 }
 
 public Action Event_teamplay_round_win(Event event, const char[] name, bool dontBroadcast)
@@ -165,10 +184,10 @@ public Action team_play_win_timer (Handle timer, int winteam)
 	return Plugin_Continue;
 }
 
-public void OnPluginEnd()
-{
-	RemoveRobot(ROBOT_NAME);
-}
+// public void OnPluginEnd()
+// {
+// 	RemoveRobot(ROBOT_NAME);
+// }
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
@@ -267,16 +286,16 @@ int g_SuperJumpChargeLimit = 125;
 float g_rage[MAXPLAYERS + 1] = {0.0, ...};
 float g_ragelimit = 2000.0;
 
-public Action:SetModel(client, const String:model[])
-{
-	if (IsValidClient(client) && IsPlayerAlive(client))
-	{
-		SetVariantString(model);
-		AcceptEntityInput(client, "SetCustomModel");
+// public Action:SetModel(client, const String:model[])
+// {
+// 	if (IsValidClient(client) && IsPlayerAlive(client))
+// 	{
+// 		SetVariantString(model);
+// 		AcceptEntityInput(client, "SetCustomModel");
 
-		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
-	}
-}
+// 		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
+// 	}
+// }
 
 public Action:SaxtronSoundHook(clients[64], &numClients, String:sample[PLATFORM_MAX_PATH], &entity, &channel, &Float:volume, &level, &pitch, &flags)
 {
@@ -378,183 +397,12 @@ void SayVoiceLine(int client)
 
 }
 
-MakeGiantSoldier(client)
-{
-	SMLogTag(SML_VERBOSE, "Createing Heavy");
-	TF2_SetPlayerClass(client, TFClass_Soldier);
-	TF2_RegeneratePlayer(client);
-
-	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
-	if (ragdoll > MaxClients && IsValidEntity(ragdoll)) AcceptEntityInput(ragdoll, "Kill");
-	decl String:weaponname[32];
-	GetClientWeapon(client, weaponname, sizeof(weaponname));
-	if (strcmp(weaponname, "tf_weapon_", false) == 0) 
-	{
-		SetEntProp(GetPlayerWeaponSlot(client, 0), Prop_Send, "m_iWeaponState", 0);
-		TF2_RemoveCondition(client, TFCond_Slowed);
-	}
-	CreateTimer(0.0, Timer_Switch, client);
-	SetModel(client, GSOLDIER);
-	
-	int PlayerBonusHP = 0;
-	int PlayerPerPlayerHP = 250;
-	int PlayerCount = 0;
-
-    for(int i = 0; i <= MAXPLAYERS; i++)
-    {
-		if(IsValidClient(i) && !IsAnyRobot(i))
-		{
-			PlayerBonusHP+=PlayerPerPlayerHP;
-			PlayerCount++;
-		}
-
-    }
-
-	// PrintToChatAll("Playercount was %i", PlayerCount);
-
-	int iHealth = 2046+PlayerBonusHP;
-	RoboSetHealth(client,TFClass_Soldier, iHealth, 1.5);
-	
-	//PrintToChatAll("MaxHealth %i", MaxHealth);
-	
-	RoboSetHealth(client, TFClass_Soldier, iHealth);
-	float OverHealRate = 1.5;
-
-
-
-	float scale = 1.25;
-	
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", scale);
-	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", true);
-	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "move speed penalty", 1.5);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.4);
-	TF2Attrib_SetByName(client, "health from packs decreased", 0.0);
-	//TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "healing received penalty", 0.0);
-	
-	TF2Attrib_SetByName(client, "self dmg push force increased", 6.0);
-	TF2Attrib_SetByName(client, "boots falling stomp", 6.0);
-	TF2Attrib_SetByName(client, "increased air control", 4.0);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.3);
-	TF2Attrib_SetByName(client, "increase player capture value", -1.0);
-	TF2Attrib_SetByName(client, "cannot pick up intelligence", 1.0);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.75);
-	//TF2Attrib_SetByName(client, "head scale", 0.5);
-	UpdatePlayerHitbox(client,scale);
-	TF2CustAttr_SetString(client, "fall-damage", "static-damage=1 static-damage-stomp=1 fall-damage=1.0 stomp-damage=125.0");
-	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-	
-	PrintHintText(client , ROBOT_TIPS);
-	//SetBossHealth(client);
-	PlaySpawnClip(client);
-}
-
-
-public Action:Timer_Switch(Handle:timer, any:client)
-{
-	if (IsValidClient(client))
-		GiveGiantPyro(client);
-}
-
-// #define SergeantsDrillHat 183
-// 
-
-stock GiveGiantPyro(client)
-{
-	if (IsValidClient(client))
-	{
-		
-		RoboRemoveAllWearables(client);
-
-		TF2_RemoveWeaponSlot(client, 0);
-		TF2_RemoveWeaponSlot(client, 1);
-		TF2_RemoveWeaponSlot(client, 2);
-
-
-		CreateRoboWeapon(client, "tf_weapon_shovel", 5, 6, 1, 2, 0);
-
-		int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-
-		if(IsValidEntity(Weapon3))
-		{
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs players", 3.1);
-			// TF2Attrib_SetByName(Weapon3, "melee range multiplier", 1.25);
-			TF2Attrib_SetByName(Weapon3, "killstreak tier", 1.0);		
-			TF2Attrib_SetByName(Weapon3, "mod weapon blocks healing", 1.0);		
-			TF2Attrib_SetByName(Weapon3, "dmg penalty vs buildings", 0.5);			
-		}
-		
-	}
-}
-
-public Native_SetGiantPyro(Handle:plugin, args)
-	MakeGiantSoldier(GetNativeCell(1));
-	
-//VSH CODE
-
-// public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor,
-// 		float &damage, int &damagetype, int &weapon, float damageForce[3],
-// 		float damagePosition[3], int damagecustom, CritType &critType)
-// {
-// 	if(!IsValidClient(victim))
-// 	return Plugin_Continue;    
-
-// 	if(!IsValidClient(attacker))
-// 	{
-
-// 		if(IsRobot(victim, ROBOT_NAME) && damagetype == DMG_FALL)
-// 		{
-// 			// PrintToChatAll("Taking regular fall damage %N", victim);
-// 			damage *= 0.0;
-// 			return Plugin_Changed;
-// 		}
-// 	}else
-// 	{
-// 		if(IsRobot(attacker, ROBOT_NAME) && damagetype == DMG_FALL)
-// 		{
-// 			// PrintToChatAll("Else attacker was %N", attacker);
-// 			// PrintToChatAll("Else vicitm was %N", victim);
-// 			damage *= 0.25;
-// 			return Plugin_Changed;
-// 		}
-// 	}
-// }
 
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
 
 	if(!IsValidClient(victim))
 	return Plugin_Continue;    
-
-	// if(!IsValidClient(attacker))
-	// {
-
-	// 	if(IsRobot(victim, ROBOT_NAME) && damagetype == DMG_FALL)
-	// 	{
-	// 		PrintToChatAll("Taking regular fall damage %N", victim);
-	// 		// damage *= 0.0;
-	// 		// return Plugin_Changed;
-	// 	}
-	// }else
-	// {
-	// 	if(IsRobot(attacker, ROBOT_NAME) && damagetype == DMG_FALL)
-	// 	{
-	// 		PrintToChatAll("Else attacker was %N", attacker);
-	// 		PrintToChatAll("Else vicitm was %N", victim);
-	// 		damage *= 0.25;
-	// 		return Plugin_Changed;
-	// 	}
-	// }
-
-
-
-
-
-
-
-
 	if(IsValidClient(attacker) && IsRobot(victim, ROBOT_NAME))
 	{
 
@@ -568,38 +416,17 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 	}
 
-	//PrintToChatAll("Damage was %f, g_rage before %f, g_rage limit was", damage, g_rage, g_ragelimit);
 
 	SaxtronRageIncrease(victim, damage);
-	// if(g_rage[victim] < g_ragelimit)
-	// {
-	// 	// PrintToChatAll("Damage was %f, g_rage before %f", damage, g_rage[victim]);
-	// 	g_rage[victim] += damage;
-	// 	// PrintToChatAll("g_rage after %f", g_rage[victim]);
-	// }
 
-	//	DrawRageHUD(victim);
+
 	}
 
 	if(IsValidClient(victim) && IsRobot(attacker, ROBOT_NAME))
 	{
-	//PrintToChatAll("Damage was %f, g_rage before %f, g_rage limit was", damage, g_rage, g_ragelimit);
 
-	// if(g_rage[attacker] < g_ragelimit)
-	// {
-	// 	// PrintToChatAll("Damage was %f, g_rage before %f", damage, g_rage[attacker]);
 	SaxtronRageIncrease(attacker, damage);
-	// 	g_rage[attacker] += damage;
-	// 	if(damage > 250.0)
-	// 	{
-	// 		g_rage[attacker] -= damage;
-	// 		g_rage[attacker] += 250.0;
-	// 	}
-		
-	// 	// PrintToChatAll("g_rage after %f", g_rage[attacker]);
-	// }
 
-	//	DrawRageHUD(attacker);
 	}
 
 	return Plugin_Continue;
@@ -615,10 +442,9 @@ void SaxtronRageIncrease(int client, float damage)
 	g_rage[client] -= damage;
 	g_rage[client] += 250.0;
 	}
-	// else
-	// {
+
 	g_rage[client] += damage;
-	// }
+
 	}
 }
 
@@ -641,11 +467,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	SaxtronSay(victim, szVO);
 
 	}
-	// if (IsRobot(victim, ROBOT_NAME)){
-	// 	PrintToChatAll("HALE DIED!");
-	// 	EmitSoundToAll("saxtron_h413/saxtron_h413_responce_fail2.wav");
-	// 	EmitSoundToAll("saxtron_h413/saxtron_h413_responce_fail2.wav");
-	// }
+
 	return Plugin_Continue;
 }
 
@@ -750,14 +572,7 @@ public void KilledPlayer(int attacker, int victim)
 	
 // }
 
-public void PlaySpawnClip(int client) {
-	char start_snd[PLATFORM_MAX_PATH];
-	// if( !GetRandomInt(0, 1) )
-	Format(start_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleRoundStart, GetRandomInt(1, 5));
-	// else 
-	//Format(start_snd, PLATFORM_MAX_PATH, "%s%i.wav", HaleStart132, GetRandomInt(1, 5));
-	SaxtronSay(client , start_snd);	
-}
+
 
 public Action ObjectDestroyed(Event event, const char[] name, bool dontBroadcast)
 {
@@ -1030,17 +845,6 @@ public void SaxtronSay(int client, const char[] voiceline)
 {
 	if (!b_SaxtonSaid[client]){
 
-	// float pos[3];
-	// GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
-
-	// EmitSoundToAll(voiceline, client, SNDCHAN_VOICE, SNDLEVEL_TRAFFIC, SND_NOFLAGS, SNDVOL_NORMAL, 100, client, pos, NULL_VECTOR, true, 0.0);
-	// EmitSoundToAll(voiceline, client, SNDCHAN_VOICE, SNDLEVEL_TRAFFIC, SND_NOFLAGS, SNDVOL_NORMAL, 100, client, pos, NULL_VECTOR, true, 0.0);
-	// EmitSoundToAll(voiceline, client, SNDCHAN_VOICE, SNDLEVEL_TRAFFIC, SND_NOFLAGS, SNDVOL_NORMAL, 100, client, pos, NULL_VECTOR, true, 0.0);
-  //  EmitSoundToAll(voiceline, client, SNDCHAN_ITEM, SNDLEVEL_TRAFFIC, SND_NOFLAGS, SNDVOL_NORMAL, 100, client, pos, NULL_VECTOR, true, 0.0);
-	// EmitSoundToAll(voiceline, client, _, SNDLEVEL_TRAFFIC, SND_NOFLAGS, 1.0, 100);
-	// EmitSoundToAll(voiceline, client, SNDCHAN_VOICE, SNDLEVEL_GUNFIRE);
-	// EmitSoundToAll(voiceline, client, SNDCHAN_VOICE, SNDLEVEL_GUNFIRE);
-
 	EmitSoundToAll(voiceline, client);
 	EmitSoundToAll(voiceline, client);
 	EmitSoundToAll(voiceline, client);
@@ -1049,9 +853,33 @@ public void SaxtronSay(int client, const char[] voiceline)
 	}
 }
 
+public void SaxtronSayAll(int client, const char[] voiceline)
+{
+	if (!b_SaxtonSaidAll[client]){
+
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsValidClient(i) && IsPlayerAlive(client))
+		{
+			EmitSoundToClient(i,voiceline);
+			EmitSoundToClient(i,voiceline);
+			EmitSoundToClient(i,voiceline);
+		}
+	}
+	b_SaxtonSaidAll[client] = true;
+	CreateTimer(25.0, Timer_SaxtonSaidAll, client);
+	}
+}
+
 public Action Timer_SaxtonSaid(Handle timer, int client)
 {
 	b_SaxtonSaid[client] = false;
+	return Plugin_Continue;
+}
+
+public Action Timer_SaxtonSaidAll(Handle timer, int client)
+{
+	b_SaxtonSaidAll[client] = false;
 	return Plugin_Continue;
 }
 
