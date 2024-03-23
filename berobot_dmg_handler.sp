@@ -98,6 +98,8 @@ float g_crit_a_cola_duration = 2.0;
 
 int ParticleStorage[MAXPLAYERS + 1] = {0, ...};
 
+#define POMSON_DRAIN_SOUND "weapons/drg_pomson_drain_01.wav"
+
 public Plugin myinfo =
 {
 	name = "berobot_dmg_handler",
@@ -147,7 +149,7 @@ public Action Event_PlayerDeath(Event event, char[] name, bool dontBroadcast){
 
 public void OnMapStart()
 {
-    // PrecacheSound(SPY_ROBOT_STAB);
+    PrecacheSound(POMSON_DRAIN_SOUND);
 }
 
 public Action Command_ToggleMMHumanDisplay(int client, int args)
@@ -974,7 +976,9 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                         if (GetEntProp(victim, Prop_Send, "m_bRageDraining"))
                         {
                             // PrintToChatAll("RAGE %f: Draining %i", rage, ragedraining);
-
+                            EmitSoundToAll(POMSON_DRAIN_SOUND, victim);
+                            EmitSoundToClient(victim, POMSON_DRAIN_SOUND);
+                            EmitSoundToClient(attacker, POMSON_DRAIN_SOUND);
                             SetEntPropFloat(victim, Prop_Send, "m_flRageMeter", currentrage - g_electric_rage_reduction);
                         }
                         
@@ -1776,7 +1780,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.15;
                 TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants %0.0f%%%% movespeed while actove",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants %0.0f%%%% movespeed while active",chat_display, MoreIsMore(stat1));
             }
 
             if (IsSpycicle(Weapon3))
@@ -1792,10 +1796,10 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsEnforcer(Weapon1))
             {
                 TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
-                TF2Attrib_SetByName(Weapon1, "keep disguise on attack", 1.0);
-                // TF2Attrib_SetByName(Weapon1, "last shot crits", 1.0);
+                // TF2Attrib_SetByName(Weapon1, "keep disguise on attack", 1.0);
+                TF2Attrib_SetByName(Weapon1, "last shot crits", 1.0);
                 TF2CustAttr_SetString(Weapon1, "dmg-bonus-vs-sapped-buildings", "damage=3.0");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}200%%%% Damage bonus {teamcolor}vs sapped buildings",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}+200%%%% Damage bonus {teamcolor}vs sapped buildings & {orange}Last shot in the clip crits",chat_display);
             }
 
             if (IsAmbassador(Weapon1))

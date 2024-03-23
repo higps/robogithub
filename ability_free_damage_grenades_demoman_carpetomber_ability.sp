@@ -78,11 +78,11 @@ public OnPluginStart()
 
 	RegAdminCmd("sm_clusterbombs", CmdMirv, ADMFLAG_BAN);
 
-	PipeCount = CreateConVar("boss_clusterbomb_count", "4", "Number of child grenades to spawn from a clusterbomb");
+	PipeCount = CreateConVar("boss_clusterbomb_count", "6", "Number of child grenades to spawn from a clusterbomb");
 	PipeDamage = CreateConVar("boss_clusterbomb_damage", "200", "Percentage of parent grenade's damage that child grenades should deal");
 	PipeScale = CreateConVar("boss_clusterbomb_scale", "1.25", "Model scale for child grenades");
 	PipeModel = CreateConVar("boss_clusterbomb_iron_bomber", "1", "Should child grenades use the iron bomber projectile or derive the model from the parent");
-	PipeSpeed = CreateConVar("boss_clusterbomb_speed", "300", "Max speed child grenades can be launched at");
+	PipeSpeed = CreateConVar("boss_clusterbomb_speed", "400", "Max speed child grenades can be launched at");
 
 }
 

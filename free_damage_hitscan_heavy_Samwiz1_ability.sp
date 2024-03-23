@@ -9,52 +9,16 @@
  
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Samwiz"
-#define ROBOT_ROLE "Damage"
-#define ROBOT_CLASS "Heavy"
-#define ROBOT_SUBCLASS "Hitscan"
-#define ROBOT_DESCRIPTION "Banana Brass Beast"
-#define ROBOT_TIPS "Can't move while spun up\nFast spin up time\nBanana Powers"
-#define ROBOT_ON_DEATH "Samwiz can't move while revved\nSamwiz's Banana mode spawns banana bombs above you on hit"
- 
-#define GDEFLECTORH      "models/bots/heavy/bot_heavy.mdl"
-#define SPAWN   "#mvm/giant_heavy/giant_heavy_entrance.wav"
-#define DEATH   "mvm/sentrybuster/mvm_sentrybuster_explode.wav"
-#define LOOP    "mvm/giant_heavy/giant_heavy_loop.wav"
 #define BANANA_MODEL "models/items/banana/banana.mdl"
-
-#define LEFTFOOT        ")mvm/giant_heavy/giant_heavy_step01.wav"
-#define LEFTFOOT1       ")mvm/giant_heavy/giant_heavy_step03.wav"
-#define RIGHTFOOT       ")mvm/giant_heavy/giant_heavy_step02.wav"
-#define RIGHTFOOT1      ")mvm/giant_heavy/giant_heavy_step04.wav"
-
-
+#define BananaHat 30643
 
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Giant Samwiz",
-	author = "Erofix using the code from: Pelipoika, PC Gamer, Jaster and StormishJustice",
+	author = "HiGPS | Bmod.TF",
 	description = "Play as the Giant Samwiz from youtube",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
-}
-
-public OnPluginStart()
-{
-	LoadTranslations("common.phrases");
-
-	RobotDefinition robot;
-	robot.name = ROBOT_NAME;
-	robot.role = ROBOT_ROLE;
-	robot.class = ROBOT_CLASS;
-	robot.subclass = ROBOT_SUBCLASS;
-	robot.shortDescription = ROBOT_DESCRIPTION;
-	robot.sounds.spawn = SPAWN;
-	robot.sounds.loop = LOOP;
-	robot.deathtip = ROBOT_ON_DEATH;
-	robot.difficulty = ROBOT_DIFFICULTY_EASY;
-	robot.sounds.death = DEATH;
-
-	AddRobot(robot, MakeGHeavy, PLUGIN_VERSION, null);
 }
 
 public void OnMapStart()
@@ -62,132 +26,36 @@ public void OnMapStart()
 	PrecacheModel(BANANA_MODEL);
 }
 
-public void OnPluginEnd()
-{
-	RemoveRobot(ROBOT_NAME);
-}
- 
-public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
-{
-//	CreateNative("BeGDeflectorH_MakeGHeavy", Native_SetGDeflectorH);
-//	CreateNative("BeGDeflectorH_IsGDeflectorH", Native_IsGDeflectorH);
-	return APLRes_Success;
-}
- 
-public Action:SetModel(client, const String:model[])
-{
-	if (IsValidClient(client) && IsPlayerAlive(client))
-	{
-		SetVariantString(model);
-		AcceptEntityInput(client, "SetCustomModel");
-
-		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
-	}
-}
-
-MakeGHeavy(client)
-{	
-	TF2_SetPlayerClass(client, TFClass_Heavy);
-	TF2_RegeneratePlayer(client);
-
-	new ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
-	if (ragdoll > MaxClients && IsValidEntity(ragdoll)) AcceptEntityInput(ragdoll, "Kill");
-	decl String:weaponname[32];
-	GetClientWeapon(client, weaponname, sizeof(weaponname));
-	if (strcmp(weaponname, "tf_weapon_", false) == 0)
-	{
-		SetEntProp(GetPlayerWeaponSlot(client, 0), Prop_Send, "m_iWeaponState", 0);
-		TF2_RemoveCondition(client, TFCond_Slowed);
-	}
-	CreateTimer(0.0, Timer_Switch, client);
-	SetModel(client, GDEFLECTORH);
-	int iHealth = 3920;
-	int bonus_hp = 60 * GetCurrentHumanCount();
-	RoboSetHealth(client, TFClass_Heavy, iHealth+bonus_hp);
-
-	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.75);
-	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
-	TF2Attrib_SetByName(client, "move speed penalty", 0.65);
-	TF2Attrib_SetByName(client, "damage force reduction", 0.5);
-	TF2Attrib_SetByName(client, "airblast vulnerability multiplier", 0.2);
-
-	TF2Attrib_SetByName(client, "ammo regen", 100.0);
-	TF2Attrib_SetByName(client, "cancel falling damage", 1.0);
-	TF2Attrib_SetByName(client, "rage giving scale", 0.75);
-
-	UpdatePlayerHitbox(client, 1.75);
-   
-	TF2_RemoveCondition(client, TFCond_CritOnFirstBlood);	
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-
-	PrintHintText(client , "+75 percent damage done\nCan't move while shooting\n50% dmg resist while spun up undher half HP");
-
-}
- 
- 
-public Action:Timer_Switch(Handle:timer, any:client)
-{
-	if (IsValidClient(client))
-		GiveGDeflectorH(client);
-}
-
-#define Tsarboosh 30081
-#define DeadofNight 30309
-#define WildWestWhiskers 30960
-#define BananaHat 30643
 
 bool g_BananaMode = false;
 float g_DamageDone = 0.0;
 
-stock GiveGDeflectorH(client)
-{
-	if (IsValidClient(client))
-	{
-		//Remove items and hats
-		RoboRemoveAllWearables(client);
-		TF2_RemoveWeaponSlot(client, 0);
-		TF2_RemoveWeaponSlot(client, 1);
-		TF2_RemoveWeaponSlot(client, 2);
+// public TF2_OnConditionRemoved(client, TFCond:condition)
+// {
 
-		g_DamageDone = 0.0;
+// }
 
-		CreateRoboHat(client, Tsarboosh, 10, 6, 15185211, 15185211, 1.0, -1.0);
-		CreateRoboHat(client, DeadofNight, 10, 6, 15185211, 15185211, 1.0, -1.0);
-		CreateRoboHat(client, WildWestWhiskers, 10, 6, 0.0, 0.0, 1.0, -1.0);
-		CreateRoboHat(client, BananaHat, 10, 6, 0.0, 0.0, 1.0, -1.0);
-		RequestFrame(FindHat, client);
-	
-		CreateRoboWeapon(client, "tf_weapon_minigun", 312, 6, 1, 0, 0);
-
-		int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-		if(IsValidEntity(Weapon1))
-		{
-			TF2Attrib_RemoveAll(Weapon1);
-			TF2Attrib_SetByName(Weapon1, "maxammo primary increased", 2.5);	
-			TF2Attrib_SetByName(Weapon1, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs buildings", 0.5);
-			TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0);
-			TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", 1.75);
-			TF2Attrib_SetByName(Weapon1, "minigun spinup time increased", 0.1);
-			TF2Attrib_SetByName(Weapon1, "aiming movespeed decreased", 0.01);
-			TF2Attrib_SetByName(Weapon1, "spunup_damage_resistance", 0.75);
-		}
-	}
-}
 public TF2_OnConditionAdded(client, TFCond:condition)
 {
-    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-    {	
-        int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+    if (IsRobot(client, ROBOT_NAME))
+    {
 
-	//PrintToChatAll("Taunt ID %i", tauntid);
-	
+		if(condition == TFCond_SpeedBuffAlly){
+			FindHat(client);
+		}
+		if(condition == TFCond_Taunting)
+			{
+			int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
 
-        if (tauntid == -1)
-        {
-		//	TF2_AddCondition(client, TFCond_SpawnOutline, 10);
-           	 CreateTimer(1.2, Timer_Taunt_Cancel, client);
-        }	  
+		//PrintToChatAll("Taunt ID %i", tauntid);
+		
+
+			if (tauntid == -1)
+			{
+			//	TF2_AddCondition(client, TFCond_SpawnOutline, 10);
+				CreateTimer(1.2, Timer_Taunt_Cancel, client);
+			}	  
+		}
 
 	}
 }
