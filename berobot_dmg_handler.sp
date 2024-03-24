@@ -14,7 +14,7 @@
 #include <stocksoup/tf/tempents_stocks>
 #include <stocksoup/datapack>
 #include <smlib>
-
+#include <tf2utils>
 
 char LOG_TAGS[][] =	 {"VERBOSE", "INFO", "ERROR"};
 enum (<<= 1)
@@ -196,6 +196,11 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
         if (IsSunOnAStick(Weapon3))
         {
+            // RemoveEquippedTFBottle(client);
+            // TF2_RemoveWeaponSlot(client,9);
+            int action_slot_item = TF2Util_GetPlayerLoadoutEntity(client, 9);
+            if(IsValidEntity(action_slot_item))RemoveEntity(action_slot_item);
+            CreateRoboWeapon(client, "tf_weapon_spellbook", 5605, 0, 1, 4, 0);
             TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=40.0");
         }else
         {
@@ -1572,6 +1577,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsSunOnAStick(Weapon3))
             {
+                int action_slot_item = TF2Util_GetPlayerLoadoutEntity(client, 9);
+                if(IsValidEntity(action_slot_item))RemoveEntity(action_slot_item);
                 CreateRoboWeapon(client, "tf_weapon_spellbook", 5605, 0, 1, 4, 0);
                 TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=40.0");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display);
@@ -3267,6 +3274,42 @@ public int FindTFWearable(int iClient, int item)
 	}
 	return -1;
 }
+
+public void RemoveEquippedTFBottle(int iClient)
+{
+    int PowerUpBottle = -1;
+    while ((PowerUpBottle = FindEntityByClassname(PowerUpBottle, "tf_powerup_bottle*")) != -1)
+    {   
+        int iWearableOwner = GetEntPropEnt(PowerUpBottle, Prop_Send, "m_hOwnerEntity");
+
+        if (iWearableOwner == iClient)
+        {
+            RemoveEntity(PowerUpBottle);
+        }
+    }
+
+    CheckSpellBook(iClient);
+}
+
+public void CheckSpellBook(int iClient)
+{
+    int SpellBook = -1;
+    while ((SpellBook = FindEntityByClassname(SpellBook, "tf_weapon_spellbook*")) != -1)
+    {   
+        int iSpellBookIndex = GetEntProp(SpellBook, Prop_Send, "m_iItemDefinitionIndex");
+        int iWearableOwner = GetEntPropEnt(SpellBook, Prop_Send, "m_hOwnerEntity");
+
+        if (iWearableOwner == iClient && iSpellBookIndex == 5605)
+        {
+            PrintToChatAll("iSpellbookindex %i on %N", iSpellBookIndex, iClient);
+        }
+        else
+        {
+            PrintToChatAll("No spell: %i on %N", iSpellBookIndex, iClient);
+        }
+    }
+}
+
 
 bool IsValidWeaponForClassBuff(int weapon)
 {

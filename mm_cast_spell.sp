@@ -75,9 +75,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kvCommand)
 		//Add some logic here to check for if the number of charges was changed
         if(HasStat(client))
 		{
-			if(IsValidEntity(g_book[client]) && HasEntProp(g_book[client], Prop_Send, "m_iSpellCharges"))
-			{
-				g_player_charges[client] = GetEntProp(g_book[client], Prop_Send, "m_iSpellCharges");
+
 				//PrintToChatAll("%N Had charges: %i",client, g_player_charges[client])
 				if(g_player_charges[client]>0)
 				{
@@ -89,11 +87,8 @@ public Action OnClientCommandKeyValues(int client, KeyValues kvCommand)
 			{
 			//PrintToChatAll("%N Had no charge",client );
 			g_button_held[client] = false;
-			}
-			
+			}	
 		}
-		
-    }
 }
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
@@ -131,7 +126,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 public void Recharge_Spell(int client) {
 	
     int index = g_Spell[client];
-    
+    PrintToServer("Recharging spell");
 
 
     if (TF2_IsPlayerInCondition(client, g_Cond))
@@ -179,6 +174,11 @@ void DrawHUD(int client)
 	char sHUDText[128];
 	int iCountDown = RoundToCeil(g_Recharge[client] - g_skill);
 	char SpellText[64];
+
+	if(IsValidEntity(g_book[client]) && HasEntProp(g_book[client], Prop_Send, "m_iSpellCharges"))
+	{
+		g_player_charges[client] = GetEntProp(g_book[client], Prop_Send, "m_iSpellCharges");
+	}
 	if(!IsValidEntity(g_book[client])) g_book[client] = FindSpellbook(client);
 	// PrintToChatAll("Gcond %i", g_Cond);
     if (TF2_IsPlayerInCondition(client, g_Cond))

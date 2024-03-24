@@ -360,6 +360,11 @@ public any Native_CreateRoboHat(Handle plugin, int numParams)
 public any Native_RoboRemoveAllWearables(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
+
+	//Remove the action slot
+	int action_slot_item = TF2Util_GetPlayerLoadoutEntity(client, 9);
+	if(IsValidEntity(action_slot_item))RemoveEntity(action_slot_item);
+
 	int wearable = -1;
 	while ((wearable = FindEntityByClassname(wearable, "tf_wearable*")) != -1)
 	{
@@ -373,29 +378,29 @@ public any Native_RoboRemoveAllWearables(Handle plugin, int numParams)
 		}
 	}
 
-	while ((wearable = FindEntityByClassname(wearable, "tf_powerup_bottle")) != -1)
-	{
-		if (IsValidEntity(wearable))
-		{
-			int player = GetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity");
-			if (client == player)
-			{
-				TF2_RemoveWearable(client, wearable);
-			}
-		}
-	}
+	// while ((wearable = FindEntityByClassname(wearable, "tf_powerup_bottle")) != -1)
+	// {
+	// 	if (IsValidEntity(wearable))
+	// 	{
+	// 		int player = GetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity");
+	// 		if (client == player)
+	// 		{
+	// 			TF2_RemoveWearable(client, wearable);
+	// 		}
+	// 	}
+	// }
 
-	while ((wearable = FindEntityByClassname(wearable, "tf_weapon_spellbook")) != -1)
-	{
-		if (IsValidEntity(wearable))
-		{
-			int player = GetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity");
-			if (client == player)
-			{
-				TF2_RemoveWearable(client, wearable);
-			}
-		}
-	}
+	// while ((wearable = FindEntityByClassname(wearable, "tf_weapon_spellbook")) != -1)
+	// {
+	// 	if (IsValidEntity(wearable))
+	// 	{
+	// 		int player = GetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity");
+	// 		if (client == player)
+	// 		{
+	// 			TF2_RemoveWearable(client, wearable);
+	// 		}
+	// 	}
+	// }
 	return Plugin_Continue;
 }
 
