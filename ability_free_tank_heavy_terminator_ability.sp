@@ -393,7 +393,7 @@ void DrawHUD(int client)
 		g_loadingDots = 1;
 	}
 
-	SetHudTextParams(0.35, 0.40, 0.5, 255, 0, 0, 255);
+	SetHudTextParams(0.18, 0.30, 0.5, 255, 0, 0, 255);
 	ShowHudText(client, -2, sHUDText);
 
 	//Search for new target after cool down period is over
