@@ -92,7 +92,8 @@ float g_electric_rage_reduction = 5.0;
 float g_wrap_duration = 5.0;
 
 float g_crit_a_cola_duration = 2.0;
-
+float g_bleed_meleevuln_duration = 2.0;
+float g_bleed_meleevuln_amount = 1.5;
 // #define SPY_ROBOT_STAB	"weapons/saxxy_impact_gen_01.wav"
 // #define SPY_ROBOT_STAB	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 
@@ -299,6 +300,11 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 {
                     SetDamageDebuff(victim, g_syringegun_debuff_amount, g_syringe_dmg_debuff_duration, attacker);
                 }
+            }
+
+            if (damagecustom == TF_CUSTOM_BLEEDING)
+            {
+                TF2Attrib_AddCustomPlayerAttribute(victim, "dmg from melee increased", g_bleed_meleevuln_amount, g_bleed_meleevuln_duration);
             }
 
             if (TF2_IsPlayerInCondition(victim, TFCond_Stealthed))
@@ -1520,7 +1526,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
                 TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tribalmans Shiv: {orange}Bleed lasts %0.0f seconds",chat_display, stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tribalmans Shiv: {orange}Bleed lasts %0.0f seconds\n{teamcolor}Bleed On Hit: {orange}+%0.0f%%%% more melee dmg taken for %0.0f seconds",chat_display, stat1,MoreIsMore(g_bleed_meleevuln_amount), g_bleed_meleevuln_duration);
             }
             
         }
@@ -1619,13 +1625,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
             if (IsWrap(Weapon3))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots heal rate for %0.0f seconds",chat_display, g_wrap_duration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Ornament: {orange}Reduce robots heal rate for %0.0f seconds\n\n{teamcolor}Bleed On Hit: {orange}+%0.0f%%%% more melee dmg taken for %0.0f seconds",chat_display, g_wrap_duration, MoreIsMore(g_bleed_meleevuln_amount), g_bleed_meleevuln_duration);
             }
 
             if (IsCleaver(Weapon2))
             {
                 TF2Attrib_SetByName(Weapon2, "bleeding duration", g_bleed_duration_bonus);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cleaver: {orange}On Hit: Bleed for %0.0f seconds",chat_display, g_bleed_duration_bonus);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cleaver: {orange}On Hit: Bleed for %0.0f seconds.\n{teamcolor}Bleed On Hit: {orange}+%0.0f%%%% more melee dmg taken for %0.0f seconds",chat_display, g_bleed_duration_bonus, MoreIsMore(g_bleed_meleevuln_amount), g_bleed_meleevuln_duration);
             }
 
         }
