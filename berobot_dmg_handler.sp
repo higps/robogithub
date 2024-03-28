@@ -1526,7 +1526,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 // TF2Attrib_SetByName(Weapon2, "slow enemy on hit major", 1.0);
                 TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tribalmans Shiv: {orange}Bleed lasts %0.0f seconds\n{teamcolor}Bleed On Hit: {orange}+%0.0f%%%% more melee dmg taken for %0.0f seconds",chat_display, stat1,MoreIsMore(g_bleed_meleevuln_amount), g_bleed_meleevuln_duration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tribalmans Shiv: {orange}Bleed lasts %0.0f seconds\n{teamcolor}Bleed On Hit: {orange}+%0.0f%%%% more melee dmg taken for %0.0f seconds",chat_display, stat1, MoreIsMore(g_bleed_meleevuln_amount), g_bleed_meleevuln_duration);
             }
             
         }
