@@ -211,6 +211,7 @@ public void OnEntityDestroyed(int entity)
 
 public void OnRocketSpawned(int rocket)
 {
+	if (!IsValidEntity(rocket)) return;
 	if (!HasEntProp(rocket, Prop_Send, "m_hOwnerEntity")) return; //prevent errors if this function somehow hooks an entity that isn't a rocket
 	
 	int owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");

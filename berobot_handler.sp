@@ -536,7 +536,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-    
+    int assister = GetClientOfUserId(GetEventInt(event, "assister"));
     //EmitSoundToAll("Announcer.MVM_General_Destruction",victim, 7);
     
     //EmitAmbientGameSound("Announcer.MVM_General_Destruction");
@@ -558,7 +558,22 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
        
         if (IsAnyRobot(victim))
         {
-            
+            // int clientIndex = -1;
+                for(int i = 1; i <= MaxClients; i++)
+                {
+                    if (IsValidClient(i) && !IsAnyRobot(i))
+                    {
+                        // clientIndex = GetClien(i);
+                        ServerCommand("sm_addpoints #%d 5", GetClientUserId(i));
+                        MC_PrintToChat(i, "{orange}Got 5 powerup points{white} when robot died");
+                    }
+                }
+            // clientIndex = GetClientOfUserId(attacker);
+            ServerCommand("sm_addpoints #%d 15", attacker);
+            if(IsValidClient(attacker))MC_PrintToChat(attacker, "{orange}Got 15 powerup points{white}  for killing robot");
+            // clientIndex = GetClientOfUserId(assister);
+            ServerCommand("sm_addpoints #%d 15", assister);
+            if(IsValidClient(assister))MC_PrintToChat(assister, "{orange}Got 15 points{white} for assisting robot death");
             //To deal with players using loadout switches to gain health back
             g_PlayerHealth[victim] = -1;
 
@@ -779,12 +794,34 @@ public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontB
 
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
-
+    // int g_powershop = -1;
 
     if (g_Enable && !g_AprilEnable){
 
         MC_PrintToChatAll("{Green}Type {orange}!info{Green} to see more info about this gamemode");
         MC_PrintToChatAll("{Green}Visit {orange}bmod.tf/mannedmachines {Green} To get the assetpack to get the most out of this mode");
+    
+    
+    
+            // int powerteam = GetRobotTeam();
+            // switch(powerteam)
+            // {
+                
+            //     case RED:
+            //     {
+            //         g_powershop = 0;
+                    
+            //     }
+            //     case BLUE:
+            //     {
+            //         g_powershop = 1;
+            //     }
+            // }
+            // //Powershop
+            // //0 RED only, 1 BLU only
+            // PrintToChatAll("Setting to %i", g_powershop);
+            // ServerCommand("sm_tf2ps_shop_restriction %i",g_powershop);
+
 
         if (GameRules_GetProp("m_bSwitchedTeamsThisRound"))
         {
@@ -815,18 +852,24 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
                     if(g_cv_bDebugMode)PrintToChatAll("RoboTeam was RED changing to BLUE...");
                     g_RoboTeam = BLUE;
                     g_HumanTeam = RED;
+                    
                 }
                 case BLUE:
                 {
                     if(g_cv_bDebugMode)PrintToChatAll("RoboTeam was BLU changing to RED...");
                     g_RoboTeam = RED;
                     g_HumanTeam = BLUE;
+
                 }
             }
             
         }
     }
+    //Powershop
+    //0 RED only, 1 BLU only
 
+    // ServerCommand("sm_plugins unload /TF2PowerShop/");
+    // ServerCommand("sm_plugins load /TF2PowerShop/");
     return Plugin_Continue;
 }
 

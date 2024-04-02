@@ -343,18 +343,21 @@ public void ReadConfig()
         
         if (g_hConfig.GetString("spawn", sound, sizeof(sound)))
         {
+            PrecacheSound(sound);
             robot.sounds.spawn = sound;
             // PrintToChatAll("ROBOT SPAWN SOUND: %s", robot.sounds.spawn);
         }
 
         if (g_hConfig.GetString("death", sound, sizeof(sound)))
         {
+            PrecacheSound(sound);
             robot.sounds.death = sound;
             // PrintToChatAll("ROBOT DEATH SOUND: %s", robot.sounds.death);
         }
 
         if (g_hConfig.GetString("loop", sound, sizeof(sound)))
         {
+            PrecacheSound(sound);
             robot.sounds.loop = sound;
             // PrintToChatAll("ROBOT LOOP SOUND: %s", robot.sounds.loop);
         }
@@ -362,6 +365,7 @@ public void ReadConfig()
         if (g_hConfig.GetString("footstep", sound, sizeof(sound)))
         {
             int footstep = StringToInt(sound);
+            // PrecacheSound(sound);
             robot.footstep = footstep;
             // PrintToChatAll("ROBOT LOOP SOUND: %s", robot.sounds.loop);
         }else

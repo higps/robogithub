@@ -173,6 +173,7 @@ void DisableRocket(int entity)
 
 public void OnRocketSpawned(int rocket)
 {
+	if (!IsValidEntity(rocket)) return;
 	int owner = GetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity");
 	if (HasStat(owner) && PlayerControlRockets[owner] && !ControllingRocket[owner] && LastControlTime[owner] > GetGameTime())
 	{
