@@ -792,6 +792,11 @@ public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontB
     }
 }
 
+public void OnClientConnected(int client)
+{
+    ServerCommand("sm_removepoints #%d ", GetClientUserId(client));
+}
+
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
     // int g_powershop = -1;
@@ -801,7 +806,16 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
         MC_PrintToChatAll("{Green}Type {orange}!info{Green} to see more info about this gamemode");
         MC_PrintToChatAll("{Green}Visit {orange}bmod.tf/mannedmachines {Green} To get the assetpack to get the most out of this mode");
     
-    
+
+                // Remove Point on player start
+                for(int i = 1; i <= MaxClients; i++)
+                {
+                    if (IsValidClient(i) && !IsAnyRobot(i))
+                    {
+                        // clientIndex = GetClien(i);
+                        ServerCommand("sm_removepoints #%d ", GetClientUserId(i));
+                    }
+                }
     
             // int powerteam = GetRobotTeam();
             // switch(powerteam)
