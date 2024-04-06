@@ -254,7 +254,12 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Handled;
 		}
 	
-
+        if (damagecustom == TF_CUSTOM_SPELL_LIGHTNING)
+        {
+            damage *= 0.1;
+            return Plugin_Changed;
+        }
+        
         if (damagecustom == TF_CUSTOM_PLASMA)
         {
             // PrintToChatAll("PLASMA");

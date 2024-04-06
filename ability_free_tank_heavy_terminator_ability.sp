@@ -180,7 +180,10 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 	int assister = GetClientOfUserId(GetEventInt(event, "assister"));
 
-	if(victim == g_target)
+        int death_flags = GetEventInt(event, "death_flags");
+        if((death_flags & TF_DEATHFLAG_DEADRINGER) != TF_DEATHFLAG_DEADRINGER) // Not a dead ringer death?
+        {
+				if(victim == g_target)
 	{
 		if(IsRobot(attacker, ROBOT_NAME))
 		{
@@ -198,6 +201,8 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 		}
 
 	}
+
+		}
 
 
 	FindTerminator();

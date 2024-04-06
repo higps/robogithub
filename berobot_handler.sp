@@ -559,21 +559,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
         if (IsAnyRobot(victim))
         {
             // int clientIndex = -1;
-                for(int i = 1; i <= MaxClients; i++)
-                {
-                    if (IsValidClient(i) && !IsAnyRobot(i))
-                    {
-                        // clientIndex = GetClien(i);
-                        ServerCommand("sm_addpoints #%d 5", GetClientUserId(i));
-                        MC_PrintToChat(i, "{orange}Got 5 powerup points{white} when robot died");
-                    }
-                }
-            // clientIndex = GetClientOfUserId(attacker);
-            ServerCommand("sm_addpoints #%d 15", attacker);
-            if(IsValidClient(attacker))MC_PrintToChat(attacker, "{orange}Got 15 powerup points{white}  for killing robot");
-            // clientIndex = GetClientOfUserId(assister);
-            ServerCommand("sm_addpoints #%d 15", assister);
-            if(IsValidClient(assister))MC_PrintToChat(assister, "{orange}Got 15 points{white} for assisting robot death");
+
             //To deal with players using loadout switches to gain health back
             g_PlayerHealth[victim] = -1;
 
@@ -595,6 +581,31 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
             // KillRune();
             
         }
+
+        // if (!IsAnyRobot(victim) && IsAnyRobot(attacker))
+        // {
+        //     //             for(int i = 1; i <= MaxClients; i++)
+        //     // {
+        //     //     if (IsValidClient(i) && !IsAnyRobot(i))
+        //     //     {
+        //     //         // clientIndex = GetClien(i);
+        //     //         ServerCommand("sm_addpoints #%d 5", GetClientUserId(i));
+        //     //         MC_PrintToChat(i, "{orange} gained 5 powerup points{white} when robot died");
+        //     //     }
+        //     // }
+        // // clientIndex = GetClientOfUserId(attacker);
+        // // int death_flags = GetEventInt(event, "death_flags");
+        // // if((death_flags & TF_DEATHFLAG_DEADRINGER) != TF_DEATHFLAG_DEADRINGER) // Not a dead ringer death?
+        // // {
+        // // ServerCommand("sm_addpoints #%d 7", GetClientUserId(victim));
+        // // MC_PrintToChat(victim, "{orange}You gained 7 Power Points");
+        // // }
+
+        // // if(IsValidClient(attacker))MC_PrintToChat(attacker, "{orange}Got 15 powerup points{white}  for killing robot");
+        // // // clientIndex = GetClientOfUserId(assister);
+        // // ServerCommand("sm_addpoints #%d 15", assister);
+        // // if(IsValidClient(assister))MC_PrintToChat(assister, "{orange}Got 15 points{white} for assisting robot death");
+        // }
 
             // if (g_AprilEnable && g_IsAprilRTD[victim])
             // {
@@ -792,10 +803,11 @@ public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontB
     }
 }
 
-public void OnClientConnected(int client)
-{
-    ServerCommand("sm_removepoints #%d ", GetClientUserId(client));
-}
+// public void OnClientConnected(int client)
+// {
+//     // PrintToServer("Removing");
+//     ServerCommand("sm_removepoints #%d 5000", GetClientUserId(client));
+// }
 
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
@@ -813,7 +825,7 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
                     if (IsValidClient(i) && !IsAnyRobot(i))
                     {
                         // clientIndex = GetClien(i);
-                        ServerCommand("sm_removepoints #%d ", GetClientUserId(i));
+                        ServerCommand("sm_removepoints #%d 5000", GetClientUserId(i));
                     }
                 }
     

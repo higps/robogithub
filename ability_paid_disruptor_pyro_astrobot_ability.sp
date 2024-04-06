@@ -53,6 +53,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					fl_vel[1] -= AirblastPower * Cosine(fl_EyeAngles[0]) * Sine(fl_EyeAngles[1]);
 					fl_vel[2] -= AirblastPower * Sine(fl_EyeAngles[0]);
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fl_vel);
+					SetEntProp(client, Prop_Send, "m_bJumping", 1);
+					
 				}
 				
 				// // Flamethrower Jetpack
