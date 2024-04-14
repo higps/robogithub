@@ -210,7 +210,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 void TerminatorHeal(int client)
 {
-	AddPlayerHealth(client, GetCurrentHumanCount()*166, 0, false, true);
+	AddPlayerHealth(client, GetCurrentHumanCount()*50, 0, false, true);
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
 }
 
@@ -243,7 +243,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		int aimtarget = GetClientAimTarget(client);
 		if (IsValidClient(aimtarget) && aimtarget == g_target)
 		{
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.33);
+			// TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.33);
+			TF2_AddCondition(client, TFCond_CritCola, 0.33);
 		}
 
 		//Manually Finding New Target
@@ -795,21 +796,21 @@ public char AssessThreatLevel(int client)
 	return AString;
 }
 
-public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
-{
-    if(!IsValidClient(victim))
-        return Plugin_Continue;    
-    if(!IsValidClient(attacker))
-     return Plugin_Continue;   
+// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+// {
+//     if(!IsValidClient(victim))
+//         return Plugin_Continue;    
+//     if(!IsValidClient(attacker))
+//      return Plugin_Continue;   
 	
-		if(!g_isTerminator)
-		{
-			FindTerminator();
-		}
+// 		if(!g_isTerminator)
+// 		{
+// 			FindTerminator();
+// 		}
 
-		if(IsRobot(attacker, ROBOT_NAME) && victim == g_target)
-		{
-			TF2_AddCondition(attacker, TFCond_CritCola, 0.33);
-		}
-}
+// 		if(IsRobot(attacker, ROBOT_NAME) && victim == g_target)
+// 		{
+// 			TF2_AddCondition(attacker, TFCond_CritCola, 0.33);
+// 		}
+// }
 

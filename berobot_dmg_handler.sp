@@ -1251,6 +1251,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots",  "damage=1.15 only-bots=1 critType=1");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
             }
+
+            if (IsElectric(Weapon3))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons{orange} reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
+            }
         }
         if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
         {
@@ -2053,7 +2058,7 @@ bool IsElectric(int weapon)
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 		//If other electric weapons are added, add here
-	case 528, 442, 588, 441: //Short Circuit, The Righteous Bison, Cow Mangler
+	case 528, 442, 588, 441, 813, 834: //Short Circuit, The Righteous Bison, Cow Mangler, Neon Annihilator
 		{
 			return true;
 		}
