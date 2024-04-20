@@ -1195,9 +1195,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             if (IsValidWeaponForClassBuff(Weapon1))
             {
-            stat1 = 0.85;
-            TF2Attrib_SetByName(Weapon1, "dmg taken from fire reduced", stat1);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pyro: {orange}+%0.0f%%%% fire resistance",chat_display, LessIsMore(stat1));
+                stat1 = 0.85;
+                TF2Attrib_SetByName(Weapon1, "dmg taken from fire reduced", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Pyro: {orange}+%0.0f%%%% fire resistance",chat_display, LessIsMore(stat1));
             }
             
             if (IsThirdDegree(Weapon3))
@@ -3330,11 +3330,13 @@ public void CheckSpellBook(int iClient)
 bool IsValidWeaponForClassBuff(int weapon)
 {
 
-    if (weapon == -1 && weapon <= MaxClients)
+    if (weapon != -1)
     {
+        PrintToChatAll("Was valid weapon");
         return true;
     }else
     {
+       PrintToChatAll("Was not valid weapon"); 
         return false;       
     }
 }
