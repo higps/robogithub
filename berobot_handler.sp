@@ -820,15 +820,7 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
     
 
                 // Remove Point on player start
-                for(int i = 1; i <= MaxClients; i++)
-                {
-                    if (IsValidClient(i) && !IsAnyRobot(i))
-                    {
-                        // clientIndex = GetClien(i);
-                        ServerCommand("sm_removepoints #%d 5000", GetClientUserId(i));
-                    }
-                }
-    
+
             // int powerteam = GetRobotTeam();
             // switch(powerteam)
             // {
