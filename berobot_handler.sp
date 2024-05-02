@@ -99,6 +99,7 @@ GlobalForward _enabledChangedForward;
 GlobalForward _clientResetting;
 GlobalForward _modeResetRequestedForward;
 
+GlobalForward _wasRandomRobotForward;
 // float g_CV_flSpyBackStabModifier;
 
 float g_Rtr_percent;
@@ -216,6 +217,8 @@ public void OnPluginStart()
     _enabledChangedForward = new GlobalForward("MM_OnEnabledChanged", ET_Ignore, Param_Cell);
     _clientResetting = new GlobalForward("MM_OnClientResetting", ET_Ignore, Param_Cell);
     _modeResetRequestedForward = new GlobalForward("MM_ModeResetRequested", ET_Ignore);
+
+    _wasRandomRobotForward = new GlobalForward("MM_WasRandomRobotForward", ET_Ignore, Param_Cell);
 
     RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
     RegAdminCmd("sm_mr", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
@@ -1828,6 +1831,10 @@ void Internal_SetRandomRobot(int client)
     if(g_cv_bDebugMode)PrintToChatAll("setting bot %L to be robot '%s'", client, robotname);
   //  PrintToChatAll("%N: setting bot %L to be robot '%s'",client,  client, robotname);
   //  PrintToChatAll("===");
+  
+    Call_StartForward(_wasRandomRobotForward);
+    Call_PushCell(client);
+    Call_Finish();
     ForceRobot(robotname, client);
 }
 

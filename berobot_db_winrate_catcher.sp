@@ -13,9 +13,13 @@
 #define PLUGIN_VERSION "0.1"
 
 Database hDatabase = null;
-
+char g_map_name[256] = "";
+char g_ServerName[64] = ""; 
 // int g_Map_Timestamp_ID;
 char g_time[64];
+
+bool g_random_robot[MAXPLAYERS + 1] = {false,...};
+
 public void OnMapStart()
 {
     //Generate Timestamp here, each map has it's own timestamp
@@ -23,7 +27,16 @@ public void OnMapStart()
     int Map_Timestamp_ID = GetTime();
     FormatTime(g_time, sizeof(g_time), "%Y-%m-%d %H:%M:%S", Map_Timestamp_ID);
 
+    
+    GetCurrentMap(g_map_name, sizeof(g_map_name));               // Get map name. (itemtest, ctf_2fort)
+    GetMapDisplayName(g_map_name, g_map_name, sizeof(g_map_name)); 
+
+    Handle convar = FindConVar("hostname");
+    GetConVarString(convar, g_ServerName, sizeof(g_ServerName)); 
+
     Database.Connect(GotDatabase, "mm_winrates");
+
+
 }
 
 public void OnPluginStart()
@@ -97,9 +110,7 @@ public Action Event_teamplay_robot_win_table(Event event, char[] name, bool dont
     
 
     // PrintToChatAll("Time: %s",time);
-    char map_name[256];
-    GetCurrentMap(map_name, sizeof(map_name));               // Get map name. (itemtest, ctf_2fort)
-    GetMapDisplayName(map_name, map_name, sizeof(map_name)); 
+
 
     int total_gametime = RoundToNearest(GetGameTime());
     int robot_team_win = (team == RobotTeam) ? 1 : 0;
@@ -108,25 +119,23 @@ public Action Event_teamplay_robot_win_table(Event event, char[] name, bool dont
     int CurrentHumans = GetCurrentHumanCount();
     int player_count = CurrentRobots+CurrentHumans;
     // g_Map_Timestamp_ID = g_Map_Timestamp_ID;
-    // PrintToChatAll("Round Won: Timestamp: %s, Robot team was %i, Gametime was: %i Robot win? %i, ROBOT STR %s, MAP WAS %s", g_time, RobotTeam, total_gametime, robot_team_win, win_team_str,map_name);
+    // PrintToChatAll("Round Won: Timestamp: %s, Robot team was %i, Gametime was: %i Robot win? %i, ROBOT STR %s, MAP WAS %s", g_time, RobotTeam, total_gametime, robot_team_win, win_team_str,g_map_name);
 
 
-    // timestamp, , total_gametime, map_name. player_count, CurrentRobots, CurrentHumans,robot_team_win
+    // timestamp, , total_gametime, g_map_name. player_count, CurrentRobots, CurrentHumans,robot_team_win
     // SQL_FastQuery(hDatabase, "INSERT INTO mm_robot_win (timestamp, team, total_gametime, map, player_count, robot_team_win) VALUES (NOW(), 'RED', 600, 'cp_dustbowl', 12, 1)");    
 
     // Create the SQL query string with formatted variables
    
     
-    Handle convar = FindConVar("hostname");
-    char ServerName[64];
-    GetConVarString(convar, ServerName, sizeof(ServerName)); 
-    // PrintToChatAll("%s",ServerName);
+
+    // PrintToChatAll("%s",g_ServerName);
 
     char query[1024];
-    hDatabase.Format(query, sizeof(query), "INSERT INTO mm_robot_win (game_id_timestamp, win_team, total_gametime, map, player_count, robot_count, human_count, robot_team_win, server) VALUES ('%s', '%s', %i, '%s', %i, %i, %i, %i, '%s')", g_time, win_team_str, total_gametime, map_name, player_count, CurrentRobots, CurrentHumans, robot_team_win, ServerName);
+    hDatabase.Format(query, sizeof(query), "INSERT INTO mm_robot_win (game_id_timestamp, win_team, total_gametime, map, player_count, robot_count, human_count, robot_team_win, server) VALUES ('%s', '%s', %i, '%s', %i, %i, %i, %i, '%s')", g_time, win_team_str, total_gametime, g_map_name, player_count, CurrentRobots, CurrentHumans, robot_team_win, g_ServerName);
     SQL_FastQuery(hDatabase, query);
     // char query[1024];
-    // Format(query, sizeof(query), "INSERT INTO mm_robot_win (game_id_timestamp, win_team, total_gametime, map, player_count, robot_count, human_count, robot_team_win, server) VALUES ('%s', '%s', %i, '%s', %i, %i, %i, %i, '%s')", g_time, win_team_str, total_gametime, map_name, player_count, CurrentRobots, CurrentHumans, robot_team_win, ServerName);
+    // Format(query, sizeof(query), "INSERT INTO mm_robot_win (game_id_timestamp, win_team, total_gametime, map, player_count, robot_count, human_count, robot_team_win, server) VALUES ('%s', '%s', %i, '%s', %i, %i, %i, %i, '%s')", g_time, win_team_str, total_gametime, g_map_name, player_count, CurrentRobots, CurrentHumans, robot_team_win, g_ServerName);
 
     // Execute the SQL query in a threaded manner
     // hDatabase.Query(T_DBInsert, query);
@@ -161,8 +170,8 @@ public Action Event_teamplay_robot_win_table(Event event, char[] name, bool dont
             // char query[512];
             // Format(query, sizeof(query), "INSERT INTO mm_robot_human_comp (game_id_timestamp, client_steamId, class, total_gametime) VALUES ('%s', '%s', %d, %d)", g_time, steamID, playerClass, total_gametime);
 
-            // // Execute the SQL query in a threaded manner
-            // hDatabase.Query(T_DBInsert, query);
+            // Execute the SQL query in a threaded manner
+            hDatabase.Query(T_DBInsert, query);
             // }
 
             if (IsAnyRobot(i))
@@ -204,4 +213,39 @@ public void T_DBInsert(Database db, DBResultSet results, const char[] error, any
     {
         // Query successful, handle the result if needed
     }
+}
+public void MM_PickRobotAndPreviousRobot(int client, int random, const char[] robotName)
+{
+    // MC_PrintToChatAll("Call was for %N with string:%s:", client, robotName);
+    char steamID[45];
+    GetClientAuthId(client, AuthId_SteamID64, steamID, sizeof(steamID));
+    if(StrEqual(steamID, "STEAM_ID_STOP_IGNORING_RETVALS")) {
+    steamID = "BOT";
+    }
+    
+    int team = GetClientTeam(client);
+    char team_str[4];
+    if (team == TFTeam_Blue) {
+        team_str = "BLU";
+    } else if (team == TFTeam_Red) {
+        team_str = "RED";
+    }
+    else
+    {
+        team_str = "ERR";
+    } 
+
+    int pick_time = RoundToNearest(GetEngineTime());
+    char query[1024];
+    hDatabase.Format(query, sizeof(query), "INSERT INTO mm_robot_pickrate (game_id_timestamp, robot_name, map, team, random, pick_time, client_id, server) VALUES ('%s', '%s', '%s', '%s', %i, %i, '%s', '%s')", 
+                                                                                g_time, robotName, g_map_name, team_str, g_random_robot[client], pick_time, steamID, g_ServerName);
+
+    SQL_FastQuery(hDatabase, query);
+    PrintToConsoleAll(query);
+    g_random_robot[client] = false;
+}
+
+public void MM_WasRandomRobotForward(int client)
+{
+    g_random_robot[client] = true;
 }

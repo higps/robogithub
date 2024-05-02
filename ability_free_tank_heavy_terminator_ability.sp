@@ -206,6 +206,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 
 	FindTerminator();
+	return Plugin_Continue;
 }
 
 void TerminatorHeal(int client)
@@ -260,6 +261,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		// g_switch_available = (gametime_retarget - GetEngineTime() == 0.0) ? true : false;
 	}
+	return Plugin_Continue;
 }
 
 

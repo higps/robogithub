@@ -42,6 +42,8 @@ ConVar g_cvCvarList[CV_g_Allow_Human_Robot_Creation + 1];
 bool _init;
 char _wasRobot[MAXPLAYERS + 1][NAMELENGTH];
 
+GlobalForward _robotPickAndPreviousRobot;
+
 //Universal
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -163,13 +165,19 @@ public void Init()
     HookEvent("player_death", Event_Death, EventHookMode_Pre);
     HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 
+    _robotPickAndPreviousRobot = new GlobalForward("MM_PickRobotAndPreviousRobot", ET_Ignore, Param_Cell, Param_Cell, Param_String);
+
     for(int i = 0; i <= MaxClients; i++)
     {
         _wasRobot[i] = "";
     }
 
+
     _init = true;
 }
+
+
+
 static const char ROBOT_SOUNDS[][256] =
 {
 SPAWN, DEATH, BOSS_SPAWN,TANK_SPAWN, TANK_LOOP, LOOP_DEMO, DEMO_LEFTFOOT, DEMO_LEFTFOOT1, DEMO_RIGHTFOOT, DEMO_RIGHTFOOT1, HEAVY_LOOP
@@ -223,6 +231,16 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     // CreateNative("SetTankStats", Native_SetTankStats);
 
     return APLRes_Success;
+}
+
+void PickRobotAndPreviousRobot(int client, int random, const char[] robotname)
+{
+    Call_StartForward(_robotPickAndPreviousRobot);
+    Call_PushCell(client);
+    Call_PushCell(random);
+    // PrintToChatAll("Robot name in function %s", robotname);
+    Call_PushString(robotname);
+    Call_Finish();
 }
 
 public void OnClientPutInServer(int client)
@@ -522,15 +540,19 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         }
         
         
+
         char wasRobot[NAMELENGTH];
         int trashError = Trash(targetClientId, wasRobot, name);
         if (trashError > 0)
             return trashError;            
-
+        // PrintToChatAll("Before %N is %s and wass %s", client, item.name, wasRobot);
         if (strcmp(name, wasRobot) == 0)    //don't enable robot, if client was already same robot as requested
             continue;
 
         TrackRobot(targetClientId, name);
+        int random = 2;
+        PickRobotAndPreviousRobot(client, random, item.name);
+        // PrintToChatAll("After %N is %s and wass %s", client, item.name, wasRobot);
 
         SMLogTag(SML_VERBOSE, "calling privateForward %x for robot %s, with client %i and target %s (current %i; count %i)", item.callback, name, client, target, targetClientId, target_count);
         CallCreate(targetClientId, item);
@@ -553,7 +575,7 @@ public any Native_CreateRobot(Handle plugin, int numParams)
 
 	}
 
-
+    //Send client, current_robot_name and _wasRobot
 
 	return 0;
 }
@@ -867,4 +889,5 @@ void CallCreate(int client, Robot item)
     TrackRobot(client, item.name);
     TrackRobotCreation(client, true);
     PrintHintText(client, item.tips);
+    // PrintToChatAll("%N is %s and was %s", client, item.name, _wasRobot[client]);
 }

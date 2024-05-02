@@ -3332,11 +3332,11 @@ bool IsValidWeaponForClassBuff(int weapon)
 
     if (weapon != -1)
     {
-        PrintToChatAll("Was valid weapon");
+
         return true;
     }else
     {
-       PrintToChatAll("Was not valid weapon"); 
+
         return false;       
     }
 }
