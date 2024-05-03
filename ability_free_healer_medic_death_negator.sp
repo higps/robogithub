@@ -66,9 +66,10 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		if (TF2_IsPlayerInCondition(victim, TFCond_PreventDeath))
 		{
+			
 			int hp = GetClientHealth(victim);
 			// PrintToChatAll("HP: %i\ndmg: %f", hp, damage);
-			if(float(hp) + damage < 250.0)
+			if(float(hp) + damage < 50.0)
 			{
 				damage = 0.0;
 				return Plugin_Changed;
