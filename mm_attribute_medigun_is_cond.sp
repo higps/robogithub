@@ -3,7 +3,8 @@
  */
 #pragma semicolon 1
 #include <sourcemod>
-
+#include <berobot_constants>
+#include <berobot>
 #include <sdkhooks>
 #include <tf2_stocks>
 #include <tf_custom_attributes>
@@ -180,12 +181,16 @@ MRESReturn OnGetPlayerProvidedCharge(int client, Handle hReturn) {
 
 void testframe(int client){
 	// PrintToChatAll("Frame after");
+
+	if(IsValidClient(client))
+	{
 		int healtarget = getHealingTarget(client);
 		TF2_AddCondition(client, g_cond, g_duration);
 		if(IsClientInGame(healtarget))
 		{
 			TF2_AddCondition(healtarget, g_cond, g_duration);
 		}
+	}
 }
 
 bool IsUberchargeDeployed(int weapon) {

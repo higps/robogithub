@@ -90,10 +90,13 @@ public OnPluginStart()
 
 public void OnEntityDestroyed(int entity)
 {
+	if (IsValidEntity(entity))
+	{
 	char classname[128];
 	GetEntityClassname(entity, classname, sizeof classname);
 	if (StrEqual(classname, "tf_projectile_pipe"))
 		TryMirv(entity, Grenade[entity]);
+	}
 }
 
 void TryMirv(int pipe, Pipe grenade)

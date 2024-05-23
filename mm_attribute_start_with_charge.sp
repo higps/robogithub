@@ -39,7 +39,10 @@ public Action Timer_StatCheck(Handle timer, int client)
 }
 
 bool HasStats(int client)
-{
+{   
+    if (IsValidClient(client))
+    {
+
 	char stat_buffer[256];
 	if (!TF2CustAttr_GetString(client, "start-with-charge", stat_buffer, sizeof(stat_buffer))) {
 		return false;
@@ -47,7 +50,8 @@ bool HasStats(int client)
 
     g_Amount = ReadFloatVar(stat_buffer, "amount", 1.0);
 	return true;
-    
+    }
+    return false;
 	
 }
 

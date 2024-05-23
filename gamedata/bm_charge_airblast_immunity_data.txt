@@ -6,8 +6,8 @@
 		{
 			"CTFPlayer::IsDeflectable"
 			{
-				"linux"			"156"
-				"windows"		"155"
+				"linux"			"159"
+				"windows"		"158"
 			}
 			//"CTFFlameThrower::DeflectPlayer"
 			//{

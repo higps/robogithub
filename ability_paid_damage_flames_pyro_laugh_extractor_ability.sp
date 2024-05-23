@@ -128,7 +128,7 @@ void DrawHUD(int client)
 
 	if (g_button_held[client] && iCountDown <= 0)
 	{
-		ApplyRadialStun(client, 3.0, 500.0);
+		ApplyRadialStun(client, 1.5, 500.0);
 		g_KillCount[client] = 0;
 		// g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
 		isready = false;

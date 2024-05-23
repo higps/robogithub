@@ -6,8 +6,8 @@
 		{
 			"CMonsterResource::SetBossHealthPercentage"
 			{
-				"linux"		"194"
-				"windows"	"193"
+				"linux"		"200"
+				"windows"	"199"
 			}
 		}
 	}

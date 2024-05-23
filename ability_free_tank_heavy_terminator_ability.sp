@@ -144,7 +144,7 @@ void FindTerminationTarget(){
 
 			g_iGlowEnt[client] = EntIndexToEntRef(TF2_AttachBasicGlow(randomPlayer));
 			g_target = randomPlayer;
-			SDKHook(g_iGlowEnt[client], SDKHook_SetTransmit, OnGlowShouldTransmit);
+			if (IsValidClient(g_iGlowEnt[client])) SDKHook(g_iGlowEnt[client], SDKHook_SetTransmit, OnGlowShouldTransmit);
 			g_flTagEndTime[client] = GetGameTime() + flDuration;
 			gametime = -1.0;
 		}

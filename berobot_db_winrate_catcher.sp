@@ -153,27 +153,40 @@ public Action Event_teamplay_robot_win_table(Event event, char[] name, bool dont
             steamID = "BOT";
             }
 
-            if (!IsAnyRobot(i))
-            {
-                // char query[1024];
-                // Get the player's current class
-                int playerClass = TF2_GetPlayerClass(i);
-                hDatabase.Format(query, sizeof(query), "INSERT INTO mm_robot_human_comp (game_id_timestamp, client_steamId, class, total_gametime) VALUES ('%s', '%s', %i, %i)", g_time, steamID, playerClass, total_gametime);
-                SQL_FastQuery(hDatabase, query);
-            }
+            // if (!IsAnyRobot(i))
+            // {
+            //     // char query[1024];
+            //     // Get the player's current class
+            //     int playerClass = TF2_GetPlayerClass(i);
+            //     hDatabase.Format(query, sizeof(query), "INSERT INTO mm_robot_human_comp (game_id_timestamp, client_steamId, class, total_gametime) VALUES ('%s', '%s', %i, %i)", g_time, steamID, playerClass, total_gametime);
+            //     SQL_FastQuery(hDatabase, query);
+            // }
 
             // if (!IsAnyRobot(i))
             // {
             // // Get the player's current class
             // int playerClass = TF2_GetPlayerClass(i);
-
-            // char query[512];
-            // Format(query, sizeof(query), "INSERT INTO mm_robot_human_comp (game_id_timestamp, client_steamId, class, total_gametime) VALUES ('%s', '%s', %d, %d)", g_time, steamID, playerClass, total_gametime);
+            char query[512];
+            if (!IsAnyRobot(i))
+            {
+            int playerClass = TF2_GetPlayerClass(i);
+            Format(query, sizeof(query), "INSERT INTO mm_robot_human_comp (game_id_timestamp, client_steamId, class, total_gametime) VALUES ('%s', '%s', %d, %d)", g_time, steamID, playerClass, total_gametime);
 
             // Execute the SQL query in a threaded manner
             hDatabase.Query(T_DBInsert, query);
+            }
             // }
 
+            // if (IsAnyRobot(i))
+            // {
+            //     char robotName[NAMELENGTH];
+            //     Robot robot;
+            //     GetRobot(i, robotName, NAMELENGTH);
+            //     GetRobotDefinition(robotName, robot);
+            //     // PrintToChatAll("Robot name was %s", robotName);
+            //     hDatabase.Format(query, sizeof(query), "INSERT INTO mm_robot_individual_win (game_id_timestamp, client_steamId, robot_name, total_gametime, robot_team_win) VALUES ('%s', '%s', '%s', %i, %i)", g_time, steamID, robotName, total_gametime, robot_team_win);
+            //     SQL_FastQuery(hDatabase, query);
+            // }
             if (IsAnyRobot(i))
             {
                 char robotName[NAMELENGTH];
@@ -181,10 +194,11 @@ public Action Event_teamplay_robot_win_table(Event event, char[] name, bool dont
                 GetRobot(i, robotName, NAMELENGTH);
                 GetRobotDefinition(robotName, robot);
                 // PrintToChatAll("Robot name was %s", robotName);
-                hDatabase.Format(query, sizeof(query), "INSERT INTO mm_robot_individual_win (game_id_timestamp, client_steamId, robot_name, total_gametime, robot_team_win) VALUES ('%s', '%s', '%s', %i, %i)", g_time, steamID, robotName, total_gametime, robot_team_win);
-                SQL_FastQuery(hDatabase, query);
+                // hDatabase.Format(query, sizeof(query), "INSERT INTO mm_robot_individual_win (game_id_timestamp, client_steamId, robot_name, total_gametime, robot_team_win) VALUES ('%s', '%s', '%s', %i, %i)", g_time, steamID, robotName, total_gametime, robot_team_win);
+                // SQL_FastQuery(hDatabase, query);
+                Format(query, sizeof(query), "INSERT INTO mm_robot_individual_win (game_id_timestamp, client_steamId, robot_name, total_gametime, robot_team_win) VALUES ('%s', '%s', '%s', %i, %i)", g_time, steamID, robotName, total_gametime, robot_team_win);
+                hDatabase.Query(T_DBInsert, query);
             }
-
             // if (IsAnyRobot(i))
             // {
             //     char robotName[NAMELENGTH];
@@ -237,11 +251,14 @@ public void MM_PickRobotAndPreviousRobot(int client, int random, const char[] ro
 
     int pick_time = RoundToNearest(GetEngineTime());
     char query[1024];
-    hDatabase.Format(query, sizeof(query), "INSERT INTO mm_robot_pickrate (game_id_timestamp, robot_name, map, team, random, pick_time, client_id, server) VALUES ('%s', '%s', '%s', '%s', %i, %i, '%s', '%s')", 
+    // hDatabase.Format(query, sizeof(query), "INSERT INTO mm_robot_pickrate (game_id_timestamp, robot_name, map, team, random, pick_time, client_id, server) VALUES ('%s', '%s', '%s', '%s', %i, %i, '%s', '%s')", 
+                                                                                // g_time, robotName, g_map_name, team_str, g_random_robot[client], pick_time, steamID, g_ServerName);
+    Format(query, sizeof(query), "INSERT INTO mm_robot_pickrate (game_id_timestamp, robot_name, map, team, random, pick_time, client_id, server) VALUES ('%s', '%s', '%s', '%s', %i, %i, '%s', '%s')", 
                                                                                 g_time, robotName, g_map_name, team_str, g_random_robot[client], pick_time, steamID, g_ServerName);
-
-    SQL_FastQuery(hDatabase, query);
-    PrintToConsoleAll(query);
+    // SQL_FastQuery(hDatabase, query);
+    hDatabase.Query(T_DBInsert, query);
+    // SQL_TQuery() 
+    // PrintToConsoleAll(query);
     g_random_robot[client] = false;
 }
 
@@ -249,3 +266,19 @@ public void MM_WasRandomRobotForward(int client)
 {
     g_random_robot[client] = true;
 }
+
+// public void InsertCallback(Handle db, Handle queryHandle, any data)
+// {
+//     // Check if the query was successful
+//     if (SQL_FinishQuery(queryHandle))
+//     {
+//         PrintToServer("Data insertion successful");
+//     }
+//     else
+//     {
+//         LogError("Data insertion failed: %s", SQL_GetLastError(db));
+//     }
+
+//     // Release the query handle
+//     SQL_FreeHandle(queryHandle);
+// }
