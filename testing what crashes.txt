@@ -1,0 +1,208 @@
+Sure, here is the converted Markdown format for your WIKI code:
+
+# Humans
+
+Scout Respawn - OK
+
+# Robot Overview
+See robots grouped by:
+- [Robot Overview by Class]
+- [Robot Overview by Subclass]
+- [Robot Overview by Role]
+
+## Damage Flames
+### Pyro
+- [Aero]: Mini-crit Jumpers Reserve Shooter - OK
+- [Agro]: Degreaser, Scorch shot, Maul - OK
+- [Fire Wizard]: Throws Fireball, Crit on burning melee - OK
+- [Firelord]: Wide Fire - OK
+- [Heatsink]: Slap Ring Fire - OK
+- [Laugh Extractor]: AOE scare ability - OK
+- [Lister]: Dragon's Fury, Powerjack - OK
+- [Rocket Man]: Faster airblast - OK
+- [Wamo]: Plhogistinator, Manmelter - OK
+
+## Damage Grenades
+### Demoman
+- [Carpet Bomber]: Cluster Bomb Grenades - OK
+- [Dreysidel]: Mass Scottish Resistance - OK
+- [Expl-Odin]: Grenade Launcher Launcher - OK
+- [Led]: Rapid Grenade Launcher - OK
+- [Mortar Mack]: Multi-Shot - OK
+- [Phase Bomber]: Bomb Spawning Charge - OK
+- [Quickler]: Long Range Sticky Bombardment - OK
+- [Raid]: Short Range Rapid Iron Bomber - OK
+- [Solarlight]: Hybrid Knight - OK
+- [Stickler]: Large Radius Sticky Bomb - OK
+- [Zip Bomb]: Infinite Caber - OK
+- [Zero G]: No Gravity Stickies - OK
+
+## Damage Hitscan
+### Heavy
+- [Big Joey]: Tomislav - OK
+- [Deflector Mkii]: LVL 2 Deflecting Heavy - OK
+- [Firewall]: Overheating Heavy - OK
+- [Higps]: LVL 1 Deflector - OK
+- [Rager]: Pushback rage - OK
+- [Riotcop]: Panic Attack Power Shotgun - OK
+- [Samwiz]: Banana Brass Beast - OK
+- [Shredder]: Resistance Piercing + Penetrating Bullets - OK
+
+### Scout
+- [B4Nny]: Scatter Scout - OK
+- [Backscatter]: Rapid Fire Backscatter - OK
+- [Hammerhead]: Long Range Shortstop - OK
+- [Mecha Face]: Rapid Baby Face's Blaster - OK
+
+## Damage Melee
+### Demoman
+- [Archibolt]: Shadowleap Spell - OK
+- [Flycharger]: Fly in any direction Charge, Claidheamh Mòr - OK
+- [Robo-Knight]: Eyelander, Chargin' Targe - OK
+- [Sultan]: Persian Persuader, Splendid Screen - OK
+
+### Heavy
+- [Boxing Champ]: Killing Gloves of Boxing - OK
+- [Mafia Bank]: Rapid Eviction Notice, Airblast Resist - OK
+
+### Pyro
+- [Black Knight]: 250HP bonus per human, Increased Range Rake - OK
+- [Centurion]: Critical Chain Third Degree - OK
+- [Volcanyro]: Gas Passer, Sharpened Volcano Fragment - OK
+
+### Scout
+- [Funke]: Cleaver + Batsaber Combo - OK
+
+### Sniper
+- [Fat Magic]: Bushwacka, Jarate - OK
+
+### Soldier
+- [Equalizor]: Equalizer & Escape Plan fusion, Base Jumper - OK, but TAG LAST HIT must be fixed
+
+## Damage Rockets
+### Soldier
+- [Artillery]: Rapid Long Range Artillery - OK
+- [Bazookajoe2002]: Rapid fire Bazooka - OK
+- [Buff Bot]: Buff-Banner - OK
+- [Captitan Concho]: Increased Healing Concheror - OK
+- [Cloaker]: Cloaker - OK
+- [Dewill]: Rapid Ground Striker - OK
+- [Dr Grordbot]: Electro Ball, Cow Mangler - OK
+- [Gunslinger]: Instant Weapon Switch, Stock Loadout - OK
+- [Icebear]: Rapid Rocket Launcher Specialist - OK
+- [Ivory]: MIRV Rocket Launcher - OK
+- [Kappy]: Remote Control Rocket - OK
+- [Shounic]: Rocket Launcher Launcher - OK
+
+## Disruptor Disruptor
+### Demoman
+- [Samureye]: Half-Zatoichi, Splendid Screen - OK
+- [Toofty]: Iron Bomber, Sticky jumper - OK
+
+### Heavy
+- [Hoovy]: Perma-crit mittens - OK
+
+### Pyro
+- [Astrobot]: Low Gravity Pyro
+- [Kristianma]: Detonator, Axtinguisher
+
+### Scout
+- [Bonk Scout]: Bonk + Rapid Sandman
+- [Fan Scout]: High Pushback
+- [Hype Scout]: Soda Popper. Forward boost on hit
+
+### Soldier
+- [Blastinator]: High Knock Back Rockets
+- [Elmaxo]: The Original, Market Gardner
+- [Lazy Purple]: Fast Direct hit, Market Garden
+- [Tone Technician]: Rocket Jumper, Market Gardner
+
+## Engineer SingleClass
+### Engineer
+- [Barricade]: Barricade Buildings, Weak LVL 3 sentry, Shotgun, Southern Hospitality
+- [Brainiac]: MatePorter ability, Upgrading Rescue Ranger, Eureka Effect
+- [Chatgbt Guardian]: Tech Specialist, Rapid Build
+- [Gnome]: Throw your buildings, Frontier Justice
+- [Nofungineer]: Rapid Pomson High Damage Short Circuit
+- [Uncle Dane]: Widowmaker, Wrench
+- [Wrangler Bill]: Wrangler, Rapid Fire mini-sentries, Teamporter
+- [Zonical]: Quick-draw Pistol, Gunslinger
+
+## Healer Healer
+### Heavy
+- [Robovich]: Rapid Sandvich tosser
+
+### Medic
+- [Array Seven]: Kritzkrieg
+- [Blood Bandit]: Vampire Uber
+- [Death Negator]: Overheal, slow overheal decay and rapid Negate Death
+- [Dr. Crossbow Cop]: Strength Buff Crossbow
+- [Quick-Shielder]: Quickfix + MvM Shield
+- [Rust Repair]: Vita-Saw Medic Healer
+- [Sentro]: AOE Heal uber + Fireball
+- [Skymin Slash]: Dmg Reflect Vaccinator
+- [Theory-Y]: Multi-Banner Vaccinator
+
+## Sentry Buster Sentry Buster
+### Demoman
+- [Loch'N Larry]: Rapid Anti-Sentry Loch-n-Load
+
+### Pyro
+- [Pilgrim]: Thermal Thruster + Homewrecker
+
+### Soldier
+- [Bursty]: Burstfire Direct Hit
+
+## Sniper Sniper
+### Sniper
+- [Carbine Cassidy]: Headshotting Carbine
+- [Crocotron]: Sydney Sleeper, Danger Shield, Kukri
+- [Huntsbot]: Penetrating Huntsman
+- [Jbird]: Explosive HS, Cozy Camper, Shahanshah
+- [Skeeter]: Knockback Sniper
+- [Spaceguyonline]: Mini-Crit Boost On Kill
+
+## Spy Spy
+### Spy
+- [Black Shiv]: Grappling hook, Silent Killer
+- [Mrpaladin]: Turn invis on backstab
+- [Stabbystabby]: Rapid fire kunai
+- [Trickster]: BotZip Shrink Powers
+- [Warper]: Warp to last target hit
+
+## Tank Tank
+### Demoman
+- [Executioner]: High Damage Skull Cutter
+- [Hacked Slasher]: Power-Walk Charge
+
+### Heavy
+- [Bearded Expense]: Taunt: Leap Ability
+- [Big Chief]: High Heal on Kill
+- [Gotham Protector]: Gain buffs on class punch. Immune to tickle and Uberchain
+- [Megaton]: Knockback Fists of Steel
+- [Pancop]: Rapid Heal on hit.
+- [Sensor Armstrong]: Nanomachines
+- [Terminator]: Terminate specific players
+
+### Soldier
+- [Back Up]: Battalions Backup
+
+## ZBOSS Flames
+### Pyro
+- [Skilltron]: Rapid Fire Airblast
+
+## ZBOSS Grenades
+### DemoMan
+- [Nuker]: Nuke Shot
+
+## ZBOSS Hitscan
+### Heavy
+- [Kommisar Krit]: Slow Crit Minigun
+
+## ZBOSS Melee
+### Soldier
+- [Saxtron]: Critical Rockets
+
+## ZBOSS Rockets
+### Soldier
+- [General Crits]: Critical Rockets

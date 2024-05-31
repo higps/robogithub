@@ -66,10 +66,15 @@ public void OnPluginStart()
 {
 
     RegAdminCmd("sm_reload_robot_configs", Cmd_ReloadRobotConfigs, ADMFLAG_SLAY, "Reload the robot configs");
-    Initialize();
+    LoadPaints();
     
      //Debug function to print the robot path
      //PrintConfigPathForRobotName("A-Robot");
+}
+
+public void OnMapStart()
+{
+    Initialize();
 }
 
 public Action Initialize()
@@ -85,7 +90,7 @@ public Action Initialize()
     }
 
     //Load paints if there are robots in the folder
-    LoadPaints();
+    
     while (ReadDirEntry(dir, fileName, sizeof(fileName)))
     {
         // Only process .cfg files

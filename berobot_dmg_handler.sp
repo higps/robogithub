@@ -860,6 +860,8 @@ void DizzyTarget (int victim)
 void ChangeKnockBack (int victim)
 {
                         // PrintToChatAll("WAS LOOSE CANNON %");
+                    if (IsValidClient(victim) && IsPlayerAlive(victim))
+                    {
                     float vOrigin[3], vAngles[3], vForward[3], vVelocity[3];
                     GetClientEyePosition(victim, vOrigin);
                     GetClientEyeAngles(victim, vAngles);
@@ -882,6 +884,7 @@ void ChangeKnockBack (int victim)
                     
                     // And set it
                    TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, vVelocity);
+                    }
 }
 
 void Disguiseframe (DataPack info)
@@ -899,6 +902,8 @@ void Disguiseframe (DataPack info)
 
 void FastDisguise(int iClient, TFTeam iTeam, TFClassType iClass, int iTarget)
 {
+    if (IsValidClient(iClient) && IsPlayerAlive(iClient))
+    {
     TF2_DisguisePlayer(iClient, iTeam, iClass, iTarget); // SetEntProp(iClient, Prop_Send, "m_hDisguiseWeapon", iWeapon);
 
     SetEntProp(iClient, Prop_Send, "m_nDisguiseTeam", _:iTeam);
@@ -910,6 +915,7 @@ void FastDisguise(int iClient, TFTeam iTeam, TFClassType iClass, int iTarget)
    SetEntProp(iClient, Prop_Send, "m_iDisguiseHealth", IsPlayerAlive(iTarget) ? GetClientHealth(iTarget) : GetClassBaseHP(iTarget));
 
     TF2_AddCondition(iClient, TFCond_Disguised);
+    }
 }
 
 public Action GetClassBaseHP(int iClient)
