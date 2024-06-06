@@ -59,6 +59,9 @@ float g_Attribute_Display_CollDown = 10.0;
 float g_Attribute_Display[MAXPLAYERS + 1] = {0.0, ...};
 bool b_Attribute_Display[MAXPLAYERS + 1] = {true, ...};
 
+float g_loose_cannon_timer = 3.0;
+float g_loose_cannon_hit[MAXPLAYERS + 1] = {0.0, ...};
+
  float g_bleed_duration_bonus = 10.0;
 
 float g_axtinguisherspeedboost = 5.0;
@@ -224,6 +227,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 
 float g_Razorback_Original_Recharge = -1.0;
 float g_Razorback_Original_Recharge_Robot_Hit = 0.2;
+
 //Damage Related functions
 /* Plugin Exclusive Functions */
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
@@ -258,6 +262,13 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
         {
             damage *= 0.1;
             return Plugin_Changed;
+        }
+
+        if (damagecustom == TF_CUSTOM_BLEEDING && IsAnyRobot(victim))
+        {
+            damage *= 1.4;
+            return Plugin_Changed;
+            
         }
         
         if (damagecustom == TF_CUSTOM_PLASMA)
@@ -413,7 +424,13 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 {
                     
                     // PrintToChatAll("Hit with Scorch %i",damagecustom);
-                    RequestFrame(ChangeKnockBack,victim);
+                    DataPack info = new DataPack();
+                    info.Reset();
+                    info.WriteCell(victim);
+                    info.WriteCell(50.0);
+
+                    RequestFrame(ChangeKnockBack,info);
+
 
                 }
 
@@ -484,36 +501,53 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 
             // }
 
-            if (iClassAttacker == TFClass_Soldier)
-            {
-                if (IsAirStrike(weapon))
-                {
-                    if (g_AirStrikeDamage[attacker] >= g_AirStrikeDMGRequirement)
-                    {
-                        IncrementHeadCount(attacker);
-                        g_AirStrikeDamage[attacker] = 0.0;
-                    }else
-                    {
-                        g_AirStrikeDamage[attacker] += damage;
-                    }
-                    
-                }
-            }
 
-            // if (iClassAttacker == TFClass_Sniper)
+            // if (iClassAttacker == TFClass_Scout)
             // {
-            //     if (IsSMG(weapon))
+            //     if (IsForceANature(weapon))
             //     {
-            //         TF2_StunPlayer(victim, 0.1, 0.6, TF_STUNFLAG_SLOWDOWN, attacker);
-            //         TF2_AddCondition(victim, TFCond_Sapped, 0.1, attacker);    
+            //         // PrintToChatAll("Engine time: %f", GetEngineTime());
+            //         // PrintToChatAll("Cannon hit %f",g_loose_cannon_hit[victim]);
+            //         if (GetEngineTime() <= g_loose_cannon_hit[victim])
+            //         {
+            //             // PrintToChatAll("Normal Knockback");
+            //             g_loose_cannon_hit[victim] = GetEngineTime() + g_loose_cannon_timer;
+            //         }
+            //         else
+            //         {
+            //             DataPack info = new DataPack();
+            //             info.Reset();
+            //             info.WriteCell(victim);
+            //             info.WriteCell(1050.0);
+            //             // PrintToChatAll("Reducing Knockback");
+            //             RequestFrame(ChangeKnockBack,info);
+            //         }
+                    
             //     }
+
             // }
 
             if (iClassAttacker == TFClass_DemoMan)
             {
                 if (IsLooseCannon(weapon))
                 {
-                   RequestFrame(ChangeKnockBack, victim);
+                    // PrintToChatAll("Engine time: %f", GetEngineTime());
+                    // PrintToChatAll("Cannon hit %f",g_loose_cannon_hit[victim]);
+                    if (GetEngineTime() >= g_loose_cannon_hit[victim])
+                    {
+                        // PrintToChatAll("Normal Knockback");
+                        g_loose_cannon_hit[victim] = GetEngineTime() + g_loose_cannon_timer;
+                    }
+                    else
+                    {
+                        DataPack info = new DataPack();
+                        info.Reset();
+                        info.WriteCell(victim);
+                        info.WriteCell(50.0);
+                        // PrintToChatAll("Reducing Knockback");
+                        RequestFrame(ChangeKnockBack,info);
+                    }
+                    
                 }
             }
 
@@ -857,9 +891,14 @@ void DizzyTarget (int victim)
     TeleportEntity(victim, NULL_VECTOR, angles, NULL_VECTOR);
 }
 
-void ChangeKnockBack (int victim)
+void ChangeKnockBack (DataPack info)
 {
-                        // PrintToChatAll("WAS LOOSE CANNON %");
+
+                    info.Reset();
+                    int victim = info.ReadCell();
+                    int flDistance = info.ReadCell();
+                    delete info;
+                    // PrintToChatAll("WAS LOOSE CANNON %");
                     if (IsValidClient(victim) && IsPlayerAlive(victim))
                     {
                     float vOrigin[3], vAngles[3], vForward[3], vVelocity[3];
@@ -870,7 +909,7 @@ void ChangeKnockBack (int victim)
                     GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
                     
                     // make it usable
-                    float flDistance = 50.0;
+                    // float flDistance = 50.0;
 
                     ScaleVector(vForward, flDistance);	
                     
@@ -951,6 +990,25 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     if (IsAnyRobot(victim))
     {
     TFClassType iClassAttacker = TF2_GetPlayerClass(attacker);
+
+
+
+    if (iClassAttacker == TFClass_Soldier)
+    {
+        if (IsAirStrike(weapon))
+        {
+            PrintToChatAll("DMG %f", damage);
+            if (g_AirStrikeDamage[attacker] >= g_AirStrikeDMGRequirement)
+            {
+                IncrementHeadCount(attacker);
+                g_AirStrikeDamage[attacker] = 0.0;
+            }else
+            {
+                g_AirStrikeDamage[attacker] += damage;
+            }
+            
+        }
+    }
             switch(damagecustom){
                 case TF_CUSTOM_PLASMA_CHARGED: 
                 {
@@ -1234,10 +1292,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsBackScratcher(Weapon3))
             {
                 stat1 = 20.0;
+                stat2 = 0.5;
                 TF2Attrib_SetByName(Weapon3, "bleeding duration", stat1);
                 TF2Attrib_SetByName(Weapon3, "health from healers reduced", 1.0);
+                TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat2);
+                TF2Attrib_SetByName(Weapon3, "provide on active", 1.0);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Backscratcher: On Hit: {orange}Bleed for %0.0f seconds, {orange}No healing penalty",chat_display, stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Backscratcher: On Hit: {orange}Bleed for %0.0f seconds, {orange}No healing penalty. +%0.0f melee dmg resistance while active",chat_display, stat1, stat2);
             }
 
             if (IsReserveShooter(Weapon2))
@@ -1426,6 +1487,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Warrior Spirit: {orange}+%i HP{teamcolor} on hit against robots",chat_display, g_warriorspirit_heal_on_hit);
             }
 
+            if(IsFistsOfSteel(Weapon3))
+            {
+                stat1 = 0.5;
+                TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Fists of Steel: While Active: {orange}+%0.00f%%%% Crit Resistance{teamcolor}",chat_display, LessIsMore(stat1));
+            }
+
             if (IsKGB(Weapon3))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}KGB: {orange}+%0.0f seconds of critical hits{teamcolor} when landing a quick 3 hit combo vs robots",chat_display, g_kgb_crit_combo_duration);
@@ -1597,6 +1665,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Pistol: {orange}On Hit: {teamcolor}Speed boost for {orange}%0.0f seconds",chat_display, stat1);
             }
 
+            if (IsForceANature(Weapon1))
+            {
+                stat1 = 40.0;
+                TF2Attrib_SetByName(Weapon1, "apply z velocity on damage", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Force A Nature: {orange}On Penetration Hit:+ %0.0f%%%% increased robot knockback bonus",chat_display, stat1);
+            }
             if (IsSunOnAStick(Weapon3))
             {
                 int action_slot_item = TF2Util_GetPlayerLoadoutEntity(client, 9);
@@ -1846,8 +1920,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             if (IsAirStrike(Weapon1))
             {
-                TF2Attrib_SetByName(Weapon1, "clipsize increase on kill", 8.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}AirStrike: {orange}Gains additional clip{teamcolor} by doing %i damage to robots, {orange}+4 extra bonus clip", chat_display, RoundToNearest(g_AirStrikeDMGRequirement));
+                stat1 = 16.0;
+                TF2Attrib_SetByName(Weapon1, "clipsize increase on kill",stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}AirStrike: {orange}Gains additional clip{teamcolor} by doing %i damage to robots, {orange}+%i extra max bonus clip on kill", chat_display, RoundToNearest(g_AirStrikeDMGRequirement), stat1);
             }
             if (IsBlackBox(Weapon1))
             {
@@ -2877,6 +2952,36 @@ bool IsLooseCannon(int weapon)
 	return false;
 }
 
+
+bool IsForceANature(int weapon)
+{
+    if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other loose cannon
+	case 45, 1078: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsFistsOfSteel(int weapon)
+{
+    if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other loose cannon
+	case 331: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 bool IsDemoKnight(int weapon1, int weapon2)
 {
     //Demoknights don't have weapons in slot1 or 2
