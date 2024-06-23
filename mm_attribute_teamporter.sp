@@ -678,7 +678,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if (CanUseTele(client) && buttons & (IN_DUCK))
 	{
 
-		if(g_Recharge[client] == g_RechargeCap && TF2_IsPlayerInCondition(client, TFCond_TeleportedGlow))
+		if(g_Recharge[client] >= g_RechargeCap && g_b_touching_spawn[client])
 		{
 			Teleport_Player(client);
 		}
@@ -694,7 +694,7 @@ void UpdateCharge(int client)
 	{
 		if(IsFakeClient(client))
 		{
-			Teleport_Player(client);
+			// Teleport_Player(client);
 		}
 		if(g_Recharge[client] >= g_RechargeCap)
 		{
@@ -1237,9 +1237,18 @@ Action Teleport_Player(int client)
 		g_Recharge[client] = 1;
 		g_Teleported[client] = true;
 		float oober = 3.0;
-		TF2_AddCondition(client, TFCond_Ubercharged, oober);
+		TF2_AddCondition(client, TFCond_UberchargedCanteen, oober);
 		TF2_AddCondition(client, TFCond_TeleportedGlow, 5.0);
 		g_spawnclamp[client] = false;
+
+		// A human spy was teleported
+		if(!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Spy)
+		{
+			TF2_AddCondition(client, TFCond_UberchargedCanteen, 8.0);
+			TF2_AddCondition(client, TFCond_RuneHaste, 8.0);
+			TF2_AddCondition(client, TFCond_ImmuneToPushback, 8.0);
+			TF2_AddCondition(client, TFCond_TeleportedGlow, 8.0);
+		}
 	}
 	// else
 	// 	PrintCenterText(client, "No teleporters found");

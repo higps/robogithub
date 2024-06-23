@@ -2277,7 +2277,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         {
             char word[5]; // Assuming "more" or "less" won't exceed 4 characters
             GetDamageWord(word, sizeof(word));
-            MC_PrintToChatAll("{magenta}Low Power!\nRobots take {orange}%.0f %% %s {teamcolmagentaor}damage!", (g_f_Damage_Bonus-1.0)*100,word);
+            MC_PrintToChatAll("{magenta}Low Power!\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
             // PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100, word);
             g_b_broadcast_msg = true;
         }
@@ -2350,7 +2350,7 @@ void CalculateDamageModifier(int dmg_method)
 }
 
 float damage_bonus(float x) {
-    float base = Pow(2.75/ 1.0, 1.0 / 15.0);
+    float base = Pow(2.75/ 1.0, 1.0 / 12.0);
     return 1.0 * Pow(base, x);
 }
 

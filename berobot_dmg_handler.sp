@@ -257,7 +257,14 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		damageForce[2] == -10.0;
 		return Plugin_Handled;
 		}
-	
+
+        if(damagecustom == TF_CUSTOM_SPELL_FIREBALL)
+        {
+            // PrintToChatAll("WAS FIREBALL!");
+            damage *= 0.7;
+            return Plugin_Changed;
+        }
+
         if (damagecustom == TF_CUSTOM_SPELL_LIGHTNING)
         {
             damage *= 0.1;
@@ -997,7 +1004,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     {
         if (IsAirStrike(weapon))
         {
-            PrintToChatAll("DMG %f", damage);
+            // PrintToChatAll("DMG %f", damage);
             if (g_AirStrikeDamage[attacker] >= g_AirStrikeDMGRequirement)
             {
                 IncrementHeadCount(attacker);
@@ -1242,7 +1249,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
     //CreateTimer(0.8, AddAttributes, client);
 
 
-
+// IMPORTANT, FOR THE DOCUMENTATION TO WORK ALL IF (IS) STATEMENTS NEEDS A SPACE, OR ELSE IT WON'T SHOW UP IN THE DOCUMENTATION
 
     if (!IsAnyRobot(client) && IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) != GetRobotTeam())
     {
@@ -1421,6 +1428,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
             }
 
+            if (IsScottishResistance(Weapon2))
+            {
+                stat1 = 1.80;
+                TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scottish Resistance: {orange}+%0.0f%%%% clip size",chat_display, MoreIsMore(stat1));
+            }
+
             if (IsEyelander(Weapon3))
             {
                 g_Eyelander_Counter[client] = 0;
@@ -1444,6 +1458,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
         if (TF2_GetPlayerClass(client) == TFClass_Heavy)
         {
+
             if (IsAnyMinigun(Weapon1))
             {
                 stat1 = 0.6;
@@ -1475,6 +1490,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 
             }
 
+
+
             if (IsStockOrAllClassWeapon(Weapon3))
             {
                 stat1 = 1.5;
@@ -1486,14 +1503,6 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Warrior Spirit: {orange}+%i HP{teamcolor} on hit against robots",chat_display, g_warriorspirit_heal_on_hit);
             }
-
-            if(IsFistsOfSteel(Weapon3))
-            {
-                stat1 = 0.5;
-                TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Fists of Steel: While Active: {orange}+%0.00f%%%% Crit Resistance{teamcolor}",chat_display, LessIsMore(stat1));
-            }
-
             if (IsKGB(Weapon3))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}KGB: {orange}+%0.0f seconds of critical hits{teamcolor} when landing a quick 3 hit combo vs robots",chat_display, g_kgb_crit_combo_duration);
@@ -1506,6 +1515,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
                 TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots",  "damage=1.15 only-bots=1 critType=1");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
+            }
+
+            if (IsFistsOfSteel(Weapon3))
+            {
+                stat1 = 0.5;
+                TF2Attrib_SetByName(Weapon3, "dmg taken from crit reduced", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Fists of Steel: While Active: {orange}+%0.00f%%%% Crit Resistance{teamcolor}",chat_display, LessIsMore(stat1));
             }
 
         }
@@ -2598,6 +2614,21 @@ bool IsSkullCutter(int weapon)
 	{
 
 	case 172: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsScottishResistance(int weapon)
+{
+	if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+
+	case 130: 
 		{
 			return true;
 		}
