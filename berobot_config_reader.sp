@@ -816,6 +816,7 @@ MakeRobotFrame(client)
                 float duration = i_hConfig.GetFloat(NULL_STRING); 
 
                 // Apply the condition with the specified duration.
+                // Here we need some logic in case spy doesn't get the infinite cloak stat yet
                 if (duration >= 0.0)
                 {
                     TF2_AddCondition(client, conditionID, duration);
