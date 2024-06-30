@@ -643,6 +643,13 @@ MakeRobotFrame(client)
                         //Special Case for Beggars Bazooka
                         if(GetEntProp(iWeapon, Prop_Send, "m_iItemDefinitionIndex") != 730)RoboCorrectClipSize(iWeapon);
                      }
+                    if (HasEntProp(iWeapon, Prop_Send, "m_iSecondaryAmmoType"))
+                     {
+                        // PrintToChatAll("HAD SECONDARY TYPE");
+                        RoboCorrectClipSize(iWeapon);
+                        // SetVariantString("self.SetClip1(self.GetMaxClip1())");
+                        // AcceptEntityInput(iWeapon, "RunScriptCode");
+                     }
                     }
                    i_hConfig.GoBack(); // Jump back to the "weapons" section after processing the "attributes" key
                     

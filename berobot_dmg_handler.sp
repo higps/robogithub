@@ -1312,7 +1312,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 0.6;
                 TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", stat1);
-                TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.75 critType=2");
+                TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.25 critType=2");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter:{orange}+25%% damage bonus vs jumping robots. {orange}+%0.0f%%%% faster deploy speed",chat_display, LessIsMore(stat1));
             }
 
@@ -1461,7 +1461,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsAnyMinigun(Weapon1))
             {
-                stat1 = 0.6;
+                stat1 = 0.7;
                 TF2Attrib_SetByName(Weapon1, "dmg penalty vs players", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Minigun deal {orange}-%0.00f %%%% damage{teamcolor} vs robots",chat_display, LessIsMore(stat1));
             }
@@ -1995,7 +1995,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 0.6;
                 TF2Attrib_SetByName(Weapon2, "single wep deploy time decreased", stat1);
-                TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.75 critType=2");
+                TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.25 critType=2");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Reserve Shooter:{orange}+25%% damage bonus vs jumping robots. {orange}+%0.0f%%%% faster deploy speed",chat_display, LessIsMore(stat1));
             }
             if (IsShotGun(Weapon2))
