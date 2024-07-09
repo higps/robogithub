@@ -124,8 +124,8 @@ bool b_g_high_power = false;
 int g_RoundCount;
 // int g_TankCount;
 
-int b_is_koth;
-int koth_caps;
+// int b_is_koth;
+// int koth_caps;
 ArrayList g_Volunteers;
 
 
@@ -270,9 +270,9 @@ public void OnPluginStart()
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
     HookEvent("teamplay_round_start", Event_Waiting_Abouttoend, EventHookMode_Post);
 
+// SetTeamCoinsFor(1,2);
 
-
-    HookEvent("teamplay_point_captured", Event_Teamplay_Point_Captured, EventHookMode_Post);
+//     HookEvent("teamplay_point_captured", Event_Teamplay_Point_Captured, EventHookMode_Post);
     
     HookEvent("player_death", Event_Death, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
@@ -386,8 +386,8 @@ public void OnMapStart()
     g_RoboTeam = -1;
     PrecacheSound(RESISTANCE);
     
-    b_is_koth = GameRules_GetProp("m_bPlayingKoth");
-    koth_caps = 0;
+    // b_is_koth = GameRules_GetProp("m_bPlayingKoth");
+    // koth_caps = 0;
 }
 
 public void ResetMode()
@@ -780,31 +780,31 @@ public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dont
 // {
 //     Command_YT_Robot_Start(1, true);
 // }
+// float g_last_given_boss_coin = 0.0;
+// public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontBroadcast)
+// {
+//     //int team = GetEventInt(event, "team");
+//     //PrintToChatAll("Team wws %i", team);
 
-public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontBroadcast)
-{
-    //int team = GetEventInt(event, "team");
-    //PrintToChatAll("Team wws %i", team);
-
-    if (g_Enable && g_BossMode)
-    {
+//     if (g_Enable && g_BossMode)
+//     {
         
-        if (!b_is_koth)
-        {
-        AddTeamCoins(TFTeam_Blue, 1);
-        AddTeamCoins(TFTeam_Red, 1);
-        }else
-        {
-            koth_caps++;
-            if (koth_caps > 4)
-            {
-                AddTeamCoins(TFTeam_Blue, 1);
-                AddTeamCoins(TFTeam_Red, 1);
-                koth_caps = 0;
-            }
-        }  
-    }
-}
+//         if (!b_is_koth)
+//         {
+//         SetTeamCoinsFor(TFTeam_Blue, 1);
+//         SetTeamCoinsFor(TFTeam_Red, 1);
+//         }else
+//         {
+//             koth_caps++;
+//             if (koth_caps > 4)
+//             {
+//                 SetTeamCoinsFor(TFTeam_Blue, 1);
+//                 SetTeamCoinsFor(TFTeam_Red, 1);
+//                 koth_caps = 0;
+//             }
+//         }  
+//     }
+// }
 
 // public void OnClientConnected(int client)
 // {

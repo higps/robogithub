@@ -1002,7 +1002,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
     if (iClassAttacker == TFClass_Soldier)
     {
-        if (IsAirStrike(weapon))
+        if (IsAirStrike(weapon) && !IsAnyRobot(attacker))
         {
             // PrintToChatAll("DMG %f", damage);
             if (g_AirStrikeDamage[attacker] >= g_AirStrikeDMGRequirement)

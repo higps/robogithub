@@ -64,6 +64,16 @@ native void AddTeamCoins(TFTeam team, int amount);
 native void AddTeamCoinsFor(int clientId, int amount);
 
 /**
+ * Set amount to a add a specified amount to the robot team coins
+ * 
+ * @param clientId  robot-coin will be added to this clients team
+ * @param amount    amount of robot-coin to add
+ * @noreturn
+ */
+native void SetTeamCoinsFor(int clientId, int amount);
+
+
+/**
  * returns available team-coins
  * 
  * @param clientId  team-coins will be returned for this clients team

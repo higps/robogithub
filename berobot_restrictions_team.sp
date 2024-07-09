@@ -72,6 +72,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("AddRobotCoinsFor", Native_AddRobotCoinsFor);
     CreateNative("AddTeamCoins", Native_AddTeamCoins);
     CreateNative("AddTeamCoinsFor", Native_AddTeamCoinsFor);
+    CreateNative("SetTeamCoinsFor", Native_SetTeamCoinsFor);
     CreateNative("GetRobotCoinsFor", Native_GetRobotCoinsFor);
     CreateNative("GetTeamCoinsFor", Native_GetTeamCoinsFor);
     CreateNative("PayRobotCoin", Native_PayRobotCoin);
@@ -104,6 +105,15 @@ public any Native_AddTeamCoinsFor(Handle plugin, int numParams)
     
     TFTeam team = view_as<TFTeam>(GetClientTeam(clientId));
     AddTeamCoins(team, amount);
+}
+
+public any Native_SetTeamCoinsFor(Handle plugin, int numParams)
+{
+    TFTeam team = view_as<TFTeam>(GetNativeCell(1));
+    int amount = GetNativeCell(2);
+    
+    _teamCoins[team] = amount;
+    UpdateRestrictions();
 }
 
 public any Native_AddTeamCoins(Handle plugin, int numParams)
