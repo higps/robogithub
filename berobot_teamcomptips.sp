@@ -28,7 +28,6 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 
-    HookEvent("teamplay_point_captured", Event_Teamplay_Point_Captured, EventHookMode_Post);
     RegConsoleCmd("sm_showcomptips", Command_ShowCompTips, "Toggles showing composition tips for your team");
 
 
