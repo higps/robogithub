@@ -28,6 +28,7 @@ public Plugin myinfo =
 public void OnPluginStart()
 {
 
+    HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
     RegConsoleCmd("sm_showcomptips", Command_ShowCompTips, "Toggles showing composition tips for your team");
 
 
