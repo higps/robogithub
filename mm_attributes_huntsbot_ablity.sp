@@ -12,7 +12,7 @@ bool  g_FireMode					= false;
 float g_skill;
 float g_skill_cooldown = 30.0;
 float g_skill_time;
-float g_f_duration = 5.0;
+float g_f_duration = 8.0;
 bool  b_alerted	   = false;
 float g_fired_cooldown;
 #define ROBOT_NAME "Huntsbot"
