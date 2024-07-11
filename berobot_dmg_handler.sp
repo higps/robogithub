@@ -1938,7 +1938,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 16.0;
                 TF2Attrib_SetByName(Weapon1, "clipsize increase on kill",stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}AirStrike: {orange}Gains additional clip{teamcolor} by doing %i damage to robots, {orange}+%i extra max bonus clip on kill", chat_display, RoundToNearest(g_AirStrikeDMGRequirement), stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}AirStrike: {orange}Gains additional clip{teamcolor} by doing %i damage to robots, {orange}+%0.0f extra max bonus clip on kill", chat_display, RoundToNearest(g_AirStrikeDMGRequirement), stat1);
             }
             if (IsBlackBox(Weapon1))
             {

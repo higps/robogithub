@@ -45,7 +45,7 @@ public void OnMapStart()
 
 public void OnPluginStart()
 {
-    HookEvent("player_death", Event_Death, EventHookMode_Post);
+    HookEvent("player_death", Event_Death, EventHookMode_Pre);
     HookEvent("teamplay_point_captured", Event_Teamplay_Point_Captured, EventHookMode_Post);
     HookEvent("teamplay_round_start", Event_teamplay_round_start, EventHookMode_Post);
     HookEvent("teamplay_setup_finished", Event_teamplay_setup_finished, EventHookMode_Post);
@@ -72,16 +72,17 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
 public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontBroadcast)
 {        
 
-
-    if(!g_first_capture)
+    if(!IsBossPresent())
     {
-        g_first_capture = true;
-        GiveBossCoin();
-    }else
-    {
-        CheckBossCoin();
+        if(!g_first_capture)
+        {
+            g_first_capture = true;
+            GiveBossCoin();
+        }else
+        {
+            CheckBossCoin();
+        }
     }
-
     
 
     return Plugin_Continue;
@@ -97,18 +98,25 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
     {
         CheckBossCoin();
     }
+
+
+    // if (IsBoss(victim))
+    // {
+    //     PrintToChatAll("%N was a boss", victim);
+    // }
     return Plugin_Continue;
 }
 
 void CheckBossCoin()
 {
+    if(!IsBossPresent())
+    {
     // PrintToChatAll("Current gametime: %f\nLast Boss Coin %f\nNext Boss Coin: %f\nNext boss coin in %f seconds",GetEngineTime(),g_last_given_boss_coin, (g_last_given_boss_coin + g_last_given_boss_coin_cooldown), (g_last_given_boss_coin + g_last_given_boss_coin_cooldown)- GetEngineTime());
         if (!b_is_koth)
         {
             int robotteam = GetRobotTeam();
 
            
-            
             if (GetEngineTime() > (g_last_given_boss_coin + g_last_given_boss_coin_cooldown))
             {
                 
@@ -117,7 +125,7 @@ void CheckBossCoin()
                     // PrintToChatAll("WAS RED TEAM, BUT NO CAP");
                  }else{
                     // PrintToChatAll("WAS T");
-                    GiveBossCoin();
+                     GiveBossCoin();
                  }
             }
             
@@ -129,17 +137,32 @@ void CheckBossCoin()
                 GiveBossCoin();
                 koth_caps = 0;
             }
-    }  
+        } 
+    } 
+}
+
+bool IsBossPresent()
+{    
+    for(int i = 1; i <= MaxClients; i++)
+    {
+        if (IsBoss(i))
+        {
+            // PrintToChatAll("Boss is present");
+            return true;
+        } 
+    }
+    // PrintToChatAll("No Boss is present");
+    return false;
 }
 
 void GiveBossCoin()
 {
-
+    // bool BossPresent = false;
     for(int i = 1; i <= MaxClients; i++)
     {
+        
         if (IsValidClient(i) && IsAnyRobot(i))
         {
-            // PrintToChatAll("Emitting sound to %N",i);
             if (GetTeamCoinsFor(i) != 1)
             {
                 EmitSoundToClient(i,get_boss_coin_sound);

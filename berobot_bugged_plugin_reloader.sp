@@ -31,6 +31,7 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
     {
      ServerCommand("sm_plugins reload /mm_cast_spell/");
      ServerCommand("sm_plugins reload /owned_building_phasing/");
+     ServerCommand("sm_plugins reload /ability/");
      g_bool_loaded = true;
     }
      
