@@ -182,6 +182,11 @@ jobs:
         with:
           file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/entity_prefabs.inc'
           location: './lib-include/stocksoup'
+      - name: Download  entity_prop_stocks.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/entity_prop_stocks.inc'
+          location: './lib-include/stocksoup'    
       # stocksoup/tf/entity_tools
       - name: Download entity_tools.inc
         uses: carlosperate/download-file-action@v1
