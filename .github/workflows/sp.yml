@@ -176,6 +176,12 @@ jobs:
         with:
           file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/entity_prefabs.inc'
           location: './lib-include/stocksoup/tf'
+        # 
+      - name: Download entity_tool.inc
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/entity_tools.inc'
+          location: './lib-include/stocksoup/tf'
         # tf_cattr_buff_override.inc
       - name: Download tf_cattr_buff_override.inc
         uses: carlosperate/download-file-action@v1
