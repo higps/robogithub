@@ -309,7 +309,11 @@ jobs:
         with:
           file-url: 'https://raw.githubusercontent.com/bcserv/smlib/transitional_syntax/scripting/include/smlib/world.inc'
           location: './lib-include/smlib'
-
+      - name:stocksoup/master/tf/entity_prefabs.inc'
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/entity_prefabs.inc'
+          location: './lib-include/stocksoup'
 
       # Compile
       - name: Compile plugins
