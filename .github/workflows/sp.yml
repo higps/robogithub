@@ -176,12 +176,18 @@ jobs:
         with:
           file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/tf/entity_prefabs.inc'
           location: './lib-include/stocksoup/tf'
+        # stocksoup/tf/entity_prefabs.inc
+      - name: Download tf entity_prefabs.inc master
+        uses: carlosperate/download-file-action@v1
+        with:
+          file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/entity_prefabs.inc'
+          location: './lib-include/stocksoup'
       # stocksoup/tf/entity_tools
       - name: Download entity_tools.inc
         uses: carlosperate/download-file-action@v1
         with:
           file-url: 'https://raw.githubusercontent.com/nosoop/stocksoup/master/entity_tools.inc'
-          location: './lib-include/stocksoup/tf'
+          location: './lib-include/stocksoup'
         # stocksoup/tf/entity_prefabs
       - name: Download master entity_prefabs.inc
         uses: carlosperate/download-file-action@v1
