@@ -20,16 +20,14 @@
 #define TARGET_FOUND "ui/cyoa_objective_panel_expand.wav"
 #define TARGET_TERMINATED "ui/cyoa_map_open.wav.wav"
 #define TARGET_CANCEL "ui/cyoa_map_close.wav"
-float scale = 1.15;
-
 enum
 {
-target_valid,
-target_in_spawn,
-target_no_valid_target,
-target_lost,
-target_terminated,
-target_cancelled
+	target_valid,
+	target_in_spawn,
+	target_no_valid_target,
+	target_lost,
+	target_terminated,
+	target_cancelled
 }
 public OnMapStart()
 {
@@ -82,7 +80,7 @@ int g_previous_target = -2;
 bool g_isTerminator = false;
 float gametime = -1.0;
 float gametime_retarget = -1.0;
-
+int g_the_terminator = -1;
 public FindTerminator()
 {
 	
@@ -91,6 +89,7 @@ public FindTerminator()
 			{
 				// PrintToChatAll("Terminator was %N", i);
 				g_isTerminator = true;
+				g_the_terminator = i;
 				return i;
 			}
 		}
@@ -111,7 +110,7 @@ void FindTerminationTarget(){
 
 
 		//Only do this check if there is a terminator
-	if (g_isTerminator)
+		if (g_isTerminator)
 		{
 			//Find the Terminator target
 		TFTeam clientTeam = TF2_GetClientTeam(client);
@@ -141,10 +140,14 @@ void FindTerminationTarget(){
 			if (IsValidEntity(g_iGlowEnt[client])) {
 			RemoveEntity(g_iGlowEnt[client]);
 		}
-
+			// PrintToChatAll("Applying glow to %N", randomPlayer);
 			g_iGlowEnt[client] = EntIndexToEntRef(TF2_AttachBasicGlow(randomPlayer));
 			g_target = randomPlayer;
-			if (IsValidClient(g_iGlowEnt[client])) SDKHook(g_iGlowEnt[client], SDKHook_SetTransmit, OnGlowShouldTransmit);
+			if (IsValidEntity(g_iGlowEnt[client]))
+			{
+				// PrintToChatAll("Hooking onglow for %N", g_iGlowEnt[client]);
+				SDKHook(g_iGlowEnt[client], SDKHook_SetTransmit, OnGlowShouldTransmit);
+			}
 			g_flTagEndTime[client] = GetGameTime() + flDuration;
 			gametime = -1.0;
 		}
@@ -217,6 +220,17 @@ void TerminatorHeal(int client)
 
 Action OnGlowShouldTransmit(int glow, int client) {
 	int glowTarget = GetEntPropEnt(glow, Prop_Data, "m_hParent");
+
+	// PrintToChatAll("Glow %N", glowTarget);
+	// PrintToChatAll("Glow team %i",TF2_GetClientTeam(glowTarget));
+	// PrintToChatAll("Terminatorteam team %i",TF2_GetClientTeam(FindTerminator()));
+	if (!TF2_IsEnemyTeam(TF2_GetClientTeam(glowTarget), TF2_GetClientTeam(client))) {
+		// prevent showing outline on teammates
+		// TODO make this more robust for teamcounts larger than 2 --
+		// we'd need to track the attacker
+		return Plugin_Stop;
+	}
+
 	if (!g_isTerminator || g_targetstatus != target_valid) return Plugin_Stop;
 
 	if (!IsValidEntity(glowTarget)) {
@@ -224,12 +238,8 @@ Action OnGlowShouldTransmit(int glow, int client) {
 	}
 
 	
-	if (!TF2_IsEnemyTeam(TF2_GetClientTeam(glowTarget), TF2_GetClientTeam(client))) {
-		// prevent showing outline on teammates
-		// TODO make this more robust for teamcounts larger than 2 --
-		// we'd need to track the attacker
-		return Plugin_Stop;
-	}
+	
+
 	
 	return Plugin_Continue;
 }

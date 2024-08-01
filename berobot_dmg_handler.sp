@@ -1356,21 +1356,24 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");
 
                 stat1 = 0.70;
+                stat2 = 0.2;
                 if (Weapon1 != -1)
                 {
                     TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
                  //   SetDemoDamageBuff(Weapon1);
+                    TF2Attrib_SetByName(Weapon1, "dmg falloff decreased", stat2);
                     
                 }
 
                 if (Weapon2 != -1)
                 {
                     TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
+                    TF2Attrib_SetByName(Weapon2, "dmg falloff decreased", stat2);
                    // SetDemoDamageBuff(Weapon2);
                     
                 }
                 stat1 = 1.0-stat1;
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoman: All of projectile weapons {orange}Reload %0.0f%%%% faster\n{teamcolor}Melee weapons {orange}more damage{teamcolor} the more damage you do",chat_display, OneIs100(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoman: All of projectile weapons {orange}Reload %0.0f%%%% faster. +%0.0f%%%% splash damage bonus\n{teamcolor}Melee weapons {orange}more damage{teamcolor} the more damage you do",chat_display, OneIs100(stat1), MoreIsMore(stat2));
             }
 
             if (Weapon3 != -1)
@@ -1937,8 +1940,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsAirStrike(Weapon1))
             {
                 stat1 = 16.0;
+                stat2 = 0.15;
+                stat3 = 2.0;
                 TF2Attrib_SetByName(Weapon1, "clipsize increase on kill",stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}AirStrike: {orange}Gains additional clip{teamcolor} by doing %i damage to robots, {orange}+%0.0f extra max bonus clip on kill", chat_display, RoundToNearest(g_AirStrikeDMGRequirement), stat1);
+                TF2Attrib_SetByName(Weapon1, "rocketjump attackrate bonus",stat2);
+                TF2Attrib_SetByName(Weapon1, "maxammo primary increased",stat3);
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}AirStrike: {orange}Gains additional clip{teamcolor} by doing %i damage to robots, {orange}+%0.0f extra max bonus clip on kill. %0.0f%%%% faster firing speed while rocket jumping. +%0.0f%%%% max ammo bonus", chat_display, RoundToNearest(g_AirStrikeDMGRequirement), stat1, LessIsMore(stat2), OneIs100(stat2));
             }
             if (IsBlackBox(Weapon1))
             {
@@ -1953,24 +1961,26 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Beggars Bazooka: {orange}+%0.0f clip size",chat_display, stat1);
             }
-            if (IsAnyRocketLauncher(Weapon1))
-            {
-                stat1 = 0.8;
-                TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Primary {orange}+%0.0f%%%% faster reload",chat_display, LessIsMore(stat1));
-            }
-
             if (IsRocketLauncher(Weapon1))
             {
                 stat1 = 1.5;
                 TF2Attrib_SetByName(Weapon1, "Blast radius increased", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Rocket Launcher {orange}+%0.0f%%%% larger explosion radius",chat_display, MoreIsMore(stat1));
             }
+            if (IsAnyRocketLauncher(Weapon1))
+            {
+                stat1 = 0.7;
+                stat2 = 0.15;
+                TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
+                TF2Attrib_SetByName(Weapon1, "dmg falloff decreased", stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Primary {orange}+%0.0f%%%% faster reload. +%0.0f%%%% splash damage bonus",chat_display, LessIsMore(stat1), MoreIsMore(stat2));
+            }
             if (IsEqualizer(Weapon3))
             {
                 stat1 = 20.0;
                 TF2Attrib_SetByName(Weapon3, "mod rage on hit bonus", stat1);
-                Format(chat_display, sizeof(chat_display), "%s{orange}\nEqualizer: %0.0f%%%%{teamcolor} increased rage build",chat_display, MoreIsMore(stat1));
+                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Equalizer: %0.0f%%%%{teamcolor} increased rage build",chat_display, MoreIsMore(stat1));
                 
             }
             if (IsMarketGardner(Weapon3))

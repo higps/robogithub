@@ -2227,7 +2227,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
       if (g_f_Damage_Bonus == -1.0 && (g_b_changed_dmg || !g_b_broadcast_msg))
       {
         // PrintCenterTextAll("Alert: Robot Power Restored\nRobots take normal damage");
-        MC_PrintToChatAll("{magenta}Alert: Robot Power Restored\nRobots take normal damage");
+        MC_PrintToChatAll("{magenta}Alert: Balance Restored\nRobots take normal damage");
         g_b_broadcast_msg = true;
       } 
       
@@ -2237,7 +2237,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         {
             char word[5]; // Assuming "more" or "less" won't exceed 4 characters
             GetDamageWord(word, sizeof(word));
-            MC_PrintToChatAll("{magenta}Alert: Low Power!\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
+            MC_PrintToChatAll("{magenta}Alert: Player Imbalance detected\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
             // PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100,word);
             g_b_broadcast_msg = true;
         }
@@ -2259,7 +2259,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         {
             char word[5]; // Assuming "more" or "less" won't exceed 4 characters
             GetDamageWord(word, sizeof(word));
-            MC_PrintToChatAll("{magenta}Alert: High Power!\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
+            MC_PrintToChatAll("{magenta}Alert: Player Imbalance detected!\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
             // PrintCenterTextAll("Alert: High Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100, word);
             g_b_broadcast_msg = true;
         }
@@ -2277,7 +2277,7 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
         {
             char word[5]; // Assuming "more" or "less" won't exceed 4 characters
             GetDamageWord(word, sizeof(word));
-            MC_PrintToChatAll("{magenta}Low Power!\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
+            MC_PrintToChatAll("{magenta}Player Imbalance detected!\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
             // PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100, word);
             g_b_broadcast_msg = true;
         }
