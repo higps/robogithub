@@ -1354,7 +1354,10 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_RemoveByName(Weapon3, "dmg taken from crit reduced");
                 TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
                 TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");
+            }
 
+            if (IsDemoPrimaryOrSecondary(Weapon1) || IsDemoPrimaryOrSecondary(Weapon2))
+            {
                 stat1 = 0.70;
                 stat2 = 0.2;
                 if (Weapon1 != -1)
@@ -1375,6 +1378,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 1.0-stat1;
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoman: All of projectile weapons {orange}Reload %0.0f%%%% faster. +%0.0f%%%% splash damage bonus\n{teamcolor}Melee weapons {orange}more damage{teamcolor} the more damage you do",chat_display, OneIs100(stat1), MoreIsMore(stat2));
             }
+
+
 
             if (Weapon3 != -1)
             {
@@ -3034,6 +3039,22 @@ bool IsDemoKnight(int weapon1, int weapon2)
         return true;
     }
     return false;
+}
+
+
+bool IsDemoPrimaryOrSecondary(int weapon)
+{
+    if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If others are added, add them here
+	case 19,206,308,996,1007,1151,15077,15079,15091,15092,15116,15117,15142,15158,20,207,130,265,661,797,806,886,895,904,913,962,971,1150,15009,15012,15024,15038,15045,15048,15082,15083,15084,15113,15137,15138,15155: 
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 bool IsIronBomber(int weapon)
