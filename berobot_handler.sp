@@ -327,7 +327,11 @@ public void OnPluginStart()
 // 		}
 // 	}
 // }
-
+public void MM_robotChangedInSpawn(int client)
+{
+    PrintToChatAll("Robot changed in spawn for %N", client);
+    CreateTimer(1.0, Timer_SetHealth_Changed, client);
+}
 public void OnClientPutInServer(int client)
 {
     // DHookEntity(g_hIsDeflectable, false, client);
@@ -726,17 +730,35 @@ public Action Timer_Regen(Handle timer, any client)
 
 public Action Timer_SetHealth(Handle timer, any client)
 {
-    //PrintToChatAll("Timebomb: %i", g_TimeBombTime[client]);
+    PrintToChatAll("Set normal hp");
+    SetRoboSpawnHealth(client, false);
+}
+
+
+public Action Timer_SetHealth_Changed(Handle timer, any client)
+{
+    PrintToChatAll("Changed in spawn");
+    SetRoboSpawnHealth(client, true);
+}
+
+void SetRoboSpawnHealth(int client, bool changed_in_spawn)
+{
+
         int currenthealth = GetClientHealth(client);
         if (g_cv_bDebugMode)PrintToChatAll("Current health %i", currenthealth);
         if (g_cv_bDebugMode)PrintToChatAll("g_Player health for %N was %i", client, g_PlayerHealth[client]);
-        if (g_PlayerHealth[client] < currenthealth && g_PlayerHealth[client] != -1)
+        if (g_PlayerHealth[client] < currenthealth && g_PlayerHealth[client] != -1) 
         { 
-        TF2_SetHealth(client, g_PlayerHealth[client]);
+            if (!IsBoss(client) || !changed_in_spawn) 
+            {
+                TF2_SetHealth(client, g_PlayerHealth[client]);
+            }
 
         }
-        //PrintHintText(client,"You have instant respawn as scout");
 }
+
+
+
 
 public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dontBroadcast)
 {
@@ -1532,7 +1554,7 @@ public Action Command_ChangeRobot(int client, int args)
         if (!IsAnyRobot(targetClientId))
             continue;
 
-        g_PlayerHealth[client] = -1;
+        // g_PlayerHealth[client] = -1;
         g_cv_Volunteered[targetClientId] = true;
         SetClientRepicking(targetClientId, true);
         ChooseRobot(targetClientId);
@@ -2092,11 +2114,14 @@ public Action Block_Kill(int client, const char[] command, int args){
        // TimeBombPlayer(client, 9000, false);
         //ServerCommand("sm_timebomb #%d", playerID);
         return Plugin_Handled; 
-    }else
-    {
-        return Plugin_Continue;
     }
-    
+
+    // if (IsAnyRobot(client) && g_BossMode && TF2Spawn_IsClientInSpawn(client))
+    // {
+    //     PrintCenterText(client,"Self destruct disabled in spawn\nUse loadout button or !bot or change class to change robot");
+    //     return Plugin_Handled; 
+    // }
+    return Plugin_Continue;
 }
 
 public Action Timer_Kill(Handle timer, any client)
@@ -2141,7 +2166,8 @@ public Action cmd_blocker(int client, const char[] command, int argc)
         
         return Plugin_Handled;
     }
-    else if (IsAnyRobot(client) && g_BossMode && IsPlayerAlive(client))
+
+    if (IsAnyRobot(client) && g_BossMode)
     {
         PrintCenterText(client,"Unable to change class. Use !bot to change robot or !stuck if you are stuck");
 

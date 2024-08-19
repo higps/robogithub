@@ -85,7 +85,7 @@ int g_warriorspirit_heal_on_hit = 50;
 int g_warriorspirit_max_overheal = 450;
 
 float g_kgb_crit_combo_duration = 6.0;
-
+float g_eviction_notice_haste_duration = 4.0;
 float g_protection_rune_duration = 1.0;
 
 float g_electric_rage_reduction = 5.0;
@@ -471,6 +471,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     if (TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen))
                     {
                         Punch_Count[attacker] = 0;
+                        TF2_AddCondition(attacker, TFCond_CritCanteen, g_kgb_crit_combo_duration, attacker);
                     }
 
                     if (!g_Timer[attacker]){
@@ -482,14 +483,13 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     g_Timer[attacker] = true;
                     }
 
-                    if (Punch_Count[attacker] > 2)
+                    if (Punch_Count[attacker] > 1)
                     {
                         Combo_Stopper(attacker);
                         
                         TF2_AddCondition(attacker, TFCond_CritCanteen, g_kgb_crit_combo_duration, attacker);
                     }
-
-		}
+		    }
                     
 
 
@@ -1488,13 +1488,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsTomiSlav(Weapon1))
             {
                 stat1 = 0.25;
-                stat2 = 1.0;
-
+                stat2 = 1.8;
                 TF2Attrib_SetByName(Weapon1, "minigun spinup time decreased", stat1);
-                TF2Attrib_SetByName(Weapon1, "closerange backattack minicrits", stat2);
+                TF2Attrib_SetByName(Weapon1, "major increased jump height", stat2);
 
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tomislav: {orange}Mini-crits from behind. +%0.0f%%%% faster {teamcolor}rev up speed.",chat_display, OneIs100(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Tomislav: +%0.0f%%%% faster {teamcolor}rev up speed. {orange}+%0.0f%%%% increased jump height",chat_display, OneIs100(stat1), OneIs100(stat2));
                 
             }
 
@@ -1513,7 +1512,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
             if (IsKGB(Weapon3))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}KGB: {orange}+%0.0f seconds of critical hits{teamcolor} when landing a quick 3 hit combo vs robots",chat_display, g_kgb_crit_combo_duration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}KGB: {orange}+%0.0f seconds of critical hits{teamcolor} when landing a quick 2 hit combo vs robots",chat_display, g_kgb_crit_combo_duration);
+            }
+            if (IsEvictionNotice(Weapon3))
+            {
+                TF2CustAttr_SetString(Weapon3, "on-hit-addcond", "TFCond=91 duration=3.0 apply-to-self=1 apply-on-teammate-hit=0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Eviction Notice: On Hit:{orange} Gain Haste rune for +%0.0f seconds",chat_display, g_eviction_notice_haste_duration);
             }
             if (IsShotGun(Weapon2))
             {
@@ -2524,6 +2528,21 @@ bool IsKGB(int weapon)
 	{
 		//If Holiday_Punch gets skins in future with different indices, add them here
 	case 43: //Holiday_Punch
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsEvictionNotice(int weapon)
+{
+	if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If Holiday_Punch gets skins in future with different indices, add them here
+	case 426: //Holiday_Punch
 		{
 			return true;
 		}

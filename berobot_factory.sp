@@ -43,7 +43,7 @@ bool _init;
 char _wasRobot[MAXPLAYERS + 1][NAMELENGTH];
 
 GlobalForward _robotPickAndPreviousRobot;
-
+GlobalForward _robotChangedInSpawn;
 //Universal
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -166,7 +166,7 @@ public void Init()
     HookEvent("player_spawn", Event_Player_Spawned, EventHookMode_Post);
 
     _robotPickAndPreviousRobot = new GlobalForward("MM_PickRobotAndPreviousRobot", ET_Ignore, Param_Cell, Param_Cell, Param_String);
-
+    _robotChangedInSpawn = new GlobalForward("MM_robotChangedInSpawn", ET_Ignore, Param_Cell, Param_Cell, Param_String);
     for(int i = 0; i <= MaxClients; i++)
     {
         _wasRobot[i] = "";
@@ -854,7 +854,9 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
         
         TF2_RespawnPlayer(clientId);
         //TF2_SetPlayerClass(clientId, TFClass_Heavy);
-
+        Call_StartForward(_robotChangedInSpawn);
+        Call_PushCell(clientId);
+        Call_Finish();
         return 0;
     }
 

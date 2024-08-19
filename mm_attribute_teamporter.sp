@@ -413,6 +413,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	#endif
 	if (!IsAnyRobot(client))
 	{
+		g_TouchHooked[client] = false;
 		#if defined DEBUG
 		PrintToChatAll("%N spawned and was not a robot", client);
 		#endif
