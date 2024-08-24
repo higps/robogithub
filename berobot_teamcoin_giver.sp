@@ -93,17 +93,26 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-    // int assister = GetClientOfUserId(GetEventInt(event, "assister"));
+    // PrintToChatAll("Dead");
+
+    if (IsBoss(victim))
+    {
+        g_last_given_boss_coin = GetEngineTime();
+        // This will make it so the cooldown resets
+        // PrintToChatAll("CD was %f", g_last_given_boss_coin_cooldown);
+        if (g_last_given_boss_coin_cooldown == first_boss_coin_cooldown)
+        {
+            g_last_given_boss_coin_cooldown = subsequent_boss_coin_cooldown;
+        }
+    }
+
     if(IsAnyRobot(victim) && !IsAnyRobot(attacker))
     {
         CheckBossCoin();
     }
 
 
-    // if (IsBoss(victim))
-    // {
-    //     PrintToChatAll("%N was a boss", victim);
-    // }
+
     return Plugin_Continue;
 }
 

@@ -85,7 +85,7 @@ int g_warriorspirit_heal_on_hit = 50;
 int g_warriorspirit_max_overheal = 450;
 
 float g_kgb_crit_combo_duration = 6.0;
-float g_eviction_notice_haste_duration = 4.0;
+// float g_eviction_notice_haste_duration = 4.0;
 float g_protection_rune_duration = 1.0;
 
 float g_electric_rage_reduction = 5.0;
@@ -1514,11 +1514,6 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}KGB: {orange}+%0.0f seconds of critical hits{teamcolor} when landing a quick 2 hit combo vs robots",chat_display, g_kgb_crit_combo_duration);
             }
-            if (IsEvictionNotice(Weapon3))
-            {
-                TF2CustAttr_SetString(Weapon3, "on-hit-addcond", "TFCond=91 duration=3.0 apply-to-self=1 apply-on-teammate-hit=0");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Eviction Notice: On Hit:{orange} Gain Haste rune for +%0.0f seconds",chat_display, g_eviction_notice_haste_duration);
-            }
             if (IsShotGun(Weapon2))
             {
                 stat1 = 0.8;
@@ -2535,20 +2530,20 @@ bool IsKGB(int weapon)
 	return false;
 }
 
-bool IsEvictionNotice(int weapon)
-{
-	if (weapon == -1 && weapon <= MaxClients) return false;
+// bool IsEvictionNotice(int weapon)
+// {
+// 	if (weapon == -1 && weapon <= MaxClients) return false;
 	
-	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
-	{
-		//If Holiday_Punch gets skins in future with different indices, add them here
-	case 426: //Holiday_Punch
-		{
-			return true;
-		}
-	}
-	return false;
-}
+// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+// 	{
+// 		//If Holiday_Punch gets skins in future with different indices, add them here
+// 	case 426: //Holiday_Punch
+// 		{
+// 			return true;
+// 		}
+// 	}
+// 	return false;
+// }
 
 bool IsRevolver(int weapon)
 {
@@ -2827,7 +2822,7 @@ bool IsStockOrAllClassWeapon(int weapon){
 	{
 		//If other allclass are added, add here
         
-	case 0,1,3,5,8,190,191,193,195,198,609,264,423,474,880,939,954,1013,1071,1123,1127,30758,660,30667: 
+	case 0,1,3,5,587,8,190,191,193,195,198,609,264,423,474,880,939,954,1013,1071,1123,1127,30758,660,30667: 
 		{
 			return true;
 		}

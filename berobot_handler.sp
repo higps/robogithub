@@ -329,7 +329,7 @@ public void OnPluginStart()
 // }
 public void MM_robotChangedInSpawn(int client)
 {
-    PrintToChatAll("Robot changed in spawn for %N", client);
+    // PrintToChatAll("Robot changed in spawn for %N", client);
     CreateTimer(1.0, Timer_SetHealth_Changed, client);
 }
 public void OnClientPutInServer(int client)
@@ -730,14 +730,14 @@ public Action Timer_Regen(Handle timer, any client)
 
 public Action Timer_SetHealth(Handle timer, any client)
 {
-    PrintToChatAll("Set normal hp");
+    // PrintToChatAll("Set normal hp");
     SetRoboSpawnHealth(client, false);
 }
 
 
 public Action Timer_SetHealth_Changed(Handle timer, any client)
 {
-    PrintToChatAll("Changed in spawn");
+    // PrintToChatAll("Changed in spawn");
     SetRoboSpawnHealth(client, true);
 }
 
