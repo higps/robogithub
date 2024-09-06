@@ -125,7 +125,7 @@ bool _volunteered[MAXPLAYERS + 1];
  *  maps a (char steamId[64]) key to a (int queuePoints) valuelunteerStates
  */
 StringMap _queuePoints;
-
+bool g_block_volunteer = false;
 public void OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
@@ -159,6 +159,8 @@ public void OnPluginStart()
 
 
     HookEvent("teamplay_point_captured", Event_Teamplay_Point_Captured, EventHookMode_Post);
+    HookEvent("tf_game_over", Event_Teamplay_TF_Game_Over, EventHookMode_Post);
+    HookEvent("teamplay_game_over", Event_Teamplay_TF_Game_Over, EventHookMode_Post);
 
     LoadVipSteamIds();    
     LoadQueuePointsFromFile();    
@@ -172,6 +174,14 @@ public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontB
 UpdateQueuePointsOnCap();
 
 }
+
+public Action Event_Teamplay_TF_Game_Over(Event event, char[] name, bool dontBroadcast)
+{
+g_block_volunteer = true;
+// PrintToChatAll("GAME OVER");
+
+}
+
 
 public void OnConfigsExecuted()
 {
@@ -214,6 +224,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 public void OnMapStart()
 {
     Reset();
+    g_block_volunteer = false;
 }
 
 void Reset()
@@ -316,10 +327,16 @@ public Action Command_Volunteer(int client, int args)
     SMLogTag(SML_VERBOSE, "Command_Volunteer called for %L", client);
 
     ConVar b_AprilEnabled = FindConVar("sm_mm_april_enable");
-    
+
     if (GetConVarBool(b_AprilEnabled))
     {
         PrintCenterText(client, "No need to volunteer");
+        return Plugin_Handled;
+    }
+
+    if (g_block_volunteer)
+    {
+        PrintCenterText(client, "Game is over, no need to volunteer");
         return Plugin_Handled;
     }
 

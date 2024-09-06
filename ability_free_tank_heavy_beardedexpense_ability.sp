@@ -25,7 +25,7 @@
 
 Handle g_hGameConf;
 Handle g_hIsDeflectable;
-
+float jump_timer = 2.0;
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Bearded Expense Leap Ability and boom bullshit",
@@ -118,13 +118,13 @@ public TF2_OnConditionAdded(client, TFCond:condition)
 		EmitSoundToAll(ALARM, client);
 
 
-		CreateTimer(3.3, Timer_Taunt_Cancel, client);
+		CreateTimer(jump_timer, Timer_Taunt_Cancel, client);
 		}
 
 		if (tauntid == -1)
 		{
 
-			CreateTimer(3.3, Timer_Taunt_Cancel, client);
+			CreateTimer(jump_timer, Timer_Taunt_Cancel, client);
 		}	  
     }
 }

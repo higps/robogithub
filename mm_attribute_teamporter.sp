@@ -69,7 +69,7 @@ float vecSpawns[2][3];
 int g_iPadType[2048];
 char g_szOffsetStartProp[64];
 int g_iOffsetMatchingTeleporter = -1;
-
+float g_drawtime[MAXPLAYERS + 1] = 0.0;
 int g_Recharge[MAXPLAYERS + 1] = 0;
 int g_RechargeCap = 500;
 
@@ -447,7 +447,7 @@ public Action OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 	return Plugin_Continue;
 }
-bool g_b_touching_spawn[MAXPLAYERS + 1];
+bool g_b_hud_drawn[MAXPLAYERS + 1];
 
 public Action OnTouch(int client, int ent)
 {
@@ -464,9 +464,10 @@ public Action OnTouch(int client, int ent)
 			{
 				UpdateCharge(client);
 				DrawHUD(client);
+				
 				// PrintCenterText(client, "Touching Spawn Robo");
 				// g_b_CanGetTeled[client] = true;
-				g_b_touching_spawn[client] = true;
+				// g_b_hud_drawn[client] = true;
 			}
 			else if (!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Spy)
 			{
@@ -476,18 +477,15 @@ public Action OnTouch(int client, int ent)
 				{
 					UpdateCharge(client);
 					DrawHUD(client);
-					g_b_touching_spawn[client] = true;
+					// g_b_hud_drawn[client] = true;
 					// PrintCenterText(client, "Touching Enemy Spawn Spy");
 					// g_b_CanGetTeled[client] = true;
+					
 				}
 			}
 		
 				
 				
-		}
-		else
-		{
-			g_b_touching_spawn[client] = false;
 		}
 	}
 	return Plugin_Continue;
@@ -679,10 +677,16 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if (CanUseTele(client) && buttons & (IN_DUCK))
 	{
 
-		if(g_Recharge[client] >= g_RechargeCap && g_b_touching_spawn[client])
+		if(g_Recharge[client] >= g_RechargeCap && g_b_hud_drawn[client] && g_drawtime[client] + 1.0 >= GetEngineTime())
 		{
 			Teleport_Player(client);
 		}
+		// else if (g_Recharge[client] >= g_RechargeCap && g_b_hud_drawn[client] && !TF2Spawn_IsClientInSpawn(client) && !IsAnyRobot(client))
+		// {
+		// 	Teleport_Player(client);
+		// }
+
+		
 	}
 }
 
@@ -764,24 +768,28 @@ public Action DrawHUD(int client)
 				//	PrintCenterTextAll("Ready");
 					Format(sHUDText, sizeof sHUDText, "Teamporter Ready!\nTeamporter is building");
 					SetHudTextParams(-1.0, -0.2, 0.1, 0, 130, 130, 255);
+					g_b_hud_drawn[client] = false;
 				}
 				case TELE_CARRIED:
 				{
 				//	PrintCenterTextAll("Ready");
 					Format(sHUDText, sizeof sHUDText, "Teamporter Ready!\nTeamporter is being carried");
 					SetHudTextParams(-1.0, -0.2, 0.1, 130, 130, 0, 255);
+					g_b_hud_drawn[client] = false;
 				}
 				case TELE_SAPPER:
 				{
 				//	PrintCenterTextAll("Ready");
 					Format(sHUDText, sizeof sHUDText, "Teamporter Ready!\nTeamporter is Disabled / Sapped");
 					SetHudTextParams(-1.0, -0.2, 0.1, 133, 0, 130, 255);
+					g_b_hud_drawn[client] = false;
 				}
 				case TELE_RECHARGING:
 				{
 				//	PrintCenterTextAll("Ready");
 					Format(sHUDText, sizeof sHUDText, "Teamporter Ready!\nEngipad Teamporter is Recharging...");
 					SetHudTextParams(-1.0, -0.2, 0.1, 50, 50, 100, 255);
+					g_b_hud_drawn[client] = false;
 				}
 				case TELE_READY:
 				{
@@ -789,6 +797,8 @@ public Action DrawHUD(int client)
 					Format(sHUDText, sizeof(sHUDText), "Teamporter Ready!\nCrouch to Teleport!");
 					TF2_AddCondition(client, TFCond_TeleportedGlow, 1.0);
 					SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
+					g_b_hud_drawn[client] = true;
+					g_drawtime[client] = GetEngineTime();
 				}
 				// case TELE_WRONGTEAM:
 				// {
@@ -863,27 +873,31 @@ public Action DrawHUD(int client)
 				{
 					Format(sHUDText, sizeof(sHUDText), "%s\nTeamporter is building", sHUDText);
 					SetHudTextParams(-1.0, -0.2, 0.1, 0, 130, 130, 255);
+					g_b_hud_drawn[client] = false;
 				}
 				case TELE_CARRIED:
 				{
 					Format(sHUDText, sizeof(sHUDText), "%s\nTeamporter is being carried", sHUDText);
 					SetHudTextParams(-1.0, -0.2, 0.1, 130, 130, 0, 255);
+					g_b_hud_drawn[client] = false;
 				}
 				case TELE_SAPPER:
 				{
-					Format(sHUDText, sizeof(sHUDText), "%s\nnTeamporter is Disabled / Sapped", sHUDText);
+					Format(sHUDText, sizeof(sHUDText), "%s\nTeamporter is Disabled / Sapped", sHUDText);
 					SetHudTextParams(-1.0, -0.2, 0.1, 133, 0, 130, 255);
+					g_b_hud_drawn[client] = false;
 				}
 				case TELE_RECHARGING:
 				{
 				Format(sHUDText, sizeof(sHUDText), "%s\nEngipad Teamporter is Recharging...", sHUDText);
 					SetHudTextParams(-1.0, -0.2, 0.1, 50, 50, 100, 255);
+					g_b_hud_drawn[client] = false;
 				}
-				case TELE_READY:
-				{
-					Format(sHUDText, sizeof(sHUDText), "%s\nTeamporter ready!", sHUDText);
-					SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
-				}
+				// case TELE_READY:
+				// {
+				// 	Format(sHUDText, sizeof(sHUDText), "%s\nTeamporter ready!", sHUDText);
+				// 	SetHudTextParams(-1.0, -0.2, 0.1, 0, 255, 0, 255);
+				// }
 				// case TELE_WRONGTEAM:
 				// {
 				// //	PrintCenterTextAll("Ready");
@@ -904,6 +918,7 @@ public Action DrawHUD(int client)
 		{
 			Format(sHUDText, sizeof(sHUDText), "%s\nNo active Teleporter",sHUDText);
 			SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+			g_b_hud_drawn[client] = false;
 		}
 
 

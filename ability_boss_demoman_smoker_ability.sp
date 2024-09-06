@@ -8,7 +8,7 @@
 #include <tf_custom_attributes>
 
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Nuker"
+#define ROBOT_NAME	"Smoker"
 
 #define BLU_MODEL	"models/props_trainyard/bomb_cart.mdl"
 #define RED_MODEL "models/props_trainyard/bomb_cart_red.mdl"

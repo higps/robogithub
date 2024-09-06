@@ -843,7 +843,15 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
         MC_PrintToChatAll("{Green}Type {orange}!info{Green} to see more info about this gamemode");
         MC_PrintToChatAll("{Green}Visit {orange}bmod.tf/mannedmachines {Green} To get the assetpack to get the most out of this mode");
     
-
+        // Reset the health buffer when a round starts to prevent robots from getting dmg health carried over from last round
+        for(int i = 1; i <= MaxClients+1; i++)
+        {
+            if(IsValidClient(i))
+            {
+                g_PlayerHealth[i] = -1;
+                // PrintCenterText(i,"RESETTING UR HEALTH");
+            }
+        }
                 // Remove Point on player start
 
             // int powerteam = GetRobotTeam();
