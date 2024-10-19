@@ -1943,14 +1943,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             if (IsAirStrike(Weapon1))
             {
-                stat1 = 16.0;
-                stat2 = 0.15;
-                stat3 = 2.0;
+                stat1 = 8.0;
+                stat2 = 0.25;
                 TF2Attrib_SetByName(Weapon1, "clipsize increase on kill",stat1);
                 TF2Attrib_SetByName(Weapon1, "rocketjump attackrate bonus",stat2);
-                TF2Attrib_SetByName(Weapon1, "maxammo primary increased",stat3);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}AirStrike: {orange}Gains additional clip{teamcolor} by doing %i damage to robots, {orange}+%0.0f extra max bonus clip on kill. %0.0f%%%% faster firing speed while rocket jumping. +%0.0f%%%% max ammo bonus", chat_display, RoundToNearest(g_AirStrikeDMGRequirement), stat1, LessIsMore(stat2), OneIs100(stat2));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}AirStrike: {orange}Gains additional clip{teamcolor} by doing %i damage to robots, {orange}+%0.0f extra max bonus clip on kill. %0.0f%%%% faster firing speed while rocket jumping", chat_display, RoundToNearest(g_AirStrikeDMGRequirement), stat1, LessIsMore(stat2), OneIs100(stat2));
             }
             if (IsBlackBox(Weapon1))
             {
