@@ -120,6 +120,9 @@ int g_AprilEnable;
 float g_f_Damage_Bonus = 1.0;
 float g_f_previous_dmg_bonus = -1.0;
 //bool g_IsAprilRTD[MAXPLAYERS + 1] = false;
+
+float g_cr_cooldown[MAXPLAYERS + 1] = {0.0,...};
+
 bool b_g_high_power = false;
 int g_RoundCount;
 // int g_TankCount;
@@ -1490,86 +1493,156 @@ public Action Command_RoboVote(int client, int args)
 
 public Action Command_ChangeRobot(int client, int args)
 {
-
+    // Prevent command if conditions are not met (April Fools check)
     if (g_AprilEnable && !g_Enable)
     {
-        PrintCenterText(client, "You can't change robot you fool!");
+        PrintCenterText(client, "You can't change robot, you fool!");
         return Plugin_Handled;
     }
 
-    if (g_cv_bDebugMode)PrintToChatAll("Got to 1");
-
+    // Check if the player is in spawn or dead (restriction for robot change)
     if (!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
     {
-        PrintCenterText(client, "You can only change robot when in spawn or dead");
+        PrintCenterText(client, "You can only change robot when in spawn or dead.");
         return Plugin_Handled;
     }
-    char target[32];
-    if(args < 1)
+
+    // If a name is provided (i.e., args >= 1), we need to handle potential names with spaces
+    if (args >= 1)
     {
-        target = "";
+        
+        char robotName[128];  // Expanded buffer to handle longer robot names with spaces
+        robotName[0] = '\0';  // Initialize as an empty string
+
+        // Collect all command arguments after "sm_cr" into robotName, separated by spaces
+        for (int i = 1; i <= args; i++)  // Loop through all arguments provided
+        {
+            char part[32];  // Each argument can be up to 32 characters long
+            GetCmdArg(i, part, sizeof(part));  // Get each argument part
+
+            // If this is not the first part, add a space before the next part
+            if (i > 1)
+            {
+                StrCat(robotName, sizeof(robotName), " ");
+            }
+
+            // Concatenate the part to the robotName
+            StrCat(robotName, sizeof(robotName), part);
+        }
+
+        // Check if a valid robot name was entered
+        if (robotName[0] != '\0' && g_cr_cooldown[client] < GetEngineTime())
+        {
+            // Attempt to turn the player into the specified robot
+            CreateRobot(robotName, client, ""); // Since normal players can only target themselves, the target is empty
+            SetEntProp(client, Prop_Send, "m_bIsMiniBoss", 1); // Set the minion/boss status
+
+            PrintCenterText(client, "You have turned into %s!", robotName); // Feedback to player
+            g_cr_cooldown[client] = GetEngineTime() + 10.0; 
+            return Plugin_Handled;
+        }
     }
-    else
-        GetCmdArg(1, target, sizeof(target));
 
-    int targetFilter = 0;
-    if(target[0] == '\0')
-    {
-        target = "@me";
-        targetFilter = COMMAND_FILTER_NO_IMMUNITY;
-    }
+    // If no robot name is provided, open the menu as usual
+    // This block handles the case where no arguments are provided (player wants to open the menu)
 
-    char target_name[MAX_TARGET_LENGTH];
-    int target_list[MAXPLAYERS], target_count;
-    bool tn_is_ml;
-
-
-    //For the times when someone is not a robot, but is on the robot team.
+    // Check if the player is already on the robot team or if April Fools is enabled
     int iTeam = GetClientTeam(client);
-    
-    if (g_cv_bDebugMode)PrintToChatAll("Client team was %i:", iTeam);
-    if (g_cv_bDebugMode)PrintToChatAll("Robogteam was: %i", g_RoboTeam);
-
-    if (iTeam == g_RoboTeam || g_AprilEnable){
-    if (g_cv_bDebugMode)PrintToChatAll("Attempting to allow menu selection for %N", client);
-    
-    // g_PlayerHealth[client] = -1;
-
-    SetClientRepicking(client, true);
-    ChooseRobot(client);
-    
-    return Plugin_Handled;
-    }
-
-    if((target_count = ProcessTargetString(
-          target,
-          client,
-          target_list,
-          MAXPLAYERS,
-          targetFilter,
-          target_name,
-          sizeof(target_name),
-          tn_is_ml)) <= 0)
+    if (iTeam == g_RoboTeam || g_AprilEnable)
     {
-        ReplyToTargetError(client, target_count);
+        // Allow robot selection through the menu
+        SetClientRepicking(client, true); // Mark the player as repicking
+        ChooseRobot(client); // Open the robot selection menu
         return Plugin_Handled;
-    }
-
-    for(int i = 0; i < target_count; i++)
-    {
-        int targetClientId = target_list[i];
-
-        if (!IsAnyRobot(targetClientId))
-            continue;
-
-        // g_PlayerHealth[client] = -1;
-        g_cv_Volunteered[targetClientId] = true;
-        SetClientRepicking(targetClientId, true);
-        ChooseRobot(targetClientId);
     }
 
     return Plugin_Handled;
 }
+
+
+
+// public Action Command_ChangeRobot(int client, int args)
+// {
+
+//     if (g_AprilEnable && !g_Enable)
+//     {
+//         PrintCenterText(client, "You can't change robot you fool!");
+//         return Plugin_Handled;
+//     }
+
+//     if (g_cv_bDebugMode)PrintToChatAll("Got to 1");
+
+//     if (!TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
+//     {
+//         PrintCenterText(client, "You can only change robot when in spawn or dead");
+//         return Plugin_Handled;
+//     }
+//     char target[32];
+//     if(args < 1)
+//     {
+//         target = "";
+//     }
+//     else
+//         GetCmdArg(1, target, sizeof(target));
+
+//     int targetFilter = 0;
+//     if(target[0] == '\0')
+//     {
+//         target = "@me";
+//         targetFilter = COMMAND_FILTER_NO_IMMUNITY;
+//     }
+
+//     char target_name[MAX_TARGET_LENGTH];
+//     int target_list[MAXPLAYERS], target_count;
+//     bool tn_is_ml;
+
+
+//     //For the times when someone is not a robot, but is on the robot team.
+//     int iTeam = GetClientTeam(client);
+    
+//     if (g_cv_bDebugMode)PrintToChatAll("Client team was %i:", iTeam);
+//     if (g_cv_bDebugMode)PrintToChatAll("Robogteam was: %i", g_RoboTeam);
+
+//     if (iTeam == g_RoboTeam || g_AprilEnable){
+//     if (g_cv_bDebugMode)PrintToChatAll("Attempting to allow menu selection for %N", client);
+    
+//     // g_PlayerHealth[client] = -1;
+
+//     SetClientRepicking(client, true);
+//     ChooseRobot(client);
+    
+//     return Plugin_Handled;
+//     }
+
+//     if((target_count = ProcessTargetString(
+//           target,
+//           client,
+//           target_list,
+//           MAXPLAYERS,
+//           targetFilter,
+//           target_name,
+//           sizeof(target_name),
+//           tn_is_ml)) <= 0)
+//     {
+//         ReplyToTargetError(client, target_count);
+//         return Plugin_Handled;
+//     }
+
+//     for(int i = 0; i < target_count; i++)
+//     {
+//         int targetClientId = target_list[i];
+
+//         if (!IsAnyRobot(targetClientId))
+//             continue;
+
+//         // g_PlayerHealth[client] = -1;
+//         g_cv_Volunteered[targetClientId] = true;
+//         SetClientRepicking(targetClientId, true);
+//         ChooseRobot(targetClientId);
+//     }
+
+//     return Plugin_Handled;
+// }
 
 public Action Command_ShowStats(int client, int args)
 {
@@ -2104,7 +2177,7 @@ public Action OnClientCommand(int client, int args)
 public Action Block_Kill(int client, const char[] command, int args){
 
 
-    if (!IsAnyRobot(client) && g_BossMode && !TF2Spawn_IsClientInSpawn(client))
+    if (!IsAnyRobot(client) && g_BossMode && !TF2Spawn_IsClientInSpawn(client) && IsPlayerAlive(client))
     {
       //  PrintToChatAll("BLOCKED KILL on %N", client);
        // int playerID = GetClientUserId(client);

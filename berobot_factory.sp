@@ -539,7 +539,15 @@ public any Native_CreateRobot(Handle plugin, int numParams)
             return 4;
         }
         
-        
+        int count = GetRobotCount(item.name);
+        int roboCap = GetRobotCap(item.name);
+        if (count >= roboCap)
+        {
+        MC_PrintToChat(client, "{MAGENTA}==%s IS ALREADY IN USE==\n==GIVING RANDOM ROBOT INSTEAD==",item.name);
+        //SMLogTag(SML_VERBOSE, "resetting %L's bought robot to random, because %s is already taken", victimClientId, targetClientId);
+        SetRandomRobot(targetClientId);
+        return 5;
+        }
 
         char wasRobot[NAMELENGTH];
         int trashError = Trash(targetClientId, wasRobot, name);

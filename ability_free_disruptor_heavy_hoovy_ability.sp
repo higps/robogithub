@@ -133,20 +133,43 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(IsRobot(attacker, ROBOT_NAME))
 	{
 		
-	if(TF2_IsPlayerInCondition(victim, TFCond_Taunting) && !IsAnyRobot(victim))
-	{
-		int tauntid = GetEntProp(victim, Prop_Send, "m_iTauntItemDefIndex");
-		// PrintToChatAll("Taunt ID %i", tauntid);
-		if (tauntid != -1)SendVictimToSpace(victim);
-	}
+		if(TF2_IsPlayerInCondition(victim, TFCond_Taunting) && !IsAnyRobot(victim))
+		{
+			int tauntid = GetEntProp(victim, Prop_Send, "m_iTauntItemDefIndex");
+			// PrintToChatAll("Taunt ID %i", tauntid);
+			if (tauntid != -1)SendVictimToSpace(victim);
+		}
 
-	if(!TF2_IsPlayerInCondition(attacker, TFCond_RuneWarlock) && IsPlayerAlive(attacker)) RequestFrame(StunPlayer, victim);
-
+		if(!TF2_IsPlayerInCondition(attacker, TFCond_RuneWarlock) && IsPlayerAlive(attacker)) RequestFrame(StunPlayer, victim);
 
 	}  
 
+	// if(IsRobot(victim, ROBOT_NAME))
+	// {
+	// 	if (IsHolidayPunch(weapon))
+	// 	{
+	// 		// TF2_RemoveCondition(victim, TFCond_Taunting);
+	// 	}
+	// }
+
 	return Plugin_Continue;
-	}
+}
+
+// bool IsHolidayPunch(int weapon)
+// {
+// 	if (weapon == -1 && weapon <= MaxClients) return false;
+// 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+// 	{
+// 		//If other bottles
+        
+// 	case 656:
+// 		{
+// 			return true;
+// 		}
+// 	}
+// 	return false;
+    
+// }
 
 void StunPlayer (int victim)
 {
@@ -154,11 +177,7 @@ void StunPlayer (int victim)
 	
 		TF2_StunPlayer(victim, 3.5, 0.0, TF_STUNFLAG_BONKSTUCK);
 		//return Plugin_Changed;
-	}
-
-
-		
-		
+	}	
 }
 
 void SendVictimToSpace(int victim)
