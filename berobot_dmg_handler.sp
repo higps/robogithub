@@ -2519,8 +2519,8 @@ bool IsKGB(int weapon)
 	
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
-		//If Holiday_Punch gets skins in future with different indices, add them here
-	case 43: //Holiday_Punch
+		//If KGB gets skins in future with different indices, add them here
+	case 43: //KGB
 		{
 			return true;
 		}
