@@ -28,7 +28,7 @@ char paintNames[MAX_PAINTS][64];
 int paintValues1[MAX_PAINTS];
 int paintValues2[MAX_PAINTS];
 int numPaints = 0;
-
+g_b_reload = false;
 public void AddPaint(char[] name, int value1)
 {
     _InternalAddPaint(name, value1, 0);
@@ -70,11 +70,22 @@ public void OnPluginStart()
     
      //Debug function to print the robot path
      //PrintConfigPathForRobotName("A-Robot");
+     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+}
+
+public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+{
+    if(!g_b_reload)
+    {
+        Initialize();
+        g_b_reload = true;
+    }
 }
 
 public void OnMapStart()
 {
-    Initialize();
+    g_b_reload = false;
+    
 }
 
 public Action Initialize()

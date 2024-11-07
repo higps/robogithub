@@ -71,7 +71,7 @@ char g_szOffsetStartProp[64];
 int g_iOffsetMatchingTeleporter = -1;
 float g_drawtime[MAXPLAYERS + 1] = 0.0;
 int g_Recharge[MAXPLAYERS + 1] = 0;
-int g_RechargeCap = 500;
+int g_RechargeCap = 300;
 
 bool g_TouchHooked[MAXPLAYERS + 1] = false;
 enum //Teleporter states
