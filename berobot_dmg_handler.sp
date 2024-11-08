@@ -1694,17 +1694,6 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "apply z velocity on damage", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Force A Nature: {orange}On Penetration Hit:+ %0.0f%%%% increased robot knockback bonus",chat_display, stat1);
             }
-            if (IsSunOnAStick(Weapon3))
-            {
-                int action_slot_item = TF2Util_GetPlayerLoadoutEntity(client, 9);
-                if(IsValidEntity(action_slot_item))RemoveEntity(action_slot_item);
-                CreateRoboWeapon(client, "tf_weapon_spellbook", 5605, 0, 1, 4, 0);
-                TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=40.0");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display);
-            }else
-            {
-                TF2CustAttr_SetString(client, "Spell-Caster", "Spell=-1 Cooldown=40.0");
-            }
 
             if (IsCandyCane(Weapon3))
             {   
@@ -1745,6 +1734,18 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 TF2Attrib_SetByName(Weapon2, "bleeding duration", g_bleed_duration_bonus);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Cleaver: {orange}On Hit: Bleed for %0.0f seconds.\n{teamcolor}Bleed On Hit: {orange}+%0.0f%%%% more melee dmg taken for %0.0f seconds",chat_display, g_bleed_duration_bonus, MoreIsMore(g_bleed_meleevuln_amount), g_bleed_meleevuln_duration);
+            }
+
+            if (IsSunOnAStick(Weapon3))
+            {
+                int action_slot_item = TF2Util_GetPlayerLoadoutEntity(client, 9);
+                if(IsValidEntity(action_slot_item))RemoveEntity(action_slot_item);
+                CreateRoboWeapon(client, "tf_weapon_spellbook", 5605, 0, 1, 4, 0);
+                TF2CustAttr_SetString(client, "Spell-Caster", "Spell=0 Cooldown=40.0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sun-on-a-Stick:{orange} Fire ball spell",chat_display);
+            }else
+            {
+                TF2CustAttr_SetString(client, "Spell-Caster", "Spell=-1 Cooldown=40.0");
             }
 
         }
