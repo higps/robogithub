@@ -1474,6 +1474,18 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Minigun deal {orange}-%0.00f %%%% damage{teamcolor} vs robots",chat_display, LessIsMore(stat1));
             }
             
+            // if (IsStockMinigun(Weapon1))
+            // {
+            //     stat1 = 0.7;
+            //     TF2Attrib_SetByName(Weapon1, "dmg from melee increased", stat1);
+            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Minigun: {orange}+%0.00f %%%% melee damage resistance while active",chat_display, LessIsMore(stat1));
+            // }
+
+            // if (IsBrassBeast(Weapon1))
+            // {
+            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Brass Beast: {orange}Gain up to +15%%%% damage bonus on damage done. Decays when no damage is done",chat_display);
+            //     TF2CustAttr_SetString(Weapon1, "damage increase mult on hit", "amount=0.001 max=0.15 decay_start=0.2 decay_per_second=0.01 reset_on_kill=0 show_on_hud=1");
+            // }
 
             if (IsNatascha(Weapon1))
             {
@@ -1482,7 +1494,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "speed_boost_on_hit", stat1);
                 TF2Attrib_SetByName(Weapon1, "aiming movespeed increased", stat2);
                 
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Heavy Natascha: {orange}+%0.0f second speed boost on hit +%0.0f %%%% faster movespeed while spun up{teamcolor}",chat_display, stat1, MoreIsMore(stat2));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Natascha: {orange}+%0.0f second speed boost on hit +%0.0f %%%% faster movespeed while spun up{teamcolor}",chat_display, stat1, MoreIsMore(stat2));
             }
 
             if (IsTomiSlav(Weapon1))
@@ -3170,7 +3182,36 @@ bool IsAnyMinigun(int weapon)
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 
-	case 15, 202, 41, 298, 312, 424, 654, 793, 802, 811, 832, 850, 882, 891, 900, 909, 958, 967, 15004, 15020, 15026, 15031, 15040, 15055, 15086, 15087, 15088, 15098, 15099, 15123, 15124, 15125, 15147: 
+	case 15, 202, 41, 298, 312, 424, 654, 793, 802, 811, 832, 882, 891, 900, 909, 958, 967, 15004, 15020, 15026, 15031, 15040, 15055, 15086, 15087, 15088, 15098, 15099, 15123, 15124, 15125, 15147: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+bool IsStockMinigun(int weapon)
+{
+	if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+
+	case 15, 202, 298, 654, 793, 802, 882, 891, 900, 909, 958, 967, 15004, 15020, 15026, 15031, 15040, 15055, 15086, 15087, 15088, 15098, 15099, 15123, 15124, 15125, 15147: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsBrassBeast(int weapon)
+{
+	if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Brass Beast
+	case 312: 
 		{
 			return true;
 		}

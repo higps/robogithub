@@ -703,7 +703,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 	// }(
 
 
-	if(IsJumping == 0 && ang[0] < -33.0 && !g_JumpCoolDown && (GetEntProp( client, Prop_Data, "m_afButtonReleased" ) & IN_ATTACK2)) 
+	if(ang[0] < -33.0 && !g_JumpCoolDown && (GetEntProp( client, Prop_Data, "m_afButtonReleased" ) & IN_ATTACK2)) 
 	{
 	// PrintToChatAll("Button released g_Sumperjumpcharge was %i", g_SuperJumpCharge);
 	SuperJump(client, float(g_SuperJumpCharge), true);
@@ -726,7 +726,7 @@ public void SuperJump(int client, float power, bool reset)
 		g_SuperJumpCharge = 0;
 		
 		float vel[3]; GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
-		vel[2] = 750 + power * 13.0;
+		vel[2] = 150 + power * 13.0;
 		// if( g_bSuperCharge ) {
 		// 	vel[2] += 2000.0;
 		// 	g_bSuperCharge = false;
@@ -778,7 +778,7 @@ public void WeighDown(int client, float power, bool reset)
 public void PerformStun(int client)
 {
 	//Get our hero variables
-	float duration = 5.0;
+	float duration = 1.5;
 	bool fullStun = false;
 	float radius = 400.0;
 	int iTeam = GetClientTeam(client);
@@ -796,6 +796,7 @@ public void PerformStun(int client)
 	// PrintToChatAll("%s",szVO);
 	b_SaxtonSaid[client] = false;
 	SaxtronSay(client, szVO);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 8.0);
 }
 
 public void ApplyRadialStun(int hero, int team, float flDuration, float flRadius, bool full)
