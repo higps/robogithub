@@ -1001,6 +1001,9 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 //     return Plugin_Continue;
 // }
 
+
+
+// float g_highpower_duration = 8.0;
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
     // if (!g_Enable)
@@ -1015,6 +1018,83 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     {      
         RequestFrame(Set_g_PlayerHealth, victim);        
         
+        // if (b_g_high_power)
+        // {
+        //     int randomBuff = GetRandomInt(1, 25);
+        //     // PrintToChatAll("random num was %i", randomBuff);
+        //     // Apply a condition based on the random number
+        //     if (randomBuff == 1)
+        //     {
+        //         randomBuff = GetRandomInt(1, 12);
+        //         // PrintToChatAll("Buff was %i", randomBuff);
+        //         switch (randomBuff)
+        //                 {
+        //                     case 1:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_Buffed, g_highpower_duration);
+        //                         // PrintToChatAll("Applied Buffed condition! Lucky number: %d", randomBuff);
+        //                     }
+        //                     case 2:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_CritCanteen, g_highpower_duration);
+        //                         // PrintToChatAll("Applied Crit Boosted condition! Lucky number: %d", randomBuff);
+        //                     }
+        //                     case 3:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_BulletImmune, g_highpower_duration);
+        //                         // PrintToChatAll("Applied Bullet Resist condition! Lucky number: %d", randomBuff);
+        //                     }
+        //                     case 4:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_BlastImmune, g_highpower_duration);
+        //                         // PrintToChatAll("Applied Blast Resist condition! Lucky number: %d", randomBuff);
+        //                     }
+        //                     case 5:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_FireImmune, g_highpower_duration);
+        //                         // PrintToChatAll("Applied Fire Resist condition! Lucky number: %d", randomBuff);
+        //                     }
+        //                     case 6:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_CritCola, g_highpower_duration);
+        //                         // PrintToChatAll("Applied Fire Resist condition! Lucky number: %d", randomBuff);
+        //                     }
+        //                     case 7:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_DefenseBuffed, g_highpower_duration);
+        //                         // PrintToChatAll("Applied Fire Resist condition! Lucky number: %d", randomBuff);
+        //                     }
+        //                     case 8:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_RegenBuffed, g_highpower_duration);
+        //                         // PrintToChatAll("Applied Fire Resist condition! Lucky number: %d", randomBuff);
+        //                     }
+        //                     case 9:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_RegenBuffed, g_highpower_duration);
+        //                         // PrintToChatAll("Applied Fire Resist condition! Lucky number: %d", randomBuff);
+        //                     }
+        //                     case 10:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_RuneHaste, g_highpower_duration);
+        //                     }
+        //                     case 11:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_RunePrecision, g_highpower_duration);
+        //                     }
+        //                     case 12:
+        //                     {
+        //                         TF2_AddCondition(victim, TFCond_RuneAgility, g_highpower_duration);
+        //                     }
+        //                     default:
+        //                     {
+        //                         // If no special case is hit, apply a default buff or do nothing
+        //                         // PrintToChatAll("No special buff applied this time. Lucky number: %d", randomBuff);
+        //                     }
+        //                 }
+        //     }
+        // }
+       
     }
 
     if (g_f_Damage_Bonus != -1.0)
@@ -2102,7 +2182,7 @@ public Action OnClientCommand(int client, int args)
     {
         TFTeam iTeam = view_as<TFTeam>(GetEntProp(client, Prop_Send, "m_iTeamNum"));
         
-        //PrintToChatAll("Join team triggered. %N's team was %i", client, iTeam);
+
 
         if (g_SpectateSelection)
         {
@@ -2113,7 +2193,7 @@ public Action OnClientCommand(int client, int args)
 
         if(g_cv_BlockTeamSwitch)
         {
-            PrintCenterText(client, "Boss mode is activated: Teams are locked");
+            
             if(g_cv_bDebugMode) PrintToChatAll("Teamswitch is %b ", g_cv_BlockTeamSwitch);
             //If someone joins while the event is going, set correct player team
 
@@ -2151,6 +2231,52 @@ public Action OnClientCommand(int client, int args)
                 // TF2_SetPlayerClass(client, view_as<TFClassType>(irandomclass));
                 // TF2_RespawnPlayer(client);
             }
+
+
+                    //PrintToChatAll("Join team triggered. %N's team was %i", client, iTeam);
+
+            if (g_BossMode)
+            {
+                GetCmdArg(1, cmd, sizeof(cmd));
+                // PrintToChatAll("%N args %s", client, cmd);
+
+                
+                TFTeam teampick;
+                
+                if(strcmp(cmd, "blue", true) == 0)
+                {
+                    teampick = TFTeam_Blue;
+
+                }else if (strcmp(cmd, "red", true) == 0)
+                {
+                    teampick = TFTeam_Red;
+                }
+
+                int roboteam = GetRobotTeam();
+                //PrintToChatAll("Teampick: %i",teampick);
+                int userid = GetClientUserId(client);
+                //Case: You are human wanting to be robot
+                if(!IsAnyRobot(client) && teampick == roboteam)
+                {
+                    // MakeRobot(client, true);
+                    
+                    ServerCommand("sm_setvolunteer #%d", GetClientUserId(client));
+                    PrintCenterText(client, "Boss mode is activated: Volenteering you to be a robot!");
+                }
+                else if (IsAnyRobot(client) && teampick != roboteam)
+                {
+                    // UnmakeRobot(client);
+                    ServerCommand("sm_unsetvolunteer #%d", GetClientUserId(client));
+                    PrintCenterText(client, "Boss mode is activated: Unvolunteering you");
+                }
+                else
+                {
+                    // ServerCommand("sm_setvolunteer %i", client);
+                    PrintCenterText(client, "Boss mode is activated: Teams are locked");    
+                }
+            }
+
+            
             return Plugin_Handled;
         }
     }
@@ -2511,6 +2637,7 @@ bool AddRandomVolunteer()
         int islots = g_RoboCapTeam - g_Volunteers.Length;
         //PrintToChatAll("A new robot-slot is available. There is now %i available robot slots remains. Type !join to become a giant robot", islots);
         MC_PrintToChatAll("{green}%i{orange} Robot-slot available! Type {green}!join{orange} to become a giant robot!", islots);
+        // MC_PrintToChatAll("{magenta}Robots gets random buffs at random until balance is restored");
         b_g_high_power = true;
         return false;
     }

@@ -8,6 +8,7 @@
 #include <berobot_constants>
 #include <berobot>
 #include <berobot_core_restrictions>
+#include <tf2_stocks>
 
 char LOG_TAGS[][] = {"VERBOSE", "INFO", "ERROR"};
 enum(<<= 1)
@@ -73,7 +74,13 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
     int attackerClientId = GetClientOfUserId(attackerUserId);
 
 
-
+        int death_flags = GetEventInt(event, "death_flags");
+    if((death_flags & TF_DEATHFLAG_DEADRINGER) != TF_DEATHFLAG_DEADRINGER)
+    {
+        PrintToChatAll("Not deadringer");
+    }else{
+        return;
+    } // Not a dead ringer death?
     if (IsAnyRobot(attackerClientId) && IsValidClient(victimClientId))
     {
         

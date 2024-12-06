@@ -461,6 +461,24 @@ MakeRobotFrame(client)
     char configPath[256];
     s_RobotConfigPaths.GetString(robotName, configPath, sizeof(configPath));
 
+    //g_hConfig.DeleteThis();  // Clear any previous data.
+    KeyValues i_hConfig = new KeyValues("Robot");
+	// CreateTimer(0.0, Timer_Switch, client);
+    // MakeEquipment(client, robot);
+    if (!i_hConfig.ImportFromFile(configPath))
+    {
+            if (StrEqual(robotName, ""))
+            {
+                PrintToChatAll("Failed to import robot config from path %s because robot name was null", configPath);
+            }
+            else
+            {
+                PrintToChatAll("Failed to import robot config from path %s for robot name %s Removing", configPath, robotName);
+                RemoveRobot(robotName);
+            }
+            return;
+    }
+
     TFClassType iRobot_class = StringToTFClassType(robot.class)
     TF2_SetPlayerClass(client, iRobot_class);
 	TF2_RegeneratePlayer(client);
@@ -490,15 +508,7 @@ MakeRobotFrame(client)
     UpdatePlayerHitbox(client, robot.scale);
 	SetEntProp(client, Prop_Send, "m_bIsMiniBoss", _:true);
 
-    //g_hConfig.DeleteThis();  // Clear any previous data.
-    KeyValues i_hConfig = new KeyValues("Robot");
-	// CreateTimer(0.0, Timer_Switch, client);
-    // MakeEquipment(client, robot);
-    if (!i_hConfig.ImportFromFile(configPath))
-    {
-        PrintToChatAll("Failed to import robot config from path %s for robot name %s", configPath, robotName);
-        return;
-    }
+
 
     // Now, fetch the name from the configuration to verify.
     char configRobotName[NAMELENGTH];
