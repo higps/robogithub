@@ -77,7 +77,7 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
         int death_flags = GetEventInt(event, "death_flags");
     if((death_flags & TF_DEATHFLAG_DEADRINGER) != TF_DEATHFLAG_DEADRINGER)
     {
-        PrintToChatAll("Not deadringer");
+        // PrintToChatAll("Not deadringer");
     }else{
         return;
     } // Not a dead ringer death?

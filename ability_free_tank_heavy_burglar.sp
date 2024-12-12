@@ -8,7 +8,7 @@
 #include <tf_ontakedamage>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Gotham Protector"
+#define ROBOT_NAME	"Burglar"
 
 enum eRuneTypes
 {
@@ -65,7 +65,8 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-
+float buff_duration = 8.0;
+float haste_duration = 4.0;
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
 	// if (!g_Enable)
@@ -77,36 +78,36 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 	if (IsRobot(attacker, ROBOT_NAME))
 	{
-		float duration = 4.0;
-		TF2_AddCondition(attacker, TFCond_RuneHaste, duration);
+
+		TF2_AddCondition(attacker, TFCond_RuneHaste, haste_duration);
 
 		switch (TF2_GetPlayerClass(victim))
 		{
 			
 			case TFClass_Soldier, TFClass_DemoMan:{
-				//TF2_AddCondition(attacker, TFCond_SmallBlastResist, duration);
-				TF2_AddCondition(attacker, TFCond_UberBlastResist, duration, attacker);
-				TF2Attrib_AddCustomPlayerAttribute(attacker, "dmg taken from blast reduced", 0.35, duration);
+				//TF2_AddCondition(attacker, TFCond_SmallBlastResist, buff_duration);
+				TF2_AddCondition(attacker, TFCond_UberBlastResist, buff_duration, attacker);
+				TF2Attrib_AddCustomPlayerAttribute(attacker, "dmg taken from blast reduced", 0.35, buff_duration);
 			}
 			case TFClass_Pyro:{
-			//TF2_AddCondition(attacker, TFCond_SmallFireResist, duration);
-			TF2_AddCondition(attacker, TFCond_UberFireResist, duration, attacker);
-			TF2Attrib_AddCustomPlayerAttribute(attacker, "dmg taken from fire reduced", 0.35, duration);
+			//TF2_AddCondition(attacker, TFCond_SmallFireResist, buff_duration);
+			TF2_AddCondition(attacker, TFCond_UberFireResist, buff_duration, attacker);
+			TF2Attrib_AddCustomPlayerAttribute(attacker, "dmg taken from fire reduced", 0.35, buff_duration);
 			
 			}
 			case TFClass_Heavy, TFClass_Engineer, TFClass_Sniper, TFClass_Scout:{ 
 				
-				TF2_AddCondition(attacker, TFCond_UberBulletResist, duration);
-				TF2Attrib_AddCustomPlayerAttribute(attacker, "dmg taken from bullets reduced", 0.35, duration);
-				//TF2_AddCondition(attacker, TFCond_BulletImmune, duration);
+				TF2_AddCondition(attacker, TFCond_UberBulletResist, buff_duration);
+				TF2Attrib_AddCustomPlayerAttribute(attacker, "dmg taken from bullets reduced", 0.35, buff_duration);
+				//TF2_AddCondition(attacker, TFCond_BulletImmune, buff_duration);
 				
 			}
 			case TFClass_Medic:{
-				TF2_AddCondition(attacker, TFCond_RadiusHealOnDamage, duration);
+				TF2_AddCondition(attacker, TFCond_RadiusHealOnDamage, buff_duration);
 				
 			}
 			case TFClass_Spy:{
-				TF2_AddCondition(attacker, TFCond_Stealthed, duration);
+				TF2_AddCondition(attacker, TFCond_Stealthed, buff_duration);
 			}
 		
 			
@@ -126,7 +127,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			case TFClass_Medic:{
 				if (TF2_IsPlayerInCondition(attacker, TFCond_Ubercharged))
 				{
-					TF2_AddCondition(victim, TFCond_UberchargedCanteen, 4.0);
+					TF2_AddCondition(victim, TFCond_UberchargedCanteen, haste_duration);
 				}
 
 			}

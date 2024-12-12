@@ -44,6 +44,12 @@ bool g_Timer[MAXPLAYERS + 1] = {false, ...};
 
 int g_Eyelander_Counter[MAXPLAYERS + 1] = {0, ...};
 
+float g_BazaarHSDMG[MAXPLAYERS +1] = {0.0, ...};
+float g_BazaarBodyDMG[MAXPLAYERS +1] = {0.0, ...};
+
+float g_BazaarHSBuildrate = 450.0;
+float g_BazaarBodyPenalty = 75.0;
+
 float g_AirStrikeDamage[MAXPLAYERS +1] = {0.0, ...};
 float g_AirStrikeDMGRequirement = 250.0;
 float g_ElectricStunDuration = 5.0;
@@ -74,7 +80,7 @@ float g_blutsauger_heal_reduction = 0.35;
 float g_blutsauger_heal_reduction_duration = 1.0;
 
 float g_syringegun_debuff_amount  = 0.85;
-float g_syringe_dmg_debuff_duration = 1.0;
+float g_syringe_dmg_debuff_duration = 4.0;
 
 float g_spycicle_fire_speed_debuff = 0.7;
 float g_spycicle_fire_Speed_debuff_duration = 6.0;
@@ -197,6 +203,9 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
             g_AirStrikeDamage[client] = 0.0; 
 
         }
+
+        ResetBazaarDamage(client);
+
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
         if (IsSunOnAStick(Weapon3))
         {
@@ -707,17 +716,17 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     TF_CUSTOM_TAUNT_ENGINEER_SMASH, TF_CUSTOM_TAUNT_ENGINEER_ARM, TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF,
                     TF_CUSTOM_TAUNTATK_GASBLAST:
                     {
-                        damage *= 2.5;
+                        damage *= 3.0;
                         return Plugin_Changed;
                     }
                     case TF_CUSTOM_TAUNT_GRENADE:
                     {
-                        damage *= 3.5;
+                        damage *= 8.0;
                         return Plugin_Changed;
                     }
                     case TF_CUSTOM_TAUNT_HADOUKEN:
                     {
-                        damage *= 3.0;
+                        damage *= 4.0;
                         return Plugin_Changed;
                     }
                 }
@@ -964,6 +973,12 @@ void FastDisguise(int iClient, TFTeam iTeam, TFClassType iClass, int iTarget)
     }
 }
 
+void ResetBazaarDamage(int client)
+{
+    g_BazaarBodyDMG[client] = 0.0;
+    g_BazaarHSDMG[client] = 0.0;
+}
+
 public Action GetClassBaseHP(int iClient)
 {
     switch (TF2_GetPlayerClass(iClient))
@@ -1107,19 +1122,39 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             }
             if (iClassAttacker == TFClass_Sniper)
             {
+                //Bazaar Bargain Head Mechanic
                 if (IsBazaar(weapon)) {
+                    // PrintToChatAll("HSDMG %f", damage);
                     int decapitations = GetEntProp(attacker, Prop_Send, "m_iDecapitations");
                     if (damagecustom == TF_CUSTOM_HEADSHOT)
                     {
-                        SetEntProp(attacker, Prop_Send, "m_iDecapitations", decapitations + 1);
+                        g_BazaarHSDMG[attacker] += damage;
+                        // PrintToChatAll("Total DMG %f", g_BazaarHSDMG[attacker]);
+                        if(g_BazaarHSDMG[attacker] >= g_BazaarHSBuildrate)
+                        {
+                            SetEntProp(attacker, Prop_Send, "m_iDecapitations", decapitations + 1);
+                            
+                            ResetBazaarDamage(attacker);
+                        }
+                        
                     }else
                     {
-                        if (decapitations == 0 || decapitations == 1)
+
+                            g_BazaarBodyDMG[attacker] += damage;
+                            // PrintToChatAll("BDMG %f", damage);
+                            // PrintToChatAll("Total BDMG %f", g_BazaarBodyDMG[attacker]);
+                        if(g_BazaarBodyDMG[attacker] >= g_BazaarBodyPenalty)
                         {
-                            SetEntProp(attacker, Prop_Send, "m_iDecapitations", 0);    
-                        }else
-                        {
-                            SetEntProp(attacker, Prop_Send, "m_iDecapitations", decapitations - 2);    
+                            if (decapitations == 0 || decapitations == 1)
+                            {
+                                SetEntProp(attacker, Prop_Send, "m_iDecapitations", 0); 
+                                
+                            }else
+                            {
+                                SetEntProp(attacker, Prop_Send, "m_iDecapitations", decapitations - 2);   
+                            }
+                            EmitSoundToClient(attacker, POMSON_DRAIN_SOUND);
+                            ResetBazaarDamage(attacker);
                         }
                         
                     }
@@ -3679,7 +3714,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		if (IsAnyRobot(client))
 		{	
             // PrintToChatAll("%N WAS SPUN UP", client);
-            if (condition == TFCond_Slowed && TF2_GetPlayerClass(client) == TFClass_Heavy)TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.25);
+            // if (condition == TFCond_Slowed && TF2_GetPlayerClass(client) == TFClass_Heavy)TF2Attrib_AddCustomPlayerAttribute(client, "SET BONUS: dmg from sentry reduced", 1.25);
 
             if (condition == TFCond_Milked && milk_time[client] < GetEngineTime())
             {
