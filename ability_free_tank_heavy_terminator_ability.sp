@@ -254,8 +254,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		int aimtarget = GetClientAimTarget(client);
 		if (IsValidClient(aimtarget) && aimtarget == g_target)
 		{
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.33);
-			TF2_AddCondition(client, TFCond_CritCola, 0.33);
+			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.7);
+			TF2_AddCondition(client, TFCond_CritCola, 0.7);
 		}
 
 		//Manually Finding New Target

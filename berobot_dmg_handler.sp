@@ -150,10 +150,32 @@ public void OnPluginStart()
 
 public Action Event_PlayerDeath(Event event, char[] name, bool dontBroadcast){
 
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	if (IsValidClient(client)){ 
-		DeleteParticle(0.1, ParticleStorage[client]);
+    int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+    int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+    int assister = GetClientOfUserId(GetEventInt(event, "assister"));
+	if (IsValidClient(victim)){ 
+		DeleteParticle(0.1, ParticleStorage[victim]);
+
+        int decapitations = GetEntProp(victim, Prop_Send, "m_iDecapitations");
+
+        if (decapitations != 0)
+        {
+            if(!IsAnyRobot(victim) && IsAnyRobot(attacker) || IsAnyRobot(assister))
+            {
+                // PrintToChatAll("Decaps %i for %N", decapitations, victim);
+                if(decapitations >= 8) decapitations = 8;
+                TF2_AddCondition(attacker, TFCond_CritCola, float(decapitations));
+                TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, float(decapitations));
+                TF2_AddCondition(attacker, TFCond_DefenseBuffed, float(decapitations));
+                TF2_AddCondition(assister, TFCond_CritCola, float(decapitations));
+                TF2_AddCondition(assister, TFCond_DefenseBuffed, float(decapitations));
+                TF2_AddCondition(assister, TFCond_SpeedBuffAlly, float(decapitations));
+            }
+        }
+        
 	}
+
+    
 	return Plugin_Continue;
 }
 

@@ -72,7 +72,7 @@ public Action HoovyBoom(Handle timer, any data)
 	GetClientAbsOrigin(victim, pos22);
 
 	int particle = CreateEntityByName("info_particle_system");
-	DispatchKeyValue(particle, "effect_name", "ExplosionCore_Wall");
+	DispatchKeyValue(particle, "effect_name", "fluidSmokeExpl_ring_mvm");
 	AcceptEntityInput(particle, "Start");
 	TeleportEntity(particle, pos22, NULL_VECTOR, NULL_VECTOR);
 	DispatchSpawn(particle);
