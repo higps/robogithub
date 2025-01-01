@@ -25,7 +25,7 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-bool b_Hooked[MAXPLAYERS + 1] = false;
+bool b_Hooked[MAXPLAYERS + 1] = {false,...};
 
 public void OnClientPutInServer(int client)
 {
