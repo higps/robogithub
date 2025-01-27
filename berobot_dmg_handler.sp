@@ -2022,9 +2022,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
             if (IsBlackBox(Weapon1))
             {
-                stat1 = 30.0;
-                TF2Attrib_SetByName(Weapon1, "heal on hit for rapidfire", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blackbox: On Hit: Up to {orange}%0.0f bonus health",chat_display, stat1);
+                stat1 = 20.0;
+                TF2Attrib_SetByName(Weapon1, "max health additive bonus", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Blackbox: +{orange}%0.0f Bonus Max Health",chat_display, stat1);
             }
 
             if (IsBeggarsBazooka(Weapon1))
