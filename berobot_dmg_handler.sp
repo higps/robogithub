@@ -47,8 +47,8 @@ int g_Eyelander_Counter[MAXPLAYERS + 1] = {0, ...};
 float g_BazaarHSDMG[MAXPLAYERS +1] = {0.0, ...};
 float g_BazaarBodyDMG[MAXPLAYERS +1] = {0.0, ...};
 
-float g_BazaarHSBuildrate = 450.0;
-float g_BazaarBodyPenalty = 75.0;
+float g_BazaarHSBuildrate = 320.0;
+float g_BazaarBodyPenalty = 120.0;
 
 float g_AirStrikeDamage[MAXPLAYERS +1] = {0.0, ...};
 float g_AirStrikeDMGRequirement = 250.0;
@@ -1656,7 +1656,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsBazaar(Weapon1))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bargin: {orange}On Headshot every 450 dmg: +1 head{teamcolor}, {orange}On Bodyshot 75 dmg : -2 heads{teamcolor}",chat_display);  
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Bazaar Bargin: {orange}On Headshot every 320 dmg: +1 head{teamcolor}, {orange}On Bodyshot 120 dmg : -2 heads{teamcolor}",chat_display);  
             }
 
             if (IsClassic(Weapon1))

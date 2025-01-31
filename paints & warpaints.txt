@@ -198,6 +198,19 @@ Warpaints:
 "419" - Pacific Peacemaker
 "420" - Mechanized Monster
 
+"421" - Stardust
+"422" - Team Detail
+"423" - Gobi Glazed
+"424" - Sleek Greek
+"425" - Graphite Gripped
+"426" - Stealth Specialist
+"427" - Piranha Mania
+"428" - Team Charged
+"429" - Brawler's Iron
+"430" - Necropolish
+"431" - Blackout
+"432" - Broken Record
+
 
 391 Smissmas Sweater
 15000-15158 These are decorated war hero collection weapon ids. Use the weaponid in place of paint id.
