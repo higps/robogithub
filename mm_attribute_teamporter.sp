@@ -1260,10 +1260,10 @@ Action Teleport_Player(int client)
 		// A human spy was teleported
 		if(!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_Spy)
 		{
-			TF2_AddCondition(client, TFCond_UberchargedCanteen, 8.0);
-			TF2_AddCondition(client, TFCond_RuneHaste, 8.0);
-			TF2_AddCondition(client, TFCond_ImmuneToPushback, 8.0);
-			TF2_AddCondition(client, TFCond_TeleportedGlow, 8.0);
+			TF2_AddCondition(client, TFCond_UberchargedCanteen, oober);
+			TF2_AddCondition(client, TFCond_RuneHaste, oober + oober);
+			TF2_AddCondition(client, TFCond_ImmuneToPushback, oober + oober);
+			TF2_AddCondition(client, TFCond_TeleportedGlow, 5.0);
 		}
 	}
 	// else
