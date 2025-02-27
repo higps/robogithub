@@ -106,6 +106,10 @@ float g_bleed_meleevuln_amount = 1.5;
 // #define SPY_ROBOT_STAB	"weapons/saxxy_impact_gen_01.wav"
 // #define SPY_ROBOT_STAB	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 
+
+float gas_passer_fire_vuln = 1.4;
+float gas_passer_fire_vuln_duration = 5.0;
+
 int ParticleStorage[MAXPLAYERS + 1] = {0, ...};
 
 #define POMSON_DRAIN_SOUND "weapons/drg_pomson_drain_01.wav"
@@ -1383,6 +1387,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
             }
 
+            if (IsGasPasser(Weapon2))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gas Passer: {orange}Gassed enemies take {teamcolor}+%0.0f%%%% more fire damage {orange}for {teamcolor}%0.0f {orange}seconds",chat_display, MoreIsMore(gas_passer_fire_vuln), gas_passer_fire_vuln_duration);
+            }
+
             if (IsElectric(Weapon3))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons{orange} reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
@@ -2238,6 +2247,20 @@ bool IsElectric(int weapon)
 	{
 		//If other electric weapons are added, add here
 	case 528, 442, 588, 441, 813, 834: //Short Circuit, The Righteous Bison, Cow Mangler, Neon Annihilator
+		{
+			return true;
+		}
+	}
+	return false;
+}
+bool IsGasPasser(int weapon)
+{
+	if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		
+	case 1180:
 		{
 			return true;
 		}
@@ -3774,6 +3797,10 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
         }
 
 
+        if (condition == TFCond_Gas)
+        {
+            TF2Attrib_AddCustomPlayerAttribute(client, "dmg taken from fire increased", gas_passer_fire_vuln, gas_passer_fire_vuln_duration);
+        }
         // if (!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_DemoMan && condition == TFCond_Taunting)
         // {
              

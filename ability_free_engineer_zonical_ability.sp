@@ -25,7 +25,7 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-bool b_Hooked[MAXPLAYERS + 1] = {false,...};
+// bool b_Hooked[MAXPLAYERS + 1] = {false,...};
 
 public void OnClientPutInServer(int client)
 {
@@ -33,7 +33,7 @@ public void OnClientPutInServer(int client)
 
 	// Hook weapon switching for this client here:
 	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitch);
-	b_Hooked[client] = true;
+	// b_Hooked[client] = true;
 }
 
 public void OnClientDisconnect(int client)
@@ -42,6 +42,19 @@ public void OnClientDisconnect(int client)
 
 	// Unhook our weapon switching:
 	SDKUnhook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitch);
+}
+
+public OnMapStart()
+{
+	for(int i = 1; i <= MaxClients+1; i++)
+	{
+		if(IsValidClient(i))
+		{
+			SDKHook(i, SDKHook_WeaponSwitchPost, OnWeaponSwitch);
+			// b_Hooked[i] = true;
+			// PrintToChatAll("Hooked %N",i);
+		}
+	}
 }
 
 public void OnWeaponSwitch(int client, int weapon)
@@ -56,7 +69,7 @@ public void OnWeaponSwitch(int client, int weapon)
 	if (IsRobot(client, ROBOT_NAME))
 	{
 		
-		//PrintToChatAll("Weapon was %i", weapon);
+		// PrintToChatAll("Weapon was %i", weapon);
 		if (IsPistol(weapon))
 		{
 			TF2_AddCondition(client, TFCond_CritHype, 3.0);
