@@ -128,21 +128,24 @@ bool g_PushButton[MAXPLAYERS + 1] = {false, ...};
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if (IsRobot(client, ROBOT_NAME) && buttons & (IN_ATTACK3|IN_USE) && !g_PushButton[client])
+	if (IsRobot(client, ROBOT_NAME))
 	{
-		
+		DrawHUD(client);
+		if (buttons & (IN_ATTACK3|IN_USE) && !g_PushButton[client])
+		{
 		if (g_rocketCurve == true)
 		{	
 			g_rocketCurve = false;
 			ShouldMirvConverge = false;
-			PrintCenterText(client, "MIRV MODE:  MORTAR");
+			// PrintCenterText(client, "MIRV MODE:  MORTAR");
 		}else{
 			g_rocketCurve = true;
 			ShouldMirvConverge = true;
-			PrintCenterText(client, "MIRV MODE: CONVERGE");
+			// PrintCenterText(client, "MIRV MODE: CONVERGE");
 		}
 		g_PushButton[client] = true;
 		CreateTimer(0.2, Button_Reset, client);
+		}
 	}
 	
 
@@ -170,11 +173,36 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 			g_PushButton[client] = true;
 			CreateTimer(0.2, Button_Reset, client);
 		}
-
+		
 	}
 	return Plugin_Continue;
 }
 
+
+void DrawHUD(int client)
+{
+	char sHUDText[128];
+
+	
+	Format(sHUDText, sizeof(sHUDText), "Detonate: M2\nMode: ");
+	
+
+	if(ShouldMirvConverge <= 0)
+	{
+		Format(sHUDText, sizeof(sHUDText), "Detonate: M2\nChange Mode: Reload\nMIRV Mode: Mortar");
+			
+		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+
+		
+	} else {
+		Format(sHUDText, sizeof(sHUDText), "Detonate: M2\nChange Mode: Reload\nMIRV Mode: Converge");
+		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
+		
+		// PrintToChatAll("Not Ready!");
+	}
+	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+	ShowHudText(client, -2, sHUDText);
+}
 
 public Action Button_Reset(Handle timer, int client)
 {

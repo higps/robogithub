@@ -55,6 +55,10 @@ float g_AirStrikeDMGRequirement = 250.0;
 float g_ElectricStunDuration = 5.0;
 float g_HealDebuff = 1.0;
 
+float g_Gas_passer_fire_vuln = 1.4;
+float g_Gas_passer_fire_vuln_duration = 5.0;
+
+
 float g_FrontierJusticeDamage[MAXPLAYERS + 1] = {0.0, ...};
 float g_FrontierJusticeDMGRequirement = 250.0;
 int g_EngineerRevengeCrits[MAXPLAYERS + 1] = {0, ...};
@@ -107,8 +111,6 @@ float g_bleed_meleevuln_amount = 1.5;
 // #define SPY_ROBOT_STAB	")mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 
 
-float gas_passer_fire_vuln = 1.4;
-float gas_passer_fire_vuln_duration = 5.0;
 
 int ParticleStorage[MAXPLAYERS + 1] = {0, ...};
 
@@ -1389,7 +1391,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsGasPasser(Weapon2))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gas Passer: {orange}Gassed enemies take {teamcolor}+%0.0f%%%% more fire damage {orange}for {teamcolor}%0.0f {orange}seconds",chat_display, MoreIsMore(gas_passer_fire_vuln), gas_passer_fire_vuln_duration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gas Passer: {orange}Gassed enemies take {teamcolor}+%0.0f %%%% more fire damage {orange}for {teamcolor}%0.0f {orange}seconds",chat_display, MoreIsMore(g_Gas_passer_fire_vuln), g_Gas_passer_fire_vuln_duration);
             }
 
             if (IsElectric(Weapon3))
@@ -3799,7 +3801,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
         if (condition == TFCond_Gas)
         {
-            TF2Attrib_AddCustomPlayerAttribute(client, "dmg taken from fire increased", gas_passer_fire_vuln, gas_passer_fire_vuln_duration);
+            TF2Attrib_AddCustomPlayerAttribute(client, "dmg taken from fire increased", g_Gas_passer_fire_vuln, g_Gas_passer_fire_vuln_duration);
         }
         // if (!IsAnyRobot(client) && TF2_GetPlayerClass(client) == TFClass_DemoMan && condition == TFCond_Taunting)
         // {

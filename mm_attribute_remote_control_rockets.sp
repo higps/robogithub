@@ -215,27 +215,32 @@ public Action Button_Reset(Handle timer, int client)
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
 
-	if (HasStat(client) && buttons & (IN_ATTACK2) && !g_PushButton[client])
+	if (HasStat(client))
 	{
-		if (PlayerControlRockets[client] == false && ControllingRocket[client] == false)
-		{	
-			PlayerControlRockets[client] = true;
+		DrawHUD(client);
 
-			PrintCenterText(client, "REMOTE ROCKET CONTROL: ON");
-		}
-		else if (PlayerControlRockets[client] == true /*&& ControllingRocket[client] == false*/)
+		if(buttons & (IN_ATTACK2) && !g_PushButton[client])
 		{
-			PlayerControlRockets[client] = false;
+			if (PlayerControlRockets[client] == false && ControllingRocket[client] == false)
+			{	
+				PlayerControlRockets[client] = true;
 
-			if (ControllingRocket[client])
-			{
-				SetPlayerRCMode(client, false);
+				// PrintCenterText(client, "REMOTE ROCKET CONTROL: ON");
 			}
+			else if (PlayerControlRockets[client] == true /*&& ControllingRocket[client] == false*/)
+			{
+				PlayerControlRockets[client] = false;
 
-			PrintCenterText(client, "REMOTE ROCKET CONTROL: OFF");
+				if (ControllingRocket[client])
+				{
+					SetPlayerRCMode(client, false);
+				}
+
+				// PrintCenterText(client, "REMOTE ROCKET CONTROL: OFF");
+			}
+			g_PushButton[client] = true;
+			CreateTimer(0.2, Button_Reset, client);
 		}
-		g_PushButton[client] = true;
-		CreateTimer(0.2, Button_Reset, client);
 	}
 
 	if (HasStat(client) && buttons & (IN_ATTACK3|IN_USE) && !g_PushButton[client])
@@ -305,6 +310,31 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	}
 
 	return Plugin_Continue;
+}
+
+void DrawHUD(int client)
+{
+	char sHUDText[128];
+
+	
+	// Format(sHUDText, sizeof(sHUDText), "Remote Control: M2\nMode: ");
+	
+
+	if(!PlayerControlRockets[client] != 0)
+	{
+		Format(sHUDText, sizeof(sHUDText), "Thirdperson: M3\nToggle Remote: M2\nRemote Control: OFF");
+			
+		// SetHudTextParams(1.0, 0.5, 0.3, 255, 0, 0, 255);
+
+		
+	} else {
+		Format(sHUDText, sizeof(sHUDText), "Thirdperson: M3\nToggle Remote: M2\nRemote Control: ON");
+		// SetHudTextParams(1.0, 0.5, 0.3, 0, 255, 0, 255);
+		
+		// PrintToChatAll("Not Ready!");
+	}
+	SetHudTextParams(1.0, 0.5, 0.5, 0, 255, 0, 255);
+	ShowHudText(client, -2, sHUDText);
 }
 
 bool IsValidRocket(int rocket)
