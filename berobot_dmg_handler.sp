@@ -148,7 +148,7 @@ public void OnPluginStart()
     HookEvent("player_death", Event_PlayerDeath, EventHookMode_Post);
     HookEvent("crossbow_heal", Event_Crossbow_Heal, EventHookMode_Post);
     RegConsoleCmd("sm_mminfo", Command_ToggleMMHumanDisplay, "Toggle Manned Machines Stats Display for humans");
-    RegConsoleCmd("sm_stun", Command_Stun, "stuns a player");
+    // RegConsoleCmd("sm_stun", Command_Stun, "stuns a player");
     
 //     HookEvent("object_destroyed", Event_Object_Destroyed, EventHookMode_Post);
 //     HookEvent("object_detonated", Event_Object_Detonated, EventHookMode_Post);
@@ -192,36 +192,36 @@ public void OnMapStart()
     PrecacheSound(POMSON_DRAIN_SOUND);
 }
 
-public Action Command_Stun(int client, int numParams)
-{
-    if (numParams < 2) // Ensure at least 2 arguments are provided
-    {
-        PrintToChat(client, "Usage: sm_stun <target> <duration>");
-        return Plugin_Handled;
-    }
+// public Action Command_Stun(int client, int numParams)
+// {
+//     if (numParams < 2) // Ensure at least 2 arguments are provided
+//     {
+//         PrintToChat(client, "Usage: sm_stun <target> <duration>");
+//         return Plugin_Handled;
+//     }
 
-    char targetName[32];
-    GetCmdArg(1, targetName, sizeof(targetName)); // First argument: Target's name or UserID
+//     char targetName[32];
+//     GetCmdArg(1, targetName, sizeof(targetName)); // First argument: Target's name or UserID
 
-    char durationArg[16];
-    GetCmdArg(2, durationArg, sizeof(durationArg)); // Second argument: Duration
+//     char durationArg[16];
+//     GetCmdArg(2, durationArg, sizeof(durationArg)); // Second argument: Duration
 
-    float stun_duration = StringToFloat(durationArg); // Convert duration to float
+//     float stun_duration = StringToFloat(durationArg); // Convert duration to float
 
-    // Find the target and allow bots
-    int victim = FindTarget(client, targetName, false, false); // 'true' = No dead filter, 'false' = Allow bots
+//     // Find the target and allow bots
+//     int victim = FindTarget(client, targetName, false, false); // 'true' = No dead filter, 'false' = Allow bots
 
-    if (victim == -1) // If no valid target is found, FindTarget() already prints an error message
-    {
-        return Plugin_Handled;
-    }
+//     if (victim == -1) // If no valid target is found, FindTarget() already prints an error message
+//     {
+//         return Plugin_Handled;
+//     }
 
-    // Apply stun effect
-    TF2_StunPlayer(victim, stun_duration, 0.0, TF_STUNFLAG_NOSOUNDOREFFECT | TF_STUNFLAGS_BIGBONK, client);
-    PrintToChatAll("%N stunned %N for %.1f seconds!", client, victim, stun_duration);
+//     // Apply stun effect
+//     TF2_StunPlayer(victim, stun_duration, 0.0, TF_STUNFLAG_NOSOUNDOREFFECT | TF_STUNFLAGS_BIGBONK, client);
+//     PrintToChatAll("%N stunned %N for %.1f seconds!", client, victim, stun_duration);
 
-    return Plugin_Handled;
-}
+//     return Plugin_Handled;
+// }
 
 
 
