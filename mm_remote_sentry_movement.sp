@@ -356,8 +356,8 @@ public OnPluginStart()
     cvarMini = CreateConVar("sm_remote_build_mini", "1", "Set true to allow mini sentries to be built.");
     cvarInstant = CreateConVar("sm_remote_instant", "0", "Set true to build buildings instantly (from the remote menu).");
     cvarAlways = CreateConVar("sm_remote_always_builds", "0", "Set true allow remote to always build new objects (within limits).");
-    cvarFactor = CreateConVar("sm_remote_factor", "0.8 1 1.5", "Object Speed Factor: Specify either 1 factor (multiplied by (4 - upgrade level) or 3 values (one per upgrade level) separated with spaces");
-    cvarSpeed = CreateConVar("sm_remote_speed", "680.0", "Speed at which remote objects move.");
+    cvarFactor = CreateConVar("sm_remote_factor", "0.8 1 1.1", "Object Speed Factor: Specify either 1 factor (multiplied by (4 - upgrade level) or 3 values (one per upgrade level) separated with spaces");
+    cvarSpeed = CreateConVar("sm_remote_speed", "600.0", "Speed at which remote objects move.");
     cvarJump = CreateConVar("sm_remote_jump", "2000.0", "Speed at which remote objects jump.");
     cvarFall = CreateConVar("sm_remote_fall", "600.0", "Speed at which remote objects fall.");
     cvarObjectsTxt = CreateConVar("sm_build_objects_txt", "0", "Set true if objects.txt has been modified to allow multiple buildings.");
