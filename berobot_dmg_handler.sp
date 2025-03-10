@@ -684,11 +684,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 3.0);
                     }
 
-                    if (IsSpycicle(weapon))
-                    {
-                        TF2Attrib_AddCustomPlayerAttribute(victim, "damage penalty", g_spycicle_fire_speed_debuff, g_spycicle_fire_Speed_debuff_duration);
-                        //TF2_StunPlayer(victim, 1.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
-                    }
+
 
                     if (IsYer(weapon))
                     {
@@ -749,6 +745,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         damage *= 1.2;
                     }
 
+                    if (IsSpycicle(weapon))
+                    {
+                        damage *= 0.8;
+                        TF2Attrib_AddCustomPlayerAttribute(victim, "damage penalty", g_spycicle_fire_speed_debuff, g_spycicle_fire_Speed_debuff_duration);
+                        //TF2_StunPlayer(victim, 1.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
+                    }
+                    if (IsStockKnife(weapon))
+                    {
+                        damage *= 1.1;
+                    }
                     critType = CritType_Crit;
                     if (g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                     TF2_AddCondition(attacker, TFCond_RuneResist, g_protection_rune_duration);
@@ -2029,7 +2035,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             if (IsStockKnife(Weapon3))
             {
                 TF2CustAttr_SetString(Weapon3, "tag last enemy hit", "8.0");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Knife:{orange}Tags robots on hit{teamcolor} for 8 seconds",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Knife:{orange}Tags robots on hit{teamcolor} for 8 seconds. {orange}Deals +10%%%% {teamcolor}bonus backstab damage",chat_display);
             }
 
 
@@ -2042,7 +2048,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsSpycicle(Weapon3))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spycicle: {orange}On Backstab: Slows enemy attack speed by -%0.0f%%%% for %0.0f seconds",chat_display, LessIsMore(g_spycicle_fire_speed_debuff), g_spycicle_fire_Speed_debuff_duration);
+                TF2Attrib_SetByName(Weapon3, "damage bonus", 2.0);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Spycicle: {orange}On Backstab: Reduces enemy damage by -%0.0f%%%% for %0.0f seconds. Deals -20%%%%{teamcolor}less backstab damage",chat_display, LessIsMore(g_spycicle_fire_speed_debuff), g_spycicle_fire_Speed_debuff_duration);
             }
 
             if (IsYer(Weapon3))

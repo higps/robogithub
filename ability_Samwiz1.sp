@@ -87,7 +87,14 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		SpawnBombs(victim, attacker);
 	}else
 	{
-		g_DamageDone += damage;
+	if (!TF2_IsPlayerInCondition(victim, TFCond_Ubercharged) &&
+		!TF2_IsPlayerInCondition(victim, TFCond_UberchargedCanteen) &&
+		!TF2_IsPlayerInCondition(victim, TFCond_UberchargedHidden) &&
+		!TF2_IsPlayerInCondition(victim, TFCond_UberchargedOnTakeDamage) &&
+			!TF2_IsPlayerInCondition(victim, TFCond_UberchargeFading))
+		{
+			g_DamageDone += damage;
+		}
 	}
 	}
 	return Plugin_Continue;
