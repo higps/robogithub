@@ -322,13 +322,13 @@ void DrawHUD(int client)
 
 	if(!PlayerControlRockets[client] != 0)
 	{
-		Format(sHUDText, sizeof(sHUDText), "Thirdperson: M3\nToggle Remote: M2\nRemote Control: OFF");
+		Format(sHUDText, sizeof(sHUDText), "Thirdperson(M3)\nRemote Control (M2): OFF");
 			
 		// SetHudTextParams(1.0, 0.5, 0.3, 255, 0, 0, 255);
 
 		
 	} else {
-		Format(sHUDText, sizeof(sHUDText), "Thirdperson: M3\nToggle Remote: M2\nRemote Control: ON");
+		Format(sHUDText, sizeof(sHUDText), "Thirdperson(M3)\nRemote Control (M2): ON");
 		// SetHudTextParams(1.0, 0.5, 0.3, 0, 255, 0, 255);
 		
 		// PrintToChatAll("Not Ready!");

@@ -292,7 +292,7 @@ public Action OnWeaponSwitch(int client, int weapon)
 	// If a player pulls out a pda, flush m_aObjects
 	if (GetPlayerWeaponSlot(client, 3) == weapon && IsPDA(weapon))
 	{
-		HasStat(client);
+		// HasStat(client);
 		AllowBuilding(client);
 		return Plugin_Continue;
 	}

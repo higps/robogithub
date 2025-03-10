@@ -129,6 +129,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
+    LoadTranslations("common.phrases");
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
     SMLogTag(SML_INFO, "berobot_dmg_handler started at %i", GetTime());
 
@@ -147,6 +148,7 @@ public void OnPluginStart()
     HookEvent("player_death", Event_PlayerDeath, EventHookMode_Post);
     HookEvent("crossbow_heal", Event_Crossbow_Heal, EventHookMode_Post);
     RegConsoleCmd("sm_mminfo", Command_ToggleMMHumanDisplay, "Toggle Manned Machines Stats Display for humans");
+    RegConsoleCmd("sm_stun", Command_Stun, "stuns a player");
     
 //     HookEvent("object_destroyed", Event_Object_Destroyed, EventHookMode_Post);
 //     HookEvent("object_detonated", Event_Object_Detonated, EventHookMode_Post);
@@ -189,6 +191,39 @@ public void OnMapStart()
 {
     PrecacheSound(POMSON_DRAIN_SOUND);
 }
+
+public Action Command_Stun(int client, int numParams)
+{
+    if (numParams < 2) // Ensure at least 2 arguments are provided
+    {
+        PrintToChat(client, "Usage: sm_stun <target> <duration>");
+        return Plugin_Handled;
+    }
+
+    char targetName[32];
+    GetCmdArg(1, targetName, sizeof(targetName)); // First argument: Target's name or UserID
+
+    char durationArg[16];
+    GetCmdArg(2, durationArg, sizeof(durationArg)); // Second argument: Duration
+
+    float stun_duration = StringToFloat(durationArg); // Convert duration to float
+
+    // Find the target and allow bots
+    int victim = FindTarget(client, targetName, false, false); // 'true' = No dead filter, 'false' = Allow bots
+
+    if (victim == -1) // If no valid target is found, FindTarget() already prints an error message
+    {
+        return Plugin_Handled;
+    }
+
+    // Apply stun effect
+    TF2_StunPlayer(victim, stun_duration, 0.0, TF_STUNFLAG_NOSOUNDOREFFECT | TF_STUNFLAGS_BIGBONK, client);
+    PrintToChatAll("%N stunned %N for %.1f seconds!", client, victim, stun_duration);
+
+    return Plugin_Handled;
+}
+
+
 
 public Action Command_ToggleMMHumanDisplay(int client, int args)
 {
@@ -333,7 +368,6 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
         // {
         //     PrintToChatAll("WAS ELECTRIC");
         // }
-
         if (IsAnyRobot(victim))
         {
             if (TF2_GetPlayerClass(attacker) == TFClass_DemoMan)
@@ -362,20 +396,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 }
             }
 
-            if (damagecustom == TF_CUSTOM_BLEEDING)
-            {
-                TF2Attrib_AddCustomPlayerAttribute(victim, "dmg from melee increased", g_bleed_meleevuln_amount, g_bleed_meleevuln_duration);
-            }
 
-            if (TF2_IsPlayerInCondition(victim, TFCond_Stealthed))
-            {
-                
-                if (damagecustom == TF_CUSTOM_BLEEDING || IsElectric(weapon))
-                {
-                    TF2_RemoveCondition(victim, TFCond_Stealthed);
-                }        //Code to remove stealthed from burning and bleeding
-
-            }
         }
 
     
@@ -735,14 +756,13 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     // EmitSoundToClient(victim, SPY_ROBOT_STAB);
                     return Plugin_Changed;
                 }
-
+                // PrintToChatAll("%i",damagecustom);
                 switch (damagecustom)
                 {
                     case TF_CUSTOM_TAUNT_HIGH_NOON, TF_CUSTOM_TAUNT_GRAND_SLAM, 
                     TF_CUSTOM_TAUNT_FENCING, TF_CUSTOM_TAUNT_ARROW_STAB, TF_CUSTOM_TELEFRAG,
                     TF_CUSTOM_TAUNT_BARBARIAN_SWING, TF_CUSTOM_TAUNT_UBERSLICE, 
-                    TF_CUSTOM_TAUNT_ENGINEER_SMASH, TF_CUSTOM_TAUNT_ENGINEER_ARM, TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF,
-                    TF_CUSTOM_TAUNTATK_GASBLAST:
+                    TF_CUSTOM_TAUNT_ENGINEER_SMASH, TF_CUSTOM_TAUNT_ENGINEER_ARM, TF_CUSTOM_TAUNT_ALLCLASS_GUITAR_RIFF:
                     {
                         damage *= 3.0;
                         return Plugin_Changed;
@@ -755,6 +775,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     case TF_CUSTOM_TAUNT_HADOUKEN:
                     {
                         damage *= 4.0;
+                        return Plugin_Changed;
+                    }
+                    case TF_CUSTOM_TAUNTATK_GASBLAST:
+                    {
+                        damage *= 6.5;
+                        return Plugin_Changed;
+                    }
+                    case TF_CUSTOM_TAUNT_ARMAGEDDON:
+                    {
+                        damage *= 6.5;
                         return Plugin_Changed;
                     }
                 }
@@ -1239,6 +1269,26 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
             // PrintToChatAll("Condcount was %i with %N and %N", condcount, victim, attacker);
             /* if (critType != CritType_Crit) */ damage = damage*condmodifier;
             return Plugin_Changed; 
+            }
+
+            if (IsAnyRobot(victim))
+            {
+                // PrintToChatAll("DMG CUSTOM %i", damagecustom);
+                if (damagecustom == TF_CUSTOM_BLEEDING)
+                {
+                    // PrintToChatAll("Applied dmg vuln");
+                    TF2Attrib_AddCustomPlayerAttribute(victim, "dmg from melee increased", g_bleed_meleevuln_amount, g_bleed_meleevuln_duration);
+                }
+
+                if (TF2_IsPlayerInCondition(victim, TFCond_Stealthed))
+                {
+                    
+                    if (damagecustom == TF_CUSTOM_BLEEDING || IsElectric(weapon))
+                    {
+                        TF2_RemoveCondition(victim, TFCond_Stealthed);
+                    }        //Code to remove stealthed from burning and bleeding
+
+            }
             }
 
         
