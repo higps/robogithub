@@ -2197,6 +2197,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                         Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}From Liberty Launcher: Shotgun: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
                     }
 
+                    if (IsReserveShooter(Weapon2))
+                    {
+                        stat1 = 1.5;
+                        TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
+                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}From Liberty Launcher: Reserve Shooter: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
+                    }
+
                     if (IsBison(Weapon2))
                     {
                         stat1 = 0.65;
