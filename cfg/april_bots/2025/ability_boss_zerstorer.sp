@@ -37,7 +37,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 	if(condition == TFCond_UberBulletResist){
 
-	TF2_AddCondition(healtarget,TFCond_Kritzkrieged, 6.0);
+	TF2_AddCondition(healtarget,TFCond_CritCanteen, 6.0);
 	TF2_AddCondition(client, TFCond_MarkedForDeath, 4.5);
 	}
 
@@ -45,13 +45,13 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 	TF2_AddCondition(healtarget, TFCond_HalloweenQuickHeal, 6.0);
 	TF2_AddCondition(healtarget, TFCond_MegaHeal, 6.0);
-	TF2Attrib_AddCustomPlayerAttribute(healtarget, "healing received bonus", 2, 6.0);
+	// TF2Attrib_AddCustomPlayerAttribute(healtarget, "healing received bonus", 2.0, 6.0);
 	TF2_AddCondition(client,TFCond_MarkedForDeath, 4.5);
 	}
 
 	if(condition == TFCond_UberFireResist){
 
-	TF2_AddCondition(healtarget,TFCond_Ubercharged, 6.0);
+	TF2_AddCondition(healtarget,TFCond_UberchargedCanteen, 6.0);
 	TF2_AddCondition(client,TFCond_MarkedForDeath, 4.5);
 	}
 
