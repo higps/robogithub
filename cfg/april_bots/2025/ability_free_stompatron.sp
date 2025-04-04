@@ -39,7 +39,7 @@ void StunPlayer (int victim)
 }
 
 
-public Action BeardedBoom(Handle timer, any data)
+public Action StompBoom(Handle timer, any data)
 {
 	Handle infokv = data;
 	int attacker = KvGetNum(infokv, "attacker");
@@ -98,7 +98,6 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 	return Plugin_Continue;
 }
-
   
 
 void SendVictimToSpace(int victim)
@@ -127,4 +126,21 @@ void SendVictimToSpace(int victim)
 
 
 	TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, vVelocity);
+}
+
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+	if (IsValidClient(attacker) && IsValidClient(victim))
+	{
+		if (IsRobot(attacker, ROBOT_NAME) && damagecustom == TF_CUSTOM_BOOTS_STOMP)
+		{
+		Handle infokv = CreateKeyValues("infokv");
+		KvSetNum(infokv, "attacker", attacker);
+		KvSetNum(infokv, "victim", victim);
+		CreateTimer(0.0, StompBoom, infokv);
+
+		}
+
+	}
+	return Plugin_Continue;
 }
