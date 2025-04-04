@@ -11,44 +11,49 @@
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Gambler"
 
+#define sJackpotLine	"vo/mvm/norm/spy_mvm_laughlong01.mp3"
+#define sSpawnSound		"misc/halloween/hwn_wheel_of_fate.wav"	
 static const char Gambler_Positive[][256] =
 {
-	"vo/mmv/norm/spy_mvm_autocappedintelligence01.mp3",
-	"vo/mmv/norm/spy_mvm_autocappedcontrolpoint03.mp3",
-	"vo/mmv/norm/spy_mvm_positivevocalization01.mp3",
-	"vo/mmv/norm/spy_mvm_positivevocalization02.mp3",
-    "vo/mmv/norm/spy_mvm_positivevocalization03.mp3",
-	"vo/mmv/norm/spy_mvm_positivevocalization04.mp3",
-	"vo/mmv/norm/spy_mvm_positivevocalization05.mp3",
-	"vo/mmv/norm/spy_mvm_cheers04.mp3",
-	"vo/mmv/norm/spy_mvm_cheers01.mp3",
-	"vo/mmv/norm/spy_mvm_cheers07.mp3"
+	"vo/mvm/norm/spy_mvm_autocappedintelligence01.mp3",
+	"vo/mvm/norm/spy_mvm_autocappedcontrolpoint03.mp3",
+	"vo/mvm/norm/spy_mvm_positivevocalization01.mp3",
+	"vo/mvm/norm/spy_mvm_positivevocalization02.mp3",
+    "vo/mvm/norm/spy_mvm_positivevocalization03.mp3",
+	"vo/mvm/norm/spy_mvm_positivevocalization04.mp3",
+	"vo/mvm/norm/spy_mvm_positivevocalization05.mp3",
+	"vo/mvm/norm/spy_mvm_cheers04.mp3",
+	"vo/mvm/norm/spy_mvm_cheers01.mp3",
+	"vo/mvm/norm/spy_mvm_cheers07.mp3"
 };
 
 static const char Gambler_Neutral[][256] =
 {
-    "vo/mmv/norm/spy_mvm_negativevocalization04.mp3",
-	"vo/mmv/norm/spy_mvm_negativevocalization03.mp3",
-	"vo/mmv/norm/spy_mvm_autodejectedtie03.mp3"
+    "vo/mvm/norm/spy_mvm_negativevocalization04.mp3",
+	"vo/mvm/norm/spy_mvm_negativevocalization03.mp3",
+	"vo/mvm/norm/spy_mvm_autodejectedtie03.mp3"
 };
 
 static const char Gambler_Negative[][256] =
 {
-    "vo/mmv/norm/spy_mvm_paincrticialdeath01.mp3",
-	"vo/mmv/norm/spy_mvm_autodejectedtie02.mp3",
-	"vo/mmv/norm/spy_mvm_jaratehit06.mp3",
-	"vo/mmv/norm/spy_mvm_jaratehit01.mp3",
-	"vo/mmv/norm/spy_mvm_jeers01.mp3",
-	"vo/mmv/norm/spy_mvm_jeers02.mp3",
-	"vo/mmv/norm/spy_mvm_jeers03.mp3",
-	"vo/mmv/norm/spy_mvm_jeers04.mp3",
-	"vo/mmv/norm/spy_mvm_jeers05.mp3",
-	"vo/mmv/norm/spy_mvm_jeers06.mp3"
+    "vo/mvm/norm/spy_mvm_paincrticialdeath01.mp3",
+	"vo/mvm/norm/spy_mvm_autodejectedtie02.mp3",
+	"vo/mvm/norm/spy_mvm_jaratehit06.mp3",
+	"vo/mvm/norm/spy_mvm_jaratehit01.mp3",
+	"vo/mvm/norm/spy_mvm_jeers01.mp3",
+	"vo/mvm/norm/spy_mvm_jeers02.mp3",
+	"vo/mvm/norm/spy_mvm_jeers03.mp3",
+	"vo/mvm/norm/spy_mvm_jeers04.mp3",
+	"vo/mvm/norm/spy_mvm_jeers05.mp3",
+	"vo/mvm/norm/spy_mvm_jeers06.mp3"
 };
 float g_DamageDone;
 bool g_core;
 public void OnMapStart()
 {
+	PrecacheSound(sJackpotLine);
+	
+	PrecacheSound(sSpawnSound);
 
 	int size = sizeof Gambler_Positive;
 	for (int i = 0; i < size; i++)
@@ -98,10 +103,10 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
-float g_duration = 5.0;
+float g_duration = 15.0;
 float GambleModeTimer = -1.0;
 float g_skill; 
-float g_skill_cooldown = 1200.0;
+float g_skill_cooldown = 400.0;
 
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -149,7 +154,7 @@ void DrawHUD(int client)
 
 	int iCountDownFiring = RoundToCeil(GambleModeTimer - g_skill);
 	
-	Format(sHUDText, sizeof(sHUDText), "Gamble Core...: %i %%%%\n    %s",iPercents, sProgress);
+	Format(sHUDText, sizeof(sHUDText), "Gamble Core: %i %%%%\n    %s",iPercents, sProgress);
 
 	if(iPercents >= 100)
 	{
@@ -185,17 +190,16 @@ void DrawHUD(int client)
             	
             	int size3 = sizeof Gambler_Negative;
             	int soundswitch3 = GetRandomInt(0, size3 - 1);
-				
 				switch(GetRandomInt(0, 5))
 				{
 					case 0:
 					{
-						MC_PrintToChatAll("{teamcolor}Warning! {orange}The Gambler {teamcolor}Has Hit The {red}J{F7FF00}A{11FF00}C{00FFFF}K{001AFF}P{8900FF}O{FF00E6}T{teamcolor}!");
+						MC_PrintToChatAll("{red}Warning! {orange}The Gambler {red}Has Hit The {pink}JACKPOT");
 						TF2_AddCondition(client, TFCond_Ubercharged, g_duration);
 						TF2_AddCondition(client, TFCond_Kritzkrieged, g_duration);
 						TF2_AddCondition(client, TFCond_MegaHeal, g_duration);
-						MC_PrintToChatEx(client, client, "{green}Success! You've Been Granted: JACKPOT");
-						EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+						MC_PrintToChatEx(client, client, "{pink}MAJOR SUCCESS! You've Been Granted: JACKPOT");
+						EmitSoundToClient(client,sJackpotLine);
 					}
 					default:
 					{
@@ -264,35 +268,35 @@ void DrawHUD(int client)
 							{
 								TF2_AddCondition(client, TFCond_Bonked, g_duration);
 								MC_PrintToChatEx(client, client, "{yellow}Success? You've Been Granted: Full DODGE With No Attack");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Neutral[soundswitch2]);
 								
 							}
 							case 9:
 							{
 								TF2_AddCondition(client, TFCond_SwimmingCurse, g_duration);
 								MC_PrintToChatEx(client, client, "{yellow}Success? You've Been Granted: Air Swimming");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Neutral[soundswitch2]);
 								
 							}
 							case 10:
 							{
 								TF2_AddCondition(client, TFCond_BalloonHead, g_duration);
 								MC_PrintToChatEx(client, client, "{yellow}Success? You've Been Granted: A Balloon Head");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Neutral[soundswitch2]);
 								
 							}
 							case 11:
 							{
 								TF2_AddCondition(client, TFCond_LostFooting, g_duration);
 								MC_PrintToChatEx(client, client, "{yellow}Success? You've Been Granted: Slippery Walk");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Neutral[soundswitch2]);
 								
 							}
 							case 12:
 							{
 								TF2_AddCondition(client, TFCond_Charging, g_duration);
 								MC_PrintToChatEx(client, client, "{yellow}Success? You've Been Granted: Demoknight Charge");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Neutral[soundswitch2]);
 								
 							}
 							case 13:
@@ -300,21 +304,21 @@ void DrawHUD(int client)
 								TF2_StunPlayer(client, 15, 0.0,	TF_STUNFLAGS_LOSERSTATE, client);
 								TF2_AddCondition(client, TFCond_MVMBotRadiowave, 16);
 								MC_PrintToChatEx(client, client, "{red}Failure! You've Been Cursed With: Short Circuit");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Negative[soundswitch3]);
 								
 							}
 							case 14:
 							{
 								TF2_AddCondition(client, TFCond_MarkedForDeath, g_duration);
 								MC_PrintToChatEx(client, client, "{red}Failure! You've Been Cursed With: Marked For Death");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Negative[soundswitch3]);
 								
 							}
 							case 15:
 							{
 								TF2_AddCondition(client, TFCond_HalloweenKart, g_duration);
 								MC_PrintToChatEx(client, client, "{red}Failure! You've Been Cursed With: Bumper Cart");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Negative[soundswitch3]);
 								
 							}
 							case 16:
@@ -322,7 +326,7 @@ void DrawHUD(int client)
 								TF2_AddCondition(client, TFCond_Slowed, g_duration);
 								TF2Attrib_SetByName(client, "move speed penalty", 0.5);
 								MC_PrintToChatEx(client, client, "{red}Failure! You've Been Cursed With: Slow Down");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Negative[soundswitch3]);
 								
 							}
 							case 17:
@@ -330,21 +334,21 @@ void DrawHUD(int client)
 								TF2_AddCondition(client, TFCond_Gas, g_duration);
 								TF2Attrib_AddCustomPlayerAttribute(client, "dmg taken from fire increased", 2.5, g_duration);								
 								MC_PrintToChatEx(client, client, "{red}Failure! You've Been Cursed With: Flammable");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Negative[soundswitch3]);
 								
 							}
 							case 18:
 							{
 								TF2_AddCondition(client, TFCond_Milked, g_duration);
 								MC_PrintToChatEx(client, client, "{red}Failure! You've Been Cursed With: Mad Milk");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Negative[soundswitch3]);
 								
 							}
 							case 19:
 							{
 								TF2_AddCondition(client, TFCond_Jarated, g_duration);
 								MC_PrintToChatEx(client, client, "{red}Failure! You've Been Cursed With: Jarate");
-								EmitSoundToClient(client,Gambler_Positive[soundswitch]);
+								EmitSoundToClient(client,Gambler_Negative[soundswitch3]);
 								
 							}
 						}
