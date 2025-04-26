@@ -106,7 +106,7 @@ bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_duration = 15.0;
 float GambleModeTimer = -1.0;
 float g_skill; 
-float g_skill_cooldown = 400.0;
+float g_skill_cooldown = 200.0;
 
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
