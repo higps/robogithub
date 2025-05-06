@@ -190,7 +190,7 @@ void DrawHUD(int client)
             	
             	int size3 = sizeof Gambler_Negative;
             	int soundswitch3 = GetRandomInt(0, size3 - 1);
-				switch(GetRandomInt(0, 5))
+				switch(GetRandomInt(0, 50))
 				{
 					case 0:
 					{

@@ -465,7 +465,7 @@ MakeRobotFrame(client)
     KeyValues i_hConfig = new KeyValues("Robot");
 	// CreateTimer(0.0, Timer_Switch, client);
     // MakeEquipment(client, robot);
-    if (!i_hConfig.ImportFromFile(configPath))
+    if (!i_hConfig.ImportFromFile(configPath) && IsAnyRobot(client))
     {
             if (StrEqual(robotName, ""))
             {
