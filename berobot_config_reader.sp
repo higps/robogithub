@@ -465,15 +465,18 @@ MakeRobotFrame(client)
     KeyValues i_hConfig = new KeyValues("Robot");
 	// CreateTimer(0.0, Timer_Switch, client);
     // MakeEquipment(client, robot);
-    if (!i_hConfig.ImportFromFile(configPath) && IsAnyRobot(client))
+    if (!i_hConfig.ImportFromFile(configPath))
     {
             if (StrEqual(robotName, ""))
             {
-                PrintToChatAll("Failed to import robot config from path %s because robot name was null", configPath);
+            if (IsAnyRobot(client))
+                {
+                     PrintToChatAll("Failed to import robot config from path %s because robot name was null", configPath);
+                }
             }
             else
             {
-                PrintToChatAll("Failed to import robot config from path %s for robot name %s Removing", configPath, robotName);
+                if (IsAnyRobot(client)) PrintToChatAll("Failed to import robot config from path %s for robot name %s Removing", configPath, robotName);
                 RemoveRobot(robotName);
             }
             return;
