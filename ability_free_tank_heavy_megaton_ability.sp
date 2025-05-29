@@ -59,6 +59,6 @@ void IncreaseMaxHealth(int client, float amount)
         return;
 
 	amount_stack[client] = amount_stack[client] + amount;
-	PrintToChatAll("Amount stack %f", amount_stack[client] );
+	// PrintToChatAll("Amount stack %f", amount_stack[client] );
 	TF2Attrib_SetByName(client, "max health additive penalty", amount_stack[client]);
 }
