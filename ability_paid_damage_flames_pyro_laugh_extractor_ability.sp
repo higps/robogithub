@@ -15,8 +15,8 @@ bool g_button_held[MAXPLAYERS + 1] = false;
 // float g_Recharge[MAXPLAYERS + 1] = 0.0;
 // float g_RechargeCooldown = 5.0;
 float g_skill;
-int g_KillCount[MAXPLAYERS + 1] = {5,...};
-int g_KillsNeeded = 5;
+int g_KillCount[MAXPLAYERS + 1] = {7,...};
+int g_KillsNeeded = 7;
 
 public Plugin:myinfo = 
 {
@@ -32,7 +32,7 @@ public OnPluginStart()
 {
     for (int i = 1; i <= MAXPLAYERS; i++)
     {
-        g_KillCount[i] = 5;
+        g_KillCount[i] = 7;
     }
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 }

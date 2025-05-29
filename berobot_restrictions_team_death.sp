@@ -55,7 +55,7 @@ public void MM_OnEnabledChanged(int enabled)
 
 void Start()
 {
-    HookEvent("player_death",    OnDeath,   EventHookMode_PostNoCopy);
+    HookEvent("player_death",    OnDeath,   EventHookMode_Pre);
 }
 
 public void OnDeath(Event event, const char[] name, bool dontBroadcast)
@@ -133,15 +133,19 @@ public void OnDeath(Event event, const char[] name, bool dontBroadcast)
     }
 
     char robotName[NAMELENGTH];
-    GetRobot(victimClientId, robotName, NAMELENGTH);
     Robot robot;
+    GetRobot(victimClientId, robotName, NAMELENGTH);
     GetRobotDefinition(robotName, robot);
 
     int rewardedRobotCoins = robot.robotCoinsOnDeath;
+
+    // PrintToChatAll("Robot name was %s", robotName);
+    // PrintToChatAll("adding %i RobotCoins", rewardedRobotCoins);
     SMLogTag(SML_VERBOSE, "adding %i RobotCoins, because robot %L died", rewardedRobotCoins, victimClientId);
     AddRobotCoinsFor(victimClientId, rewardedRobotCoins);
 
     int rewardedTeamCoins = robot.teamCoinsOnDeath;
+    // PrintToChatAll("adding %i TeamCoins, because robot %L died", rewardedTeamCoins, victimClientId);
     SMLogTag(SML_VERBOSE, "adding %i TeamCoins, because robot %L died", rewardedTeamCoins, victimClientId);
     AddTeamCoinsFor(victimClientId, rewardedTeamCoins);
 

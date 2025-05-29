@@ -1854,8 +1854,10 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 
                 stat1 = 1.50;
+                stat2 = 1.0;
                 TF2Attrib_SetByName(Weapon2, "increased jump height", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Winger: {orange}+%0.0f%%%% additional passive jump height bonus",chat_display, MoreIsMore(stat1));
+                TF2Attrib_SetByName(Weapon2, "cancel falling damage ", stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Winger: {orange}+%0.0f%%%% additional passive jump height bonus. Wearer takes no falling damage",chat_display, MoreIsMore(stat1));
             }
             if (IsSandman(Weapon3))
             {

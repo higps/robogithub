@@ -94,7 +94,7 @@ void SetSpeed(int client)
     GetAngleVectors(vAngles, vForward, NULL_VECTOR, NULL_VECTOR);
 
     // Set forward momentum
-    float flDistance = 250.0;
+    float flDistance = 400.0;
     ScaleVector(vForward, flDistance);
 
     // Add current velocity to preserve existing momentum

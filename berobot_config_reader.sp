@@ -324,6 +324,10 @@ public void ReadConfig()
             iInteger = g_hConfig.GetNum("rc_on_death", iInteger);
             robot.robotCoinsOnDeath = iInteger;
         }
+        else
+        {
+            robot.robotCoinsOnDeath = 10;
+        }
 
         if (g_hConfig.GetFloat("tc_on_death"))
         {
