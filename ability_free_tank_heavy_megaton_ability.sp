@@ -56,7 +56,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 		IncreaseMaxHealth(attacker, damage);
 
 		int bonus_hp_damage = RoundToNearest(float(GetClientHealth(victim)) / 3.0) ;
-		PrintToChatAll("%i",bonus_hp_damage);
+		// PrintToChatAll("%i",bonus_hp_damage);
 		damage = damage + bonus_hp_damage;
 		return Plugin_Changed;
 	}
