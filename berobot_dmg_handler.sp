@@ -161,6 +161,19 @@ public Action Event_PlayerDeath(Event event, char[] name, bool dontBroadcast){
     int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     int victim = GetClientOfUserId(GetEventInt(event, "userid"));
     int assister = GetClientOfUserId(GetEventInt(event, "assister"));
+    int weaponindex = event.GetInt("weapon_def_index");
+    // PrintToChatAll("Killed with item def index: %d", defIndex);
+
+    // Example: check if it's Half-Zatoichi
+    if (weaponindex == 357 && !IsAnyRobot(attacker))
+    {
+        // PrintToChatAll("Attacker used Half-Zatoichi!");
+        int hp_gain = RoundToNearest(float(Entity_GetMaxHealth(victim)) / 3.0);
+        // PrintToChatAll("Gained %i HP on kill",hp_gain);
+        AddPlayerHealth(attacker,hp_gain,hp_gain);
+
+        // PrintToChatAll("%i",GetClientHealth(attacker));
+    }
 	if (IsValidClient(victim)){ 
 		DeleteParticle(0.1, ParticleStorage[victim]);
 
@@ -1577,7 +1590,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
             stat1 = 25.0;
             TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", stat1);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit",chat_display, stat1);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit. On Kill: Gain 33%%%% of targets max HP as overheal",chat_display, stat1);
 
                 if (TF2_GetPlayerClass(client) == TFClass_Soldier)
                 {
@@ -1822,7 +1835,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", stat1);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Pistol: {orange}On Hit: {teamcolor}Speed boost for {orange}%0.0f seconds",chat_display, stat1);
+                TF2Attrib_RemoveByName(Weapon2,"clip size bonus");
             }
+            
 
             if (IsForceANature(Weapon1))
             {
@@ -1894,6 +1909,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon2, "clip size bonus", 2.0);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: {orange}+%0.0f%%%% clip size",chat_display, MoreIsMore(stat1));
+                TF2Attrib_RemoveByName(Weapon2,"speed_boost_on_hit");
             }
             if (IsSouthernHospitality(Weapon3))
             {
@@ -2135,7 +2151,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 25.0;
                 TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", stat1);
                 TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");  
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit",chat_display, stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit. On Kill: Gain 33%%%% of targets max HP as overheal",chat_display, stat1);
                 
             }
 

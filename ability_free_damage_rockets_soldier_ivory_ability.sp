@@ -131,7 +131,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if (IsRobot(client, ROBOT_NAME))
 	{
 		DrawHUD(client);
-		if (buttons & (IN_ATTACK3|IN_USE) && !g_PushButton[client])
+		if (buttons & (IN_ATTACK3|IN_USE|IN_RELOAD) && !g_PushButton[client])
 		{
 		if (g_rocketCurve == true)
 		{	

@@ -7,6 +7,7 @@
 #include <berobot>
 #include <berobot_core>
 #include <morecolors>
+#include <tf2utils>
 #define ROBOT_NAME	"Megaton"
 #define PLUGIN_VERSION "1.0"
 public Plugin:myinfo =
@@ -17,24 +18,28 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.bmod.tf"
 }
-float amount_stack[MAXPLAYERS + 1] = {0.0,...};
+float amount_stack = 0.0;
 
-public void OnPluginStart()
+// public void OnPluginStart()
+// {
+// 	HookEvent("player_death", Event_Death, EventHookMode_Post);
+// }
+
+public void OnRoundStart()
 {
-	HookEvent("player_death", Event_Death, EventHookMode_Post);
+	amount_stack = 0.0;
 }
+// public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+// {
+// 	// PrintToChatAll("DED");
+// 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
-{
-	// PrintToChatAll("DED");
-	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	if(IsRobotWhenDead(client, ROBOT_NAME))
-	{
-		amount_stack[client] = 0;
-	}
+// 	if(IsRobotWhenDead(client, ROBOT_NAME))
+// 	{
+// 		amount_stack[client] = 0;
+// 	}
 	    
-}
+// }
 
 
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
@@ -49,6 +54,11 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 	if (IsRobot(attacker, ROBOT_NAME) )
 	{
 		IncreaseMaxHealth(attacker, damage);
+
+		int bonus_hp_damage = RoundToNearest(float(GetClientHealth(victim)) / 3.0) ;
+		PrintToChatAll("%i",bonus_hp_damage);
+		damage = damage + bonus_hp_damage;
+		return Plugin_Changed;
 	}
 }
 
@@ -58,7 +68,7 @@ void IncreaseMaxHealth(int client, float amount)
     if (!IsClientInGame(client) || !IsPlayerAlive(client))
         return;
 
-	amount_stack[client] = amount_stack[client] + amount;
+	amount_stack = amount_stack + amount;
 	// PrintToChatAll("Amount stack %f", amount_stack[client] );
-	TF2Attrib_SetByName(client, "max health additive penalty", amount_stack[client]);
+	TF2Attrib_SetByName(client, "max health additive penalty", amount_stack);
 }
