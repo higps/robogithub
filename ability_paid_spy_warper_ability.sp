@@ -20,12 +20,15 @@
 #define CHAR_FULL "■"
 #define CHAR_EMPTY "□"
 
-bool g_button_held[MAXPLAYERS + 1] = {false, ...};
+bool g_button_held_to_enemy[MAXPLAYERS + 1] = {false, ...};
+bool g_button_held_to_previous[MAXPLAYERS + 1] = {false, ...};
+
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
 float g_RechargeCooldown = 10.0;
 float g_skill;
 int g_target[MAXPLAYERS + 1] = {-1,...};
 float g_target_coords[3] = {0.0, ...};
+float g_past_coords[3] = {0.0, ...};
 float g_scale = 1.5;
 
 public Plugin:myinfo =
@@ -37,12 +40,24 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 
+void ResetTeleCoordinates()
+{
+    for(int client = 1 ; client <= MaxClients ; client++ )
+    {
+        g_target[client] = -1; 
+    }
+}
 
+public void OnRoundStart()
+{
+    ResetTeleCoordinates();
+}
 
 public void OnPluginStart()
 {
     HookEvent("player_spawn", Event_PlayerSpawn);
     HookEvent("post_inventory_application", Event_PlayerSpawn);
+    HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
 public Action Event_PlayerSpawn(Handle event, const char[] name, bool dontBroadcast)
@@ -55,17 +70,24 @@ public Action Event_PlayerSpawn(Handle event, const char[] name, bool dontBroadc
 
     return Plugin_Continue;
 }
+public Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+
+	//PrintToChatAll("Logname %s", weapon_logname);
+	//int weaponID = GetEntPropEnt(weapon, Prop_Send, "m_iItemDefinitionIndex");
+	
+	//PrintToChatAll("Attacker %N , weaponID %i, logname: %s", attacker, weaponID, weapon_logname);
+
+	if (IsRobot(attacker, ROBOT_NAME))
+	{
+		g_Recharge[attacker] = 0.0;
+	}
+}
 
 public OnMapStart()
 {
 	PrecacheSound(TELEPORTER_SPAWN, true);
-}
-
-
-MakeSpy(client)
-{
-	
-
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -75,16 +97,29 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_ATTACK3|IN_USE) ) 
 		{
-            g_button_held[client] = true;
+            g_button_held_to_enemy[client] = true;
 		}
 
 
 
 		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_ATTACK3|IN_USE) ) 
 		{
-			g_button_held[client] = false;
+			g_button_held_to_enemy[client] = false;
             
 		}
+
+        if( GetEntProp(client, Prop_Data, "m_afButtonPressed" ) & (IN_RELOAD) ) 
+		{
+            g_button_held_to_previous[client] = true;
+		}
+
+
+
+		if( GetEntProp(client, Prop_Data, "m_afButtonReleased" ) & (IN_RELOAD) ) 
+		{
+			g_button_held_to_previous[client] = false;
+            
+		} 
 
 		g_skill = GetEngineTime();
 		DrawHUD(client);
@@ -108,18 +143,18 @@ void DrawHUD(int client)
 
 		Format(sHUDText, sizeof(sHUDText), "Warp Ready!\nNeeds Target!");
 			
-		SetHudTextParams(1.0, 0.8, 0.5, 255, 0, 0, 255);
+		SetHudTextParams(1.0, 0.7, 0.5, 255, 0, 0, 255);
 		
 
 		
 	}else if(iCountDown <= 0 && g_target[client] != -1)
 	{
-		Format(sHUDText, sizeof(sHUDText), "Warp Ready!");
+		Format(sHUDText, sizeof(sHUDText), "Warp Ready!\nAttack3: To Enemy\nReload: To Self");
 			
-		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
+		SetHudTextParams(1.0, 0.7, 0.5, 0, 255, 0, 255);
 	}else
 	{
-		SetHudTextParams(1.0, 0.8, 0.5, 255, 0, 0, 255);
+		SetHudTextParams(1.0, 0.7, 0.5, 255, 0, 0, 255);
 	}
 
 		 ShowHudText(client, -2, sHUDText);
@@ -132,11 +167,14 @@ void DrawHUD(int client)
 			isready = true;	
 		}
 
-	if (g_button_held[client] && iCountDown <= 0 && g_target[client] != -1)
+	if (g_button_held_to_enemy[client] && iCountDown <= 0 && g_target[client] != -1)
 	{
 		RequestFrame(Teleport, client);
-		
-		
+	}
+
+    if (g_button_held_to_previous[client] && iCountDown <= 0 && g_target[client] != -1)
+	{
+		RequestFrame(Teleport, client);
 	}
 }
 
@@ -157,20 +195,34 @@ void Teleport (int client)
 				TeleportEntity(attach, PreTeleOrigin, NULL_VECTOR, NULL_VECTOR);
 				TE_Particle("drg_wrenchmotron_teleport", PreTeleOrigin, _, _, attach, 1,0);
 				int attach2 = CreateEntityByName("trigger_push");
-				TeleportEntity(attach2, g_target_coords, NULL_VECTOR, NULL_VECTOR);
-				TE_Particle("drg_wrenchmotron_teleport", g_target_coords, _, _, attach2, 1,0);
+				
+                if(g_button_held_to_enemy[client])
+                {
+                TeleportEntity(attach2, g_target_coords, NULL_VECTOR, NULL_VECTOR);
+				TE_Particle("drg_wrenchmotron_teleport", g_target_coords, _, _, attach2, 1,0);    
+                }else
+                {
+                TeleportEntity(attach2, g_past_coords, NULL_VECTOR, NULL_VECTOR);
+				TE_Particle("drg_wrenchmotron_teleport", g_past_coords, _, _, attach2, 1,0);
+                }
+                
 
 				// FakeClientCommand(client, "eureka_teleport");
 				TF2_AddCondition(client, TFCond_TeleportedGlow, 5.0);
 				EmitSoundToAll(TELEPORTER_SPAWN, client);
 				EmitSoundToAll(TELEPORTER_SPAWN, client);
 
-
-				CreateTimer(0.5, Teleport_Player, client);
-
-				g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+                if (g_button_held_to_enemy[client])
+                {
+                    CreateTimer(0.5, Teleport_Player, client);
+                    g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+                }else 
+                {
+                    CreateTimer(0.5, Teleport_Player_Past, client);
+                    g_Recharge[client] = GetEngineTime() + g_RechargeCooldown/4.0;
+                }
 				isready = false;
-				g_target[client] = -1;
+
 			
 		
 	}
@@ -178,16 +230,27 @@ void Teleport (int client)
 
 public Action Teleport_Player(Handle timer, int client)
 {
-	if(IsRobot(client, ROBOT_NAME) && IsPlayerAlive(client))TeleportEntity(client, g_target_coords, NULL_VECTOR, NULL_VECTOR);
+	if(IsRobot(client, ROBOT_NAME) && IsPlayerAlive(client))
+    {
+        TeleportEntity(client, g_target_coords, NULL_VECTOR, NULL_VECTOR);
+        g_target[client] = -1;
+    }
 }
 
-
-
-void GetCoordinates (int victim)
+public Action Teleport_Player_Past(Handle timer, int client)
 {
-	GetClientAbsOrigin(victim, g_target_coords);
+	if(IsRobot(client, ROBOT_NAME) && IsPlayerAlive(client))TeleportEntity(client, g_past_coords, NULL_VECTOR, NULL_VECTOR);
 }
 
+void GetCoordinates (int client)
+{
+	GetClientAbsOrigin(client, g_target_coords);
+}
+
+void GetCoordinatesPast(int client)
+{
+	GetClientAbsOrigin(client, g_past_coords);
+}
 /* Plugin Exclusive Functions */
 //Code that Gets the one to teleport to
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
@@ -204,7 +267,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		g_target[attacker] = victim;
 
-		RequestFrame(GetCoordinates, victim);	
+		RequestFrame(GetCoordinates, victim);
+        RequestFrame(GetCoordinatesPast, attacker);
 		
 	}  
 

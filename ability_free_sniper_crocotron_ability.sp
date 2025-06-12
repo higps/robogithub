@@ -32,6 +32,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 
 		SpawnBombs(victim, attacker);
+        SpawnBombs(attacker, attacker);
 
 
 	}

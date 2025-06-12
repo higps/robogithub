@@ -32,7 +32,7 @@ public OnPluginStart()
 
 bool g_button_held[MAXPLAYERS + 1] = {false, ...};
 float g_Recharge[MAXPLAYERS + 1] = {0.0, ...};
-int g_Heal_Bolts_Hits_Needed = 30;
+int g_Heal_Bolts_Hits_Needed = 25;
 int g_healcount = 0;
 float g_duration = 10.0;
 
