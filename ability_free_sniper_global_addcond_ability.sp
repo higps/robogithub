@@ -32,45 +32,47 @@ public OnPluginStart()
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-	
-	if (IsRobot(attacker, SPACEGUYONLINE))
+	int death_flags = GetEventInt(event, "death_flags");
+    if((death_flags & TF_DEATHFLAG_DEADRINGER) != TF_DEATHFLAG_DEADRINGER) 
 	{
-		for(int client = 1 ; client <= MaxClients ; client++ )
+		if (IsRobot(attacker, SPACEGUYONLINE))
 		{
-			if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client))
+			for(int client = 1 ; client <= MaxClients ; client++ )
 			{
-				
-				TF2_AddCondition(client, TFCond_CritCola, 3.0);
+				if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client))
+				{
+					
+					TF2_AddCondition(client, TFCond_CritCola, 3.0);
 
+				}
+			}
+		}	
+
+		if (IsRobot(attacker, CARBINECASSIDY))
+		{
+			for(int client = 1 ; client <= MaxClients ; client++ )
+			{
+				if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client))
+				{
+					
+					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 5.0);
+
+				}
 			}
 		}
-	}	
-
-	if (IsRobot(attacker, CARBINECASSIDY))
-	{
-		for(int client = 1 ; client <= MaxClients ; client++ )
+		if (IsRobot(attacker, HUNTSBOT))
 		{
-			if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client))
+			for(int client = 1 ; client <= MaxClients ; client++ )
 			{
-				
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 5.0);
+				if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client))
+				{
+					
+					TF2_AddCondition(client, TFCond_DefenseBuffNoCritBlock, 3.0);
 
+				}
 			}
-		}
+		}	
 	}
-	if (IsRobot(attacker, HUNTSBOT))
-	{
-		for(int client = 1 ; client <= MaxClients ; client++ )
-		{
-			if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client))
-			{
-				
-				TF2_AddCondition(client, TFCond_DefenseBuffNoCritBlock, 3.0);
-
-			}
-		}
-	}	
-
 }
 
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
