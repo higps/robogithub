@@ -167,8 +167,8 @@ stock void Tempent_DrawBox(FVector pos, float size, float duration = 0.1)
 	max = ConstructVector(size, size, size);
 	min = ConstructVector(size * -1.0, size * -1.0, size * -1.0);
 
-	Vector_Add(max, pos, max);
-	Vector_Add(min, pos, min);
+	max.Add(pos);
+	min.Add(pos);
 
 	FVector pos1, pos2, pos3, pos4, pos5, pos6;
 	pos1 = max;

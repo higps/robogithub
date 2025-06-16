@@ -155,7 +155,7 @@ enum struct FClient
 	int GetMaxHealth()
 	{
 		if (this.Alive())
-			return GetEntProp(this.GetReference(), Prop_Data, "m_iMaxHealth");
+			return GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, this.Get())
 
 		return 0;
 	}
@@ -172,7 +172,7 @@ enum struct FClient
 		{
 			int health = GetClientHealth(this.Get());
 
-			int max = GetEntProp(this.Get(), Prop_Data, "m_iMaxHealth");
+			int max = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, this.Get());
 			if (health > max * overheal)
 				return;
 

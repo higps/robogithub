@@ -156,7 +156,7 @@ enum struct FTimer
 * @return - FTimer containing this timer's information
 */
 
-stock FTimer ConstructTimer(float duration, bool paused = true, bool loop = false, bool singleUse, float initialDelay = 0.0)
+stock FTimer ConstructTimer(const float duration, bool paused = true, bool loop = false, bool singleUse = false, float initialDelay = 0.0)
 {
 	FTimer timer;
 	timer.Set(duration, paused, loop, singleUse, initialDelay);

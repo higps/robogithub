@@ -50,6 +50,13 @@ enum struct FVector
 		this.Z += vec.Z;
 	}
 
+	void Subtract(FVector vec)
+	{
+		this.X -= vec.X;
+		this.Y -= vec.Y;
+		this.Z -= vec.Z;
+	}
+
 	// Returns the distance between this vector and another given vector
 	float DistanceTo(FVector vec, bool squared = false)
 	{
@@ -67,7 +74,6 @@ enum struct FVector
 	// Normalizes this vector
 	void Normalize()
 	{
-		// I hate 1.10
 		float vector[3];
 		vector = this.ToFloat();
 
@@ -179,10 +185,18 @@ enum struct FRotator
 	}
 	
 	// Checks if this rotator is equal to another - precision makes this inaccurate
-	bool IsEqual(FRotator rotation)
+	bool IsEqual(FRotator rotation, float error = 0.001)
 	{
-		if (this.Pitch == rotation.Pitch && this.Yaw == rotation.Yaw && this.Roll == rotation.Yaw)
-			return true;
+		if (rotation.Pitch - error <= this.Pitch <= rotation.Pitch + error)
+		{
+			if (rotation.Yaw - error <= this.Yaw <= rotation.Yaw + error)
+			{
+				if (rotation.Roll - error <= this.Roll <= rotation.Roll + error)
+				{
+					return true;
+				}
+			}
+		}
 			
 		return false;
 	}
@@ -241,13 +255,16 @@ stock float Vector_GetDistance(FVector vector1, FVector vector2, bool squared = 
 }
 
 // Calculates the cross product between two FVectors. Either inputs may be used as the buffer
-stock void Vector_CrossProduct(FVector vector1, FVector vector2, FVector buffer)
+stock FVector Vector_CrossProduct(FVector vector1, FVector vector2)
 {
 	float result[3];
 
 	GetVectorCrossProduct(Vector_MakeFloat(vector1), Vector_MakeFloat(vector2), result);
 
+	FVector buffer;
 	Vector_MakeFromFloat(buffer, result);
+
+	return buffer;
 }
 
 // Converts a float array into a FVector object
@@ -266,40 +283,55 @@ stock float[] Vector_MakeFloat(FVector vector)
 
 
 // Adds two FVectors. Either inputs may be used as the buffer
-stock void Vector_Add(FVector vector1, FVector vector2, FVector buffer)
+stock FVector Vector_Add(FVector vector1, FVector vector2)
 {
+	FVector buffer;
+
 	buffer.X = vector1.X + vector2.X;
 	buffer.Y = vector1.Y + vector2.Y;
 	buffer.Z = vector1.Z + vector2.Z;
+
+	return buffer;
 }
 
 
-// Subtracts an FVector from another FVector. Either inputs may be used as the buffer
-stock void Vector_Subtract(FVector vector1, FVector vector2, FVector buffer)
+// Subtracts FVectors vector1 - vector2. Either inputs may be used as the buffer
+stock FVector Vector_Subtract(FVector vector1, FVector vector2)
 {
+	FVector buffer;
+
 	buffer.X = vector1.X - vector2.X;
 	buffer.Y = vector1.Y - vector2.Y;
 	buffer.Z = vector1.Z - vector2.Z;
+
+	return buffer;
 }
 
 
 // Creates an FVector from two points by subtracting the two points
-stock void Vector_MakeFromPoints(FVector origin, FVector destination, FVector buffer)
+stock FVector Vector_MakeFromPoints(FVector origin, FVector destination)
 {
+	FVector buffer;
+
 	buffer.X = destination.X - origin.X;
 	buffer.Y = destination.Y - origin.Y;
 	buffer.Z = destination.Z - origin.Z;
+
+	return buffer;
 }
 
 
 // Stores the angles of an FVector as a Rotator
-stock void Vector_GetAngles(FVector vector, FRotator rot)
+stock FRotator Vector_GetAngles(FVector vector)
 {
 	float angles[3];
 
 	GetVectorAngles(Vector_MakeFloat(vector), angles);
 
+	FRotator rot;
 	Rotator_MakeFromFloat(rot, angles);
+
+	return rot;
 }
 
 

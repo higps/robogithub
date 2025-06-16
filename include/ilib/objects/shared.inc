@@ -226,6 +226,11 @@ methodmap APersistentObject < StringMap
 		return this.GetObject().GetPosition();
 	}
 
+	public FVector GetRelativePosition()
+	{
+		return this.GetObject().GetRelativePosition();
+	}
+
 	// Returns the absolute angles of this entity
 	public FRotator GetAngles()
 	{
@@ -241,6 +246,21 @@ methodmap APersistentObject < StringMap
 	public void Teleport(FTransform transform)
 	{
 		this.GetObject().Teleport(transform.Position, transform.Rotation, transform.Velocity);
+	}
+
+	public void SetVelocityRotation(FRotator rotation, FVector velocity)
+	{
+		this.GetObject().SetVelocityRotation(rotation, velocity);
+	}
+
+	public FObject AttachParticle(const char[] name, FVector offset)
+	{
+		return this.GetObject().AttachParticle(name, offset);
+	}
+
+	public void SetModel(const char[] model)
+	{
+		SetEntityModel(this.Get(), model);
 	}
 
 	/*
@@ -299,6 +319,11 @@ methodmap APersistentObject < StringMap
 		return rotator;
 	}
 
+	public void SetParent(FObject parent)
+	{
+		this.GetObject().SetParent(parent);
+	}
+
 	// Sets an entity property on this object
 	public void SetObjectPropEnt(const char[] key, FObject entity) { this.SetArray(key, entity, sizeof FObject); }
 
@@ -318,8 +343,64 @@ methodmap APersistentObject < StringMap
 	// Gets a string property from this object
 	public void GetObjectPropString(const char[] key, char[] buffer, int size) { this.GetString(key, buffer, size); }
 
+	public void Input(const char[] input, int activator = -1, int caller = -1, int id = 0)
+	{
+		this.GetObject().Input(input, activator, caller, id);
+	}
 
+	public void LoopTimer(const char[] value)
+	{
+		FTimer timer;
+		timer = this.GetTimer(value);
 
+		timer.Loop();
+
+		this.SetTimer(value, timer);
+	}
+
+	public bool TimerExpired(const char[] value)
+	{
+		FTimer timer;
+		timer = this.GetTimer(value);
+
+		bool expired = timer.Expired();
+
+		if (expired)
+		{
+			this.SetTimer(value, timer);
+		}
+
+		return expired;
+	}
+
+	public FTimer GetTimer(const char[] value)
+	{
+		FTimer timer;
+		this.GetArray(value, timer, sizeof FTimer);
+
+		return timer;
+	}
+
+	public void SetTimer(const char[] value, FTimer timer)
+	{
+		this.SetArray(value, timer, sizeof FTimer);
+	}
+
+	public void PauseTimer(const char[] value)
+	{
+		FTimer timer;
+		timer = this.GetTimer(value);
+		timer.Pause();
+		this.SetTimer(value, timer);
+	}
+
+	public void ResumeTimer(const char[] value)
+	{
+		FTimer timer;
+		timer = this.GetTimer(value);
+		timer.Continue();
+		this.SetTimer(value, timer);
+	}
 
 	/* Sets a float property on the entity
 	* @note This is the same as calling SetEntPropFloat. If you need a custom property use SetObjectPropFloat
@@ -423,7 +504,7 @@ methodmap AClient < APersistentObject
 		public set(int health) { SetEntityHealth(this.GetClient().Get(), health); }
 	}
 
-	// Max health of this client. (Read only)
+	// Max health of this client.
 	property int MaxHealth
 	{
 		public get()
@@ -441,6 +522,11 @@ methodmap AClient < APersistentObject
 		public get() { return view_as<TFTeam>(this.GetClient().GetTeam()); }
 	}
 
+	public int GetSlot(int slot)
+	{
+		return this.GetClient().GetSlot(slot);
+	}
+
 	// Returns the camera position of this client
 	public FVector GetEyePosition()
 	{
@@ -456,6 +542,21 @@ methodmap AClient < APersistentObject
 	public bool Alive()
 	{
 		return this.GetClient().Alive();
+	}
+
+	public void AddCondition(TFCond cond, float duration = TFCondDuration_Infinite, FObject inflictor = {})
+	{
+		TF2_AddCondition(this.Get(), cond, duration, inflictor.Get());
+	}
+
+	public void RemoveCondition(TFCond cond)
+	{
+		TF2_RemoveCondition(this.Get(), cond);
+	}
+
+	public bool InCondition(TFCond cond)
+	{
+		return TF2_IsPlayerInCondition(this.Get(), cond);
 	}
 }
 
@@ -491,7 +592,7 @@ methodmap SObjectMap < StringMap
 	// Sets a StringMap value with an `FObject` as a key
 	public void SetObjectValue(FObject key, any value)
 	{
-		char index[8];
+		char index[32];
 		FormatEx(index, sizeof index, "%d", key.GetReference());
 		
 		this.SetValue(index, value);
@@ -505,7 +606,7 @@ methodmap SObjectMap < StringMap
 	 */
 	public void GetObjectValue(FObject key, any& value)
 	{
-		char index[8];
+		char index[32];
 		FormatEx(index, sizeof index, "%d", key.GetReference());
 
 		this.GetValue(index, value);
@@ -514,7 +615,7 @@ methodmap SObjectMap < StringMap
 	// Returns a base persistent object. Make sure to cast to whichever type you're getting.
 	public APersistentObject GetObject(FObject key)
 	{
-		char index[8];
+		char index[32];
 		FormatEx(index, sizeof index, "%d", key.GetReference());
 		
 		APersistentObject entity;
@@ -526,9 +627,8 @@ methodmap SObjectMap < StringMap
 	// Checks if the given key exists in this map
 	public bool HasKey(FObject key)
 	{
-		char index[8];
+		char index[32];
 		FormatEx(index, sizeof index, "%d", key.GetReference());
-
 		return this.ContainsKey(index);
 	}
 	
@@ -537,9 +637,10 @@ methodmap SObjectMap < StringMap
 	 */
 	public void RemoveObjectValue(FObject key)
 	{
-		char index[8];
+		char index[32];
 		FormatEx(index, sizeof index, "%d", key.GetReference());
 		
+		this.SetValue(index, 0);
 		this.Remove(index);
 	}
 }

@@ -25,6 +25,18 @@ methodmap FMath
 	{
 		return (value < min) ? min : (value < max) ? value : max;
 	}
+
+	// Returns the lesser of two given values. Value1 is prioritized in the case of equal values
+	public static float Min(float value1, float value2)
+	{
+		return (value1 <= value2) ? value1 : value2;
+	}
+
+	// Returns the greater of two given values. Value1 is prioritized in the case of equal values
+	public static float Max(float value1, float value2)
+	{
+		return (value1 >= value2) ? value1 : value2;
+	}
 	
 	// From UE5 FMath::RInterpConstantTo
 	/*
@@ -62,6 +74,90 @@ methodmap FMath
 		result.Roll += FMath.ClampFloat(deltaRotation.Roll, -deltaSpeed, deltaSpeed);
 		return result.GetNormalized();
 	}
+
+	/*
+	* Interpolates from a starting vector to the given target vector at a constant rate
+	*
+	* @param current		Starting vector
+	* @param target			Vector to interpolate to
+	* @param delta			Length of distance between starting and target vectors (from 0.0 to 1.0)
+	* @param speed			How fast the interpolation should be (value of 0.0 = no interpolation).
+	*
+	* @return 				Vector between the current and target vectors based on the delta given		
+	*/
+	public static FVector InterpVectorConstant(FVector current, FVector target, float time, float speed)
+	{
+		FVector delta;
+		delta = target;
+		delta.Subtract(current);
+		float deltaSize = delta.Length();
+		float maxStep = speed * time;
+
+		if (deltaSize > maxStep)
+		{
+			if (maxStep > 0.0)
+			{
+				FVector newDelta;
+				newDelta.X = delta.X / deltaSize;
+				newDelta.Y = delta.Y / deltaSize;
+				newDelta.Z = delta.Z / deltaSize;
+
+				FVector result;
+				result.X = current.X + newDelta.X * maxStep;
+				result.Y = current.Y + newDelta.Y * maxStep;
+				result.Z = current.Z + newDelta.Z * maxStep;
+				
+				return result;
+			}
+			else
+			{
+				return current;
+			}
+		}
+
+		return target;
+	}
+
+	// From UE5 FMath::VInterpTo
+	/*
+	* Interpolates from a starting vector to the given target vector in a smooth transition
+	*
+	* @param current		Starting vector
+	* @param target			Vector to interpolate to
+	* @param delta			Length of distance between starting and target vectors (from 0.0 to 1.0)
+	* @param speed			How fast the interpolation should be (value of 0.0 = no interpolation).
+	*
+	* @return 				Vector between the current and target vectors based on the delta given		
+	*/
+	public static FVector InterpVectorTo(FVector current, FVector target, float delta, float speed)
+	{
+		// If no interp speed, jump to target value
+		if( speed <= 0.0 )
+		{
+			return target;
+		}
+
+		// Distance to reach
+		FVector dist;
+		dist = Vector_Subtract(target, current);
+
+		// If distance is too small, just set the desired location
+		if (dist.Length() <= 0.001)
+		{
+			return target;
+		}
+
+		// Delta Move, Clamp so we do not over shoot.
+		FVector moveVector, result;
+		float scalar = FMath.ClampFloat(delta * speed, 0.0, 1.0);
+		moveVector = dist;
+		moveVector.Scale(scalar);
+
+		result = current;
+		result.Add(moveVector);
+
+		return result;
+	}
 	
 	/*
 	* Gets the rotation between two locations in world space
@@ -75,9 +171,9 @@ methodmap FMath
 	{
 		FRotator angles;
 		FVector buffer;
-		Vector_Subtract(destination, origin, buffer);
+		buffer = Vector_Subtract(destination, origin);
 
-		Vector_GetAngles(buffer, angles);
+		angles = Vector_GetAngles(buffer);
 
 		return angles;
 	}
@@ -135,16 +231,16 @@ methodmap FMath
 		FVector interimVec;
 		interimVec = angle.GetForwardVector();
 		interimVec.Scale(offset.X);
-		Vector_Add(interimVec, result, result);
+		result.Add(interimVec);
 
 		interimVec = angle.GetRightVector();
 		interimVec.Negate();
 		interimVec.Scale(offset.Y);
-		Vector_Add(interimVec, result, result);
+		result.Add(interimVec);
 
 		interimVec = angle.GetUpVector();
 		interimVec.Scale(offset.Z);
-		Vector_Add(interimVec, result, result);
+		result.Add(interimVec);
 
 		return result;
 	}
@@ -156,9 +252,14 @@ methodmap FMath
 			
 		normal.Scale(dot * 2.0);
 
-		Vector_Subtract(input, normal, result);
+		result = Vector_Subtract(input, normal);
 
 		return result;
+	}
+
+	public static float LinearInterp(float origin, float dest, float percent)
+	{
+		return origin + (dest - origin) * percent;
 	}
 }
 
@@ -189,6 +290,118 @@ methodmap FGameplayStatics
 			if (IsClientInGame(i))
 				EmitSoundToClient(i, sample);
 		}
+	}
+
+	/*
+	* Creates an explosion with the given parameters. The damage from this explosion has no built in falloff/rampup.
+	*
+	* @param owner				Owner of the explosion to credit damage to
+	* @param spawn				Spawn transform for this explosion
+	* @param damage				How much damage this explosion should deal (Rarely ever deals this exact amount, is almost always less)
+	* @param radus				Blast radius of the explosion
+	* @param explodeSound		Sound to use for this explosion
+	* @param explodeParticle	Particle to use for this explosion
+	*
+	*/
+	public static void CreateExplosion(FClient owner, FTransform spawn, float damage, float radius, const char[] explodeSound, const char[] explodeParticle, int soundlevel = 95)
+	{
+		FObject explosion;
+		explosion = FGameplayStatics.CreateObjectDeferred("tf_generic_bomb");
+
+		explosion.SetKeyValueFloat("damage", damage);
+		explosion.SetKeyValueFloat("radius", radius);
+		explosion.SetKeyValue("health", "1");
+
+		explosion.SetOwner(owner.GetObject());
+
+		//explosion.SetKeyValue("sound", explodeSound);
+		EmitAmbientSound(explodeSound, spawn.Position.ToFloat(), GetWorld().Get(), soundlevel);
+
+		explosion.SetKeyValue("explode_particle", explodeParticle);
+
+		FGameplayStatics.FinishSpawn(explosion, spawn);
+
+		SDKHooks_TakeDamage(explosion.Get(), owner.Get(), owner.Get(), 2.0);
+	}
+
+	/* Gets the number of players currently in game with an optional team value
+	*
+	* @param team			Optional team number to check for
+	*
+	* @return	Number of players currently in game
+	*/
+	public static int GetPlayerCount(bool alive = false, TFTeam team = view_as<TFTeam>(-1))
+	{
+		int index = 0;
+		int teamNum = view_as<int>(team);
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			FClient client;
+			if (IsClientInGame(i))
+			{
+				if (alive && !IsPlayerAlive(i))
+				{
+					continue;
+				}
+				
+				client = ConstructClient(i);
+				// Check if we should restrict to a given team or not
+				if (teamNum >= 0)
+				{
+					if (client.GetTeam() == teamNum)
+					{
+						index++;
+					}
+				}
+				else
+				{
+					index++;
+				}
+			}
+		}
+		return index;
+	}
+
+	/* Gets the number of players currently in game and stores them in a player array
+	*
+	* @param players		Buffer to store player indices in
+	* @param team			Optional team number to check for
+	*
+	* @return	Number of players currently in game
+	*/
+	public static int GetPlayerCountEx(int[] players, bool alive = false, TFTeam team = view_as<TFTeam>(-1))
+	{
+		int index = 0;
+		int teamNum = view_as<int>(team);
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			FClient client;
+			if (IsClientInGame(i))
+			{
+				if (alive && !IsPlayerAlive(i))
+				{
+					continue;
+				}
+
+				client = ConstructClient(i);
+
+				// Check if we should restrict to a given team or not
+				if (teamNum >= 0)
+				{
+					if (client.GetTeam() == teamNum)
+					{
+						players[index] = i;
+						index++;
+					}
+				}
+				else
+				{
+					players[index] = i;
+					index++;
+				}
+			}
+		}
+		return index;
 	}
 
 	/*
@@ -290,6 +503,68 @@ methodmap FGameplayStatics
 	{
 		return target.GetPosition().DistanceTo(destination.GetPosition());
 	}
+
+	/*
+	* Dissolves the client's ragdoll if they are dead and the ragdoll exists
+	*
+	* @param client			Client to dissolve
+	* @param type			Type of dissolve effect to use (https://developer.valvesoftware.com/wiki/Env_entity_dissolver)
+	* @param magnitude		Force to push the ragdoll with when dissolving
+	*
+	*/
+	public static void DissolveClient(FClient client, int type = 0, int magnitude = 200)
+	{
+		if (!client.Alive())
+		{
+			FObject ragdoll;
+			ragdoll = client.GetObject().GetPropEnt(Prop_Send, "m_hRagdoll");
+			if (ragdoll.Valid())
+			{
+				FObject dissolver;
+				dissolver = FGameplayStatics.CreateObject("env_entity_dissolver");
+				
+				dissolver.SetKeyValueInt("dissolvetype", type);
+				dissolver.SetKeyValueInt("magnitude", magnitude);
+				dissolver.SetKeyValue("target", "!activator");
+
+				dissolver.Input("Dissolve", ragdoll.Get());
+				dissolver.Kill();
+			}
+		}
+	}
+}
+
+// Generic filter for traces; only checks if the hit entity is the entity passed through the trace function.
+public bool GenericFilter(int entity, int mask, any data)
+{
+	return entity != data;
+}
+
+// Filter for ignoring players in a trace
+public bool FilterIgnorePlayers(int entity, int mask, any data)
+{
+	if (ConstructClient(entity).Valid())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+// Filter for ignoring players in a trace, also ignores the passed entity index
+public bool FilterIgnorePlayersEx(int entity, int mask, any data)
+{
+	if (entity == data)
+	{
+		return false;
+	}
+
+	if (ConstructClient(entity).Valid())
+	{
+		return false;
+	}
+
+	return true;
 }
 
 

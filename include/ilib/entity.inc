@@ -215,12 +215,23 @@ enum struct FObject
 	}
 
 	/*
-	* Wrapper for DispatchKeyValueInt()
+	* Wrapper for DispatchKeyValueVector()
 	*
 	* @param key Name of the key to set the value of
 	* @param value Value to set on the key, as an FVector
 	*/
 	void SetKeyValueVector(const char[] key, FVector value)
+	{
+		DispatchKeyValueVector(this.Reference, key, value.ToFloat());
+	}
+
+	/*
+	* Wrapper for DispatchKeyValueVector() for FRotator
+	*
+	* @param key Name of the key to set the value of
+	* @param value Value to set on the key, as an FVector
+	*/
+	void SetKeyValueRotator(const char[] key, FRotator value)
 	{
 		DispatchKeyValueVector(this.Reference, key, value.ToFloat());
 	}
@@ -498,6 +509,16 @@ enum struct FObject
 		this.GetPropVector(Prop_Data, "m_vecOrigin", pos);
 
 		return pos;
+	}
+
+	/*
+	* Sets the relative position of this object.
+	*
+	* @param position		Relative Position to set
+	*/
+	void SetRelativePosition(FVector position)
+	{
+		this.SetPropVector(Prop_Data, "m_vecOrigin", position);
 	}
 
 	/*
