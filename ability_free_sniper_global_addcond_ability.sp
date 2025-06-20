@@ -91,7 +91,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 			if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client))
 			{
 				
-				if(!IsBoss(client))AddPlayerHealth(client, RoundToNearest(damage/3.0), 1);
+				if(!IsBoss(client))AddPlayerHealth(client, RoundToNearest(damage/1.5), 1);
 
 			}
 		}

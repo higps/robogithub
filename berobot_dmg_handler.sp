@@ -1502,6 +1502,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                     TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
                  //   SetDemoDamageBuff(Weapon1);
                     TF2Attrib_SetByName(Weapon1, "dmg falloff decreased", stat2);
+                    TF2CustAttr_SetString(Weapon1, "hp-damage",  "damage=110.0 only-bots=1");
                     
                 }
 
@@ -1509,11 +1510,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 {
                     TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
                     TF2Attrib_SetByName(Weapon2, "dmg falloff decreased", stat2);
+                    TF2CustAttr_SetString(Weapon2, "hp-damage",  "damage=110.0 only-bots=1");
                    // SetDemoDamageBuff(Weapon2);
                     
                 }
                 stat1 = 1.0-stat1;
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoman: All of projectile weapons {orange}Reload %0.0f%%%% faster. +%0.0f%%%% splash damage bonus\n{teamcolor}Melee weapons {orange}more damage{teamcolor} the more damage you do",chat_display, OneIs100(stat1), MoreIsMore(stat2));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Demoman: All of projectile weapons {orange}Reload %0.0f%%%% faster. +%0.0f%%%% splash damage bonus. Increased HP damage\n{teamcolor}Melee weapons {orange}more damage{teamcolor} the more damage you do",chat_display, OneIs100(stat1), MoreIsMore(stat2));
             }
 
 
