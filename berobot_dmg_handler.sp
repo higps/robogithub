@@ -1388,6 +1388,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
         int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+        int Weapon4 = GetPlayerWeaponSlot(client, TFWeaponSlot_PDA);
         //Temporary Stats to be used in displaying in the text
         float stat1;
         float stat2;
@@ -1768,7 +1769,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}SMG: {orange}On Hit: {teamcolor}Speed boost for %0.0f seconds",chat_display, stat1);
+                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.35");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}SMG: {orange}On Hit: {teamcolor}Speed boost for %0.0f seconds. Increased +35%%%% damage bonus vs robots below 30%%%% HP",chat_display, stat1);
             }
 
             if (IsCarbine(Weapon2))
@@ -1836,10 +1838,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Pistol: {orange}On Hit: {teamcolor}Speed boost for {orange}%0.0f seconds",chat_display, stat1);
-                TF2Attrib_RemoveByName(Weapon2,"clip size bonus");
+                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.35");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Pistol: {orange}On Hit: {teamcolor}Speed boost for {orange}%0.0f seconds, Increased +35%%%% damage bonus vs robots below 30%%%% HP",chat_display, stat1);
             }
-            
 
             if (IsForceANature(Weapon1))
             {
@@ -1908,10 +1909,14 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         {
             if (IsPistol(Weapon2))
             {
-                stat1 = 2.0;
-                TF2Attrib_SetByName(Weapon2, "clip size bonus", 2.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: {orange}+%0.0f%%%% clip size",chat_display, MoreIsMore(stat1));
+                stat1 = 1.0;
+                TF2Attrib_SetByName(Weapon4, "bidirectional teleport", stat1);
+                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.35");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: Increased +35%%%% damage bonus vs robots below 30%%%% HP",chat_display);
                 TF2Attrib_RemoveByName(Weapon2,"speed_boost_on_hit");
+            }else
+            {
+                TF2Attrib_RemoveByName(Weapon4, "bidirectional teleport");
             }
             if (IsSouthernHospitality(Weapon3))
             {
@@ -2083,7 +2088,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 // TF2Attrib_SetByName(Weapon1, "keep disguise on attack", 1.0);
                 TF2Attrib_SetByName(Weapon1, "last shot crits", 1.0);
                 TF2CustAttr_SetString(Weapon1, "dmg-bonus-vs-sapped-buildings", "damage=3.0");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gun: {orange}Projectile penetration {teamcolor}bonus & {orange}+200%%%% Damage bonus {teamcolor}vs sapped buildings & {orange}Last shot in the clip crits",chat_display);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Enforcer: {orange}Projectile penetration {teamcolor}bonus & {orange}+200%%%% Damage bonus {teamcolor}vs sapped buildings & {orange}Last shot in the clip crits",chat_display);
             }
 
             if (IsAmbassador(Weapon1))
@@ -2095,6 +2100,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 TF2Attrib_SetByName(Weapon1, "crit_dmg_falloff", 0.0);
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Diamondback: {orange}No critical damage falloff",chat_display);
+            }
+            if (IsLetranger(Weapon1))
+            {
+                TF2CustAttr_SetString(Weapon1, "reduce-max-hp", "damage_ratio=1.0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}LeTranger: {orange}On Hit: Reduce target max health by damage dealt",chat_display);
             }
         }
         if (TF2_GetPlayerClass(client) == TFClass_Soldier)
@@ -2777,6 +2787,21 @@ bool IsDiamondback(int weapon)
 	{
 		//Revolver and Enforcer
 	case 525: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsLetranger(int weapon)
+{
+	if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Letranger
+	case 224: 
 		{
 			return true;
 		}
