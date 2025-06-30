@@ -78,6 +78,7 @@ public Action OnWeaponEquip(int client, int weapon) {
     // }
 
     // PrintToChatAll("Client %N's class: %d, model: %s", client, class, g_ArmsModels[class]);
+
 		TFClassType class = TF2_GetPlayerClass(client);
 		PrecacheModel(g_ArmsModels[class]);
 		// PrintToChatAll("Setting Model for %N", client);
@@ -93,9 +94,8 @@ public Action OnWeaponEquip(int client, int weapon) {
 		// SetEntityModel(weapon, TEST);
 		// SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
 		// SetEntProp(weapon, Prop_Send, "m_iViewModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
-	}
 		
-
+	}
 	
 	return Plugin_Continue;
 }

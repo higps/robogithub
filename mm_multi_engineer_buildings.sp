@@ -251,8 +251,8 @@ void HasStat(int client)
 	
 
 	//PrintToChatAll("Has Stat Found for %N, setting variables", client);
-	g_SentryLimit = ReadIntVar(stat_buffer, "sentries", 1);
-	g_DispenserLimit = ReadIntVar(stat_buffer, "dispensers", 1);
+	g_SentryLimit = ReadIntVar(stat_buffer, "sentries", 10);
+	g_DispenserLimit = ReadIntVar(stat_buffer, "dispensers", 10);
 	g_TeleporterLimit = ReadIntVar(stat_buffer, "teleporters", 1);
 
 	cvMax[0] = g_DispenserLimit;

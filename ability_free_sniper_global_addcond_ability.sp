@@ -88,10 +88,11 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 	{
 		for(int client = 1 ; client <= MaxClients ; client++ )
 		{
-			if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client))
+			if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client) && !TF2_IsPlayerInCondition(client, TFCond_Overhealed))
 			{
+				// (int iClient, int iAdd, int iOverheal = 0, bool bStaticMax = false, bShowHealthGain = true)
 				
-				if(!IsBoss(client))AddPlayerHealth(client, RoundToNearest(damage/1.5), 1);
+				if(!IsBoss(client))AddPlayerHealth(client, RoundToNearest(damage/1.5), 1, false, true);
 
 			}
 		}

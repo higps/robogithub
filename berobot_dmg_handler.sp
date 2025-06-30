@@ -1496,14 +1496,14 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsDemoPrimaryOrSecondary(Weapon1) || IsDemoPrimaryOrSecondary(Weapon2))
             {
-                stat1 = 0.70;
+                stat1 = 0.80;
                 stat2 = 0.2;
                 if (Weapon1 != -1)
                 {
                     TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
                  //   SetDemoDamageBuff(Weapon1);
                     TF2Attrib_SetByName(Weapon1, "dmg falloff decreased", stat2);
-                    TF2CustAttr_SetString(Weapon1, "hp-damage",  "damage=110.0 only-bots=1");
+                    TF2CustAttr_SetString(Weapon1, "hp-damage",  "damage=250.0 only-bots=1");
                     
                 }
 
@@ -1511,7 +1511,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 {
                     TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
                     TF2Attrib_SetByName(Weapon2, "dmg falloff decreased", stat2);
-                    TF2CustAttr_SetString(Weapon2, "hp-damage",  "damage=110.0 only-bots=1");
+                    TF2CustAttr_SetString(Weapon2, "hp-damage",  "damage=250.0 only-bots=1");
                    // SetDemoDamageBuff(Weapon2);
                     
                 }
@@ -1769,7 +1769,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", stat1);
-                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.35");
+                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.15");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}SMG: {orange}On Hit: {teamcolor}Speed boost for %0.0f seconds. Increased +35%%%% damage bonus vs robots below 30%%%% HP",chat_display, stat1);
             }
 
@@ -1838,8 +1838,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 2.0;
                 TF2Attrib_SetByName(Weapon2, "speed_boost_on_hit", stat1);
-                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.35");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Pistol: {orange}On Hit: {teamcolor}Speed boost for {orange}%0.0f seconds, Increased +35%%%% damage bonus vs robots below 30%%%% HP",chat_display, stat1);
+                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.15");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Scout Pistol: {orange}On Hit: {teamcolor}Speed boost for {orange}%0.0f seconds, Increased +15%%%% damage bonus vs robots below 30%%%% HP",chat_display, stat1);
             }
 
             if (IsForceANature(Weapon1))
@@ -1911,8 +1911,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.0;
                 TF2Attrib_SetByName(Weapon4, "bidirectional teleport", stat1);
-                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.35");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: Increased +35%%%% damage bonus vs robots below 30%%%% HP",chat_display);
+                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.15");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: Increased +15%%%% damage bonus vs robots below 30%%%% HP",chat_display);
                 TF2Attrib_RemoveByName(Weapon2,"speed_boost_on_hit");
             }else
             {
@@ -1929,9 +1929,9 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
             if (IsGunSlinger(Weapon3))
             {
-                stat1 = 8.0;
-                TF2Attrib_SetByName(Weapon3, "engineer sentry build rate multiplier", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+%0.0f%%%% faster sentry build speed",chat_display, MoreIsMore(stat1)); 
+                stat1 = 0.75;
+                TF2Attrib_SetByName(Weapon3, "deploy time decreased", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunslinger: {orange}+%0.0f%%%% faster weapon switch speed",chat_display, LessIsMore(stat1)); 
             }
             if (IsElectric(Weapon1) || IsElectric(Weapon2))
             {
@@ -1943,7 +1943,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "projectile penetration", 1.0);
                 TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
                 TF2Attrib_SetByName(Weapon1, "fire rate bonus", stat1);
-                TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots", "damage=1.15 only-bots=1 critType=1");
+                TF2CustAttr_SetString(Weapon1, "dmg-crit-vs-jumping-robots", "damage=1.15 only-bots=1 critType=1");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
             }
         }
