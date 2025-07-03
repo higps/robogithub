@@ -46,7 +46,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 				GetEntityClassname(wep, weaponname, sizeof(weaponname));
 
 				if(buttons & IN_ATTACK2 &&
-				(GetEntPropFloat(wep, Prop_Send, "m_flNextSecondaryAttack") - fl_NextSecondaryAttack[client]) > 0.0)
+				(GetEntPropFloat(wep, Prop_Send, "m_flNextSecondaryAttack") - fl_NextSecondaryAttack[client]) > 0.0 && GetEntProp(client, Prop_Send, "m_bJumping"))
 				{
 					fl_NextSecondaryAttack[client] = GetEntPropFloat(wep, Prop_Send, "m_flNextSecondaryAttack");
 					fl_vel[0] -= AirblastPower * Cosine(fl_EyeAngles[0]) * Cosine(fl_EyeAngles[1]);
@@ -55,7 +55,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fl_vel);
 					SetEntProp(client, Prop_Send, "m_bJumping", 1);
 					TF2_AddCondition(client, TFCond_BlastJumping);
-					TF2_AddCondition(client, TFCond_MarkedForDeath, 2.0);
+					TF2Attrib_AddCustomPlayerAttribute(client, "mod_maxhealth_drain_rate", 20.5, 4.0);
+					// TF2_AddCondition(client, TFCond_MarkedForDeath, 2.0);
 				}
 				
 				// // Flamethrower Jetpack

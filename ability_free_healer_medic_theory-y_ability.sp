@@ -49,8 +49,8 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 	if(condition == TFCond_UberFireResist){
 
-	TF2_AddCondition(healtarget,TFCond_DefenseBuffed, 4.0);
-	TF2_AddCondition(client,TFCond_DefenseBuffed, 4.0);
+	TF2_AddCondition(healtarget,TFCond_HalloweenQuickHeal, 4.0);
+	TF2_AddCondition(client,TFCond_HalloweenQuickHeal, 4.0);
 	}
 
 	}
