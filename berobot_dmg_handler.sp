@@ -1849,6 +1849,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Force A Nature: {orange}On Penetration Hit:+ %0.0f%%%% increased robot knockback bonus",chat_display, stat1);
             }
 
+            if (IsBackScatter(Weapon1))
+            {
+                TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "8.0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Backscatter:{orange} On Hit: Tag enemies for 8 seconds",chat_display);
+            }
+
             if (IsCandyCane(Weapon3))
             {   
                 stat1 = 1.33;
@@ -3223,6 +3229,21 @@ bool IsForceANature(int weapon)
 	{
 		//If other loose cannon
 	case 45, 1078: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsBackScatter(int weapon)
+{
+    if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other loose cannon
+	case 1103: 
 		{
 			return true;
 		}
