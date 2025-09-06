@@ -137,8 +137,13 @@ void DrawHUD(int client)
 	
 	Format(sHUDText, sizeof(sHUDText), "Warp: %i", iCountDown);
 	
+    if (IsCloaked(client)) 
+    {
+		Format(sHUDText, sizeof(sHUDText), "Warp Disabled!\nDecloak to Enable!");
+			
+		SetHudTextParams(1.0, 0.7, 0.5, 255, 0, 0, 255);
 
-	if(iCountDown <= 0 && g_target[client] == -1)
+    }else if(iCountDown <= 0 && g_target[client] == -1)
 	{
 
 		Format(sHUDText, sizeof(sHUDText), "Warp Ready!\nNeeds Target!");
@@ -167,12 +172,12 @@ void DrawHUD(int client)
 			isready = true;	
 		}
 
-	if (g_button_held_to_enemy[client] && iCountDown <= 0 && g_target[client] != -1)
+	if (g_button_held_to_enemy[client] && iCountDown <= 0 && g_target[client] != -1 && !IsCloaked(client))
 	{
 		RequestFrame(Teleport, client);
 	}
 
-    if (g_button_held_to_previous[client] && iCountDown <= 0 && g_target[client] != -1)
+    if (g_button_held_to_previous[client] && iCountDown <= 0 && g_target[client] != -1 && !IsCloaked(client))
 	{
 		RequestFrame(Teleport, client);
 	}
@@ -219,7 +224,7 @@ void Teleport (int client)
                 }else 
                 {
                     CreateTimer(0.5, Teleport_Player_Past, client);
-                    g_Recharge[client] = GetEngineTime() + g_RechargeCooldown/4.0;
+                    g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
                 }
 				isready = false;
 
@@ -230,7 +235,7 @@ void Teleport (int client)
 
 public Action Teleport_Player(Handle timer, int client)
 {
-	if(IsRobot(client, ROBOT_NAME) && IsPlayerAlive(client))
+	if(IsRobot(client, ROBOT_NAME) && IsPlayerAlive(client) && !IsCloaked(client))
     {
         TeleportEntity(client, g_target_coords, NULL_VECTOR, NULL_VECTOR);
         g_target[client] = -1;
@@ -239,7 +244,7 @@ public Action Teleport_Player(Handle timer, int client)
 
 public Action Teleport_Player_Past(Handle timer, int client)
 {
-	if(IsRobot(client, ROBOT_NAME) && IsPlayerAlive(client))TeleportEntity(client, g_past_coords, NULL_VECTOR, NULL_VECTOR);
+	if(IsRobot(client, ROBOT_NAME) && IsPlayerAlive(client) && !IsCloaked(client))TeleportEntity(client, g_past_coords, NULL_VECTOR, NULL_VECTOR);
 }
 
 void GetCoordinates (int client)
@@ -349,4 +354,17 @@ stock void TE_Particle(char[] Name, float origin[3] = NULL_VECTOR, float start[3
         }
     }
     TE_SendToAll(delay);
+}
+bool IsCloaked(client)
+{
+    if (TF2_IsPlayerInCondition(client, TFCond_Cloaked) ||
+         TF2_IsPlayerInCondition(client, TFCond_CloakFlicker) || 
+        TF2_IsPlayerInCondition(client, TFCond_Stealthed) ||
+        TF2_IsPlayerInCondition(client, TFCond_StealthedUserBuffFade) ||
+        TF2_IsPlayerInCondition(client, TFCond_DeadRingered))
+    {
+        return true;
+    }
+    
+    return false;
 }
