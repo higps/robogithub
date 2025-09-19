@@ -31,9 +31,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if (IsRobot(attacker, ROBOT_NAME) && damagecustom != 0)
 	{
 
-		SpawnBombs(victim, attacker);
-        SpawnBombs(attacker, attacker);
 
+
+
+
+		if (damagecustom == TF_CUSTOM_HEADSHOT || GetEntPropFloat(weapon, Prop_Send, "m_flChargedDamage") >= 90.0)
+		{
+
+			SpawnBombs(victim, attacker);
+
+		} 
 
 	}
 
@@ -43,51 +50,51 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 void SpawnBombs(int client, int attacker)
 {
-    
-    int team = GetClientTeam(attacker);
-    float pos[3], vel[3];// ang[3];
-    int children = 1;
-    float speed = 250.0;
+	
+	int team = GetClientTeam(attacker);
+	float pos[3], vel[3];// ang[3];
+	int children = 1;
+	float speed = 250.0;
 
 
-    GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
-    GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
-    
+	GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
+	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
+	
 
-    pos[2] += 80.0;
-    for (int i = 1; i <= children; i++)
-    {
-        int child = CreateEntityByName("tf_projectile_jar");
-        
-        
-        float child_vel[3];
-        float child_ang[3];
+	pos[2] += 80.0;
+	for (int i = 1; i <= children; i++)
+	{
+		int child = CreateEntityByName("tf_projectile_jar");
+		
+		
+		float child_vel[3];
+		float child_ang[3];
 
-        //Prevent child grenades from detonating on contact
-        SetEntProp(child, Prop_Send, "m_bTouched", 1);
+		//Prevent child grenades from detonating on contact
+		SetEntProp(child, Prop_Send, "m_bTouched", 1);
 
-        //Set properties
-        //SetEntProp(child, Prop_Send, "m_bCritical", view_as<int>(crit));
-        SetEntPropEnt(child, Prop_Data, "m_hOwnerEntity", attacker);
-        SetEntPropEnt(child, Prop_Data, "m_hThrower", attacker);
+		//Set properties
+		//SetEntProp(child, Prop_Send, "m_bCritical", view_as<int>(crit));
+		SetEntPropEnt(child, Prop_Data, "m_hOwnerEntity", attacker);
+		SetEntPropEnt(child, Prop_Data, "m_hThrower", attacker);
 
-        
-        // SetEntPropFloat(child, Prop_Send, "m_flDamage", 100.0);
-        // SetEntPropFloat(child, Prop_Send, "m_flModelScale", 1.2);
-        
-        GetClientEyeAngles(client, child_ang);
-        
-        GetAngleVectors(child_ang, child_vel, NULL_VECTOR, NULL_VECTOR);
-        
-        ScaleVector(child_vel, speed);
-            
-        //child_vel[2] = FloatAbs(child_vel[2]);
+		
+		// SetEntPropFloat(child, Prop_Send, "m_flDamage", 100.0);
+		// SetEntPropFloat(child, Prop_Send, "m_flModelScale", 1.2);
+		
+		GetClientEyeAngles(client, child_ang);
+		
+		GetAngleVectors(child_ang, child_vel, NULL_VECTOR, NULL_VECTOR);
+		
+		ScaleVector(child_vel, speed);
+			
+		//child_vel[2] = FloatAbs(child_vel[2]);
 
-        SetEntProp(child, Prop_Send, "m_iTeamNum", team);
-        SetEntProp(child, Prop_Send, "m_bIsLive", 1);
+		SetEntProp(child, Prop_Send, "m_iTeamNum", team);
+		SetEntProp(child, Prop_Send, "m_bIsLive", 1);
 
-        TeleportEntity(child, pos, child_ang, child_vel);
-        DispatchSpawn(child);
-        //SDKHook(child, SDKHook_Touch, OnMirvOverlap);
-    }
+		TeleportEntity(child, pos, child_ang, child_vel);
+		DispatchSpawn(child);
+		//SDKHook(child, SDKHook_Touch, OnMirvOverlap);
+	}
 }
