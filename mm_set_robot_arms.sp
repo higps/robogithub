@@ -36,6 +36,12 @@ char g_ArmsModels[10][] = {
     SPY_ARMS,                   // 8 - TFClass_Spy
     ENGI_ARMS                   // 9 - TFClass_Engineer
 };
+
+char workshopMaps[][] = 
+{
+	"workshop/2649883639"
+};
+
 public Plugin myinfo = {
 	name = "MM Arm",
 	author = "Sandy, Heavy Is GPS | Bmod.TF",
@@ -43,19 +49,38 @@ public Plugin myinfo = {
 	version = "1.0.0",
 	url = ""
 };
-
+bool g_b_robot_hands = false;
 public void OnMapStart()
 {
-	
+	g_b_robot_hands = false;
 	PrintToChatAll("PLUGIN!");
 		for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i)) {
 			OnClientPutInServer(i);
 		}
 	}
+
+    // Check if the current map is in the list
+    char mapName[PLATFORM_MAX_PATH];
+    GetCurrentMap(mapName, sizeof(mapName));
+
+    int pos = StrContains(mapName, ".ugc");
+    if (pos != -1)
+    {
+        char workshopID[32];
+        strcopy(workshopID, sizeof(workshopID), mapName[pos + 4]); // everything after ".ugc"
+        PrintToServer("Workshop map detected! ID: %s", workshopID);
+		g_b_robot_hands = true;
+    }
+    else
+    {
+        PrintToServer("Map %s is not a workshop map.", mapName);
+		g_b_robot_hands = false;
+    }
 }
 
 public void OnPluginStart() {
+	g_b_robot_hands = false;
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i)) {
 			OnClientPutInServer(i);
@@ -69,34 +94,36 @@ public void OnClientPutInServer(int client) {
 
 public Action OnWeaponEquip(int client, int weapon) {
 
-	if (IsValidEntity(weapon) && IsValidHumanClient(client) && IsAnyRobot(client)){
+	if (g_b_robot_hands)
+	{
+		if (IsValidEntity(weapon) && IsValidHumanClient(client) && IsAnyRobot(client)){
 
 
-    // if (class <= TFClass_Unknown || class > TFClass_Engineer)
-    // {
-    //     PrintToChatAll("Invalid class for client %d", client);
-    // }
+		// if (class <= TFClass_Unknown || class > TFClass_Engineer)
+		// {
+		//     PrintToChatAll("Invalid class for client %d", client);
+		// }
 
-    // PrintToChatAll("Client %N's class: %d, model: %s", client, class, g_ArmsModels[class]);
+		// PrintToChatAll("Client %N's class: %d, model: %s", client, class, g_ArmsModels[class]);
 
-		TFClassType class = TF2_GetPlayerClass(client);
-		PrecacheModel(g_ArmsModels[class]);
-		// PrintToChatAll("Setting Model for %N", client);
-		SetEntityModel(weapon, g_ArmsModels[class]);
-		SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
-		SetEntProp(weapon, Prop_Send, "m_iViewModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
+			TFClassType class = TF2_GetPlayerClass(client);
+			PrecacheModel(g_ArmsModels[class]);
+			// PrintToChatAll("Setting Model for %N", client);
+			SetEntityModel(weapon, g_ArmsModels[class]);
+			SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
+			SetEntProp(weapon, Prop_Send, "m_iViewModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
 
 
-	    // PrintToChatAll("Client %N's class: %d, model: %s", client, class, g_ArmsModels[class]);
+			// PrintToChatAll("Client %N's class: %d, model: %s", client, class, g_ArmsModels[class]);
 
-		// // PrecacheModel(TEST);
-		// // PrintToChatAll("Setting Model for %N", client);
-		// SetEntityModel(weapon, TEST);
-		// SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
-		// SetEntProp(weapon, Prop_Send, "m_iViewModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
-		
+			// // PrecacheModel(TEST);
+			// // PrintToChatAll("Setting Model for %N", client);
+			// SetEntityModel(weapon, TEST);
+			// SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
+			// SetEntProp(weapon, Prop_Send, "m_iViewModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
+			
+		}
 	}
-	
 	return Plugin_Continue;
 }
 

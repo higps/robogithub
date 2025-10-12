@@ -1466,7 +1466,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsElectric(Weapon3))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons{orange} reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons{orange} reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Damage drains shield and banner duration",chat_display, g_ElectricStunDuration);
             }
         }
         if (TF2_GetPlayerClass(client) == TFClass_DemoMan)
@@ -1929,7 +1929,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             }
             if (IsElectric(Weapon1) || IsElectric(Weapon2))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons{orange} reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Your electric weapons{orange} reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Damage drains shield and banner duration",chat_display, g_ElectricStunDuration);
             }
             if (IsShotGun(Weapon1))
             {
@@ -2163,7 +2163,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsElectric(Weapon1) || IsElectric(Weapon2))
             {
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Electric weapons {orange}reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Shortens Enemy MvM shield duration",chat_display, g_ElectricStunDuration);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Electric weapons {orange}reduce robot heal rate{teamcolor} for %0.1f seconds on hit. Damage drains shield and banner duration",chat_display, g_ElectricStunDuration);
             }
             if (IsReserveShooter(Weapon2))
             {
