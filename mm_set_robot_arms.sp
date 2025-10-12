@@ -37,11 +37,6 @@ char g_ArmsModels[10][] = {
     ENGI_ARMS                   // 9 - TFClass_Engineer
 };
 
-char workshopMaps[][] = 
-{
-	"workshop/2649883639"
-};
-
 public Plugin myinfo = {
 	name = "MM Arm",
 	author = "Sandy, Heavy Is GPS | Bmod.TF",
@@ -49,11 +44,18 @@ public Plugin myinfo = {
 	version = "1.0.0",
 	url = ""
 };
+
+char workshopMaps[][] = 
+{
+	"workshop/2649883639",
+	"test_mm_assets"
+};
+
 bool g_b_robot_hands = false;
 public void OnMapStart()
 {
 	g_b_robot_hands = false;
-	PrintToChatAll("PLUGIN!");
+	// PrintToChatAll("PLUGIN!");
 		for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i)) {
 			OnClientPutInServer(i);
@@ -61,23 +63,79 @@ public void OnMapStart()
 	}
 
     // Check if the current map is in the list
+    // char mapName[PLATFORM_MAX_PATH];
+    // GetCurrentMap(mapName, sizeof(mapName));
+
+    // int pos = StrContains(mapName, ".ugc");
+    // if (pos != -1)
+    // {
+    //     char workshopID[32];
+    //     strcopy(workshopID, sizeof(workshopID), mapName[pos + 4]); // everything after ".ugc"
+    //     PrintToServer("Workshop map detected! ID: %s", workshopID);
+	// 	g_b_robot_hands = true;
+    // }
+    // else
+    // {
+    //     PrintToServer("Map %s is not a workshop map.", mapName);
+	// 	g_b_robot_hands = false;
+    // }
+	    // Whitelisted maps (normal + workshop)
+    char whitelist[][] = 
+    {
+        "workshop/2649883639",
+        "test_mm_assets"
+    };
+
     char mapName[PLATFORM_MAX_PATH];
     GetCurrentMap(mapName, sizeof(mapName));
 
-    int pos = StrContains(mapName, ".ugc");
-    if (pos != -1)
+    char normalizedName[PLATFORM_MAX_PATH];
+    NormalizeMapName(mapName, normalizedName, sizeof(normalizedName));
+
+    bool isWhitelisted = false;
+    for (int i = 0; i < sizeof(whitelist); i++)
     {
-        char workshopID[32];
-        strcopy(workshopID, sizeof(workshopID), mapName[pos + 4]); // everything after ".ugc"
-        PrintToServer("Workshop map detected! ID: %s", workshopID);
+        if (StrEqual(normalizedName, whitelist[i], false))
+        {
+            isWhitelisted = true;
+            break;
+        }
+    }
+
+    if (isWhitelisted)
+    {
+        PrintToServer("Map %s (normalized: %s) is in whitelist!", mapName, normalizedName);
 		g_b_robot_hands = true;
     }
     else
     {
-        PrintToServer("Map %s is not a workshop map.", mapName);
+        PrintToServer("Map %s (normalized: %s) is NOT in whitelist.", mapName, normalizedName);
 		g_b_robot_hands = false;
     }
 }
+
+/**
+ * Normalizes map name:
+ * - Extracts workshop ID if `.ugc` present → "workshop/XXXXXXXXX"
+ * - Otherwise keeps the plain map name
+ */
+void NormalizeMapName(const char[] mapName, char[] output, int maxLen)
+{
+    int pos = StrContains(mapName, ".ugc");
+    if (pos != -1)
+    {
+        // Extract number after ".ugc"
+        char id[32];
+        strcopy(id, sizeof(id), mapName[pos + 4]); // skip ".ugc"
+        Format(output, maxLen, "workshop/%s", id);
+    }
+    else
+    {
+        // Normal map — copy as-is
+        strcopy(output, maxLen, mapName);
+    }
+}
+
 
 public void OnPluginStart() {
 	g_b_robot_hands = false;
