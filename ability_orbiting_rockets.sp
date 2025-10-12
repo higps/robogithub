@@ -111,10 +111,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 {
 	if (!(StrContains(classname, "tf_projectile_rocket"))) // Only rockets
 	{
-		RequestFrame(ProjectileSpawned, ConstructObject(entity).Reference);
+		CreateTimer(0.1, DelayRocketSpawn, entity);
+		
 	}
 }
-
+public Action DelayRocketSpawn (Handle timer, int entity)
+{
+	if (IsValidEntity(entity))
+	{
+	RequestFrame(ProjectileSpawned, ConstructObject(entity).Reference);
+	}
+}
 public void OnEntityDestroyed(int entity)
 {
 	if (entity <= 0 || entity > 2048) return; //prevent ent refs being used

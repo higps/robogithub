@@ -1148,17 +1148,17 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                     // PrintToChatAll("WAS HEAVY OR MEDIC");
                     if (HasEntProp(victim, Prop_Send, "m_flRageMeter"))
                     {
-                        
+
 
                         float currentrage = GetEntPropFloat(victim, Prop_Send, "m_flRageMeter");
-                        
+                        float rage_removal = damage / 40.0;
                         if (GetEntProp(victim, Prop_Send, "m_bRageDraining"))
                         {
-                            // PrintToChatAll("RAGE %f: Draining %i", rage, ragedraining);
+                            // PrintToChatAll("RAGE %f: Draining %f", currentrage, rage_removal);
                             EmitSoundToAll(POMSON_DRAIN_SOUND, victim);
                             EmitSoundToClient(victim, POMSON_DRAIN_SOUND);
                             EmitSoundToClient(attacker, POMSON_DRAIN_SOUND);
-                            SetEntPropFloat(victim, Prop_Send, "m_flRageMeter", currentrage - g_electric_rage_reduction);
+                            SetEntPropFloat(victim, Prop_Send, "m_flRageMeter", currentrage - rage_removal);
                         }
                         
                     }
@@ -1614,19 +1614,6 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Minigun deal {orange}-%0.00f %%%% damage{teamcolor} vs robots",chat_display, LessIsMore(stat1));
             }
             
-            // if (IsStockMinigun(Weapon1))
-            // {
-            //     stat1 = 0.7;
-            //     TF2Attrib_SetByName(Weapon1, "dmg from melee increased", stat1);
-            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Minigun: {orange}+%0.00f %%%% melee damage resistance while active",chat_display, LessIsMore(stat1));
-            // }
-
-            // if (IsBrassBeast(Weapon1))
-            // {
-            //     Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Brass Beast: {orange}Gain up to +15%%%% damage bonus on damage done. Decays when no damage is done",chat_display);
-            //     TF2CustAttr_SetString(Weapon1, "damage increase mult on hit", "amount=0.001 max=0.15 decay_start=0.2 decay_per_second=0.01 reset_on_kill=0 show_on_hud=1");
-            // }
-
             if (IsNatascha(Weapon1))
             {
                 stat1 = 3.0;
@@ -1917,9 +1904,10 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.0;
                 TF2Attrib_SetByName(Weapon4, "bidirectional teleport", stat1);
+                TF2Attrib_RemoveByName(Weapon2,"speed_boost_on_hit");
                 TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.15");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Engineer Pistol: Increased +15%%%% damage bonus vs robots below 30%%%% HP",chat_display);
-                TF2Attrib_RemoveByName(Weapon2,"speed_boost_on_hit");
+                
             }else
             {
                 TF2Attrib_RemoveByName(Weapon4, "bidirectional teleport");
