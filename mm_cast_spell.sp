@@ -66,30 +66,33 @@ bool HasStat(int attacker)
 	return true;
 }
 bool isready[MAXPLAYERS + 1] = {false,...}; 
-public Action OnClientCommandKeyValues(int client, KeyValues kvCommand)
-{
-    char sCommand[64];
-    kvCommand.GetSectionName(sCommand,sizeof(sCommand));
-    if (strcmp(sCommand,"+use_action_slot_item_server") == 0)//The client pressed his action key (Default:H)
-    {
-		//Add some logic here to check for if the number of charges was changed
-        if(HasStat(client))
-		{
+bool isrecharging[MAXPLAYERS + 1] = {false,...}; 
+// public Action OnClientCommandKeyValues(int client, KeyValues kvCommand)
+// {
+//     char sCommand[64];
+//     kvCommand.GetSectionName(sCommand,sizeof(sCommand));
+//     // if (strcmp(sCommand,"+use_action_slot_item_server") == 0)//The client pressed his action key (Default:H)
+// 	if (strcmp(sCommand,"calscale") == 0)//The client pressed his action key (Default:H)
+//     {
+// 		//Add some logic here to check for if the number of charges was changed
+//         if(HasStat(client))
+// 		{
 
-				//PrintToChatAll("%N Had charges: %i",client, g_player_charges[client])
-				if(g_player_charges[client]>0)
-				{
-					g_button_held[client] = true;
-					g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-					isready[client] = false;
-				}
-			}else
-			{
-			//PrintToChatAll("%N Had no charge",client );
-			g_button_held[client] = false;
-			}	
-		}
-}
+// 				PrintToChatAll("%N Had charges: %i",client, g_player_charges[client])
+// 				if(g_player_charges[client]>0)
+// 				{
+// 					g_button_held[client] = true;
+// 					g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+// 					isready[client] = false;
+					
+// 				}
+// 			}else
+// 			{
+// 			//PrintToChatAll("%N Had no charge",client );
+// 			g_button_held[client] = false;
+// 			}	
+// 		}
+// }
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if (HasStat(client))
@@ -118,6 +121,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		// UpdateCharge(client);
 		g_skill = GetEngineTime();
 		DrawHUD(client);
+
 		
 	}
 	return Plugin_Continue;
@@ -140,15 +144,15 @@ public void Recharge_Spell(int client) {
     }
 	
 
-		int ent = FindSpellbook(client);
-		if (ent != -1) {
-			SetEntProp(ent, Prop_Send, "m_iSpellCharges", g_stat_Charges[client]);
-			SetEntProp(ent, Prop_Send, "m_iSelectedSpellIndex", index);
-			g_book[client] = ent;
-		}else
-		{
-			g_book[client] = -1;
-		}
+	int ent = FindSpellbook(client);
+	if (ent != -1) {
+		SetEntProp(ent, Prop_Send, "m_iSpellCharges", g_stat_Charges[client]);
+		SetEntProp(ent, Prop_Send, "m_iSelectedSpellIndex", index);
+		g_book[client] = ent;
+	}else
+	{
+		g_book[client] = -1;
+	}
 
 
 
@@ -159,11 +163,11 @@ public int FindSpellbook(int client) {
 	while ((i = FindEntityByClassname(i, "tf_weapon_spellbook")) != -1) {
 		if (IsValidEntity(i) && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client && !GetEntProp(i, Prop_Send, "m_bDisguiseWeapon"))
 		{
-			//PrintToChatAll("Book found %N", client);
+			// PrintToChatAll("Book found %N", client);
 			return i;
 		}
 	}
-	//PrintToChatAll("No book found for %N", client);
+	// PrintToChatAll("No book found for %N", client);
 	return -1;
 }
 
@@ -179,6 +183,18 @@ void DrawHUD(int client)
 	{
 		g_player_charges[client] = GetEntProp(g_book[client], Prop_Send, "m_iSpellCharges");
 	}
+
+	if (!isready[client] && iCountDown <= 0)
+	{
+	TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
+	// PrintToChatAll("Ready!");
+	isready[client] = true;	
+	// RequestFrame(Recharge_Spell, client);
+	Recharge_Spell(client);
+	
+	}
+
+
 	if(!IsValidEntity(g_book[client])) g_book[client] = FindSpellbook(client);
 	// PrintToChatAll("Gcond %i", g_Cond);
     if (TF2_IsPlayerInCondition(client, g_Cond))
@@ -194,32 +210,46 @@ void DrawHUD(int client)
         Format(SpellText, sizeof(SpellText), "%s", Spell_String[g_SpellOnCond]);
     }
 
+	// PrintCenterText(client, "Charges: %i", g_player_charges[client] );
+	//When all charges are used
+	if (g_player_charges[client] <= 0 && !isrecharging[client])
+	{
+		g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
+		isrecharging[client] = true;
+		isready[client] = false;	
+	}
+
 	Format(sHUDText, sizeof(sHUDText), "%s: %i   ", SpellText, iCountDown);
 	// PrintToChatAll("Countdown %i for %N", iCountDown, client);
+
+	// if (g_player_charges[client] <= 0)
+	// {
+	// 	isready[client] = true;	
+	// }
+
+
 	if(iCountDown <= 0)
 	{
-	Format(sHUDText, sizeof(sHUDText), "%s: Ready!\nActivate With\nAction Slot!", SpellText);
 
+	Format(sHUDText, sizeof(sHUDText), "%s: Ready!\nActivate With\nAction Slot!", SpellText);
+	
+	//We are done recharging
+	isrecharging[client] = false;
 	SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
 	//Give The Spell
 //	GiveSpellCharge(client);
-	if (g_player_charges[client]< 1)RequestFrame(Recharge_Spell, client);
 
+	//Start the recharge of the spell and charges
 	} else {
+
 		SetHudTextParams(1.0, 0.8, 0.5, 255, 255, 255, 255);
-		
 		
 	}
 	
 	ShowHudText(client, -2, sHUDText);
 
 
-	if (!isready[client] && iCountDown <= 0)
-	{
-	TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
-	// PrintToChatAll("Ready!");
-	isready[client] = true;	
-	}
+
 
 	// Old code where the button did the attack
 	// if (g_button_held[client] && iCountDown <= 0 && IsPlayerAlive(client))
