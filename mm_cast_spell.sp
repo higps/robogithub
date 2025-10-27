@@ -230,7 +230,11 @@ void DrawHUD(int client)
 
 	if(iCountDown <= 0)
 	{
-
+		
+	if (g_stat_Charges[client] > 1)
+	{
+		Format(SpellText, sizeof(SpellText), "\nCharges: %i/%i", g_player_charges[client],g_stat_Charges[client]);
+	}
 	Format(sHUDText, sizeof(sHUDText), "%s: Ready!\nActivate With\nAction Slot!", SpellText);
 	
 	//We are done recharging

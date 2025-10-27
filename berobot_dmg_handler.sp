@@ -67,7 +67,7 @@ int g_EngineerRevengeCrits[MAXPLAYERS + 1] = {0, ...};
 
 float g_Attribute_Display_CollDown = 10.0;
 float g_Attribute_Display[MAXPLAYERS + 1] = {0.0, ...};
-bool b_Attribute_Display[MAXPLAYERS + 1] = {true, ...};
+bool b_Attribute_Display[MAXPLAYERS + 1] = {false, ...};
 
 float g_loose_cannon_timer = 3.0;
 float g_loose_cannon_hit[MAXPLAYERS + 1] = {0.0, ...};
@@ -129,6 +129,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
+    
     LoadTranslations("common.phrases");
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
     SMLogTag(SML_INFO, "berobot_dmg_handler started at %i", GetTime());
@@ -274,6 +275,10 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     
     if (!IsAnyRobot(client))
     {
+        if(GetRandomInt(0,4) == 4)
+        {
+        MC_PrintToChatEx(client, client, "{teamcolor}Type {orange}!mminfo {teamcolor}or {orange}!mystats {teamcolor}to see custom buffs and staff for your class and weapons!");
+        }
         if (HasAirStrike(client))
         {
             g_AirStrikeDamage[client] = 0.0; 
@@ -1072,7 +1077,17 @@ public Action GetClassBaseHP(int iClient)
     }
     return 125;
 } 
+float GetPlayerSpeed(int client)
+{
+    float velocity[3];
+    GetEntPropVector(client, Prop_Data, "m_vecVelocity", velocity);
 
+    return SquareRoot(
+        velocity[0] * velocity[0] +
+        velocity[1] * velocity[1] +
+        velocity[2] * velocity[2]
+    );
+}
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
     // if (!g_Enable)
@@ -1084,7 +1099,15 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     if (!IsValidClient(attacker))
         return Plugin_Continue;
     
-       
+    if (IsBabyFacesBlaster(weapon))
+    {
+        
+        float speed = GetPlayerSpeed(attacker);
+        float dmg_bonus = ((RoundToNearest(speed/20.0))/100.0)+1.0;
+        PrintCenterText(attacker, "SPD: %.2f\nDMG: +%.0f%%", speed,(dmg_bonus-1.0)*100);
+        damage *= dmg_bonus;
+        return Plugin_Handled;
+    }
 
     if (IsAnyRobot(victim))
     {
@@ -1840,6 +1863,10 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 TF2CustAttr_SetString(Weapon1, "tag last enemy hit", "8.0");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Backscatter:{orange} On Hit: Tag enemies for 8 seconds",chat_display);
+            }
+            if (IsBabyFacesBlaster(Weapon1))
+            {
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Baby Face's Blaster:{orange} Deal damage based on speed",chat_display);
             }
 
             if (IsCandyCane(Weapon3))
@@ -3099,6 +3126,21 @@ bool IsCritACola(int weapon){
 	{
 		//If other allclass are added, add here
 	case 163: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+bool IsBabyFacesBlaster(int weapon){
+	if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other allclass are added, add here
+	case 772: 
 		{
 			return true;
 		}

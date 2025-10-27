@@ -45,12 +45,6 @@ public Plugin myinfo = {
 	url = ""
 };
 
-char workshopMaps[][] = 
-{
-	"workshop/2649883639",
-	"test_mm_assets"
-};
-
 bool g_b_robot_hands = false;
 public void OnMapStart()
 {
@@ -82,7 +76,12 @@ public void OnMapStart()
 	    // Whitelisted maps (normal + workshop)
     char whitelist[][] = 
     {
+        //Test
         "workshop/2649883639",
+        //Calamity
+        "workshop/2897811023",
+        //Upward
+        "workshop/3156008215",
         "test_mm_assets"
     };
 

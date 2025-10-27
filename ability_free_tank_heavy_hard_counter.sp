@@ -8,7 +8,7 @@
 #include <tf_ontakedamage>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Burglar"
+#define ROBOT_NAME	"Hard Counter"
 
 enum eRuneTypes
 {
