@@ -2454,29 +2454,31 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
 
 
 
-    while (g_Volunteers.Length == g_RoboCapTeam)
-    {
-        //Only type this one time when damage value is restarted
-      if (g_f_Damage_Bonus == -1.0 && (g_b_changed_dmg || !g_b_broadcast_msg))
-      {
-        // PrintCenterTextAll("Alert: Robot Power Restored\nRobots take normal damage");
-        MC_PrintToChatAll("{magenta}Alert: Balance Restored\nRobots take normal damage");
-        g_b_broadcast_msg = true;
-      } 
+    // while (g_Volunteers.Length == g_RoboCapTeam)
+    // {
+    // //     //Only type this one time when damage value is restarted
+    // //   if (g_f_Damage_Bonus == -1.0 && (g_b_changed_dmg || !g_b_broadcast_msg))
+    // //   {
+    // //     // PrintCenterTextAll("Alert: Robot Power Restored\nRobots take normal damage");
+    // //     MC_PrintToChatAll("{magenta}Alert: Balance Restored\nRobots take normal damage");
+    // //     g_b_broadcast_msg = true;
+    // //   } 
       
 
-        CalculateDamageModifier(dmg_method_on_target);
-        if(g_f_Damage_Bonus != -1.0 && (g_b_changed_dmg || !g_b_broadcast_msg))
-        {
-            char word[5]; // Assuming "more" or "less" won't exceed 4 characters
-            GetDamageWord(word, sizeof(word));
-            MC_PrintToChatAll("{magenta}Alert: Player Imbalance detected\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
-            // PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100,word);
-            g_b_broadcast_msg = true;
-        }
+    // //     CalculateDamageModifier(dmg_method_on_target);
+    // //     if(g_f_Damage_Bonus != -1.0 && (g_b_changed_dmg || !g_b_broadcast_msg))
+    // //     {
+    // //         // PrintToChatAll("Too many humans2?");
+    // //         char word[5]; // Assuming "more" or "less" won't exceed 4 characters
+    // //         GetDamageWord(word, sizeof(word));
+    // //         // CreateChampion();
+    // //         MC_PrintToChatAll("{magenta}Alert: Player Imbalance detected\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
+    // //         // PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100,word);
+    // //         g_b_broadcast_msg = true;
+    // //     }
         
-        break;
-    }
+    //     break;
+    // }
 
 
 
@@ -2484,39 +2486,40 @@ int Native_EnsureRobotCount(Handle plugin, int numParams)
     {
         bool success = AddRandomVolunteer();
         SMLogTag(SML_VERBOSE, "adding random volunteer succcess: %b", success);
-        
-        CalculateDamageModifier(dmg_method_off_target);
-        // PrintToChatAll("Previous %f, g_f_dmg %f", g_f_previous_dmg_bonus, g_f_Damage_Bonus);
+        // PrintToChatAll("Too many humans2?");
+    //     CalculateDamageModifier(dmg_method_off_target);
+    //     // PrintToChatAll("Previous %f, g_f_dmg %f", g_f_previous_dmg_bonus, g_f_Damage_Bonus);
 
-        if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)
-        {
-            char word[5]; // Assuming "more" or "less" won't exceed 4 characters
-            GetDamageWord(word, sizeof(word));
-            MC_PrintToChatAll("{magenta}Alert: Player Imbalance detected!\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
-            // PrintCenterTextAll("Alert: High Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100, word);
-            g_b_broadcast_msg = true;
-        }
+    //     if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)
+    //     {
+    //         char word[5]; // Assuming "more" or "less" won't exceed 4 characters
+    //         GetDamageWord(word, sizeof(word));
+    //         MC_PrintToChatAll("{magenta}Alert: Player Imbalance detected!\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
+    //         // PrintCenterTextAll("Alert: High Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100, word);
+    //         g_b_broadcast_msg = true;
+    //     }
         
         if (!success)
             break;
     }
 
 
-    while (g_Volunteers.Length > g_RoboCapTeam)
-    {
-        CalculateDamageModifier(dmg_method_off_target);
-        
-        if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)
-        {
-            char word[5]; // Assuming "more" or "less" won't exceed 4 characters
-            GetDamageWord(word, sizeof(word));
-            MC_PrintToChatAll("{magenta}Player Imbalance detected!\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
-            // PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100, word);
-            g_b_broadcast_msg = true;
-        }
-        break;
-    }
+    // while (g_Volunteers.Length > g_RoboCapTeam)
+    // {
+    //     CalculateDamageModifier(dmg_method_off_target);
+    //     if((g_b_changed_dmg || !g_b_broadcast_msg) && g_f_Damage_Bonus != -1.0)
+    //     {
+    //         char word[5]; // Assuming "more" or "less" won't exceed 4 characters
+    //         GetDamageWord(word, sizeof(word));
+    //         MC_PrintToChatAll("{magenta}Player Imbalance detected!\nRobots take {orange}%.0f %% %s {magenta}damage!", (g_f_Damage_Bonus-1.0)*100,word);
+    //         // PrintCenterTextAll("Alert: Low Power!\nRobots take %.0f %% %s damage!", (g_f_Damage_Bonus-1.0)*100, word);
+    //         g_b_broadcast_msg = true;
+    //     }
+    //     break;
+    // }
 }
+
+
 
 stock void GetDamageWord(char[] word, int maxsize)
 {
