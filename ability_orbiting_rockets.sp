@@ -9,6 +9,9 @@
 		orbit-hide-core - If orbit-type is set to 2, the core rocket will be hidden
 		orbit-speed - How fast the child rocket orbit around the center
 		orbit-count - How many child rockets to spawn
+		delay-spawn - If non-zero, delays the spawn of the orbiting rockets by this value
+		acceleration - Scales speed of rocket by this value every 0.1s
+		max-rocket-speed - If acceleration is non-zero, speed will not scale above or below this value (if acceleration is negative)
 */
 
 #pragma semicolon 1
@@ -25,7 +28,7 @@ public Plugin MyInfo =
 {
 	name = "Orbiting Rockets",
 	author = "IvoryPal",
-	description = "Fired will orbit their path"
+	description = "Fired rockets will orbit their path"
 };
 
 enum struct FProjectile
@@ -42,6 +45,9 @@ bool ChildRocket[2049] = {false, ...};
 int OrbitType[MAXPLAYERS+1] = {0, ...};
 int OrbitCount[MAXPLAYERS+1] = {1, ...};
 bool HideCore[MAXPLAYERS+1] = {false, ...};
+float DelaySpawn[MAXPLAYERS+1] = {0.0, ...};
+float Acceleration[MAXPLAYERS+1] = {0.0, ...};
+float MaxSpeed[MAXPLAYERS+1] = {1100.0, ...};
 
 bool HasStat(int client, int weapon)
 {
@@ -65,6 +71,9 @@ bool HasStat(int client, int weapon)
 	HideCore[client] = view_as<bool>(ReadIntVar(stat_buffer, "orbit-hide-core"));
 	OrbitSpeed[client] = ReadFloatVar(stat_buffer, "orbit-speed", 250.0);
 	OrbitCount[client] = ReadIntVar(stat_buffer, "orbit-count", 1);
+	DelaySpawn[client] = ReadFloatVar(stat_buffer, "spawn-delay", 0.0);
+	Acceleration[client] = ReadFloatVar(stat_buffer, "acceleration", 0.0);
+	MaxSpeed[client] = ReadFloatVar(stat_buffer, "max-rocket-speed", 1100.0);
 
 	if (OrbitType[client] < 1)
 	{
@@ -104,6 +113,7 @@ Action CmdOrbitRockets(int client, int args)
 public void OnClientPostAdminCheck(int client)
 {
 	OrbitRadius[client] = 50.0; // Reset to default
+	OrbitSpeed[client] = 250.0;
 	ClientHasOrbit[client] = false;
 }
 
@@ -159,7 +169,7 @@ void ProjectileSpawned(int projRef)
 	{
 		if (ValidLauncher(proj) && (HasStat(owner.Get(), launcher.Get()) || ClientHasOrbit[owner.Get()]))
 		{
-			SetupProjectile(proj, Projectile[projId], owner);
+			SetupProjectile(proj, owner);
 		}
 	}
 }
@@ -172,7 +182,7 @@ bool ValidLauncher(FObject entity)
 	return weapon.Valid();
 }
 
-void SetupProjectile(FObject entity, FProjectile proj, FClient owner)
+void SetupProjectile(FObject entity, FClient owner)
 {
 	int ownerId = owner.Get();
 	int projId = entity.Get();
@@ -182,6 +192,42 @@ void SetupProjectile(FObject entity, FProjectile proj, FClient owner)
 	entity.SetPropFloat(Prop_Send, "m_flModelScale", 1.25);
 
 	SDKHook(projId, SDKHook_Touch, OnRocketOverlap);
+
+	if (DelaySpawn[ownerId] >= 0.1)
+	{
+		DataPack pack = new DataPack();
+		pack.WriteCellArray(entity, sizeof FObject);
+		pack.WriteCell(original);
+		pack.WriteCellArray(owner, sizeof FClient);
+		CreateTimer(DelaySpawn[ownerId], DelayedSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
+	}
+	else
+	{
+		CreateProjectileRing(entity, original, Projectile[projId], owner);
+	}
+}
+
+Action DelayedSpawn(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	FObject entity;
+	FClient owner;
+	pack.ReadCellArray(entity, sizeof FObject);
+	URocket rocket =pack.ReadCell();
+	pack.ReadCellArray(owner, sizeof FClient);
+	delete pack;
+
+	if (entity.Valid() && owner.Valid())
+	{
+		CreateProjectileRing(entity, rocket, Projectile[entity.Get()], owner);
+	}
+
+	return Plugin_Stop;
+}
+
+void CreateProjectileRing(FObject entity, URocket original, FProjectile proj, FClient owner)
+{
+	int ownerId = owner.Get();
 
 	FTransform spawn;
 	spawn.Position = entity.GetPosition();
@@ -256,7 +302,62 @@ void SetupProjectile(FObject entity, FProjectile proj, FClient owner)
 
 			proj.Rockets.Push(rocket.GetObject().Reference);
 		}
+
+		if (Acceleration[ownerId] > 1.001 || Acceleration[ownerId] < 0.999)
+		{
+			DataPack pack = new DataPack();
+			pack.WriteCell(owner.GetReference());
+			pack.WriteCell(original);
+			CreateTimer(0.1, RocketUpdateSpeed, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		}
 	}
+}
+
+Action RocketUpdateSpeed(Handle timer, DataPack pack)
+{
+	if (pack)
+	{
+		pack.Reset();
+		FClient owner;
+		owner.SetReference(pack.ReadCell());
+		URocket rocket = pack.ReadCell();
+
+		float accel = Acceleration[owner.Get()];
+
+		if (owner.Valid())
+		{
+			Action result = Plugin_Continue;
+			float speed = rocket.Speed * accel;
+			float max = MaxSpeed[owner.Get()];
+
+			if (accel > 1.001)
+			{
+				if (speed >= max)
+				{
+					speed = max;
+					delete pack;
+					result = Plugin_Stop;
+				}
+			}
+			else if (accel < 0.999)
+			{
+				if (speed <= max)
+				{
+					speed = max;
+					delete pack;
+					result = Plugin_Stop;
+				}
+			}
+			rocket.FireProjectile(rocket.GetObject().GetAngles(), speed);
+
+			return result;
+		}
+
+		delete pack;
+		return Plugin_Stop;
+	}
+
+	return Plugin_Stop;
 }
 
 Action OnRocketOverlap(int rocketId, int otherId)
