@@ -45,8 +45,8 @@ bool ChildRocket[2049] = {false, ...};
 int OrbitType[MAXPLAYERS+1] = {0, ...};
 int OrbitCount[MAXPLAYERS+1] = {1, ...};
 bool HideCore[MAXPLAYERS+1] = {false, ...};
-float DelaySpawn[MAXPLAYERS+1] = {0.0, ...};
-float Acceleration[MAXPLAYERS+1] = {0.0, ...};
+float DelaySpawn[MAXPLAYERS+1] = {0.1, ...};
+float Acceleration[MAXPLAYERS+1] = {1.0, ...};
 float MaxSpeed[MAXPLAYERS+1] = {1100.0, ...};
 
 bool HasStat(int client, int weapon)
@@ -98,23 +98,25 @@ public void OnPluginStart()
 		}
 	}
 
-	//RegAdminCmd("sm_orbitrockets", CmdOrbitRockets, ADMFLAG_BAN);
+	RegAdminCmd("sm_orbitrockets", CmdOrbitRockets, ADMFLAG_BAN);
 }
 
-/*
+
 Action CmdOrbitRockets(int client, int args)
 {
 	ClientHasOrbit[client] = !ClientHasOrbit[client];
 
 	return Plugin_Handled;
 }
-*/
 
 public void OnClientPostAdminCheck(int client)
 {
 	OrbitRadius[client] = 50.0; // Reset to default
 	OrbitSpeed[client] = 250.0;
 	ClientHasOrbit[client] = false;
+	OrbitType[client] = 2;
+	OrbitCount[client] = 3;
+	HideCore[client] = true;
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
@@ -181,8 +183,14 @@ void SetupProjectile(FObject entity, FClient owner)
 	int projId = entity.Get();
 
 	URocket original = CastToRocket(UObject(projId));
-	//SetEntityModel(projId, "models/empty.mdl");
-	entity.SetPropFloat(Prop_Send, "m_flModelScale", 1.25);
+	if (DelaySpawn[ownerId] < 0.1 && (OrbitType[ownerId] == 1 || HideCore[ownerId]))
+	{
+		SetEntityModel(original.Get(), "models/empty.mdl");
+	}
+	else
+	{
+		entity.SetPropFloat(Prop_Send, "m_flModelScale", 1.25);
+	}
 
 	SDKHook(projId, SDKHook_Touch, OnRocketOverlap);
 
@@ -206,9 +214,16 @@ Action DelayedSpawn(Handle timer, DataPack pack)
 	FObject entity;
 	FClient owner;
 	pack.ReadCellArray(entity, sizeof FObject);
-	URocket rocket =pack.ReadCell();
+	URocket rocket = pack.ReadCell();
 	pack.ReadCellArray(owner, sizeof FClient);
 	delete pack;
+
+	if (rocket.Valid())
+	{
+		SetEntityModel(rocket.Get(), "models/empty.mdl");
+		CreateParticleSystem("ExplosionCore_MidAir", entity.GetPosition(), entity.GetAngles(), 1.0);
+		EmitAmbientGameSound("BaseExplosionEffect.Sound", entity.GetPosition().ToFloat(), entity.Get());
+	}
 
 	if (entity.Valid() && owner.Valid())
 	{
@@ -225,10 +240,10 @@ void CreateProjectileRing(FObject entity, URocket original, FProjectile proj, FC
 	FTransform spawn;
 	spawn.Position = entity.GetPosition();
 	spawn.Rotation = entity.GetAngles();
+	spawn.Rotation.Pitch = 0.0;
 
 	FObject rotator;
 	rotator = FGameplayStatics.CreateObjectDeferred("func_rotating");
-
 	switch (OrbitType[ownerId])
 	{
 		case 1: rotator.SetKeyValue("spawnflags", "0"); // rotate on Z-axis
@@ -240,7 +255,8 @@ void CreateProjectileRing(FObject entity, URocket original, FProjectile proj, FC
 	}
 	rotator.SetKeyValueFloat("maxspeed", OrbitSpeed[ownerId]);
 	FGameplayStatics.FinishSpawn(rotator, spawn);
-	//rotator.Teleport(spawn.Position, spawn.Rotation, ConstructVector());
+	SetEntityCollisionGroup(rotator.Get(), 23);
+	rotator.SetProp(Prop_Data, "m_usSolidFlags", 4);
 	rotator.SetParent(entity);
 	rotator.Input("Start");
 
@@ -252,10 +268,6 @@ void CreateProjectileRing(FObject entity, URocket original, FProjectile proj, FC
 	//PrintToChatAll("Position: %.1f, %.1f, %.1f", spawn.Position.X, spawn.Position.Y, spawn.Position.Z);
 	if (original.Valid())
 	{
-		if (OrbitType[ownerId] == 1 || HideCore[ownerId])
-		{
-			SetEntityRenderMode(original.Get(), RENDER_NONE);
-		}
 		int rockets = OrbitCount[ownerId];
 		float theta = ((FLOAT_PI * 2) / rockets);
 		float radius = OrbitRadius[ownerId];
@@ -277,7 +289,8 @@ void CreateProjectileRing(FObject entity, URocket original, FProjectile proj, FC
 			URocket rocket = URocket();
 			rocket.Damage = original.Damage / float(rockets);
 			rocket.GetObject().SetOwner(owner.GetObject());
-			
+			rocket.Critical = original.Critical;
+
 			SetVariantInt(owner.GetTeam());
 			rocket.GetObject().Input("SetTeam");
 			SetVariantInt(owner.GetTeam());
@@ -286,6 +299,7 @@ void CreateProjectileRing(FObject entity, URocket original, FProjectile proj, FC
 			spawn.Position = offset;
 			spawn.Rotation = entity.GetAngles();
 			FGameplayStatics.FinishSpawn(rocket.GetObject(), spawn);
+			//rocket.FireProjectile(spawn.Rotation, 0.0);
 
 			rocket.GetObject().SetParent(rotator);
 			rocket.GetObject().SetPropEnt(Prop_Send, "m_hOriginalLauncher", entity.GetPropEnt(Prop_Send, "m_hOriginalLauncher"));
@@ -317,7 +331,7 @@ Action RocketUpdateSpeed(Handle timer, DataPack pack)
 
 		float accel = Acceleration[owner.Get()];
 
-		if (owner.Valid())
+		if (owner.Valid() && rocket.Valid())
 		{
 			Action result = Plugin_Continue;
 			float speed = rocket.Speed * accel;
@@ -342,6 +356,7 @@ Action RocketUpdateSpeed(Handle timer, DataPack pack)
 				}
 			}
 			rocket.FireProjectile(rocket.GetObject().GetAngles(), speed);
+			UpdateChildSpeed(rocket);
 
 			return result;
 		}
@@ -351,6 +366,28 @@ Action RocketUpdateSpeed(Handle timer, DataPack pack)
 	}
 
 	return Plugin_Stop;
+}
+
+void UpdateChildSpeed(URocket rocket)
+{
+	ArrayList children = Projectile[rocket.Get()].Rockets;
+	if (children)
+	{
+		FObject child;
+		for (int i = 0; i < children.Length; i++)
+		{
+			child.SetReference(children.Get(i));
+			if (child.Valid())
+			{
+				//float speed = rocket.Speed;
+
+				FVector velocity;
+				velocity = rocket.GetObject().GetAngles().GetForwardVector();
+				velocity.Scale(0.0);
+				TeleportEntity(child.Get(), NULL_VECTOR, NULL_VECTOR, velocity.ToFloat());
+			}
+		}
+	}
 }
 
 Action OnRocketOverlap(int rocketId, int otherId)
