@@ -22,8 +22,6 @@
 
 int g_count;
 int g_lucky_sandwich;
-int g_lucky_sandwich_pickups_needed;
-int g_lucky_sandwich_health_given;
 
 bool HasStats(int weapon)
 {
@@ -38,13 +36,6 @@ bool HasStats(int weapon)
     }
     g_count = ReadIntVar(stat_buffer, "throwable-count", 2);
 
-
-    if(g_lucky_sandwich)
-    {
-        g_lucky_sandwich_pickups_needed = ReadIntVar(stat_buffer, "pickups-needed", 2);
-        g_lucky_sandwich_health_given = ReadIntVar(stat_buffer, "give-health", 1000);
-    }
-    // g_bmod_disciplinary = ReadIntVar(stat_buffer, "bmod-disciplinary", 0);
     return true;
 }
 
