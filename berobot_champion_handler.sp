@@ -37,13 +37,15 @@ public void OnPluginStart()
 }
 public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
-	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+    int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+
     if(victim == g_i_current_champion)
     {
         MC_PrintToChatAll("{gold}%N{green} the champion died", victim);
         g_i_current_champion = -1
         CheckChampion();
     }
+    return Plugin_Continue;
 }
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
@@ -134,10 +136,10 @@ public Action Timer_CheckChampionLeaveSpawn(Handle timer)
 
     return Plugin_Continue;
 }
-float g_hp_base = 165.0;
-float g_jump_height_base = 1.2;
-float g_moves_speed_base = 1.1;
-float g_scale = 1.25;
+// float g_hp_base = 165.0;
+// float g_jump_height_base = 1.2;
+// float g_moves_speed_base = 1.1;
+// float g_scale = 1.25;
 
 void CreateChampion(int client)
 {
@@ -146,8 +148,10 @@ void CreateChampion(int client)
                 
         SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.25);
 
-
-        CreateClassChampion(client);
+        int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
+        int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+        int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+    
         // Determine class and call appropriate class handler
         switch (TF2_GetPlayerClass(client))
         {
@@ -161,16 +165,16 @@ void CreateChampion(int client)
                 MakePyroChampion(client);
 
             case TFClass_DemoMan:
-                MakeDemomanChampion(client);
+                MakeDemomanChampion(client, Weapon1, Weapon2);
 
             case TFClass_Heavy:
                 MakeHeavyChampion(client);
 
             case TFClass_Engineer:
-                MakeEngineerChampion(client);
+                MakeEngineerChampion(client, Weapon3);
 
             case TFClass_Medic:
-                MakeMedicChampion(client);
+                MakeMedicChampion(client, Weapon2);
 
             case TFClass_Sniper:
                 MakeSniperChampion(client);
@@ -179,6 +183,8 @@ void CreateChampion(int client)
                 MakeSpyChampion(client);
 
         }
+
+        CreateClassChampion(client, Weapon1, Weapon2, Weapon3);
     }
 }
 
@@ -199,11 +205,25 @@ void MakePyroChampion(int client)
     // TODO: Add Pyro-specific buffs or logic here
     
 }
-
-void MakeDemomanChampion(int client)
+bool IsDemoKnight(int weapon1, int weapon2)
+{
+    //Demoknights don't have weapons in slot1 or 2
+    // PrintToChatAll("Weapon1 was %i", weapon1);
+    // PrintToChatAll("Weapon2 was %i", weapon2);
+    if (weapon2 == -1)
+    {
+        if (weapon1 == -1 || GetEntProp(weapon1, Prop_Send, "m_iItemDefinitionIndex") == 1101) //This is a base jumper
+        return true;
+    }
+    return false;
+}
+void MakeDemomanChampion(int client, int Weapon1, int Weapon2)
 {
     // TODO: Add Demoman-specific buffs or logic here
-    
+    if (IsDemoKnight(Weapon1, Weapon2))
+    {
+        
+    }
 }
 
 void MakeHeavyChampion(int client)
@@ -212,16 +232,23 @@ void MakeHeavyChampion(int client)
     
 }
 
-void MakeEngineerChampion(int client)
+void MakeEngineerChampion(int client, int Weapon3)
 {
     // TODO: Add Engineer-specific buffs or logic here
-    
+    if(Weapon3 != -1)
+    {
+        
+        TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", g_dmg_bonus); 
+    }
 }
 
-void MakeMedicChampion(int client)
+void MakeMedicChampion(int client, int Weapon2)
 {
     // TODO: Add Medic-specific buffs or logic here
-    
+    if (Weapon2 != -1)
+    {
+        TF2Attrib_SetByName(Weapon2, "heal rate bonus", g_dmg_bonus); 
+    }
 }
 
 void MakeSniperChampion(int client)
@@ -237,7 +264,7 @@ void MakeSpyChampion(int client)
 }
 
 
-void CreateClassChampion(int client)
+void CreateClassChampion(int client, int Weapon1, int Weapon2, int Weapon3)
 {
     // Shared champion logic goes here
     // Example: give increased speed, HP, or effects common to all champions
@@ -245,9 +272,7 @@ void CreateClassChampion(int client)
     //3160 
     //3025 
 
-    int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
-    int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-    int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+
     
     if (Weapon1 != -1)
     {
@@ -265,7 +290,7 @@ void CreateClassChampion(int client)
     // TF2Attrib_SetByName(Weapon1, "attach particle effect", 3160.0);
     // TF2Attrib_SetByName(Weapon1, "attach particle effect static", 3160.0);
     // TF2Attrib_SetByName(client, "move speed bonus", 1.0 + (0.05 * float(g_MissingHumans)) + (0.02 * float(g_CurrentRobots)));
-    TF2Attrib_SetByName(client, "max health additive bonus", (60.0 * float(g_MissingHumans))-100.0); 
+    TF2Attrib_SetByName(client, "max health additive bonus", (30.0 * (float(g_MissingHumans))-100.0) + (20.0 * float(g_CurrentRobots))); 
     
     TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
     TF2_AddCondition(client, TFCond_KingAura);
@@ -324,5 +349,16 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
     {
         damage *= g_dmg_bonus;
         return Plugin_Handled;
+    }
+    return Plugin_Continue;
+}
+
+public void OnClientDisconnect(int client)
+{
+
+    if(client == g_i_current_champion)
+    {
+        g_i_current_champion = -1;
+        CheckChampion();
     }
 }
