@@ -287,7 +287,7 @@ void CreateProjectileRing(FObject entity, URocket original, FProjectile proj, FC
 			offset = FMath.OffsetVector(origin, offsetAngle, offset);
 
 			URocket rocket = URocket();
-			rocket.Damage = original.Damage / float(rockets);
+			rocket.Damage = original.Damage;
 			rocket.GetObject().SetOwner(owner.GetObject());
 			rocket.Critical = original.Critical;
 
