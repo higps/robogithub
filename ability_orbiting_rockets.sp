@@ -277,6 +277,7 @@ void CreateProjectileRing(FObject entity, URocket original, FProjectile proj, FC
 			URocket rocket = URocket();
 			rocket.Damage = original.Damage / float(rockets);
 			rocket.GetObject().SetOwner(owner.GetObject());
+			rocket.Critical = original.Critical;
 			
 			SetVariantInt(owner.GetTeam());
 			rocket.GetObject().Input("SetTeam");
@@ -317,7 +318,7 @@ Action RocketUpdateSpeed(Handle timer, DataPack pack)
 
 		float accel = Acceleration[owner.Get()];
 
-		if (owner.Valid())
+		if (owner.Valid() && rocket.Valid())
 		{
 			Action result = Plugin_Continue;
 			float speed = rocket.Speed * accel;
