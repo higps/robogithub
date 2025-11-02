@@ -1,0 +1,26 @@
+"Games" {
+	"tf" {
+		"Signatures"
+		{
+			"ApplyPunchImpulseX"
+			{
+				"library"	"server"
+				"windows"	"\x55\x8B\xEC\x53\x56\x8B\xF1\xB3\x0"
+				"linux"		"@_ZN9CTFPlayer18ApplyPunchImpulseXEf"
+			}
+		}
+		"Functions" {
+			"CTFPlayer::ApplyPunchImpulseX" {
+				"signature" "ApplyPunchImpulseX"
+				"callconv" "thiscall"
+				"return" "bool"
+				"this" "entity"
+				"arguments" {
+					"player" {
+						"type" "float"
+					}
+				}
+			}
+		}
+	}
+}
