@@ -40,6 +40,7 @@ FProjectile Projectile[2049];
 
 float OrbitRadius[MAXPLAYERS+1] = {100.0, ...};
 float OrbitSpeed[MAXPLAYERS+1] = {250.0, ...};
+float RotSpeed[MAXPLAYERS+1] = {0.0, ...};
 bool ClientHasOrbit[MAXPLAYERS+1] = {false, ...};
 bool ChildRocket[2049] = {false, ...};
 int OrbitType[MAXPLAYERS+1] = {0, ...};
@@ -262,7 +263,14 @@ void CreateProjectileRing(FObject entity, URocket original, FProjectile proj, FC
 
 	proj.Rotator = rotator;
 
-	SetVariantFloat(1.0);
+	float rotspeed = 1.0;
+	if (Acceleration[ownerId] > 1.0)
+	{
+		rotspeed = 0.5;
+	}
+
+	SetVariantFloat(rotspeed);
+	RotSpeed[ownerId] = rotspeed;
 	rotator.Input("SetSpeed");
 
 	//PrintToChatAll("Position: %.1f, %.1f, %.1f", spawn.Position.X, spawn.Position.Y, spawn.Position.Z);
@@ -315,6 +323,7 @@ void CreateProjectileRing(FObject entity, URocket original, FProjectile proj, FC
 			DataPack pack = new DataPack();
 			pack.WriteCell(owner.GetReference());
 			pack.WriteCell(original);
+			pack.WriteCellArray(rotator, sizeof FObject);
 			CreateTimer(0.1, RocketUpdateSpeed, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
@@ -328,6 +337,8 @@ Action RocketUpdateSpeed(Handle timer, DataPack pack)
 		FClient owner;
 		owner.SetReference(pack.ReadCell());
 		URocket rocket = pack.ReadCell();
+		FObject rotator;
+		pack.ReadCellArray(rotator, sizeof FObject);
 
 		float accel = Acceleration[owner.Get()];
 
@@ -336,6 +347,7 @@ Action RocketUpdateSpeed(Handle timer, DataPack pack)
 			Action result = Plugin_Continue;
 			float speed = rocket.Speed * accel;
 			float max = MaxSpeed[owner.Get()];
+			RotSpeed[owner.Get()] *= accel;
 
 			if (accel > 1.001)
 			{
@@ -348,6 +360,10 @@ Action RocketUpdateSpeed(Handle timer, DataPack pack)
 			}
 			else if (accel < 0.999)
 			{
+				if (RotSpeed[owner.Get()] <= 0.2)
+				{
+					RotSpeed[owner.Get()] = 0.2;
+				}
 				if (speed <= max)
 				{
 					speed = max;
@@ -356,6 +372,8 @@ Action RocketUpdateSpeed(Handle timer, DataPack pack)
 				}
 			}
 			rocket.FireProjectile(rocket.GetObject().GetAngles(), speed);
+			SetVariantFloat(RotSpeed[owner.Get()]);
+			rotator.Input("SetSpeed");
 			UpdateChildSpeed(rocket);
 
 			return result;
