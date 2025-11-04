@@ -8,6 +8,7 @@
 
 #define ROBOT_NAME	"RoboVich"
 #define PLUGIN_VERSION "1.0"
+#define SOUND "player/recharged.wav"
 public Plugin:myinfo =
 {
 	name = "[TF2] Robovich Ability",
@@ -16,9 +17,12 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-
+public void OnMapStart()
+{
+	PrecacheSound(SOUND);
+}
 float g_damage_count = 0.0;
-float g_damage_cap = 200.0;
+float g_damage_cap = 170.0;
 int g_max_cap = 30;
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
@@ -49,15 +53,18 @@ void AddSandVichCount(int client)
 	int iWeapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 	if (iWeapon != -1)
 	{
-
+		// float charge = GetEntPropFloat(client, Prop_Send, "m_flItemChargeMeter");
+		// PrintToChatAll("Charge meter %f", charge);
+		
 		int iOffset = GetEntProp(iWeapon, Prop_Send, "m_iPrimaryAmmoType", 1) * 4;
 		int iAmmoTable = FindSendPropInfo("CTFPlayer", "m_iAmmo");
 		int iAmmo = GetEntData(client, iAmmoTable + iOffset, 4);
-
+		// SetEntPropFloat(client, Prop_Send, "m_flEffectBarProgress", 10.0);
 		if (iAmmo < g_max_cap)
 		{
 			SetEntData(client, iAmmoTable + iOffset, iAmmo+1, 4, true);
 			PrintCenterText(client, "+1 Sandvich\n%i / %i", iAmmo+1, g_max_cap);
+			EmitSoundToAll(SOUND,client);
 		}
 		else
 		{
