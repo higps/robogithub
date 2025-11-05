@@ -10,7 +10,7 @@
 #include <tf_ontakedamage>
 
 #define PLUGIN_VERSION "1.0"
-
+#define SOUND "/items/powerup_pickup_king.wav"
 bool b_g_valid_champions[MAXPLAYERS + 1] = { false, ... };
 bool g_b_found_valid_champion = false;
 int g_i_current_champion = -1;
@@ -20,6 +20,7 @@ int g_CurrentRobots = 0;
 float g_dmg_bonus = 1.0;
 public void OnMapStart()
 {
+    PrecacheSound(SOUND);
     g_MissingHumans = 0;
     g_b_found_valid_champion = false;
     g_i_current_champion = -1;
@@ -29,6 +30,7 @@ public void OnMapStart()
         g_h_checkChampionTimer = INVALID_HANDLE;
     }
 }
+
 
 public void OnPluginStart()
 {
@@ -298,7 +300,7 @@ void CreateClassChampion(int client, int Weapon1, int Weapon2, int Weapon3)
     // TF2_AddCondition(client, TFCond_CritCanteen, 4.0);
     // TF2_AddCondition(client, TFCond_UberchargedCanteen, 4.0);
     RequestFrame(HealToMax, client);
-
+    EmitSoundToAll(SOUND,client);
     // MC_PrintToChatAll("{green}[Manned Machines]{default} SatParticles stats to the %N CHAMPION!", client);
 }
 
