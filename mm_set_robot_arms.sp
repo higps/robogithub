@@ -82,7 +82,11 @@ public void OnMapStart()
         "workshop/2897811023",
         //Upward
         "workshop/3156008215",
-        "test_mm_assets"
+        "test_mm_assets",
+        //Roborig
+        "workshop/3292713370",
+        // Process
+        "workshop/2910353343"
     };
 
     char mapName[PLATFORM_MAX_PATH];

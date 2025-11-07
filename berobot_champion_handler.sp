@@ -69,10 +69,10 @@ void CheckChampion()
     // Super straight forward math compulation. The 0.833 is to compensate for the 16.7% faster firing speed the king rune gives
     g_dmg_bonus = 1.0 + (0.20 * float(g_MissingHumans)) * 0.833;
 
-    PrintToChatAll("Current Robots: %i", g_CurrentRobots);
-    PrintToChatAll("Current Humans: %i", CurrentHumans);
-    PrintToChatAll("Target Humans: %i", TargetHumans);
-    PrintToChatAll("Missing Humans: %i", g_MissingHumans);
+    // PrintToChatAll("Current Robots: %i", g_CurrentRobots);
+    // PrintToChatAll("Current Humans: %i", CurrentHumans);
+    // PrintToChatAll("Target Humans: %i", TargetHumans);
+    // PrintToChatAll("Missing Humans: %i", g_MissingHumans);
 
     if (g_MissingHumans > 0)
     {
