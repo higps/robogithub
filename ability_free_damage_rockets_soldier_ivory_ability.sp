@@ -345,10 +345,7 @@ void SplitRocket(int rocket, bool converge)
 		DispatchSpawn(mirv);
 		if (HasEntProp(rocket, Prop_Send, "m_bCritical"))
 			SetEntProp(mirv, Prop_Send, "m_bCritical", crit);
-		
-		int offset = FindSendPropInfo(netname, "m_iDeflected") + 4;
-		float dmg = GetEntDataFloat(rocket, offset);
-		SetEntDataFloat(mirv, offset, dmg);
+		SetEntDataFloat(mirv, FindSendPropInfo(netname, "m_iDeflected") + 4, 50.0);
 
 		if (converge)
 		{
