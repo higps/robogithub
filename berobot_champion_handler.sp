@@ -11,23 +11,30 @@
 
 #define PLUGIN_VERSION "1.0"
 #define SOUND "/items/powerup_pickup_king.wav"
-bool b_g_valid_champions[MAXPLAYERS + 1] = { false, ... };
-bool g_b_found_valid_champion = false;
+bool g_b_valid_candidate[MAXPLAYERS + 1] = { false, ... };
+bool g_b_found_valid_candidate = false;
 int g_i_current_champion = -1;
 Handle g_h_checkChampionTimer = INVALID_HANDLE;
+Handle g_h_checkChampionCowardTimer = INVALID_HANDLE;
 int g_MissingHumans = 0;
 int g_CurrentRobots = 0;
 float g_dmg_bonus = 1.0;
+bool g_b_yap = true;
 public void OnMapStart()
 {
     PrecacheSound(SOUND);
     g_MissingHumans = 0;
-    g_b_found_valid_champion = false;
+    g_b_found_valid_candidate = false;
     g_i_current_champion = -1;
     if (g_h_checkChampionTimer != INVALID_HANDLE)
     {
         CloseHandle(g_h_checkChampionTimer);
         g_h_checkChampionTimer = INVALID_HANDLE;
+    }
+    if (g_h_checkChampionCowardTimer != INVALID_HANDLE)
+    {
+        CloseHandle(g_h_checkChampionCowardTimer);
+        g_h_checkChampionCowardTimer = INVALID_HANDLE;
     }
 }
 
@@ -43,92 +50,116 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
     if(victim == g_i_current_champion)
     {
-        MC_PrintToChatAll("{gold}%N{green} the champion died", victim);
+        MC_PrintToChatAll("{green}The {gold}Champion:{gold} %N{green} has fallen.", victim);
         g_i_current_champion = -1
-        CheckChampion();
+        g_b_yap = true;
+        RequestFrame(CheckChampion);
     }
     return Plugin_Continue;
 }
+
+float g_cooldown = 5.0;
+float g_last_check = 0.0;
+
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
-    if(g_i_current_champion == -1)CheckChampion();
+    
+    if (GetEngineTime() >= g_last_check + g_cooldown)
+    {
+        g_last_check = GetEngineTime();
+        if(g_i_current_champion == -1)RequestFrame(CheckChampion);
+     
+    }
     return Plugin_Continue;
 }
-
-void CheckChampion()
+void FindValidCandidates()
 {
-    g_CurrentRobots = GetCurrentRobotCount();
-    int CurrentHumans = GetCurrentHumanCount();
-
-    ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
-    float ratio = drobotcount.FloatValue;
-
-    int TargetHumans = RoundToFloor(float(g_CurrentRobots) * ratio) - g_CurrentRobots;
-    g_MissingHumans = TargetHumans - CurrentHumans;
-
-    // Super straight forward math compulation. The 0.833 is to compensate for the 16.7% faster firing speed the king rune gives
-    g_dmg_bonus = 1.0 + (0.20 * float(g_MissingHumans)) * 0.833;
-
-    // PrintToChatAll("Current Robots: %i", g_CurrentRobots);
-    // PrintToChatAll("Current Humans: %i", CurrentHumans);
-    // PrintToChatAll("Target Humans: %i", TargetHumans);
-    // PrintToChatAll("Missing Humans: %i", g_MissingHumans);
-
-    if (g_MissingHumans > 0)
+    for (int i = 1; i <= MaxClients; i++)
     {
-        MC_PrintToChatAll("{green}Finding champion with power of %i players", g_MissingHumans);
-
-        g_b_found_valid_champion = false;
-        for (int i = 1; i <= MaxClients; i++)
+        if (IsClientInGame(i) && !IsAnyRobot(i) && TF2Spawn_IsClientInSpawn(i) && IsPlayerAlive(i))
         {
-            if (IsClientInGame(i) && !IsAnyRobot(i) && TF2Spawn_IsClientInSpawn(i))
-            {
-                b_g_valid_champions[i] = true;
-                g_b_found_valid_champion = true;
-            }
-            else
-            {
-                b_g_valid_champions[i] = false;
-            }
+            g_b_valid_candidate[i] = true;
+            g_b_found_valid_candidate = true;
         }
-
-        if (g_b_found_valid_champion)
+        else
         {
-            MC_PrintToChatAll("{green}Next player to leave spawn becomes the {gold}CHAMPION");
-            if (g_h_checkChampionTimer == INVALID_HANDLE)
+            g_b_valid_candidate[i] = false;
+        }
+    }
+}
+void CheckChampion()
+{   
+    
+    if (g_i_current_champion == -1)
+    {
+        g_CurrentRobots = GetCurrentRobotCount();
+        int CurrentHumans = GetCurrentHumanCount();
+
+        ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
+        float ratio = drobotcount.FloatValue;
+
+        int TargetHumans = RoundToFloor(float(g_CurrentRobots) * ratio) - g_CurrentRobots;
+        g_MissingHumans = TargetHumans - CurrentHumans;
+
+
+        g_dmg_bonus = 1.0 + (0.35 * float(g_MissingHumans));
+
+        // PrintToChatAll("Current Robots: %i", g_CurrentRobots);
+        // PrintToChatAll("Current Humans: %i", CurrentHumans);
+        // PrintToChatAll("Target Humans: %i", TargetHumans);
+        // PrintToChatAll("Missing Humans: %i", g_MissingHumans);
+
+        if (g_MissingHumans > 0)
+        {
+            
+            if(g_b_yap)
             {
-                g_h_checkChampionTimer = CreateTimer(0.3, Timer_CheckChampionLeaveSpawn, _, TIMER_REPEAT);
+                MC_PrintToChatAll("{green}A champion with the power level of %i will surface soon", g_MissingHumans);
+                g_b_yap = false;
+            }
+
+            
+
+            FindValidCandidates();
+
+            if (g_b_found_valid_candidate)
+            {
+                // MC_PrintToChatAll("{green}Next player to leave spawn becomes the {gold}CHAMPION");
+                if (g_h_checkChampionTimer == INVALID_HANDLE)
+                {
+                    g_h_checkChampionTimer = CreateTimer(1.0, Timer_CheckChampionLeaveSpawn, _, TIMER_REPEAT);
+                }
             }
         }
         else
         {
-            // PrintToChatAll("Found no valid champion");
-        }
-    }
-    else
-    {
-        // PrintToChatAll("Removing champion");
-        g_i_current_champion = -1;
-        if (g_h_checkChampionTimer != INVALID_HANDLE)
-        {
-            CloseHandle(g_h_checkChampionTimer);
-            g_h_checkChampionTimer = INVALID_HANDLE;
-        }
-        for (int i = 1; i <= MaxClients; i++)
-        {
-            b_g_valid_champions[i] = false;
+            // PrintToChatAll("Removing champion");
+            g_i_current_champion = -1;
+            g_b_yap = true;
+            if (g_h_checkChampionTimer != INVALID_HANDLE)
+            {
+                CloseHandle(g_h_checkChampionTimer);
+                g_h_checkChampionTimer = INVALID_HANDLE;
+            }
+            for (int i = 1; i <= MaxClients; i++)
+            {
+                g_b_valid_candidate[i] = false;
+            }
         }
     }
 }
 
+
+
 public Action Timer_CheckChampionLeaveSpawn(Handle timer)
 {
+    // PrintToChatAll("Timer");
     for (int i = 1; i <= MaxClients; i++)
     {
-        if (b_g_valid_champions[i] && IsClientInGame(i) && !TF2Spawn_IsClientInSpawn(i))
+        if (g_b_valid_candidate[i] && IsClientInGame(i) && !TF2Spawn_IsClientInSpawn(i))
         {
             g_i_current_champion = i;
-            MC_PrintToChatAll("{orange}%N {green}has left spawn and is now the {gold}CHAMPION!", i);
+            MC_PrintToChatAll("{orange}%N {green}has become the {gold}CHAMPION!", i);
             CreateChampion(i);
             // Stop checking further
             g_h_checkChampionTimer = INVALID_HANDLE;
@@ -143,13 +174,17 @@ public Action Timer_CheckChampionLeaveSpawn(Handle timer)
 // float g_moves_speed_base = 1.1;
 // float g_scale = 1.25;
 
+void SetScale(int client, float scale)
+{
+    SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.25);
+    UpdatePlayerHitbox(client, 1.25);
+}
+
 void CreateChampion(int client)
 {
-    if (IsValidClient(client) && !IsAnyRobot(client))
+    if (IsValidClient(client) && !IsAnyRobot(client) && IsPlayerAlive(client))
     {
-                
-        SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.25);
-
+        SetScale(client, 1.25);
         int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
         int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -167,7 +202,7 @@ void CreateChampion(int client)
                 MakePyroChampion(client);
 
             case TFClass_DemoMan:
-                MakeDemomanChampion(client, Weapon1, Weapon2);
+                MakeDemomanChampion(Weapon1, Weapon2, Weapon3);
 
             case TFClass_Heavy:
                 MakeHeavyChampion(client);
@@ -185,9 +220,38 @@ void CreateChampion(int client)
                 MakeSpyChampion(client);
 
         }
-
+                
         CreateClassChampion(client, Weapon1, Weapon2, Weapon3);
+        if (g_h_checkChampionCowardTimer == INVALID_HANDLE)
+        {
+            g_h_checkChampionCowardTimer = CreateTimer(0.3, Timer_CheckChampionCoward, _, TIMER_REPEAT);
+        }
     }
+}
+
+void RemoveChampion(int client)
+{
+    MC_PrintToChatAll("{yellow}%N {green}was the champion, but was a {yellow}coward {green}ran in to spawn, and is no more", client);
+    SetScale(client, 1.0);
+    TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
+    g_i_current_champion = -1
+    g_b_yap = true;
+    TF2_RemoveAllWeapons(client);
+    TF2_RespawnPlayer(client);
+}
+
+public Action Timer_CheckChampionCoward(Handle timer)
+{
+    if(TF2Spawn_IsClientInSpawn(g_i_current_champion) &&  IsPlayerAlive(g_i_current_champion))
+    {
+        // PrintToChatAll("CHAMPION IN SPAWN!");
+        g_h_checkChampionCowardTimer = INVALID_HANDLE;
+        RemoveChampion(g_i_current_champion);
+        RequestFrame(CheckChampion);
+        return Plugin_Stop;
+    }
+
+    return Plugin_Continue;
 }
 
 void MakeScoutChampion(int client)
@@ -219,13 +283,14 @@ bool IsDemoKnight(int weapon1, int weapon2)
     }
     return false;
 }
-void MakeDemomanChampion(int client, int Weapon1, int Weapon2)
+void MakeDemomanChampion(int Weapon1, int Weapon2, int Weapon3)
 {
     // TODO: Add Demoman-specific buffs or logic here
     if (IsDemoKnight(Weapon1, Weapon2))
     {
-        
+        TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", g_dmg_bonus); 
     }
+    
 }
 
 void MakeHeavyChampion(int client)
@@ -292,11 +357,11 @@ void CreateClassChampion(int client, int Weapon1, int Weapon2, int Weapon3)
     // TF2Attrib_SetByName(Weapon1, "attach particle effect", 3160.0);
     // TF2Attrib_SetByName(Weapon1, "attach particle effect static", 3160.0);
     // TF2Attrib_SetByName(client, "move speed bonus", 1.0 + (0.05 * float(g_MissingHumans)) + (0.02 * float(g_CurrentRobots)));
-    TF2Attrib_SetByName(client, "max health additive bonus", (30.0 * (float(g_MissingHumans))-100.0) + (20.0 * float(g_CurrentRobots))); 
+    TF2Attrib_SetByName(client, "max health additive bonus", (50.0 * (float(g_MissingHumans)))); 
     
     TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
-    TF2_AddCondition(client, TFCond_KingAura);
-    TF2_AddCondition(client, TFCond_KingRune);
+    // TF2_AddCondition(client, TFCond_KingAura);
+    // TF2_AddCondition(client, TFCond_KingRune);
     // TF2_AddCondition(client, TFCond_CritCanteen, 4.0);
     // TF2_AddCondition(client, TFCond_UberchargedCanteen, 4.0);
     RequestFrame(HealToMax, client);
@@ -313,27 +378,6 @@ void HealToMax(int client)
     
     // TF2_AddCondition(client, TFCond_HalloweenQuickHeal, 2.0);
     TF2Attrib_AddCustomPlayerAttribute(client, "health regen", 99999.0, 2.0);
-}
-
-public TF2_OnConditionRemoved(client, TFCond condition)
-{
-    if (!IsAnyRobot(client) && condition == TFCond_KingRune || condition == TFCond_KingAura )
-    {	
-        if(client == g_i_current_champion)
-        {
-            MC_PrintToChatAll("{yellow}%N {green}was the champion, but was a {yellow}coward {green}ran in to spawn, and is no more", client);
-            SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
-            TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
-            g_i_current_champion = -1
-
-            TF2_RemoveAllWeapons(client);
-            TF2_RespawnPlayer(client);
-            
-
-            CheckChampion();
-        }
-		
-	}
 }
 
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
@@ -361,6 +405,7 @@ public void OnClientDisconnect(int client)
     if(client == g_i_current_champion)
     {
         g_i_current_champion = -1;
+        g_b_yap = true;
         CheckChampion();
     }
 }
