@@ -28,6 +28,8 @@ public OnPluginStart()
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 }
 
+int g_space_guy_kill_count = 0;
+int g_space_guy_kill_requirement = 3;
 
 public Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
@@ -37,13 +39,17 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 	{
 		if (IsRobot(attacker, SPACEGUYONLINE))
 		{
-			for(int client = 1 ; client <= MaxClients ; client++ )
+			g_space_guy_kill_count++;
+			if(g_space_guy_kill_count >= g_space_guy_kill_requirement)
 			{
-				if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client))
+				for(int client = 1 ; client <= MaxClients ; client++ )
 				{
-					
-					TF2_AddCondition(client, TFCond_CritCola, 3.0);
-
+					if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client))
+					{
+						
+						TF2_AddCondition(client, TFCond_CritCola, 3.0);
+						g_space_guy_kill_count = 0;
+					}
 				}
 			}
 		}	
@@ -92,7 +98,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 			{
 				// (int iClient, int iAdd, int iOverheal = 0, bool bStaticMax = false, bShowHealthGain = true)
 				
-				if(!IsBoss(client))AddPlayerHealth(client, RoundToNearest(damage/1.5), 1, false, true);
+				if(!IsBoss(client))AddPlayerHealth(client, RoundToNearest(damage/1.2), 1, false, true);
 
 			}
 		}
