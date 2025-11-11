@@ -22,7 +22,7 @@ public void OnMapStart()
 	PrecacheSound(SOUND);
 }
 float g_damage_count = 0.0;
-float g_damage_cap = 15.0;
+float g_damage_cap = 90.0;
 int g_max_cap = 30;
 public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {

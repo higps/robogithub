@@ -1016,7 +1016,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
     if (IsAnyRobot(victim))
     {      
-        RequestFrame(Set_g_PlayerHealth, victim);        
+        if(attacker != victim)RequestFrame(Set_g_PlayerHealth, victim);        
         
         // if (b_g_high_power)
         // {

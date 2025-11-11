@@ -20,6 +20,9 @@ int g_MissingHumans = 0;
 int g_CurrentRobots = 0;
 float g_dmg_bonus = 1.0;
 bool g_b_yap = true;
+
+GlobalForward _currentChampion;
+
 public void OnMapStart()
 {
     PrecacheSound(SOUND);
@@ -43,7 +46,15 @@ public void OnPluginStart()
 {
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
     HookEvent("player_death", Event_Death, EventHookMode_Post);
+
+    CreateNative("MM_GetCurrentChampion", Native_GetCurrentChampion);
 }
+
+public int Native_GetCurrentChampion(Handle plugin, int numParams)
+{
+    return g_i_current_champion;
+}
+
 public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
     int victim = GetClientOfUserId(GetEventInt(event, "userid"));
@@ -184,7 +195,7 @@ void CreateChampion(int client)
 {
     if (IsValidClient(client) && !IsAnyRobot(client) && IsPlayerAlive(client))
     {
-        SetScale(client, 1.25);
+        // SetScale(client, 1.25);
         int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
         int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
@@ -358,7 +369,12 @@ void CreateClassChampion(int client, int Weapon1, int Weapon2, int Weapon3)
     // TF2Attrib_SetByName(Weapon1, "attach particle effect static", 3160.0);
     // TF2Attrib_SetByName(client, "move speed bonus", 1.0 + (0.05 * float(g_MissingHumans)) + (0.02 * float(g_CurrentRobots)));
     TF2Attrib_SetByName(client, "max health additive bonus", (50.0 * (float(g_MissingHumans)))); 
-    
+    // TF2Attrib_SetByName(client, "particle effect use head origin", 1.0); 
+    //3160 teamwork valorance
+    // 3025 enchanted
+    // TF2Attrib_SetByName(client, "attach particle effect", 3160.0); 
+    TF2Attrib_SetByName(client, "attach particle effect", 3025.0); 
+    CreateRoboHat(client, 30808, 5, 8, -1, -1, 1.25, 1.0);
     TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
     // TF2_AddCondition(client, TFCond_KingAura);
     // TF2_AddCondition(client, TFCond_KingRune);
@@ -408,4 +424,29 @@ public void OnClientDisconnect(int client)
         g_b_yap = true;
         CheckChampion();
     }
+}
+
+public FindHat(int iClient)
+{
+	int iWearableItem = -1;
+	// PrintToServer("LOOKING HAT 1 !");
+	while ((iWearableItem = FindEntityByClassname(iWearableItem, "tf_wearable*")) != -1) // Regular hats.
+	{	
+		// We check for the wearable's item def index and its owner.
+		int iWearableIndex = GetEntProp(iWearableItem, Prop_Send, "m_iItemDefinitionIndex");
+		int iWearableOwner = GetEntPropEnt(iWearableItem, Prop_Send, "m_hOwnerEntity");
+		// PrintToServer("LOOKING HAT 2 !");
+		// If the owners match.
+		if (iWearableOwner == iClient)
+		{
+			// Going through all items. 4 = cosmetics
+			for (int i = 0; i < 4; i++)
+			{			
+				// PrintToServer("LOOKING HAT 3 !");
+				// If a weapon's definition index matches with the one stored...
+				TF2Attrib_SetByName(iWearableIndex, "attach particle effect", 35.0); 
+			}
+		}
+	}
+	// return false;
 }

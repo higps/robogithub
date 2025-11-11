@@ -50,6 +50,8 @@ float g_retarget_timer = 25.0;
 int g_loadingDots = 1;
 int g_targetstatus;
 
+native int MM_GetCurrentChampion();
+
 public Plugin:myinfo =
 {
 	name = "[TF2] Be the Terminator",
@@ -140,6 +142,11 @@ void FindTerminationTarget(){
 			if (IsValidEntity(g_iGlowEnt[client])) {
 			RemoveEntity(g_iGlowEnt[client]);
 		}
+			int champion = MM_GetCurrentChampion();
+			if (champion != -1)
+			{
+				randomPlayer = champion;
+			}
 			// PrintToChatAll("Applying glow to %N", randomPlayer);
 			g_iGlowEnt[client] = EntIndexToEntRef(TF2_AttachBasicGlow(randomPlayer));
 			g_target = randomPlayer;
@@ -214,8 +221,8 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 void TerminatorHeal(int client)
 {
-	AddPlayerHealth(client, GetCurrentHumanCount()*50, 0, false, true);
-	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0);
+	AddPlayerHealth(client, GetCurrentHumanCount()*800, 0, false, true);
+	TF2_AddCondition(client, TFCond_UberchargedCanteen, 4.0);
 }
 
 Action OnGlowShouldTransmit(int glow, int client) {

@@ -86,7 +86,23 @@ public void OnMapStart()
         //Roborig
         "workshop/3292713370",
         // Process
-        "workshop/2910353343"
+        "workshop/2910353343",
+        //Manhattan
+        "workshop/3602056326",
+        //Rottenburg
+        "workshop/3602052424",
+        //pl_bigrock
+        "workshop/3602050192",
+        //badwater
+        "workshop/3602058199",
+        //gorge
+        "workshop/3602062741",
+        //Borneo
+        "workshop/3602059755",
+        //Underground
+        "workshop/3602054692",
+        //Sequoia
+        "workshop/3602111026"
     };
 
     char mapName[PLATFORM_MAX_PATH];
