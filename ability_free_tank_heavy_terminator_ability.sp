@@ -221,7 +221,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
 void TerminatorHeal(int client)
 {
-	AddPlayerHealth(client, GetCurrentHumanCount()*800, 0, false, true);
+	AddPlayerHealth(client, GetCurrentHumanCount()*80, 0, false, true);
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, 4.0);
 }
 
