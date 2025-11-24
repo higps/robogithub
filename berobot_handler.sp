@@ -94,6 +94,7 @@ bool g_Voted[MAXPLAYERS + 1];
 bool g_GoingToDie[MAXPLAYERS + 1] = {false, ...};
 int g_TimeBombTime[MAXPLAYERS+1] = { 0, ... };
 int g_PlayerHealth[MAXPLAYERS +1] = {-1, ...};
+int g_PlayerMaxHealth[MAXPLAYERS + 1] = {-1, ...};
 
 GlobalForward _enabledChangedForward;
 GlobalForward _clientResetting;
@@ -340,6 +341,7 @@ public void OnClientPutInServer(int client)
     // DHookEntity(g_hIsDeflectable, false, client);
 
     g_PlayerHealth[client] = -1;
+    g_PlayerMaxHealth[client] = -1;
 }
 
 // public MRESReturn IsPlayerDeflectable(int pThis, Handle hReturn, Handle hParams)
@@ -539,7 +541,10 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 //     }
 // }
 
-
+public Action GetMaxHealth(int client)
+{
+    return GetEntProp(client, Prop_Data, "m_iMaxHealth");
+}
 
 
 public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
@@ -572,7 +577,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 
             //To deal with players using loadout switches to gain health back
             g_PlayerHealth[victim] = -1;
-
+            g_PlayerMaxHealth[victim] = -1;
             CreateTimer(0.0, RemoveBody, victim);
             float position[3];
             GetEntPropVector(victim, Prop_Data, "m_vecOrigin", position);	
@@ -754,7 +759,14 @@ void SetRoboSpawnHealth(int client, bool changed_in_spawn)
         { 
             if (!IsBoss(client) || !changed_in_spawn) 
             {
-                TF2_SetHealth(client, g_PlayerHealth[client]);
+                
+                
+
+                //Sets the health based on the previous % of max health vs damage taken
+                
+                float ratio = float(g_PlayerHealth[client]) / float(g_PlayerMaxHealth[client]);
+                TF2_SetHealth(client, RoundToNearest(ratio * float(GetMaxHealth(client))));
+                PrintCenterText(client, "ERROR!:\nRobot Damaged!\nRecycled %.0f%%% health!\nDestruction required!", ratio*100.0);
             }
 
         }
@@ -852,6 +864,7 @@ public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroa
             if(IsValidClient(i))
             {
                 g_PlayerHealth[i] = -1;
+                g_PlayerMaxHealth[i] = -1;
                 // PrintCenterText(i,"RESETTING UR HEALTH");
             }
         }
@@ -1238,11 +1251,16 @@ void Set_g_PlayerHealth(int victim)
     if(g_cv_bDebugMode)PrintToChatAll("Health was %i for %N", health, victim);
 
     g_PlayerHealth[victim] = health;
+    g_PlayerMaxHealth[victim] = GetMaxHealth(victim);
     
+
+    // PrintToChatAll("Maxhp for %N: %i", victim, GetEntProp(victim, Prop_Data, "m_iMaxHealth"));
+
     if (IsPlayerAlive(victim)){
         if(g_cv_bDebugMode)PrintToChatAll("Setting health for %N to %i", victim, g_PlayerHealth[victim]);
     }else{
         g_PlayerHealth[victim] = -1;
+        g_PlayerMaxHealth[victim] = -1;
         if(g_cv_bDebugMode)PrintToChatAll("%N is dead, setting g_PlayerHealth to -1", victim);
 
     }

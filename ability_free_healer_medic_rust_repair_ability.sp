@@ -219,6 +219,18 @@ public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& da
 			int healer = attacker;
 			int target = victim;
 
+
+			if (TF2_IsPlayerInCondition(target, TFCond_Taunting))
+			{	
+				
+				
+				int tauntid = GetEntProp(target, Prop_Send, "m_iTauntItemDefIndex");
+				if (tauntid == 463 || tauntid == -1)
+				{
+				TF2_RemoveCondition(target, TFCond_Taunting);
+				}
+			}
+
 			if(!TF2_IsPlayerInCondition(healer, TFCond_CritHype))
 			{
 				g_healcount++;

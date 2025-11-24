@@ -811,6 +811,11 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         damage *= 6.5;
                         return Plugin_Changed;
                     }
+                    case 86:
+                    {
+                        damage *= 6.5;
+                        return Plugin_Changed;
+                    }
                 }
 
                 if (!IsBoss(victim) && IsAnyRobot(victim))

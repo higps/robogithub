@@ -22,7 +22,7 @@ float g_dmg_bonus = 1.0;
 bool g_b_yap = true;
 
 GlobalForward _currentChampion;
-
+int g_previous_check_human_count = 0;
 public void OnMapStart()
 {
     PrecacheSound(SOUND);
@@ -39,6 +39,7 @@ public void OnMapStart()
         CloseHandle(g_h_checkChampionCowardTimer);
         g_h_checkChampionCowardTimer = INVALID_HANDLE;
     }
+    g_previous_check_human_count = -1;
 }
 
 
@@ -59,13 +60,17 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
     int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 
-    if(victim == g_i_current_champion)
-    {
-        MC_PrintToChatAll("{green}The {gold}Champion:{gold} %N{green} has fallen.", victim);
-        g_i_current_champion = -1
-        g_b_yap = true;
-        RequestFrame(CheckChampion);
-    }
+	int death_flags = GetEventInt(event, "death_flags");
+    if((death_flags & TF_DEATHFLAG_DEADRINGER) != TF_DEATHFLAG_DEADRINGER) 
+        {
+            if(victim == g_i_current_champion)
+            {
+                MC_PrintToChatAll("{green}The {gold}Champion:{gold} %N{green} has fallen.", victim);
+                g_i_current_champion = -1
+                g_b_yap = true;
+                RequestFrame(CheckChampion);
+            }
+        }
     return Plugin_Continue;
 }
 
@@ -78,7 +83,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     if (GetEngineTime() >= g_last_check + g_cooldown)
     {
         g_last_check = GetEngineTime();
-        if(g_i_current_champion == -1)RequestFrame(CheckChampion);
+        RequestFrame(CheckChampion);
      
     }
     return Plugin_Continue;
@@ -98,22 +103,35 @@ void FindValidCandidates()
         }
     }
 }
+
+
 void CheckChampion()
 {   
     
+    //PrintToChatAll("Checking champion!");
+    g_CurrentRobots = GetCurrentRobotCount();
+    int CurrentHumans = GetCurrentHumanCount();
+
+    ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
+    float ratio = drobotcount.FloatValue;
+
+    int TargetHumans = RoundToFloor(float(g_CurrentRobots) * ratio) - g_CurrentRobots;
+    g_MissingHumans = TargetHumans - CurrentHumans;
+
+    g_dmg_bonus = 1.0 + (0.35 * float(g_MissingHumans));
+
+    // PrintToChatAll("Missing humans: %i", g_MissingHumans);
+    // PrintToChatAll("Previous Missing humans: %i", g_previous_check_human_count);
+    if (g_i_current_champion != -1 && g_previous_check_human_count != g_MissingHumans)
+    {
+            MC_PrintToChatAll("{orange}%N {green}changed from level %i changed to %i",g_previous_check_human_count, g_i_current_champion, g_MissingHumans);
+            CreateChampion(g_i_current_champion);
+    }
+
     if (g_i_current_champion == -1)
     {
-        g_CurrentRobots = GetCurrentRobotCount();
-        int CurrentHumans = GetCurrentHumanCount();
 
-        ConVar drobotcount = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
-        float ratio = drobotcount.FloatValue;
-
-        int TargetHumans = RoundToFloor(float(g_CurrentRobots) * ratio) - g_CurrentRobots;
-        g_MissingHumans = TargetHumans - CurrentHumans;
-
-
-        g_dmg_bonus = 1.0 + (0.35 * float(g_MissingHumans));
+        
 
         // PrintToChatAll("Current Robots: %i", g_CurrentRobots);
         // PrintToChatAll("Current Humans: %i", CurrentHumans);
@@ -139,6 +157,7 @@ void CheckChampion()
                 if (g_h_checkChampionTimer == INVALID_HANDLE)
                 {
                     g_h_checkChampionTimer = CreateTimer(1.0, Timer_CheckChampionLeaveSpawn, _, TIMER_REPEAT);
+                    g_previous_check_human_count = g_MissingHumans;
                 }
             }
         }
@@ -185,11 +204,11 @@ public Action Timer_CheckChampionLeaveSpawn(Handle timer)
 // float g_moves_speed_base = 1.1;
 // float g_scale = 1.25;
 
-void SetScale(int client, float scale)
-{
-    SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.25);
-    UpdatePlayerHitbox(client, 1.25);
-}
+// void SetScale(int client, float scale)
+// {
+//     SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.25);
+//     UpdatePlayerHitbox(client, 1.25);
+// }
 
 void CreateChampion(int client)
 {
@@ -243,7 +262,7 @@ void CreateChampion(int client)
 void RemoveChampion(int client)
 {
     MC_PrintToChatAll("{yellow}%N {green}was the champion, but was a {yellow}coward {green}ran in to spawn, and is no more", client);
-    SetScale(client, 1.0);
+    // SetScale(client, 1.0);
     TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
     g_i_current_champion = -1
     g_b_yap = true;
@@ -340,7 +359,7 @@ void MakeSpyChampion(int client)
     // TODO: Add Spy-specific buffs or logic here
     
 }
-
+int ChampionHat = 30808;
 
 void CreateClassChampion(int client, int Weapon1, int Weapon2, int Weapon3)
 {
@@ -365,22 +384,27 @@ void CreateClassChampion(int client, int Weapon1, int Weapon2, int Weapon3)
         TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", g_dmg_bonus); 
     }
     // int Weapon4 = GetPlayerWeaponSlot(client, TFWeaponSlot_PDA);
-    // TF2Attrib_SetByName(Weapon1, "attach particle effect", 3160.0);
-    // TF2Attrib_SetByName(Weapon1, "attach particle effect static", 3160.0);
     // TF2Attrib_SetByName(client, "move speed bonus", 1.0 + (0.05 * float(g_MissingHumans)) + (0.02 * float(g_CurrentRobots)));
     TF2Attrib_SetByName(client, "max health additive bonus", (50.0 * (float(g_MissingHumans)))); 
     // TF2Attrib_SetByName(client, "particle effect use head origin", 1.0); 
     //3160 teamwork valorance
     // 3025 enchanted
     // TF2Attrib_SetByName(client, "attach particle effect", 3160.0); 
-    TF2Attrib_SetByName(client, "attach particle effect", 3025.0); 
-    CreateRoboHat(client, 30808, 5, 8, -1, -1, 1.25, 1.0);
-    TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
+    
+    if (!HasChampionhat(client))
+    {
+        int hat = CreateRoboHat(client, ChampionHat, 5, 8, -1, -1, 1.25, 1.0);
+        TF2Attrib_SetByName(hat, "attach particle effect", 3025.0); 
+        RequestFrame(HealToMax, client);
+        TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
+    }
+    
+    
     // TF2_AddCondition(client, TFCond_KingAura);
     // TF2_AddCondition(client, TFCond_KingRune);
     // TF2_AddCondition(client, TFCond_CritCanteen, 4.0);
     // TF2_AddCondition(client, TFCond_UberchargedCanteen, 4.0);
-    RequestFrame(HealToMax, client);
+    
     EmitSoundToAll(SOUND,client);
     // MC_PrintToChatAll("{green}[Manned Machines]{default} SatParticles stats to the %N CHAMPION!", client);
 }
@@ -426,7 +450,8 @@ public void OnClientDisconnect(int client)
     }
 }
 
-public FindHat(int iClient)
+
+public Action HasChampionhat(int iClient)
 {
 	int iWearableItem = -1;
 	// PrintToServer("LOOKING HAT 1 !");
@@ -444,9 +469,14 @@ public FindHat(int iClient)
 			{			
 				// PrintToServer("LOOKING HAT 3 !");
 				// If a weapon's definition index matches with the one stored...
-				TF2Attrib_SetByName(iWearableIndex, "attach particle effect", 35.0); 
+				if (iWearableIndex == ChampionHat)
+				{
+                    PrintToChatAll("FOUND HAT")
+                    return true;
+				}
 			}
 		}
 	}
-	// return false;
+    PrintToChatAll("FOUND DIDNT HAT")
+	return false;
 }

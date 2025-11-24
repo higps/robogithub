@@ -137,21 +137,21 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	return Plugin_Continue;
 }
 
-// public void TF2_OnConditionAdded(int client, TFCond condition)
-// {
+public void TF2_OnConditionAdded(int client, TFCond condition)
+{
 	
 
 
-// 	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-// 	{	
-// 		int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-// 		if (tauntid == 463 || tauntid == -1)
-// 		{
-// 		TF2_RemoveCondition(client, condition);
-// 		}
-// 	}
+	if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+	{	
+		int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+		if (tauntid == 463 || tauntid == -1)
+		{
+		TF2_RemoveCondition(client, condition);
+		}
+	}
 
-// }
+}
 
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
