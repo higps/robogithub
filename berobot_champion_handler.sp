@@ -471,12 +471,12 @@ public Action HasChampionhat(int iClient)
 				// If a weapon's definition index matches with the one stored...
 				if (iWearableIndex == ChampionHat)
 				{
-                    PrintToChatAll("FOUND HAT")
+                    // PrintToChatAll("FOUND HAT")
                     return true;
 				}
 			}
 		}
 	}
-    PrintToChatAll("FOUND DIDNT HAT")
+    // PrintToChatAll("FOUND DIDNT HAT")
 	return false;
 }
