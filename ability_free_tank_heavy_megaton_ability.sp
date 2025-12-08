@@ -44,9 +44,10 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 		{
 			// PrintToChat(g_robot_player,"Current Max HP %i", TF2Util_GetEntityMaxHealth(g_robot_player));
 			int hp_regen = RoundToNearest(float(TF2Util_GetEntityMaxHealth(g_robot_player)) / (4.0 + float(GetCurrentRobotCount())));
+			
 			// PrintToChat(g_robot_player, "Entity HP: %i Healing for %i", TF2Util_GetEntityMaxHealth(g_robot_player), hp_regen);
-			TF2Attrib_AddCustomPlayerAttribute(g_robot_player, "health regen", float(hp_regen), 1.1);
-			TF2_AddCondition(g_robot_player, TFCond_InHealRadius, 1.2);
+			TF2Attrib_AddCustomPlayerAttribute(g_robot_player, "health regen", float(hp_regen), 1.3);
+			TF2_AddCondition(g_robot_player, TFCond_InHealRadius, 1.3);
 		}
 		
 	}
