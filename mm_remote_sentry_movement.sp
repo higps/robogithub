@@ -109,6 +109,7 @@ public Plugin:myinfo = {
     url = "http://www.jigglysfunhouse.net"
 };
 
+g_b_map_ending = false;
 /**
  * Description: Function to check the entity limit.
  *              Use before spawning an entity.
@@ -421,7 +422,9 @@ public OnPluginStart()
     HookEvent("player_team",PlayerChangeTeamEvent);
     HookEventEx("teamplay_round_win",EventRoundOver,EventHookMode_PostNoCopy);
     HookEventEx("teamplay_round_stalemate",EventRoundOver,EventHookMode_PostNoCopy);
-
+    
+    HookEvent("tf_game_over", Event_Teamplay_TF_Game_Over, EventHookMode_Post);
+    HookEvent("teamplay_game_over", Event_Teamplay_TF_Game_Over, EventHookMode_Post);
     #if defined _amp_node_included || defined _ztf2grab_included
         m_AmpNodeAvailable = LibraryExists("amp_node");
         m_GravgunAvailable = LibraryExists("ztf2grab");
@@ -452,6 +455,18 @@ public OnPluginStart()
     }
 #endif
 
+public Action Event_Teamplay_TF_Game_Over(Event event, char[] name, bool dontBroadcast)
+{
+    g_b_map_ending = true;
+    for(int i = 1; i <= MaxClients; i++)
+	{	
+        if(HasStats(i))
+        {
+            RemoteOff(i, 0);
+        }
+    }
+}
+
 public OnConfigsExecuted()
 {
     ParseFactorVar();
@@ -469,11 +484,15 @@ public OnMapStart()
     gTimer = CreateTimer(0.1, UpdateObjects, INVALID_HANDLE, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
     g_iMaxEntities  = GetMaxEntities();
+    g_b_map_ending = false;
+
+    
 }
 
 public OnMapEnd()
 {
     CloseHandle(gTimer);
+
 }
 
 public RemoteCvarChange(Handle:convar, const String:oldValue[], const String:newValue[])
@@ -2678,7 +2697,7 @@ char emptyArgs[1] = "";
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
     // PrintToServer("Running");
-	if (HasStats(client))
+	if (HasStats(client) && !g_b_map_ending)
 	{
 
 		if( GetEntProp( client, Prop_Data, "m_afButtonReleased" )  & IN_RELOAD) 

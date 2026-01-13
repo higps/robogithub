@@ -220,16 +220,7 @@ public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& da
 			int target = victim;
 
 
-			if (TF2_IsPlayerInCondition(target, TFCond_Taunting))
-			{	
-				
-				
-				int tauntid = GetEntProp(target, Prop_Send, "m_iTauntItemDefIndex");
-				if (tauntid == 463 || tauntid == -1)
-				{
-				TF2_RemoveCondition(target, TFCond_Taunting);
-				}
-			}
+
 
 			if(!TF2_IsPlayerInCondition(healer, TFCond_CritHype))
 			{
@@ -244,6 +235,17 @@ public Action OnTraceAttack(int victim, int& attacker, int& inflictor, float& da
 			TF2_AddCondition(target, TFCond_SpeedBuffAlly, team_duration);
 			TF2_AddCondition(target, TFCond_Buffed, team_duration);
 			
+			if (TF2_IsPlayerInCondition(target, TFCond_Taunting))
+			{	
+				
+				
+				int tauntid = GetEntProp(target, Prop_Send, "m_iTauntItemDefIndex");
+				if (tauntid == 463 || tauntid == -1)
+				{
+				TF2_RemoveCondition(target, TFCond_Taunting);
+				}
+			}
+
 			}
 
 		}

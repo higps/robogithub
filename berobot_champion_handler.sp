@@ -21,6 +21,8 @@ int g_CurrentRobots = 0;
 float g_dmg_bonus = 1.0;
 bool g_b_yap = true;
 
+bool g_b_was_champion[MAXPLAYERS + 1] = { false, ... };
+
 GlobalForward _currentChampion;
 int g_previous_check_human_count = 0;
 public void OnMapStart()
@@ -79,7 +81,17 @@ float g_last_check = 0.0;
 
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
-    
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+    if (g_b_was_champion[client] && (g_i_current_champion != client))
+    {
+        //The player has been a champion but is no more, may have kept weapons with stats, need to be reset.
+        // PrintToChatAll("%N was champion, removing stats", client);
+        RequestFrame(RemoveChampion,client);
+        g_b_was_champion[client] = false;
+
+    }
+
     if (GetEngineTime() >= g_last_check + g_cooldown)
     {
         g_last_check = GetEngineTime();
@@ -124,7 +136,7 @@ void CheckChampion()
     // PrintToChatAll("Previous Missing humans: %i", g_previous_check_human_count);
     if (g_i_current_champion != -1 && g_previous_check_human_count != g_MissingHumans)
     {
-            MC_PrintToChatAll("{orange}%N {green}changed from level %i changed to %i",g_previous_check_human_count, g_i_current_champion, g_MissingHumans);
+            MC_PrintToChatAll("{orange}%N {green}changed from level %i -> %i",g_i_current_champion, g_previous_check_human_count, g_MissingHumans);
             CreateChampion(g_i_current_champion);
     }
 
@@ -226,10 +238,10 @@ void CreateChampion(int client)
                 MakeScoutChampion(client);
 
             case TFClass_Soldier:
-                MakeSoldierChampion(client);
+                MakeSoldierChampion(client, Weapon3);
 
             case TFClass_Pyro:
-                MakePyroChampion(client);
+                MakePyroChampion(client, Weapon3);
 
             case TFClass_DemoMan:
                 MakeDemomanChampion(Weapon1, Weapon2, Weapon3);
@@ -244,7 +256,7 @@ void CreateChampion(int client)
                 MakeMedicChampion(client, Weapon2);
 
             case TFClass_Sniper:
-                MakeSniperChampion(client);
+                MakeSniperChampion(client, Weapon1);
 
             case TFClass_Spy:
                 MakeSpyChampion(client);
@@ -252,13 +264,15 @@ void CreateChampion(int client)
         }
                 
         CreateClassChampion(client, Weapon1, Weapon2, Weapon3);
+        
         if (g_h_checkChampionCowardTimer == INVALID_HANDLE)
         {
             g_h_checkChampionCowardTimer = CreateTimer(0.3, Timer_CheckChampionCoward, _, TIMER_REPEAT);
         }
     }
 }
-
+float uber = 0.0;
+int first_weapon_index = -1;
 void RemoveChampion(int client)
 {
     MC_PrintToChatAll("{yellow}%N {green}was the champion, but was a {yellow}coward {green}ran in to spawn, and is no more", client);
@@ -266,8 +280,40 @@ void RemoveChampion(int client)
     TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
     g_i_current_champion = -1
     g_b_yap = true;
+
+
+    // Store resources
+    int decaps = GetEntProp(client, Prop_Send, "m_iDecapitations");
+    // PrintToChatAll("Decaps: %i", decaps);
+    TFClassType first_class = TF2_GetPlayerClass(client);
+
+     
+
+    if (first_class == TFClass_Medic)
+    {
+        int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+        first_weapon_index = GetEntProp(Weapon2, Prop_Send, "m_iItemDefinitionIndex");
+        uber = GetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel");
+    }
+
     TF2_RemoveAllWeapons(client);
     TF2_RespawnPlayer(client);
+
+    // Restore decapitations
+    if (first_class == TF2_GetPlayerClass(client))
+    {
+    SetEntProp(client, Prop_Send, "m_iDecapitations", decaps);
+    }
+    // Restore medic uber
+    if (TF2_GetPlayerClass(client) == TFClass_Medic)
+    {
+        int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+        //Prevent exploit of switching uber and keeping charge
+        if (first_weapon_index == GetEntProp(Weapon2, Prop_Send, "m_iItemDefinitionIndex"))
+        {
+            SetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel", uber);
+        }
+    }
 }
 
 public Action Timer_CheckChampionCoward(Handle timer)
@@ -287,19 +333,27 @@ public Action Timer_CheckChampionCoward(Handle timer)
 void MakeScoutChampion(int client)
 {
     // TODO: Add Scout-specific buffs or logic here
-    
+    TF2Attrib_SetByName(client, "max health additive bonus", (25.0 * (float(g_MissingHumans)))); 
 }
 
-void MakeSoldierChampion(int client)
+void MakeSoldierChampion(int client, int Weapon3)
 {
     // TODO: Add Soldier-specific buffs or logic here
-    
+    TF2Attrib_SetByName(client, "max health additive bonus", (55.0 * (float(g_MissingHumans)))); 
+    if (Weapon3 != -1)
+    {
+        TF2Attrib_SetByName(Weapon3, "rocket jump damage reduction", g_dmg_bonus);
+    }
 }
 
-void MakePyroChampion(int client)
+void MakePyroChampion(int client, int Weapon3)
 {
     // TODO: Add Pyro-specific buffs or logic here
-    
+    TF2Attrib_SetByName(client, "max health additive bonus", (45.0 * (float(g_MissingHumans)))); 
+    if (Weapon3 != -1)
+    {
+        TF2Attrib_SetByName(Weapon3, "rocket jump damage reduction", g_dmg_bonus);
+    }
 }
 bool IsDemoKnight(int weapon1, int weapon2)
 {
@@ -320,22 +374,28 @@ void MakeDemomanChampion(int Weapon1, int Weapon2, int Weapon3)
     {
         TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", g_dmg_bonus); 
     }
-    
+    if (Weapon3 != -1)
+    {
+        TF2Attrib_SetByName(Weapon3, "rocket jump damage reduction", g_dmg_bonus);
+    }
 }
 
 void MakeHeavyChampion(int client)
 {
     // TODO: Add Heavy-specific buffs or logic here
-    
+    TF2Attrib_SetByName(client, "max health additive bonus", (65.0 * (float(g_MissingHumans)))); 
 }
 
 void MakeEngineerChampion(int client, int Weapon3)
 {
     // TODO: Add Engineer-specific buffs or logic here
+    TF2Attrib_SetByName(client, "max health additive bonus", (25.0 * (float(g_MissingHumans)))); 
     if(Weapon3 != -1)
     {
         
         TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", g_dmg_bonus); 
+        TF2Attrib_SetByName(Weapon3, "build rate bonus", g_dmg_bonus); 
+        
     }
 }
 
@@ -346,18 +406,22 @@ void MakeMedicChampion(int client, int Weapon2)
     {
         TF2Attrib_SetByName(Weapon2, "heal rate bonus", g_dmg_bonus); 
     }
+    TF2Attrib_SetByName(client, "max health additive bonus", (35.0 * (float(g_MissingHumans)))); 
 }
 
-void MakeSniperChampion(int client)
+void MakeSniperChampion(int client, Weapon1)
 {
     // TODO: Add Sniper-specific buffs or logic here
-    
+    if (Weapon1 != -1)
+    {
+        TF2Attrib_SetByName(Weapon1, "damage bonus", 1.0 + (g_dmg_bonus/6.0)); 
+    }
 }
 
 void MakeSpyChampion(int client)
 {
     // TODO: Add Spy-specific buffs or logic here
-    
+    TF2Attrib_SetByName(client, "max health additive bonus", (25.0 * (float(g_MissingHumans)))); 
 }
 int ChampionHat = 30808;
 
@@ -385,7 +449,7 @@ void CreateClassChampion(int client, int Weapon1, int Weapon2, int Weapon3)
     }
     // int Weapon4 = GetPlayerWeaponSlot(client, TFWeaponSlot_PDA);
     // TF2Attrib_SetByName(client, "move speed bonus", 1.0 + (0.05 * float(g_MissingHumans)) + (0.02 * float(g_CurrentRobots)));
-    TF2Attrib_SetByName(client, "max health additive bonus", (50.0 * (float(g_MissingHumans)))); 
+    
     // TF2Attrib_SetByName(client, "particle effect use head origin", 1.0); 
     //3160 teamwork valorance
     // 3025 enchanted
@@ -394,8 +458,9 @@ void CreateClassChampion(int client, int Weapon1, int Weapon2, int Weapon3)
     if (!HasChampionhat(client))
     {
         int hat = CreateRoboHat(client, ChampionHat, 5, 8, -1, -1, 1.25, 1.0);
-        TF2Attrib_SetByName(hat, "attach particle effect", 3025.0); 
+        
         RequestFrame(HealToMax, client);
+        RequestFrame(SetHatParticle, hat);
         TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
     }
     
@@ -406,6 +471,7 @@ void CreateClassChampion(int client, int Weapon1, int Weapon2, int Weapon3)
     // TF2_AddCondition(client, TFCond_UberchargedCanteen, 4.0);
     
     EmitSoundToAll(SOUND,client);
+    g_b_was_champion[client] = true;
     // MC_PrintToChatAll("{green}[Manned Machines]{default} SatParticles stats to the %N CHAMPION!", client);
 }
 
@@ -420,6 +486,10 @@ void HealToMax(int client)
     TF2Attrib_AddCustomPlayerAttribute(client, "health regen", 99999.0, 2.0);
 }
 
+void SetHatParticle(int hat)
+{
+    if(IsValidEntity(hat))TF2Attrib_SetByName(hat, "attach particle effect", 3216.0);
+}
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
     // if (!g_Enable)

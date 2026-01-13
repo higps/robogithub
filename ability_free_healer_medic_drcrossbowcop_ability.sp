@@ -159,14 +159,6 @@ public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroad
 
 	if(!TF2_IsPlayerInCondition(healer, TFCond_CritHype))g_healcount++;
 
-	if (TF2_IsPlayerInCondition(target, TFCond_Taunting))
-	{	
-		int tauntid = GetEntProp(target, Prop_Send, "m_iTauntItemDefIndex");
-		if (tauntid == 463 || tauntid == -1)
-		{
-		TF2_RemoveCondition(target, TFCond_Taunting);
-		}
-	}
 
 	//PrintToChatAll("%N Healed %N, healcount was %i ", healer, target, g_healcount);
 
@@ -194,6 +186,17 @@ public Action Event_Crossbow_Heal(Event event, const char[] name, bool dontBroad
 	{
 	TF2_AddCondition(target, TFCond_CritCanteen, reduced_duration);
 	}
+
+	if (TF2_IsPlayerInCondition(target, TFCond_Taunting))
+	{	
+		int tauntid = GetEntProp(target, Prop_Send, "m_iTauntItemDefIndex");
+		if (tauntid == 463 || tauntid == -1)
+		{
+		TF2_RemoveCondition(target, TFCond_Taunting);
+		}
+	}
+
+
 	}
 
 	}
