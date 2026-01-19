@@ -61,6 +61,7 @@ public Event_Death(Event event, const char[] name, bool dontBroadcast)
 				if(IsAnyRobot(client) && GetClientTeam(attacker) == GetClientTeam(client))
 				{
 					
+					PrintCenterText(client,"Speed boost from %N", client);
 					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 5.0);
 
 				}

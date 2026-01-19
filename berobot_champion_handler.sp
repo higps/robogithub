@@ -241,10 +241,10 @@ void CreateChampion(int client)
                 MakeSoldierChampion(client, Weapon3);
 
             case TFClass_Pyro:
-                MakePyroChampion(client, Weapon3);
+                MakePyroChampion(client, Weapon1, Weapon2, Weapon3);
 
             case TFClass_DemoMan:
-                MakeDemomanChampion(Weapon1, Weapon2, Weapon3);
+                MakeDemomanChampion(client, Weapon1, Weapon2, Weapon3);
 
             case TFClass_Heavy:
                 MakeHeavyChampion(client);
@@ -342,19 +342,39 @@ void MakeSoldierChampion(int client, int Weapon3)
     TF2Attrib_SetByName(client, "max health additive bonus", (55.0 * (float(g_MissingHumans)))); 
     if (Weapon3 != -1)
     {
-        TF2Attrib_SetByName(Weapon3, "rocket jump damage reduction", g_dmg_bonus);
+        SetJumpDmgReduction(Weapon3);
     }
 }
 
-void MakePyroChampion(int client, int Weapon3)
+void MakePyroChampion(int client,int Weapon1, int Weapon2, int Weapon3)
 {
     // TODO: Add Pyro-specific buffs or logic here
     TF2Attrib_SetByName(client, "max health additive bonus", (45.0 * (float(g_MissingHumans)))); 
-    if (Weapon3 != -1)
-    {
-        TF2Attrib_SetByName(Weapon3, "rocket jump damage reduction", g_dmg_bonus);
-    }
+    
+    SetJumpDmgReduction(Weapon1);
+    SetJumpDmgReduction(Weapon2);
+    SetJumpDmgReduction(Weapon3);
 }
+
+float ConvertBoostToReduction(float boost)
+{
+    float reduction = 2.0 - boost;
+    return ClampFloat(reduction, 0.1, 9999.0);
+}
+
+float ClampFloat(float value, float min, float max)
+{
+    if (value < min)
+    {
+        return min;
+    }
+    if (value > max)
+    {
+        return max;
+    }
+    return value;
+}
+
 bool IsDemoKnight(int weapon1, int weapon2)
 {
     //Demoknights don't have weapons in slot1 or 2
@@ -367,16 +387,27 @@ bool IsDemoKnight(int weapon1, int weapon2)
     }
     return false;
 }
-void MakeDemomanChampion(int Weapon1, int Weapon2, int Weapon3)
+void MakeDemomanChampion(int client, int Weapon1, int Weapon2, int Weapon3)
 {
     // TODO: Add Demoman-specific buffs or logic here
+
+    TF2Attrib_SetByName(client, "max health additive bonus", (45.0 * (float(g_MissingHumans)))); 
     if (IsDemoKnight(Weapon1, Weapon2))
     {
         TF2Attrib_SetByName(Weapon3, "dmg bonus vs buildings", g_dmg_bonus); 
     }
-    if (Weapon3 != -1)
+
+        SetJumpDmgReduction(Weapon1);
+        SetJumpDmgReduction(Weapon2);
+}
+
+void SetJumpDmgReduction(int weapon)
+{
+    if (weapon != -1)
     {
-        TF2Attrib_SetByName(Weapon3, "rocket jump damage reduction", g_dmg_bonus);
+        float dmg_reduction = ClampFloat(2.0 - g_dmg_bonus, 0.1, 9999.0);
+        // PrintToChatAll("DMG REDUCTION WAS %f", dmg_reduction);
+        TF2Attrib_SetByName(weapon, "rocket jump damage reduction", dmg_reduction);
     }
 }
 
@@ -392,9 +423,9 @@ void MakeEngineerChampion(int client, int Weapon3)
     TF2Attrib_SetByName(client, "max health additive bonus", (25.0 * (float(g_MissingHumans)))); 
     if(Weapon3 != -1)
     {
-        
-        TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", g_dmg_bonus); 
-        TF2Attrib_SetByName(Weapon3, "build rate bonus", g_dmg_bonus); 
+        float bonus = ClampFloat(2.0 - g_dmg_bonus, 0.1, 9999.0);
+        TF2Attrib_SetByName(Weapon3, "upgrade rate decrease", g_dmg_bonus*1.35); 
+        TF2Attrib_SetByName(Weapon3, "build rate bonus", bonus); 
         
     }
 }
