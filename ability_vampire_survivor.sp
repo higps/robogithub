@@ -21,69 +21,145 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 Handle g_hRepeatingTimer = null;
-// #define MAX_PROJECTILES 30
 
-// char g_ProjectileList[MAX_PROJECTILES][64] =
-// {
-//     "tf_projectile_arrow",
-//     "tf_projectile_ball_ornament",
-//     "tf_projectile_cleaver",
-//     "tf_projectile_energy_ball",
-//     "tf_projectile_healing_bolt",
-//     "tf_projectile_jar",
-//     "tf_projectile_jar_gas",
-//     "tf_projectile_jar_milk",
-//     "tf_projectile_lightningorb",
-//     "tf_projectile_pipe",
-//     "tf_projectile_rocket",
-//     "tf_projectile_sentryrocket",
-//     "tf_projectile_spellbats",
-//     "tf_projectile_spellfireball",
-//     "tf_projectile_spellkartbats",
-//     "tf_projectile_spellkartorb",
-//     "tf_projectile_spellmeteorshower",
-//     "tf_projectile_stun_ball"
-// };
+char g_ProjectileList[][64] =
+{
+	"tf_projectile_rocket",
+	"tf_projectile_pipe",
+	"tf_projectile_spellfireball",
+	"tf_projectile_cleaver",
+	"tf_projectile_sentryprojectile",
+    "tf_projectile_ball_ornament",
+    "tf_projectile_healing_bolt",
+    "tf_projectile_jar",
+	"tf_projectile_stun_ball",
+    "tf_projectile_jar_milk",
+	"tf_projectile_energy_ball",
+	"tf_projectile_jar_gas",
+    "tf_projectile_spellbats",
+
+};
+#define MAX_LEVEL 13
+#define START_LEVEL 0
+#define BASE_XP 100   // XP required to go from level 1 → 2
+
+int g_level = 0;
+int g_maxlevel = 10;
+int g_exp = 0;
+
+
+
+void ResetPlayerProgress()
+{
+    g_level = START_LEVEL;
+    g_exp = 0;
+}
+
+public void OnMapStart()
+{
+	ResetPlayerProgress();
+}
+public void OnMapEnd()
+{
+    StopRepeatingTimer();
+}
+
+int GetXPRequiredForLevel(int level)
+{
+    // XP needed to go FROM this level TO the next
+    // Level 1 -> 100
+    // Level 2 -> 200
+    // Level 3 -> 400
+    return BASE_XP * (1 << (level - 1));
+}
+void StopRepeatingTimer()
+{
+    if (g_hRepeatingTimer != null)
+    {
+        KillTimer(g_hRepeatingTimer);
+        g_hRepeatingTimer = null;
+    }
+}
+
+void AddExperience(int client, int amount)
+{
+    if (g_level >= MAX_LEVEL)
+        return;
+	PrintToChatAll("Current Exp %i", g_exp);
+	PrintToChatAll("Amount %i", amount);
+    g_exp += amount;
+    CheckLevelUp(client);
+}
+
+void CheckLevelUp(int client)
+{
+    while (g_level < MAX_LEVEL)
+    {
+        int xpRequired = GetXPRequiredForLevel(g_level);
+
+        if (g_exp < xpRequired)
+            break;
+
+        g_exp -= xpRequired;
+        g_level++;
+
+        OnPlayerLevelUp(client, g_level);
+    }
+}
+
+void OnPlayerLevelUp(int client, int newLevel)
+{
+    PrintToChat(client, "[LEVEL UP] You reached level %d!", newLevel);
+
+    if (newLevel == MAX_LEVEL)
+    {
+        PrintToChat(client, "[LEVEL UP] MAX LEVEL REACHED!");
+    }
+    g_hRepeatingTimer = CreateTimer(
+        2.0,
+        Timer_DoSomething,
+        newLevel-1,
+        TIMER_REPEAT
+    );
+    // Apply perks, stats, unlocks, etc here
+}
+
+public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+{
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+		return Plugin_Continue;
+}
 
 public void OnPluginStart()
 {
+
+	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
     // Start a repeating timer every 10 seconds
-    g_hRepeatingTimer = CreateTimer(
-        2.0,                 // interval (seconds)
-        Timer_DoSomething,    // callback
-        _,                    // optional data
-        TIMER_REPEAT          // repeats until map change
-    );
+    if (g_hRepeatingTimer != null)
+    {
+        return; // timer already running
+    }
+	// int projectile_id = 1;
+
 }
-// void UseProjectile(int projIndex)
-// {
-//     char projectile[64];
-//     strcopy(projectile, sizeof(projectile), g_ProjectileList[projIndex]);
 
-//     PrintToServer("[TF2] Selected projectile: %s", projectile);
-
-//     // Example usage:
-//     // CreateEntityByName(projectile);
-// }
-// Timer callback
-public Action Timer_DoSomething(Handle timer)
+public Action Timer_DoSomething(Handle timer, int projectile_id)
 {
-    DoMyFunction();
+    DoMyFunction(projectile_id);
     return Plugin_Continue; // keep repeating
 }
 
 
 // Your custom function
-void DoMyFunction()
+void DoMyFunction(int projectile_id)
 {
 	//Find the client
 	int attacker = -1;
     for(int i = 1; i <= MaxClients; i++)
 	{	
-		if (IsRobot(i, "Icebear"))
+		if (IsRobot(i, "Survivor"))
 		{
 			attacker = i;
-			
 		}
 	}
 	int closestVictim = -1;
@@ -117,29 +193,37 @@ void DoMyFunction()
 		}
 	}	
 
-	SpawnBombs(closestVictim, attacker);
+	SpawnBombs(closestVictim, attacker, projectile_id);
 }
 
-// public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+
+public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
+{
+    // if (!g_Enable)
+    //     return Plugin_Continue;
+	if(!IsValidClient(victim))
+	return Plugin_Continue;    
+	if(!IsValidClient(attacker))
+	return Plugin_Continue;
+
+	if (IsRobot(attacker, "Survivor"))
+	{
+
+		AddExperience(attacker, RoundToFloor(damage/4.0));
+
+	}
+	return Plugin_Continue;
+}
+
+// void GetRandomProjectile(int attacker)
 // {
-//     // if (!g_Enable)
-//     //     return Plugin_Continue;
-// 	if(!IsValidClient(victim))
-// 	return Plugin_Continue;    
-// 	if(!IsValidClient(attacker))
-// 	return Plugin_Continue;
-
-// 	if (IsRobot(attacker, "Icebear"))
-// 	{
-
-
-// 		SpawnBombs(victim, attacker);
+// 	int size = sizeof g_ProjectileList;
+// 	for (int i = 0; i < size; i++)
+// 		PrintToChatAll(g_ProjectileList[i]);
 // 	}
-// 	return Plugin_Continue;
 // }
 
-
-void SpawnBombs(int client, int attacker)
+void SpawnBombs(int client, int attacker, int projectile_id)
 {
 	int team = GetClientTeam(attacker);
 
@@ -169,27 +253,33 @@ void SpawnBombs(int client, int attacker)
 	// Angles
 	GetVectorAngles(dir, ang);
 
-	int rocket = CreateEntityByName("tf_projectile_ball_ornament");
-	if (rocket == -1)
+	// int size = sizeof g_ProjectileList;
+	// int projectile_id = GetRandomInt(0, size-1);
+
+
+	int projectile = CreateEntityByName(g_ProjectileList[projectile_id]);
+	if (projectile == -1)
 		return;
 
+	PrintToChatAll("Firing %s", g_ProjectileList[projectile_id]);
+
 	// 🔴 THESE MUST BE SET BEFORE DispatchSpawn
-	SetEntPropEnt(rocket, Prop_Send, "m_hOwnerEntity", attacker);
+	SetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity", attacker);
 	SetVariantInt(team);
-	AcceptEntityInput(rocket, "TeamNum");
+	AcceptEntityInput(projectile, "TeamNum");
 	SetVariantInt(team);
-	AcceptEntityInput(rocket, "SetTeam");
-	// SetEntProp(rocket, Prop_Send, "m_iTeamNum", team);
-	SetEntProp(rocket, Prop_Send, "m_bCritical", 0);
+	AcceptEntityInput(projectile, "SetTeam");
+	// SetEntProp(projectile, Prop_Send, "m_iTeamNum", team);
+	SetEntProp(projectile, Prop_Send, "m_bCritical", 0);
 	
-	DispatchSpawn(rocket);
-	// int offset = FindSendPropInfo("CTFProjectileRocket", "m_iDeflected") + 4;
+	DispatchSpawn(projectile);
+	// int offset = FindSendPropInfo("CTFProjectileProjectile", "m_iDeflected") + 4;
 	// float damage = 100.0;
-	// SetEntPropFloat(rocket, Prop_Send, "m_flDamage", 100.0);
-	// GetEntPropFloat(rocket, Prop_Data, "m_flDamage", 100.0);
-	// SetEntDataFloat(rocket, offset, damage);
-	TeleportEntity(rocket, spawnPos, ang, vel);
-	// SetEntPropFloat(rocket, Prop_Send, "m_flDamage", 100.0);
+	// SetEntPropFloat(projectile, Prop_Send, "m_flDamage", 100.0);
+	// GetEntPropFloat(projectile, Prop_Data, "m_flDamage", 100.0);
+	// SetEntDataFloat(projectile, offset, damage);
+	TeleportEntity(projectile, spawnPos, ang, vel);
+	// SetEntPropFloat(projectile, Prop_Send, "m_flDamage", 100.0);
 }
 
 
