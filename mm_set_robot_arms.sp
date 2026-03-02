@@ -102,7 +102,9 @@ public void OnMapStart()
         //Underground
         "workshop/3602054692",
         //Sequoia
-        "workshop/3602111026"
+        "workshop/3602111026",
+        //Whiterock
+        "workshop/3677271882"
     };
 
     char mapName[PLATFORM_MAX_PATH];
