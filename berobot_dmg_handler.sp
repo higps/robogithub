@@ -169,7 +169,7 @@ public Action Event_PlayerDeath(Event event, char[] name, bool dontBroadcast){
     if (weaponindex == 357 && !IsAnyRobot(attacker))
     {
         // PrintToChatAll("Attacker used Half-Zatoichi!");
-        int hp_gain = RoundToNearest(float(Entity_GetMaxHealth(victim)) / 3.0);
+        int hp_gain = RoundToNearest(float(Entity_GetMaxHealth(victim)) / 10.0);
         // PrintToChatAll("Gained %i HP on kill",hp_gain);
         AddPlayerHealth(attacker,hp_gain,hp_gain);
 
@@ -1487,6 +1487,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
             }
 
+            if (IsPanicAttack(Weapon2))
+            {
+                stat1 = 0.8;
+
+                TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
+                TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
+                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.3");                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1));
+            }
+
             if (IsGasPasser(Weapon2))
             {
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gas Passer: {orange}Gassed enemies take {teamcolor}+%0.0f %%%% more fire damage {orange}for {teamcolor}%0.0f {orange}seconds",chat_display, MoreIsMore(g_Gas_passer_fire_vuln), g_Gas_passer_fire_vuln_duration);
@@ -1621,7 +1631,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
             stat1 = 25.0;
             TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", stat1);
-            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit. On Kill: Gain 33%%%% of targets max HP as overheal",chat_display, stat1);
+            Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit. On Kill: Gain 10%%%% of targets max HP as overheal",chat_display, stat1);
 
                 if (TF2_GetPlayerClass(client) == TFClass_Soldier)
                 {
@@ -1689,6 +1699,17 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
                 TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots",  "damage=1.15 only-bots=1 critType=1");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
+            }
+
+
+            if (IsPanicAttack(Weapon2))
+            {
+                stat1 = 0.8;
+
+                TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
+                TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
+                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.3");                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1));
             }
 
             if (IsFistsOfSteel(Weapon3))
@@ -1972,6 +1993,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2CustAttr_SetString(Weapon1, "dmg-crit-vs-jumping-robots", "damage=1.15 only-bots=1 critType=1");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
             }
+
+            if (IsPanicAttack(Weapon1))
+            {
+                stat1 = 0.8;
+
+                TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
+                TF2Attrib_SetByName(Weapon1, "fire rate bonus", stat1);
+                TF2CustAttr_SetString(Weapon1, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.3");                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1));
+            }
         }
         if (TF2_GetPlayerClass(client) == TFClass_Medic)
         {
@@ -2189,7 +2220,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 stat1 = 25.0;
                 TF2Attrib_SetByName(Weapon3, "heal on hit for rapidfire", stat1);
                 TF2Attrib_RemoveByName(Weapon3, "fire rate bonus");  
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit. On Kill: Gain 33%%%% of targets max HP as overheal",chat_display, stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Half-Zatoichi: {orange}gains %0.0f HP on hit. On Kill: Gain 10%%%% of targets max HP as overheal",chat_display, stat1);
                 
             }
 
@@ -2212,6 +2243,16 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
                 TF2CustAttr_SetString(Weapon2, "dmg-crit-vs-jumping-robots",  "damage=1.15 only-bots=1 critType=1");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Shotgun: {orange}Penetrates {teamcolor} & {orange}+%0.0f%%%% faster firing and reload speed, +15%%%% dmg bonus + minicrit vs jumping robots",chat_display, LessIsMore(stat1));
+            }
+
+            if (IsPanicAttack(Weapon2))
+            {
+                stat1 = 0.8;
+
+                TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
+                TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
+                TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.3");                
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1));
             }
 
             int Gunboats = FindTFWearable(client, 133);
@@ -2251,6 +2292,13 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                         stat1 = 1.5;
                         TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
                         Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}From Liberty Launcher: Shotgun: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
+                    }
+
+                    if (IsPanicAttack(Weapon2))
+                    {
+                        stat1 = 1.5;
+                        TF2Attrib_SetByName(Weapon2, "clip size bonus", stat1);
+                        Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}From Liberty Launcher: Panic Attack: {orange}+%0.0f%% Bonus Clip on Shotgun",chat_display, MoreIsMore(stat1));
                     }
 
                     if (IsReserveShooter(Weapon2))
@@ -3173,7 +3221,22 @@ bool IsShotGun(int weapon){
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 		//If other shotguns are added, add here
-	case 9,10,11,12,199,425,1141,1153,15003,15016,15044,15047,15085,15109,15132,15133,15152: 
+	case 9,10,11,12,199,425,1141,15003,15016,15044,15047,15085,15109,15132,15133,15152: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsPanicAttack(int weapon){
+    
+    	if (weapon == -1 && weapon <= MaxClients) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//If other shotguns are added, add here
+	case 1153: 
 		{
 			return true;
 		}

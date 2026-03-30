@@ -116,7 +116,7 @@ void FindValidCandidates()
     }
 }
 
-
+int g_previous_missing_humans = 0;
 void CheckChampion()
 {   
     
@@ -136,7 +136,8 @@ void CheckChampion()
     // PrintToChatAll("Previous Missing humans: %i", g_previous_check_human_count);
     if (g_i_current_champion != -1 && g_previous_check_human_count != g_MissingHumans)
     {
-            MC_PrintToChatAll("{orange}%N {green}changed from level %i -> %i",g_i_current_champion, g_previous_check_human_count, g_MissingHumans);
+            if (g_previous_missing_humans != g_MissingHumans)MC_PrintToChatAll("{orange}%N {green}changed from level %i -> %i",g_i_current_champion, g_previous_check_human_count, g_MissingHumans);
+            g_previous_missing_humans = g_MissingHumans;
             CreateChampion(g_i_current_champion);
     }
 

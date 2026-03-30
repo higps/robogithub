@@ -873,7 +873,7 @@ RemoteControl(client, TFExtObjectType:type)
         PrintToChat(client, "You are not authorized to use remote controls.");
         return;
     }
-
+    
     // Save the client's position so we can restore it later
     GetClientAbsOrigin(client, clientPosition[client]);
 
@@ -1039,10 +1039,25 @@ RemoteControl(client, TFExtObjectType:type)
             }
         }
         else if (objectid > 0)
+        {
             control(client, objectid, type);
+            // PrintToChatAll("Sat attrib on %N", client);
+            int Weapon5 = GetPlayerWeaponSlot(client, TFWeaponSlot_Building);
+            TF2Attrib_SetByName(Weapon5, "mod_maxhealth_drain_rate", 10.0);
+            int Weapon4 = GetPlayerWeaponSlot(client, TFWeaponSlot_PDA);
+            TF2Attrib_SetByName(Weapon4, "mod_maxhealth_drain_rate", 10.0);
+            int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+            TF2Attrib_SetByName(Weapon3, "mod_maxhealth_drain_rate", 10.0);
+            int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+            TF2Attrib_SetByName(Weapon2, "mod_maxhealth_drain_rate", 10.0);
+            TF2_AddCondition(client, TFCond_MarkedForDeathSilent);
+        }
         else
+        {
             PrintToChat(client, "%s not found!", TF2_ObjectNames[type]);
+        }
     }
+
 }
 
 BuildObject(client, TFExtObjectType:type)
@@ -1871,6 +1886,18 @@ public Action:RemoteOff(client, args)
     g_WatcherEntRef[client] = 0;
     g_RemoteObjectRef[client] = 0;
     g_RemoteType[client] = TFExtObject_Unknown;
+    // PrintToChatAll("unSat attrib on %N", client);
+
+    int Weapon5 = GetPlayerWeaponSlot(client, TFWeaponSlot_Building);
+    int Weapon4 = GetPlayerWeaponSlot(client, TFWeaponSlot_PDA);
+    TF2Attrib_RemoveByName(Weapon5, "mod_maxhealth_drain_rate");
+   
+    TF2Attrib_RemoveByName(Weapon4, "mod_maxhealth_drain_rate");
+    int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+    TF2Attrib_RemoveByName(Weapon3, "mod_maxhealth_drain_rate");
+    int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+    TF2Attrib_RemoveByName(Weapon2, "mod_maxhealth_drain_rate");
+    TF2_RemoveCondition(client, TFCond_MarkedForDeathSilent);
     return Plugin_Handled;
 }
 
@@ -2678,7 +2705,7 @@ stock BuildTeleporterExit(hBuilder, const Float:fOrigin[3], const Float:fAngle[3
 #include <sdkhooks>
 #include <sourcemod>
 #include <tf2_stocks>
-#include <tf2attributes>
+
 #include <berobot_constants>
 #include <berobot>
 #include <tf_custom_attributes>
