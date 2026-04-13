@@ -887,6 +887,7 @@ RemoteControl(client, TFExtObjectType:type)
                 GetEntPropEnt(target,  Prop_Send, "m_hBuilder") == client)
             {
                 control(client, target, type);
+
             }
             else
             {
@@ -1041,16 +1042,8 @@ RemoteControl(client, TFExtObjectType:type)
         else if (objectid > 0)
         {
             control(client, objectid, type);
-            // PrintToChatAll("Sat attrib on %N", client);
-            int Weapon5 = GetPlayerWeaponSlot(client, TFWeaponSlot_Building);
-            TF2Attrib_SetByName(Weapon5, "mod_maxhealth_drain_rate", 10.0);
-            int Weapon4 = GetPlayerWeaponSlot(client, TFWeaponSlot_PDA);
-            TF2Attrib_SetByName(Weapon4, "mod_maxhealth_drain_rate", 10.0);
-            int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-            TF2Attrib_SetByName(Weapon3, "mod_maxhealth_drain_rate", 10.0);
-            int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-            TF2Attrib_SetByName(Weapon2, "mod_maxhealth_drain_rate", 10.0);
-            TF2_AddCondition(client, TFCond_MarkedForDeathSilent);
+
+
         }
         else
         {
@@ -1058,6 +1051,20 @@ RemoteControl(client, TFExtObjectType:type)
         }
     }
 
+}
+
+SetDebuf(int client)
+{
+    PrintToChatAll("Sat attrib on %N", client);
+    int Weapon5 = GetPlayerWeaponSlot(client, TFWeaponSlot_Building);
+    TF2Attrib_SetByName(Weapon5, "mod_maxhealth_drain_rate", 10.0);
+    int Weapon4 = GetPlayerWeaponSlot(client, TFWeaponSlot_PDA);
+    TF2Attrib_SetByName(Weapon4, "mod_maxhealth_drain_rate", 10.0);
+    int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+    TF2Attrib_SetByName(Weapon3, "mod_maxhealth_drain_rate", 10.0);
+    int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+    TF2Attrib_SetByName(Weapon2, "mod_maxhealth_drain_rate", 10.0);
+    TF2_AddCondition(client, TFCond_MarkedForDeathSilent);
 }
 
 BuildObject(client, TFExtObjectType:type)
@@ -1770,7 +1777,9 @@ public ObjectSelected(Handle:menu,MenuAction:action,client,selection)
         {
             new objectid = EntRefToEntIndex(objectRef);
             if (objectid > 0 && IsValidEdict(objectid) && IsValidEntity(objectid))
+            {
                 control(client, objectid, TF2_GetExtObjectType(objectid));
+            }
         }
     }
     else if (action == MenuAction_End)
@@ -1826,6 +1835,7 @@ bool:control(client, objectid, TFExtObjectType:type)
             g_RemoteType[client] = type;
             g_WatcherEntRef[client] = EntIndexToEntRef(watcher);
             g_RemoteObjectRef[client] = EntIndexToEntRef(objectid);
+            SetDebuf(client);
             return true;
         }
     }
