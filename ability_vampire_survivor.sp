@@ -8,9 +8,7 @@
 #include <tf_ontakedamage>
  
 #define PLUGIN_VERSION "1.0"
-#define ROBOT_NAME	"Samwiz"
-#define BANANA_MODEL "models/items/banana/banana.mdl"
-#define BananaHat 30643
+#define ROBOT_NAME	"Survivor"
 
 public Plugin:myinfo =
 {
@@ -24,37 +22,76 @@ Handle g_hRepeatingTimer = null;
 
 char g_ProjectileList[][64] =
 {
-	"tf_projectile_rocket",
-	"tf_projectile_pipe",
-	"tf_projectile_spellfireball",
-	"tf_projectile_cleaver",
-	"tf_projectile_sentryprojectile",
-    "tf_projectile_ball_ornament",
-    "tf_projectile_healing_bolt",
-    "tf_projectile_jar",
-	"tf_projectile_stun_ball",
-    "tf_projectile_jar_milk",
-	"tf_projectile_energy_ball",
-	"tf_projectile_jar_gas",
-    "tf_projectile_spellbats",
+	"tf_projectile_rocket", // 0
+	"tf_projectile_pipe", // 1
+	"tf_projectile_spellfireball", // 2
+	"tf_projectile_cleaver", // 3
+	"tf_projectile_sentryrocket", // 4
+    "tf_projectile_ball_ornament", // 5
+    "tf_projectile_jar", // 6
+	"tf_projectile_stun_ball", // 7
+    "tf_projectile_jar_milk", // 8
+	"tf_projectile_energy_ball", // 9
+	"tf_projectile_jar_gas", // 10
+    "tf_projectile_spellbats", // 11
 
+};
+
+enum TFProjectile
+{
+    TFProjectile_Rocket = 0,
+    TFProjectile_Pipe,
+    TFProjectile_SpellFireball,
+    TFProjectile_Cleaver,
+    TFProjectile_SentryProjectile,
+    TFProjectile_BallOrnament,
+    TFProjectile_Jar,
+    TFProjectile_StunBall,
+    TFProjectile_JarMilk,
+    TFProjectile_EnergyBall,
+    TFProjectile_JarGas,
+    TFProjectile_SpellBats
 };
 #define MAX_LEVEL 13
 #define START_LEVEL 0
 #define BASE_XP 100   // XP required to go from level 1 → 2
 
 int g_level = 0;
-int g_maxlevel = 10;
+int g_maxlevel = 11;
 int g_exp = 0;
+int g_expreq = BASE_XP;
 
 
+public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+{
+	if (IsRobot(client, ROBOT_NAME))
+	{
+
+		DrawHUD(client);
+
+	}
+	return Plugin_Continue;
+}
+
+
+void DrawHUD(int client)
+{
+	char sHUDText[128];
+	Format(sHUDText, sizeof(sHUDText), "Level: %i/%i\nXP: %i/%i",g_level,g_maxlevel,g_exp,g_expreq);
+
+
+	SetHudTextParams(0.85, 0.6, 0.1, 255, 0, 0, 255);
+
+
+	ShowHudText(client, -3, sHUDText);
+
+}
 
 void ResetPlayerProgress()
 {
     g_level = START_LEVEL;
     g_exp = 0;
 }
-
 public void OnMapStart()
 {
 	ResetPlayerProgress();
@@ -71,6 +108,7 @@ int GetXPRequiredForLevel(int level)
     // Level 2 -> 200
     // Level 3 -> 400
     return BASE_XP * (1 << (level - 1));
+	// return RoundToCeil(BASE_XP * Pow(1.3, float(level - 1)));
 }
 void StopRepeatingTimer()
 {
@@ -85,8 +123,6 @@ void AddExperience(int client, int amount)
 {
     if (g_level >= MAX_LEVEL)
         return;
-	PrintToChatAll("Current Exp %i", g_exp);
-	PrintToChatAll("Amount %i", amount);
     g_exp += amount;
     CheckLevelUp(client);
 }
@@ -96,13 +132,13 @@ void CheckLevelUp(int client)
     while (g_level < MAX_LEVEL)
     {
         int xpRequired = GetXPRequiredForLevel(g_level);
-
+		g_expreq = xpRequired; 
         if (g_exp < xpRequired)
             break;
 
         g_exp -= xpRequired;
         g_level++;
-
+		
         OnPlayerLevelUp(client, g_level);
     }
 }
@@ -140,7 +176,7 @@ public void OnPluginStart()
         return; // timer already running
     }
 	// int projectile_id = 1;
-
+	ResetPlayerProgress();
 }
 
 public Action Timer_DoSomething(Handle timer, int projectile_id)
@@ -162,6 +198,9 @@ void DoMyFunction(int projectile_id)
 			attacker = i;
 		}
 	}
+
+	if (attacker != 1)
+	{
 	int closestVictim = -1;
 	float closestDist = 0.0;
 
@@ -194,6 +233,8 @@ void DoMyFunction(int projectile_id)
 	}	
 
 	SpawnBombs(closestVictim, attacker, projectile_id);
+	}
+
 }
 
 
@@ -264,6 +305,81 @@ void SpawnBombs(int client, int attacker, int projectile_id)
 	PrintToChatAll("Firing %s", g_ProjectileList[projectile_id]);
 
 	// 🔴 THESE MUST BE SET BEFORE DispatchSpawn
+
+	if(TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen) ||
+		TF2_IsPlayerInCondition(attacker, TFCond_Kritzkrieged))
+	{
+		//
+	}
+
+	// int player_weapon = GetPlayerWeaponSlot(attacker, 0);
+    // if (player_weapon != -1)
+    // {
+    //     SetEntPropEnt(projectile, Prop_Send, "m_hLauncher", player_weapon);
+    // }
+	SetEntPropEnt(projectile, Prop_Data, "m_hOwnerEntity", attacker);
+	switch(projectile_id) 
+	{
+		case TFProjectile_Rocket: 
+		{
+			//Code
+			SetEntDataFloat(projectile, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected") + 4, 80.0, true);
+		}
+		case TFProjectile_Pipe: 
+		{
+		//Code
+			PrintToChatAll("Pipe");
+			// SetEntPropEnt(projectile, Prop_Data, "m_hOwnerEntity", attacker);
+			// float time = GetGameTime() - 1.0;
+			// SetEntPropFloat(projectile, Prop_Send, "m_flCreationTime", time);
+			SetEntProp(projectile, Prop_Send, "m_bTouched", 1);
+			SetEntDataFloat(projectile, FindSendPropInfo("CTFGrenadePipebombProjectile", "m_iType") + 16, 100.0);
+			SetEntPropFloat(projectile, Prop_Send, "m_flDamage", 80.0);
+		}
+		case TFProjectile_SpellFireball: 
+		{
+		// PrintToChatAll("Fireball");
+		}
+		case TFProjectile_Cleaver: 
+		{
+		PrintToChatAll("Cleaver");
+		// Need to add attribute list
+		int weapon = GivePlayerItem(attacker, "tf_weapon_cleaver");
+		SetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity", attacker);
+		SetEntPropEnt(projectile, Prop_Send, "m_hLauncher", weapon);
+		SetEntPropEnt(projectile, Prop_Send, "m_hOriginalLauncher", weapon);
+		}
+		case TFProjectile_SentryProjectile: 
+		{
+		//Code
+		PrintToChatAll("SentryProjectile");
+		SetEntDataFloat(projectile, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected") + 4, 100.0, true);
+		}
+		case TFProjectile_BallOrnament: 
+		{
+		PrintToChatAll("TFProjectile_BallOrnament");
+		}
+		case TFProjectile_Jar: 
+		{
+		PrintToChatAll("TFProjectile_Jar");
+		}
+		case TFProjectile_JarMilk: 
+		{
+		PrintToChatAll("TFProjectile_JarMilk");
+		}
+		case TFProjectile_EnergyBall: 
+		{
+		PrintToChatAll("TFProjectile_EnergyBall");
+		}
+		case TFProjectile_JarGas: 
+		{
+		PrintToChatAll("TFProjectile_JarGas");
+		}
+		case TFProjectile_SpellBats: 
+		{
+		PrintToChatAll("TFProjectile_SpellBats");
+		}
+	}
 	SetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity", attacker);
 	SetVariantInt(team);
 	AcceptEntityInput(projectile, "TeamNum");
@@ -271,15 +387,8 @@ void SpawnBombs(int client, int attacker, int projectile_id)
 	AcceptEntityInput(projectile, "SetTeam");
 	// SetEntProp(projectile, Prop_Send, "m_iTeamNum", team);
 	SetEntProp(projectile, Prop_Send, "m_bCritical", 0);
-	
 	DispatchSpawn(projectile);
-	// int offset = FindSendPropInfo("CTFProjectileProjectile", "m_iDeflected") + 4;
-	// float damage = 100.0;
-	// SetEntPropFloat(projectile, Prop_Send, "m_flDamage", 100.0);
-	// GetEntPropFloat(projectile, Prop_Data, "m_flDamage", 100.0);
-	// SetEntDataFloat(projectile, offset, damage);
 	TeleportEntity(projectile, spawnPos, ang, vel);
-	// SetEntPropFloat(projectile, Prop_Send, "m_flDamage", 100.0);
 }
 
 
