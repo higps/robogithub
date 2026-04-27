@@ -6,9 +6,10 @@
 #include <berobot>
 #include <sdkhooks>
 #include <tf_ontakedamage>
- 
+ #include <sdktools>
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Survivor"
+ArrayList g_hTimers;
 
 public Plugin:myinfo =
 {
@@ -24,14 +25,14 @@ char g_ProjectileList[][64] =
 {
 	"tf_projectile_rocket", // 0
 	"tf_projectile_pipe", // 1
-	"tf_projectile_spellfireball", // 2
+	//"tf_projectile_spellfireball", // 2
 	"tf_projectile_cleaver", // 3
 	"tf_projectile_sentryrocket", // 4
     "tf_projectile_ball_ornament", // 5
     "tf_projectile_jar", // 6
 	"tf_projectile_stun_ball", // 7
     "tf_projectile_jar_milk", // 8
-	"tf_projectile_energy_ball", // 9
+	//"tf_projectile_energy_ball", // 9
 	"tf_projectile_jar_gas", // 10
     "tf_projectile_spellbats", // 11
 
@@ -41,25 +42,24 @@ enum TFProjectile
 {
     TFProjectile_Rocket = 0,
     TFProjectile_Pipe,
-    TFProjectile_SpellFireball,
+    //TFProjectile_SpellFireball,
     TFProjectile_Cleaver,
     TFProjectile_SentryProjectile,
     TFProjectile_BallOrnament,
     TFProjectile_Jar,
     TFProjectile_StunBall,
     TFProjectile_JarMilk,
-    TFProjectile_EnergyBall,
+    //TFProjectile_EnergyBall,
     TFProjectile_JarGas,
     TFProjectile_SpellBats
 };
-#define MAX_LEVEL 13
+#define MAX_LEVEL 10
 #define START_LEVEL 0
 #define BASE_XP 100   // XP required to go from level 1 → 2
 
 int g_level = 0;
-int g_maxlevel = 11;
 int g_exp = 0;
-int g_expreq = BASE_XP;
+int g_expreq;
 
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -77,7 +77,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 void DrawHUD(int client)
 {
 	char sHUDText[128];
-	Format(sHUDText, sizeof(sHUDText), "Level: %i/%i\nXP: %i/%i",g_level,g_maxlevel,g_exp,g_expreq);
+	Format(sHUDText, sizeof(sHUDText), "Level: %i/%i\nXP: %i/%i",g_level,MAX_LEVEL,g_exp,g_expreq);
 
 
 	SetHudTextParams(0.85, 0.6, 0.1, 255, 0, 0, 255);
@@ -91,6 +91,7 @@ void ResetPlayerProgress()
 {
     g_level = START_LEVEL;
     g_exp = 0;
+	g_expreq = GetXPRequiredForLevel(1);
 }
 public void OnMapStart()
 {
@@ -107,8 +108,8 @@ int GetXPRequiredForLevel(int level)
     // Level 1 -> 100
     // Level 2 -> 200
     // Level 3 -> 400
-    return BASE_XP * (1 << (level - 1));
-	// return RoundToCeil(BASE_XP * Pow(1.3, float(level - 1)));
+    // return BASE_XP * (1 << (level - 1));
+	return RoundToCeil(BASE_XP * Pow(1.4, float(level - 1)));
 }
 void StopRepeatingTimer()
 {
@@ -131,7 +132,7 @@ void CheckLevelUp(int client)
 {
     while (g_level < MAX_LEVEL)
     {
-        int xpRequired = GetXPRequiredForLevel(g_level);
+        int xpRequired = GetXPRequiredForLevel(g_level + 1);
 		g_expreq = xpRequired; 
         if (g_exp < xpRequired)
             break;
@@ -142,41 +143,78 @@ void CheckLevelUp(int client)
         OnPlayerLevelUp(client, g_level);
     }
 }
+#define LEVELUP_SOUND "misc/achievement_earned.wav"
 
 void OnPlayerLevelUp(int client, int newLevel)
 {
+	PrecacheSound(LEVELUP_SOUND, true);
+	EmitSoundToClient(client, LEVELUP_SOUND, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL);
     PrintToChat(client, "[LEVEL UP] You reached level %d!", newLevel);
 
     if (newLevel == MAX_LEVEL)
     {
         PrintToChat(client, "[LEVEL UP] MAX LEVEL REACHED!");
+
     }
-    g_hRepeatingTimer = CreateTimer(
+	TF2_AddCondition(client, TFCond_CritCanteen, 2.0);
+	TF2_AddCondition(client, TFCond_UberchargedCanteen, 2.0);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 2.0);
+    // g_hRepeatingTimer = CreateTimer(
+    //     2.0,
+    //     Timer_DoSomething,
+    //     newLevel-1,
+    //     TIMER_REPEAT
+    // );
+        Handle timer = CreateTimer(
         2.0,
         Timer_DoSomething,
-        newLevel-1,
+        newLevel-1, // pass client for validation
         TIMER_REPEAT
     );
-    // Apply perks, stats, unlocks, etc here
+
+    g_hTimers.Push(timer);
+}
+
+void KillAllTimers()
+{
+    for (int i = 0; i < g_hTimers.Length; i++)
+    {
+        Handle timer = g_hTimers.Get(i);
+        if (timer != null)
+        {
+            KillTimer(timer);
+        }
+    }
+
+    g_hTimers.Clear();
 }
 
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
-    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+    	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+		if (IsRobot(client, ROBOT_NAME))
+		{
+			g_expreq = GetXPRequiredForLevel(1);
+			ResetPlayerProgress();
+		}
 		return Plugin_Continue;
 }
 
 public void OnPluginStart()
 {
-
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
     // Start a repeating timer every 10 seconds
+
+	g_hTimers = new ArrayList();
     if (g_hRepeatingTimer != null)
     {
         return; // timer already running
     }
 	// int projectile_id = 1;
 	ResetPlayerProgress();
+	g_expreq = GetXPRequiredForLevel(1);
 }
 
 public Action Timer_DoSomething(Handle timer, int projectile_id)
@@ -199,7 +237,7 @@ void DoMyFunction(int projectile_id)
 		}
 	}
 
-	if (attacker != 1)
+	if (attacker != -1)
 	{
 	int closestVictim = -1;
 	float closestDist = 0.0;
@@ -232,7 +270,7 @@ void DoMyFunction(int projectile_id)
 		}
 	}	
 
-	SpawnBombs(closestVictim, attacker, projectile_id);
+	if (closestVictim != -1)SpawnBombs(closestVictim, attacker, projectile_id);
 	}
 
 }
@@ -250,7 +288,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if (IsRobot(attacker, "Survivor"))
 	{
 
-		AddExperience(attacker, RoundToFloor(damage/4.0));
+		AddExperience(attacker, RoundToFloor(damage/2.0));
 
 	}
 	return Plugin_Continue;
@@ -302,17 +340,17 @@ void SpawnBombs(int client, int attacker, int projectile_id)
 	if (projectile == -1)
 		return;
 
-	PrintToChatAll("Firing %s", g_ProjectileList[projectile_id]);
+	// PrintToChatAll("Firing %s", g_ProjectileList[projectile_id]);
 
 	// 🔴 THESE MUST BE SET BEFORE DispatchSpawn
 
-	if(TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen) ||
-		TF2_IsPlayerInCondition(attacker, TFCond_Kritzkrieged))
-	{
-		//
-	}
+	// if(TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen) ||
+	// 	TF2_IsPlayerInCondition(attacker, TFCond_Kritzkrieged))
+	// {
+	// 	//
+	// }
 
-	// int player_weapon = GetPlayerWeaponSlot(attacker, 0);
+	int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
     // if (player_weapon != -1)
     // {
     //     SetEntPropEnt(projectile, Prop_Send, "m_hLauncher", player_weapon);
@@ -328,7 +366,7 @@ void SpawnBombs(int client, int attacker, int projectile_id)
 		case TFProjectile_Pipe: 
 		{
 		//Code
-			PrintToChatAll("Pipe");
+			// PrintToChatAll("Pipe");
 			// SetEntPropEnt(projectile, Prop_Data, "m_hOwnerEntity", attacker);
 			// float time = GetGameTime() - 1.0;
 			// SetEntPropFloat(projectile, Prop_Send, "m_flCreationTime", time);
@@ -336,48 +374,54 @@ void SpawnBombs(int client, int attacker, int projectile_id)
 			SetEntDataFloat(projectile, FindSendPropInfo("CTFGrenadePipebombProjectile", "m_iType") + 16, 100.0);
 			SetEntPropFloat(projectile, Prop_Send, "m_flDamage", 80.0);
 		}
-		case TFProjectile_SpellFireball: 
-		{
-		// PrintToChatAll("Fireball");
-		}
+		// case TFProjectile_SpellFireball: 
+		// {
+		// // PrintToChatAll("Fireball");
+		// }
 		case TFProjectile_Cleaver: 
 		{
-		PrintToChatAll("Cleaver");
-		// Need to add attribute list
-		int weapon = GivePlayerItem(attacker, "tf_weapon_cleaver");
-		SetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity", attacker);
-		SetEntPropEnt(projectile, Prop_Send, "m_hLauncher", weapon);
-		SetEntPropEnt(projectile, Prop_Send, "m_hOriginalLauncher", weapon);
+			// int cleaver = CreateEntityByName("tf_projectile_cleaver");
+			// RequestFrame(ChangeModel,cleaver);
+			// it is important that teleporting happens before dispatch otherwise spawn angles are wrong
+			//TeleportEntity(cleaver, vecEyePosition, angEyes, NULL_VECTOR);
+			//DispatchSpawn(cleaver);
+			
+			// use for physics logic
+			// SDKCall(g_SDKCallInitGrenade, projectile, vecVelocity, vecAngImpulse, attacker, 0, 5.0);
+			
+			SetEntPropEnt(projectile, Prop_Send, "m_hThrower", attacker);
+			SetEntPropEnt(projectile, Prop_Send, "m_hLauncher", weapon);
+			SetEntPropEnt(projectile, Prop_Send, "m_hOriginalLauncher", weapon);
 		}
 		case TFProjectile_SentryProjectile: 
 		{
 		//Code
-		PrintToChatAll("SentryProjectile");
+		// PrintToChatAll("SentryProjectile");
 		SetEntDataFloat(projectile, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected") + 4, 100.0, true);
 		}
 		case TFProjectile_BallOrnament: 
 		{
-		PrintToChatAll("TFProjectile_BallOrnament");
+		// PrintToChatAll("TFProjectile_BallOrnament");
 		}
 		case TFProjectile_Jar: 
 		{
-		PrintToChatAll("TFProjectile_Jar");
+		// PrintToChatAll("TFProjectile_Jar");
 		}
 		case TFProjectile_JarMilk: 
 		{
-		PrintToChatAll("TFProjectile_JarMilk");
+		// PrintToChatAll("TFProjectile_JarMilk");
 		}
-		case TFProjectile_EnergyBall: 
-		{
-		PrintToChatAll("TFProjectile_EnergyBall");
-		}
+		// case TFProjectile_EnergyBall: 
+		// {
+		// PrintToChatAll("TFProjectile_EnergyBall");
+		// }
 		case TFProjectile_JarGas: 
 		{
-		PrintToChatAll("TFProjectile_JarGas");
+		// PrintToChatAll("TFProjectile_JarGas");
 		}
 		case TFProjectile_SpellBats: 
 		{
-		PrintToChatAll("TFProjectile_SpellBats");
+		// PrintToChatAll("TFProjectile_SpellBats");
 		}
 	}
 	SetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity", attacker);
@@ -391,104 +435,17 @@ void SpawnBombs(int client, int attacker, int projectile_id)
 	TeleportEntity(projectile, spawnPos, ang, vel);
 }
 
-
-
-
-// GPT generated 
-// void SpawnBombs(int client, int attacker)
-// {
-// 	int team = GetClientTeam(attacker);
-
-// 	float spawnPos[3];
-// 	float targetPos[3];
-// 	float dir[3];
-// 	float vel[3];
-// 	float ang[3];
-
-// 	float speed = 1200.0; // projectile speed
-
-// 	// Get attacker position (spawn above head)
-// 	GetClientEyePosition(attacker, spawnPos);
-// 	spawnPos[2] += 40.0;
-
-// 	// Get target (client) position
-// 	GetClientEyePosition(client, targetPos);
-
-// 	// Direction = target - spawn
-// 	MakeVectorFromPoints(spawnPos, targetPos, dir);
-// 	NormalizeVector(dir, dir);
-
-// 	// Velocity = direction * speed
-// 	ScaleVector(dir, speed);
-// 	vel = dir;
-
-// 	// Convert direction to angles so projectile faces target
-// 	GetVectorAngles(dir, ang);
-
-// 	int child = CreateEntityByName("tf_projectile_pipe");
-// 	if (child == -1)
-// 		return;
-
-// 	// Prevent contact detonation
-// 	SetEntProp(child, Prop_Send, "m_bTouched", 1);
-
-// 	// Ownership & damage
-// 	SetEntPropEnt(child, Prop_Data, "m_hOwnerEntity", attacker);
-// 	SetEntPropFloat(child, Prop_Send, "m_flDamage", 100.0);
-// 	SetEntPropFloat(child, Prop_Send, "m_flModelScale", 1.2);
-
-// 	SetEntProp(child, Prop_Send, "m_iTeamNum", team);
-// 	SetEntProp(child, Prop_Send, "m_bIsLive", 1);
-
-// 	DispatchSpawn(child);
-// 	TeleportEntity(child, spawnPos, ang, vel);
-// }
-
-
-// void SpawnBombs(int client, int attacker)
-// {
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
 	
-// 	int team = GetClientTeam(attacker);
-// 	float pos[3], vel[3], ang[3];
-// 	int children = 1;
-// 	float speed = 250.0;
+	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-
-// 	GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos);
-// 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", vel);
-	
-
-// 	pos[2] += 120.0;
-// 	for (int i = 1; i <= children; i++)
-// 	{
-// 		int child = CreateEntityByName("tf_projectile_pipe");
-		
-		
-// 		float child_vel[3];
-// 		float child_ang[3];
-
-// 		//Prevent child grenades from detonating on contact
-// 		SetEntProp(child, Prop_Send, "m_bTouched", 1);
-
-// 		//Set properties
-// 		//SetEntProp(child, Prop_Send, "m_bCritical", view_as<int>(crit));
-// 		SetEntPropEnt(child, Prop_Data, "m_hOwnerEntity", attacker);
-// 		SetEntPropFloat(child, Prop_Send, "m_flDamage", 100.0);
-// 		SetEntPropFloat(child, Prop_Send, "m_flModelScale", 1.2);
-
-// 		for (int axis = 0; axis < 3; axis++){
-
-// 			child_vel[axis] = vel[axis] + GetRandomFloat(speed * -1.0, speed);
-// 			child_ang[axis] = ang[axis] + GetRandomFloat(0.0 , 360.0);
-// 		}
-// 		child_vel[2] = FloatAbs(child_vel[2]);
-
-// 		SetEntProp(child, Prop_Send, "m_iTeamNum", team);
-// 		SetEntProp(child, Prop_Send, "m_bIsLive", 1);
-
-// 		DispatchSpawn(child);
-// 		//SDKHook(child, SDKHook_Touch, OnMirvOverlap);
-// 		TeleportEntity(child, pos, child_ang, child_vel);
-
-// 	}
-// }
+	if(IsRobotWhenDead(client, ROBOT_NAME))
+	{
+		// PrintToChatAll("DED");
+		ResetPlayerProgress();
+		KillAllTimers();
+		//return Plugin_Stop; // stops THIS instance
+	}
+	    
+}
