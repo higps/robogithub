@@ -1055,7 +1055,7 @@ RemoteControl(client, TFExtObjectType:type)
 
 SetDebuf(int client)
 {
-    PrintToChatAll("Sat attrib on %N", client);
+    //PrintToChatAll("Sat attrib on %N", client);
     int Weapon5 = GetPlayerWeaponSlot(client, TFWeaponSlot_Building);
     TF2Attrib_SetByName(Weapon5, "mod_maxhealth_drain_rate", 10.0);
     int Weapon4 = GetPlayerWeaponSlot(client, TFWeaponSlot_PDA);
