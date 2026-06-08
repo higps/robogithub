@@ -55,7 +55,7 @@ enum TFProjectile
 };
 #define MAX_LEVEL 10
 #define START_LEVEL 0
-#define BASE_XP 100   // XP required to go from level 1 → 2
+#define BASE_XP 75   // XP required to go from level 1 → 2
 
 int g_level = 0;
 int g_exp = 0;
@@ -127,9 +127,21 @@ void AddExperience(int client, int amount)
     g_exp += amount;
     CheckLevelUp(client);
 }
-
+bool heal_yap = true;
 void CheckLevelUp(int client)
 {
+
+	if (g_level == 3)
+	{
+		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		if(heal_yap)
+		{
+		PrintToChatAll("LVL3 Bonus: You got health regen!");
+		TF2Attrib_SetByName(client, "health regen", 5.0);
+		heal_yap = false;
+		}
+
+	}
     while (g_level < MAX_LEVEL)
     {
         int xpRequired = GetXPRequiredForLevel(g_level + 1);
@@ -206,7 +218,7 @@ public void OnPluginStart()
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
     // Start a repeating timer every 10 seconds
-
+	heal_yap = true;
 	g_hTimers = new ArrayList();
     if (g_hRepeatingTimer != null)
     {
@@ -289,7 +301,10 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 
 		AddExperience(attacker, RoundToFloor(damage/2.0));
-
+		// if (victim == attacker){
+		// damage = 0.0;
+		// return Plugin_Changed;
+		// } 
 	}
 	return Plugin_Continue;
 }
@@ -445,6 +460,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 		// PrintToChatAll("DED");
 		ResetPlayerProgress();
 		KillAllTimers();
+		heal_yap = true;
 		//return Plugin_Stop; // stops THIS instance
 	}
 	    
