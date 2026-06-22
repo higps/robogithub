@@ -9,7 +9,14 @@
  #include <sdktools>
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME	"Survivor"
-ArrayList g_hTimers;
+#define MAX_LEVEL 10
+#define START_LEVEL 0
+#define BASE_XP 75   // XP required to go from level 1 → 2
+
+int g_iScheduledCount = 0;
+int g_iScheduledProjectileId[MAX_LEVEL];
+float g_fNextActionTime[MAX_LEVEL];
+float g_fInterval[MAX_LEVEL];
 
 public Plugin:myinfo =
 {
@@ -19,7 +26,6 @@ public Plugin:myinfo =
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
 }
-Handle g_hRepeatingTimer = null;
 
 char g_ProjectileList[][64] =
 {
@@ -92,6 +98,7 @@ void ResetPlayerProgress()
     g_level = START_LEVEL;
     g_exp = 0;
 	g_expreq = GetXPRequiredForLevel(1);
+    ResetScheduledProjectiles();
 }
 public void OnMapStart()
 {
@@ -99,7 +106,7 @@ public void OnMapStart()
 }
 public void OnMapEnd()
 {
-    StopRepeatingTimer();
+    ResetScheduledProjectiles();
 }
 
 int GetXPRequiredForLevel(int level)
@@ -111,13 +118,27 @@ int GetXPRequiredForLevel(int level)
     // return BASE_XP * (1 << (level - 1));
 	return RoundToCeil(BASE_XP * Pow(1.4, float(level - 1)));
 }
-void StopRepeatingTimer()
+float GetProjectileInterval(int projectile_id)
 {
-    if (g_hRepeatingTimer != null)
-    {
-        KillTimer(g_hRepeatingTimer);
-        g_hRepeatingTimer = null;
-    }
+    // Return the interval in seconds for this projectile.
+    // Change these values if you want different timing per projectile.
+    return 2.0;
+}
+
+void AddScheduledProjectile(int projectile_id)
+{
+    if (g_iScheduledCount >= MAX_LEVEL)
+        return;
+
+    g_iScheduledProjectileId[g_iScheduledCount] = projectile_id;
+    g_fInterval[g_iScheduledCount] = GetProjectileInterval(projectile_id);
+    g_fNextActionTime[g_iScheduledCount] = GetEngineTime() + g_fInterval[g_iScheduledCount];
+    g_iScheduledCount++;
+}
+
+void ResetScheduledProjectiles()
+{
+    g_iScheduledCount = 0;
 }
 
 void AddExperience(int client, int amount)
@@ -136,7 +157,7 @@ void CheckLevelUp(int client)
 		// int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 		if(heal_yap)
 		{
-		PrintToChatAll("LVL3 Bonus: You got health regen!");
+		PrintToChat(client,"LVL3 Bonus: You got health regen!");
 		TF2Attrib_SetByName(client, "health regen", 5.0);
 		heal_yap = false;
 		}
@@ -168,37 +189,14 @@ void OnPlayerLevelUp(int client, int newLevel)
         PrintToChat(client, "[LEVEL UP] MAX LEVEL REACHED!");
 
     }
-	TF2_AddCondition(client, TFCond_CritCanteen, 2.0);
-	TF2_AddCondition(client, TFCond_UberchargedCanteen, 2.0);
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 2.0);
-    // g_hRepeatingTimer = CreateTimer(
-    //     2.0,
-    //     Timer_DoSomething,
-    //     newLevel-1,
-    //     TIMER_REPEAT
-    // );
-        Handle timer = CreateTimer(
-        2.0,
-        Timer_DoSomething,
-        newLevel-1, // pass client for validation
-        TIMER_REPEAT
-    );
-
-    g_hTimers.Push(timer);
+	
+	TF2_AddCondition(client, TFCond_UberchargedCanteen, 0.5);
+    AddScheduledProjectile(newLevel - 1);
 }
 
 void KillAllTimers()
 {
-    for (int i = 0; i < g_hTimers.Length; i++)
-    {
-        Handle timer = g_hTimers.Get(i);
-        if (timer != null)
-        {
-            KillTimer(timer);
-        }
-    }
-
-    g_hTimers.Clear();
+    ResetScheduledProjectiles();
 }
 
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
@@ -217,22 +215,29 @@ public void OnPluginStart()
 {
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
 	HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
-    // Start a repeating timer every 10 seconds
-	heal_yap = true;
-	g_hTimers = new ArrayList();
-    if (g_hRepeatingTimer != null)
-    {
-        return; // timer already running
-    }
-	// int projectile_id = 1;
+    heal_yap = true;
+	ResetScheduledProjectiles();
 	ResetPlayerProgress();
 	g_expreq = GetXPRequiredForLevel(1);
 }
 
-public Action Timer_DoSomething(Handle timer, int projectile_id)
+void ExecuteRoutine(int projectile_id)
 {
     DoMyFunction(projectile_id);
-    return Plugin_Continue; // keep repeating
+}
+
+public void OnGameFrame()
+{
+    float fCurrentTime = GetEngineTime();
+
+    for (int i = 0; i < g_iScheduledCount; i++)
+    {
+        if (fCurrentTime >= g_fNextActionTime[i])
+        {
+            ExecuteRoutine(g_iScheduledProjectileId[i]);
+            g_fNextActionTime[i] = fCurrentTime + g_fInterval[i];
+        }
+    }
 }
 
 
@@ -269,6 +274,16 @@ void DoMyFunction(int projectile_id)
 
 		if (GetClientTeam(i) == attackerTeam)
 			continue; // skip teammates
+		// Ignore disguised or cloaked spies
+		if (TF2_GetPlayerClass(i) == TFClass_Spy)
+		{
+			if (TF2_IsPlayerInCondition(i, TFCond_Disguised) ||
+				TF2_IsPlayerInCondition(i, TFCond_Cloaked))
+			{
+				continue;
+			}
+		}
+
 
 		float victimPos[3];
 		GetClientAbsOrigin(i, victimPos);
@@ -300,7 +315,12 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if (IsRobot(attacker, "Survivor"))
 	{
 
-		AddExperience(attacker, RoundToFloor(damage/2.0));
+		if (attacker != victim)
+		{
+			int Weapon3 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee);
+			if (weapon == Weapon3) AddExperience(attacker, RoundToFloor(damage/2.0));
+		}
+		
 		// if (victim == attacker){
 		// damage = 0.0;
 		// return Plugin_Changed;
@@ -463,5 +483,5 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 		heal_yap = true;
 		//return Plugin_Stop; // stops THIS instance
 	}
-	    
+		    
 }
