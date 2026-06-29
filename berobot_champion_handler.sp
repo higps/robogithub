@@ -144,6 +144,14 @@ void CheckChampion()
             CreateChampion(g_i_current_champion);
     }
 
+    if (g_i_current_champion != -1 && g_MissingHumans <= 0)
+    {
+        MC_PrintToChatAll("{yellow}%N {green}is no longer a champion, power level dropped to %i", g_i_current_champion, g_MissingHumans);
+        StripChampionExtras(g_i_current_champion);
+        g_i_current_champion = -1;
+        g_b_yap = true;
+    }
+
     if (g_i_current_champion == -1)
     {
 
