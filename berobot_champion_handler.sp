@@ -25,6 +25,7 @@ bool g_b_was_champion[MAXPLAYERS + 1] = { false, ... };
 
 GlobalForward _currentChampion;
 int g_previous_check_human_count = 0;
+int ChampionHat = 30808;
 public void OnMapStart()
 {
     PrecacheSound(SOUND);
@@ -68,8 +69,10 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
             if(victim == g_i_current_champion)
             {
                 MC_PrintToChatAll("{green}The {gold}Champion:{gold} %N{green} has fallen.", victim);
-                g_i_current_champion = -1
+                g_i_current_champion = -1;
+                g_b_was_champion[victim] = false;
                 g_b_yap = true;
+                StripChampionExtras(victim);
                 RequestFrame(CheckChampion);
             }
         }
@@ -85,11 +88,8 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 
     if (g_b_was_champion[client] && (g_i_current_champion != client))
     {
-        //The player has been a champion but is no more, may have kept weapons with stats, need to be reset.
-        // PrintToChatAll("%N was champion, removing stats", client);
-        RequestFrame(RemoveChampion,client);
         g_b_was_champion[client] = false;
-
+        RequestFrame(StripChampionExtras, client);
     }
 
     if (GetEngineTime() >= g_last_check + g_cooldown)
@@ -102,6 +102,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 }
 void FindValidCandidates()
 {
+    g_b_found_valid_candidate = false;
     for (int i = 1; i <= MaxClients; i++)
     {
         if (IsClientInGame(i) && !IsAnyRobot(i) && TF2Spawn_IsClientInSpawn(i) && IsPlayerAlive(i))
@@ -136,9 +137,19 @@ void CheckChampion()
     // PrintToChatAll("Previous Missing humans: %i", g_previous_check_human_count);
     if (g_i_current_champion != -1 && g_previous_check_human_count != g_MissingHumans)
     {
-            if (g_previous_missing_humans != g_MissingHumans)MC_PrintToChatAll("{orange}%N {green}changed from level %i -> %i",g_i_current_champion, g_previous_check_human_count, g_MissingHumans);
+            if (g_previous_missing_humans != g_MissingHumans)
+                MC_PrintToChatAll("{orange}%N {green}changed from level %i -> %i",g_i_current_champion, g_previous_check_human_count, g_MissingHumans);
+            g_previous_check_human_count = g_MissingHumans;
             g_previous_missing_humans = g_MissingHumans;
             CreateChampion(g_i_current_champion);
+    }
+
+    if (g_i_current_champion != -1 && g_MissingHumans <= 0)
+    {
+        MC_PrintToChatAll("{yellow}%N {green}is no longer a champion, power level dropped to %i", g_i_current_champion, g_MissingHumans);
+        StripChampionExtras(g_i_current_champion);
+        g_i_current_champion = -1;
+        g_b_yap = true;
     }
 
     if (g_i_current_champion == -1)
@@ -272,6 +283,27 @@ void CreateChampion(int client)
         }
     }
 }
+void RemoveChampionHat(int client)
+{
+    int iWearableItem = -1;
+    while ((iWearableItem = FindEntityByClassname(iWearableItem, "tf_wearable*")) != -1)
+    {
+        if (GetEntProp(iWearableItem, Prop_Send, "m_iItemDefinitionIndex") == ChampionHat &&
+            GetEntPropEnt(iWearableItem, Prop_Send, "m_hOwnerEntity") == client)
+        {
+            TF2_RemoveWearable(client, iWearableItem);
+            break;
+        }
+    }
+}
+
+void StripChampionExtras(int client)
+{
+    RemoveChampionHat(client);
+    if (IsValidClient(client))
+        TF2Attrib_RemoveByName(client, "max health additive bonus");
+}
+
 float uber = 0.0;
 int first_weapon_index = -1;
 void RemoveChampion(int client)
@@ -279,16 +311,19 @@ void RemoveChampion(int client)
     MC_PrintToChatAll("{yellow}%N {green}was the champion, but was a {yellow}coward {green}ran in to spawn, and is no more", client);
     // SetScale(client, 1.0);
     TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.0);
-    g_i_current_champion = -1
-    g_b_yap = true;
-
+    if (g_i_current_champion == client)
+    {
+        g_i_current_champion = -1;
+        g_b_yap = true;
+    }
+    StripChampionExtras(client);
 
     // Store resources
     int decaps = GetEntProp(client, Prop_Send, "m_iDecapitations");
     // PrintToChatAll("Decaps: %i", decaps);
     TFClassType first_class = TF2_GetPlayerClass(client);
 
-     
+
 
     if (first_class == TFClass_Medic)
     {
@@ -297,6 +332,7 @@ void RemoveChampion(int client)
         uber = GetEntPropFloat(Weapon2, Prop_Send, "m_flChargeLevel");
     }
 
+    g_b_was_champion[client] = false;
     TF2_RemoveAllWeapons(client);
     TF2_RespawnPlayer(client);
 
@@ -319,6 +355,11 @@ void RemoveChampion(int client)
 
 public Action Timer_CheckChampionCoward(Handle timer)
 {
+    if (g_i_current_champion == -1)
+    {
+        g_h_checkChampionCowardTimer = INVALID_HANDLE;
+        return Plugin_Stop;
+    }
     if(TF2Spawn_IsClientInSpawn(g_i_current_champion) &&  IsPlayerAlive(g_i_current_champion))
     {
         // PrintToChatAll("CHAMPION IN SPAWN!");
@@ -455,7 +496,7 @@ void MakeSpyChampion(int client)
     // TODO: Add Spy-specific buffs or logic here
     TF2Attrib_SetByName(client, "max health additive bonus", (25.0 * (float(g_MissingHumans)))); 
 }
-int ChampionHat = 30808;
+
 
 void CreateClassChampion(int client, int Weapon1, int Weapon2, int Weapon3)
 {
@@ -543,42 +584,27 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
 
 public void OnClientDisconnect(int client)
 {
-
     if(client == g_i_current_champion)
     {
         g_i_current_champion = -1;
         g_b_yap = true;
         CheckChampion();
     }
+    g_b_was_champion[client] = false;
 }
 
 
-public Action HasChampionhat(int iClient)
+public bool HasChampionhat(int iClient)
 {
 	int iWearableItem = -1;
-	// PrintToServer("LOOKING HAT 1 !");
-	while ((iWearableItem = FindEntityByClassname(iWearableItem, "tf_wearable*")) != -1) // Regular hats.
-	{	
-		// We check for the wearable's item def index and its owner.
+	while ((iWearableItem = FindEntityByClassname(iWearableItem, "tf_wearable*")) != -1)
+	{
 		int iWearableIndex = GetEntProp(iWearableItem, Prop_Send, "m_iItemDefinitionIndex");
 		int iWearableOwner = GetEntPropEnt(iWearableItem, Prop_Send, "m_hOwnerEntity");
-		// PrintToServer("LOOKING HAT 2 !");
-		// If the owners match.
-		if (iWearableOwner == iClient)
+		if (iWearableOwner == iClient && iWearableIndex == ChampionHat)
 		{
-			// Going through all items. 4 = cosmetics
-			for (int i = 0; i < 4; i++)
-			{			
-				// PrintToServer("LOOKING HAT 3 !");
-				// If a weapon's definition index matches with the one stored...
-				if (iWearableIndex == ChampionHat)
-				{
-                    // PrintToChatAll("FOUND HAT")
-                    return true;
-				}
-			}
+            return true;
 		}
 	}
-    // PrintToChatAll("FOUND DIDNT HAT")
-	return false;
+    return false;
 }

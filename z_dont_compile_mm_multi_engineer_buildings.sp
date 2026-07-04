@@ -258,7 +258,7 @@ void HasStat(int client)
 	cvMax[0] = g_DispenserLimit;
 	cvMax[1] = g_TeleporterLimit;
 	cvMax[2] = g_SentryLimit;
-	// PrintToChatAll("%N had stat",client);
+	PrintToChatAll("%N had stat",client);
 	
 	}
 }
@@ -641,6 +641,7 @@ public MRESReturn CTFPlayer_FinishedObject(int pThis, DHookParam hParams)
 	else m_aObjects.AddToTail(GetEntityHandle(obj));
 
 	CTFGameStats_Event_PlayerCreatedBuilding(pThis, obj);
+	ChangeEdictState(pThis);
 
 	if (g_ActualObjects[pThis].FindValue(EntIndexToEntRef(obj)) != -1)
 		return MRES_Supercede;
@@ -750,6 +751,7 @@ public MRESReturn CTFPlayer_RemoveObject(int pThis, DHookParam hParams)
 		if (m_aObjects.FindEx(handle) == -1)
 			m_aObjects.AddToTail(handle);
 	}
+	ChangeEdictState(pThis);
 	return MRES_Ignored;
 }
 
@@ -1003,7 +1005,10 @@ stock void AllowBuilding(int client)
 	{
 		g_ActualObjects[client].GetArray(i, info);
 		if (!IsValidEntity(info.ref))
+		{
 			g_ActualObjects[client].Erase(i);
+			continue;
+		}
 
 		++count[view_as< int >(info.GetType())];
 		if (info.GetType() == TFObject_Teleporter)
@@ -1037,6 +1042,7 @@ stock void AllowBuilding(int client)
 		if (remove)
 			m_aObjects.FastRemove(i);
 	}
+	ChangeEdictState(client);
 }
 
 stock void AllowDestroying(int client)
@@ -1123,6 +1129,7 @@ stock void AllowDestroying(int client)
 			}
 		}
 	}
+	ChangeEdictState(client);
 }
 
 stock int GetOldestObject(int client, TFObjectType type, TFObjectMode mode = TFObjectMode_Invalid)

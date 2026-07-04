@@ -89,7 +89,9 @@ methodmap RobotSubclass < StringMap {
 
     public void Dispose()
     {
-        delete this.Robots;
+        ArrayList robots;
+        if (this.GetValue("Robots", robots))
+            delete robots;
         delete this;
     }
 }
@@ -379,9 +381,17 @@ methodmap RobotSelectionMenu < StringMap {
 
     public void Dispose()
     {
-        this.GetBosses().Dispose();
-        this.Get(true).Dispose();
-        this.Get(false).Dispose();
+        RobotSubclass bosses = this.GetBosses();
+        if (bosses)
+            bosses.Dispose();
+
+        RobotCategory freeCategory = this.Get(true);
+        if (freeCategory)
+            freeCategory.Dispose();
+
+        RobotCategory paidCategory = this.Get(false);
+        if (paidCategory)
+            paidCategory.Dispose();
 
         delete this;
     }
