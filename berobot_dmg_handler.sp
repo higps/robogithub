@@ -1494,7 +1494,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
                 TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
                 TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.3");                
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1),LessIsMore(stat1));
             }
 
             if (IsGasPasser(Weapon2))
@@ -1709,7 +1709,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
                 TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
                 TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.3");                
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1),LessIsMore(stat1));
             }
 
             if (IsFistsOfSteel(Weapon3))
@@ -2001,7 +2001,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon1, "Reload time decreased", stat1);
                 TF2Attrib_SetByName(Weapon1, "fire rate bonus", stat1);
                 TF2CustAttr_SetString(Weapon1, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.3");                
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1), LessIsMore(stat2));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1), LessIsMore(stat1));
             }
         }
         if (TF2_GetPlayerClass(client) == TFClass_Medic)
@@ -2252,7 +2252,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2Attrib_SetByName(Weapon2, "Reload time decreased", stat1);
                 TF2Attrib_SetByName(Weapon2, "fire rate bonus", stat1);
                 TF2CustAttr_SetString(Weapon2, "damage-based-on-remaining-hp", "target_hp_ratio=0.3 damage_modifier=1.3");                
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Panic Attack: {orange}+%0.0f%%%% faster firing and reload speed, {orange}+%0.0f%%%% damage bonus on targets in red health",chat_display, LessIsMore(stat1),LessIsMore(stat1));
             }
 
             int Gunboats = FindTFWearable(client, 133);
