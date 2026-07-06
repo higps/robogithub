@@ -125,11 +125,11 @@ float GetProjectileInterval(int projectile_id)
 	{
 		case TFProjectile_Rocket:
 		{
-			return 3.0;
+			return 2.8;
 		}
 		case TFProjectile_Pipe:
 		{
-			return 2.0;
+			return 2.1;
 		}
 		case TFProjectile_Cleaver:
 		{
