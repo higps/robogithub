@@ -126,6 +126,9 @@ bool _volunteered[MAXPLAYERS + 1];
  */
 StringMap _queuePoints;
 bool g_block_volunteer = false;
+
+bool _showQueuePointsHUD[MAXPLAYERS + 1] = {false, ...};
+
 public void OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
@@ -150,7 +153,6 @@ public void OnPluginStart()
     RegAdminCmd("sm_reload_queuepoints_volunteers", Command_ReloadQueuepointsVolunteers, ADMFLAG_SLAY, "reloads queuepoints from file");
 
     RegConsoleCmd("sm_queuepoints", Command_OutputQueuepoints, "outputs queuepoints into chat");
-    RegConsoleCmd("sm_qpnts", Command_OutputQueuepoints, "outputs queuepoints into chat");
     RegConsoleCmd("sm_qp", Command_OutputQueuepoints, "outputs queuepoints into chat");
 
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
@@ -162,8 +164,8 @@ public void OnPluginStart()
     HookEvent("tf_game_over", Event_Teamplay_TF_Game_Over, EventHookMode_Post);
     HookEvent("teamplay_game_over", Event_Teamplay_TF_Game_Over, EventHookMode_Post);
 
-    LoadVipSteamIds();    
-    LoadQueuePointsFromFile();    
+    LoadVipSteamIds();
+    LoadQueuePointsFromFile();
 
     Reset();
 }
@@ -190,12 +192,22 @@ public void OnConfigsExecuted()
     _robocapTeam = GetConVarInt(_robocapTeamConVar);
 }
 
+public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
+{
+    if (IsValidClient(client) && _showQueuePointsHUD[client])
+    {
+        DrawQueuePointsHUD(client);
+    }
+    return Plugin_Continue;
+}
+
 public void MM_OnClientResetting(int clientId)
 {
     SMLogTag(SML_VERBOSE, "resetting volunteer status for client %i", clientId);
 
     _pickedOption[clientId] = false;
     _volunteered[clientId] = false;
+    _showQueuePointsHUD[clientId] = false;
 }
 
 public void AutoVolunteerAdminFlagCvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
@@ -276,7 +288,7 @@ public Action Command_SetVolunteer(int client, int args)
     if (!IsEnabled())
     {
         MM_PrintToChat(client, "Unable to volunteer, robot-mode is not enabled");
-        SMLogTag(SML_VERBOSE, "Command_SetVolunteer cancled for %L, because robot-mode is not enabled", client);
+        SMLogTag(SML_VERBOSE, "Command_SetVolunteer canceled for %L, because robot-mode is not enabled", client);
         return Plugin_Handled;
     }
 
@@ -384,9 +396,25 @@ public Action Command_OutputQueuepoints(int client, int args)
 {
     SMLogTag(SML_VERBOSE, "Command_OutputQueuepoints called for %L", client);
 
+    if (args >= 1)
+    {
+        char arg[32];
+        GetCmdArg(1, arg, sizeof(arg));
+
+        if (StrEqual(arg, "hud", false))
+        {
+            _showQueuePointsHUD[client] = !_showQueuePointsHUD[client];
+            if (_showQueuePointsHUD[client])
+                MM_PrintToChat(client, "Queue Points HUD {green}ENABLED");
+            else
+                MM_PrintToChat(client, "Queue Points HUD {red}DISABLED");
+            return Plugin_Handled;
+        }
+    }
+
     int ignored[1];
     ArrayList queuePointList = CreateSortedVolunteersList(ignored, 0);
-    
+
     for(int i = 0; i < queuePointList.Length; i++)
     {
         VolunteerState state = queuePointList.Get(i);
@@ -952,4 +980,50 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     {
         delete menu;
     }
+}
+
+void DrawQueuePointsHUD(int client)
+{
+    char steamId[64];
+    if (!GetClientAuthId(client, AuthId_Steam2, steamId, sizeof(steamId)))
+        return;
+
+    int myQueuePoints = 0;
+    _queuePoints.GetValue(steamId, myQueuePoints);
+
+    char sHUDText[256];
+    Format(sHUDText, sizeof(sHUDText), "Your Queue Points: %i\n", myQueuePoints);
+
+    int ignored[1];
+    ArrayList sortedList = CreateSortedVolunteersList(ignored, 0);
+    sortedList.SortCustom(VolunteerStateComparision);
+
+    int myRank = 0;
+    for(int i = 0; i < sortedList.Length; i++)
+    {
+        VolunteerState state = sortedList.Get(i);
+        char stateId[64];
+        state.GetSteamId(stateId);
+        if (StrEqual(steamId, stateId, false))
+        {
+            myRank = i + 1;
+            break;
+        }
+    }
+
+    char steamIdState[64];
+    for(int i = 0; i < sortedList.Length && i < 6; i++)
+    {
+        VolunteerState state = sortedList.Get(i);
+        state.GetSteamId(steamIdState);
+        int clientId = GetClientOfUserId(state.UserId);
+        Format(sHUDText, sizeof(sHUDText), "%s%i. %N - %i pts\n", sHUDText, i + 1, clientId, state.QueuePoints);
+    }
+
+    Format(sHUDText, sizeof(sHUDText), "%s\nYour Rank: %i / %i", sHUDText, myRank, sortedList.Length);
+
+    SetHudTextParams(0.02, 0.05, 0.1, 255, 255, 255, 255);
+    ShowHudText(client, -1, sHUDText);
+
+    delete sortedList;
 }
