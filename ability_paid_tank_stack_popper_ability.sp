@@ -57,7 +57,7 @@ void GetMostCommonEnemyClasses(int client, int mostCommonClasses[TFClass_Enginee
     {
         mostCommonClasses[i] = 0;
     }
-	for(int i = 1; i <= MaxClients+1; i++)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsValidClient(i) && GetClientTeam(i) == enemyTeam)
 		{

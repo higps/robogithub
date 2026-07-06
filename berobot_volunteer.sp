@@ -171,13 +171,13 @@ public void OnPluginStart()
 public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontBroadcast)
 {
 
-UpdateQueuePointsOnCap();
+    UpdateQueuePointsOnCap();
 
 }
 
 public Action Event_Teamplay_TF_Game_Over(Event event, char[] name, bool dontBroadcast)
 {
-g_block_volunteer = true;
+    g_block_volunteer = true;
 // PrintToChatAll("GAME OVER");
 
 }
@@ -701,7 +701,13 @@ void UpdateQueuePoints(ArrayList volunteers, int neededVolunteers)
         int newQueuepoints;
         if (volunteerIndex < neededVolunteers)
         {
-            if (IsAnyRobot(clientId))newQueuepoints = 0;
+            if (IsAnyRobot(clientId))
+            {
+                newQueuepoints = 0;
+            }else
+            {
+                 newQueuepoints = state.QueuePoints + 1;
+            }
             // PrintToChatAll("%N was robot and got points set to 0!", clientId);
             SMLogTag(SML_VERBOSE, "resetting Queuepoints for %L with steamid %s", clientId, steamId);
         }
@@ -720,7 +726,7 @@ void UpdateQueuePoints(ArrayList volunteers, int neededVolunteers)
 
 void UpdateQueuePointsOnCap()
 {
-	for(int i = 1; i <= MaxClients+1; i++)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsValidClient(i) && !IsAnyRobot(i))
 		{
