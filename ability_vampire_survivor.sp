@@ -516,9 +516,15 @@ void SpawnBombs(int client, int attacker, int projectile_id)
 public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
 	
-	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+    int assister = GetClientOfUserId(GetEventInt(event, "assister"));
+	int deathflags = GetEventInt(event, "death_flags");
 
-	if(IsRobotWhenDead(client, ROBOT_NAME))
+
+
+    	
+	if(IsRobotWhenDead(victim, ROBOT_NAME))
 	{
 		// PrintToChatAll("DED");
 		ResetPlayerProgress();
@@ -526,5 +532,13 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 		heal_yap = true;
 		//return Plugin_Stop; // stops THIS instance
 	}
+
+	if ((!(deathflags & TF_DEATHFLAG_DEADRINGER)))
+	{
+		if (IsRobot(attacker, ROBOT_NAME)) AddExperience(attacker, 10);
+		if (IsRobot(assister, ROBOT_NAME)) AddExperience(assister, 5);
+		
+	}
+	
 		    
 }
