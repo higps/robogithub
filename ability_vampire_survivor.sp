@@ -120,9 +120,52 @@ int GetXPRequiredForLevel(int level)
 }
 float GetProjectileInterval(int projectile_id)
 {
-    // Return the interval in seconds for this projectile.
-    // Change these values if you want different timing per projectile.
-    return 2.0;
+	// Return the interval in seconds for this projectile.
+	switch (projectile_id)
+	{
+		case TFProjectile_Rocket:
+		{
+			return 3.0;
+		}
+		case TFProjectile_Pipe:
+		{
+			return 2.0;
+		}
+		case TFProjectile_Cleaver:
+		{
+			return 1.5;
+		}
+		case TFProjectile_SentryProjectile:
+		{
+			return 4.0;
+		}
+		case TFProjectile_BallOrnament:
+		{
+			return 2.0;
+		}
+		case TFProjectile_Jar:
+		{
+			return 20.0;
+		}
+		case TFProjectile_StunBall:
+		{
+			return 2.5;
+		}
+		case TFProjectile_JarMilk:
+		{
+			return 20.0;
+		}
+		case TFProjectile_JarGas:
+		{
+			return 10.0;
+		}
+		case TFProjectile_SpellBats:
+		{
+			return 7.5;
+		}
+	}
+
+	return 2.5;
 }
 
 void AddScheduledProjectile(int projectile_id)
