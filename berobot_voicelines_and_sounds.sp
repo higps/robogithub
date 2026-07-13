@@ -722,7 +722,7 @@ public Action Event_teamplay_setup_finished(Event event, const char[] name, bool
     // int size = sizeof WaveVoiceLineStartSounds;
     // int soundswitch = GetRandomInt(0, size - 1);
 	// EmitSoundToAll(WaveVoiceLineStartSounds[soundswitch]);
-	// for(int i = 1; i <= MaxClients+1; i++)
+	// for(int i = 1; i <= MaxClients; i++)
 	// {
 	// 	if(IsValidClient(i))
 	// 	{

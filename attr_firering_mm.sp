@@ -349,7 +349,11 @@ void InitiateFireRing(int iClient, int iWeapon)
         if(!((fVec[2] > fVecEnemy[2] + fMin[2] - 32.0) && (fVec[2] < fVecEnemy[2] + fMax[2])))
             continue;
         
-        SDKHooks_TakeDamage(iEntity, iClient, iClient, Weapon[iWeapon].m_fDamage, DMG_PLASMA);
+        SDKHooks_TakeDamage(iEntity, iClient, iClient, Weapon[iWeapon].m_fDamage, DMG_BURN);
+
+        TF2_IgnitePlayer(iEntity, iClient, 5.0);
+
+            
     }
 
     return;

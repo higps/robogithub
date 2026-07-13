@@ -46,7 +46,7 @@ public void OnClientDisconnect(int client)
 
 public OnMapStart()
 {
-	for(int i = 1; i <= MaxClients+1; i++)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsValidClient(i))
 		{

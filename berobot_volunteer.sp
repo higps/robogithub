@@ -126,6 +126,10 @@ bool _volunteered[MAXPLAYERS + 1];
  */
 StringMap _queuePoints;
 bool g_block_volunteer = false;
+
+bool _showQueuePointsHUD[MAXPLAYERS + 1] = {false, ...};
+bool _selectionPhaseActive = false;
+
 public void OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
@@ -150,8 +154,8 @@ public void OnPluginStart()
     RegAdminCmd("sm_reload_queuepoints_volunteers", Command_ReloadQueuepointsVolunteers, ADMFLAG_SLAY, "reloads queuepoints from file");
 
     RegConsoleCmd("sm_queuepoints", Command_OutputQueuepoints, "outputs queuepoints into chat");
-    RegConsoleCmd("sm_qpnts", Command_OutputQueuepoints, "outputs queuepoints into chat");
     RegConsoleCmd("sm_qp", Command_OutputQueuepoints, "outputs queuepoints into chat");
+    RegConsoleCmd("sm_qhud", Command_ToggleQueuepointsHUD, "shows/hides Queue Points HUD (usage: !qhud true|false)");
 
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
     RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
@@ -162,8 +166,8 @@ public void OnPluginStart()
     HookEvent("tf_game_over", Event_Teamplay_TF_Game_Over, EventHookMode_Post);
     HookEvent("teamplay_game_over", Event_Teamplay_TF_Game_Over, EventHookMode_Post);
 
-    LoadVipSteamIds();    
-    LoadQueuePointsFromFile();    
+    LoadVipSteamIds();
+    LoadQueuePointsFromFile();
 
     Reset();
 }
@@ -171,13 +175,13 @@ public void OnPluginStart()
 public Action Event_Teamplay_Point_Captured(Event event, char[] name, bool dontBroadcast)
 {
 
-UpdateQueuePointsOnCap();
+    UpdateQueuePointsOnCap();
 
 }
 
 public Action Event_Teamplay_TF_Game_Over(Event event, char[] name, bool dontBroadcast)
 {
-g_block_volunteer = true;
+    g_block_volunteer = true;
 // PrintToChatAll("GAME OVER");
 
 }
@@ -190,12 +194,29 @@ public void OnConfigsExecuted()
     _robocapTeam = GetConVarInt(_robocapTeamConVar);
 }
 
+public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
+{
+    if (IsValidClient(client))
+    {
+        if (_selectionPhaseActive)
+        {
+            DrawQueuePointsHUD(client);
+        }
+        else if (_showQueuePointsHUD[client])
+        {
+            DrawQueuePointsHUD(client);
+        }
+    }
+    return Plugin_Continue;
+}
+
 public void MM_OnClientResetting(int clientId)
 {
     SMLogTag(SML_VERBOSE, "resetting volunteer status for client %i", clientId);
 
     _pickedOption[clientId] = false;
     _volunteered[clientId] = false;
+    _showQueuePointsHUD[clientId] = false;
 }
 
 public void AutoVolunteerAdminFlagCvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
@@ -230,10 +251,12 @@ public void OnMapStart()
 void Reset()
 {
     _automaticVolunteerVoteIsInProgress = false;
+    _selectionPhaseActive = false;
     for(int i = 0; i <= MAXPLAYERS; i++)
     {
         _volunteered[i] = false;
         _pickedOption[i] = false;
+        _showQueuePointsHUD[i] = false;
     }
 }
 
@@ -276,7 +299,7 @@ public Action Command_SetVolunteer(int client, int args)
     if (!IsEnabled())
     {
         MM_PrintToChat(client, "Unable to volunteer, robot-mode is not enabled");
-        SMLogTag(SML_VERBOSE, "Command_SetVolunteer cancled for %L, because robot-mode is not enabled", client);
+        SMLogTag(SML_VERBOSE, "Command_SetVolunteer canceled for %L, because robot-mode is not enabled", client);
         return Plugin_Handled;
     }
 
@@ -384,9 +407,25 @@ public Action Command_OutputQueuepoints(int client, int args)
 {
     SMLogTag(SML_VERBOSE, "Command_OutputQueuepoints called for %L", client);
 
+    if (args >= 1)
+    {
+        char arg[32];
+        GetCmdArg(1, arg, sizeof(arg));
+
+        if (StrEqual(arg, "hud", false))
+        {
+            _showQueuePointsHUD[client] = !_showQueuePointsHUD[client];
+            if (_showQueuePointsHUD[client])
+                MM_PrintToChat(client, "Queue Points HUD {green}ENABLED");
+            else
+                MM_PrintToChat(client, "Queue Points HUD {red}DISABLED");
+            return Plugin_Handled;
+        }
+    }
+
     int ignored[1];
     ArrayList queuePointList = CreateSortedVolunteersList(ignored, 0);
-    
+
     for(int i = 0; i < queuePointList.Length; i++)
     {
         VolunteerState state = queuePointList.Get(i);
@@ -396,6 +435,46 @@ public Action Command_OutputQueuepoints(int client, int args)
     }
 
     delete queuePointList;
+    return Plugin_Handled;
+}
+
+public Action Command_ToggleQueuepointsHUD(int client, int args)
+{
+    if (client <= 0 || !IsClientInGame(client))
+    {
+        ReplyToCommand(client, "[SM] This command can only be used in-game.");
+        return Plugin_Handled;
+    }
+
+    if (args < 1)
+    {
+        _showQueuePointsHUD[client] = !_showQueuePointsHUD[client];
+    }
+    else
+    {
+        char arg[16];
+        GetCmdArg(1, arg, sizeof(arg));
+
+        if (StrEqual(arg, "true", false) || StrEqual(arg, "1", false) || StrEqual(arg, "on", false) || StrEqual(arg, "enable", false) || StrEqual(arg, "enabled", false))
+        {
+            _showQueuePointsHUD[client] = true;
+        }
+        else if (StrEqual(arg, "false", false) || StrEqual(arg, "0", false) || StrEqual(arg, "off", false) || StrEqual(arg, "disable", false) || StrEqual(arg, "disabled", false))
+        {
+            _showQueuePointsHUD[client] = false;
+        }
+        else
+        {
+            MM_PrintToChat(client, "Usage: !qhud true|false");
+            return Plugin_Handled;
+        }
+    }
+
+    if (_showQueuePointsHUD[client])
+        MM_PrintToChat(client, "Queue Points HUD {green}ENABLED");
+    else
+        MM_PrintToChat(client, "Queue Points HUD {red}DISABLED");
+
     return Plugin_Handled;
 }
 
@@ -481,19 +560,20 @@ int Native_GetRandomVolunteer(Handle plugin, int numParams)
 int Native_StartAutomaticVolunteerVote(Handle plugin, int numParams)
 {
     _automaticVolunteerVoteIsInProgress = true;
+    _selectionPhaseActive = true;
     for(int i = 1; i <= MaxClients; i++)
     {
         if (!IsValidClient(i) || !IsClientInGame(i))
             continue;
         if (_pickedOption[i])
-        {            
+        {
             if (_volunteered[i])
                 MM_PrintToChat(i, "You already volunteered to be a robot. type '!join' to cancel your volunteer-state.");
             else
                 MM_PrintToChat(i, "You already decided not volunteering to be a robot. type '!join' to volunteer again.");
             continue;
         }
-        
+
         Menu_AutomaticVolunteer(i);
     }
 
@@ -562,6 +642,7 @@ void VolunteerAutomaticVolunteers()
 
     SMLogTag(SML_VERBOSE, "setting _automaticVolunteerVoteIsInProgress to false");
     _automaticVolunteerVoteIsInProgress = false;
+    _selectionPhaseActive = false;
 }
 
 /**
@@ -701,7 +782,13 @@ void UpdateQueuePoints(ArrayList volunteers, int neededVolunteers)
         int newQueuepoints;
         if (volunteerIndex < neededVolunteers)
         {
-            if (IsAnyRobot(clientId))newQueuepoints = 0;
+            if (IsAnyRobot(clientId))
+            {
+                newQueuepoints = 0;
+            }else
+            {
+                 newQueuepoints = state.QueuePoints + 1;
+            }
             // PrintToChatAll("%N was robot and got points set to 0!", clientId);
             SMLogTag(SML_VERBOSE, "resetting Queuepoints for %L with steamid %s", clientId, steamId);
         }
@@ -720,7 +807,7 @@ void UpdateQueuePoints(ArrayList volunteers, int neededVolunteers)
 
 void UpdateQueuePointsOnCap()
 {
-	for(int i = 1; i <= MaxClients+1; i++)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(IsValidClient(i) && !IsAnyRobot(i))
 		{
@@ -946,4 +1033,67 @@ public int MenuHandler(Menu menu, MenuAction action, int param1, int param2)
     {
         delete menu;
     }
+}
+
+void DrawQueuePointsHUD(int client)
+{
+    char steamId[64];
+    if (!GetClientAuthId(client, AuthId_Steam2, steamId, sizeof(steamId)))
+        return;
+
+    int myQueuePoints = 0;
+    _queuePoints.GetValue(steamId, myQueuePoints);
+
+    int currentRobots = GetCurrentRobotCount();
+    int maxRobots = GetRobotCountPerTeam();
+    int availableSlots = maxRobots - currentRobots;
+
+    char sHUDText[512];
+    Format(sHUDText, sizeof(sHUDText), "Your Queue Points: %i\n", myQueuePoints);
+    Format(sHUDText, sizeof(sHUDText), "%sRobots: %i / %i (Slots Available: %i)\nType !qhud to hide hud\n", sHUDText, currentRobots, maxRobots, availableSlots);
+
+    int ignored[1];
+    ArrayList sortedList = CreateSortedVolunteersList(ignored, 0);
+    sortedList.SortCustom(VolunteerStateComparision);
+
+    int myRank = 0;
+    for(int i = 0; i < sortedList.Length; i++)
+    {
+        VolunteerState state = sortedList.Get(i);
+        char stateId[64];
+        state.GetSteamId(stateId);
+        if (StrEqual(steamId, stateId, false))
+        {
+            myRank = i + 1;
+            break;
+        }
+    }
+
+    if (myRank > 0)
+    {
+        Format(sHUDText, sizeof(sHUDText), "%s\nYour Rank: %i / %i", sHUDText, myRank, sortedList.Length);
+
+        if (availableSlots <= 0)
+        {
+            Format(sHUDText, sizeof(sHUDText), "%s\nChance: NO (No open robot slots)", sHUDText);
+        }
+        else if (myRank <= availableSlots)
+        {
+            Format(sHUDText, sizeof(sHUDText), "%s\nChance: HIGH (You are in a robot slot)", sHUDText);
+        }
+        else
+        {
+            Format(sHUDText, sizeof(sHUDText), "%s\nChance: LOW (Need %i more slot(s))", sHUDText, myRank - availableSlots);
+        }
+    }
+    else
+    {
+        Format(sHUDText, sizeof(sHUDText), "%s\nYour Rank: Not in queue", sHUDText);
+        Format(sHUDText, sizeof(sHUDText), "%s\nChance: NONE (Use !join to volunteer)", sHUDText);
+    }
+
+    SetHudTextParams(0.02, 0.05, 0.1, 255, 255, 255, 255);
+    ShowHudText(client, -1, sHUDText);
+
+    delete sortedList;
 }

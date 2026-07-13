@@ -209,7 +209,7 @@ public void OnPluginStart()
 	AddCommandListener(CommandListener_Build, "build");
 	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
 
-	for(int i = 1; i <= MaxClients+1; i++)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if (IsValidClient(i))
 		{
@@ -1170,7 +1170,7 @@ bool TeamHasRoboEngineer(int client)
 {
 	TFTeam Team = TF2_GetClientTeam(client);
 	// int positive = 0;
-	for(int i = 1; i <= MaxClients+1; i++)
+	for(int i = 1; i <= MaxClients; i++)
 	{
 		if (IsValidClient(i) && IsClientInGame(i))
 		{
