@@ -7,6 +7,8 @@
 #pragma newdecls required
 #pragma semicolon 1
 
+char MENU_CLOSE_SOUND[] = "buttons/button14.wav";
+
 bool g_HasSeenWaitingRoundStart;
 bool g_FirstRoundStarted;
 bool g_DebugRobotTips = true;
@@ -18,23 +20,27 @@ public Plugin myinfo =
 {
     name = "berobot_robot_tips",
     author = "icebear",
-    description = "Shows one-time robot HUD tips after live round start",
+    description = "Shows one-time robot tips menu after live round start",
     version = "0.1",
     url = "https://github.com/higps/robogithub"
 };
 
 public void OnPluginStart()
 {
+    PrecacheSound(MENU_CLOSE_SOUND, true);
+
     HookEvent("teamplay_round_start", Event_RoundStart, EventHookMode_Post);
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 
-    RegConsoleCmd("sm_hiderobottips", Command_HideRobotTips, "Hides robot tips HUD until you reconnect");
-    RegConsoleCmd("sm_hidetips", Command_HideRobotTips, "Hides robot tips HUD until you reconnect");
+    RegConsoleCmd("sm_hiderobottips", Command_HideRobotTips, "Hides robot tips menu until you reconnect");
+    RegConsoleCmd("sm_hidetips", Command_HideRobotTips, "Hides robot tips menu until you reconnect");
     RegConsoleCmd("sm_robottipsdebug", Command_RobotTipsDebug, "Toggles robot tips debug messages");
 }
 
 public void OnMapStart()
 {
+    PrecacheSound(MENU_CLOSE_SOUND, true);
+
     g_HasSeenWaitingRoundStart = false;
     g_FirstRoundStarted = false;
 }
@@ -96,20 +102,11 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     }
 
     g_TipsShown[client] = true;
+    ShowRobotTipsMenu(client);
 
     if (g_DebugRobotTips)
     {
         PrintToChatAll("[robot_tips] spawn %N: tips enabled for this connection", client);
-    }
-
-    return Plugin_Continue;
-}
-
-public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
-{
-    if (ShouldDrawTips(client))
-    {
-        ShowRobotTipsHud(client);
     }
 
     return Plugin_Continue;
@@ -125,8 +122,7 @@ public Action Command_HideRobotTips(int client, int args)
     g_TipsHiddenUntilReconnect[client] = true;
     g_TipsShown[client] = true;
 
-    HideRobotTipsHud(client);
-    PrintToChat(client, "[MM] Robot tips hidden until reconnect.");
+    PrintToChat(client, "[MM] Robot tips menu hidden until reconnect.");
 
     return Plugin_Handled;
 }
@@ -147,25 +143,49 @@ public Action Command_RobotTipsDebug(int client, int args)
     return Plugin_Handled;
 }
 
-void ShowRobotTipsHud(int client)
+void ShowRobotTipsMenu(int client)
 {
-    char sHUDText[256];
-    Format(sHUDText, sizeof(sHUDText), "PLACEHOLDER\nPLACEHOLDER\nPLACEHOLDER");
+    Panel panel = new Panel();
+    panel.SetTitle("Robot tips:");
 
-    // Match the volunteer HUD placement and style.
-    SetHudTextParams(0.02, 0.05, 8.0, 255, 0, 0, 255);
-    ShowHudText(client, -1, sHUDText);
+    panel.DrawItem("Focus the objective", ITEMDRAW_DISABLED); // 1
+    panel.DrawItem("Dying gives the robot team Robot-₡oins", ITEMDRAW_DISABLED); // 2
+    panel.DrawItem("Spend Robot-₡oins on MK II Robots", ITEMDRAW_DISABLED); // 3
+    panel.DrawItem("Don't chase humans", ITEMDRAW_DISABLED); // 4
+    panel.DrawItem("Tanks and ZBosses can't cap", ITEMDRAW_DISABLED); // 5
+    panel.DrawItem("Retreating is not optimal, it is better to explode and get Robot-₡oins for your team", ITEMDRAW_DISABLED); // 6
+    panel.DrawItem("CLOSE ROBOT TIPS", ITEMDRAW_DEFAULT);       // 7
+
+    panel.Send(client, PanelHandler_RobotTips, MENU_TIME_FOREVER);
+    delete panel;
 }
 
-void HideRobotTipsHud(int client)
+public int PanelHandler_RobotTips(Menu menu, MenuAction action, int client, int selection)
 {
-    SetHudTextParams(0.02, 0.05, 0.1, 255, 0, 0, 0);
-    ShowHudText(client, -1, " ");
+    if (action == MenuAction_End)
+    {
+        delete menu;
+        return 0;
+    }
+
+    if (action == MenuAction_Select)
+    {
+        if (selection == 7)
+        {
+            EmitSoundToClient(client, MENU_CLOSE_SOUND, _, _, _, _, 1.0);
+        }
+        else
+        {
+            ShowRobotTipsMenu(client);
+        }
+    }
+
+    return 0;
 }
 
 bool ShouldDisplayTips(int client)
 {
-    return ShouldDrawTips(client);
+    return ShouldEnableTipsForClient(client);
 }
 
 bool IsClientEligibleForTips(int client)
@@ -218,22 +238,3 @@ bool ShouldEnableTipsForClient(int client)
     return true;
 }
 
-bool ShouldDrawTips(int client)
-{
-    if (!IsClientEligibleForTips(client))
-    {
-        return false;
-    }
-
-    if (!g_TipsShown[client])
-    {
-        return false;
-    }
-
-    if (g_TipsHiddenUntilReconnect[client])
-    {
-        return false;
-    }
-
-    return true;
-}
