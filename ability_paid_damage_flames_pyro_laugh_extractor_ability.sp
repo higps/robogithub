@@ -28,6 +28,11 @@ public Plugin:myinfo =
 }
 
 
+public OnMapStart()
+{
+	PrecacheSound(SCREAM);
+}
+
 public OnPluginStart()
 {
     for (int i = 1; i <= MAXPLAYERS; i++)

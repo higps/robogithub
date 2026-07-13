@@ -128,6 +128,7 @@ StringMap _queuePoints;
 bool g_block_volunteer = false;
 
 bool _showQueuePointsHUD[MAXPLAYERS + 1] = {false, ...};
+bool _selectionPhaseActive = false;
 
 public void OnPluginStart()
 {
@@ -194,9 +195,16 @@ public void OnConfigsExecuted()
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
-    if (IsValidClient(client) && _showQueuePointsHUD[client])
+    if (IsValidClient(client))
     {
-        DrawQueuePointsHUD(client);
+        if (_selectionPhaseActive)
+        {
+            DrawQueuePointsHUD(client);
+        }
+        else if (_showQueuePointsHUD[client])
+        {
+            DrawQueuePointsHUD(client);
+        }
     }
     return Plugin_Continue;
 }
@@ -242,10 +250,12 @@ public void OnMapStart()
 void Reset()
 {
     _automaticVolunteerVoteIsInProgress = false;
+    _selectionPhaseActive = false;
     for(int i = 0; i <= MAXPLAYERS; i++)
     {
         _volunteered[i] = false;
         _pickedOption[i] = false;
+        _showQueuePointsHUD[i] = false;
     }
 }
 
@@ -509,19 +519,20 @@ int Native_GetRandomVolunteer(Handle plugin, int numParams)
 int Native_StartAutomaticVolunteerVote(Handle plugin, int numParams)
 {
     _automaticVolunteerVoteIsInProgress = true;
+    _selectionPhaseActive = true;
     for(int i = 1; i <= MaxClients; i++)
     {
         if (!IsValidClient(i) || !IsClientInGame(i))
             continue;
         if (_pickedOption[i])
-        {            
+        {
             if (_volunteered[i])
                 MM_PrintToChat(i, "You already volunteered to be a robot. type '!join' to cancel your volunteer-state.");
             else
                 MM_PrintToChat(i, "You already decided not volunteering to be a robot. type '!join' to volunteer again.");
             continue;
         }
-        
+
         Menu_AutomaticVolunteer(i);
     }
 
@@ -590,6 +601,7 @@ void VolunteerAutomaticVolunteers()
 
     SMLogTag(SML_VERBOSE, "setting _automaticVolunteerVoteIsInProgress to false");
     _automaticVolunteerVoteIsInProgress = false;
+    _selectionPhaseActive = false;
 }
 
 /**
@@ -991,14 +1003,20 @@ void DrawQueuePointsHUD(int client)
     int myQueuePoints = 0;
     _queuePoints.GetValue(steamId, myQueuePoints);
 
-    char sHUDText[256];
+    int currentRobots = GetCurrentRobotCount();
+    int maxRobots = GetRobotCountPerTeam();
+    int availableSlots = maxRobots - currentRobots;
+
+    char sHUDText[512];
     Format(sHUDText, sizeof(sHUDText), "Your Queue Points: %i\n", myQueuePoints);
+    Format(sHUDText, sizeof(sHUDText), "%sRobots: %i / %i (Slots Available: %i)\n\n", sHUDText, currentRobots, maxRobots, availableSlots);
 
     int ignored[1];
     ArrayList sortedList = CreateSortedVolunteersList(ignored, 0);
     sortedList.SortCustom(VolunteerStateComparision);
 
     int myRank = 0;
+    int myQueuePosition = 0;
     for(int i = 0; i < sortedList.Length; i++)
     {
         VolunteerState state = sortedList.Get(i);
@@ -1007,6 +1025,7 @@ void DrawQueuePointsHUD(int client)
         if (StrEqual(steamId, stateId, false))
         {
             myRank = i + 1;
+            myQueuePosition = i + 1;
             break;
         }
     }
@@ -1021,6 +1040,15 @@ void DrawQueuePointsHUD(int client)
     }
 
     Format(sHUDText, sizeof(sHUDText), "%s\nYour Rank: %i / %i", sHUDText, myRank, sortedList.Length);
+
+    if (availableSlots > 0)
+    {
+        Format(sHUDText, sizeof(sHUDText), "%s\nIn Queue: #%i", sHUDText, myQueuePosition);
+        if (myQueuePosition <= availableSlots)
+        {
+            Format(sHUDText, sizeof(sHUDText), "%s (GETTING ROBOT!)", sHUDText);
+        }
+    }
 
     SetHudTextParams(0.02, 0.05, 0.1, 255, 255, 255, 255);
     ShowHudText(client, -1, sHUDText);
