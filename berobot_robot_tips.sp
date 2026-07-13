@@ -11,7 +11,7 @@ char MENU_CLOSE_SOUND[] = "buttons/button14.wav";
 
 bool g_HasSeenWaitingRoundStart;
 bool g_FirstRoundStarted;
-bool g_DebugRobotTips = true;
+bool g_DebugRobotTips = false;
 
 bool g_TipsShown[MAXPLAYERS + 1] = {false, ...};
 bool g_TipsHiddenUntilReconnect[MAXPLAYERS + 1] = {false, ...};
