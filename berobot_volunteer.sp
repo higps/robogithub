@@ -155,6 +155,7 @@ public void OnPluginStart()
 
     RegConsoleCmd("sm_queuepoints", Command_OutputQueuepoints, "outputs queuepoints into chat");
     RegConsoleCmd("sm_qp", Command_OutputQueuepoints, "outputs queuepoints into chat");
+    RegConsoleCmd("sm_qhud", Command_ToggleQueuepointsHUD, "shows/hides Queue Points HUD (usage: !qhud true|false)");
 
     RegConsoleCmd("sm_volunteer", Command_Volunteer, "Volunters you to be a giant robot");
     RegConsoleCmd("sm_vlntr", Command_Volunteer, "Volunters you to be a giant robot");
@@ -434,6 +435,46 @@ public Action Command_OutputQueuepoints(int client, int args)
     }
 
     delete queuePointList;
+    return Plugin_Handled;
+}
+
+public Action Command_ToggleQueuepointsHUD(int client, int args)
+{
+    if (client <= 0 || !IsClientInGame(client))
+    {
+        ReplyToCommand(client, "[SM] This command can only be used in-game.");
+        return Plugin_Handled;
+    }
+
+    if (args < 1)
+    {
+        _showQueuePointsHUD[client] = !_showQueuePointsHUD[client];
+    }
+    else
+    {
+        char arg[16];
+        GetCmdArg(1, arg, sizeof(arg));
+
+        if (StrEqual(arg, "true", false) || StrEqual(arg, "1", false) || StrEqual(arg, "on", false) || StrEqual(arg, "enable", false) || StrEqual(arg, "enabled", false))
+        {
+            _showQueuePointsHUD[client] = true;
+        }
+        else if (StrEqual(arg, "false", false) || StrEqual(arg, "0", false) || StrEqual(arg, "off", false) || StrEqual(arg, "disable", false) || StrEqual(arg, "disabled", false))
+        {
+            _showQueuePointsHUD[client] = false;
+        }
+        else
+        {
+            MM_PrintToChat(client, "Usage: !qhud true|false");
+            return Plugin_Handled;
+        }
+    }
+
+    if (_showQueuePointsHUD[client])
+        MM_PrintToChat(client, "Queue Points HUD {green}ENABLED");
+    else
+        MM_PrintToChat(client, "Queue Points HUD {red}DISABLED");
+
     return Plugin_Handled;
 }
 
@@ -1009,14 +1050,13 @@ void DrawQueuePointsHUD(int client)
 
     char sHUDText[512];
     Format(sHUDText, sizeof(sHUDText), "Your Queue Points: %i\n", myQueuePoints);
-    Format(sHUDText, sizeof(sHUDText), "%sRobots: %i / %i (Slots Available: %i)\n\n", sHUDText, currentRobots, maxRobots, availableSlots);
+    Format(sHUDText, sizeof(sHUDText), "%sRobots: %i / %i (Slots Available: %i)\nType !qhud to hide hud\n", sHUDText, currentRobots, maxRobots, availableSlots);
 
     int ignored[1];
     ArrayList sortedList = CreateSortedVolunteersList(ignored, 0);
     sortedList.SortCustom(VolunteerStateComparision);
 
     int myRank = 0;
-    int myQueuePosition = 0;
     for(int i = 0; i < sortedList.Length; i++)
     {
         VolunteerState state = sortedList.Get(i);
@@ -1025,29 +1065,31 @@ void DrawQueuePointsHUD(int client)
         if (StrEqual(steamId, stateId, false))
         {
             myRank = i + 1;
-            myQueuePosition = i + 1;
             break;
         }
     }
 
-    char steamIdState[64];
-    for(int i = 0; i < sortedList.Length && i < 6; i++)
+    if (myRank > 0)
     {
-        VolunteerState state = sortedList.Get(i);
-        state.GetSteamId(steamIdState);
-        int clientId = GetClientOfUserId(state.UserId);
-        Format(sHUDText, sizeof(sHUDText), "%s%i. %N - %i pts\n", sHUDText, i + 1, clientId, state.QueuePoints);
-    }
+        Format(sHUDText, sizeof(sHUDText), "%s\nYour Rank: %i / %i", sHUDText, myRank, sortedList.Length);
 
-    Format(sHUDText, sizeof(sHUDText), "%s\nYour Rank: %i / %i", sHUDText, myRank, sortedList.Length);
-
-    if (availableSlots > 0)
-    {
-        Format(sHUDText, sizeof(sHUDText), "%s\nIn Queue: #%i", sHUDText, myQueuePosition);
-        if (myQueuePosition <= availableSlots)
+        if (availableSlots <= 0)
         {
-            Format(sHUDText, sizeof(sHUDText), "%s (GETTING ROBOT!)", sHUDText);
+            Format(sHUDText, sizeof(sHUDText), "%s\nChance: NO (No open robot slots)", sHUDText);
         }
+        else if (myRank <= availableSlots)
+        {
+            Format(sHUDText, sizeof(sHUDText), "%s\nChance: HIGH (You are in a robot slot)", sHUDText);
+        }
+        else
+        {
+            Format(sHUDText, sizeof(sHUDText), "%s\nChance: LOW (Need %i more slot(s))", sHUDText, myRank - availableSlots);
+        }
+    }
+    else
+    {
+        Format(sHUDText, sizeof(sHUDText), "%s\nYour Rank: Not in queue", sHUDText);
+        Format(sHUDText, sizeof(sHUDText), "%s\nChance: NONE (Use !join to volunteer)", sHUDText);
     }
 
     SetHudTextParams(0.02, 0.05, 0.1, 255, 255, 255, 255);
