@@ -254,6 +254,16 @@ forward void MM_OnEnabledChanged(int enabled);
 forward void MM_OnClientResetting(int clientId);
 
 /**
+ * Called when a client switches from one robot name to another, or back to human.
+ * 
+ * @param clientId      clientId that switched
+ * @param fromRobot     previous robot name, or empty if none
+ * @param toRobot       new robot name, or empty if switching back to human
+ * @noreturn
+ */
+forward void MM_OnRobotSwitched(int clientId, const char[] fromRobot, const char[] toRobot);
+
+/**
  * Called when mode-reset was requested
  * 
  * @noreturn

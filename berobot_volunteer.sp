@@ -194,21 +194,21 @@ public void OnConfigsExecuted()
     _robocapTeam = GetConVarInt(_robocapTeamConVar);
 }
 
-public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
-{
-    if (IsValidClient(client))
-    {
-        if (_selectionPhaseActive)
-        {
-            DrawQueuePointsHUD(client);
-        }
-        else if (_showQueuePointsHUD[client])
-        {
-            DrawQueuePointsHUD(client);
-        }
-    }
-    return Plugin_Continue;
-}
+// public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
+// {
+//     if (IsValidClient(client))
+//     {
+//         if (_selectionPhaseActive)
+//         {
+//             DrawQueuePointsHUD(client);
+//         }
+//         else if (_showQueuePointsHUD[client])
+//         {
+//             DrawQueuePointsHUD(client);
+//         }
+//     }
+//     return Plugin_Continue;
+// }
 
 public void MM_OnClientResetting(int clientId)
 {

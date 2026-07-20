@@ -67,6 +67,37 @@ int g_level = 0;
 int g_exp = 0;
 int g_expreq;
 
+public void MM_OnRobotSwitched(int clientId, const char[] fromRobot, const char[] toRobot)
+{
+	if (!StrEqual(fromRobot, ROBOT_NAME) && !StrEqual(toRobot, ROBOT_NAME))
+	{
+		return;
+	}
+	ResetPlayerProgress();
+	// char fromName[64];
+	// char toName[64];
+
+	// if (fromRobot[0] == '\0')
+	// {
+	// 	strcopy(fromName, sizeof(fromName), "human");
+	// }
+	// else
+	// {
+	// 	strcopy(fromName, sizeof(fromName), fromRobot);
+	// }
+
+	// if (toRobot[0] == '\0')
+	// {
+	// 	strcopy(toName, sizeof(toName), "human");
+	// }
+	// else
+	// {
+	// 	strcopy(toName, sizeof(toName), toRobot);
+	// }
+
+	// PrintToChatAll("[Vampire Survivor] %N switched from %s to %s", clientId, fromName, toName);
+}
+
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
@@ -201,10 +232,25 @@ void CheckLevelUp(int client)
 		if(heal_yap)
 		{
 		PrintToChat(client,"LVL3 Bonus: You got health regen!");
-		TF2Attrib_SetByName(client, "health regen", 5.0);
+		TF2Attrib_SetByName(client, "health regen", 25.0);
 		heal_yap = false;
 		}
 
+	}
+
+	if (g_level ==  4)
+	{
+		heal_yap = true;
+	}
+	if (g_level == 5)
+	{
+		int weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		if(heal_yap)
+		{
+		PrintToChat(client,"LVL5 Bonus: You got heal on it!");
+		TF2Attrib_SetByName(weapon3, "heal on hit for rapidfire", 25.0);
+		heal_yap = false;
+		}
 	}
     while (g_level < MAX_LEVEL)
     {
@@ -233,7 +279,8 @@ void OnPlayerLevelUp(int client, int newLevel)
 
     }
 	
-	TF2_AddCondition(client, TFCond_UberchargedCanteen, 0.5);
+	TF2_AddCondition(client, TFCond_HalloweenQuickHeal, 3.0);
+	TF2_AddCondition(client, TFCond_InHealRadius, 3.0);
     AddScheduledProjectile(newLevel - 1);
 }
 
@@ -251,6 +298,20 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 			g_expreq = GetXPRequiredForLevel(1);
 			ResetPlayerProgress();
 		}
+		
+		// bool find_survivor = false;
+		// for(int i = 1; i <= MaxClients; i++)
+		// {
+		// 	if (IsRobot(i, ROBOT_NAME))
+		// 	{
+		// 		find_survivor = true;
+		// 	}
+		// }
+
+		// if (find_survivor == false)
+		// {
+		// 	ResetPlayerProgress();
+		// }
 		return Plugin_Continue;
 }
 

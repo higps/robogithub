@@ -44,6 +44,7 @@ char _wasRobot[MAXPLAYERS + 1][NAMELENGTH];
 
 GlobalForward _robotPickAndPreviousRobot;
 GlobalForward _robotChangedInSpawn;
+GlobalForward _robotSwitched;
 //Universal
 #define SPAWN	"#mvm/giant_heavy/giant_heavy_entrance.wav"
 #define DEATH	"mvm/sentrybuster/mvm_sentrybuster_explode.wav"
@@ -167,6 +168,7 @@ public void Init()
 
     _robotPickAndPreviousRobot = new GlobalForward("MM_PickRobotAndPreviousRobot", ET_Ignore, Param_Cell, Param_Cell, Param_String);
     _robotChangedInSpawn = new GlobalForward("MM_robotChangedInSpawn", ET_Ignore, Param_Cell, Param_Cell, Param_String);
+    _robotSwitched = new GlobalForward("MM_OnRobotSwitched", ET_Ignore, Param_Cell, Param_String, Param_String);
     for(int i = 0; i <= MaxClients; i++)
     {
         _wasRobot[i] = "";
@@ -565,6 +567,12 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         SMLogTag(SML_VERBOSE, "calling privateForward %x for robot %s, with client %i and target %s (current %i; count %i)", item.callback, name, client, target, targetClientId, target_count);
         CallCreate(targetClientId, item);
 
+        Call_StartForward(_robotSwitched);
+        Call_PushCell(targetClientId);
+        Call_PushString(wasRobot);
+        Call_PushString(name);
+        Call_Finish();
+
         robotWasCreated = true;
     }
 	if (robotWasCreated)
@@ -803,6 +811,16 @@ int Trash(int clientId, char wasRobot[NAMELENGTH] = "", char newRobotName[NAMELE
     }
 
     Reset(clientId);
+
+    if (newRobotName[0] == '\0')
+    {
+        Call_StartForward(_robotSwitched);
+        Call_PushCell(clientId);
+        Call_PushString(wasRobot);
+        Call_PushString(newRobotName);
+        Call_Finish();
+    }
+
     PrintToChat(clientId, "1. You are no longer %s!", wasRobot);
     PrintToChat(clientId, "2. You will turn back by changing class or dying!");
     
