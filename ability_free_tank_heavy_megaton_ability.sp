@@ -22,6 +22,14 @@ public Plugin:myinfo =
 }
 float amount_stack = 0.0;
 
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	CreateNative("Megaton_HealClientByAmount", Native_HealClientByAmount);
+	CreateNative("Megaton_ShowHealthGain", Native_ShowHealthGain);
+	RegPluginLibrary("megaton_ability");
+	return APLRes_Success;
+}
+
 public void OnPluginStart()
 {
 	HookEvent("player_death", Event_Death, EventHookMode_Post);
@@ -94,6 +102,24 @@ void HealClientByAmount(int client, int heal)
 	EmitSoundToAll(sHealNoise, g_robot_player);
 }
 
+public any Native_HealClientByAmount(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	int heal = GetNativeCell(2);
+	HealClientByAmount(client, heal);
+	return 0;
+}
+
+public any Native_ShowHealthGain(Handle plugin, int numParams)
+{
+	int patient = GetNativeCell(1);
+	int health = GetNativeCell(2);
+	int healer = numParams >= 3 ? GetNativeCell(3) : -1;
+	bool addToScore = numParams >= 4 ? view_as<bool>(GetNativeCell(4)) : true;
+	ShowHealthGain(patient, health, healer, addToScore);
+	return 0;
+}
+
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
     // if (!g_Enable)
@@ -130,20 +156,21 @@ stock void ShowHealthGain(int iPatient, int iHealth, int iHealer = -1, bool bAdd
 {
 	int iUserId = GetClientUserId(iPatient);
 	
-	Handle hEvent = CreateEvent("player_healed", true);
+	Event hEvent = CreateEvent("player_healed", true);
 	
-	SetEventBool(hEvent, "sourcemod", true);
-	SetEventInt(hEvent, "patient", iUserId);
-	SetEventInt(hEvent, "healer", IsValidClient(iHealer) ? GetClientUserId(iHealer) : iUserId);
-	SetEventInt(hEvent, "amount", iHealth);
+	hEvent.SetBool("sourcemod", true);
+	hEvent.SetInt("patient", iUserId);
+	hEvent.SetInt("healer", IsValidClient(iHealer) ? GetClientUserId(iHealer) : iUserId);
+	hEvent.SetInt("amount", iHealth);
 	
-	FireEvent(hEvent);
+	hEvent.FireToClient(iPatient);
+	hEvent.Cancel();
 	
 	hEvent = CreateEvent("player_healonhit", true);
 	
-	SetEventBool(hEvent, "sourcemod", true);
-	SetEventInt(hEvent, "amount", iHealth);
-	SetEventInt(hEvent, "entindex", iPatient);
+	hEvent.SetBool("sourcemod", true);
+	hEvent.SetInt("amount", iHealth);
+	hEvent.SetInt("entindex", iPatient);
 	
 	//Adds to healing score if wanted
 	if(bAddToScore)
@@ -173,5 +200,6 @@ stock void ShowHealthGain(int iPatient, int iHealth, int iHealer = -1, bool bAdd
 		}
 	}
 	
-	FireEvent(hEvent);
+	hEvent.FireToClient(iPatient);
+	hEvent.Cancel();
 }

@@ -285,6 +285,26 @@ native int GetRobotTeam();
  * 
  * */
 native int AddPlayerHealth(int iClient, int iAdd, int iOverheal = 0, bool bStaticMax = false, bShowHealthGain = true);
+
+/**
+ * Heals a client using Megaton's local healing behavior.
+ *
+ * @param client     target client index
+ * @param heal       amount of health to add before Megaton's max-health clamp
+ * @noreturn
+ */
+native void Megaton_HealClientByAmount(int client, int heal);
+
+/**
+ * Shows Megaton's health gain HUD only to the healed client.
+ *
+ * @param patient        target client index
+ * @param health         amount shown on the heal HUD
+ * @param healer         optional healer client index
+ * @param addToScore     whether healing score should be credited
+ * @noreturn
+ */
+native void Megaton_ShowHealthGain(int patient, int health, int healer = -1, bool addToScore = true);
 /**
  * Adds health and shows it on the hud
  *  @param iClient
