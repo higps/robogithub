@@ -1954,6 +1954,18 @@ void MoveToRobots(int client)
     // ChooseRobot(client);
 }
 
+void ReopenChooseRobotMenuTopLevel(int client)
+{
+    // Fresh open clears selection breadcrumbs and starts from main category menu.
+    ChooseRobot(client, false);
+}
+
+void RefreshChooseRobotMenuInPlace(int client)
+{
+    // In-place refresh preserves current submenu selection path.
+    ChooseRobot(client, true);
+}
+
 Action ChooseRobot(int client, bool redrawing = false)
 {
 
@@ -2134,7 +2146,8 @@ void Internal_SetRobot(char robotname[NAMELENGTH], int client)
     int error = CreateRobot(robotname, client, "");
     if (error != 0)
     {
-        RedrawChooseRobotMenuFor(client);
+        // Selection failed for this client; restart from top-level for a clean retry state.
+        ReopenChooseRobotMenuTopLevel(client);
         return;
     }
 
@@ -2187,7 +2200,8 @@ any Native_RedrawChooseRobotMenuFor(Handle plugin, int numParams)
     }
 
     SMLogTag(SML_VERBOSE, "redrawing ChooseRobotMenu for %L", clientId);
-    ChooseRobot(clientId, true);
+    // External redraws should preserve the player's current submenu selection state.
+    RefreshChooseRobotMenuInPlace(clientId);
 }
 
 public Action OnClientCommand(int client, int args)

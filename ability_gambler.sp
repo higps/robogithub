@@ -189,7 +189,8 @@ void SpinWheel(int client)
 		if (GetRandomInt(1, 100) <= jackpotChance)
 		{
 			MC_PrintToChatAll("{red}Warning! {orange}The Gambler {red}Has Hit The {pink}JACKPOT");
-			TF2_AddCondition(client, TFCond_Ubercharged, g_duration);
+			TF2_AddCondition(client, TFCond_DefenseBuffed, g_duration);
+			TF2_AddCondition(client, TFCond_HalloweenQuickHeal, g_duration);
 			TF2_AddCondition(client, TFCond_Kritzkrieged, g_duration);
 			TF2_AddCondition(client, TFCond_MegaHeal, g_duration);
 			TF2_AddCondition(client, TFCond_RuneHaste, g_duration);

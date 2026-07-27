@@ -1158,6 +1158,12 @@ void GenerateNotes(Robot item, int client, char notes[15], int& draw)
         return;
     }
 
+    if (availableTeamCoins < teamCost)
+    {
+        draw = ITEMDRAW_DISABLED;
+        return;
+    }
+
     // bool BossActive = true;
     if (IsBossActive() && StrContains(notes,"B₡") != -1)
     {

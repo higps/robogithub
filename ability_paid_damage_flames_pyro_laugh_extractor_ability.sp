@@ -16,8 +16,9 @@ bool g_button_held[MAXPLAYERS + 1] = false;
 // float g_RechargeCooldown = 5.0;
 float g_skill;
 int g_KillCount[MAXPLAYERS + 1] = {7,...};
-int g_KillsNeeded = 7;
+int g_KillsNeeded = 5;
 
+float g_stun_duration = 2.0;
 public Plugin:myinfo = 
 {
 	name = "[TF2] Laugh Extractor Ability",
@@ -133,7 +134,7 @@ void DrawHUD(int client)
 
 	if (g_button_held[client] && iCountDown <= 0)
 	{
-		ApplyRadialStun(client, 1.5, 500.0);
+		ApplyRadialStun(client, g_stun_duration, 500.0);
 		g_KillCount[client] = 0;
 		// g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
 		isready = false;

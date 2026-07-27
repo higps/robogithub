@@ -45,7 +45,7 @@ float g_dottime = 0.0;
 float g_dot_interval = 0.25;
 int g_previous_state = -2;
 
-float g_retarget_timer = 25.0;
+float g_retarget_timer = 10.0;
 
 int g_loadingDots = 1;
 int g_targetstatus;
@@ -143,7 +143,7 @@ void FindTerminationTarget(){
 			RemoveEntity(g_iGlowEnt[client]);
 		}
 			int champion = MM_GetCurrentChampion();
-			if (champion != -1)
+			if (champion != -1 && TF2_GetPlayerClass(champion) != TFClass_Spy)
 			{
 				randomPlayer = champion;
 			}
