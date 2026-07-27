@@ -402,12 +402,17 @@ Menu g_chooseRobotMenus[MAXPLAYERS + 1];
 RobotSelectionMenu g_menu;
 char g_selections[MAXPLAYERS + 1][MAX_SELECTIONS + 1][NAMELENGTH];
 
+
+public void OnMapStart()
+{
+     LoadMenuTree();
+}
+
 public void OnPluginStart()
 {
     SMLoggerInit(LOG_TAGS, sizeof(LOG_TAGS), SML_ERROR, SML_FILE);
     SMLogTag(SML_INFO, "berobot_selection started at %i", GetTime());
 	
-    LoadMenuTree();
 }
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -529,6 +534,174 @@ public void LoadMenuTree()
         oldMenu.Dispose();
     }
     g_menu = menu;
+    ExportRobotSelectionMenuAsJSON(menu);
+}
+
+void ExportRobotSelectionMenuAsJSON(RobotSelectionMenu menu)
+{
+    char path[256];
+    BuildPath(Path_SM, path, sizeof(path), "robots/robot_selection.json");
+
+    ArrayList json = new ArrayList(256);
+
+    json.PushString("{");
+
+    char timestamp[64];
+    Format(timestamp, sizeof(timestamp), "  \"timestamp\": %d,", GetTime());
+    json.PushString(timestamp);
+    json.PushString("  \"categories\": {");
+
+    RobotCategory freeCategory = menu.Get(true);
+    if (freeCategory)
+    {
+        json.PushString("    \"free\": ");
+        ExportCategoryToJSON(freeCategory, json, true);
+        json.PushString(",");
+    }
+
+    RobotCategory paidCategory = menu.Get(false);
+    if (paidCategory)
+    {
+        json.PushString("    \"paid\": ");
+        ExportCategoryToJSON(paidCategory, json, true);
+    }
+
+    json.PushString("  },");
+    json.PushString("  \"bosses\": ");
+
+    RobotSubclass bossSubclass = menu.GetBosses();
+    if (bossSubclass)
+        ExportSubclassToJSON(bossSubclass, json);
+    else
+        json.PushString("null");
+
+    json.PushString("}");
+
+    WriteJSONToFile(path, json);
+    SMLogTag(SML_INFO, "robot selection hierarchy exported to %s", path);
+
+    delete json;
+}
+
+void ExportCategoryToJSON(RobotCategory category, ArrayList json, bool addBrace)
+{
+    if (addBrace)
+        json.PushString("{");
+
+    StringMapSnapshot snapshot = category.Roles.Snapshot();
+
+    for (int i = 0; i < snapshot.Length; i++)
+    {
+        char roleKey[NAMELENGTH];
+        snapshot.GetKey(i, roleKey, sizeof(roleKey));
+        RobotRole robotRole = category.Get(roleKey);
+
+        char roleLabel[256];
+        Format(roleLabel, sizeof(roleLabel), "      \"%s\": ", roleKey);
+        json.PushString(roleLabel);
+        ExportRoleToJSON(robotRole, json);
+
+        if (i < snapshot.Length - 1)
+            json.PushString(",");
+    }
+
+    delete snapshot;
+
+    if (addBrace)
+        json.PushString("    }");
+}
+
+void ExportRoleToJSON(RobotRole robotRole, ArrayList json)
+{
+    json.PushString("{");
+
+    StringMapSnapshot snapshot = robotRole.Subclasses.Snapshot();
+
+    for (int i = 0; i < snapshot.Length; i++)
+    {
+        char subclassKey[NAMELENGTH];
+        snapshot.GetKey(i, subclassKey, sizeof(subclassKey));
+        RobotSubclass robotSubclass = robotRole.Get(subclassKey);
+
+        char subclassLabel[256];
+        Format(subclassLabel, sizeof(subclassLabel), "        \"%s\": ", subclassKey);
+        json.PushString(subclassLabel);
+        ExportSubclassToJSON(robotSubclass, json);
+
+        if (i < snapshot.Length - 1)
+            json.PushString(",");
+    }
+
+    delete snapshot;
+    json.PushString("      }");
+}
+
+void ExportSubclassToJSON(RobotSubclass robotSubclass, ArrayList json)
+{
+    json.PushString("{");
+    json.PushString("          \"robots\": [");
+
+    for (int i = 0; i < robotSubclass.Robots.Length; i++)
+    {
+        Robot robot;
+        robotSubclass.Robots.GetArray(i, robot);
+
+        json.PushString("            {");
+
+        char buffer[512];
+        Format(buffer, sizeof(buffer), "              \"name\": \"%s\",", robot.name);
+        json.PushString(buffer);
+        Format(buffer, sizeof(buffer), "              \"class\": \"%s\",", robot.class);
+        json.PushString(buffer);
+        Format(buffer, sizeof(buffer), "              \"role\": \"%s\",", robot.role);
+        json.PushString(buffer);
+        Format(buffer, sizeof(buffer), "              \"subclass\": \"%s\",", robot.subclass);
+        json.PushString(buffer);
+        Format(buffer, sizeof(buffer), "              \"description\": \"%s\",", robot.shortDescription);
+        json.PushString(buffer);
+        Format(buffer, sizeof(buffer), "              \"health\": %d,", robot.health);
+        json.PushString(buffer);
+        Format(buffer, sizeof(buffer), "              \"scale\": %.2f,", robot.scale);
+        json.PushString(buffer);
+        Format(buffer, sizeof(buffer), "              \"difficulty\": %d,", robot.difficulty);
+        json.PushString(buffer);
+        Format(buffer, sizeof(buffer), "              \"count\": %d,", GetRobotCount(robot.name));
+        json.PushString(buffer);
+        Format(buffer, sizeof(buffer), "              \"cap\": %d,", GetRobotCap(robot.name));
+        json.PushString(buffer);
+        Format(buffer, sizeof(buffer), "              \"isRestricted\": %s", robot.restrictions.IsActive() ? "true" : "false");
+        json.PushString(buffer);
+        json.PushString("            }");
+
+        if (i < robotSubclass.Robots.Length - 1)
+            json.PushString(",");
+    }
+
+    json.PushString("          ],");
+
+    char countStr[64];
+    Format(countStr, sizeof(countStr), "          \"count\": %d", robotSubclass.Count);
+    json.PushString(countStr);
+    json.PushString("        }");
+}
+
+void WriteJSONToFile(const char[] path, ArrayList json)
+{
+    File file = OpenFile(path, "w");
+    if (!file)
+    {
+        SMLogTag(SML_ERROR, "failed to open file for writing: %s", path);
+        return;
+    }
+
+    for (int i = 0; i < json.Length; i++)
+    {
+        char line[512];
+        json.GetString(i, line, sizeof(line));
+        file.WriteString(line, false);
+    }
+
+    file.Close();
 }
 
 any Native_SetClientRepicking(Handle plugin, int numParams)
