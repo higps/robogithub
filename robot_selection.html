@@ -408,27 +408,72 @@
 
         async function loadRobotData() {
             try {
-                const response = await fetch('./robot_selection.json', { cache: 'no-store' });
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
+                robotData = await fetchJsonViaFetch('./robot_selection.json');
+            } catch (fetchError) {
+                try {
+                    robotData = await fetchJsonViaXhr('./robot_selection.json');
+                } catch (xhrError) {
+                    showLoadError(xhrError.message || fetchError.message);
+                    return;
                 }
-
-                robotData = await response.json();
-                document.getElementById('fileInfo').textContent = 'Loaded robot_selection.json';
-                updateTimestamp();
-                render();
-            } catch (error) {
-                document.getElementById('fileInfo').textContent = 'Failed to load robot_selection.json';
-                document.getElementById('menuContainer').innerHTML = `
-                    <div class="no-data">
-                        <strong>Could not load robot_selection.json</strong>
-                        <div>${escapeHtml(error.message)}</div>
-                        <div style="margin-top: 10px;">If you opened this page with file://, serve the folder through a local web server so the browser can fetch the JSON file.</div>
-                    </div>
-                `;
-                document.getElementById('stats').innerHTML = '';
-                document.getElementById('timestamp').textContent = '';
             }
+
+            document.getElementById('fileInfo').textContent = 'Loaded robot_selection.json';
+            updateTimestamp();
+            render();
+        }
+
+        async function fetchJsonViaFetch(url) {
+            const response = await fetch(url, { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+        }
+
+        function fetchJsonViaXhr(url) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState !== 4) {
+                        return;
+                    }
+
+                    // file:// requests report status 0 on success in some browsers.
+                    if (xhr.status === 0 || xhr.status === 200) {
+                        try {
+                            resolve(JSON.parse(xhr.responseText));
+                        } catch (parseError) {
+                            reject(parseError);
+                        }
+                    } else {
+                        reject(new Error(`HTTP ${xhr.status}`));
+                    }
+                };
+                xhr.onerror = function () {
+                    reject(new Error('Network error while loading robot_selection.json'));
+                };
+                xhr.send();
+            });
+        }
+
+        function showLoadError(message) {
+            document.getElementById('fileInfo').textContent = 'Failed to load robot_selection.json';
+            document.getElementById('menuContainer').innerHTML = `
+                <div class="no-data">
+                    <strong>Could not load robot_selection.json</strong>
+                    <div>${escapeHtml(message)}</div>
+                    <div style="margin-top: 10px;">
+                        Browsers block direct file:// access to local JSON files for security reasons.
+                        Serve this folder with a local web server instead, for example:
+                        <code>python -m http.server</code> then open http://localhost:8000/robot_selection.html,
+                        or use VS Code's "Live Server" extension.
+                    </div>
+                </div>
+            `;
+            document.getElementById('stats').innerHTML = '';
+            document.getElementById('timestamp').textContent = '';
         }
 
         function switchCategory(category, button) {
