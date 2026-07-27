@@ -1276,24 +1276,53 @@ public void MM_OnRestrictionChanged(char name[NAMELENGTH])
 
 public Action Command_BeRobot(int client, int numParams)
 {
+    if (numParams < 1)
+    {
+        ReplyToCommand(client, "Usage: sm_mr <robot_name> [target]");
+        return Plugin_Handled;
+    }
+
     char name[NAMELENGTH];
     GetCmdArg(1, name, NAMELENGTH);
 
     char target[32];
+    int targetFilter = 0;
     if (numParams < 2)
-        target[0] = '\0';
-    else 
+    {
+        target = "@me";
+        targetFilter = COMMAND_FILTER_NO_IMMUNITY;
+    }
+    else
         GetCmdArg(2, target, sizeof(target));
 
-    
+    char target_name[MAX_TARGET_LENGTH];
+    int target_list[MAXPLAYERS], target_count;
+    bool tn_is_ml;
 
-    SMLogTag(SML_VERBOSE, "BeRobot calling CreateRobot with %s, %i, %s", name, client, target);
+    if ((target_count = ProcessTargetString(
+            target,
+            client,
+            target_list,
+            MAXPLAYERS,
+            targetFilter,
+            target_name,
+            sizeof(target_name),
+            tn_is_ml)) <= 0)
+    {
+        ReplyToTargetError(client, target_count);
+        return Plugin_Handled;
+    }
+
+    SMLogTag(SML_VERBOSE, "BeRobot called for %i targets with name %s by %L", target_count, name, client);
     // //Remove the boss healthbar when changing robots, boss health bar is created on boss spawn
     // UnSetBossHealth(client);
 
-    CreateRobot(name, client, target);
-    
-    SetEntProp(client, Prop_Send, "m_bIsMiniBoss", 1);
+    for (int i = 0; i < target_count; i++)
+    {
+        int targetClientId = target_list[i];
+        Internal_SetRobot(name, targetClientId);
+        SetEntProp(targetClientId, Prop_Send, "m_bIsMiniBoss", 1);
+    }
     
     return Plugin_Handled;
 }

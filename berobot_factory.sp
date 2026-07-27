@@ -521,44 +521,12 @@ public any Native_CreateRobot(Handle plugin, int numParams)
         int targetClientId = target_list[i];
         SMLogTag(SML_VERBOSE, "%i. target: %i", i, targetClientId);
 
-        RobotCoins teamCoins = item.restrictions.GetTeamCoinsFor(targetClientId);
-        RobotCoins robotCoins = item.restrictions.GetRobotCoinsFor(targetClientId);
-
-        int availableRobotCoins = GetRobotCoinsFor(targetClientId);
-        int robotCost = robotCoins.GetPrice();
-        if (availableRobotCoins < robotCost)
-        {
-            char robotCoinMsg[256];
-            Format(robotCoinMsg, sizeof(robotCoinMsg), "Insufficient robot coins: need %iR₡, have %iR₡.", robotCost, availableRobotCoins);
-            MM_PrintToChat(targetClientId, robotCoinMsg);
-            SMLogTag(SML_ERROR, "could not create robot '%s'. insufficient robot-coins (%i < %i)", name, availableRobotCoins, robotCost);
-            return 3;
-        }
-
-        if (!teamCoins.Enabled)
-        {
-            MM_PrintToChat(targetClientId, "Team coin spending is not available yet for this pick.");
-            SMLogTag(SML_ERROR, "could not create robot '%s'. team-coins are not enabled yet", name);
-            return 3;
-        }
-
-        int availableTeamCoins = GetTeamCoinsFor(targetClientId);
-        int teamCost = teamCoins.GetPrice();
-        if (availableTeamCoins < teamCost)
-        {
-            char teamCoinMsg[256];
-            Format(teamCoinMsg, sizeof(teamCoinMsg), "Insufficient boss/team coins: need %iB₡, have %iB₡.", teamCost, availableTeamCoins);
-            MM_PrintToChat(targetClientId, teamCoinMsg);
-            SMLogTag(SML_ERROR, "could not create robot '%s'. insufficient team-coins (%i < %i)", name, availableTeamCoins, teamCost);
-            return 3;
-        }
-
         bool paid = PayRobotCoin(item.restrictions, targetClientId);
         if (!paid)
         {
-            char paymentMsg[256];
-            Format(paymentMsg, sizeof(paymentMsg), "Could not complete payment for %s. Please try again.", name);
-            MM_PrintToChat(targetClientId, paymentMsg);
+            char msg[256];
+            Format(msg, 256, "could not pay for robot %s, please try again when you have enough coins.", name);
+            MM_PrintToChat(targetClientId, msg);
 
             SMLogTag(SML_ERROR, "could not create robot '%s'. could not pay robot-coins", name);
             return 3;
