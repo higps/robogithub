@@ -1165,7 +1165,7 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                     
             // }
 
-            if (IsElectric(weapon))
+            if (IsElectric(weapon) && attacker != victim)
             {
                 TF2_AddCondition(victim, TFCond_HealingDebuff, g_ElectricStunDuration, attacker);
 

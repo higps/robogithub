@@ -658,13 +658,14 @@
                 const tags = [robot.class, robot.role, subclass].filter(Boolean)
                     .map(value => `<span class="robot-tag">${escapeHtml(value)}</span>`)
                     .join('');
+                const robotName = robot.name || '';
 
                 return `
-                    <article class="robot-card">
+                    <article class="robot-card" onclick="sendRobotSelection('${escapeJs(robotName)}')" role="button" tabindex="0">
                         <div class="robot-image-placeholder">64 x 64</div>
                         <div class="robot-card-body">
                             <div>
-                                <div class="robot-title">${escapeHtml(robot.name || 'Unnamed Robot')}</div>
+                                <div class="robot-title">${escapeHtml(robotName || 'Unnamed Robot')}</div>
                                 <div class="robot-subtitle">${escapeHtml((robot.class || 'Unknown Class') + ' Robot')}</div>
                             </div>
                             <div class="robot-description">${escapeHtml(description)}</div>
@@ -681,6 +682,11 @@
 
         function formatNumber(value) {
             return typeof value === 'number' ? value.toLocaleString() : 'N/A';
+        }
+
+        function sendRobotSelection(robotName) {
+            const url = `./mr?name=${encodeURIComponent(robotName)}`;
+            fetch(url, { method: 'GET', cache: 'no-store' }).catch(() => {});
         }
 
         function escapeHtml(value) {
