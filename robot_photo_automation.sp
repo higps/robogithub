@@ -61,6 +61,7 @@ public void OnPluginStart()
     RegAdminCmd("sm_robot_photo_get_all", Command_GetAllTransforms, ADMFLAG_ROOT, "Capture target + camera transforms and save to CSV.");
     RegAdminCmd("sm_robot_photo_load_transforms", Command_LoadTransforms, ADMFLAG_ROOT, "Load target + camera transforms from CSV.");
     RegAdminCmd("sm_robot_photo_autoload", Command_AutoloadToggle, ADMFLAG_ROOT, "Toggle startup autoload for transform CSV.");
+    RegAdminCmd("sm_robot_photo_clear_ammo", Command_ClearAmmoPacks, ADMFLAG_ROOT, "Remove all dropped ammo packs currently on the map.");
 
     if (g_AutoLoadTransformsOnStart)
     {
@@ -329,6 +330,24 @@ public Action Command_AutoloadToggle(int client, int args)
         g_AutoLoadTransformsOnStart ? "ON" : "OFF"
     );
 
+    return Plugin_Handled;
+}
+
+public Action Command_ClearAmmoPacks(int client, int args)
+{
+    int count = 0;
+    int entity = -1;
+
+    while ((entity = FindEntityByClassname(entity, "tf_ammo_pack")) != -1)
+    {
+        if (IsValidEntity(entity))
+        {
+            AcceptEntityInput(entity, "Kill");
+            count++;
+        }
+    }
+
+    ReplyToCommand(client, "[RobotPhoto] Removed %d dropped ammo pack(s).", count);
     return Plugin_Handled;
 }
 

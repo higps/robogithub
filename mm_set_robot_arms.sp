@@ -2,6 +2,7 @@
 
 
 #include <sourcemod>
+#include <clientprefs>
 #include <sdkhooks>
 #include <sdktools>
 #include <berobot_constants>
@@ -46,6 +47,107 @@ public Plugin myinfo = {
 };
 
 bool g_b_robot_hands = false;
+Cookie g_hHandsCookie = null;
+int g_iHandsMode[MAXPLAYERS + 1];
+
+int SanitizeHandsMode(int mode)
+{
+    if (mode < 0 || mode > 2)
+    {
+        mode = 2;
+    }
+    return mode;
+}
+
+int GetHandsModeForClient(int client)
+{
+    if (client <= 0 || client > MaxClients)
+    {
+        return 2;
+    }
+    return SanitizeHandsMode(g_iHandsMode[client]);
+}
+
+void SaveHandsModeForClient(int client)
+{
+    if (client <= 0 || client > MaxClients || g_hHandsCookie == null)
+    {
+        return;
+    }
+
+    char value[8];
+    IntToString(GetHandsModeForClient(client), value, sizeof(value));
+    SetClientCookie(client, g_hHandsCookie, value);
+}
+
+bool ParseHandsModeArg(const char[] text, int &mode)
+{
+    if (strlen(text) != 1)
+    {
+        return false;
+    }
+
+    if (text[0] < '0' || text[0] > '2')
+    {
+        return false;
+    }
+
+    mode = text[0] - '0';
+    return true;
+}
+
+void PrintHandsHelp(int client)
+{
+    if (!IsClientInGame(client))
+    {
+        return;
+    }
+
+    int mode = GetHandsModeForClient(client);
+    PrintToChat(client, "[MM] sm_hands modes: 0 = all disabled, 1 = all enabled, 2 = all but spy enabled.");
+    PrintToChat(client, "[MM] Usage: !hands <0|1|2>");
+    PrintToChat(client, "[MM] Current sm_hands value: %d", mode);
+}
+
+public Action Command_Hands(int client, int args)
+{
+    if (client <= 0)
+    {
+        ReplyToCommand(client, "[MM] This command is per-player and must be used in-game.");
+        return Plugin_Handled;
+    }
+
+    if (!IsClientInGame(client))
+    {
+        return Plugin_Handled;
+    }
+
+    if (args < 1)
+    {
+        PrintHandsHelp(client);
+        return Plugin_Handled;
+    }
+
+    char arg1[16];
+    GetCmdArg(1, arg1, sizeof(arg1));
+
+    int mode;
+    if (!ParseHandsModeArg(arg1, mode))
+    {
+        PrintToChat(client, "[MM] Invalid value. Use !hands 0, !hands 1, or !hands 2.");
+        PrintHandsHelp(client);
+        return Plugin_Handled;
+    }
+
+    g_iHandsMode[client] = mode;
+    SaveHandsModeForClient(client);
+
+    PrintToChat(client, "[MM] Your sm_hands value is now: %d", mode);
+    PrintHandsHelp(client);
+
+    return Plugin_Handled;
+}
+
 public void OnMapStart()
 {
 	g_b_robot_hands = false;
@@ -160,6 +262,13 @@ void NormalizeMapName(const char[] mapName, char[] output, int maxLen)
 
 public void OnPluginStart() {
 	g_b_robot_hands = false;
+    g_hHandsCookie = RegClientCookie(
+        "mm_hands_mode",
+        "Per-player robot hands mode: 0 = all disabled, 1 = all enabled, 2 = all but spy enabled.",
+        CookieAccess_Public
+    );
+    RegConsoleCmd("sm_hands", Command_Hands, "Set per-player robot hands mode (0/1/2) or show help.");
+
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i)) {
 			OnClientPutInServer(i);
@@ -168,15 +277,47 @@ public void OnPluginStart() {
 }
 
 public void OnClientPutInServer(int client) {
+	g_iHandsMode[client] = 2;
 	SDKHook(client, SDKHook_WeaponEquip, OnWeaponEquip);
 }
 
+public void OnClientCookiesCached(int client)
+{
+    if (client <= 0 || client > MaxClients || g_hHandsCookie == null)
+    {
+        return;
+    }
+
+    char value[8];
+    GetClientCookie(client, g_hHandsCookie, value, sizeof(value));
+
+    if (value[0] == '\0')
+    {
+        g_iHandsMode[client] = 2;
+        SaveHandsModeForClient(client);
+        return;
+    }
+
+    g_iHandsMode[client] = SanitizeHandsMode(StringToInt(value));
+}
+
+public void OnClientDisconnect(int client)
+{
+    if (client > 0 && client <= MaxClients)
+    {
+        g_iHandsMode[client] = 2;
+    }
+}
+
 public Action OnWeaponEquip(int client, int weapon) {
+    int handsMode = GetHandsModeForClient(client);
+    if (handsMode == 0)
+    {
+        return Plugin_Continue;
+    }
 
-	if (g_b_robot_hands)
+    if (IsValidEntity(weapon) && IsValidHumanClient(client) && IsAnyRobot(client))
 	{
-		if (IsValidEntity(weapon) && IsValidHumanClient(client) && IsAnyRobot(client)){
-
 
 		// if (class <= TFClass_Unknown || class > TFClass_Engineer)
 		// {
@@ -185,13 +326,16 @@ public Action OnWeaponEquip(int client, int weapon) {
 
 		// PrintToChatAll("Client %N's class: %d, model: %s", client, class, g_ArmsModels[class]);
 
-			TFClassType class = TF2_GetPlayerClass(client);
-			PrecacheModel(g_ArmsModels[class]);
-			// PrintToChatAll("Setting Model for %N", client);
-            if(class == TFClass_Spy) return Plugin_Continue;
-			SetEntityModel(weapon, g_ArmsModels[class]);
-			SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
-			SetEntProp(weapon, Prop_Send, "m_iViewModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
+        TFClassType class = TF2_GetPlayerClass(client);
+        PrecacheModel(g_ArmsModels[class]);
+        // PrintToChatAll("Setting Model for %N", client);
+        if (handsMode == 2 && class == TFClass_Spy)
+        {
+            return Plugin_Continue;
+        }
+        SetEntityModel(weapon, g_ArmsModels[class]);
+        SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
+        SetEntProp(weapon, Prop_Send, "m_iViewModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
 
 
 			// PrintToChatAll("Client %N's class: %d, model: %s", client, class, g_ArmsModels[class]);
@@ -202,7 +346,6 @@ public Action OnWeaponEquip(int client, int weapon) {
 			// SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
 			// SetEntProp(weapon, Prop_Send, "m_iViewModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
 			
-		}
 	}
 	return Plugin_Continue;
 }

@@ -598,8 +598,35 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	{
 		if (IsRobot(attacker, ROBOT_NAME)) AddExperience(attacker, 10);
 		if (IsRobot(assister, ROBOT_NAME)) AddExperience(assister, 5);
+
+		if (IsValidClient(victim))
+		{
+			int victimTeam = GetClientTeam(victim);
+			for (int i = 1; i <= MaxClients; i++)
+			{
+				if (!IsValidClient(i))
+				{
+					continue;
+				}
+
+				if (!IsRobot(i, ROBOT_NAME))
+				{
+					continue;
+				}
+
+				if (i == attacker || i == assister)
+				{
+					continue;
+				}
+
+				if (GetClientTeam(i) != victimTeam)
+				{
+					AddExperience(i, 3);
+				}
+			}
+		}
 		
 	}
 	
-		    
+	return Plugin_Continue;
 }
