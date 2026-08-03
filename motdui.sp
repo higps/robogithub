@@ -108,6 +108,7 @@ public void OnPluginStart()
     g_hExtContentType.SetString("jpg", "image/jpeg");
     g_hExtContentType.SetString("jpeg", "image/jpeg");
     g_hExtContentType.SetString("png", "image/png");
+    g_hExtContentType.SetString("webp", "image/webp");
     g_hExtContentType.SetString("svg", "image/svg+xml");
     g_hExtContentType.SetString("gif", "image/gif");
     g_hExtContentType.SetString("pdf", "application/pdf");

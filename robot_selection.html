@@ -19,9 +19,9 @@
             --text: #f1f5f9;
             --muted: #bfd0df;
             --accent: #f1c86f;
-            --free: #2fbf8f;
-            --paid: #ff7a59;
-            --boss: #f2b632;
+            --free: #47bf2f;
+            --paid: #ff3300;
+            --boss: #3235f2;
             --card: rgba(255, 255, 255, 0.07);
             --card-hover: rgba(255, 255, 255, 0.12);
         }
@@ -230,20 +230,14 @@
             border-color: rgba(241, 200, 111, 0.4);
         }
 
-        .robot-image-placeholder {
+        .robot-image {
             width: 64px;
             height: 64px;
             border-radius: 14px;
-            border: 1px dashed rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.16);
             background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.72em;
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
+            object-fit: cover;
+            display: block;
         }
 
         .robot-card-body {
@@ -366,17 +360,16 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤖 Robot Selection</h1>
-            <p>Auto-loaded robot roster from robot_selection.json</p>
+            <h1>Robot Selection</h1>
         </div>
 
-        <div class="status-bar">
+        <!-- <div class="status-bar">
             <div>
                 <strong>Source:</strong>
                 <span id="fileInfo" class="status-copy">Loading robot_selection.json...</span>
             </div>
             <div class="status-copy">Each card reserves a 64x64 image slot for future artwork.</div>
-        </div>
+        </div> -->
 
         <div class="category-buttons">
             <button class="category-btn free active" data-category="free" onclick="switchCategory('free', this)">Free Robots</button>
@@ -385,7 +378,7 @@
         </div>
 
         <div class="menu-container" id="menuContainer">
-            <div class="no-data"><strong>Loading robots...</strong>Please wait while the JSON file is read.</div>
+            <!-- <div class="no-data"><strong>Loading robots...</strong>Please wait while the JSON file is read.</div> -->
         </div>
 
         <div class="stats" id="stats"></div>
@@ -397,6 +390,9 @@
         let currentCategory = 'free';
         let currentRole = null;
         let currentSubclass = null;
+        //const robotImageBasePath = 'https://www.bmod.tf/assets/images/mm';
+        const robotImageBasePath = 'http://192.168.0.117/robo/img/';
+        const robotImageExtensions = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
 
         const categoryLabels = {
             free: 'Free Robots',
@@ -659,10 +655,23 @@
                     .map(value => `<span class="robot-tag">${escapeHtml(value)}</span>`)
                     .join('');
                 const robotName = robot.name || '';
+                const imageCandidates = getRobotImageCandidates(robotName);
+                const imageSrc = imageCandidates[0];
+                const fallbackSources = imageCandidates.join('|');
 
                 return `
                     <article class="robot-card" onclick="sendRobotSelection('${escapeJs(robotName)}')" role="button" tabindex="0">
-                        <div class="robot-image-placeholder">64 x 64</div>
+                        <img
+                            class="robot-image"
+                            src="${escapeHtml(imageSrc)}"
+                            data-fallback-sources="${escapeHtml(fallbackSources)}"
+                            data-fallback-index="0"
+                            alt="${escapeHtml(robotName || 'Robot')}"
+                            width="64"
+                            height="64"
+                            loading="lazy"
+                            onerror="handleRobotImageError(this)"
+                        >
                         <div class="robot-card-body">
                             <div>
                                 <div class="robot-title">${escapeHtml(robotName || 'Unnamed Robot')}</div>
@@ -678,6 +687,47 @@
                     </article>
                 `;
             }).join('');
+        }
+
+        function normalizeRobotImageName(robotName) {
+            const normalizedName = String(robotName || '')
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, '_');
+
+            return normalizedName || 'default';
+        }
+
+        function getRobotImageCandidates(robotName) {
+            const imageName = normalizeRobotImageName(robotName);
+            const primaryCandidates = robotImageExtensions.map(extension => {
+                return `${robotImageBasePath}/${encodeURIComponent(imageName)}.${extension}`;
+            });
+
+            const defaultCandidates = robotImageExtensions.map(extension => {
+                return `${robotImageBasePath}/default.${extension}`;
+            });
+
+            return imageName === 'default'
+                ? defaultCandidates
+                : primaryCandidates.concat(defaultCandidates);
+        }
+
+        function getRobotImagePath(robotName) {
+            return getRobotImageCandidates(robotName)[0];
+        }
+
+        function handleRobotImageError(image) {
+            const sources = (image.dataset.fallbackSources || '').split('|').filter(Boolean);
+            const nextIndex = Number(image.dataset.fallbackIndex || '0') + 1;
+
+            if (nextIndex >= sources.length) {
+                image.onerror = null;
+                return;
+            }
+
+            image.dataset.fallbackIndex = String(nextIndex);
+            image.src = sources[nextIndex];
         }
 
         function formatNumber(value) {
@@ -707,8 +757,8 @@
         function updateStats(label, count, countLabel) {
             const statsEl = document.getElementById('stats');
             statsEl.innerHTML = `
-                <div class="stat-item">📊 <strong>${escapeHtml(label || '')}</strong></div>
-                <div class="stat-item">🤖 ${escapeHtml(countLabel || 'Robots')}: <strong>${count}</strong></div>
+                <div class="stat-item"><strong>${escapeHtml(label || '')}</strong></div>
+                <div class="stat-item">${escapeHtml(countLabel || 'Robots')}: <strong>${count}</strong></div>
             `;
         }
     </script>

@@ -188,6 +188,7 @@ public Action OnWeaponEquip(int client, int weapon) {
 			TFClassType class = TF2_GetPlayerClass(client);
 			PrecacheModel(g_ArmsModels[class]);
 			// PrintToChatAll("Setting Model for %N", client);
+            if(class == TFClass_Spy) return Plugin_Continue;
 			SetEntityModel(weapon, g_ArmsModels[class]);
 			SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
 			SetEntProp(weapon, Prop_Send, "m_iViewModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));

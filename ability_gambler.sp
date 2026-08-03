@@ -130,7 +130,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	if (IsRobot(attacker, ROBOT_NAME))
 	{
 		if (g_Odds[attacker] < MAX_ODDS)
-		g_Odds[attacker]++;
+		g_Odds[attacker]+=10;
 
 		// Each kill spins its own core independently, so multiple cores can be active at once.
 		// The most recently triggered core always has the furthest end time, since duration is constant.
