@@ -36,7 +36,6 @@ void HttpMr(int client, MotdUIRequest req, MotdUIResponse res)
     req.GetParameter("name", szName, sizeof(szName));
 
     ClientCommand(client, "sm_mr \"%s\"", szName);
-    //PrintToChat(client, "sm_mr \"%s\"", szName);
     MotdUI.ClosePanel(client);
     res.SendString("OK");
 }
