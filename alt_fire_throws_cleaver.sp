@@ -94,6 +94,12 @@ void OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int
 	if (!IsValidEntity(inflictor) || !IsValidEntity(weapon)) {
 		return;
 	}
+
+	// Sentries/projectiles and some other damage sources are valid entities but not items.
+	// tf2attributes expects m_AttributeList, so skip entities that do not expose it.
+	if (!HasEntProp(weapon, Prop_Send, "m_AttributeList")) {
+		return;
+	}
 	
 	char attr[64];
 	if (!TF2CustAttr_GetString(weapon, "alt fire throws cleaver", attr, sizeof(attr))) {

@@ -78,7 +78,7 @@ void StartSpyHealTimer(int client)
 		return;
 	}
 
-	g_SpyHealTimer[client] = CreateTimer(4.0, Timer_HealSpy, GetClientUserId(client), TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+	g_SpyHealTimer[client] = CreateTimer(3.0, Timer_HealSpy, GetClientUserId(client), TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 
 void StopSpyHealTimer(int client)
@@ -131,7 +131,7 @@ public void HealSpy(int client)
 		return;
 	}
 	// heals for 25% of missing health
-	int hpHeal = RoundToNearest(float(missingHealth) * 0.25);
+	int hpHeal = RoundToNearest(float(missingHealth) * 0.08);
 	if (hpHeal <= 0)
 	{
 		hpHeal = 1;

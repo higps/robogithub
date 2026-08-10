@@ -1,0 +1,14 @@
+"Games"
+{
+	"tf"
+	{
+		"Signatures"
+		{
+			"CTFProjectile_Arrow::Create"
+			{
+				"library"	"server"
+				"linux"		"@_ZN19CTFProjectile_Arrow6CreateERK6VectorRK6QAngleff16ProjectileType_tP11CBaseEntityS8_"
+			}
+		}
+	}
+}

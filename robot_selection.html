@@ -414,7 +414,16 @@
                 }
             }
 
-            document.getElementById('fileInfo').textContent = 'Loaded robot_selection.json';
+            // Always start at the Free category on first successful data load.
+            currentCategory = 'free';
+            currentRole = null;
+            currentSubclass = null;
+            setActiveCategoryButton(currentCategory);
+
+            const fileInfoEl = document.getElementById('fileInfo');
+            if (fileInfoEl) {
+                fileInfoEl.textContent = 'Loaded robot_selection.json';
+            }
             updateTimestamp();
             render();
         }
@@ -455,7 +464,10 @@
         }
 
         function showLoadError(message) {
-            document.getElementById('fileInfo').textContent = 'Failed to load robot_selection.json';
+            const fileInfoEl = document.getElementById('fileInfo');
+            if (fileInfoEl) {
+                fileInfoEl.textContent = 'Failed to load robot_selection.json';
+            }
             document.getElementById('menuContainer').innerHTML = `
                 <div class="no-data">
                     <strong>Could not load robot_selection.json</strong>
@@ -477,15 +489,19 @@
             currentRole = null;
             currentSubclass = null;
 
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            setActiveCategoryButton(currentCategory);
 
             if (button) {
                 button.classList.add('active');
             }
 
             render();
+        }
+
+        function setActiveCategoryButton(category) {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === category);
+            });
         }
 
         function selectRole(roleName) {

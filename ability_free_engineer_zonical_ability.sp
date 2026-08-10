@@ -7,7 +7,6 @@
 #include <berobot>
 //#include <sendproxy>
 #include <dhooks>
-#include <sdktools>
 //#include <collisionhook>
 #include <tf_custom_attributes>
 #include <tf_ontakedamage>
@@ -26,6 +25,16 @@ public Plugin:myinfo =
 	url = "www.sourcemod.com"
 }
 // bool b_Hooked[MAXPLAYERS + 1] = {false,...};
+
+float g_clip_bonus = 0.25;
+float g_clip_bonus_increment = 0.05;
+float g_clip_bonus_max = 8.25;
+float g_current_clip_bonus[MAXPLAYERS + 1] = {0.0, ...};
+
+public void OnPluginStart()
+{
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
+}
 
 public void OnClientPutInServer(int client)
 {
@@ -80,7 +89,7 @@ public void OnWeaponSwitch(int client, int weapon)
 }
 
 bool IsPistol(int weapon){
-	if(weapon == -1 && weapon <= MaxClients) return false;
+	if (weapon <= MaxClients || !IsValidEntity(weapon)) return false;
 	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 	case 22: 
@@ -90,6 +99,21 @@ bool IsPistol(int weapon){
 	}
 	return false;
 }
+
+bool IsSentryInflictor(int inflictor)
+{
+	if (!IsValidEntity(inflictor))
+		return false;
+
+	char inflictorClassname[64];
+	GetEntityClassname(inflictor, inflictorClassname, sizeof(inflictorClassname));
+
+	if (StrEqual(inflictorClassname, "obj_sentrygun") || StrEqual(inflictorClassname, "tf_projectile_sentryrocket"))
+		return true;
+
+	return false;
+}
+
 
 
 
@@ -102,21 +126,53 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(!IsValidClient(attacker))
 	return Plugin_Continue;
 
+	if (IsRobot(attacker, ROBOT_NAME) && IsSentryInflictor(inflictor))
+	{
+		AddClipSize(attacker);
+	}
+
 	if (IsRobot(attacker, ROBOT_NAME) && TF2_IsPlayerInCondition(attacker, TFCond_CritHype))
 	{
 		// int iActiveWeapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
 		int Weapon2 = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Secondary);
 		if (IsCrit(attacker)) return Plugin_Continue;
-		
-			// PrintToChatAll("Crittype was %i", critType);
-			
-				if(weapon == Weapon2)critType = CritType_MiniCrit;
-				return Plugin_Changed;
-			
-			
+
+		// PrintToChatAll("Crittype was %i", critType);
+		if (weapon == Weapon2)
+		{
+			critType = CritType_MiniCrit;
+			return Plugin_Changed;
+		}
+		return Plugin_Continue;
 		
 	}
 	return Plugin_Continue;
+}
+
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
+{
+	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	if (IsRobotWhenDead(client, ROBOT_NAME))
+	{
+		g_current_clip_bonus[client] = 1.0;
+	}
+
+	return Plugin_Continue;
+}
+
+public void AddClipSize(int client)
+{
+	int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	if (!IsValidEntity(Weapon2))
+		return;
+
+	g_current_clip_bonus[client] += g_clip_bonus_increment;
+	if (g_current_clip_bonus[client] > g_clip_bonus_max)
+		g_current_clip_bonus[client] = g_clip_bonus_max;
+	TF2Attrib_SetByName(Weapon2, "clip size bonus", g_clip_bonus + g_current_clip_bonus[client]);
+	TF2Attrib_AddCustomPlayerAttribute(client, "faster reload rate", 0.5, 1.5);
+
 }
 
 public bool IsCrit(int client){

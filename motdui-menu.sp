@@ -67,7 +67,7 @@ void HttpMr(int client, MotdUIRequest req, MotdUIResponse res)
     char szName[PLATFORM_MAX_PATH];
     req.GetParameter("name", szName, sizeof(szName));
 
-    ClientCommand(client, "sm_mr \"%s\"", szName);
+    ClientCommand(client, "sm_cr \"%s\"", szName);
     MotdUI.ClosePanel(client);
     res.SendString("OK");
 }

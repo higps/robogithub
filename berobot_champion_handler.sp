@@ -22,6 +22,7 @@ float g_dmg_bonus = 1.0;
 bool g_b_yap = true;
 
 bool g_b_was_champion[MAXPLAYERS + 1] = { false, ... };
+bool g_b_refresh_weapons_pending[MAXPLAYERS + 1] = { false, ... };
 
 GlobalForward _currentChampion;
 int g_previous_check_human_count = 0;
@@ -43,6 +44,10 @@ public void OnMapStart()
         g_h_checkChampionCowardTimer = INVALID_HANDLE;
     }
     g_previous_check_human_count = -1;
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        g_b_refresh_weapons_pending[i] = false;
+    }
 }
 
 
@@ -69,6 +74,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
             if(victim == g_i_current_champion)
             {
                 MC_PrintToChatAll("{green}The {gold}Champion:{gold} %N{green} has fallen.", victim);
+                g_b_refresh_weapons_pending[victim] = true;
                 g_i_current_champion = -1;
                 g_b_was_champion[victim] = false;
                 g_b_yap = true;
@@ -90,6 +96,11 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
     {
         g_b_was_champion[client] = false;
         RequestFrame(StripChampionExtras, client);
+    }
+
+    if (g_b_refresh_weapons_pending[client] && (g_i_current_champion != client))
+    {
+        CreateTimer(0.2, Timer_RefreshChampionWeapons, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
     }
 
     if (GetEngineTime() >= g_last_check + g_cooldown)
@@ -147,6 +158,7 @@ void CheckChampion()
     if (g_i_current_champion != -1 && g_MissingHumans <= 0)
     {
         MC_PrintToChatAll("{yellow}%N {green}is no longer a champion, power level dropped to %i", g_i_current_champion, g_MissingHumans);
+        g_b_refresh_weapons_pending[g_i_current_champion] = true;
         StripChampionExtras(g_i_current_champion);
         g_i_current_champion = -1;
         g_b_yap = true;
@@ -213,6 +225,7 @@ public Action Timer_CheckChampionLeaveSpawn(Handle timer)
         if (g_b_valid_candidate[i] && IsClientInGame(i) && !TF2Spawn_IsClientInSpawn(i))
         {
             g_i_current_champion = i;
+            g_b_refresh_weapons_pending[i] = false;
             MC_PrintToChatAll("{orange}%N {green}has become the {gold}CHAMPION!", i);
             CreateChampion(i);
             // Stop checking further
@@ -238,6 +251,7 @@ void CreateChampion(int client)
 {
     if (IsValidClient(client) && !IsAnyRobot(client) && IsPlayerAlive(client))
     {
+        g_b_refresh_weapons_pending[client] = false;
         // SetScale(client, 1.25);
         int Weapon1 = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
         int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
@@ -563,6 +577,43 @@ void SetHatParticle(int hat)
 {
     if(IsValidEntity(hat))TF2Attrib_SetByName(hat, "attach particle effect", 3216.0);
 }
+
+public Action Timer_RefreshChampionWeapons(Handle timer, any userid)
+{
+    int client = GetClientOfUserId(userid);
+
+    if (!IsValidClient(client) || !IsPlayerAlive(client))
+    {
+        return Plugin_Stop;
+    }
+
+    if (!g_b_refresh_weapons_pending[client] || g_i_current_champion == client)
+    {
+        return Plugin_Stop;
+    }
+
+    g_b_refresh_weapons_pending[client] = false;
+
+    TF2_RemoveAllWeapons(client);
+    ForcePlayerSuicide(client);
+    CreateTimer(0.1, Timer_RespawnAfterWeaponRefresh, userid, TIMER_FLAG_NO_MAPCHANGE);
+
+    return Plugin_Stop;
+}
+
+public Action Timer_RespawnAfterWeaponRefresh(Handle timer, any userid)
+{
+    int client = GetClientOfUserId(userid);
+
+    if (!IsValidClient(client) || IsPlayerAlive(client))
+    {
+        return Plugin_Stop;
+    }
+
+    TF2_RespawnPlayer(client);
+    return Plugin_Stop;
+}
+
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
     // if (!g_Enable)
@@ -591,6 +642,7 @@ public void OnClientDisconnect(int client)
         CheckChampion();
     }
     g_b_was_champion[client] = false;
+    g_b_refresh_weapons_pending[client] = false;
 }
 
 
