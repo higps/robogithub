@@ -27,8 +27,8 @@ public Plugin:myinfo =
 // bool b_Hooked[MAXPLAYERS + 1] = {false,...};
 
 float g_clip_bonus = 0.25;
-float g_clip_bonus_increment = 0.05;
-float g_clip_bonus_max = 8.25;
+float g_clip_bonus_increment = 0.03;
+float g_clip_bonus_max = 8.0;
 float g_current_clip_bonus[MAXPLAYERS + 1] = {0.0, ...};
 
 public void OnPluginStart()
