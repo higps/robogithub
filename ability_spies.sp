@@ -131,7 +131,7 @@ public void HealSpy(int client)
 		return;
 	}
 	// heals for 25% of missing health
-	int hpHeal = RoundToNearest(float(missingHealth) * 0.08);
+	int hpHeal = RoundToNearest(float(missingHealth) * 0.1);
 	if (hpHeal <= 0)
 	{
 		hpHeal = 1;

@@ -9,20 +9,48 @@
 
 Handle g_SDKCallCreateArrow = INVALID_HANDLE;
 
-bool  g_button_held[MAXPLAYERS + 1] = { false, ... };
-float g_arrow_angles[MAXPLAYERS + 1][3];
-// float g_currenttime;
-bool  g_FireMode					= false;
-float g_skill;
-float g_skill_cooldown = 1.0;
-float g_skill_time;
-float g_f_duration = 8.0;
-bool  b_alerted	   = false;
-float g_fired_cooldown;
 float g_huntsman_arrow_speed = 2600.0;
 float g_huntsman_arrow_gravity = 0.3;
 int g_huntsman_arrow_projectile_type = 0;
 #define ROBOT_NAME "Huntsbot"
+
+void SpawnSplitArrowKillBurst(int attacker, int victim)
+{
+	float basePos[3];
+	float vPos[3];
+	float vAng[3];
+	float vForward[3];
+	float baseYaw;
+
+	GetClientAbsOrigin(victim, basePos);
+	basePos[2] += 80.0;
+	GetClientEyeAngles(attacker, vAng);
+
+	vAng[0] = 0.0;
+	vAng[2] = 0.0;
+	baseYaw = vAng[1];
+
+	// vAng[1] = baseYaw;
+	// GetAngleVectors(vAng, vForward, NULL_VECTOR, NULL_VECTOR);
+	// ScaleVector(vForward, 16.0);
+	// vPos = basePos;
+	// AddVectors(vPos, vForward, vPos);
+	// SpawnHuntsmanArrow(attacker, vPos, vAng, g_huntsman_arrow_speed);
+
+	vAng[1] = baseYaw - 30.0;
+	GetAngleVectors(vAng, vForward, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(vForward, 16.0);
+	vPos = basePos;
+	AddVectors(vPos, vForward, vPos);
+	SpawnHuntsmanArrow(attacker, vPos, vAng, g_huntsman_arrow_speed);
+
+	vAng[1] = baseYaw + 30.0;
+	GetAngleVectors(vAng, vForward, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(vForward, 16.0);
+	vPos = basePos;
+	AddVectors(vPos, vForward, vPos);
+	SpawnHuntsmanArrow(attacker, vPos, vAng, g_huntsman_arrow_speed);
+}
 
 bool IsHuntsmanLauncher(int weapon)
 {
@@ -42,6 +70,8 @@ bool IsHuntsmanLauncher(int weapon)
 
 public void OnPluginStart()
 {
+	HookEvent("player_death", Event_Death, EventHookMode_Post);
+
 	Handle hGameConf = LoadGameConfigFile("huntsbot_arrow");
 	if (hGameConf == INVALID_HANDLE)
 	{
@@ -72,89 +102,20 @@ public void OnPluginStart()
 	CloseHandle(hGameConf);
 }
 
-public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
-	if (IsRobot(client, ROBOT_NAME))
-	{
-		if (GetEntProp(client, Prop_Data, "m_afButtonPressed") & IN_ATTACK3)
-		{
-			g_button_held[client] = true;
-		}
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 
-		if (GetEntProp(client, Prop_Data, "m_afButtonReleased") & IN_ATTACK3)
-		{
-			g_button_held[client] = false;
-		}
+	if (attacker == victim)
+		return Plugin_Continue;
+	if (!IsValidClient(attacker) || !IsValidClient(victim))
+		return Plugin_Continue;
+	if (!IsRobot(attacker, ROBOT_NAME))
+		return Plugin_Continue;
 
-		g_skill = GetEngineTime();
-		g_arrow_angles[client][0] = angles[0];
-		g_arrow_angles[client][1] = angles[1];
-		g_arrow_angles[client][2] = angles[2];
-
-		DrawHUD(client);
-	}
+	SpawnSplitArrowKillBurst(attacker, victim);
 	return Plugin_Continue;
-}
-
-void DrawHUD(int client)
-{
-	char sHUDText[128];
-
-	int	 iCountDown = RoundToCeil(g_skill_time - g_skill);
-	int iFireDuration = RoundToCeil(g_f_duration - g_f_duration);
-	Format(sHUDText, sizeof(sHUDText), "Rapid Fire in %i", iCountDown);
-
-	if (iCountDown <= 0)
-	{
-		if (g_FireMode)
-		{
-			Format(sHUDText, sizeof(sHUDText), "Cooldown! %i", iCountDown);
-			SetHudTextParams(0.85, 0.6, 0.1, 255, 0, 0, 0);
-		}
-		else {
-			if (!b_alerted)
-			{
-				TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
-
-				b_alerted = true;
-			}
-
-			Format(sHUDText, sizeof(sHUDText), "Rapid Fire Ready!\nUse Special Attack to Activate!");
-			SetHudTextParams(0.85, 0.6, 0.1, 0, 255, 0, 255);
-		}
-	}
-	else {
-		SetHudTextParams(0.85, 0.6, 0.1, 255, 0, 0, 255);
-	}
-
-	if (g_button_held[client] && iCountDown <= 0)
-	{
-		float vPos[3];
-		float vForward[3];
-		GetClientEyePosition(client, vPos);
-		GetAngleVectors(g_arrow_angles[client], vForward, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(vForward, 32.0);
-		AddVectors(vPos, vForward, vPos);
-		SpawnHuntsmanArrow(client, vPos, g_arrow_angles[client], g_huntsman_arrow_speed);
-
-		// TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.1);
-		// TF2_AddCondition(client, TFCond_RuneHaste, g_f_duration);
-		g_skill_time = GetEngineTime() + g_skill_cooldown;
-		b_alerted	 = false;
-		g_fired_cooldown = GetEngineTime() + g_f_duration;
-	}
-
-	// if (FireModeTimer <= GetEngineTime() && g_FireMode)
-	// {
-	// ResetWeapon(client);
-	// }
-	// if (TF2_IsPlayerInCondition(TFCond_RuneHaste, client))
-	// {
-	// 	Format(sHUDText, sizeof(sHUDText), "Rapid Fire! %i", iFireDuration);
-	// 	// SetHudTextParams(0.85, 0.6, 0.1, 255, 69, 0, 255);
-	// }
-
-	ShowHudText(client, -3, sHUDText);
 }
 
 stock int GetArrowLauncher(int client)
