@@ -28,7 +28,6 @@ enum (<<= 1)
 #pragma semicolon 1
 enum //Convar names
 {
-    CV_flSpyBackStabModifier,
     CV_bDebugMode,
     CV_PluginVersion
 }
@@ -36,7 +35,6 @@ enum //Convar names
 ConVar g_cvCvarList[CV_PluginVersion + 1];
 
 bool g_cv_bDebugMode;
-float g_CV_flSpyBackStabModifier;
 
 int Punch_Count[MAXPLAYERS + 1] = {0, ...};
 int Timer_Punch_Count[MAXPLAYERS + 1] = {0, ...};
@@ -135,11 +133,10 @@ public void OnPluginStart()
     SMLogTag(SML_INFO, "berobot_dmg_handler started at %i", GetTime());
 
     g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_mm_dmg_debug", "0", "Enable Damage Debugging for Manned Machines Mode", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-    g_cvCvarList[CV_flSpyBackStabModifier] = CreateConVar("sm_robo_backstab_damage", "83.3", "Backstab damage that will be multipled by crit multiplier");
    
     /* Convar global variables init */
     g_cv_bDebugMode = GetConVarBool(g_cvCvarList[CV_bDebugMode]);
-    g_CV_flSpyBackStabModifier = GetConVarFloat(g_cvCvarList[CV_flSpyBackStabModifier]);
+
 
   /* Convar Change Hooks */
     g_cvCvarList[CV_bDebugMode].AddChangeHook(CvarChangeHook);
@@ -257,8 +254,7 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
 {
     if (convar == g_cvCvarList[CV_bDebugMode])
         g_cv_bDebugMode = view_as<bool>(StringToInt(sNewValue));
-    if (convar == g_cvCvarList[CV_flSpyBackStabModifier])
-        g_CV_flSpyBackStabModifier = StringToFloat(sNewValue);
+
 }
 
 // public void MM_OnEnabledChanged(int enabled)
@@ -683,7 +679,11 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                 if (damagecustom == TF_CUSTOM_BACKSTAB)
                 {
-
+                    //Set Base DMG for backstab
+                    damage = 200.0 / 3.0;
+                    critType = CritType_Crit;
+                    
+                
                     if (IsKunai(weapon))
                     {
                         AddPlayerHealth(attacker, 120, 275, true);
@@ -699,7 +699,8 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                     if (IsBigEarner(weapon))
                     {
-                        TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 3.0);
+                        TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 4.0);
+                        TF2_AddCondition(attacker, TFCond_Buffed, 4.0);
                     }
 
 
@@ -724,48 +725,24 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         RequestFrame(Disguiseframe, info);                  
                     }
 
-                    
-                    
-
-
-
                     //Do backstab modifying
                     if (g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
 
                     int victimHP = GetClientHealth(victim);
-                    int victimMAXHP = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+                    // int victimMAXHP = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+					int victimMAXHP = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, victim);
                     int victimHPpercent = RoundToNearest(float(victimHP) / float(victimMAXHP) * 100);
 
                     // PrintToChatAll("victimHP %i, MAXHP %i", victimHP, victimMAXHP);
                     
                     
-                    if (victimHPpercent >= 95){
-
-                        //Code for dynamic damage, but doesn't work well with vulnerabilities
-                        // PrintToChatAll("percent %i", victimHPpercent);
-                        // damage = (float(victimMAXHP) / 4.0) / 3.0;
-
-                        // if (damage > 1250.0)
-                        // {
-                        //     damage = 1250.0;
-                        // }
-                     damage = g_CV_flSpyBackStabModifier * 2.0;
-                    }else{
-                    
-                    damage = g_CV_flSpyBackStabModifier;    
-
-
-                    }
-                    
-                    //Bonus dmg vs heavies
-                    if (TF2_GetPlayerClass(victim) == TFClass_Heavy)
-                    {
-                        damage *= 1.2;
+                    if (victimHPpercent >= 90){
+                        damage *= 1.5;
                     }
 
                     if (IsSpycicle(weapon))
                     {
-                        damage *= 0.8;
+                        damage *= 0.9;
                         TF2Attrib_AddCustomPlayerAttribute(victim, "damage penalty", g_spycicle_fire_speed_debuff, g_spycicle_fire_Speed_debuff_duration);
                         //TF2_StunPlayer(victim, 1.0, 0.85, TF_STUNFLAG_SLOWDOWN, attacker);
                     }
@@ -773,6 +750,9 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     {
                         damage *= 1.1;
                     }
+                    float bonus_hp_damage = float(victimMAXHP) * (1.0 / 100.0);
+                    PrintToChatAll("Bonus HP dmg, %f\nVictim max hp %i", bonus_hp_damage, victimMAXHP);
+                    damage = damage + bonus_hp_damage;
                     critType = CritType_Crit;
                     if (g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
                     TF2_AddCondition(attacker, TFCond_RuneResist, g_protection_rune_duration);
@@ -2125,7 +2105,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 1.15;
                 TF2Attrib_SetByName(Weapon3, "mult_player_movespeed_active", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants %0.0f%%%% movespeed while active",chat_display, MoreIsMore(stat1));
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Big Earner:{orange}Grants %0.0f%%%% movespeed while active. On Backstab: Grants minicrits for 4 seconds",chat_display, MoreIsMore(stat1));
             }
 
             if (IsSpycicle(Weapon3))

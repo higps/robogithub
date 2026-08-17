@@ -2,6 +2,7 @@
 
 #include <sourcemod>
 #include <sdktools>
+#include <sdkhooks>
 #include <tf2_stocks>
 #include <berobot_constants>
 #include <berobot>
@@ -11,9 +12,18 @@
 #define ROBOT_NAME "Wrangler Bill"
 #define PLUGIN_VERSION "1.0"
 
-float g_self_sentry_push_force_mult = 15.0;
+float g_self_sentry_bullet_push_force_mult = 2.0;
+float g_self_sentry_rocket_push_force_mult = 4.0;
+float g_self_sentry_rocket_self_damage_mult = 6.0;
 
-void ApplySelfSentryKnockbackImpulse(int victim, int sentry, float damageForce[3])
+enum SelfSentryHitType
+{
+	SelfSentryHit_Unknown = 0,
+	SelfSentryHit_Bullet,
+	SelfSentryHit_Rocket
+};
+
+void ApplySelfSentryKnockbackImpulse(int victim, int sentry, float damageForce[3], float forceMult)
 {
 	float pushDir[3];
 	float pushVel[3];
@@ -36,7 +46,7 @@ void ApplySelfSentryKnockbackImpulse(int victim, int sentry, float damageForce[3
 	NormalizeVector(pushDir, pushDir);
 
 	// Apply extra velocity directly so wrangled self-knockback is guaranteed to change.
-	ScaleVector(pushDir, 35.0 * g_self_sentry_push_force_mult);
+	ScaleVector(pushDir, 35.0 * forceMult);
 	pushVel = pushDir;
 
 	GetEntPropVector(victim, Prop_Data, "m_vecVelocity", curVel);
@@ -95,6 +105,25 @@ int ResolveOwningSentryFromInflictor(int inflictor)
 	return -1;
 }
 
+SelfSentryHitType GetSelfSentryHitType(int inflictor, int damagetype)
+{
+	if (IsSentryRocketEntity(inflictor))
+		return SelfSentryHit_Rocket;
+
+	if (IsSentryEntity(inflictor))
+	{
+		if ((damagetype & DMG_BLAST) != 0)
+			return SelfSentryHit_Rocket;
+
+		if ((damagetype & DMG_BULLET) != 0)
+			return SelfSentryHit_Bullet;
+
+		return SelfSentryHit_Bullet;
+	}
+
+	return SelfSentryHit_Unknown;
+}
+
 bool IsWrangledSentry(int sentry)
 {
 	if (!IsSentryEntity(sentry))
@@ -138,11 +167,27 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if (!IsWrangledSentry(sentry))
 		return Plugin_Continue;
 
-	// PrintToChatAll("ALTERING PUSH");
-	damageForce[0] *= g_self_sentry_push_force_mult;
-	damageForce[1] *= g_self_sentry_push_force_mult;
-	damageForce[2] *= g_self_sentry_push_force_mult;
-	ApplySelfSentryKnockbackImpulse(victim, sentry, damageForce);
+	SelfSentryHitType hitType = GetSelfSentryHitType(inflictor, damagetype);
+	float pushMult;
+	float damageMult = 1.0;
+
+	switch (hitType)
+	{
+		case SelfSentryHit_Rocket:
+		{
+			pushMult = g_self_sentry_rocket_push_force_mult;
+			damageMult = g_self_sentry_rocket_self_damage_mult;
+		}
+		case SelfSentryHit_Bullet: pushMult = g_self_sentry_bullet_push_force_mult;
+		default: return Plugin_Continue;
+	}
+
+	damage *= damageMult;
+
+	damageForce[0] *= pushMult;
+	damageForce[1] *= pushMult;
+	damageForce[2] *= pushMult;
+	ApplySelfSentryKnockbackImpulse(victim, sentry, damageForce, pushMult);
 
 	return Plugin_Changed;
 }
