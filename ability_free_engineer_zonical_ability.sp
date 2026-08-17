@@ -29,7 +29,7 @@ public Plugin:myinfo =
 float g_clip_bonus = 0.25;
 float g_clip_bonus_increment = 0.03;
 float g_clip_bonus_max = 8.0;
-float g_current_clip_bonus[MAXPLAYERS + 1] = {0.0, ...};
+float g_current_clip_bonus[MAXPLAYERS + 1] = {1.0, ...};
 
 public void OnPluginStart()
 {

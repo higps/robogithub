@@ -186,6 +186,11 @@ public Action Event_Teamplay_TF_Game_Over(Event event, char[] name, bool dontBro
 
 }
 
+public void MM_OnRobotSwitched(int client, const char[] oldRobot, const char[] newRobot)
+{
+    ResetQueuePointsForClient(client);
+}
+
 
 public void OnConfigsExecuted()
 {
@@ -657,6 +662,29 @@ void VolunteerAutomaticVolunteers()
 ArrayList PickVolunteers(int neededVolunteers, int[] ignoredUserIds, int ignoredUserIdsLength, bool pickNonvolunteers = true)
 {
     ArrayList volunteers = CreateSortedVolunteersList(ignoredUserIds, ignoredUserIdsLength, pickNonvolunteers);
+    int selectedCount = neededVolunteers;
+    if (selectedCount > volunteers.Length)
+        selectedCount = volunteers.Length;
+
+    for(int i = 0; i < selectedCount; i++)
+    {
+        VolunteerState selectedState = volunteers.Get(i);
+        int selectedClient = GetClientOfUserId(selectedState.UserId);
+        if (IsValidClient(selectedClient))
+        {
+            BroadcastQueueDebugToAllConsoles("%N selected for robot with %i queue points (rank %i/%i)", selectedClient, selectedState.QueuePoints, i + 1, volunteers.Length);
+        }
+    }
+
+    if (volunteers.Length > selectedCount)
+    {
+        VolunteerState cutoffState = volunteers.Get(selectedCount);
+        int cutoffClient = GetClientOfUserId(cutoffState.UserId);
+        if (IsValidClient(cutoffClient))
+        {
+            BroadcastQueueDebugToAllConsoles("Next in line (not selected): %N with %i queue points (rank %i/%i)", cutoffClient, cutoffState.QueuePoints, selectedCount + 1, volunteers.Length);
+        }
+    }
     
     if (volunteers.Length > neededVolunteers)
     {
@@ -814,7 +842,8 @@ void UpdateQueuePointsOnCap()
 
 
             char steamId[64];
-            GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId));
+            if (!GetClientAuthId(i, AuthId_Steam2, steamId, sizeof(steamId)))
+                continue;
             // int clientId = GetClientOfUserId(i);
             int queuePoints;
             int newQueuepoints;
@@ -825,8 +854,30 @@ void UpdateQueuePointsOnCap()
             SMLogTag(SML_VERBOSE, "increasing Queuepoints for %L with steamid %s to %i mid round", i, steamId, newQueuepoints);
             //if (!IsFakeClient(i)) PrintToChatAll("QP for %N was %i steamID: %s\nNew QP %i", i, queuePoints, steamId, newQueuepoints);
         }
-        SaveQueuePointsToFile();
     }
+
+    SaveQueuePointsToFile();
+}
+
+void ResetQueuePointsForClient(int client)
+{
+    if (!IsValidClient(client) || !IsClientInGame(client))
+        return;
+
+    char steamId[64];
+    if (!GetClientAuthId(client, AuthId_Steam2, steamId, sizeof(steamId)))
+        return;
+
+    // Re-load first so we do not overwrite newer on-disk values with stale in-memory state.
+    LoadQueuePointsFromFile();
+    int oldQueuePoints = 0;
+    _queuePoints.GetValue(steamId, oldQueuePoints);
+    _queuePoints.SetValue(steamId, 0);
+    SaveQueuePointsToFile();
+
+    BroadcastQueueDebugToAllConsoles("%N was a robot with %i amount of points, this was set to 0", client, oldQueuePoints);
+
+    SMLogTag(SML_VERBOSE, "reset Queuepoints for %L with steamid %s to 0 (robot selected)", client, steamId);
 }
 
 int VolunteerStateComparision(int index1, int index2, Handle array, Handle hndl)
@@ -962,7 +1013,7 @@ void CutAtNewLine(char[] str, int length)
 {
     for(int i = 0; i < length; i++)
     {
-        if (str[i] == '\n')
+        if (str[i] == '\n' || str[i] == '\r')
         {
             str[i] = '\0';
             return;
@@ -981,6 +1032,20 @@ bool EveryClientAnsweredVote()
     }
 
     return true;
+}
+
+void BroadcastQueueDebugToAllConsoles(const char[] format, any ...)
+{
+    char message[256];
+    VFormat(message, sizeof(message), format, 2);
+
+    for(int i = 1; i <= MaxClients; i++)
+    {
+        if (!IsValidClient(i) || !IsClientInGame(i))
+            continue;
+
+        PrintToConsole(i, "%s", message);
+    }
 }
 
 Action Menu_AutomaticVolunteer(int client)
