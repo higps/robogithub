@@ -60,10 +60,12 @@ new clientPermissions[MAXPLAYERS+1] = { -1, ... };
 new Float:clientSpeed[MAXPLAYERS+1];
 new Float:clientFallSpeed[MAXPLAYERS+1];
 new Float:clientJumpSpeed[MAXPLAYERS+1];
+new Float:g_NextSentryJumpTime[MAXPLAYERS+1];
+new Float:g_SentryJumpCooldown = 3.0;
 new Float:clientPosition[MAXPLAYERS+1][3];
 
 new Float:levelFactor[3] = { 0.50, 1.00, 1.50 };
-new Float:defaultSpeed = 400.0;
+new Float:defaultSpeed = 350.0;
 new Float:defaultFallSpeed = -500.0;
 new Float:defaultJumpSpeed = 2000.0;
 new bool:defaultZombie = false;
@@ -740,9 +742,16 @@ public Action:UpdateObjects(Handle:timer)
 
                     if (buttons & IN_JUMP)
                     {
-                        new flags = GetEntityFlags(i_object);
-                        if (flags & FL_ONGROUND)
-                            vel[2] += (clientJumpSpeed[i] > 0.0) ? clientJumpSpeed[i] : defaultJumpSpeed;
+                        new Float:currentTime = GetEngineTime();
+                        if (currentTime >= g_NextSentryJumpTime[i])
+                        {
+                            new flags = GetEntityFlags(i_object);
+                            if (flags & FL_ONGROUND)
+                            {
+                                vel[2] += (clientJumpSpeed[i] > 0.0) ? clientJumpSpeed[i] : defaultJumpSpeed;
+                                g_NextSentryJumpTime[i] = currentTime + g_SentryJumpCooldown;
+                            }
+                        }
                     }
 
                     TeleportEntity(i_object, NULL_VECTOR, angles, vel);
@@ -1951,6 +1960,7 @@ public OnClientPutInServer(client)
     g_WatcherEntRef[client] = 0;
     g_RemoteObjectRef[client] = 0;
     g_RemoteType[client] = TFExtObject_Unknown;
+    g_NextSentryJumpTime[client] = 0.0;
 
     g_HasBuilt[client] = HasBuiltNothing;
     for (new i=0; i < sizeof(g_isAllowed[]); i++)
@@ -1962,6 +1972,7 @@ public OnClientPutInServer(client)
 public OnClientDisconnect(client)
 {
     g_HasBuilt[client] = HasBuiltNothing;
+    g_NextSentryJumpTime[client] = 0.0;
     for (new i=0; i < sizeof(g_isAllowed[]); i++)
         g_isAllowed[client][i] = 1;
 
@@ -2766,9 +2777,18 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 void DrawHUD(int client)
 {
 	char sHUDText[128];
+    char sHUDBase[96];
+    char sJumpText[48];
 	// char sProgress[32];
 	//int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCooldown) * 100.0);
 	int iCountDown = RoundToCeil(g_Recharge[client] - g_skill);
+    int iJumpCountDown = RoundToCeil(g_NextSentryJumpTime[client] - GetEngineTime());
+    if (iJumpCountDown < 0)
+    {
+        iJumpCountDown = 0;
+    }
+
+    bool bControllingObject = (g_RemoteObjectRef[client] != 0 && EntRefToEntIndex(g_RemoteObjectRef[client]) > 0);
 	
 	// for (int j = 1; j <= 10; j++)
 	// {
@@ -2776,19 +2796,19 @@ void DrawHUD(int client)
 	// 	else StrCat(sProgress, sizeof(sProgress), CHAR_EMPTY);
 	// }
 
-	Format(sHUDText, sizeof(sHUDText), "Remote Control: %i   ", iCountDown);
+    Format(sHUDBase, sizeof(sHUDBase), "Remote Control: %i   ", iCountDown);
 	
 
 	if(iCountDown <= 0)
 	{
 		if(!TF2Spawn_IsClientInSpawn(client))
 		{
-		Format(sHUDText, sizeof(sHUDText), "Remote Control:\nPress Reload!");
+        Format(sHUDBase, sizeof(sHUDBase), "Remote Control:\nPress Reload!");
 			
 		SetHudTextParams(1.0, 0.8, 0.5, 0, 255, 0, 255);
 		}else
 		{
-			Format(sHUDText, sizeof(sHUDText), "Remote Control:\nUnavailable in spawn");
+            Format(sHUDBase, sizeof(sHUDBase), "Remote Control:\nUnavailable in spawn");
 			SetHudTextParams(1.0, 0.8, 0.5, 255, 0, 0, 255);
 		}
 		
@@ -2797,6 +2817,25 @@ void DrawHUD(int client)
 		
 		// PrintToChatAll("Not Ready!");
 	}
+
+    if (bControllingObject)
+    {
+        if (iJumpCountDown > 0)
+        {
+            Format(sJumpText, sizeof(sJumpText), "\nSentry Jump: %is", iJumpCountDown);
+        }
+        else
+        {
+            Format(sJumpText, sizeof(sJumpText), "\nSentry Jump: Ready");
+        }
+    }
+    else
+    {
+        sJumpText[0] = '\0';
+    }
+
+    Format(sHUDText, sizeof(sHUDText), "%s%s", sHUDBase, sJumpText);
+
 	// if (g_hud_post_time + g_hud_draw_delay <= GetEngineTime() || g_hud_post_time == 0.0)
 	// {
 		 ShowHudText(client, -2, sHUDText);

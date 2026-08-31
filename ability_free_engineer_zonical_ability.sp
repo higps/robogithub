@@ -172,6 +172,7 @@ public void AddClipSize(int client)
 		g_current_clip_bonus[client] = g_clip_bonus_max;
 	TF2Attrib_SetByName(Weapon2, "clip size bonus", g_clip_bonus + g_current_clip_bonus[client]);
 	TF2Attrib_AddCustomPlayerAttribute(client, "faster reload rate", 0.5, 1.5);
+	TF2Attrib_AddCustomPlayerAttribute(client, "fire rate bonus", 0.8, 1.5);
 
 }
 

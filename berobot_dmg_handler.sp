@@ -751,7 +751,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         damage *= 1.1;
                     }
                     float bonus_hp_damage = float(victimMAXHP) * (1.0 / 100.0);
-                    PrintToChatAll("Bonus HP dmg, %f\nVictim max hp %i", bonus_hp_damage, victimMAXHP);
+                     if (g_cv_bDebugMode)PrintToChatAll("Bonus HP dmg, %f\nVictim max hp %i", bonus_hp_damage, victimMAXHP);
                     damage = damage + bonus_hp_damage;
                     critType = CritType_Crit;
                     if (g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
