@@ -121,6 +121,11 @@ Handle _autoVolunteerTimer;
 bool _pickedOption[MAXPLAYERS + 1];
 bool _volunteered[MAXPLAYERS + 1];
 
+// tracks when the current round started and whether the round's initial robot-selection has already run,
+// so later robot-switches this round can lose a smaller, time-decayed % of QP instead of a full reset.
+float _roundStartTime;
+bool _initialSelectionCompleted;
+
 /**
  *  maps a (char steamId[64]) key to a (int queuePoints) valuelunteerStates
  */
@@ -165,6 +170,7 @@ public void OnPluginStart()
     HookEvent("teamplay_point_captured", Event_Teamplay_Point_Captured, EventHookMode_Post);
     HookEvent("tf_game_over", Event_Teamplay_TF_Game_Over, EventHookMode_Post);
     HookEvent("teamplay_game_over", Event_Teamplay_TF_Game_Over, EventHookMode_Post);
+    HookEvent("teamplay_round_start", Event_Teamplay_Round_Start, EventHookMode_Post);
 
     LoadVipSteamIds();
     LoadQueuePointsFromFile();
@@ -184,6 +190,12 @@ public Action Event_Teamplay_TF_Game_Over(Event event, char[] name, bool dontBro
     g_block_volunteer = true;
 // PrintToChatAll("GAME OVER");
 
+}
+
+public Action Event_Teamplay_Round_Start(Event event, char[] name, bool dontBroadcast)
+{
+    _roundStartTime = GetEngineTime();
+    _initialSelectionCompleted = false;
 }
 
 public void MM_OnRobotSwitched(int client, const char[] oldRobot, const char[] newRobot)
@@ -257,6 +269,8 @@ void Reset()
 {
     _automaticVolunteerVoteIsInProgress = false;
     _selectionPhaseActive = false;
+    _roundStartTime = GetEngineTime();
+    _initialSelectionCompleted = false;
     for(int i = 0; i <= MAXPLAYERS; i++)
     {
         _volunteered[i] = false;
@@ -648,6 +662,9 @@ void VolunteerAutomaticVolunteers()
     SMLogTag(SML_VERBOSE, "setting _automaticVolunteerVoteIsInProgress to false");
     _automaticVolunteerVoteIsInProgress = false;
     _selectionPhaseActive = false;
+
+    // any robot switches after this point (mid-round manual picks) use the QP decay formula instead of a full reset.
+    _initialSelectionCompleted = true;
 }
 
 /**
@@ -872,12 +889,47 @@ void ResetQueuePointsForClient(int client)
     LoadQueuePointsFromFile();
     int oldQueuePoints = 0;
     _queuePoints.GetValue(steamId, oldQueuePoints);
-    _queuePoints.SetValue(steamId, 0);
+
+    int newQueuePoints;
+    if (!_initialSelectionCompleted)
+    {
+        newQueuePoints = 0;
+        _queuePoints.SetValue(steamId, newQueuePoints);
+        SaveQueuePointsToFile();
+
+        BroadcastQueueDebugToAllConsoles("%N was a robot with %i amount of points, this was set to 0", client, oldQueuePoints);
+        SMLogTag(SML_VERBOSE, "reset Queuepoints for %L with steamid %s to 0 (initial robot selection)", client, steamId);
+        return;
+    }
+
+    float elapsedSeconds = GetEngineTime() - _roundStartTime;
+    float decayPercent = GetQueuePointsDecayPercent(elapsedSeconds);
+    int pointsLost = RoundToNearest(oldQueuePoints * (decayPercent / 100.0));
+    newQueuePoints = oldQueuePoints - pointsLost;
+
+    _queuePoints.SetValue(steamId, newQueuePoints);
     SaveQueuePointsToFile();
 
-    BroadcastQueueDebugToAllConsoles("%N was a robot with %i amount of points, this was set to 0", client, oldQueuePoints);
+    BroadcastQueueDebugToAllConsoles("%N was a robot with %i amount of points, lost %i points (%.1f%% after %.0fs into the round), now at %i", client, oldQueuePoints, pointsLost, decayPercent, elapsedSeconds, newQueuePoints);
+    SMLogTag(SML_VERBOSE, "decayed Queuepoints for %L with steamid %s from %i to %i (%.1f%% loss after %.0fs, robot selected mid-round)", client, steamId, oldQueuePoints, newQueuePoints, decayPercent, elapsedSeconds);
+}
 
-    SMLogTag(SML_VERBOSE, "reset Queuepoints for %L with steamid %s to 0 (robot selected)", client, steamId);
+/**
+ * returns the % of QP that should be deducted, based on elapsed round time.
+ * 100% at round start, linearly decreasing to a 5% floor at 15 minutes (900s) and beyond.
+ */
+float MAX_PERCENT = 100.0;
+float MIN_PERCENT = 5.0;
+float DECAY_DURATION_SECONDS = 900.0;
+float GetQueuePointsDecayPercent(float elapsedSeconds)
+{
+    
+    if (elapsedSeconds <= 0.0)
+        return MAX_PERCENT;
+    if (elapsedSeconds >= DECAY_DURATION_SECONDS)
+        return MIN_PERCENT;
+
+    return MAX_PERCENT - ((MAX_PERCENT - MIN_PERCENT) / DECAY_DURATION_SECONDS) * elapsedSeconds;
 }
 
 int VolunteerStateComparision(int index1, int index2, Handle array, Handle hndl)
