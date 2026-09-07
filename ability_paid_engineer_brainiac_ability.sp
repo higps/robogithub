@@ -35,7 +35,7 @@ public OnMapStart()
 
 bool g_button_held[MAXPLAYERS + 1] = false;
 float g_Recharge[MAXPLAYERS + 1] = 0.0;
-float g_RechargeCooldown = 20.0;
+float g_RechargeCooldown = 15.0;
 float g_skill;
 
 
@@ -219,6 +219,8 @@ public Action Teleport_Player(Handle timer, DataPack info)
 	TeleportOrigin[2] = info.ReadCell();
 	delete info;
 
+	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.5);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.5);
 	TeleportEntity(client, TeleportOrigin, NULL_VECTOR, NULL_VECTOR);
 }
 
