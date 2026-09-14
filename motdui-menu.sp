@@ -1,5 +1,6 @@
 #include <motdui>
 #include <moonly>
+#include <advanced_motd>
 
 public Plugin myinfo =
 {
@@ -19,12 +20,14 @@ public void OnPluginStart()
     MotdUI.Route("GET", "/mr", HttpMr);
 
     RegConsoleCmd("sm_menu", cMenu);
+    RegConsoleCmd("sm_patch", cPatch);
 }
 
 void HttpMenu(int client, MotdUIRequest req, MotdUIResponse res)
 {
     res.SendFile("robots/robot_selection.html");
 }
+
 
 void HttpJson(int client, MotdUIRequest req, MotdUIResponse res)
 {
@@ -75,6 +78,12 @@ void HttpMr(int client, MotdUIRequest req, MotdUIResponse res)
 public Action cMenu(int client, int args)
 {
     MotdUI.ShowPanelUrl(client, "/");
+    return Plugin_Handled;
+}
+
+public Action cPatch(int client, int args)
+{
+    AdvMOTD_ShowMOTDPanel(client, "Patch Notes", "https://bmod.tf/mm/", MOTDPANEL_TYPE_URL, true, true);
     return Plugin_Handled;
 }
 
