@@ -94,7 +94,7 @@ int g_warriorspirit_max_overheal = 450;
 
 float g_kgb_crit_combo_duration = 6.0;
 // float g_eviction_notice_haste_duration = 4.0;
-float g_protection_rune_duration = 1.0;
+float g_protection_rune_duration = 0.8;
 
 float g_electric_rage_reduction = 5.0;
 
