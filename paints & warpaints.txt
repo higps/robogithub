@@ -211,6 +211,16 @@ Warpaints:
 "431" - Blackout
 "432" - Broken Record
 
+"433" - Sandwich Diner
+"434" - Beachy Boy
+"435" - Army Guns
+"436" - Taxi Cabbed
+"437" - Ocean Mapped
+"438" - Krak-coated
+"439" - Team Union
+"440" - Sideshow
+"441" - Storage War
+"442" - Die'n Dasher
 
 391 Smissmas Sweater
 15000-15158 These are decorated war hero collection weapon ids. Use the weaponid in place of paint id.
@@ -433,3 +443,5 @@ More Warpaints
 
 390		"Dragon Slayer"
 391		"Smissmas Sweater"
+
+392 
