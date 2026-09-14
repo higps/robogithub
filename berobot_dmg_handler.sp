@@ -2039,8 +2039,8 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
                 stat1 = 0.4;
                 TF2Attrib_SetByName(Weapon3, "dmg from melee increased", stat1);
-                TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0 addcond=97 cond-duration=2.0");
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vita-Saw: {orange}While Active: {orange}+%0.0f%%%% Melee resistance \n{teamcolor}Vita Saw: On Teammate hit: Apply {orange}Agility Rune for 2 seconds",chat_display, LessIsMore(stat1));    
+                TF2CustAttr_SetString(Weapon3, "heal-teammate", "heal=40 uber-gain=0.015 crit-heal-cooldown=10 allow-overheal=0 addcond=97 cond-duration=4.0");
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Vita-Saw: {orange}While Active: {orange}+%0.0f%%%% Melee resistance \n{teamcolor}Vita Saw: On Teammate hit: Apply {orange}Agility Rune for 4 seconds",chat_display, LessIsMore(stat1));    
             }else
             {
                 TF2Attrib_RemoveByName(Weapon3, "dmg from melee increased");
