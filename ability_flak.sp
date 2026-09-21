@@ -127,7 +127,7 @@ void MiniCritBoom(int attacker, int victim)
 		{
 			if (i == victim)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damage);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damage, DMG_GENERIC, -1, NULL_VECTOR, pos);
 				TF2_IgnitePlayer(i, attacker, MiniCritBoomIgnite);
 				continue; //don't also apply the falloff damage below to the same victim
 			}
@@ -177,7 +177,7 @@ void CritBoom(int attacker, int victim)
 			GetClientAbsOrigin(client, pos2);
 			if (GetVectorDistance(pos1, pos2) <= CritBoomRadius && TF2_GetClientTeam(attacker) != TF2_GetClientTeam(client))
 			{
-				SDKHooks_TakeDamage(client, 0, attacker, CritBoomDamage, 0, -1);
+				SDKHooks_TakeDamage(client, 0, attacker, CritBoomDamage, 0, -1, NULL_VECTOR, pos22);
 				EmitAmbientSound(sBoomNoise, pos22, client, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, 0.0);
 			}
 		}
