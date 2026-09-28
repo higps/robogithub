@@ -1397,6 +1397,7 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
         int Weapon2 = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
         int Weapon3 = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
         int Weapon4 = GetPlayerWeaponSlot(client, TFWeaponSlot_PDA);
+
         //Temporary Stats to be used in displaying in the text
         float stat1;
         float stat2;
@@ -2143,6 +2144,12 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
                 TF2CustAttr_SetString(Weapon1, "reduce-max-hp", "damage_ratio=1.0");
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}LeTranger: {orange}On Hit: Reduce target max health by damage dealt",chat_display);
             }
+            if (IsSapper(Weapon2))
+            {
+                stat1 = 1.33;
+                TF2Attrib_SetByName(Weapon2, "sapper damage bonus", stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Sapper: {orange}+%0.0f%%%% {teamcolor}Damage bonus to buildings",chat_display,(MoreIsMore(stat1)));
+            }
         }
         if (TF2_GetPlayerClass(client) == TFClass_Soldier)
         {
@@ -2164,9 +2171,11 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
 
             if (IsBeggarsBazooka(Weapon1))
             {
-                stat1 = 3.0;
-                TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", stat1);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Beggars Bazooka: {orange}+%0.0f clip size",chat_display, stat1);
+                // stat1 = 3.0;
+                stat2 = 0.3;
+                // TF2Attrib_SetByName(Weapon1, "clip size upgrade atomic", stat1);
+                TF2Attrib_SetByName(Weapon1, "fire rate bonus with reduced health", stat2);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Beggars Bazooka: Up to {orange}+%0.0f%%%% faster firing speed as health decreases",chat_display, stat1, MoreIsMore(stat2));
             }
             if (IsRocketLauncher(Weapon1))
             {
@@ -2240,12 +2249,15 @@ public Action Event_post_inventory_application(Event event, const char[] name, b
             {
 
                 TF2Attrib_SetByName(Gunboats, "cancel falling damage", 1.0);
-                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunboats:{orange} No fall damage",chat_display);
+                stat1 = 0.5;
+                TF2Attrib_SetByName(Gunboats, "SET BONUS: dmg from sentry reduced",stat1);
+                Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Gunboats:{orange} No fall damage.Reduced {orange}+%0.0f%%%% {teamcolor}sentry bullet damage taken",chat_display,(LessIsMore(stat1)));
             }
 
             int The_Mantreads = FindTFWearable(client, 444);
             if (IsValidEntity(The_Mantreads))
             {
+
                 Format(chat_display, sizeof(chat_display), "%s\n{teamcolor}Mantreads:{orange} Stomp: Stun tanks, Dizzy Robots",chat_display);
 
             }
@@ -2856,6 +2868,20 @@ bool IsLetranger(int weapon)
 	{
 		//Letranger
 	case 224: 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+bool IsSapper(int weapon)
+{
+	if (weapon <= MaxClients || !IsValidEntity(weapon)) return false;
+	
+	switch(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
+	{
+		//Sapper, Ap-Sap, Red-Tape Recorder, Quackenbirdt, Snack Attack
+	case 735,736,810,831,933,1080,1102: 
 		{
 			return true;
 		}

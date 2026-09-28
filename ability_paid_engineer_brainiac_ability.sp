@@ -15,6 +15,7 @@
 #define ROBOT_NAME	"Brainiac"
 
 int SelectedIndex[MAXPLAYERS + 1];
+Menu g_PlayerMenu[MAXPLAYERS + 1];
 
 #define TELEPORTER_SPAWN		"weapons/teleporter_ready.wav"
 
@@ -34,6 +35,7 @@ public OnMapStart()
 }
 
 bool g_button_held[MAXPLAYERS + 1] = false;
+bool g_isready[MAXPLAYERS + 1] = false;
 float g_Recharge[MAXPLAYERS + 1] = 0.0;
 float g_RechargeCooldown = 15.0;
 float g_skill;
@@ -70,7 +72,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 
 
-bool isready;
 void DrawHUD(int client)
 {
 	char sHUDText[128];
@@ -97,15 +98,16 @@ void DrawHUD(int client)
 		 ShowHudText(client, -2, sHUDText);
 
 
-		if (!isready && iCountDown <= 0)
+		if (!g_isready[client] && iCountDown <= 0)
 		{
 			TF2_AddCondition(client, TFCond_InHealRadius, 0.5);
 
-			isready = true;	
+			g_isready[client] = true;	
 		}
 
-	if (g_button_held[client] && iCountDown <= 0)
+	if (g_button_held[client] && iCountDown <= 0 && g_PlayerMenu[client] == null)
 	{
+		g_button_held[client] = false;
 		RequestFrame(CreatePlayerMenu, client);
 
 		
@@ -115,8 +117,14 @@ void DrawHUD(int client)
 // Creates a menu with all active teleporters
 void CreatePlayerMenu(int client)
 {
+	if (!IsClientInGame(client) || !IsRobot(client, ROBOT_NAME) || g_PlayerMenu[client] != null
+		|| GetEngineTime() < g_Recharge[client])
+	{
+		return;
+	}
 
 	Menu selection = new Menu(SelectionCallback);
+	g_PlayerMenu[client] = selection;
 	selection.SetTitle("Choose Teammate to Teleport to");
 
 	// selection.AddItem("-1", "Farthest");
@@ -158,21 +166,21 @@ int SelectionCallback(Menu menu, MenuAction action, int client, int selection)
 	{
 		case MenuAction_Select:
 		{
+			if (GetEngineTime() < g_Recharge[client])
+			{
+				CancelClientMenu(client);
+				return 0;
+			}
+
 			char value[8];
 			menu.GetItem(selection, value, sizeof value);
 
 			SelectedIndex[client] = StringToInt(value);
 			// PrintToChat(client, "You selected %i which was %N", SelectedIndex[client], SelectedIndex[client]);
 			float PlayerOrigin[3];
-			float TeleportOrigin[3];
 			float PreTeleOrigin[3];
 			GetClientAbsOrigin(SelectedIndex[client], PlayerOrigin);
 			GetClientAbsOrigin(client, PreTeleOrigin);
-			
-			//Math
-			TeleportOrigin[0] = PlayerOrigin[0];
-			TeleportOrigin[1] = PlayerOrigin[1];
-			TeleportOrigin[2] = (PlayerOrigin[2] + 30.0);
 			
 			//Teleport
 			if (IsPlayerAlive(SelectedIndex[client]))
@@ -192,16 +200,31 @@ int SelectionCallback(Menu menu, MenuAction action, int client, int selection)
 					DataPack info = new DataPack();
 				info.Reset();
 				info.WriteCell(client);
-				info.WriteCell(TeleportOrigin[0]);
-				info.WriteCell(TeleportOrigin[1]);
-				info.WriteCell(TeleportOrigin[2]);
+					info.WriteCell(SelectedIndex[client]);
 				CreateTimer(0.5, Teleport_Player, info);
 
 				g_Recharge[client] = GetEngineTime() + g_RechargeCooldown;
-				isready = false;
+				g_isready[client] = false;
+				CancelClientMenu(client);
 				// EmitSoundToAll(TELEPORTER_SPAWN, client);
 			} 
 
+		}
+		case MenuAction_Cancel:
+		{
+			g_button_held[client] = false;
+		}
+		case MenuAction_End:
+		{
+			for (int i = 1; i <= MaxClients; i++)
+			{
+				if (g_PlayerMenu[i] == menu)
+				{
+					g_PlayerMenu[i] = null;
+					break;
+				}
+			}
+			delete menu;
 		}
 	}
 	return 0;
@@ -213,10 +236,16 @@ public Action Teleport_Player(Handle timer, DataPack info)
 {
 	info.Reset();
 	int client = info.ReadCell();
+	int target = info.ReadCell();
+	if (!IsValidClient(client) || !IsPlayerAlive(client) || !IsValidClient(target) || !IsPlayerAlive(target))
+	{
+		delete info;
+		return Plugin_Stop;
+	}
+
 	float TeleportOrigin[3];
-	TeleportOrigin[0] = info.ReadCell();
-	TeleportOrigin[1] = info.ReadCell();
-	TeleportOrigin[2] = info.ReadCell();
+	GetClientAbsOrigin(target, TeleportOrigin);
+	TeleportOrigin[2] += 30.0;
 	delete info;
 
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.5);

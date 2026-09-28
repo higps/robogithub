@@ -52,8 +52,8 @@ static const char Gambler_Negative[][256] =
 
 float g_GambleEndTime[MAXPLAYERS + 1] = {-1.0, ...};
 
-#define BASE_ODDS 50
-#define MAX_ODDS 100
+#define BASE_ODDS 51
+#define MAX_ODDS 80
 int g_Odds[MAXPLAYERS + 1] = {BASE_ODDS, ...};
 
 public void OnMapStart()
@@ -130,7 +130,7 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 	if (IsRobot(attacker, ROBOT_NAME))
 	{
 		if (g_Odds[attacker] < MAX_ODDS)
-		g_Odds[attacker]+=10;
+		g_Odds[attacker] += 2;
 
 		// Each kill spins its own core independently, so multiple cores can be active at once.
 		// The most recently triggered core always has the furthest end time, since duration is constant.
@@ -181,11 +181,11 @@ void SpinWheel(int client)
 	int size3 = sizeof Gambler_Negative;
 	int soundswitch3 = GetRandomInt(0, size3 - 1);
 
-	// g_Odds is the % chance of a positive result, increasing 1% per kill up to MAX_ODDS (guaranteed positive)
+	// g_Odds is the % chance of a positive result, increasing 2% per kill up to MAX_ODDS
 	if (GetRandomInt(1, 100) <= g_Odds[client])
 	{
-		// Jackpot chance scales with odds too: 5% at BASE_ODDS (50), ramping up to 20% at MAX_ODDS (100)
-		int jackpotChance = RoundToNearest(5.0 + (15.0 * float(g_Odds[client] - BASE_ODDS) / float(MAX_ODDS - BASE_ODDS)));
+		// Jackpot chance scales with odds too: 2% at BASE_ODDS (50), ramping up to 10% at MAX_ODDS (80)
+		int jackpotChance = RoundToNearest(2.0 + (8.0 * float(g_Odds[client] - BASE_ODDS) / float(MAX_ODDS - BASE_ODDS)));
 		if (GetRandomInt(1, 100) <= jackpotChance)
 		{
 			MC_PrintToChatAll("{red}Warning! {orange}The Gambler {red}Has Hit The {pink}JACKPOT");

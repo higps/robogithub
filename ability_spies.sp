@@ -78,7 +78,7 @@ void StartSpyHealTimer(int client)
 		return;
 	}
 
-	g_SpyHealTimer[client] = CreateTimer(3.0, Timer_HealSpy, GetClientUserId(client), TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+	g_SpyHealTimer[client] = CreateTimer(5.0, Timer_HealSpy, GetClientUserId(client), TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 
 void StopSpyHealTimer(int client)
@@ -131,12 +131,16 @@ public void HealSpy(int client)
 		return;
 	}
 	// heals for 25% of missing health
-	int hpHeal = RoundToNearest(float(missingHealth) * 0.1);
+	int hpHeal = RoundToNearest(float(missingHealth) * 0.15);
+	if (TF2_IsPlayerInCondition(client, TFCond_OnFire))
+	{
+		hpHeal = RoundToNearest(float(hpHeal) * 0.8);
+	}
 	if (hpHeal <= 0)
 	{
 		hpHeal = 1;
 	}
-
+	
 	Megaton_HealClientByAmount(client, hpHeal);
 	Megaton_ShowHealthGain(client, hpHeal, client, false);
 	EmitSoundToClient(client, sHealNoise);
