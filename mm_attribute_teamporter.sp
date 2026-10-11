@@ -720,6 +720,16 @@ public Action DrawHUD(int client)
 {
 
 	if (IsClientInGame(client) && IsValidClient(client)){
+	if (IsBoss(client))
+	{
+		g_Recharge[client] = 0;
+		g_b_hud_drawn[client] = false;
+		SetHudTextParams(-1.0, -0.2, 0.1, 255, 0, 0, 255);
+		ShowHudText(client, -2, "Unable to teleport: you are too big.\nWalking is your only option.");
+		b_hud_clamp[client] = false;
+		return Plugin_Continue;
+	}
+
 	char sHUDText[128];
 	char sProgress[32];
 	int iPercents = RoundToCeil(float(g_Recharge[client]) / float(g_RechargeCap) * 100.0);
@@ -1314,6 +1324,9 @@ void GetFarthestTele(int client, ObjectPointer target, ObjectPointer teleporters
 
 bool CanUseTele(int client)
 {
+	if (IsBoss(client))
+		return false;
+
 	if (TF2_GetPlayerClass(client) == TFClass_Spy || IsAnyRobot(client)) // Spies can use whatever teleporter they want, so we don't bother checking teams
 		return true;
 
@@ -1328,71 +1341,71 @@ bool CanUseTele(int client)
 
 
 // Creates a menu with all active teleporters
-void CreateTeleMenu(int client, ObjectPointer teleporters[32])
-{
-	if (!teleporters[0].valid()) // Only create a menu if teleporters exist
-		return;
+// void CreateTeleMenu(int client, ObjectPointer teleporters[32])
+// {
+// 	if (!teleporters[0].valid()) // Only create a menu if teleporters exist
+// 		return;
 
-	Menu selection = new Menu(SelectionCallback);
-	selection.SetTitle("Choose Teamporter");
+// 	Menu selection = new Menu(SelectionCallback);
+// 	selection.SetTitle("Choose Teamporter");
 
-	selection.AddItem("-1", "Farthest");
+// 	selection.AddItem("-1", "Farthest");
 
-	for (int i = 0; i < 32; i++)
-	{
-		if (teleporters[i].valid())
-		{
-			int tele = teleporters[i].get();
+// 	for (int i = 0; i < 32; i++)
+// 	{
+// 		if (teleporters[i].valid())
+// 		{
+// 			int tele = teleporters[i].get();
 
-			char index[8], teleName[256], teleStatus[32];
-			IntToString(tele, index, sizeof index);
+// 			char index[8], teleName[256], teleStatus[32];
+// 			IntToString(tele, index, sizeof index);
 
-			int owner = GetEntPropEnt(tele, Prop_Send, "m_hBuilder");
+// 			int owner = GetEntPropEnt(tele, Prop_Send, "m_hBuilder");
 
-			if (GetEntProp(tele, Prop_Send, "m_bDisabled"))
-				FormatEx(teleStatus, sizeof teleStatus, "Sapped");
-			else if (GetEntProp(tele, Prop_Send, "m_bBuilding"))
-			FormatEx(teleStatus, sizeof teleStatus, "Building");
-			else
-				FormatEx(teleStatus, sizeof teleStatus, "Active");
+// 			if (GetEntProp(tele, Prop_Send, "m_bDisabled"))
+// 				FormatEx(teleStatus, sizeof teleStatus, "Sapped");
+// 			else if (GetEntProp(tele, Prop_Send, "m_bBuilding"))
+// 			FormatEx(teleStatus, sizeof teleStatus, "Building");
+// 			else
+// 				FormatEx(teleStatus, sizeof teleStatus, "Active");
 
-			// Get the name of the teleporter's owner, otherwise set the teleporter's index as the name as a fallback
-			if (IsClientInGame(owner))
-				FormatEx(teleName, sizeof teleName, "%N's Exit (%s)", owner, teleStatus);
-			else
-				FormatEx(teleName, sizeof teleName, "Exit %i (%s)", tele, teleStatus);
+// 			// Get the name of the teleporter's owner, otherwise set the teleporter's index as the name as a fallback
+// 			if (IsClientInGame(owner))
+// 				FormatEx(teleName, sizeof teleName, "%N's Exit (%s)", owner, teleStatus);
+// 			else
+// 				FormatEx(teleName, sizeof teleName, "Exit %i (%s)", tele, teleStatus);
 
-			selection.AddItem(index, teleName);
-		}
-		else	// Stop populating if we find an invalid index
-			break;
-	}
+// 			selection.AddItem(index, teleName);
+// 		}
+// 		else	// Stop populating if we find an invalid index
+// 			break;
+// 	}
 
-	selection.Display(client, 3);
-}
+// 	selection.Display(client, 3);
+// }
 
-int SelectionCallback(Menu menu, MenuAction action, int client, int selection)
-{
-	switch (action)
-	{
-		case MenuAction_Select:
-		{
-			char value[8];
-			menu.GetItem(selection, value, sizeof value);
+// int SelectionCallback(Menu menu, MenuAction action, int client, int selection)
+// {
+// 	switch (action)
+// 	{
+// 		case MenuAction_Select:
+// 		{
+// 			char value[8];
+// 			menu.GetItem(selection, value, sizeof value);
 
-			SelectedIndex[client] = StringToInt(value);
-		}
-	}
-	return 0;
-}
+// 			SelectedIndex[client] = StringToInt(value);
+// 		}
+// 	}
+// 	return 0;
+// }
 
-void GetActiveSelection(int client, ObjectPointer teleporter, ObjectPointer farthest)
-{
-	if (SelectedIndex[client] == -1) // farthest selection
-		teleporter = farthest;
-	else
-		teleporter.set(SelectedIndex[client]);
-}
+// void GetActiveSelection(int client, ObjectPointer teleporter, ObjectPointer farthest)
+// {
+// 	if (SelectedIndex[client] == -1) // farthest selection
+// 		teleporter = farthest;
+// 	else
+// 		teleporter.set(SelectedIndex[client]);
+// }
 
 // Code from
 //https://github.com/caxanga334/tf-bewithrobots-redux/blob/master/addons/sourcemod/scripting/bwrredux/functions.sp#L782
