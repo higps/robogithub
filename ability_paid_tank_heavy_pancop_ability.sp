@@ -154,29 +154,29 @@ public void OnPluginEnd()
 	}
 }
 
-// public TF2_OnConditionAdded(client, TFCond:condition)
-// {
-//     if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
-//     {	
-//         int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
-//         if (tauntid == -1)
-//         {
-// 		TF2_AddCondition(client, TFCond_CritCola, 30.0);
-// 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 30.0);
-// 		TF2_AddCondition(client, TFCond_RestrictToMelee, 30.0);
-// 		CreateTimer(2.5, Timer_Taunt_Cancel, client);
-//         }	  
-// 	}
-// }
+public TF2_OnConditionAdded(client, TFCond:condition)
+{
+    if (IsRobot(client, ROBOT_NAME) && condition == TFCond_Taunting)
+    {	
+        int tauntid = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
+        if (tauntid == -1)
+        {
+		TF2_AddCondition(client, TFCond_Buffed, 30.0);
+		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 30.0);
+		
+		CreateTimer(3.5, Timer_Taunt_Cancel, client);
+        }	  
+	}
+}
 
-// public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
-// {
-// 	if (IsValidClient(client)){
+public Action:Timer_Taunt_Cancel(Handle:timer, any:client)
+{
+	if (IsValidClient(client)){
 
-// 		TF2_RemoveCondition(client, TFCond_Taunting);
+		TF2_RemoveCondition(client, TFCond_Taunting);
 
-// 		int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+		int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 
-// 		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon); 
-// 	}
-// }
+		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon); 
+	}
+}
