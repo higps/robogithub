@@ -7,7 +7,7 @@
 #include <berobot_constants>
 #include <berobot>
 
-#define ROBOT_NAME "Identity Thief"
+#define ROBOT_NAME "Overwrite"
 
 public Plugin myinfo =
 {
