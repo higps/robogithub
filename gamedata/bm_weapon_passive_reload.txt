@@ -1,0 +1,37 @@
+"Games"
+{
+	"tf"
+	{
+		"Offsets"
+		{
+			"CTFWeaponBase::FinishReload()"
+			{
+				"windows"	"274"
+				"linux"		"280"
+				"mac"		"280"
+			}
+			"CTFRocketLauncher::FinishReload()"
+			{
+				"windows"	"274"
+				"linux"		"280"
+				"mac"		"280"
+			}
+			"CTFGrenadeLauncher::FinishReload()"
+			{
+				"windows"	"274"
+				"linux"		"280"
+				"mac"		"280"
+			}
+			"CTFWeaponBase::GetMaxClip1()"
+			{
+				"windows"	"317"
+				"linux"		"323"
+			}
+			"CBaseCombatWeapon::Holster()"
+			{
+				"windows"	"255"
+				"linux"		"261"
+			}
+		}
+	}
+}
