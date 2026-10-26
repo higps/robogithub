@@ -62,7 +62,7 @@ public void TF2_OnTakeDamagePost(int victim, int attacker, int inflictor, float 
 	{
 		speedBonus = TF2Attrib_GetValue(speedAttribute);
 	}
-	PrintToChatAll("Speed %f",speedBonus);
+	// PrintToChatAll("Speed %f",speedBonus);
 	float newSpeedBonus = speedBonus + 0.05;
 	if (newSpeedBonus > 2.2)
 	{
@@ -77,7 +77,7 @@ public void TF2_OnTakeDamagePost(int victim, int attacker, int inflictor, float 
 		{
 			airblastVulnerability = TF2Attrib_GetValue(airblastAttribute);
 		}
-		PrintToChatAll("Vuln %f", airblastVulnerability);
+		// PrintToChatAll("Vuln %f", airblastVulnerability);
 		TF2Attrib_SetByName(attacker, "airblast vulnerability multiplier", airblastVulnerability + 0.035);
 	}
 	if (!TF2_IsPlayerInCondition(attacker, TFCond_SpeedBuffAlly))
