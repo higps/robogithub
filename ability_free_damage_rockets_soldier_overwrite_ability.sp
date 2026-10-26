@@ -9,6 +9,9 @@
 
 #define ROBOT_NAME "Overwrite"
 
+float g_DamageVsPlayers = 1.2;
+float g_MoveSpeedPerKill = 0.9;
+
 public Plugin myinfo =
 {
 	name = "[TF2] Copy Any-Class Ability",
@@ -34,6 +37,8 @@ public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast
 		|| !IsPlayerAlive(attacker))
 		return;
 
+	TF2Attrib_SetByName(attacker, "move speed penalty", g_MoveSpeedPerKill);
+	TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.1);
 	TFClassType victimClass = TF2_GetPlayerClass(victim);
 	TF2_SetPlayerClass(attacker, victimClass, false, true);
 	DataPack data = new DataPack();
@@ -87,7 +92,9 @@ void Frame_RegenerateAndCopyLoadout(DataPack data)
 		int quality = GetEntProp(victimWeapon, Prop_Send, "m_iEntityQuality");
 		int level = GetEntProp(victimWeapon, Prop_Send, "m_iEntityLevel");
 		int paint = RoundToNearest(GetAttributeValue(victimWeapon, 834, 0.0));
-		CreateRoboWeapon(attacker, weaponClassname, itemIndex, quality, level, slot, paint);
+		int copiedWeapon = CreateRoboWeapon(attacker, weaponClassname, itemIndex, quality, level, slot, paint);
+		if (copiedWeapon > MaxClients && IsValidEntity(copiedWeapon))
+			TF2Attrib_SetByName(copiedWeapon, "dmg penalty vs players", g_DamageVsPlayers);
 	}
 
 	if (victimClass == TFClass_Engineer)
