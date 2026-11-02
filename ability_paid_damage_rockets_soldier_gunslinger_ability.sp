@@ -11,7 +11,7 @@
 #define ROBOT_NAME "Gunslinger"
 
 int g_HealthBeforeDamage[MAXPLAYERS + 1];
-float g_BerserkResetDelay = 3.0;
+float g_BerserkResetDelay = 4.0;
 float g_BerserkFireRatePerHit = 0.90;
 Handle g_BerserkTimer[MAXPLAYERS + 1];
 bool g_BerserkActive[MAXPLAYERS + 1];
