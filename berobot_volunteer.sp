@@ -114,6 +114,7 @@ ConVar _robocapTeamConVar;
 int _robocapTeam;
 
 StringMap _vipSteamIds;
+StringMap _temporaryVipSteamIds;
 bool _automaticVolunteerVoteIsInProgress;
 Handle _countdownTimer;
 int _countdownTarget;
@@ -155,6 +156,7 @@ public void OnPluginStart()
 
     RegAdminCmd("sm_setvolunteer", Command_SetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to true/enabled");
     RegAdminCmd("sm_unsetvolunteer", Command_UnsetVolunteer, ADMFLAG_SLAY, "sets the volunteer status to false/disabled");
+    RegAdminCmd("sm_vip", Command_TemporaryVip, ADMFLAG_SLAY, "temporarily grants VIP priority until the server restarts");
     RegAdminCmd("sm_reload_vip_volunteers", Command_ReloadVipVolunteers, ADMFLAG_SLAY, "reloads VIP-SteamIds from file");
     RegAdminCmd("sm_reload_queuepoints_volunteers", Command_ReloadQueuepointsVolunteers, ADMFLAG_SLAY, "reloads queuepoints from file");
 
@@ -172,6 +174,7 @@ public void OnPluginStart()
     HookEvent("teamplay_game_over", Event_Teamplay_TF_Game_Over, EventHookMode_Post);
     HookEvent("teamplay_round_start", Event_Teamplay_Round_Start, EventHookMode_Post);
 
+    _temporaryVipSteamIds = new StringMap();
     LoadVipSteamIds();
     LoadQueuePointsFromFile();
 
@@ -306,6 +309,82 @@ void LoadVipSteamIds()
 public Action Command_ReloadVipVolunteers(int client, int args)
 {
     LoadVipSteamIds();
+}
+
+public Action Command_TemporaryVip(int client, int args)
+{
+    if (args < 1)
+    {
+        ReplyToCommand(client, "Usage: sm_vip <player_name or id>");
+        return Plugin_Handled;
+    }
+
+    char target[MAX_TARGET_LENGTH];
+    GetCmdArg(1, target, sizeof(target));
+
+    char targetName[MAX_TARGET_LENGTH];
+    int targetList[MAXPLAYERS];
+    int targetCount;
+    bool targetNameIsML;
+
+    targetCount = ProcessTargetString(
+        target,
+        client,
+        targetList,
+        MAXPLAYERS,
+        0,
+        targetName,
+        sizeof(targetName),
+        targetNameIsML);
+
+    if (targetCount <= 0)
+    {
+        ReplyToTargetError(client, targetCount);
+        return Plugin_Handled;
+    }
+
+    for (int i = 0; i < targetCount; i++)
+    {
+        int targetClient = targetList[i];
+        char steamId[64];
+        if (!GetClientAuthId(targetClient, AuthId_Steam2, steamId, sizeof(steamId)))
+        {
+            ReplyToCommand(client, "Could not read Steam ID for %N.", targetClient);
+            continue;
+        }
+
+        bool isTemporaryVip = false;
+        if (_temporaryVipSteamIds.GetValue(steamId, isTemporaryVip) && isTemporaryVip)
+        {
+            _temporaryVipSteamIds.Remove(steamId);
+            if (client > 0 && IsClientInGame(client))
+            {
+                char adminMessage[192];
+                Format(adminMessage, sizeof(adminMessage), "Removed temporary VIP priority from %N.", targetClient);
+                MM_PrintToChat(client, adminMessage);
+            }
+            else
+                ReplyToCommand(client, "Removed temporary VIP priority from %N.", targetClient);
+
+            MM_PrintToChat(targetClient, "Your temporary VIP priority has been removed.");
+        }
+        else
+        {
+            _temporaryVipSteamIds.SetValue(steamId, true);
+            if (client > 0 && IsClientInGame(client))
+            {
+                char adminMessage[192];
+                Format(adminMessage, sizeof(adminMessage), "%N is temporarily VIP until the server restarts.", targetClient);
+                MM_PrintToChat(client, adminMessage);
+            }
+            else
+                ReplyToCommand(client, "%N is temporarily VIP until the server restarts.", targetClient);
+
+            MM_PrintToChat(targetClient, "You have been granted temporary VIP priority until the server restarts.");
+        }
+    }
+
+    return Plugin_Handled;
 }
 
 public Action Command_ReloadQueuepointsVolunteers(int client, int args)
@@ -776,6 +855,15 @@ ArrayList CreateSortedVolunteersList(int[] ignoredUserIds, int ignoredUserIdsLen
         state.QueuePoints = queuePoints;
         SMLogTag(SML_VERBOSE, "%L with steamid %s has %i Queuepoints", i, steamId, queuePoints);
 
+        bool isVip = _vipSteamIds.GetValue(steamId, value);
+        if (!isVip)
+            isVip = _temporaryVipSteamIds.GetValue(steamId, value);
+        if (isVip)
+        {
+            SMLogTag(SML_VERBOSE, "%L gets prioritized, because they are a vip", i);
+            state.Vip = true;
+        }
+
         if (!_volunteered[i])
         {
             SMLogTag(SML_VERBOSE, "%L has not volunteered", i);
@@ -787,6 +875,7 @@ ArrayList CreateSortedVolunteersList(int[] ignoredUserIds, int ignoredUserIdsLen
         state.Volunteered = true;
         volunteers.Push(state);
 
+        bool isAdmin = false;
         if (_autoVolunteerAdminFlag >= 0)
         {
             int userflags = GetUserFlagBits(i);
@@ -794,15 +883,7 @@ ArrayList CreateSortedVolunteersList(int[] ignoredUserIds, int ignoredUserIdsLen
             {
                 SMLogTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they have admin-flag %i", i, _autoVolunteerAdminFlag);
                 state.Admin = true;
-                continue;
             }
-        }
-
-        if (_vipSteamIds.GetValue(steamId, value))
-        {
-            SMLogTag(SML_VERBOSE, "%L has volunteered and gets prioritized, because they are a vip", i);
-            state.Vip = true;
-            continue;
         }
 
         SMLogTag(SML_VERBOSE, "%L has volunteered", i);
@@ -938,14 +1019,14 @@ int VolunteerStateComparision(int index1, int index2, Handle array, Handle hndl)
     VolunteerState a = view_as<VolunteerState>(list.Get(index1));
     VolunteerState b = view_as<VolunteerState>(list.Get(index2));
     
-    if (a.Admin && !b.Admin)
-        return -1;
-    if (!a.Admin && b.Admin)
-        return 1;
-    
     if (a.Vip && !b.Vip)
         return -1;
     if (!a.Vip && b.Vip)
+        return 1;
+
+    if (a.Admin && !b.Admin)
+        return -1;
+    if (!a.Admin && b.Admin)
         return 1;
     
     if (a.Volunteered && !b.Volunteered)

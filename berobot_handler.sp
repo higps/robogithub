@@ -2302,7 +2302,7 @@ public Action OnClientCommand(int client, int args)
                 // PrintToChatAll("%N args %s", client, cmd);
 
                 
-                TFTeam teampick;
+                TFTeam teampick = TFTeam_Unassigned;
                 
                 if(strcmp(cmd, "blue", true) == 0)
                 {
@@ -2324,7 +2324,8 @@ public Action OnClientCommand(int client, int args)
                     ServerCommand("sm_setvolunteer #%d", GetClientUserId(client));
                     PrintCenterText(client, "Boss mode is activated: Volenteering you to be a robot!");
                 }
-                else if (IsAnyRobot(client) && teampick != roboteam)
+                // Only an explicit "jointeam red/blue" may unvolunteer; autoteam/spectate/"auto" leave teampick Unassigned
+                else if (IsAnyRobot(client) && teampick != TFTeam_Unassigned && teampick != roboteam)
                 {
                     // UnmakeRobot(client);
                     ServerCommand("sm_unsetvolunteer #%d", GetClientUserId(client));

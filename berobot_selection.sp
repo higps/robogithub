@@ -723,6 +723,10 @@ any Native_Menu_RobotSelection(Handle plugin, int numParams)
 {
     int clientId = GetNativeCell(1);
     bool redrawing = GetNativeCell(2);
+    if (redrawing && g_chooseRobotMenus[clientId] == null)
+    {
+        return;
+    }
 
     if (!redrawing)
     {
@@ -1077,6 +1081,7 @@ public int Menu_RobotSubclass_Handler(Menu menu, MenuAction action, int param1, 
         bool found = menu.GetItem(param2, info, sizeof(info));
         PrintToConsole(param1, "You selected item: %d (found? %d info: %s)", param2, found, info);
 
+        CancelClientMenu(param1);
         SetRobot(info, param1);
     }
     /* If the menu was cancelled, print a message to the server about it. */

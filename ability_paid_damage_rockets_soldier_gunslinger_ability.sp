@@ -11,8 +11,8 @@
 #define ROBOT_NAME "Gunslinger"
 
 int g_HealthBeforeDamage[MAXPLAYERS + 1];
-float g_BerserkResetDelay = 1.5;
-float g_BerserkFireRatePerHit = 0.96;
+float g_BerserkResetDelay = 3.0;
+float g_BerserkFireRatePerHit = 0.90;
 Handle g_BerserkTimer[MAXPLAYERS + 1];
 bool g_BerserkActive[MAXPLAYERS + 1];
 int g_BerserkWeaponRef[MAXPLAYERS + 1][2];
@@ -69,6 +69,11 @@ void ApplyBerserkHit(int client)
 	}
 
 	g_BerserkFireRate[client] *= g_BerserkFireRatePerHit;
+	if (g_BerserkFireRate[client] < 0.1)
+	{
+		g_BerserkFireRate[client] = 0.1;
+	}
+
 	for (int slot = TFWeaponSlot_Primary; slot <= TFWeaponSlot_Secondary; slot++)
 	{
 		int weapon = GetPlayerWeaponSlot(client, slot);
