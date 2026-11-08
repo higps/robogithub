@@ -21,6 +21,8 @@ int g_CurrentRobots = 0;
 float g_dmg_bonus = 1.0;
 bool g_b_yap = true;
 
+int g_previous_missing_humans = 0;
+
 bool g_b_was_champion[MAXPLAYERS + 1] = { false, ... };
 bool g_b_refresh_weapons_pending[MAXPLAYERS + 1] = { false, ... };
 ConVar g_ModeConVar;
@@ -198,7 +200,7 @@ void FindValidCandidates()
     }
 }
 
-int g_previous_missing_humans = 0;
+
 void CheckChampion()
 {   
     if (!IsChampionMode())
