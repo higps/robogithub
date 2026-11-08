@@ -253,7 +253,17 @@ public Action Command_ToggleMMHumanDisplay(int client, int args)
 public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] sNewValue)
 {
     if (convar == g_cvCvarList[CV_bDebugMode])
-        g_cv_bDebugMode = view_as<bool>(StringToInt(sNewValue));
+    {
+        g_cv_bDebugMode = convar.BoolValue;
+        for (int client = 1; client <= MaxClients; client++)
+        {
+            if (IsClientInGame(client))
+            {
+                MC_PrintToChatAllEx(client, "{orange}[MM Damage]{default} Debug %s", g_cv_bDebugMode ? "{green}enabled" : "{red}disabled");
+                break;
+            }
+        }
+    }
 
 }
 
@@ -529,12 +539,12 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 if (IsKGB(weapon))
 	        	{
 
-                    if (g_cv_bDebugMode) PrintToChatAll("Hit # %i", Punch_Count[attacker]);
+                    if (g_cv_bDebugMode) MC_PrintToChatAllEx(attacker, "{orange}[MM Damage]{default} Hit # {orange}%i", Punch_Count[attacker]);
 
                     //Get the name of the player to use with the tauntem plugin
                     int playerID = GetClientUserId(victim);
                     
-                    if (g_cv_bDebugMode) PrintToChatAll("Victim name %s", playerID);
+                    if (g_cv_bDebugMode) MC_PrintToChatAllEx(victim, "{orange}[MM Damage]{default} Victim {teamcolor}%N{default} user ID {orange}%i", victim, playerID);
                         
                         
                         //Count the punches
@@ -680,7 +690,7 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                 if (damagecustom == TF_CUSTOM_BACKSTAB)
                 {
                     //Set Base DMG for backstab
-                    damage = 200.0 / 3.0;
+                    damage = 66.67;
                     critType = CritType_Crit;
                     
                 
@@ -691,9 +701,9 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
                     if (HasDiamondback(attacker)) //Diamondback gives 2, has to be+2 for some reason crits on backstab
                     {
-                    int iCrits = GetEntProp(attacker, Prop_Send, "m_iRevengeCrits");
+                        int iCrits = GetEntProp(attacker, Prop_Send, "m_iRevengeCrits");
 
-                    SetEntProp(attacker, Prop_Send, "m_iRevengeCrits", iCrits+2);
+                        SetEntProp(attacker, Prop_Send, "m_iRevengeCrits", iCrits+2);
                         
                     }
 
@@ -702,8 +712,6 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 4.0);
                         TF2_AddCondition(attacker, TFCond_Buffed, 4.0);
                     }
-
-
 
                     if (IsYer(weapon))
                     {
@@ -725,19 +733,22 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                         RequestFrame(Disguiseframe, info);                  
                     }
 
-                    //Do backstab modifying
-                    if (g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                    // //Do backstab modifying
+                    if (g_cv_bDebugMode)MC_PrintToChatAllEx(attacker, "{orange}[MM Damage]{default} Damage before change {orange}%.2f", damage);
 
                     int victimHP = GetClientHealth(victim);
-                    // int victimMAXHP = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-					int victimMAXHP = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", _, victim);
-                    int victimHPpercent = RoundToNearest(float(victimHP) / float(victimMAXHP) * 100);
+                    int victimMAXHP = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+                    if (victimMAXHP <= 0)
+                    {
+                        victimMAXHP = victimHP > 0 ? victimHP : 1;
+                    }
 
-                    // PrintToChatAll("victimHP %i, MAXHP %i", victimHP, victimMAXHP);
+                    // // PrintToChatAll("victimHP %i, MAXHP %i", victimHP, victimMAXHP);
                     
                     
-                    if (victimHPpercent >= 90){
-                        damage *= 1.5;
+                    if (float(victimHP) >= float(victimMAXHP) * 0.9){
+                        damage *= 1.25;
+                        if (g_cv_bDebugMode)MC_PrintToChatAllEx(attacker, "{orange}[MM Damage]{default} Target at or above {green}90%% HP");
                     }
 
                     if (IsSpycicle(weapon))
@@ -750,14 +761,16 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
                     {
                         damage *= 1.1;
                     }
-                    float bonus_hp_damage = float(victimMAXHP) * (1.0 / 100.0);
-                     if (g_cv_bDebugMode)PrintToChatAll("Bonus HP dmg, %f\nVictim max hp %i", bonus_hp_damage, victimMAXHP);
+
+                    float bonus_hp_damage = float(victimMAXHP) / 200.0;
+                    // MC_PrintToChatAllEx(attacker, "{orange}[MM Damage]{default} Bonus HP damage {orange}%.2f{default}; victim max HP {green}%i", bonus_hp_damage, victimMAXHP);
+                    if (g_cv_bDebugMode)MC_PrintToChatAllEx(attacker, "{orange}[MM Damage]{default} HP bonus {orange}%.2f{default}; victim max HP {green}%i", bonus_hp_damage, victimMAXHP);
                     damage = damage + bonus_hp_damage;
-                    critType = CritType_Crit;
-                    if (g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                    // // critType = CritType_Crit;
+                    if (g_cv_bDebugMode)MC_PrintToChatAllEx(attacker, "{orange}[MM Damage]{default} Backstab knife={orange}%i{default} HP={green}%i/%i{default} pre-crit={orange}%.2f{default} expected x3={orange}%.2f", GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"), victimHP, victimMAXHP, damage, damage * 3.0);
                     TF2_AddCondition(attacker, TFCond_RuneResist, g_protection_rune_duration);
-                    // EmitSoundToAll(SPY_ROBOT_STAB, victim);
-                    // EmitSoundToClient(victim, SPY_ROBOT_STAB);
+                    // // EmitSoundToAll(SPY_ROBOT_STAB, victim);
+                    // // EmitSoundToClient(victim, SPY_ROBOT_STAB);
                     return Plugin_Changed;
                 }
                 // PrintToChatAll("%i",damagecustom);
@@ -859,6 +872,14 @@ public Action TF2_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
     }
 
     return Plugin_Continue;
+}
+
+public void TF2_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom, CritType critType)
+{
+    if (g_cv_bDebugMode && damagecustom == TF_CUSTOM_BACKSTAB && IsValidClient(victim) && IsAnyRobot(victim))
+    {
+        MC_PrintToChatAllEx(victim, "{orange}[MM Damage]{default} Backstab post damage={orange}%.2f{default} crit={orange}%i{default} remaining HP={green}%i", damage, critType, GetClientHealth(victim));
+    }
 }
 
 stock void CreateParticle(int ent, char[] particleType, float time)
@@ -1196,9 +1217,9 @@ public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflic
                 if (IsMarketGardner(weapon))
                 {
                     
-                    if (g_cv_bDebugMode)PrintToChatAll("Damage before change %f", damage);
+                    if (g_cv_bDebugMode)MC_PrintToChatAllEx(attacker, "{orange}[MM Damage]{default} Damage before change {orange}%.2f", damage);
                     damage *= g_market_gardner_dmg_bonus;
-                    if (g_cv_bDebugMode)PrintToChatAll("Set damage to %f", damage);
+                    if (g_cv_bDebugMode)MC_PrintToChatAllEx(attacker, "{orange}[MM Damage]{default} Set damage to {orange}%.2f", damage);
                     return Plugin_Changed;
                     
                 }
@@ -3860,11 +3881,11 @@ public void CheckSpellBook(int iClient)
 
         if (iWearableOwner == iClient && iSpellBookIndex == 5605)
         {
-            PrintToChatAll("iSpellbookindex %i on %N", iSpellBookIndex, iClient);
+            MC_PrintToChatAllEx(iClient, "{orange}[MM Damage]{default} Spellbook index {orange}%i{default} on {teamcolor}%N", iSpellBookIndex, iClient);
         }
         else
         {
-            PrintToChatAll("No spell: %i on %N", iSpellBookIndex, iClient);
+            MC_PrintToChatAllEx(iClient, "{orange}[MM Damage]{default} No spell: {orange}%i{default} on {teamcolor}%N", iSpellBookIndex, iClient);
         }
     }
 }

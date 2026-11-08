@@ -471,6 +471,7 @@ MakeRobotFrame(client)
     // MakeEquipment(client, robot);
     if (!i_hConfig.ImportFromFile(configPath))
     {
+            delete i_hConfig;
             if (StrEqual(robotName, ""))
             {
             if (IsAnyRobot(client))
@@ -482,6 +483,7 @@ MakeRobotFrame(client)
             {
                 if (IsAnyRobot(client)) PrintToChatAll("Failed to import robot config from path %s for robot name %s Removing", configPath, robotName);
                 RemoveRobot(robotName);
+                SetRandomRobot(client);
             }
             return;
     }
