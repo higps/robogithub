@@ -447,9 +447,9 @@ public Action Command_Volunteer(int client, int args)
 {
     SMLogTag(SML_VERBOSE, "Command_Volunteer called for %L", client);
 
-    ConVar b_AprilEnabled = FindConVar("sm_mm_april_enable");
+    ConVar mode = FindConVar("sm_manned_machines_mode");
 
-    if (GetConVarBool(b_AprilEnabled))
+    if (mode != null && mode.IntValue == 2)
     {
         PrintCenterText(client, "No need to volunteer");
         return Plugin_Handled;
@@ -725,7 +725,9 @@ int CountVolunteers()
 void VolunteerAutomaticVolunteers()
 {
     int[] ignoredUserIds = new int[1];
-    ArrayList pickedVolunteers = PickVolunteers(_robocapTeam, ignoredUserIds, 0);
+    ConVar mode = FindConVar("sm_manned_machines_mode");
+    bool pickNonvolunteers = mode == null || mode.IntValue != 3;
+    ArrayList pickedVolunteers = PickVolunteers(_robocapTeam, ignoredUserIds, 0, pickNonvolunteers);
 
     int[] volunteerArray = new int[pickedVolunteers.Length];
     for(int i = 0; i < pickedVolunteers.Length; i++)

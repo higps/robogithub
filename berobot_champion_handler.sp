@@ -23,6 +23,7 @@ bool g_b_yap = true;
 
 bool g_b_was_champion[MAXPLAYERS + 1] = { false, ... };
 bool g_b_refresh_weapons_pending[MAXPLAYERS + 1] = { false, ... };
+ConVar g_ModeConVar;
 
 GlobalForward _currentChampion;
 int g_previous_check_human_count = 0;
@@ -57,15 +58,79 @@ public void OnPluginStart()
     HookEvent("player_death", Event_Death, EventHookMode_Post);
 
     CreateNative("MM_GetCurrentChampion", Native_GetCurrentChampion);
+    if (!IsChampionMode()) DisableChampionSystem();
+}
+
+public void OnConfigsExecuted()
+{
+    if (!IsChampionMode()) DisableChampionSystem();
+}
+
+bool IsChampionMode()
+{
+    if (g_ModeConVar == null)
+    {
+        g_ModeConVar = FindConVar("sm_manned_machines_mode");
+        if (g_ModeConVar != null)
+            g_ModeConVar.AddChangeHook(ChampionModeChanged);
+    }
+    return g_ModeConVar != null && g_ModeConVar.IntValue == 1;
+}
+
+public void ChampionModeChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    if (!IsChampionMode()) DisableChampionSystem();
+    else RequestFrame(CheckChampion);
+}
+
+void DisableChampionSystem()
+{
+    int champion = g_i_current_champion;
+    g_i_current_champion = -1;
+    if (g_h_checkChampionTimer != INVALID_HANDLE)
+    {
+        delete g_h_checkChampionTimer;
+        g_h_checkChampionTimer = INVALID_HANDLE;
+    }
+    if (g_h_checkChampionCowardTimer != INVALID_HANDLE)
+    {
+        delete g_h_checkChampionCowardTimer;
+        g_h_checkChampionCowardTimer = INVALID_HANDLE;
+    }
+    for (int client = 1; client <= MaxClients; client++)
+    {
+        bool hadExtras = client == champion || g_b_was_champion[client] || g_b_refresh_weapons_pending[client];
+        g_b_valid_candidate[client] = false;
+        g_b_was_champion[client] = false;
+        g_b_refresh_weapons_pending[client] = false;
+        if (hadExtras && IsValidClient(client) && !IsAnyRobot(client))
+        {
+            StripChampionExtras(client);
+            if (IsPlayerAlive(client))
+            {
+                TF2_RemoveAllWeapons(client);
+                TF2_RegeneratePlayer(client);
+            }
+        }
+    }
+    g_b_found_valid_candidate = false;
+    g_MissingHumans = 0;
+    g_CurrentRobots = 0;
+    g_dmg_bonus = 1.0;
+    g_previous_check_human_count = -1;
+    g_previous_missing_humans = 0;
+    g_b_yap = true;
 }
 
 public int Native_GetCurrentChampion(Handle plugin, int numParams)
 {
-    return g_i_current_champion;
+    return IsChampionMode() ? g_i_current_champion : -1;
 }
 
 public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
 {
+    if (!IsChampionMode())
+        return Plugin_Continue;
     int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 
 	int death_flags = GetEventInt(event, "death_flags");
@@ -90,6 +155,11 @@ float g_last_check = 0.0;
 
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
+    if (!IsChampionMode())
+    {
+        DisableChampionSystem();
+        return Plugin_Continue;
+    }
     int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
     if (g_b_was_champion[client] && (g_i_current_champion != client))
@@ -131,6 +201,11 @@ void FindValidCandidates()
 int g_previous_missing_humans = 0;
 void CheckChampion()
 {   
+    if (!IsChampionMode())
+    {
+        DisableChampionSystem();
+        return;
+    }
     
     //PrintToChatAll("Checking champion!");
     g_CurrentRobots = GetCurrentRobotCount();
@@ -219,6 +294,12 @@ void CheckChampion()
 
 public Action Timer_CheckChampionLeaveSpawn(Handle timer)
 {
+    if (!IsChampionMode())
+    {
+        g_h_checkChampionTimer = INVALID_HANDLE;
+        DisableChampionSystem();
+        return Plugin_Stop;
+    }
     // PrintToChatAll("Timer");
     for (int i = 1; i <= MaxClients; i++)
     {
@@ -249,6 +330,8 @@ public Action Timer_CheckChampionLeaveSpawn(Handle timer)
 
 void CreateChampion(int client)
 {
+    if (!IsChampionMode())
+        return;
     if (IsValidClient(client) && !IsAnyRobot(client) && IsPlayerAlive(client))
     {
         g_b_refresh_weapons_pending[client] = false;
@@ -369,6 +452,12 @@ void RemoveChampion(int client)
 
 public Action Timer_CheckChampionCoward(Handle timer)
 {
+    if (!IsChampionMode())
+    {
+        g_h_checkChampionCowardTimer = INVALID_HANDLE;
+        DisableChampionSystem();
+        return Plugin_Stop;
+    }
     if (g_i_current_champion == -1)
     {
         g_h_checkChampionCowardTimer = INVALID_HANDLE;
@@ -580,6 +669,8 @@ void SetHatParticle(int hat)
 
 public Action Timer_RefreshChampionWeapons(Handle timer, any userid)
 {
+    if (!IsChampionMode())
+        return Plugin_Stop;
     int client = GetClientOfUserId(userid);
 
     if (!IsValidClient(client) || !IsPlayerAlive(client))
@@ -603,6 +694,8 @@ public Action Timer_RefreshChampionWeapons(Handle timer, any userid)
 
 public Action Timer_RespawnAfterWeaponRefresh(Handle timer, any userid)
 {
+    if (!IsChampionMode())
+        return Plugin_Stop;
     int client = GetClientOfUserId(userid);
 
     if (!IsValidClient(client) || IsPlayerAlive(client))
@@ -616,6 +709,8 @@ public Action Timer_RespawnAfterWeaponRefresh(Handle timer, any userid)
 
 public Action TF2_OnTakeDamageModifyRules(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, CritType &critType)
 {
+    if (!IsChampionMode())
+        return Plugin_Continue;
     // if (!g_Enable)
     //     return Plugin_Continue;
     // PrintToChatAll("Damage was done");

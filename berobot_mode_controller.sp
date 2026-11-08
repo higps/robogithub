@@ -42,16 +42,11 @@ enum (<<= 1)
 
 enum 
 {
-    CV_g_Rtr_precent,
     CV_bDebugMode,
     CV_flYoutuberMode,
     CV_g_RoboCapTeam,
     CV_g_RoboCap,
-    CV_g_RoboTeamMode,
-    CV_g_RoboMode,
     CV_g_RoboStartTeam,
-    CV_g_Enable,
-    CV_g_AprilEnable,
     CV_PluginVersion
 }
 
@@ -61,6 +56,13 @@ enum {
 }
 
 ConVar g_cvCvarList[CV_PluginVersion + 1];
+ConVar g_MannedMachinesModeConVar;
+ConVar g_BothTeamsRobotsRatioConVar;
+int g_MannedMachinesMode = 1;
+bool g_RestoreHumanTeamPermission;
+int g_PreviousHumanTeamPermission;
+bool g_EnsuringBothTeamsRobots;
+int g_StandardRobotCapTeam;
 
 bool g_cv_bDebugMode;
 
@@ -71,7 +73,6 @@ bool g_WaitingForPlayers = true;
 
 bool g_cv_Volunteered[MAXPLAYERS + 1];
 char g_cv_RobotPicked[MAXPLAYERS + 1][NAMELENGTH];
-bool g_Voted[MAXPLAYERS + 1];
 
 GlobalForward _enabledChangedForward;
 GlobalForward _clientResetting;
@@ -79,7 +80,6 @@ GlobalForward _modeResetRequestedForward;
 
 GlobalForward _wasRandomRobotForward;
 
-float g_Rtr_percent;
 
 int g_CV_flYoutuberMode;
 int g_Enable;
@@ -87,11 +87,7 @@ int g_RoboCapTeam;
 int g_RoboTeam;
 int g_HumanTeam;
 int g_RoboCap;
-int g_RoboTeamMode;
 int g_RoboStartTeam;
-int g_RoboMode;
-int g_iVotes;
-int g_iVotesNeeded;
 int g_AprilEnable;
 
 float g_f_Damage_Bonus = 1.0;
@@ -123,44 +119,29 @@ public void OnPluginStart()
 
     g_cvCvarList[CV_PluginVersion] = CreateConVar("sm_mm_version", PLUGIN_VERSION, "Plugin Version.", FCVAR_NOTIFY | FCVAR_DONTRECORD | FCVAR_CHEAT);
 
-    g_cvCvarList[CV_g_Enable] = CreateConVar("sm_mm_enable", "0", "0 = Manned Machines disabled, 1 = Manned Machines enabled", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-    g_cvCvarList[CV_g_AprilEnable] = CreateConVar("sm_mm_april_enable", "0", "0 = Manned Machines april fools disabled, 1 = Manned Machines april fools enabled", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 
     g_cvCvarList[CV_bDebugMode] = CreateConVar("sm_mm_debug", "0", "Enable Debugging for Manned Machines Mode", FCVAR_NOTIFY, true, 0.0, true, 1.0);
     g_cvCvarList[CV_g_RoboCapTeam] = CreateConVar(CONVAR_ROBOCAP_TEAM, "6", "The total amount of giant robots on a team");  
     g_cvCvarList[CV_g_RoboCap] = CreateConVar("sm_robocap", "1", "The amount of giant robots allowed per robot-type");
-    g_cvCvarList[CV_g_RoboTeamMode] = CreateConVar("sm_both_teams_have_robots", "0", "0 = One Team consists only of robots, 1 = Both teams have bots");
-    g_cvCvarList[CV_g_RoboMode] = CreateConVar("sm_robo_mode", "0", "0 = Starts the mode when waiting for players is over, 1 = Start game by reaching enough volunteers");
     g_cvCvarList[CV_g_RoboStartTeam] = CreateConVar("sm_robot_random_start_team", "1", "0 = Robots always start on red, 1 = Robot team is randomly picked RED or BLUE, 2 = Robots Always starts on blue");
 
-    g_cvCvarList[CV_g_Rtr_precent] = CreateConVar("sm_mm_needed_rtr_ratio", "0.5", "The ratio of votes needed to start the mode with !rtr 1.0 = 100% 0.0 = 0%");
 
     g_cvCvarList[CV_flYoutuberMode] = CreateConVar("sm_mm_yt_mode", "0", "Uses youtuber mode for the official mode to set youtubers as the proper classes");
 
-    g_Enable = GetConVarInt(g_cvCvarList[CV_g_Enable]);
-    g_AprilEnable = GetConVarInt(g_cvCvarList[CV_g_AprilEnable]);
 
     g_cv_bDebugMode = GetConVarBool(g_cvCvarList[CV_bDebugMode]);
 
-    g_Rtr_percent = GetConVarFloat(g_cvCvarList[CV_g_Rtr_precent]);
     g_RoboCapTeam = GetConVarInt(g_cvCvarList[CV_g_RoboCapTeam]);
     g_RoboCap = GetConVarInt(g_cvCvarList[CV_g_RoboCap]);
-    g_RoboTeamMode = GetConVarInt(g_cvCvarList[CV_g_RoboTeamMode]);
     g_RoboStartTeam = GetConVarInt(g_cvCvarList[CV_g_RoboStartTeam]);
-    g_RoboMode = GetConVarInt(g_cvCvarList[CV_g_RoboMode]);
     g_CV_flYoutuberMode = GetConVarInt(g_cvCvarList[CV_flYoutuberMode]);
 
     g_cvCvarList[CV_bDebugMode].AddChangeHook(CvarChangeHook);
-    g_cvCvarList[CV_g_Enable].AddChangeHook(CvarChangeHook);
-    g_cvCvarList[CV_g_AprilEnable].AddChangeHook(CvarChangeHook);
 
     g_cvCvarList[CV_flYoutuberMode].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboCapTeam].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboCap].AddChangeHook(CvarChangeHook);
-    g_cvCvarList[CV_g_RoboTeamMode].AddChangeHook(CvarChangeHook);
     g_cvCvarList[CV_g_RoboStartTeam].AddChangeHook(CvarChangeHook);
-    g_cvCvarList[CV_g_RoboMode].AddChangeHook(CvarChangeHook);
-    g_cvCvarList[CV_g_Rtr_precent].AddChangeHook(CvarChangeHook);
 
     _enabledChangedForward = new GlobalForward("MM_OnEnabledChanged", ET_Ignore, Param_Cell);
     _clientResetting = new GlobalForward("MM_OnClientResetting", ET_Ignore, Param_Cell);
@@ -170,15 +151,13 @@ public void OnPluginStart()
 
     RegAdminCmd("sm_makerobot", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
     RegAdminCmd("sm_mr", Command_BeRobot, ADMFLAG_SLAY, "Become a robot");
-    RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Sets up the team and starts the robot");
+    RegAdminCmd("sm_boss_mode", Command_YT_Robot_Start, ADMFLAG_SLAY, "Starts or stops the selected Manned Machines mode");
     RegAdminCmd("sm_selection_mode", Command_Robot_Selection, ADMFLAG_SLAY, "Forces selection mode");
 
     RegAdminCmd("sm_me_boss", Command_Me_Boss, ADMFLAG_SLAY, "Checks if you are a boss");
-    RegAdminCmd("sm_random_robot", Command_SetRandomRobot, ADMFLAG_SLAY, "Checks if you are a boss");
+    RegAdminCmd("sm_random_robot", Command_SetRandomRobot, ADMFLAG_SLAY, "Sets a random robot");
     RegAdminCmd("sm_toggle_team_switch", Command_ToggleTeamSwitch, ADMFLAG_SLAY, "Toggles allowing teamswitch");
 
-    RegConsoleCmd("sm_rtr", Command_RoboVote, "Votes to begin a mode");
-    RegConsoleCmd("sm_rocktherobot", Command_RoboVote, "Votes to begin a mode");
     RegConsoleCmd("sm_changerobot", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_chngrbt", Command_ChangeRobot, "change your robot");
     RegConsoleCmd("sm_cr", Command_ChangeRobot, "change your robot");
@@ -189,12 +168,371 @@ public void OnPluginStart()
     HookEvent("teamplay_round_start", Event_Waiting_Abouttoend, EventHookMode_Post);
 
     HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
+    HookEvent("player_team", Event_PlayerTeamChanged, EventHookMode_Post);
 
     g_Volunteers = new ArrayList(ByteCountToCells(g_RoboCapTeam));
 
     g_Volunteers.Clear();
 
+    g_MannedMachinesModeConVar = CreateConVar("sm_manned_machines_mode", "1", "0 = Off, 1 = Standard, 2 = April (everyone is a robot), 3 = Volunteers distributed across both teams", FCVAR_NOTIFY, true, 0.0, true, 3.0);
+    g_BothTeamsRobotsRatioConVar = CreateConVar("both_team_has_robots_ratio", "3", "Total players per robot on each team in mode 3", FCVAR_NOTIFY, true, 1.0);
+    g_BothTeamsRobotsRatioConVar.AddChangeHook(BothTeamsRobotsRatioChanged);
+    g_MannedMachinesModeConVar.AddChangeHook(MannedMachinesModeChanged);
+    ApplyMannedMachinesMode(false);
 }
+
+public void OnConfigsExecuted()
+{
+    ApplyMannedMachinesMode(false);
+}
+
+public void OnPluginEnd()
+{
+    if (g_RestoreHumanTeamPermission)
+    {
+        ConVar permission = FindConVar("sm_allow_robots_on_human_team");
+        if (permission != null)
+            permission.SetInt(g_PreviousHumanTeamPermission);
+    }
+}
+
+public void MannedMachinesModeChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    ApplyMannedMachinesMode(true);
+}
+
+public void BothTeamsRobotsRatioChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    if (g_MannedMachinesMode == 3)
+    {
+        UpdateBothTeamsRobotTarget();
+        EnsureRobotCount();
+    }
+}
+
+int GetRobotTargetForPlayerCount(int players)
+{
+    float ratio = g_BothTeamsRobotsRatioConVar.FloatValue;
+    if (players == 0)
+        return 0;
+    if (float(players) <= ratio)
+        return 1;
+    int target = RoundToFloor(float(players) / ratio) + 1;
+    return target > players ? players : target;
+}
+
+int GetBothTeamsRobotTarget(int team)
+{
+    if (team != view_as<int>(TFTeam_Red) && team != view_as<int>(TFTeam_Blue))
+        return 0;
+    int redPlayers = GetTeamClientCount(TFTeam_Red);
+    int bluePlayers = GetTeamClientCount(TFTeam_Blue);
+    int redTarget = GetRobotTargetForPlayerCount(redPlayers);
+    int blueTarget = GetRobotTargetForPlayerCount(bluePlayers);
+    int target = redTarget > blueTarget ? redTarget : blueTarget;
+    int smallerTeam = redPlayers < bluePlayers ? redPlayers : bluePlayers;
+    return target > smallerTeam ? smallerTeam : target;
+}
+
+void UpdateBothTeamsRobotTarget()
+{
+    g_cvCvarList[CV_g_RoboCapTeam].SetInt(GetBothTeamsRobotTarget(TFTeam_Red) + GetBothTeamsRobotTarget(TFTeam_Blue));
+}
+
+int GetAssignedRobotCount(int team)
+{
+    int count;
+    for (int client = 1; client <= MaxClients; client++)
+    {
+        if (IsValidClient(client) && g_cv_Volunteered[client] && GetClientTeam(client) == team)
+            count++;
+    }
+    return count;
+}
+
+int ChooseBothTeamsRobotTeam(int client)
+{
+    int redCount = GetAssignedRobotCount(TFTeam_Red);
+    int blueCount = GetAssignedRobotCount(TFTeam_Blue);
+    bool redAvailable = redCount < GetBothTeamsRobotTarget(TFTeam_Red);
+    bool blueAvailable = blueCount < GetBothTeamsRobotTarget(TFTeam_Blue);
+    if (!redAvailable && !blueAvailable)
+        return TFTeam_Unassigned;
+    if (!redAvailable)
+        return TFTeam_Blue;
+    if (!blueAvailable)
+        return TFTeam_Red;
+    if (redCount == blueCount)
+        return GetClientTeam(client) == TFTeam_Blue ? TFTeam_Blue : TFTeam_Red;
+    return redCount < blueCount ? TFTeam_Red : TFTeam_Blue;
+}
+
+void MoveBothTeamsVolunteer(int client, int team)
+{
+    int oldTeam = GetClientTeam(client);
+    if (oldTeam == team)
+        return;
+    for (int human = 1; human <= MaxClients; human++)
+    {
+        if (IsValidClient(human) && !g_cv_Volunteered[human] && !IsAnyRobot(human) && GetClientTeam(human) == team)
+        {
+            TF2_SwapTeamAndRespawnNoMsg(human, oldTeam);
+            TF2_RespawnPlayer(human);
+            break;
+        }
+    }
+    TF2_SwapTeamAndRespawnNoMsg(client, team);
+    TF2_RespawnPlayer(client);
+}
+
+void BalanceBothTeamsPlayers()
+{
+    while (GetTeamClientCount(TFTeam_Red) > GetTeamClientCount(TFTeam_Blue) + 1
+        || GetTeamClientCount(TFTeam_Blue) > GetTeamClientCount(TFTeam_Red) + 1)
+    {
+        int largerTeam = GetTeamClientCount(TFTeam_Red) > GetTeamClientCount(TFTeam_Blue)
+            ? view_as<int>(TFTeam_Red) : view_as<int>(TFTeam_Blue);
+        int smallerTeam = largerTeam == view_as<int>(TFTeam_Red)
+            ? view_as<int>(TFTeam_Blue) : view_as<int>(TFTeam_Red);
+        int player;
+        for (int pass = 0; pass < 2 && player == 0; pass++)
+        {
+            for (int client = MaxClients; client >= 1; client--)
+            {
+                if (!IsValidClient(client) || GetClientTeam(client) != largerTeam)
+                    continue;
+                if (pass == 0 && (g_cv_Volunteered[client] || IsAnyRobot(client)))
+                    continue;
+                player = client;
+                break;
+            }
+        }
+        if (player == 0)
+            break;
+        ChangeClientTeam(player, smallerTeam);
+        TF2_RespawnPlayer(player);
+    }
+}
+
+void BalanceBothTeamsRobotAssignments()
+{
+    while (GetAssignedRobotCount(TFTeam_Red) > GetAssignedRobotCount(TFTeam_Blue) + 1
+        || GetAssignedRobotCount(TFTeam_Blue) > GetAssignedRobotCount(TFTeam_Red) + 1)
+    {
+        int largerTeam = GetAssignedRobotCount(TFTeam_Red) > GetAssignedRobotCount(TFTeam_Blue)
+            ? view_as<int>(TFTeam_Red) : view_as<int>(TFTeam_Blue);
+        int smallerTeam = largerTeam == view_as<int>(TFTeam_Red)
+            ? view_as<int>(TFTeam_Blue) : view_as<int>(TFTeam_Red);
+        if (GetAssignedRobotCount(smallerTeam) >= GetBothTeamsRobotTarget(smallerTeam))
+            break;
+        int player;
+        for (int client = MaxClients; client >= 1; client--)
+        {
+            if (IsValidClient(client) && g_cv_Volunteered[client] && GetClientTeam(client) == largerTeam)
+            {
+                player = client;
+                break;
+            }
+        }
+        if (player == 0)
+            break;
+        MoveBothTeamsVolunteer(player, smallerTeam);
+    }
+}
+
+void StartBothTeamsRobotMode()
+{
+    g_BossMode = true;
+    g_cv_BlockTeamSwitch = false;
+    g_RoboTeam = TFTeam_Unassigned;
+    g_HumanTeam = TFTeam_Unassigned;
+    ServerCommand("mp_forceautoteam 0");
+    ServerCommand("mp_teams_unbalance_limit 1");
+    ServerCommand("mp_autoteambalance 0");
+    ServerCommand("mp_scrambleteams_auto 0");
+    ServerCommand("sm_cvar tf_dropped_weapon_lifetime 0");
+    ServerCommand("mp_restartgame 5");
+
+    int redCount;
+    int blueCount;
+    for (int pass = 0; pass < 2; pass++)
+    {
+        for (int client = 1; client <= MaxClients; client++)
+        {
+            if (!IsValidClient(client) || GetClientTeam(client) < view_as<int>(TFTeam_Red))
+                continue;
+            if (g_cv_Volunteered[client] != (pass == 0))
+                continue;
+            int team = redCount <= blueCount ? view_as<int>(TFTeam_Red) : view_as<int>(TFTeam_Blue);
+            TF2_SwapTeamAndRespawnNoMsg(client, team);
+            if (team == view_as<int>(TFTeam_Red)) redCount++;
+            else blueCount++;
+            if (g_cv_Volunteered[client]) RequestFrame(Internal_SetRandomRobot, client);
+        }
+    }
+    EnsureBothTeamsRobotCount();
+}
+
+void EnsureBothTeamsRobotCount()
+{
+    if (g_EnsuringBothTeamsRobots || !g_Enable || !g_BossMode || g_MannedMachinesMode != 3)
+        return;
+    g_EnsuringBothTeamsRobots = true;
+    BalanceBothTeamsPlayers();
+    UpdateBothTeamsRobotTarget();
+    BalanceBothTeamsRobotAssignments();
+
+    for (int team = view_as<int>(TFTeam_Red); team <= view_as<int>(TFTeam_Blue); team++)
+    {
+        for (int client = MaxClients; client >= 1 && GetAssignedRobotCount(team) > GetBothTeamsRobotTarget(team); client--)
+        {
+            if (!IsValidClient(client) || !g_cv_Volunteered[client] || GetClientTeam(client) != team)
+                continue;
+            g_cv_Volunteered[client] = false;
+            g_cv_RobotPicked[client] = "";
+            int index = g_Volunteers.FindValue(client);
+            if (index >= 0) g_Volunteers.Erase(index);
+            TrashRobot(client);
+            TF2_RegeneratePlayer(client);
+        }
+    }
+
+    while (GetAssignedRobotCount(TFTeam_Red) < GetBothTeamsRobotTarget(TFTeam_Red)
+        || GetAssignedRobotCount(TFTeam_Blue) < GetBothTeamsRobotTarget(TFTeam_Blue))
+    {
+        int[] ignored = new int[MaxClients + 1];
+        int ignoredCount;
+        for (int client = 1; client <= MaxClients; client++)
+        {
+            if (IsValidClient(client) && (g_cv_Volunteered[client] || GetClientTeam(client) < view_as<int>(TFTeam_Red)))
+                ignored[ignoredCount++] = GetClientUserId(client);
+        }
+        int volunteer = GetRandomVolunteer(ignored, ignoredCount);
+        if (!IsValidClient(volunteer))
+            break;
+        if (GetAssignedRobotCount(TFTeam_Red) == GetAssignedRobotCount(TFTeam_Blue))
+        {
+            ignored[ignoredCount++] = GetClientUserId(volunteer);
+            int partner = GetRandomVolunteer(ignored, ignoredCount);
+            if (!IsValidClient(partner))
+                break;
+            MakeRobot(volunteer, true);
+            MakeRobot(partner, true);
+        }
+        else
+        {
+            MakeRobot(volunteer, true);
+        }
+    }
+
+    while (GetAssignedRobotCount(TFTeam_Red) != GetAssignedRobotCount(TFTeam_Blue))
+    {
+        int largerTeam = GetAssignedRobotCount(TFTeam_Red) > GetAssignedRobotCount(TFTeam_Blue)
+            ? view_as<int>(TFTeam_Red) : view_as<int>(TFTeam_Blue);
+        int player;
+        for (int client = MaxClients; client >= 1; client--)
+        {
+            if (IsValidClient(client) && g_cv_Volunteered[client] && GetClientTeam(client) == largerTeam)
+            {
+                player = client;
+                break;
+            }
+        }
+        if (player == 0)
+            break;
+        g_cv_Volunteered[player] = false;
+        g_cv_RobotPicked[player] = "";
+        int index = g_Volunteers.FindValue(player);
+        if (index >= 0) g_Volunteers.Erase(index);
+        TrashRobot(player);
+        TF2_RegeneratePlayer(player);
+    }
+    g_EnsuringBothTeamsRobots = false;
+}
+
+void ApplyMannedMachinesMode(bool transition)
+{
+    int mode = g_MannedMachinesModeConVar.IntValue;
+    bool changed = mode != g_MannedMachinesMode;
+    bool wasActive = g_BossMode;
+    int previousEnable = g_Enable;
+    int previousMode = g_MannedMachinesMode;
+
+    if (changed && mode == 3)
+        g_StandardRobotCapTeam = g_RoboCapTeam;
+
+    if (transition && changed)
+    {
+        for (int client = 1; client <= MaxClients; client++)
+        {
+            if (IsValidClient(client) && IsAnyRobot(client))
+            {
+                TrashRobot(client);
+            }
+        }
+        ResetMode();
+    }
+
+    g_MannedMachinesMode = mode;
+    g_AprilEnable = mode == 2 ? 1 : 0;
+    g_Enable = mode == 0 ? 0 : 1;
+    if (mode == 3)
+        UpdateBothTeamsRobotTarget();
+    else if (changed && previousMode == 3)
+    {
+        ConVar dynamicEnabled = FindConVar("sm_berobot_dynamicRobotCount_enable");
+        ConVar standardRatio = FindConVar("sm_berobot_dynamicRobotCount_humansPerRobot");
+        int target = g_StandardRobotCapTeam;
+        if (dynamicEnabled != null && dynamicEnabled.BoolValue && standardRatio != null && standardRatio.FloatValue > 0.0)
+        {
+            target = RoundToCeil(float(GetTeamClientCount(TFTeam_Red) + GetTeamClientCount(TFTeam_Blue)) / standardRatio.FloatValue);
+            if (target < 1) target = 1;
+        }
+        g_cvCvarList[CV_g_RoboCapTeam].SetInt(target);
+    }
+    if (previousEnable != g_Enable)
+    {
+        Call_StartForward(_enabledChangedForward);
+        Call_PushCell(g_Enable);
+        Call_Finish();
+    }
+
+    ConVar permission = FindConVar("sm_allow_robots_on_human_team");
+    if (permission != null)
+    {
+        if (mode == 2 || mode == 3)
+        {
+            if (!g_RestoreHumanTeamPermission)
+            {
+                g_PreviousHumanTeamPermission = permission.IntValue;
+                g_RestoreHumanTeamPermission = true;
+            }
+            permission.SetInt(1);
+        }
+        else if (g_RestoreHumanTeamPermission)
+        {
+            permission.SetInt(g_PreviousHumanTeamPermission);
+            g_RestoreHumanTeamPermission = false;
+        }
+    }
+
+    if (transition && changed)
+    {
+        if (mode == 0)
+        {
+            ServerCommand("mp_forceautoteam 1");
+            ServerCommand("sm_cvar tf_dropped_weapon_lifetime 30");
+            ServerCommand("mp_teams_unbalance_limit 1");
+            ServerCommand("mp_autoteambalance 1");
+            ServerCommand("mp_scrambleteams_auto 1");
+        }
+        else if (wasActive || !g_WaitingForPlayers)
+        {
+            Command_Robot_Selection(0, 0);
+        }
+    }
+}
+
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
@@ -231,19 +569,15 @@ public void ResetMode()
     g_cv_BlockTeamSwitch = false;
     g_BossMode = false;
     g_SpectateSelection = false;
-    g_iVotes = 0;
     g_Volunteers.Clear();
 
     for(int i = 0; i <= MAXPLAYERS; i++)
     {
         g_cv_Volunteered[i] = false;
         g_cv_RobotPicked[i] = "";
-        g_Voted[i] = false;
 
     }
 
-    int totalplayers = RoundToCeil(float(GetClientCount(false)) * g_Rtr_percent);
-    g_iVotesNeeded = totalplayers;
 
     Call_StartForward(_modeResetRequestedForward);
     Call_Finish();
@@ -252,6 +586,19 @@ public void ResetMode()
 public void OnClientDisconnect_Post(int client)
 {
     Reset(client);
+    if (g_MannedMachinesMode == 3)
+        RequestFrame(EnsureBothTeamsRobotCountFrame);
+}
+
+public void Event_PlayerTeamChanged(Event event, const char[] name, bool dontBroadcast)
+{
+    if (g_MannedMachinesMode == 3)
+        RequestFrame(EnsureBothTeamsRobotCountFrame);
+}
+
+void EnsureBothTeamsRobotCountFrame(any data)
+{
+    EnsureBothTeamsRobotCount();
 }
 
 void Reset(int client)
@@ -279,6 +626,8 @@ void Reset(int client)
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
     int client = GetClientOfUserId(event.GetInt("userid"));
+    if (!g_Enable || !IsValidClient(client))
+        return Plugin_Continue;
     if (!g_AprilEnable) RequestFrame(RobotTeamCheck, client);
     if (!IsAnyRobot(client) && g_AprilEnable && g_BossMode && g_Enable)
     {
@@ -290,7 +639,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 public Action SetRandomRobot_Timer(Handle timer, any client)
 {
 
-    if (!IsAnyRobot(client))
+    if (g_Enable && g_AprilEnable && g_BossMode && IsValidClient(client) && !IsAnyRobot(client))
     {
         Internal_SetRandomRobot(client);
     }
@@ -318,13 +667,17 @@ public Action Event_Waiting_Abouttoend(Event event, const char[] name, bool dont
 
     }
 
-    int totalplayers = RoundToCeil(float(GetClientCount(false)) * g_Rtr_percent);
-    g_iVotesNeeded = totalplayers;
 
 }
 
 public Action Event_teamplay_round_start(Event event, char[] name, bool dontBroadcast)
 {
+    if (g_Enable && g_MannedMachinesMode == 3)
+    {
+        if (GameRules_GetProp("m_bSwitchedTeamsThisRound")) ResetCoins();
+        EnsureBothTeamsRobotCount();
+        return Plugin_Continue;
+    }
 
     if (g_Enable && !g_AprilEnable){
 
@@ -384,8 +737,6 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
     if(convar == g_cvCvarList[CV_flYoutuberMode])
         g_CV_flYoutuberMode = StringToInt(sNewValue);
 
-    if(convar == g_cvCvarList[CV_g_Rtr_precent])
-        g_Rtr_percent = StringToFloat(sNewValue);
 
     if(convar == g_cvCvarList[CV_g_RoboCap])
         g_RoboCap = StringToInt(sNewValue);
@@ -396,25 +747,6 @@ public void CvarChangeHook(ConVar convar, const char[] sOldValue, const char[] s
         if (g_Enable) PrintToChatAll("Current Robots: %i", g_RoboCapTeam);
     }
 
-    if(convar == g_cvCvarList[CV_g_RoboTeamMode])
-        g_RoboTeamMode = StringToInt(sNewValue);
-
-    if(convar == g_cvCvarList[CV_g_RoboMode])
-        g_RoboMode = StringToInt(sNewValue); 
-
-    if(convar == g_cvCvarList[CV_g_Enable])
-    {
-        g_Enable = StringToInt(sNewValue); 
-
-        Call_StartForward(_enabledChangedForward);
-        Call_PushCell(g_Enable);
-        Call_Finish();
-    }
-
-    if(convar == g_cvCvarList[CV_g_AprilEnable])
-    {
-        g_AprilEnable = StringToInt(sNewValue); 
-    }
 }
 
 public any Native_GetRobotTeam(Handle plugin, int numParams)
@@ -424,6 +756,26 @@ public any Native_GetRobotTeam(Handle plugin, int numParams)
 
 void RobotTeamCheck(int client)
 {
+    if (!g_Enable || g_AprilEnable || !g_BossMode || !IsValidClient(client))
+        return;
+    if (g_MannedMachinesMode == 3)
+    {
+        if (GetClientTeam(client) < view_as<int>(TFTeam_Red))
+        {
+            if (g_cv_Volunteered[client]) Reset(client);
+            if (IsAnyRobot(client)) TrashRobot(client);
+        }
+        else if (g_cv_Volunteered[client])
+        {
+            if (!IsAnyRobot(client)) Internal_SetRandomRobot(client);
+        }
+        else if (IsAnyRobot(client))
+        {
+            TrashRobot(client);
+        }
+        EnsureBothTeamsRobotCount();
+        return;
+    }
     if(IsClientInGame(client))
     {
         int iTeam = GetClientTeam(client);
@@ -543,6 +895,13 @@ public Action Command_Me_Boss(int client, int args)
 
 public Action Command_Robot_Selection(int client, int args)
 {
+    if (g_Enable && g_MannedMachinesMode == 3)
+    {
+        UpdateBothTeamsRobotTarget();
+        g_cv_BlockTeamSwitch = false;
+        StartAutomaticVolunteerVote();
+        return Plugin_Handled;
+    }
 
     if (g_AprilEnable && g_Enable){
         Command_YT_Robot_Start(1, true);
@@ -568,6 +927,29 @@ public Action Command_Robot_Selection(int client, int args)
 
 public Action Command_YT_Robot_Start(int client, int args)
 {
+    if (g_Enable && g_BossMode)
+    {
+        PrintCenterTextAll("Stopping Manned Machines mode");
+        for (int player = 1; player <= MaxClients; player++)
+        {
+            if (IsValidClient(player) && IsAnyRobot(player))
+                TrashRobot(player);
+        }
+        ServerCommand("mp_forceautoteam 1");
+        ServerCommand("sm_cvar tf_dropped_weapon_lifetime 30");
+        ServerCommand("mp_teams_unbalance_limit 1");
+        ServerCommand("mp_restartgame 5");
+        ServerCommand("mp_autoteambalance 1");
+        ServerCommand("mp_scrambleteams_auto 1");
+        ResetMode();
+        return Plugin_Handled;
+    }
+
+    if (g_Enable && g_MannedMachinesMode == 3)
+    {
+        StartBothTeamsRobotMode();
+        return Plugin_Handled;
+    }
 
     if (g_Enable  && !g_AprilEnable)
     {
@@ -620,20 +1002,6 @@ public Action Command_YT_Robot_Start(int client, int args)
             g_BossMode = true;
             if(g_cv_bDebugMode) PrintToChatAll("Robots will be Team %i", g_RoboTeam);
             if(g_cv_bDebugMode) PrintToChatAll("Humans will be Team %i", g_HumanTeam);
-        }
-        else
-        {
-            g_cv_BlockTeamSwitch = false;
-            PrintCenterTextAll("Stopping Giant Robot Event mode");
-            ServerCommand("mp_forceautoteam 1");
-            ServerCommand("sm_cvar tf_dropped_weapon_lifetime 30");
-            ServerCommand("mp_teams_unbalance_limit 1");
-            ServerCommand("mp_restartgame 5");
-            ServerCommand("mp_autoteambalance 1");
-            ServerCommand("mp_scrambleteams_auto 1");
-
-            ResetMode();
-
         }
 
         if(g_BossMode)
@@ -694,64 +1062,18 @@ public Action Command_YT_Robot_Start(int client, int args)
     }
     else
     {
-        PrintCenterText(client, "Manned Machines is not enabled. Enable with sm_mm_enable 1");
+        ReplyToCommand(client, "Manned Machines is off. Select a mode with sm_manned_machines_mode 1, 2 or 3.");
     }
-}
-
-public Action Command_RoboVote(int client, int args)
-{
-    if (g_Enable)
-    {
-        if (g_WaitingForPlayers)
-        {
-            MC_PrintToChatEx(client, client,"[{orange}SM{default}]{teamcolor} Still waiting for players, try again once waiting for players is over");
-            return;
-        }
-
-        if (g_BossMode)
-        {
-            MC_PrintToChatEx(client, client,"[{orange}SM{default}]{teamcolor} Giant Boss Mode is already active");
-            return;
-        }
-
-        if (g_CV_flYoutuberMode)
-        {
-            MC_PrintToChatEx(client, client,"[{orange}SM{default}]{teamcolor} Giant Boss Mode is already active with Youtubers");
-            return;
-        }
-
-        if (g_RoboMode == 1)
-        {
-            MC_PrintToChatEx(client, client,"[{orange}SM{default}]{teamcolor} Voting is disabled. Use {green}!join{green} to become a robot, game starts when enough volunteers are reached");
-            return;
-        }
-
-        if(g_Voted[client])
-        {
-            MC_PrintToChat(client,"{orange}You have already voted");
-            return;
-        }
-
-        g_iVotes++;
-
-        MC_PrintToChatAllEx(client, "[{orange}SM{default}] {teamcolor}%N {default}wants to start Giant Robot Boss mode. [{orange}%i{default}/{orange}%i {default}more votes required]", client, g_iVotes, g_iVotesNeeded);
-
-        if(g_iVotes >= g_iVotesNeeded)
-        {
-            Command_Robot_Selection(client, args);
-        }
-    }
-    else
-    {
-        MC_PrintToChatAllEx(client, "[{orange}SM{default}] {teamcolor}%N {default}Manned Machines mode is {red}disabled", client);
-    }
-
-    return;
-
+    return Plugin_Handled;
 }
 
 public Action Command_ChangeRobot(int client, int args)
 {
+    if (g_MannedMachinesMode == 3 && !g_cv_Volunteered[client])
+    {
+        MM_PrintToChat(client, "Volunteer with !join to become a robot.");
+        return Plugin_Handled;
+    }
 
     if (g_AprilEnable && !g_Enable)
     {
@@ -797,7 +1119,7 @@ public Action Command_ChangeRobot(int client, int args)
     }
 
     int iTeam = GetClientTeam(client);
-    if (iTeam == g_RoboTeam || g_AprilEnable)
+    if (iTeam == g_RoboTeam || g_AprilEnable || (g_MannedMachinesMode == 3 && g_cv_Volunteered[client]))
     {
 
         SetClientRepicking(client, true); 
@@ -850,7 +1172,34 @@ public Action MakeRobot(int client, bool volunteering)
     {
         MM_PrintToChat(client, "Unable to make robot, robot-mode is not enabled");
         SMLogTag(SML_VERBOSE, "MakeRobot cancled for %L, because robot-mode is not enabled", client);
-        return;
+        return Plugin_Handled;
+    }
+
+    if (g_MannedMachinesMode == 3)
+    {
+        if (!IsValidClient(client) || GetClientTeam(client) < view_as<int>(TFTeam_Red))
+            return Plugin_Handled;
+        if (volunteering && !g_cv_Volunteered[client])
+        {
+            int team = ChooseBothTeamsRobotTeam(client);
+            if (team == view_as<int>(TFTeam_Unassigned))
+                return Plugin_Handled;
+            if (g_BossMode) MoveBothTeamsVolunteer(client, team);
+            g_cv_Volunteered[client] = true;
+            g_Volunteers.Push(client);
+            if (g_BossMode) RequestFrame(Internal_SetRandomRobot, client);
+        }
+        else if (!volunteering && g_cv_Volunteered[client])
+        {
+            g_cv_Volunteered[client] = false;
+            int index = g_Volunteers.FindValue(client);
+            if (index >= 0) g_Volunteers.Erase(index);
+            g_cv_RobotPicked[client] = "";
+            TrashRobot(client);
+            TF2_RegeneratePlayer(client);
+            EnsureBothTeamsRobotCount();
+        }
+        return Plugin_Handled;
     }
 
     if(volunteering && !g_cv_Volunteered[client])
@@ -891,7 +1240,7 @@ public Action MakeRobot(int client, bool volunteering)
 
         g_Volunteers.Resize(g_RoboCapTeam);
 
-        return;
+        return Plugin_Handled;
     }
 
     for(int i = 0; i < g_Volunteers.Length; i++)
@@ -937,7 +1286,7 @@ Action ChooseRobot(int client, bool redrawing = false)
 
 void Internal_SetRandomRobot(int client)
 {
-    if (!g_Enable)
+    if (!g_Enable || !IsValidClient(client) || (g_MannedMachinesMode == 3 && !g_cv_Volunteered[client]))
         return;
 
     ArrayList robotNames = GetRobotNames();
@@ -1025,6 +1374,12 @@ any Native_ForceRobot(Handle plugin, int numParams)
 
 void Internal_SetRobot(char robotname[NAMELENGTH], int client)
 {
+    if (g_MannedMachinesMode == 3 && (!IsValidClient(client) || !g_cv_Volunteered[client] || GetClientTeam(client) < view_as<int>(TFTeam_Red)))
+    {
+        if (IsValidClient(client)) MM_PrintToChat(client, "Volunteer with !join to become a robot.");
+        return;
+    }
+
     int error = CreateRobot(robotname, client, "");
     if (error != 0)
     {
@@ -1088,6 +1443,8 @@ any Native_RedrawChooseRobotMenuFor(Handle plugin, int numParams)
 
 public Action OnClientCommand(int client, int args)
 {
+    if (g_MannedMachinesMode == 3)
+        return Plugin_Continue;
     char cmd[16];
 
     GetCmdArg(0, cmd, sizeof(cmd));
@@ -1224,12 +1581,19 @@ int Native_SetVolunteers(Handle plugin, int numParams)
         int clientId = GetClientOfUserId(volunteers[i]);
         MakeRobot(clientId, true);
     }
+    if (g_MannedMachinesMode == 3 && g_Enable && !g_BossMode)
+        StartBothTeamsRobotMode();
 }
 bool g_b_changed_dmg = false;
 bool g_b_broadcast_msg = false;
 
 int Native_EnsureRobotCount(Handle plugin, int numParams)
 {
+    if (g_MannedMachinesMode == 3)
+    {
+        EnsureBothTeamsRobotCount();
+        return 0;
+    }
     if (!g_BossMode)
         return;
 

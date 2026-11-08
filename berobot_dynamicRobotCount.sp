@@ -100,6 +100,10 @@ void SetRoboCapTeam()
     if (!_enabled)
         return;
 
+    ConVar mode = FindConVar("sm_manned_machines_mode");
+    if (mode != null && mode.IntValue == 3)
+        return;
+
     //int count = GetClientCount();
 
     // int Spectate = GetTeamClientCount(1);

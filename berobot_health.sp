@@ -93,8 +93,8 @@ bool IsDebugEnabled()
 
 bool IsAprilEnabled()
 {
-    ConVar april = FindConVar("sm_mm_april_enable");
-    return april != null && april.BoolValue;
+    ConVar mode = FindConVar("sm_manned_machines_mode");
+    return mode != null && mode.IntValue == 2;
 }
 
 bool isMiniBoss(int client)
