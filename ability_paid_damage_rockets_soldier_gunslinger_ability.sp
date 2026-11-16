@@ -1,7 +1,8 @@
 #pragma semicolon 1
+#pragma newdecls required
 #include <sourcemod>
 #include <tf2_stocks>
-#include <tf2attributes>
+#include <tf2utils>
 #include <tf_ontakedamage>
 
 #include <berobot_constants>
@@ -9,16 +10,10 @@
 
 #define PLUGIN_VERSION "1.0"
 #define ROBOT_NAME "Gunslinger"
+#define SECONDARY_RELOAD_COOLDOWN 0.5
 
 int g_HealthBeforeDamage[MAXPLAYERS + 1];
-float g_BerserkResetDelay = 4.0;
-float g_BerserkFireRatePerHit = 0.90;
-Handle g_BerserkTimer[MAXPLAYERS + 1];
-bool g_BerserkActive[MAXPLAYERS + 1];
-int g_BerserkWeaponRef[MAXPLAYERS + 1][2];
-bool g_BerserkHadAttribute[MAXPLAYERS + 1][2];
-float g_BerserkBaseFireRate[MAXPLAYERS + 1][2];
-float g_BerserkFireRate[MAXPLAYERS + 1];
+float g_NextReloadTime[MAXPLAYERS + 1][2];
 
 public Plugin myinfo =
 {
@@ -56,107 +51,53 @@ public void TF2_OnTakeDamagePost(int victim, int attacker, int inflictor, float 
 		return;
 	}
 
-	ApplyBerserkHit(attacker);
-}
-
-void ApplyBerserkHit(int client)
-{
-	// PrintToChatAll("Berserk active");
-	if (!g_BerserkActive[client])
+	int primary = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Primary);
+	int secondary = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Secondary);
+	if (weapon == primary)
 	{
-		g_BerserkFireRate[client] = 1.0;
-		g_BerserkActive[client] = true;
+		TryAddRoundToClip(attacker, TFWeaponSlot_Secondary);
 	}
-
-	g_BerserkFireRate[client] *= g_BerserkFireRatePerHit;
-	if (g_BerserkFireRate[client] < 0.1)
+	else if (weapon == secondary)
 	{
-		g_BerserkFireRate[client] = 0.1;
+		TryAddRoundToClip(attacker, TFWeaponSlot_Primary);
 	}
-
-	for (int slot = TFWeaponSlot_Primary; slot <= TFWeaponSlot_Secondary; slot++)
-	{
-		int weapon = GetPlayerWeaponSlot(client, slot);
-		if (weapon <= MaxClients || !IsValidEntity(weapon))
-		{
-			ResetBerserkWeapon(client, slot);
-			continue;
-		}
-
-		if (EntRefToEntIndex(g_BerserkWeaponRef[client][slot]) != weapon)
-		{
-			ResetBerserkWeapon(client, slot);
-			g_BerserkWeaponRef[client][slot] = EntIndexToEntRef(weapon);
-			Address attribute = TF2Attrib_GetByName(weapon, "fire rate bonus");
-			g_BerserkHadAttribute[client][slot] = attribute != Address_Null;
-			g_BerserkBaseFireRate[client][slot] = attribute != Address_Null ? TF2Attrib_GetValue(attribute) : 1.0;
-		}
-
-		TF2Attrib_SetByName(weapon, "fire rate bonus", g_BerserkBaseFireRate[client][slot] * g_BerserkFireRate[client]);
-	}
-	// PrintToChatAll("Sat firerate");
-	if (g_BerserkTimer[client] != null)
-	{
-		delete g_BerserkTimer[client];
-	}
-	g_BerserkTimer[client] = CreateTimer(g_BerserkResetDelay, Timer_ResetBerserk, client, TIMER_FLAG_NO_MAPCHANGE);
-}
-
-public Action Timer_ResetBerserk(Handle timer, any client)
-{
-	g_BerserkTimer[client] = null;
-	ResetBerserk(client);
-	return Plugin_Stop;
-}
-
-void ResetBerserkWeapon(int client, int slot)
-{
-	int weapon = EntRefToEntIndex(g_BerserkWeaponRef[client][slot]);
-	if (weapon > MaxClients && IsValidEntity(weapon))
-	{
-		if (g_BerserkHadAttribute[client][slot])
-		{
-			TF2Attrib_SetByName(weapon, "fire rate bonus", g_BerserkBaseFireRate[client][slot]);
-		}
-		else
-		{
-			TF2Attrib_RemoveByName(weapon, "fire rate bonus");
-		}
-	}
-	g_BerserkWeaponRef[client][slot] = INVALID_ENT_REFERENCE;
-}
-
-void ResetBerserk(int client)
-{
-	if (g_BerserkTimer[client] != null)
-	{
-		delete g_BerserkTimer[client];
-	}
-
-	for (int slot = TFWeaponSlot_Primary; slot <= TFWeaponSlot_Secondary; slot++)
-	{
-		ResetBerserkWeapon(client, slot);
-	}
-	g_BerserkActive[client] = false;
 }
 
 public void OnClientDisconnect(int client)
 {
-	ResetBerserk(client);
+	g_NextReloadTime[client][TFWeaponSlot_Primary] = 0.0;
+	g_NextReloadTime[client][TFWeaponSlot_Secondary] = 0.0;
 }
 
-public void OnMapEnd()
+void TryAddRoundToClip(int client, int slot)
 {
-	for (int client = 1; client <= MaxClients; client++)
+	float currentTime = GetEngineTime();
+	if (currentTime < g_NextReloadTime[client][slot])
 	{
-		ResetBerserk(client);
+		return;
+	}
+
+	int weapon = GetPlayerWeaponSlot(client, slot);
+	if (AddRoundToClip(weapon))
+	{
+		g_NextReloadTime[client][slot] = currentTime + SECONDARY_RELOAD_COOLDOWN;
 	}
 }
 
-public void OnPluginEnd()
+bool AddRoundToClip(int weapon)
 {
-	for (int client = 1; client <= MaxClients; client++)
+	if (weapon <= MaxClients || !IsValidEntity(weapon))
 	{
-		ResetBerserk(client);
+		return false;
 	}
+
+	int clip = GetEntProp(weapon, Prop_Send, "m_iClip1");
+	int maxClip = TF2Util_GetWeaponMaxClip(weapon);
+	if (clip < 0 || maxClip <= 0 || clip >= maxClip)
+	{
+		return false;
+	}
+
+	SetEntProp(weapon, Prop_Send, "m_iClip1", clip + 1);
+	return true;
 }

@@ -8,3 +8,7 @@ pywiki_robots.py
 TF2 Set Class.sp
 givebotsweapons_v2.sp
 robotcoins_analysis.md
+agent_context/architecture.md
+agent_context/plugins.md
+agent_context/README.md
+agent_context/robot-configs.md
