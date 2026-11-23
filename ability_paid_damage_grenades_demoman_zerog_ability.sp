@@ -16,6 +16,7 @@
 #define STICKY_PUSH_COOLDOWN 0.5
 #define STICKY_TRAIL_RED "stickybombtrail_red"
 #define STICKY_TRAIL_BLUE "stickybombtrail_blue"
+#define STICKY_REDIRECT_SOUND "ui/itemcrate_smash_common.wav"
 
 float g_StickyReadyTime[MAXPLAYERS + 1];
 int g_StickyTrailRef[2048];
@@ -27,6 +28,11 @@ public Plugin:myinfo =
 	description = "No grav sticks",
 	version = PLUGIN_VERSION,
 	url = "www.sourcemod.com"
+}
+
+public void OnMapStart()
+{
+	PrecacheSound(STICKY_REDIRECT_SOUND);
 }
 
 public void OnEntityCreated(int iEntity, const char[] sClassName) 
@@ -41,15 +47,39 @@ public void OnEntityCreated(int iEntity, const char[] sClassName)
 public void Hook_OnProjectileSpawn(iEntity) {
 	int iClient = GetEntPropEnt(iEntity, Prop_Data, "m_hOwnerEntity");
 	if (0 < iClient && iClient <= MaxClients && IsRobot(iClient, ROBOT_NAME)) {
-		
-		RequestFrame(SetGrav, iEntity);
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(iEntity));
+		pack.WriteCell(iClient);
+		RequestFrame(SetGrav, pack);
 	}
 }
 
-void SetGrav(int iEntity)
+void SetGrav(DataPack pack)
 {
+	pack.Reset();
+	int iEntity = EntRefToEntIndex(pack.ReadCell());
+	int client = pack.ReadCell();
+	delete pack;
+
+	if (iEntity == -1)
+	{
+		return;
+	}
+
 	Phys_EnableGravity(iEntity, false);
 	SetEntPropFloat(iEntity, Prop_Send, "m_flModelScale", 1.25);
+
+	// Without gravity the sticky would hang at its spawn point, so launch it along the robot's view
+	float eyeAng[3], fwd[3];
+	GetClientEyeAngles(client, eyeAng);
+	GetAngleVectors(eyeAng, fwd, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(fwd, PUSH_SPEED);
+
+	// Setting velocity overwrites spin, so restore a tumble similar to the engine's pipe spin
+	float spin[3];
+	spin[0] = 600.0;
+	spin[1] = GetRandomFloat(-1200.0, 1200.0);
+	Phys_SetVelocity(iEntity, fwd, spin, true);
 }
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
@@ -89,7 +119,7 @@ void DrawHUD(int client)
 
 void PushStickies(int client)
 {
-	PrintToChatAll("Pushing sticks");
+	// PrintToChatAll("Pushing sticks");
 	float eyePos[3], eyeAng[3], aimVec[3], aimPos[3];
 	GetClientEyePosition(client, eyePos);
 	GetClientEyeAngles(client, eyeAng);
@@ -107,19 +137,19 @@ void PushStickies(int client)
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", ownerVel);
 	while ((sticky = FindEntityByClassname(sticky, "tf_projectile_pipe_remote")) != -1)
 	{
-		PrintToChatAll("while test");
+		// PrintToChatAll("while test");
 		if (GetEntPropEnt(sticky, Prop_Data, "m_hThrower") != client)
 		{
-			PrintToChatAll("true 1");
+			// PrintToChatAll("true 1");
 			continue;
 		}
 		// Stuck stickies have m_bTouched set; only push ones still in flight
 		if (GetEntProp(sticky, Prop_Send, "m_bTouched"))
 		{
-			PrintToChatAll("true 2");
+			// PrintToChatAll("true 2");
 			continue;
 		}
-		PrintToChatAll("Found bomb");
+		// PrintToChatAll("Found bomb");
 		// Stickies are VPhysics objects, so velocity must be applied through vphysics; TeleportEntity is overridden by the simulation
 		float stickyPos[3], dir[3];
 		GetEntPropVector(sticky, Prop_Data, "m_vecOrigin", stickyPos);
@@ -132,6 +162,7 @@ void PushStickies(int client)
 
 		Phys_AddVelocity(sticky, dir, NULL_VECTOR);
 		AttachStickyTrail(sticky, client);
+		EmitSoundToAll(STICKY_REDIRECT_SOUND, sticky);
 	}
 }
 
