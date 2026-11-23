@@ -29,8 +29,14 @@ enum
 	target_terminated,
 	target_cancelled
 }
+int g_selectedTargetUserIds[MAXPLAYERS + 1];
+
 public OnMapStart()
 {
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		g_selectedTargetUserIds[i] = 0;
+	}
 	PrecacheSound(TARGET_SEARCH);
 	PrecacheSound(TARGET_LOST);
 	PrecacheSound(TARGET_FOUND);
@@ -78,7 +84,6 @@ public void OnPluginEnd()
 
 int validPlayers[MAXPLAYERS + 1];
 int g_target = -1;
-int g_previous_target = -2;
 bool g_isTerminator = false;
 float gametime = -1.0;
 float gametime_retarget = -1.0;
@@ -122,7 +127,7 @@ void FindTerminationTarget(){
 			if(IsValidClient(i) && IsClientInGame(i) && IsPlayerAlive(i) && !TF2Spawn_IsClientInSpawn(i))
 			{
 				TFTeam iTeam = TF2_GetClientTeam(i);
-				if (clientTeam != iTeam && iTeam != TFTeam_Spectator && iTeam != TFTeam_Unassigned && i != g_previous_target)
+				if (clientTeam != iTeam && iTeam != TFTeam_Spectator && iTeam != TFTeam_Unassigned && g_selectedTargetUserIds[i] != GetClientUserId(i))
 				{
 				validPlayers[numValidPlayers] = i;
 				numValidPlayers++;
@@ -143,13 +148,18 @@ void FindTerminationTarget(){
 			RemoveEntity(g_iGlowEnt[client]);
 		}
 			int champion = MM_GetCurrentChampion();
-			if (champion != -1 && TF2_GetPlayerClass(champion) != TFClass_Spy)
+			for (int i = 0; i < numValidPlayers; i++)
 			{
-				randomPlayer = champion;
+				if (validPlayers[i] == champion && TF2_GetPlayerClass(champion) != TFClass_Spy)
+				{
+					randomPlayer = champion;
+					break;
+				}
 			}
 			// PrintToChatAll("Applying glow to %N", randomPlayer);
 			g_iGlowEnt[client] = EntIndexToEntRef(TF2_AttachBasicGlow(randomPlayer));
 			g_target = randomPlayer;
+			g_selectedTargetUserIds[randomPlayer] = GetClientUserId(randomPlayer);
 			if (IsValidEntity(g_iGlowEnt[client]))
 			{
 				// PrintToChatAll("Hooking onglow for %N", g_iGlowEnt[client]);
@@ -195,6 +205,10 @@ public Action Event_Death(Event event, const char[] name, bool dontBroadcast)
         {
 				if(victim == g_target)
 	{
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			g_selectedTargetUserIds[i] = 0;
+		}
 		if(IsRobot(attacker, ROBOT_NAME))
 		{
 			TerminatorHeal(attacker);

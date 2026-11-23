@@ -1021,6 +1021,12 @@ int VolunteerStateComparision(int index1, int index2, Handle array, Handle hndl)
     VolunteerState a = view_as<VolunteerState>(list.Get(index1));
     VolunteerState b = view_as<VolunteerState>(list.Get(index2));
     
+    // volunteering is required before VIP or admin priority can apply
+    if (a.Volunteered && !b.Volunteered)
+        return -1;
+    if (!a.Volunteered && b.Volunteered)
+        return 1;
+
     if (a.Vip && !b.Vip)
         return -1;
     if (!a.Vip && b.Vip)
@@ -1029,11 +1035,6 @@ int VolunteerStateComparision(int index1, int index2, Handle array, Handle hndl)
     if (a.Admin && !b.Admin)
         return -1;
     if (!a.Admin && b.Admin)
-        return 1;
-    
-    if (a.Volunteered && !b.Volunteered)
-        return -1;
-    if (!a.Volunteered && b.Volunteered)
         return 1;
 
     if (a.QueuePoints < b.QueuePoints)
